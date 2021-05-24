@@ -1,6 +1,7 @@
 # Exalt Account Manager
 
 The Exalt Account Manager (EAM for short) is a launcher for the game Realm of the mad god (ROTMG) Exalt version (Unity-client).
+
 ![Exalt Account Manager](https://i.imgur.com/cDijuuR.png)
 
 
@@ -19,4 +20,5 @@ The Exalt Account Manager (EAM for short) is a launcher for the game Realm of th
 - Token-Viewer
 
 ### Screenshot of the statistics module
+
 ![Statistics](https://i.imgur.com/qlXnuXP.png)
