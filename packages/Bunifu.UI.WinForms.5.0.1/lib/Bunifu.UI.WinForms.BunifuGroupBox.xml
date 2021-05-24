@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bunifu.UI.WinForms.BunifuGroupBox</name>
+    </assembly>
+    <members>
+        <member name="T:Bunifu.UI.WinForms.BunifuGroupBox">
+            <summary>
+            Provides customizable group boxes for hosting and managing individual controls.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuGroupBox.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.UI.WinForms.BunifuGroupBox" /> control.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuGroupBox.#ctor(System.Int32,System.Single,System.Drawing.Color)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.UI.WinForms.BunifuGroupBox" /> control.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuGroupBox.LineStyles">
+            <summary>
+            Provides different line style options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Solid">
+            <summary>
+            A solid line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Dash">
+            <summary>
+            A dashed line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Dot">
+            <summary>
+            A dotted line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.DashDot">
+            <summary>
+            A dashed and dotted recursive line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.DashDotDot">
+            <summary>
+            A dashed, dotted-dotted recursive line.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.BorderThickness">
+            <summary>
+            Gets or sets the border thickness.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.BorderRadius">
+            <summary>
+            Gets or sets the border radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.LabelIndent">
+            <summary>
+            Gets or sets the label indent size.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.Text">
+            <summary>
+            Gets or sets the label text.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.Font">
+            <summary>
+            Gets or sets the label font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.ForeColor">
+            <summary>
+            Gets or sets the label fore color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.BorderColor">
+            <summary>
+            Gets or sets the border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.LabelAlign">
+            <summary>
+            Gets or sets the label alignment.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuGroupBox.LineStyle">
+            <summary>
+            Gets or sets the group box line style.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuGroupBox.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuGroupBox.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">
+            true if managed resources should be disposed; otherwise, false.
+            </param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuGroupBox.InitializeComponent">
+            <summary>
+            Required method for Designer support.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuGroupBox.BunifuControlDesignerActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.UI.WinForms.BunifuGroupBox.BunifuControlDesignerActionList"/> class.
+            </summary>
+            <seealso cref="T:System.ComponentModel.Design.DesignerActionList" />
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuGroupBox.BunifuControlDesignerActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.GraphicsExtension">
+            <summary>
+            Provides graphics extension methods for drawing rectangles.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.GraphicsExtension.GenerateRoundedRectangle(System.Drawing.Graphics,System.Drawing.RectangleF,System.Single)">
+            <summary>
+            Generates a rounded rectangle.
+            </summary>
+            <param name="graphics">The graphics object to use for drawing.</param>
+            <param name="rectangle">The client rectangle.</param>
+            <param name="radius">The rectangle radius.</param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.GraphicsExtension.GenerateCapsule(System.Drawing.Graphics,System.Drawing.RectangleF)">
+            <summary>
+            Generates a rectangular graphics capsule.
+            </summary>
+            <param name="graphics">The graphics object to use for drawing.</param>
+            <param name="baseRect">The base client rectangle.</param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.GraphicsExtension.DrawRoundedRectangle(System.Drawing.Graphics,System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Draws a rounded rectangle specified by a pair of coordinates, a width, 
+            a height and the radius for the arcs that make the rounded edges.
+            </summary>
+            <param name="brush">A <see cref="T:System.Drawing.Pen"/> that determines the color, width and style of the rectangle.</param>
+            <param name="x">The x-coordinate of the upper-left corner of the rectangle to draw.</param>
+            <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw.</param>
+            <param name="width">Width of the rectangle to draw.</param>
+            <param name="height">Height of the rectangle to draw.</param>
+            <param name="radius">The radius of the arc used for the rounded edges.</param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.GraphicsExtension.DrawRoundedRectangle(System.Drawing.Graphics,System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Draws a rounded rectangle specified by a pair of coordinates, a width, 
+            a height and the radius for the arcs that make the rounded edges.
+            </summary>
+            <param name="brush">A <see cref="T:System.Drawing.Pen"/> that determines the color, width and style of the rectangle.</param>
+            <param name="x">The x-coordinate of the upper-left corner of the rectangle to draw.</param>
+            <param name="y">The y-coordinate of the upper-left corner of the rectangle to draw.</param>
+            <param name="width">Width of the rectangle to draw.</param>
+            <param name="height">Height of the rectangle to draw.</param>
+            <param name="radius">The radius of the arc used for the rounded edges.</param>
+        </member>
+        <member name="F:Utilities.BunifuGroupBox.IndentEditor.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuGroupBox.IndentEditor.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Utilities.BunifuGroupBox.IndentEditor.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

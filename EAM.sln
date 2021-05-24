@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StringToBase64", "StringToBase64\StringToBase64.csproj", "{786F8D8B-1C1B-43E7-BE17-50872F7720E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExaltAccountManager", "ExaltAccountManager\ExaltAccountManager.csproj", "{4DAA2462-CE82-491D-A823-B839036566D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAM Tasktray Tool", "EAM Tasktray Tool\EAM Tasktray Tool.csproj", "{39F18F98-F955-4B55-B7BC-1D8402E279BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK_EAM_Lib", "MK_EAM_Lib\MK_EAM_Lib.csproj", "{63C8EBA3-8DCD-46BD-98D0-58F3190C5B6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAM Daily Login Service", "EAM Daily Login Service\EAM Daily Login Service.csproj", "{762C7732-B9DF-4ED4-B166-ED8AB0134D1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAM Statistics", "EAM Statistics\EAM Statistics.csproj", "{B429BD15-3C98-4150-9F09-9A521A112997}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{786F8D8B-1C1B-43E7-BE17-50872F7720E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{786F8D8B-1C1B-43E7-BE17-50872F7720E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{786F8D8B-1C1B-43E7-BE17-50872F7720E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{786F8D8B-1C1B-43E7-BE17-50872F7720E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DAA2462-CE82-491D-A823-B839036566D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DAA2462-CE82-491D-A823-B839036566D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DAA2462-CE82-491D-A823-B839036566D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DAA2462-CE82-491D-A823-B839036566D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39F18F98-F955-4B55-B7BC-1D8402E279BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39F18F98-F955-4B55-B7BC-1D8402E279BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39F18F98-F955-4B55-B7BC-1D8402E279BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39F18F98-F955-4B55-B7BC-1D8402E279BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63C8EBA3-8DCD-46BD-98D0-58F3190C5B6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63C8EBA3-8DCD-46BD-98D0-58F3190C5B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63C8EBA3-8DCD-46BD-98D0-58F3190C5B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63C8EBA3-8DCD-46BD-98D0-58F3190C5B6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{762C7732-B9DF-4ED4-B166-ED8AB0134D1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{762C7732-B9DF-4ED4-B166-ED8AB0134D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{762C7732-B9DF-4ED4-B166-ED8AB0134D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{762C7732-B9DF-4ED4-B166-ED8AB0134D1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B429BD15-3C98-4150-9F09-9A521A112997}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B429BD15-3C98-4150-9F09-9A521A112997}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B429BD15-3C98-4150-9F09-9A521A112997}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B429BD15-3C98-4150-9F09-9A521A112997}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D61C4B34-772E-4C38-B3C8-4F8C367D52A9}
+	EndGlobalSection
+EndGlobal
