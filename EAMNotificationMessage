@@ -1,5 +1,8 @@
 {
-    "type":0,
-    "message":"",
-    "link":""
+	"id":0,
+	"type":2,
+	"message":"This is a test, please ignore this!",
+	"link":"",
+	"linkM":"",
+	"forceShow":true
 }
