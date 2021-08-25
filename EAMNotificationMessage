@@ -1,8 +1,8 @@
 {
-	"id":1,
+	"id":2,
 	"type":1,
 	"message":"There is a new EAM-Version available with tons of new features!",
 	"link":"https://github.com/MaikEight/ExaltAccountManager",
 	"linkM":"http://www.mpgh.net/forum/forumdisplay.php?f=599",
-	"forceShow":false
+	"forceShow":true
 }
