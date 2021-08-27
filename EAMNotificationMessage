@@ -1,8 +1,8 @@
 {
-	"id":6,
+	"id":0,
 	"type":0,
-	"message":"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.",
-	"link":"https://github.com/MaikEight/ExaltAccountManager",
-	"linkM":"http://www.mpgh.net/forum/forumdisplay.php?f=599",
+	"message":"",
+	"link":"",
+	"linkM":"",
 	"forceShow":false
 }
