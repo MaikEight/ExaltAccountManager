@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ExaltAccountManager</RootNamespace>
     <AssemblyName>ExaltAccountManager</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,116 +40,148 @@
     <StartupObject>ExaltAccountManager.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bunifu.Charts.WinForms, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.Charts.WinForms.1.1.3\lib\net40\Bunifu.Charts.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="Bunifu.Licensing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f89b4760ba7dcb6b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.Licensing.dll</HintPath>
+      <HintPath>..\packages\Bunifu.Charts.WinForms.1.1.3\lib\net40\Bunifu.Licensing.dll</HintPath>
     </Reference>
     <Reference Include="Bunifu.UI.WinForms.1.5.3, Version=1.5.3.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.1.5.3.dll</HintPath>
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.1.5.3.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuButton, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuButton.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuButton, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuButton.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuCheckBox, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuCheckBox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuCheckBox, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuCheckBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuCircleProgress, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuCircleProgress.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuCircleProgress, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuCircleProgress.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuColorTransition, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuColorTransition.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuColorTransition, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuColorTransition.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuDataGridView, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuDataGridView.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuDataGridView, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuDataGridView.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuDatePicker, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuDatePicker.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuDatePicker, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuDatePicker.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuDropdown, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuDropdown.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuDropdown, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuDropdown.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuFormDock, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuFormDock.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuFormDock, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuFormDock.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuGauge, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuGauge.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuGauge, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuGauge.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuGradientPanel, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuGradientPanel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuGradientPanel, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuGradientPanel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuGroupBox, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuGroupBox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuGroupBox, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuGroupBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuImageButton, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuImageButton.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuImageButton, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuImageButton.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuLabel, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuLabel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuLabel, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuLabel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuPages, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuPages.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuPages, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuPages.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuPanel, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuPanel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuPanel, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuPanel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuPictureBox, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuPictureBox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuPictureBox, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuPictureBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuProgressBar, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuProgressBar.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuProgressBar, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuProgressBar.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuRadioButton, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuRadioButton.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuRadioButton, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuRadioButton.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuRating, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuRating.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuRating, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuRating.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuScrollBar, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuScrollBar.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuScrollBar, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuScrollBar.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuSeparator, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuSeparator.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuSeparator, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuSeparator.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuShadowPanel, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuShadowPanel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuShadowPanel, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuShadowPanel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuShapes, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuShapes.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuShapes, Version=5.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuShapes.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuSlider, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuSlider.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuSlider, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuSlider.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuSnackbar, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuSnackbar.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuSnackbar, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuSnackbar.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuTextbox, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuTextbox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuTextBox, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuTextBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuToggleSwitch, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuToggleSwitch.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuToggleSwitch, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuToggleSwitch.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuToolTip, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuToolTip.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuToolTip, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuToolTip.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuTransition, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuTransition.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuTransition, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuTransition.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuUserControl, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.BunifuUserControl.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuUserControl, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.BunifuUserControl.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.Deprecated, Version=4.1.1.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.1\lib\Bunifu.UI.WinForms.Deprecated.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.Deprecated, Version=5.0.9.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.0.9\lib\net40\Bunifu.UI.WinForms.Deprecated.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=27.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.27.1.1\lib\net47\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="EAM Statistics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\EAM Statistics\bin\Release\EAM Statistics.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.9.1.0, Culture=neutral, PublicKeyToken=e25603a88b3aa7da, processorArchitecture=MSIL">
       <HintPath>..\packages\TaskScheduler.2.9.1\lib\net452\Microsoft.Win32.TaskScheduler.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -160,8 +193,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessToken.cs" />
-    <Compile Include="AccountInfo.cs" />
     <Compile Include="AccountUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -174,12 +205,35 @@
     <Compile Include="AccountUIHeader.Designer.cs">
       <DependentUpon>AccountUIHeader.cs</DependentUpon>
     </Compile>
-    <Compile Include="AesCryptographyService.cs" />
     <Compile Include="ChangeLogEntry.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ChangeLogEntry.Designer.cs">
       <DependentUpon>ChangeLogEntry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorChanger.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorChanger.Designer.cs">
+      <DependentUpon>ColorChanger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmHWIDchanger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmHWIDchanger.Designer.cs">
+      <DependentUpon>FrmHWIDchanger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmHWIDTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmHWIDTool.Designer.cs">
+      <DependentUpon>FrmHWIDTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmImExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmImExport.Designer.cs">
+      <DependentUpon>FrmImExport.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmAbout.cs">
       <SubType>Form</SubType>
@@ -217,6 +271,12 @@
     <Compile Include="FrmHelp.Designer.cs">
       <DependentUpon>FrmHelp.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmImportAskPass.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmImportAskPass.Designer.cs">
+      <DependentUpon>FrmImportAskPass.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmLogViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -229,17 +289,35 @@
     <Compile Include="FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMessage.Designer.cs">
+      <DependentUpon>FrmMessage.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmOptions.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmOptions.Designer.cs">
       <DependentUpon>FrmOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSetup.Designer.cs">
+      <DependentUpon>FrmSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmTokenViewer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmTokenViewer.Designer.cs">
       <DependentUpon>FrmTokenViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmUpdater.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmUpdater.Designer.cs">
+      <DependentUpon>FrmUpdater.cs</DependentUpon>
     </Compile>
     <Compile Include="HelpUI.cs">
       <SubType>UserControl</SubType>
@@ -276,6 +354,18 @@
     <Compile Include="RoundPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FrmServerListChanger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmServerListChanger.Designer.cs">
+      <DependentUpon>FrmServerListChanger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SortAlphabeticalUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SortAlphabeticalUI.Designer.cs">
+      <DependentUpon>SortAlphabeticalUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="TokenViewerUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -303,6 +393,18 @@
     <EmbeddedResource Include="ChangeLogEntry.resx">
       <DependentUpon>ChangeLogEntry.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ColorChanger.resx">
+      <DependentUpon>ColorChanger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmHWIDchanger.resx">
+      <DependentUpon>FrmHWIDchanger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmHWIDTool.resx">
+      <DependentUpon>FrmHWIDTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmImExport.resx">
+      <DependentUpon>FrmImExport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmAbout.resx">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -321,17 +423,29 @@
     <EmbeddedResource Include="FrmHelp.resx">
       <DependentUpon>FrmHelp.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmImportAskPass.resx">
+      <DependentUpon>FrmImportAskPass.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmLogViewer.resx">
       <DependentUpon>FrmLogViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmMessage.resx">
+      <DependentUpon>FrmMessage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmOptions.resx">
       <DependentUpon>FrmOptions.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmSetup.resx">
+      <DependentUpon>FrmSetup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmTokenViewer.resx">
       <DependentUpon>FrmTokenViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmUpdater.resx">
+      <DependentUpon>FrmUpdater.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelpUI.resx">
       <DependentUpon>HelpUI.cs</DependentUpon>
@@ -359,6 +473,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="FrmServerListChanger.resx">
+      <DependentUpon>FrmServerListChanger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SortAlphabeticalUI.resx">
+      <DependentUpon>SortAlphabeticalUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TokenViewerUI.resx">
       <DependentUpon>TokenViewerUI.cs</DependentUpon>
     </EmbeddedResource>
@@ -405,6 +525,106 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
+    <None Include="Resources\ic_fingerprint_black_48dp.png" />
+    <None Include="Resources\ic_fingerprint_white_48dp.png" />
+    <None Include="Resources\ic_help_outline_white_36dp.png" />
+    <None Include="Resources\ic_help_outline_black_36dp.png" />
+    <None Include="Resources\ic_new_releases_black_48dp.png" />
+    <None Include="Resources\ic_new_releases_white_48dp.png" />
+    <None Include="Resources\alphabetical_sorting_az_24px.png" />
+    <None Include="Resources\alphabetical_sorting_za_24px.png" />
+    <None Include="Resources\alphabetical_sorting_za_white_24px.png" />
+    <None Include="Resources\alphabetical_sorting_az_white_24px.png" />
+    <None Include="Resources\ic_hourglass_empty_black_36dp.png" />
+    <None Include="Resources\ic_hourglass_empty_white_36dp.png" />
+    <None Include="Resources\below_white_24px.png" />
+    <None Include="Resources\below_black_24px.png" />
+    <None Include="Resources\ic_done_white_24dp.png" />
+    <None Include="Resources\ic_done_black_24dp.png" />
+    <None Include="Resources\search_more_black_24px_2.png" />
+    <None Include="Resources\search_more_white_24px.png" />
+    <None Include="Resources\ic_search_white_24dp.png" />
+    <None Include="Resources\ic_search_black_24dp.png" />
+    <None Include="Resources\ic_beenhere_black_36dp.png" />
+    <None Include="Resources\ic_beenhere_white_36dp.png" />
+    <None Include="Resources\ic_new_releases_white_36dp.png" />
+    <None Include="Resources\ic_new_releases_black_36dp.png" />
+    <None Include="Resources\below_white_48px.png" />
+    <None Include="Resources\below_black_48px.png" />
+    <None Include="Resources\ic_block_white_18dp.png" />
+    <None Include="Resources\ic_block_black_18dp.png" />
+    <None Include="Resources\fingerprint_scan_24px.png" />
+    <None Include="Resources\fingerprint_scan_white_24px_1.png" />
+    <None Include="Resources\fingerprint_24px.png" />
+    <None Include="Resources\fingerprint_white_24px.png" />
+    <None Include="Resources\fingerprint_white_15px.png" />
+    <None Include="Resources\fingerprint_15px.png" />
+    <None Include="Resources\outline_sync_problem_black_24dp.png" />
+    <None Include="Resources\outline_sync_problem_white_24dp.png" />
+    <None Include="Resources\sync_settings_white_30px.png" />
+    <None Include="Resources\sync_settings_30px.png" />
+    <None Include="Resources\icons8_sync_settings_30px_1.png" />
+    <None Include="Resources\list_white_24px_1.png" />
+    <None Include="Resources\list_24px.png" />
+    <None Include="Resources\list_white_13px.png" />
+    <None Include="Resources\list_13px.png" />
+    <None Include="Resources\server_18px.png" />
+    <None Include="Resources\server_18p.png" />
+    <None Include="Resources\UI_Icon_Discord2.png" />
+    <None Include="Resources\ic_email_white_24dp.png" />
+    <None Include="Resources\ic_drafts_white_24dp.png" />
+    <None Include="Resources\ic_drafts_black_24dp.png" />
+    <None Include="Resources\UI_Icon_SocialDiscord_black1.jpg" />
+    <None Include="Resources\ic_email_black_24dp.png" />
+    <None Include="Resources\ic_email_black_36dp.png" />
+    <None Include="Resources\ic_email_black_48dp.png" />
+    <None Include="Resources\UI_Icon_SocialDiscord_black.jpg" />
+    <None Include="Resources\UI_Icon_SocialDiscord_black.png" />
+    <None Include="Resources\UI_Icon_SocialDiscord.png" />
+    <None Include="Resources\ic_add_circle_outline_black_18dp.png" />
+    <None Include="Resources\ic_refresh_white_24dp.png" />
+    <None Include="Resources\ic_rotate_right_white_24dp.png" />
+    <None Include="Resources\ic_rotate_right_black_24dp.png" />
+    <None Include="Resources\ic_refresh_black_24dp.png" />
+    <None Include="Resources\outline_save_black_18dp.png" />
+    <None Include="Resources\save_18p.png" />
+    <None Include="Resources\outline_drag_indicator_black_36dp.png" />
+    <None Include="Resources\outline_drag_indicator_white_36dp.png" />
+    <None Include="Resources\ic_add_to_photos_black_48dp.png" />
+    <None Include="Resources\ic_add_to_photos_white_48dp.png" />
+    <None Include="Resources\ic_filter_none_white_48dp.png" />
+    <None Include="Resources\ic_filter_none_black_48dp.png" />
+    <None Include="Resources\ic_import_export_black_48dp.png" />
+    <None Include="Resources\ic_import_export_white_48dp.png" />
+    <None Include="Resources\ic_import_export_white_24dp.png" />
+    <None Include="Resources\ic_import_export_black_24dp.png" />
+    <None Include="Resources\ic_import_export_black_36dp.png" />
+    <None Include="Resources\ic_import_export_white_36dp.png" />
+    <None Include="Resources\baseline_autorenew_white_36dp_45G.png" />
+    <None Include="Resources\baseline_autorenew_black_36dp_45G.png" />
+    <None Include="Resources\time_36px.png" />
+    <None Include="Resources\time_black_36px.png" />
+    <None Include="Resources\new_Outline_black_18px.png" />
+    <None Include="Resources\new_Outline_white_18px.png" />
+    <None Include="Resources\new_Outline_18px.png" />
+    <None Include="Resources\outline_sync_problem_white_36dp.png" />
+    <None Include="Resources\outline_sync_problem_black_36dp.png" />
+    <None Include="Resources\outline_published_with_changes_black_36dp.png" />
+    <None Include="Resources\outline_published_with_changes_white_36dp.png" />
+    <None Include="Resources\outline_edit_white_36dp.png" />
+    <None Include="Resources\outline_edit_black_36dp.png" />
+    <None Include="Resources\outline_border_color_white_36dp.png" />
+    <None Include="Resources\outline_border_color_black_36dp.png" />
+    <None Include="Resources\baseline_delete_outline_white_36dp.png" />
+    <None Include="Resources\baseline_delete_outline_black_36dp.png" />
+    <None Include="Resources\ic_folder_white_18dp.png" />
+    <None Include="Resources\ic_folder_black_18dp.png" />
+    <None Include="Resources\ic_fiber_new_white_18dp.png" />
+    <None Include="Resources\ic_fiber_new_black_18dp.png" />
+    <None Include="Resources\maintenance_black_48px.png" />
+    <None Include="Resources\maintenance_white_48px.png" />
+    <None Include="Resources\outline_slow_motion_video_black_36dp.png" />
+    <None Include="Resources\outline_slow_motion_video_white_36dp.png" />
     <None Include="Resources\ic_not_interested_white_18dp.png" />
     <None Include="Resources\ic_delete_forever_white_18dp.png" />
     <None Include="Resources\ic_not_interested_black_18dp.png" />
@@ -490,6 +710,9 @@
       <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
       <Name>MK_EAM_Lib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

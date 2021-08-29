@@ -16,12 +16,14 @@ namespace ExaltAccountManager
         public LogData data;
         private FrmLogViewer frmLogViewer;
         private bool showDate = true;
-        public LogDataUI(FrmLogViewer _frmLogViewer, LogData _data, bool _showDate = true, bool isHeadLine = false)
+        private bool isHeadLine = false;
+        public LogDataUI(FrmLogViewer _frmLogViewer, LogData _data, bool _showDate = true, bool _isHeadLine = false)
         {
             InitializeComponent();
             frmLogViewer = _frmLogViewer;
             data = _data;
             showDate = _showDate;
+            isHeadLine = _isHeadLine;
 
             if (!isHeadLine)
                 ApplyDataToUI();
@@ -33,9 +35,12 @@ namespace ExaltAccountManager
                 lMessage.Text = "Log message";
                 lEventType.Text = "Event Type";
                 pEventType.Width += ((frmLogViewer.Width - 2) - this.Width);
+
+                this.Width += 8;
+
                 if (frmLogViewer.isDarkmode)
                 {
-                    this.BackColor = Color.FromArgb(0,0,0);                    
+                    this.BackColor = Color.FromArgb(0, 0, 0);
                 }
                 else
                 {
@@ -56,8 +61,15 @@ namespace ExaltAccountManager
                 lTime.Text = data.time.ToShortTimeString();
                 lSender.Text = data.sender;
                 lMessage.Text = data.message;
+                toolTip.SetToolTip(lMessage, data.message);
                 lEventType.Text = data.eventType.ToString();
             }
+        }
+
+        private void LogDataUI_Click(object sender, EventArgs e)
+        {
+            if (!isHeadLine)
+                Clipboard.SetText($"{data.time.ToString("dd.MM.yyyy HH:mm")}\t{data.sender}\t{data.message}\t{data.eventType.ToString()}");
         }
     }
 }

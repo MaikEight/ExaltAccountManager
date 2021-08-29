@@ -1,4 +1,5 @@
-﻿using MK_EAM_Lib;
+﻿using Bunifu.UI.WinForms;
+using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,43 +15,110 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using AccountInfo = MK_EAM_Lib.AccountInfo;
 
 namespace ExaltAccountManager
 {
     public partial class FrmMain : Form
     {
-        public readonly Version version = new Version(2, 0, 8);
-        OptionsUI optionenUI;
-        MoreToolsUI moreUI = null;
+        public readonly Version version = new Version(2, 2, 2);
         bool openMoreUI = true;
 
-        public string exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe");
-        public List<AccountInfo> accounts = new List<AccountInfo>();
+        #region UIs
+
+        OptionsUI optionenUI;
+        MoreToolsUI moreUI = null;
+        SortAlphabeticalUI sortAlphabeticalUI;
+        public ColorChanger colorChanger;
+        public FrmServerListChanger frmServerListChanger;
+
+        //THE HWID Change does not work, sadly...
+        //public FrmHWIDchanger frmHWIDchanger;
+
+        #endregion
+
+        public List<MK_EAM_Lib.AccountInfo> accounts = new List<MK_EAM_Lib.AccountInfo>();
+        public List<AccountUI> accountUIs = new List<AccountUI>();
         public bool closeAfterConnect = false;
         public bool useDarkmode = false;
-        public string optionsPath = Path.Combine(Application.StartupPath, "EAM.options");
-        public string accountsPath = Path.Combine(Application.StartupPath, "EAM.accounts");
-        public string accountOrdersPath = Path.Combine(Application.StartupPath, "EAM.accountOrders");
-        public string dailyLoginsPath = Path.Combine(Application.StartupPath, "EAM.DailyLogins");
-        public string notificationOptionsPath = Path.Combine(Application.StartupPath, "EAM.NotificationOptions");
-        //public string userLoginStatsPath = Path.Combine(Application.StartupPath, "EAM.LoginStats");
-        public string accountStatsPath = Path.Combine(Application.StartupPath, "Stats");
-        public NotificationOptions notOpt;
+        public string serverToJoin = string.Empty;
+
+        public bool[] notificationValues = new bool[] { true, true, true, true };
+
+        #region Paths
+
+        public string exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe");
+
+        public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
+
+        public string optionsPath = Path.Combine(saveFilePath, "EAM.options");
+        public string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
+        public string accountOrdersPath = Path.Combine(saveFilePath, "EAM.accountOrders");
+        public string dailyLoginsPath = Path.Combine(saveFilePath, "EAM.DailyLogins");
+        public string notificationOptionsPath = Path.Combine(saveFilePath, "EAM.NotificationOptions");
+        public string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
+        public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
         public string pathLogs = Path.Combine(Application.StartupPath, "EAM.Logs");
+        public string lastUpdateCheckPath = Path.Combine(saveFilePath, "EAM.LastUpdateCheck");
+        public string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
+        public string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
+        public string pingCheckerExePath = Path.Combine(Application.StartupPath, "EAM PingChecker.exe");
+        public string getClientHWIDToolPath = Path.Combine(Application.StartupPath, "EAM_GetClientHWID");
+
+        private string[] flagPaths = new string[]
+        {
+             Path.Combine(Application.StartupPath, "flag.ScreenshotMode"),
+             Path.Combine(Application.StartupPath, "flag.MPGH")
+        };
+
+        #endregion
+
+        #region Flags
+
+        public bool screenshotMode = false;
+        public bool isMPGHVersion = false;
+
+        #endregion
+
+        public NotificationOptions notOpt;
 
         public bool loading = false;
         public List<LogData> logs = new List<LogData>();
-        private AccountOrders accountOrders;
+        public AccountOrders accountOrders;
         public bool lockForm = false;
+        public bool isNewInstall = false;
+        public ServerDataCollection serverData;
+
+        public string checksumJson = string.Empty;
+        public string buildHash = string.Empty;
+        public bool updateRequired = false;
+
+        public EAMNotificationMessage msg;
+        private string updateLink = string.Empty;
+        private EAMNotificationMessageSaveFile notificationSaveFile;
 
         public FrmMain()
         {
             InitializeComponent();
-            lVersion.Text = $"v{version}";
 
-            moreUI = new MoreToolsUI(this);
-            moreUI.Visible = false;
+            lVersion.Text = $"v{version}";
+            toolTip.AlignTextWithTitle = true;
+
+            moreUI = new MoreToolsUI(this)
+            {
+                Visible = false
+            };
             this.Controls.Add(moreUI);
+            header.SetFrmMain(this);
+
+            sortAlphabeticalUI = new SortAlphabeticalUI(this);
+            sortAlphabeticalUI.Visible = false;
+            this.Controls.Add(sortAlphabeticalUI);
+            sortAlphabeticalUI.Top = header.Bottom + 15;
+
+            pMain.HorizontalScroll.Visible = false;
+            pMain.VerticalScroll.Visible = false;
+            pMain.AutoScroll = false;
 
             try
             {
@@ -60,94 +128,371 @@ namespace ExaltAccountManager
                 optionenUI.BringToFront();
                 header.BringToFront();
                 pMain.BringToFront();
+                scrollbar.BringToFront();
 
-                if (File.Exists(optionsPath))
+                #region Load Flags
+
+                for (int i = 0; i < flagPaths.Length; i++)
                 {
                     try
                     {
-                        OptionsData opt = (OptionsData)ByteArrayToObject(File.ReadAllBytes(optionsPath));
-                        exePath = opt.exePath;
-                        closeAfterConnect = opt.closeAfterConnection;
-                        useDarkmode = !opt.useDarkmode;
-                    }
-                    catch { }
-                }
-                else
-                {
-                    try
-                    {
-                        OptionsData opt = new OptionsData()
+                        if (File.Exists(flagPaths[i]))
                         {
-                            exePath = exePath,
-                            closeAfterConnection = false,
-                            useDarkmode = !useDarkmode
-                        };
-                        File.WriteAllBytes(optionsPath, ObjectToByteArray(opt));
-                    }
-                    catch { }
-                }
-                if (File.Exists(accountOrdersPath))
-                {
-                    try
-                    {
-                        accountOrders = (AccountOrders)ByteArrayToObject(File.ReadAllBytes(accountOrdersPath));
-                    }
-                    catch { }
-                }
-
-                if (File.Exists(accountsPath))
-                {
-                    try
-                    {
-                        loading = true;
-                        byte[] data = File.ReadAllBytes(accountsPath);
-                        AesCryptographyService acs = new AesCryptographyService();
-                        accounts = (List<AccountInfo>)ByteArrayToObject(acs.Decrypt(data));
-                        UpdateAccountInfos();
-                        loading = false;
-                    }
-                    catch { }
-                }
-                if (File.Exists(notificationOptionsPath))
-                {
-                    try
-                    {
-                        notOpt = (NotificationOptions)ByteArrayToObject(File.ReadAllBytes(notificationOptionsPath));
-                    }
-                    catch { }
-                }
-                else
-                {
-                    try
-                    {
-                        notOpt = new NotificationOptions();
-                        File.WriteAllBytes(notificationOptionsPath, ObjectToByteArray(notOpt));
+                            switch (i)
+                            {
+                                case 0: //Screenshot Mode
+                                    screenshotMode = true;
+                                    break;
+                                case 1: //isMPGH release
+                                    isMPGHVersion = true;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                     }
                     catch { }
                 }
 
-                try
+                #endregion
+
+                if (!Directory.Exists(saveFilePath))
                 {
-                    if (!Directory.Exists(accountStatsPath))
-                        Directory.CreateDirectory(accountStatsPath);
+                    Directory.CreateDirectory(saveFilePath);
+                    isNewInstall = true;
                 }
-                catch { }
+
+                if (isNewInstall || (!File.Exists(accountsPath) && !File.Exists(optionsPath)))
+                {
+                    isNewInstall = true;
+
+                    SwitchDesign();
+
+                    this.Show();
+                    this.BringToFront();
+
+                    lockForm = true;
+
+                    FrmSetup frmSetup = new FrmSetup(this);
+                    frmSetup.StartPosition = FormStartPosition.Manual;
+                    frmSetup.Location = new Point(this.Location.X + ((this.Width - frmSetup.Width) / 2), this.Location.Y + ((this.Height - frmSetup.Height) / 2));
+                    frmSetup.Show(this);
+                }
+
+                if (!isNewInstall)
+                {
+                    if (File.Exists(optionsPath))
+                    {
+                        try
+                        {
+                            OptionsData opt = (OptionsData)ByteArrayToObject(File.ReadAllBytes(optionsPath));
+                            exePath = opt.exePath;
+                            closeAfterConnect = opt.closeAfterConnection;
+                            useDarkmode = !opt.useDarkmode;
+                            serverToJoin = opt.serverToJoin;
+
+                            notificationValues[0] = opt.searchRotmgUpdates;
+                            notificationValues[1] = opt.searchUpdateNotification;
+                            notificationValues[2] = opt.searchWarnings;
+                            notificationValues[3] = opt.deactivateKillswitch;
+                        }
+                        catch { }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            OptionsData opt = new OptionsData()
+                            {
+                                exePath = exePath,
+                                closeAfterConnection = false,
+                                useDarkmode = !useDarkmode,
+                                serverToJoin = string.Empty,
+                                searchRotmgUpdates = notificationValues[0],
+                                searchUpdateNotification = notificationValues[1],
+                                searchWarnings = notificationValues[2],
+                                deactivateKillswitch = notificationValues[3]
+                            };
+                            File.WriteAllBytes(optionsPath, ObjectToByteArray(opt));
+                        }
+                        catch { }
+                    }
+                    if (File.Exists(accountOrdersPath))
+                    {
+                        try
+                        {
+                            accountOrders = (AccountOrders)ByteArrayToObject(File.ReadAllBytes(accountOrdersPath));
+                        }
+                        catch { }
+                    }
+
+                    if (File.Exists(accountsPath))
+                    {
+                        LoadAccountInfos(accountsPath);
+                    }
+                    if (File.Exists(notificationOptionsPath))
+                    {
+                        try
+                        {
+                            notOpt = (NotificationOptions)ByteArrayToObject(File.ReadAllBytes(notificationOptionsPath));
+                        }
+                        catch { }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            notOpt = new NotificationOptions();
+                            File.WriteAllBytes(notificationOptionsPath, ObjectToByteArray(notOpt));
+                        }
+                        catch { }
+                    }
+
+                    try
+                    {
+                        if (!Directory.Exists(accountStatsPath))
+                            Directory.CreateDirectory(accountStatsPath);
+                    }
+                    catch { }
+                }
+
+                LoadServerData();
 
                 LoadLogs();
-
-                SwitchDesign();
+                if (!isNewInstall)
+                    SwitchDesign();
                 pbDarkmode_MouseLeave(pbDarkmode, null);
 
                 timerLoadProcesses_Tick(timerLoadProcesses, null);
                 timerLoadProcesses.Start();
 
                 this.BringToFront();
+
+                colorChanger = new ColorChanger(this);
+                colorChanger.Visible = false;
+                pMain.Controls.Add(colorChanger);
+
+                frmServerListChanger = new FrmServerListChanger(this);
+                //frmHWIDchanger = new FrmHWIDchanger(this);
+
+                Application.DoEvents();
+
+                bool checkForNotification = true;
+                notificationSaveFile = new EAMNotificationMessageSaveFile();
+                if (File.Exists(lastNotificationCheckPath))
+                {
+                    try
+                    {
+                        notificationSaveFile = ByteArrayToObject(File.ReadAllBytes(lastNotificationCheckPath)) as EAMNotificationMessageSaveFile;
+                    }
+                    catch
+                    {
+                        notificationSaveFile = new EAMNotificationMessageSaveFile();
+                    }
+                }
+
+                checkForNotification = notificationSaveFile.forceCheck || DateTime.Now.Date > notificationSaveFile.lastCheck.Date || notificationSaveFile.lastCheckWasStop;
+
+                if ((notificationValues[1] || notificationValues[2] || notificationValues[3]) && checkForNotification)
+                {
+                    if (notificationSaveFile.lastCheckWasStop)
+                    {
+                        lockForm = true;
+                        pMain.Enabled = false;
+                    }
+
+                    try
+                    {
+                        msg = EAMNotificationMessage.GetEAMNotificationMessage();
+
+                        timerShowMessage.Start();
+                    }
+                    catch
+                    {
+                        LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to get / save notification message"));
+                        optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                    }
+                }
+
+                if (notificationValues[0])
+                {
+                    bool checkForUpdate = false;
+                    if (File.Exists(lastUpdateCheckPath))
+                    {
+                        try
+                        {
+                            string[] rows = File.ReadAllLines(lastUpdateCheckPath);
+                            DateTime date = new DateTime(long.Parse(rows[0]));
+                            bool updateRequired = Convert.ToBoolean(rows[1]);
+
+                            if (updateRequired)
+                                checkForUpdate = true;
+                            else if (date.Date.AddDays(1) < DateTime.Now)
+                            {
+                                checkForUpdate = true;
+                            }
+                        }
+                        catch
+                        {
+                            checkForUpdate = true;
+                        }
+                    }
+                    else
+                        checkForUpdate = true;
+
+                    if (checkForUpdate)
+                    {
+                        FrmUpdater updCheck = new FrmUpdater(this, true);
+                    }
+                }
             }
-            catch { loading = false; }
+            catch (Exception ex)
+            {
+                loading = false;
+
+                LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed while loading! {ex.StackTrace}"));
+                optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+            }
         }
 
-        public void ShowMoreUI(bool hideOnly = false)
+        public bool ShowGameUpdateRequired(bool required)
         {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<bool, bool>)ShowGameUpdateRequired, required);
+
+            lUpdateNeeded.Visible = required;
+
+            return false;
+        }
+
+        public void SetAccountOrders(AccountOrders o) => accountOrders = o;
+
+        public void LoadAccountInfos(string path, bool performSaveAfter = false)
+        {
+            try
+            {
+                loading = true;
+
+                try
+                {
+                    AccountSaveFile saveFile = (AccountSaveFile)ByteArrayToObject(File.ReadAllBytes(path));
+                    accounts = AccountSaveFile.Decrypt(saveFile);
+                }
+                catch
+                {
+                    LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to decrypt accounts."));
+
+#pragma warning disable CS0612 
+
+                    byte[] data = File.ReadAllBytes(path);
+                    AesCryptographyService acs = new AesCryptographyService();
+                    List<ExaltAccountManager.AccountInfo> accs = (List<ExaltAccountManager.AccountInfo>)ByteArrayToObject(acs.Decrypt(data));
+                    accounts = new List<MK_EAM_Lib.AccountInfo>();
+                    for (int i = 0; i < accs.Count; i++)
+                        accounts.Add(ExaltAccountManager.AccountInfo.Convert(accs[i]));
+
+#pragma warning restore CS0612 
+
+                    LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.AccountInfo, $"Found an old save file, converting it."));
+                    if (!performSaveAfter)
+                        File.Delete(path);
+                    SaveAccounts();
+                }
+
+                UpdateAccountInfos();
+
+                loading = false;
+
+                if (performSaveAfter)
+                    SaveAccounts();
+            }
+            catch (Exception e) { string ex = e.Message; }
+        }
+
+        private void LoadServerData()
+        {
+            try
+            {
+                if (File.Exists(serverCollectionPath))
+                {
+                    serverData = (ServerDataCollection)ByteArrayToObject(File.ReadAllBytes(serverCollectionPath));
+                }
+            }
+            catch { }
+        }
+
+        public void ShowColorChangerUI(AccountUI ui, bool hideOnly = false)
+        {
+            if (colorChanger.ui == ui || hideOnly)
+            {
+                colorChanger.ui = null;
+                colorChanger.Visible = false;
+                return;
+            }
+
+            colorChanger.ShowUI(ui);
+            colorChanger.Location = new Point(ui.Location.X + 56, ui.Location.Y);
+            if (colorChanger.Top > pMain.Height - colorChanger.Height)
+                colorChanger.Top = pMain.Height - colorChanger.Height;
+            pMain.Controls.SetChildIndex(colorChanger, 0);
+            colorChanger.Visible = true;
+        }
+
+        public void ShowServerListUI(AccountUI ui, int x = -1, int y = -1)
+        {
+            if (lockForm && (x == -1 || y == -1)) return;
+
+            if (frmServerListChanger == null)
+            {
+                frmServerListChanger = new FrmServerListChanger(this);
+            }
+
+            lockForm = true;
+            frmServerListChanger.ShowUI(ui);
+            if (ui != null)
+                frmServerListChanger.Location = new Point(this.Location.X + ui.Location.X + 186, this.Location.Y + ui.Location.Y + ui.Height + pMain.Top);
+            else if (x > -1 || y > -1)
+                frmServerListChanger.Location = new Point(x + ((250 - frmServerListChanger.Width) / 2), y + ((345 - frmServerListChanger.Height) / 2));
+            else
+                frmServerListChanger.Location = new Point(this.Location.X + ((this.Width - frmServerListChanger.Width) / 2), this.Location.Y + ((this.Height - frmServerListChanger.Height) / 2));
+
+            if (frmServerListChanger.Top > (this.Bottom - frmServerListChanger.Height) - 2)
+                frmServerListChanger.Top = (this.Bottom - frmServerListChanger.Height) - 2;
+
+            frmServerListChanger.ShowDialog();
+        }
+
+        //public void ShowHWIDUI(AccountUI ui)
+        //{
+        //    if (lockForm) return;
+
+        //    lockForm = true;
+        //    frmHWIDchanger.ShowUI(ui);
+        //    if (ui != null)
+        //        frmHWIDchanger.Location = new Point(this.Location.X + ui.Location.X + 75, this.Location.Y + ui.Location.Y + ui.Height + pMain.Top);
+        //    else
+        //        frmHWIDchanger.Location = new Point(this.Location.X + ((this.Width - frmHWIDchanger.Width) / 2), this.Location.Y + ((this.Height - frmHWIDchanger.Height) / 2));
+
+        //    if (frmHWIDchanger.Top > (this.Bottom - frmHWIDchanger.Height) - 2)
+        //        frmHWIDchanger.Top = (this.Bottom - frmHWIDchanger.Height) - 2;
+
+        //    frmHWIDchanger.ShowDialog();
+        //}
+
+        public void ShowMoreUI(bool hideOnly = false, bool dontHideSort = false)
+        {
+            if (hideOnly)
+            {
+                if (colorChanger.Visible)
+                {
+                    colorChanger.ui = null;
+                    colorChanger.Visible = false;
+                }
+
+                if (sortAlphabeticalUI.Visible && !dontHideSort)
+                    sortAlphabeticalUI.Visible = false;
+            }
+
             if (openMoreUI)
             {
                 if (hideOnly) return;
@@ -170,6 +515,15 @@ namespace ExaltAccountManager
                 openMoreUI = false;
                 timerMoreToolsUI.Start();
             }
+
+            if (colorChanger.Visible)
+            {
+                colorChanger.ui = null;
+                colorChanger.Visible = false;
+            }
+
+            if (sortAlphabeticalUI.Visible && !dontHideSort)
+                sortAlphabeticalUI.Visible = false;
         }
 
         private void LoadLogs()
@@ -213,12 +567,14 @@ namespace ExaltAccountManager
             }
         }
 
-        public AccountInfo GetAccountData(AccountInfo info, bool getName = true)
+        public MK_EAM_Lib.AccountInfo GetAccountData(MK_EAM_Lib.AccountInfo info, bool getName = true)
         {
             try
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.WebRequest, $"Sending \"account/verify\" for {info.email}."));
                 string uniqueID = GetDeviceUniqueIdentifier();
+                //uniqueID = (string.IsNullOrEmpty(info.customClientID) || info.customClientID.Equals(uniqueID)) ? uniqueID : info.customClientID;
+
                 string webPath = string.Format("https://www.realmofthemadgod.com/account/verify?guid={0}&password={1}&clientToken={2}&game_net=Unity&play_platform=Unity&game_net_user_id=", WebUtility.UrlEncode(info.email), WebUtility.UrlEncode(info.password), uniqueID);
                 string responseData = string.Empty;
 
@@ -248,7 +604,7 @@ namespace ExaltAccountManager
 
                 Tuple<string, string, string> tup = GetClientAccessData(responseData);
 
-                info.accessToken = new AccessToken(tup.Item1, tup.Item2, tup.Item3, uniqueID);
+                info.accessToken = new MK_EAM_Lib.AccessToken(tup.Item1, tup.Item2, tup.Item3, uniqueID);
                 try
                 {
                     string link = $"https://www.realmofthemadgod.com/char/list?do_login=true&accessToken={WebUtility.UrlEncode(info.accessToken.token)}&game_net=Unity&play_platform=Unity&game_net_user_id=";
@@ -299,6 +655,19 @@ namespace ExaltAccountManager
             CharListStats s = new CharListStats();
             try
             {
+                serverData = ServerDataCollection.CreateNewCollection(charList);
+                File.WriteAllBytes(serverCollectionPath, ObjectToByteArray(serverData));
+                if (frmServerListChanger != null)
+                    frmServerListChanger.LoadServers();
+            }
+            catch (Exception)
+            {
+                LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to parse / save servers."));
+                optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+            }
+
+            try
+            {
                 string[] chars = Regex.Split(charList, ("</Char>"));
                 if (chars.Length > 0)
                     chars[0] = chars[0].Substring(chars[0].IndexOf("<Char id=\""), chars[0].Length - chars[0].IndexOf("<Char id=\""));
@@ -317,7 +686,7 @@ namespace ExaltAccountManager
             return s;
         }
 
-        private void SaveAccountStats(AccountInfo info, string request, string charList)
+        private void SaveAccountStats(MK_EAM_Lib.AccountInfo info, string request, string charList)
         {
             try
             {
@@ -371,14 +740,19 @@ namespace ExaltAccountManager
             SwitchDesign();
             OptionsData opt = new OptionsData()
             {
-                closeAfterConnection = closeAfterConnect,
                 exePath = exePath,
-                useDarkmode = useDarkmode
+                closeAfterConnection = false,
+                useDarkmode = useDarkmode,
+                serverToJoin = string.Empty,
+                searchRotmgUpdates = notificationValues[0],
+                searchUpdateNotification = notificationValues[1],
+                searchWarnings = notificationValues[2],
+                deactivateKillswitch = notificationValues[3]
             };
             SaveOptions(opt);
         }
 
-        public void SaveOptions(OptionsData opt)
+        public void SaveOptions(OptionsData opt, bool showSnackbarNotification = false)
         {
             try
             {
@@ -386,11 +760,23 @@ namespace ExaltAccountManager
                     LogEvent(new LogData(logs.Count + 1, "EAM Options", LogEventType.SaveOptions, $"Saving new options."));
                 byte[] data = ObjectToByteArray(opt);
                 File.WriteAllBytes(optionsPath, data);
+
+                if (showSnackbarNotification)
+                    snackbar.Show(this, $"Options saved successfully!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
+
+                if (msg != null && msg.type == EAMNotificationMessageType.UpdateAvailable)
+                {
+                    lUpdateAvailable.Visible = true;
+                    lVersion.ForeColor = useDarkmode ? Color.Orange : Color.DarkOrange;
+                    notificationSaveFile.forceCheck = true;
+                    updateLink = isMPGHVersion ? msg.linkM : msg.link;
+                }
             }
             catch
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM Options", LogEventType.EAMError, $"Failed to save options!"));
                 optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                snackbar.Show(this, $"Failed to save options!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
             }
         }
 
@@ -435,7 +821,7 @@ namespace ExaltAccountManager
                 font = Color.White;
             }
 
-            ApplyTheme(useDarkmode, def, second, third, font);            
+            ApplyTheme(useDarkmode, def, second, third, font);
         }
 
         public void ApplyTheme(bool isDarkmode, Color def, Color second, Color third, Color font)
@@ -443,18 +829,26 @@ namespace ExaltAccountManager
             FormsUtils.SuspendDrawing(this);
 
             this.ForeColor = font;
+            toolTip.TitleForeColor = font;
+            toolTip.TextForeColor = Color.FromArgb(225, font.R, font.G, font.B);
 
             header.BackColor = second;
             optionenUI.ApplyTheme(third, font);
             moreUI.ApplyTheme(isDarkmode);
-            pMain.BackColor = def;
-            pTop.BackColor = def;
+            sortAlphabeticalUI.ApplyTheme(isDarkmode);
+            pMain.BackColor =
+            pTop.BackColor =
+            lUpdateNeeded.BackColor =
+            lUpdateAvailable.BackColor =
             pBox.BackColor = def;
             lDev.ForeColor = font;
             pbDarkmode.BackColor = pBox.BackColor;
             header.ApplyTheme(isDarkmode);
+
             toolTip.BackColor = def;
+
             //pbDarkmode.SizeMode = (isDarkmode) ? PictureBoxSizeMode.StretchImage : PictureBoxSizeMode.CenterImage;
+            BunifuSnackbar.CustomizationOptions opt;
 
             if (isDarkmode)
             {
@@ -463,7 +857,26 @@ namespace ExaltAccountManager
                 pbClose.Image = Properties.Resources.ic_close_white_24dp;
                 pbMinimize.Image = Properties.Resources.baseline_minimize_white_24dp;
 
-                toolTip.SetToolTip(pbDarkmode, $"Switch to daymode{Environment.NewLine}Burn your eyes!");
+                toolTip.SetToolTipIcon(pbDarkmode, pbDarkmode.Image);
+                toolTip.SetToolTipTitle(pbDarkmode, "Switch to daymode");
+                toolTip.SetToolTip(pbDarkmode, $"Burn your eyes!");
+
+                opt = new BunifuSnackbar.CustomizationOptions()
+                {
+                    ActionBackColor = Color.FromArgb(8, 8, 8),
+                    BackColor = Color.FromArgb(8, 8, 8),
+                    ActionBorderColor = Color.FromArgb(15, 15, 15),
+                    BorderColor = Color.FromArgb(15, 15, 15),
+                    ActionForeColor = Color.FromArgb(170, 170, 170),
+                    ForeColor = Color.FromArgb(170, 170, 170),
+                    CloseIconColor = Color.FromArgb(246, 255, 237)
+                };
+
+                scrollbar.BorderColor = second;
+                scrollbar.BackgroundColor = def;
+                scrollbar.ThumbColor = third;
+
+                lUpdateNeeded.ForeColor = lUpdateAvailable.ForeColor = Color.Orange;
             }
             else
             {
@@ -472,11 +885,49 @@ namespace ExaltAccountManager
                 pbClose.Image = Properties.Resources.ic_close_black_24dp;
                 pbMinimize.Image = Properties.Resources.baseline_minimize_black_24dp;
 
-                toolTip.SetToolTip(pbDarkmode, $"Switch to darkmode{Environment.NewLine}Come to the dark side, we have cookies!");
+                toolTip.SetToolTipIcon(pbDarkmode, pbDarkmode.Image);
+                toolTip.SetToolTipTitle(pbDarkmode, "Switch to darkmode");
+                toolTip.SetToolTip(pbDarkmode, $"Come to the dark side, we have cookies!");
+
+                opt = new BunifuSnackbar.CustomizationOptions()
+                {
+                    ActionBackColor = Color.White,
+                    BackColor = Color.White,
+                    ActionBorderColor = Color.White,
+                    BorderColor = Color.White,
+                    ActionForeColor = Color.Black,
+                    ForeColor = Color.Black,
+                    CloseIconColor = Color.FromArgb(246, 255, 237)
+                };
+
+                scrollbar.BorderColor = Color.Silver;
+                scrollbar.BackgroundColor = def;
+                scrollbar.ThumbColor = Color.Gray;
+
+                lUpdateNeeded.ForeColor = lUpdateAvailable.ForeColor = Color.DarkOrange;
             }
 
-            foreach (AccountUI ui in pMain.Controls.OfType<AccountUI>())
+            if (updateRequired)
+                lVersion.ForeColor = useDarkmode ? Color.Orange : Color.DarkOrange;
+
+            snackbar.ErrorOptions = opt;
+            snackbar.ErrorOptions.CloseIconColor = Color.FromArgb(255, 204, 199);
+            snackbar.WarningOptions = opt;
+            snackbar.WarningOptions.CloseIconColor = Color.FromArgb(255, 229, 143);
+            snackbar.InformationOptions = opt;
+            snackbar.InformationOptions.CloseIconColor = Color.FromArgb(145, 213, 255);
+            snackbar.SuccessOptions = opt;
+            snackbar.SuccessOptions.CloseIconColor = Color.FromArgb(246, 255, 237);
+
+            foreach (AccountUI ui in accountUIs)
                 ui.ApplyTheme(useDarkmode, def, second, third, font);
+
+            if (colorChanger != null)
+                colorChanger.ApplyTheme();
+            if (frmServerListChanger != null)
+                frmServerListChanger.ApplyTheme();
+            //if (frmHWIDchanger != null)
+            //    frmHWIDchanger.ApplyTheme();
 
             FormsUtils.ResumeDrawing(this);
 
@@ -492,11 +943,24 @@ namespace ExaltAccountManager
             {
                 accountOrders = new AccountOrders();
             }
-            else
+            else if (accountOrders.orderData == null)
+                accountOrders.orderData = new List<OrderData>();
+            else if (accountOrders.orderData.Count > 0)
                 nextID = accountOrders.orderData.Max(o => o.index) + 1;
 
             accountOrders.orderData.Add(new OrderData() { email = mail, index = nextID });
             SaveAccountOrders();
+        }
+
+        public void HideDragHandles(AccountUI ui = null)
+        {
+            for (int i = 0; i < accountUIs.Count; i++)
+            {
+                if (ui != null && ui == accountUIs[i])
+                    continue;
+
+                accountUIs[i].HideDragHandle();
+            }
         }
 
         public void RemoveAccountFromOrders(string mail)
@@ -535,6 +999,7 @@ namespace ExaltAccountManager
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to save new account-orders!"));
                 optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                snackbar.Show(this, $"Failed to save new account-orders!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
             }
         }
 
@@ -553,6 +1018,7 @@ namespace ExaltAccountManager
             {
                 dragMouseDownLocation = e.Location;
                 pMain.SuspendLayout();
+                HideDragHandles(sender as AccountUI);
             }
         }
 
@@ -573,7 +1039,8 @@ namespace ExaltAccountManager
                 dragUI.Top = top;
 
                 dragUI.BringToFront();
-                pMain.Invalidate();
+                //pMain.Invalidate();
+                pMain.Update();
                 foreach (AccountUI ui in pMain.Controls.OfType<AccountUI>())
                     ui.Update();
             }
@@ -598,28 +1065,29 @@ namespace ExaltAccountManager
 
         #region AccountOrders
 
-        private void OrderUIs()
+        private void OrderUIs(bool doSort = true)
         {
-            pMain.AutoScroll = false;
+            //pMain.AutoScroll = pMain.VerticalScroll.Enabled = pMain.HorizontalScroll.Enabled =
+            //pMain.VerticalScroll.Visible = pMain.HorizontalScroll.Visible = false;            
+            if (doSort)
+                SortUIs();
 
-            SortUIs();
+            FormsUtils.SuspendDrawing(pMain);
 
             List<AccountUI> uis = pMain.Controls.OfType<AccountUI>().ToList();
+            int offset = (scrollbar.Value < scrollbar.Maximum - 17 ? scrollbar.Value : scrollbar.Value + ((scrollbar.Maximum - 17) - scrollbar.Value));
             for (int i = 0; i < uis.Count; i++)
             {
-                if (uiPoints.Contains(uis[i].Location))
+                Point point = new Point(uis[i].Location.X, uis[i].Location.Y + offset);
+                if (uiPoints.Contains(point))
                 {
-                    accountOrders.orderData.Where(o => o.email.Equals(uis[i].accountInfo.email)).First().index = uiPoints.IndexOf(uis[i].Location);
-                    uis[i].isSecond = uiPoints.IndexOf(uis[i].Location) % 2 == 1;
+                    accountOrders.orderData.Where(o => o.email.Equals(uis[i].accountInfo.email)).First().index = uiPoints.IndexOf(point);
+                    uis[i].isSecond = uiPoints.IndexOf(point) % 2 == 1;
                     uis[i].ApplyTheme(useDarkmode);
                 }
             }
 
-            pMain.AutoScroll = false;
-            pMain.HorizontalScroll.Maximum = 0;
-            pMain.HorizontalScroll.Visible = false;
-            pMain.VerticalScroll.Visible = false;
-            pMain.AutoScroll = true;
+            FormsUtils.ResumeDrawing(pMain);
         }
 
         private void SortUIs()
@@ -634,13 +1102,25 @@ namespace ExaltAccountManager
             yValues.Sort();
             temp2.AddRange(temp);
 
+            FormsUtils.SuspendDrawing(pMain);
+
             for (int i = 0; i < yValues.Count; i++)
             {
                 AccountUI ui = GetUIsWithYValue(yValues[i], temp2); //Gets the ui with Y-Values.
                 if (ui.Name.Equals("FALSE")) //If the Value is not Found, a ui with the name "FALSE" is returned.
+                {
+                    ui.Name = "AccountUI";
                     return; //Stops
-                ui.Location = uiPoints[i]; //sets the location of the ui the the btnPoints[i]-value.
+                }
+                ui.Location = uiPoints[i]; //sets the location of the ui to the Points[i]-value.
             }
+            int offset = (scrollbar.Value < scrollbar.Maximum - 17 ? scrollbar.Value : scrollbar.Value + ((scrollbar.Maximum - 17) - scrollbar.Value));
+            for (int i = 0; i < temp.Count; i++)
+            {
+                temp[i].Top -= offset; //apply offset
+            }
+
+            FormsUtils.ResumeDrawing(pMain);
         }
 
         private AccountUI GetUIsWithYValue(int value, List<AccountUI> temp2)
@@ -663,7 +1143,6 @@ namespace ExaltAccountManager
 
         public void UpdateAccountInfos()
         {
-
             #region Create colors
 
             Color def = Color.FromArgb(255, 255, 255);
@@ -681,7 +1160,7 @@ namespace ExaltAccountManager
 
             #endregion
 
-            #region Check for existing AccountOrders - v1.4 and older do not have any -> create one if missing
+            #region Check for existing AccountOrders - v1.4 and older or Imported accounts do not have any -> create one if missing
 
             if (accountOrders == null)
             {
@@ -715,6 +1194,7 @@ namespace ExaltAccountManager
 
             #region Delete current AccountUIs
 
+            accountUIs.Clear();
             List<AccountUI> temp = new List<AccountUI>();
             temp.AddRange(pMain.Controls.OfType<AccountUI>());
 
@@ -723,6 +1203,7 @@ namespace ExaltAccountManager
             for (int i = 0; i < temp.Count; i++)
                 temp[i].Dispose();
             temp.Clear();
+
 
             #endregion
 
@@ -746,6 +1227,7 @@ namespace ExaltAccountManager
                 ui.isSecond = color;
 
                 temp.Add(ui);
+                accountUIs.Add(ui);
 
                 color = !color;
             }
@@ -776,13 +1258,8 @@ namespace ExaltAccountManager
 
             #endregion
 
-            header.ScrollbarStateChanged(h > pMain.Height);
-
-            pMain.AutoScroll = false;
-            pMain.HorizontalScroll.Maximum = 0;
-            pMain.HorizontalScroll.Visible = false;
-            pMain.VerticalScroll.Visible = false;
-            pMain.AutoScroll = true;
+            scrollbar.Visible = header.ScrollbarStateChanged(h > pMain.Height);
+            scrollbar.BindTo(pMain);
 
             for (int i = 0; i < temp.Count; i++)
                 temp[i].ChangeScrollState(h > pMain.Height);
@@ -841,7 +1318,7 @@ namespace ExaltAccountManager
             searchProcesses = false;
         }
 
-        public void ChangeDailyLoginState(AccountInfo acc)
+        public void ChangeDailyLoginState(MK_EAM_Lib.AccountInfo acc)
         {
             if (loading) return;
 
@@ -911,22 +1388,29 @@ namespace ExaltAccountManager
         {
             try
             {
-                AesCryptographyService acs = new AesCryptographyService();
-                byte[] obj = ObjectToByteArray(accounts);
-                byte[] data = acs.Encrypt(obj);
-
-                File.WriteAllBytes(accountsPath, data);
-                if (logs.Count == 0 || logs[logs.Count - 1].eventType != LogEventType.SaveAccounts || (logs[logs.Count - 1].eventType == LogEventType.SaveAccounts && logs[logs.Count - 1].time < DateTime.Now.AddMinutes(-1)))
-                    LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.SaveAccounts, $"Saving accounts."));
+                AccountSaveFile saveFile = AccountSaveFile.Encrypt(new AccountSaveFile(), ObjectToByteArray(accounts));
+                if (saveFile != null && string.IsNullOrEmpty(saveFile.error))
+                {
+                    File.WriteAllBytes(accountsPath, ObjectToByteArray(saveFile));
+                    if (logs.Count == 0 || logs[logs.Count - 1].eventType != LogEventType.SaveAccounts || (logs[logs.Count - 1].eventType == LogEventType.SaveAccounts && logs[logs.Count - 1].time < DateTime.Now.AddMinutes(-1)))
+                        LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.SaveAccounts, $"Saving accounts."));
+                }
+                else
+                {
+                    LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to encrypt accounts!"));
+                    snackbar.Show(this, $"Failed to encrypt accounts!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
+                    throw new Exception();
+                }
             }
             catch
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to save accounts!"));
                 optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                snackbar.Show(this, $"Failed to save accounts!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
             }
         }
 
-        public void Connect(AccountInfo accountInfo)
+        public void Connect(MK_EAM_Lib.AccountInfo accountInfo)
         {
             try
             {
@@ -937,10 +1421,11 @@ namespace ExaltAccountManager
                         DateTime cTime = new DateTime(2000, 1, 1);
                         try
                         {
-                            cTime = AccessToken.UnixTimeStampToDateTime(Convert.ToDouble(accountInfo.accessToken.creationTime));
+                            cTime = MK_EAM_Lib.AccessToken.UnixTimeStampToDateTime(Convert.ToDouble(accountInfo.accessToken.creationTime));
                         }
                         catch { cTime = new DateTime(2000, 1, 1); }
-                        if (cTime.Date < DateTime.Now.Date || accountInfo.accessToken.validUntil < DateTime.Now || string.IsNullOrEmpty(accountInfo.accessToken.clientToken) || !accountInfo.accessToken.clientToken.Equals(GetDeviceUniqueIdentifier()))
+                        string hwid = GetDeviceUniqueIdentifier();
+                        if (cTime.Date < DateTime.Now.Date || accountInfo.accessToken.validUntil < DateTime.Now || string.IsNullOrEmpty(accountInfo.accessToken.clientToken) || !accountInfo.accessToken.clientToken.Equals((string.IsNullOrEmpty(accountInfo.customClientID) || accountInfo.customClientID.Equals(hwid)) ? hwid : accountInfo.customClientID))
                         {
                             int index = accounts.IndexOf(accountInfo);
                             accountInfo = GetAccountData(accountInfo, false);
@@ -952,8 +1437,11 @@ namespace ExaltAccountManager
                         }
                     }
                     LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.Login, $"Start login into account: {accountInfo.email}."));
+                    snackbar.Show(this, $"Start login into account: {accountInfo.email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
 
-                    string arguments = string.Format("\"data:{{platform:Deca,guid:{0},token:{1},tokenTimestamp:{2},tokenExpiration:{3},env:4}}\"", StringToBase64String(accountInfo.email), StringToBase64String(accountInfo.accessToken.token), StringToBase64String(accountInfo.accessToken.creationTime), StringToBase64String(accountInfo.accessToken.expirationTime));
+                    string arguments = string.Format("\"data:{{platform:Deca,guid:{0},token:{1},tokenTimestamp:{2},tokenExpiration:{3},env:4,serverName:{4}}}\"",
+                                       StringToBase64String(accountInfo.email), StringToBase64String(accountInfo.accessToken.token), StringToBase64String(accountInfo.accessToken.creationTime), StringToBase64String(accountInfo.accessToken.expirationTime), GetServerName(accountInfo.serverName));
+
                     ProcessStartInfo pinfo = new ProcessStartInfo();
                     pinfo.FileName = exePath;
                     pinfo.Arguments = arguments;
@@ -980,17 +1468,29 @@ namespace ExaltAccountManager
                 else
                 {
                     LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Login attempt failed, the game.exe was not found."));
+                    snackbar.Show(this, "Login attempt failed, the game.exe was not found.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                     optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
                 }
             }
             catch
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Login attempt failed: object broken, try re-adding the account."));
+                snackbar.Show(this, "Login attempt failed: object broken, try re-adding the account.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                 optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
             }
         }
 
-        private void SaveLoginStats(AccountInfo info, bool sendCharList = false)
+        private string GetServerName(string server)
+        {
+            if (string.IsNullOrEmpty(server))
+                return serverToJoin;
+            else if (server.Equals("Last"))
+                return string.Empty;
+            else
+                return server;
+        }
+
+        private void SaveLoginStats(MK_EAM_Lib.AccountInfo info, bool sendCharList = false)
         {
             try
             {
@@ -1012,6 +1512,7 @@ namespace ExaltAccountManager
                     catch (Exception)
                     {
                         LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to load / save login-stats."));
+                        snackbar.Show(this, "Failed to load / save login-stats.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                         optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
                     }
                 }
@@ -1025,6 +1526,7 @@ namespace ExaltAccountManager
             catch
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to save login-stats."));
+                snackbar.Show(this, "Failed to save login-stats.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                 optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
             }
         }
@@ -1044,6 +1546,7 @@ namespace ExaltAccountManager
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM Notify", LogEventType.EAMError, $"Failed to save notification-options!"));
                 optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                snackbar.Show(this, "Failed to save notification-options!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
             }
         }
 
@@ -1064,21 +1567,24 @@ namespace ExaltAccountManager
                 return null;
 
             BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream();
-            bf.Serialize(ms, obj);
-
-            return ms.ToArray();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
         }
 
         public object ByteArrayToObject(byte[] arrBytes)
         {
-            MemoryStream memStream = new MemoryStream();
-            BinaryFormatter binForm = new BinaryFormatter();
-            memStream.Write(arrBytes, 0, arrBytes.Length);
-            memStream.Seek(0, SeekOrigin.Begin);
-            object obj = (object)binForm.Deserialize(memStream);
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                BinaryFormatter binForm = new BinaryFormatter();
+                memStream.Write(arrBytes, 0, arrBytes.Length);
+                memStream.Seek(0, SeekOrigin.Begin);
+                object obj = (object)binForm.Deserialize(memStream);
 
-            return obj;
+                return obj;
+            }
         }
 
         public void CloseFrmLog(FrmLogViewer logViewer)
@@ -1166,49 +1672,67 @@ namespace ExaltAccountManager
             catch
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to parse ClientAccessData!"));
+                snackbar.Show(this, "Failed to parse ClientAccessData!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
             }
 
             return new Tuple<string, string, string>(string.Empty, string.Empty, string.Empty);
         }
 
-        public string GetDeviceUniqueIdentifier()
+        public string GetDeviceUniqueIdentifier(bool fileFailed = false)
         {
             string ret = string.Empty;
 
-            string concatStr = string.Empty;
-            try
+            if (!File.Exists(forceHWIDFilePath) || fileFailed)
             {
-                using (ManagementObjectSearcher searcherBb = new ManagementObjectSearcher("SELECT * FROM Win32_BaseBoard"))
+                string concatStr = string.Empty;
+                try
                 {
-                    foreach (var obj in searcherBb.Get())
+                    using (ManagementObjectSearcher searcherBb = new ManagementObjectSearcher("SELECT * FROM Win32_BaseBoard"))
                     {
-                        concatStr += (string)obj.Properties["SerialNumber"].Value ?? string.Empty;
+                        foreach (var obj in searcherBb.Get())
+                        {
+                            concatStr += (string)obj.Properties["SerialNumber"].Value ?? string.Empty;
+                        }
+                    }
+                    using (ManagementObjectSearcher searcherBios = new ManagementObjectSearcher("SELECT * FROM Win32_BIOS"))
+                    {
+                        foreach (var obj in searcherBios.Get())
+                        {
+                            concatStr += (string)obj.Properties["SerialNumber"].Value ?? string.Empty;
+                        }
+                    }
+                    using (ManagementObjectSearcher searcherOs = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
+                    {
+                        foreach (var obj in searcherOs.Get())
+                        {
+                            concatStr += (string)obj.Properties["SerialNumber"].Value ?? string.Empty;
+                        }
+                    }
+                    using (var sha1 = SHA1.Create())
+                    {
+                        ret = string.Join("", sha1.ComputeHash(Encoding.UTF8.GetBytes(concatStr)).Select(b => b.ToString("x2")));
                     }
                 }
-                using (ManagementObjectSearcher searcherBios = new ManagementObjectSearcher("SELECT * FROM Win32_BIOS"))
+
+                catch
                 {
-                    foreach (var obj in searcherBios.Get())
-                    {
-                        concatStr += (string)obj.Properties["SerialNumber"].Value ?? string.Empty;
-                    }
-                }
-                using (ManagementObjectSearcher searcherOs = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
-                {
-                    foreach (var obj in searcherOs.Get())
-                    {
-                        concatStr += (string)obj.Properties["SerialNumber"].Value ?? string.Empty;
-                    }
-                }
-                using (var sha1 = SHA1.Create())
-                {
-                    ret = string.Join("", sha1.ComputeHash(Encoding.UTF8.GetBytes(concatStr)).Select(b => b.ToString("x2")));
+                    LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to get the DeviceUniqueIdentifier!"));
+                    optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                    snackbar.Show(this, "Failed to get the DeviceUniqueIdentifier!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                 }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.ToString());
-                LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to get the DeviceUniqueIdentifier!"));
-                optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                try
+                {
+                    ret = File.ReadAllText(forceHWIDFilePath);
+                }
+                catch
+                {
+                    LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to load HWID from file, using alternative Methode!"));
+                    optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                    return GetDeviceUniqueIdentifier(true);
+                }
             }
 
             return ret;
@@ -1224,6 +1748,7 @@ namespace ExaltAccountManager
             {
                 LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, $"Failed to load running processes."));
                 optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                snackbar.Show(this, "Failed to load running processes.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
             }
         }
 
@@ -1329,6 +1854,176 @@ namespace ExaltAccountManager
             sf.LineAlignment = StringAlignment.Center;
             e.Graphics.DrawString(e.ToolTipText, new Font(this.Font.FontFamily, 8f, FontStyle.Regular), toolTipBrushForeColor, e.Bounds, sf);
         }
+
+        private void pMain_MouseEnter(object sender, EventArgs e) => HideDragHandles();
+
+        private void lUpdateNeeded_Click(object sender, EventArgs e)
+        {
+            moreUI.pUpdater_Click(null, null);
+        }
+
+        public void ShowSortAlphabeticalUI(int left, bool useEmail)
+        {
+            if (!transition.IsCompleted)
+                return;
+
+            sortAlphabeticalUI.Left = left;
+            sortAlphabeticalUI.BringToFront();
+
+            if (sortAlphabeticalUI.Visible && sortAlphabeticalUI.useEmail != useEmail)
+                sortAlphabeticalUI.Visible = false;
+
+            sortAlphabeticalUI.useEmail = useEmail;
+
+            if (sortAlphabeticalUI.Visible)
+                transition.HideSync(sortAlphabeticalUI, true);
+            else
+                transition.ShowSync(sortAlphabeticalUI, true);
+        }
+
+        public void SortAccountsAlphabetical(bool az, bool useEmail = false)
+        {
+            try
+            {
+                if (az)
+                {
+                    accountOrders.orderData = useEmail ? accountOrders.orderData.OrderBy(o => o.email).ToList() : accountOrders.orderData = accountOrders.orderData.OrderBy(o => accounts.Where(a => a.email.Equals(o.email)).First().name).ToList();
+                }
+                else
+                {
+                    accountOrders.orderData = useEmail ? accountOrders.orderData.OrderByDescending(o => o.email).ToList() : accountOrders.orderData = accountOrders.orderData.OrderByDescending(o => accounts.Where(a => a.email.Equals(o.email)).First().name).ToList();
+                }
+            }
+            catch
+            {
+                LogEvent(new LogData(logs.Count + 1, "EAM", LogEventType.EAMError, "Failed to order accounts."));
+                optionenUI.BlinkLog((useDarkmode) ? Color.Crimson : Color.IndianRed);
+                snackbar.Show(this, "Failed to order accounts.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
+            }
+
+            for (int i = 0; i < accountOrders.orderData.Count; i++)
+                accountOrders.orderData[i].index = i;
+
+            FormsUtils.SuspendDrawing(pMain);
+
+            List<AccountUI> uis = pMain.Controls.OfType<AccountUI>().ToList();
+            int offset = (scrollbar.Value < scrollbar.Maximum - 17 ? scrollbar.Value : scrollbar.Value + ((scrollbar.Maximum - 17) - scrollbar.Value));
+            for (int i = 0; i < uis.Count; i++)
+            {
+                Point point = new Point(uis[i].Location.X, uis[i].Location.Y + offset);
+                if (uiPoints.Contains(point))
+                {
+                    int x = accountOrders.orderData.Where(o => o.email.Equals(uis[i].accountInfo.email)).First().index;
+                    uis[i].Location = uiPoints[x];
+                    uis[i].isSecond = x % 2 == 1;
+                    uis[i].ApplyTheme(useDarkmode);
+                }
+            }
+
+            FormsUtils.ResumeDrawing(pMain);
+
+            SaveAccountOrders();
+
+            transition.HideSync(sortAlphabeticalUI, true);
+        }
+
+        private void timerShowMessage_Tick(object sender, EventArgs e)
+        {
+            timerShowMessage.Stop();
+
+            if (notificationSaveFile == null)
+                notificationSaveFile = new EAMNotificationMessageSaveFile();
+
+            if (msg.forceShow || !notificationSaveFile.knownIDs.Contains(msg.id) || notificationSaveFile.lastCheckWasStop)
+            {
+                if (!notificationSaveFile.knownIDs.Contains(msg.id))
+                    notificationSaveFile.knownIDs.Add(msg.id);
+                bool wasStop = notificationSaveFile.lastCheckWasStop;
+                bool frmShown = false;
+
+                notificationSaveFile.forceCheck =
+                notificationSaveFile.lastCheckWasStop = false;
+
+                //Show Message
+                switch (msg.type)
+                {
+                    case EAMNotificationMessageType.None:
+                        break;
+                    case EAMNotificationMessageType.UpdateAvailable:
+                        {
+                            if (!notificationValues[1])
+                                return;
+                            lUpdateAvailable.Visible = true;
+                            lVersion.ForeColor = useDarkmode ? Color.Orange : Color.DarkOrange;
+                            notificationSaveFile.forceCheck = true;
+                            updateLink = isMPGHVersion ? msg.linkM : msg.link;
+
+                            FrmMessage frmMsg = new FrmMessage(this, msg);
+                            frmMsg.StartPosition = FormStartPosition.Manual;
+                            frmMsg.Location = new Point(this.Location.X + ((this.Width - frmMsg.Width) / 2), this.Location.Y + ((this.Height - frmMsg.Height) / 2));
+                            frmMsg.Show(this);
+                            frmShown = true;
+                        }
+                        break;
+                    case EAMNotificationMessageType.Message:
+                        {
+                            if (!notificationValues[2])
+                                return;
+                            lockForm = true;
+                            FrmMessage frmMsg = new FrmMessage(this, msg);
+                            frmMsg.StartPosition = FormStartPosition.Manual;
+                            frmMsg.Location = new Point(this.Location.X + ((this.Width - frmMsg.Width) / 2), this.Location.Y + ((this.Height - frmMsg.Height) / 2));
+                            frmMsg.Show(this);
+                            frmShown = true;
+                        }
+                        break;
+                    case EAMNotificationMessageType.Warning:
+                        {
+                            if (!notificationValues[2])
+                                return;
+                            lockForm = true;
+                            
+                            FrmMessage frmMsg = new FrmMessage(this, msg);
+                            frmMsg.StartPosition = FormStartPosition.Manual;
+                            frmMsg.Location = new Point(this.Location.X + ((this.Width - frmMsg.Width) / 2), this.Location.Y + ((this.Height - frmMsg.Height) / 2));
+                            frmMsg.Show(this);
+                            frmShown = true;
+                        }
+                        break;
+                    case EAMNotificationMessageType.Stop:
+                        {
+                            if (!notificationValues[3])
+                                return;
+
+                            lockForm = true;
+                            pMain.Enabled = false;
+                            notificationSaveFile.forceCheck = true;
+                            notificationSaveFile.lastCheckWasStop = true;
+
+                            FrmMessage frmMsg = new FrmMessage(this, msg);
+                            frmMsg.StartPosition = FormStartPosition.Manual;
+                            frmMsg.Location = new Point(this.Location.X + ((this.Width - frmMsg.Width) / 2), this.Location.Y + ((this.Height - frmMsg.Height) / 2));
+                            frmMsg.Show(this);
+                            frmShown = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                File.WriteAllBytes(lastNotificationCheckPath, ObjectToByteArray(notificationSaveFile));
+
+                if (wasStop && msg.type != EAMNotificationMessageType.Stop)
+                {
+                    lockForm = frmShown;
+                    pMain.Enabled = true;
+                }
+            }
+        }
+
+        private void lUpdateAvailable_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(updateLink);
+        }
     }
 
     public static class ProcADV
@@ -1346,6 +2041,67 @@ namespace ExaltAccountManager
             catch { }
 
             return "";
+        }
+    }
+
+    [Obsolete]
+    [System.Serializable]
+    public class AccountInfo
+    {
+        public string name;
+        public string email;
+        public string password;
+
+        public bool performSave;
+
+        public AccessToken accessToken;
+
+        public bool requestSuccessfull = true;
+
+        public AccountInfo() { }
+        public AccountInfo(MuledumpAccounts muledump)
+        {
+            name = muledump.mail;
+            email = muledump.mail;
+            password = muledump.password;
+            performSave = false;
+        }
+
+        public static MK_EAM_Lib.AccountInfo Convert(AccountInfo info)
+        {
+            return new MK_EAM_Lib.AccountInfo()
+            {
+                name = info.name,
+                email = info.email,
+                password = info.password,
+                performSave = info.performSave,
+                accessToken = AccessToken.Convert(info.accessToken),
+                requestSuccessfull = info.requestSuccessfull
+            };
+        }
+    }
+    [Obsolete]
+    [System.Serializable]
+    public class AccessToken
+    {
+        public string token;
+        public string creationTime;
+        public string expirationTime;
+        public string clientToken;
+        public System.DateTime validUntil;
+
+        public AccessToken() { }
+
+        public static MK_EAM_Lib.AccessToken Convert(ExaltAccountManager.AccessToken t)
+        {
+            return new MK_EAM_Lib.AccessToken()
+            {
+                token = t.token,
+                creationTime = t.creationTime,
+                expirationTime = t.expirationTime,
+                clientToken = t.clientToken,
+                validUntil = t.validUntil
+            };
         }
     }
 }

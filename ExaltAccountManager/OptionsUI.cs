@@ -23,6 +23,7 @@ namespace ExaltAccountManager
         public void ShowOptions(object sender, EventArgs e)
         {
             frm.ShowMoreUI(true);
+
             if (frm.lockForm) return;
 
             //show them!

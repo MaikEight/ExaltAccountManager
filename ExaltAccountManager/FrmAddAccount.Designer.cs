@@ -128,7 +128,7 @@
             // 
             this.lHeadline.AutoSize = true;
             this.lHeadline.Font = new System.Drawing.Font("Century Schoolbook", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lHeadline.Location = new System.Drawing.Point(54, 9);
+            this.lHeadline.Location = new System.Drawing.Point(54, 11);
             this.lHeadline.Name = "lHeadline";
             this.lHeadline.Size = new System.Drawing.Size(135, 25);
             this.lHeadline.TabIndex = 2;
@@ -138,9 +138,9 @@
             // 
             // tbName
             // 
-            this.tbName.Location = new System.Drawing.Point(40, 93);
+            this.tbName.Location = new System.Drawing.Point(28, 93);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(175, 20);
+            this.tbName.Size = new System.Drawing.Size(195, 20);
             this.tbName.TabIndex = 3;
             this.toolTip.SetToolTip(this.tbName, "Name used only inside this tool.");
             // 
@@ -148,7 +148,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Century Schoolbook", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(26, 70);
+            this.label1.Location = new System.Drawing.Point(24, 70);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(93, 20);
             this.label1.TabIndex = 3;
@@ -159,7 +159,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Century Schoolbook", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(26, 130);
+            this.label2.Location = new System.Drawing.Point(24, 130);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(60, 20);
             this.label2.TabIndex = 5;
@@ -168,9 +168,9 @@
             // 
             // tbEmail
             // 
-            this.tbEmail.Location = new System.Drawing.Point(40, 153);
+            this.tbEmail.Location = new System.Drawing.Point(28, 153);
             this.tbEmail.Name = "tbEmail";
-            this.tbEmail.Size = new System.Drawing.Size(175, 20);
+            this.tbEmail.Size = new System.Drawing.Size(195, 20);
             this.tbEmail.TabIndex = 1;
             this.toolTip.SetToolTip(this.tbEmail, "E-Mail of the ROTMG-Account");
             // 
@@ -178,7 +178,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Century Schoolbook", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(26, 190);
+            this.label3.Location = new System.Drawing.Point(24, 190);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(78, 20);
             this.label3.TabIndex = 7;
@@ -187,10 +187,10 @@
             // 
             // tbPassword
             // 
-            this.tbPassword.Location = new System.Drawing.Point(40, 213);
+            this.tbPassword.Location = new System.Drawing.Point(28, 213);
             this.tbPassword.Name = "tbPassword";
             this.tbPassword.PasswordChar = '*';
-            this.tbPassword.Size = new System.Drawing.Size(175, 20);
+            this.tbPassword.Size = new System.Drawing.Size(195, 20);
             this.tbPassword.TabIndex = 2;
             this.toolTip.SetToolTip(this.tbPassword, "Password of the ROTMG-Account");
             this.tbPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbPassword_KeyDown);
@@ -247,7 +247,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmAddAccount";
             this.ShowInTaskbar = false;
-            this.Text = "FrmAddAccount";
+            this.Text = "Add Account";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Frm_Closing);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrmAddAccount_Paint);
             this.pTop.ResumeLayout(false);

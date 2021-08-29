@@ -31,6 +31,7 @@
             this.lHeadline = new System.Windows.Forms.Label();
             this.pLine = new System.Windows.Forms.Panel();
             this.lEntry = new System.Windows.Forms.Label();
+            this.lReleaseDate = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lHeadline
@@ -63,12 +64,25 @@
             this.lEntry.Text = "- Entry";
             this.lEntry.UseMnemonic = false;
             // 
+            // lReleaseDate
+            // 
+            this.lReleaseDate.Font = new System.Drawing.Font("Century Gothic", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lReleaseDate.Location = new System.Drawing.Point(377, 24);
+            this.lReleaseDate.MaximumSize = new System.Drawing.Size(405, 0);
+            this.lReleaseDate.Name = "lReleaseDate";
+            this.lReleaseDate.Size = new System.Drawing.Size(49, 15);
+            this.lReleaseDate.TabIndex = 3;
+            this.lReleaseDate.Text = "00.00.00000";
+            this.lReleaseDate.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lReleaseDate.UseMnemonic = false;
+            // 
             // ChangeLogEntry
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.Controls.Add(this.lEntry);
             this.Controls.Add(this.pLine);
+            this.Controls.Add(this.lReleaseDate);
+            this.Controls.Add(this.lEntry);
             this.Controls.Add(this.lHeadline);
             this.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ChangeLogEntry";
@@ -83,5 +97,6 @@
         private System.Windows.Forms.Label lHeadline;
         private System.Windows.Forms.Panel pLine;
         private System.Windows.Forms.Label lEntry;
+        private System.Windows.Forms.Label lReleaseDate;
     }
 }

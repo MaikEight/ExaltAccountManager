@@ -34,26 +34,26 @@ namespace EAM_Statistics
             this.lAmountOfChars = new System.Windows.Forms.Label();
             this.lCharactersHeadline = new System.Windows.Forms.Label();
             this.pAccount = new System.Windows.Forms.Panel();
+            this.mtpAccounts = new EAM_Statistics.MaterialPanel();
             this.pCharacter = new System.Windows.Forms.Panel();
+            this.mtpChars = new EAM_Statistics.MaterialPanel();
             this.pTotalFame = new System.Windows.Forms.Panel();
             this.lOverallTotalChange = new System.Windows.Forms.Label();
             this.lTotalFameHeadline = new System.Windows.Forms.Label();
             this.lTotalFame = new System.Windows.Forms.Label();
+            this.mtpTotalFame = new EAM_Statistics.MaterialPanel();
             this.pTotalAliveFame = new System.Windows.Forms.Panel();
             this.lTotalAliveChange = new System.Windows.Forms.Label();
             this.lTotalAliveFameHeadline = new System.Windows.Forms.Label();
             this.lTotalAliveFame = new System.Windows.Forms.Label();
+            this.materialPanel1 = new EAM_Statistics.MaterialPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lTotalLoginsChange = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lTotalLoginsHeadline = new System.Windows.Forms.Label();
             this.lTotalLogins = new System.Windows.Forms.Label();
             this.materialPanel2 = new EAM_Statistics.MaterialPanel();
-            this.materialPanel1 = new EAM_Statistics.MaterialPanel();
             this.topAccountLiveFame = new EAM_Statistics.MaterialTopAccount();
             this.topAccountFame = new EAM_Statistics.MaterialTopAccount();
-            this.mtpTotalFame = new EAM_Statistics.MaterialPanel();
-            this.mtpChars = new EAM_Statistics.MaterialPanel();
-            this.mtpAccounts = new EAM_Statistics.MaterialPanel();
             this.mtpInfo = new EAM_Statistics.MaterialTextPanel();
             this.pAccount.SuspendLayout();
             this.pCharacter.SuspendLayout();
@@ -112,6 +112,16 @@ namespace EAM_Statistics
             this.pAccount.Size = new System.Drawing.Size(200, 70);
             this.pAccount.TabIndex = 7;
             // 
+            // mtpAccounts
+            // 
+            this.mtpAccounts.BackColor = System.Drawing.Color.Transparent;
+            this.mtpAccounts.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.mtpAccounts.Location = new System.Drawing.Point(0, 0);
+            this.mtpAccounts.Margin = new System.Windows.Forms.Padding(2);
+            this.mtpAccounts.Name = "mtpAccounts";
+            this.mtpAccounts.Size = new System.Drawing.Size(200, 70);
+            this.mtpAccounts.TabIndex = 1;
+            // 
             // pCharacter
             // 
             this.pCharacter.Controls.Add(this.lCharactersHeadline);
@@ -121,6 +131,16 @@ namespace EAM_Statistics
             this.pCharacter.Name = "pCharacter";
             this.pCharacter.Size = new System.Drawing.Size(200, 70);
             this.pCharacter.TabIndex = 8;
+            // 
+            // mtpChars
+            // 
+            this.mtpChars.BackColor = System.Drawing.Color.Transparent;
+            this.mtpChars.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.mtpChars.Location = new System.Drawing.Point(0, 0);
+            this.mtpChars.Margin = new System.Windows.Forms.Padding(2);
+            this.mtpChars.Name = "mtpChars";
+            this.mtpChars.Size = new System.Drawing.Size(200, 70);
+            this.mtpChars.TabIndex = 4;
             // 
             // pTotalFame
             // 
@@ -163,6 +183,16 @@ namespace EAM_Statistics
             this.lTotalFame.TabIndex = 3;
             this.lTotalFame.Text = "{0} total fame";
             // 
+            // mtpTotalFame
+            // 
+            this.mtpTotalFame.BackColor = System.Drawing.Color.Transparent;
+            this.mtpTotalFame.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.mtpTotalFame.Location = new System.Drawing.Point(0, 0);
+            this.mtpTotalFame.Margin = new System.Windows.Forms.Padding(2);
+            this.mtpTotalFame.Name = "mtpTotalFame";
+            this.mtpTotalFame.Size = new System.Drawing.Size(200, 83);
+            this.mtpTotalFame.TabIndex = 1;
+            // 
             // pTotalAliveFame
             // 
             this.pTotalAliveFame.Controls.Add(this.lTotalAliveChange);
@@ -204,10 +234,20 @@ namespace EAM_Statistics
             this.lTotalAliveFame.TabIndex = 3;
             this.lTotalAliveFame.Text = "{0} alive fame";
             // 
+            // materialPanel1
+            // 
+            this.materialPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.materialPanel1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.materialPanel1.Location = new System.Drawing.Point(0, 0);
+            this.materialPanel1.Margin = new System.Windows.Forms.Padding(2);
+            this.materialPanel1.Name = "materialPanel1";
+            this.materialPanel1.Size = new System.Drawing.Size(200, 83);
+            this.materialPanel1.TabIndex = 1;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.lTotalLoginsChange);
-            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.lTotalLoginsHeadline);
             this.panel1.Controls.Add(this.lTotalLogins);
             this.panel1.Controls.Add(this.materialPanel2);
             this.panel1.Location = new System.Drawing.Point(210, 168);
@@ -226,15 +266,15 @@ namespace EAM_Statistics
             this.lTotalLoginsChange.Text = "+{0} since last week";
             this.lTotalLoginsChange.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // label2
+            // lTotalLoginsHeadline
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI Semilight", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(10, 11);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(58, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Total logins";
+            this.lTotalLoginsHeadline.AutoSize = true;
+            this.lTotalLoginsHeadline.Font = new System.Drawing.Font("Segoe UI Semilight", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lTotalLoginsHeadline.Location = new System.Drawing.Point(10, 11);
+            this.lTotalLoginsHeadline.Name = "lTotalLoginsHeadline";
+            this.lTotalLoginsHeadline.Size = new System.Drawing.Size(58, 13);
+            this.lTotalLoginsHeadline.TabIndex = 2;
+            this.lTotalLoginsHeadline.Text = "Total logins";
             // 
             // lTotalLogins
             // 
@@ -255,16 +295,6 @@ namespace EAM_Statistics
             this.materialPanel2.Name = "materialPanel2";
             this.materialPanel2.Size = new System.Drawing.Size(200, 83);
             this.materialPanel2.TabIndex = 1;
-            // 
-            // materialPanel1
-            // 
-            this.materialPanel1.BackColor = System.Drawing.Color.Transparent;
-            this.materialPanel1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.materialPanel1.Location = new System.Drawing.Point(0, 0);
-            this.materialPanel1.Margin = new System.Windows.Forms.Padding(2);
-            this.materialPanel1.Name = "materialPanel1";
-            this.materialPanel1.Size = new System.Drawing.Size(200, 83);
-            this.materialPanel1.TabIndex = 1;
             // 
             // topAccountLiveFame
             // 
@@ -287,36 +317,6 @@ namespace EAM_Statistics
             this.topAccountFame.Name = "topAccountFame";
             this.topAccountFame.Size = new System.Drawing.Size(200, 175);
             this.topAccountFame.TabIndex = 10;
-            // 
-            // mtpTotalFame
-            // 
-            this.mtpTotalFame.BackColor = System.Drawing.Color.Transparent;
-            this.mtpTotalFame.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.mtpTotalFame.Location = new System.Drawing.Point(0, 0);
-            this.mtpTotalFame.Margin = new System.Windows.Forms.Padding(2);
-            this.mtpTotalFame.Name = "mtpTotalFame";
-            this.mtpTotalFame.Size = new System.Drawing.Size(200, 83);
-            this.mtpTotalFame.TabIndex = 1;
-            // 
-            // mtpChars
-            // 
-            this.mtpChars.BackColor = System.Drawing.Color.Transparent;
-            this.mtpChars.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.mtpChars.Location = new System.Drawing.Point(0, 0);
-            this.mtpChars.Margin = new System.Windows.Forms.Padding(2);
-            this.mtpChars.Name = "mtpChars";
-            this.mtpChars.Size = new System.Drawing.Size(200, 70);
-            this.mtpChars.TabIndex = 4;
-            // 
-            // mtpAccounts
-            // 
-            this.mtpAccounts.BackColor = System.Drawing.Color.Transparent;
-            this.mtpAccounts.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.mtpAccounts.Location = new System.Drawing.Point(0, 0);
-            this.mtpAccounts.Margin = new System.Windows.Forms.Padding(2);
-            this.mtpAccounts.Name = "mtpAccounts";
-            this.mtpAccounts.Size = new System.Drawing.Size(200, 70);
-            this.mtpAccounts.TabIndex = 1;
             // 
             // mtpInfo
             // 
@@ -384,7 +384,7 @@ namespace EAM_Statistics
         private System.Windows.Forms.Label lTotalAliveChange;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lTotalLoginsChange;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lTotalLoginsHeadline;
         private System.Windows.Forms.Label lTotalLogins;
         private MaterialPanel materialPanel2;
     }

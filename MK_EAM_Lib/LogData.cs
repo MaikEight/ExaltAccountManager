@@ -47,6 +47,9 @@
         StatsError,
         NoLogs,
         LogsError,
-        SaveUIOrder
+        SaveUIOrder,
+        AccountInfo,
+        PingError,
+        PingInfo
     }
 }

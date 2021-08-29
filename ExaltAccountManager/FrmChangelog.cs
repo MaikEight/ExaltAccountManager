@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager
@@ -14,6 +9,7 @@ namespace ExaltAccountManager
     {
         List<string> changelogsHeadline = new List<string>()
         {
+            "v2.2 - Ping checker, Security improvements and more",
             "v2.0 - Statistics, Changelog, Token viewer + QoL improvements",
             "v1.4 - \"Security improvements and QoL update\"",
             "v1.3 - The Daily Autologin Update!",
@@ -23,6 +19,36 @@ namespace ExaltAccountManager
         };
         List<string> changelogs = new List<string>()
         {
+            $"ADDED A PING CHECKER MODULE{Environment.NewLine}{Environment.NewLine}" +
+            $"- Ping every server and compare your ping time with the others.{Environment.NewLine}" +
+            $"- Set favorites to quickly get an overview of the important servers.{Environment.NewLine}{Environment.NewLine}" +
+            $"GAME UPDATER{Environment.NewLine}{Environment.NewLine}" +
+            $"- Added a simple way to update or repair the game when needed.{Environment.NewLine}" +
+            $"- It automatically checks once a day and will let you know if there{Environment.NewLine}   is an update available.{Environment.NewLine}{Environment.NewLine}" +
+            $"SECURITY IMPROVEMENTS{Environment.NewLine}{Environment.NewLine}" +
+            $"- The old AES-Key/IV implementation was a bit... dirty, so I switched{Environment.NewLine}" +
+            $"   from AES 128 to DPAPI (Windows Data Protection API) wich is {Environment.NewLine}   quite superior and more secure.{Environment.NewLine}{Environment.NewLine}" +
+            $"Instant SETUP{Environment.NewLine}{Environment.NewLine}" +
+            $"- Import data from an old version in the blink of an eye!{Environment.NewLine}{Environment.NewLine}" +
+            $"STATISTICS MODULE{Environment.NewLine}{Environment.NewLine}" +
+            $"- Added a switch to differentiate between base and total fame for the      \"radar chart\" and the \"best class\".{Environment.NewLine}" +
+            $"- Fixed the radar chart not rendering with new datasets.{Environment.NewLine}" +
+            $"       Known bug: Old datasets do not render.{Environment.NewLine}" +
+            $"                          > Just refresh them by \"re-new\" the token.{Environment.NewLine}{Environment.NewLine}" +
+            $"IMPORT & EXPORT{Environment.NewLine}{Environment.NewLine}" +
+            $"- Added a way to export and import data into this tool.{Environment.NewLine}" +
+            $"  Currently accepted formats are: .EAMexport, .CSV and muledump files.{Environment.NewLine}{Environment.NewLine}" +
+            $"UI-IMPROVEMENTS{Environment.NewLine}{Environment.NewLine}" +
+            $"- Added grouping colors for each account to set them apart.{Environment.NewLine}" +
+            $"- Added a nice snackbar (sadly it's nothing to eat).{Environment.NewLine}" +
+            $"- Added / switched some images for more responsiveness.{Environment.NewLine}" +
+            $"- Added an alphabetical sorting menu for accountName or email.{Environment.NewLine}" +
+            $"     Just click the List-Titles (Account Name and Email) to show it.{Environment.NewLine}" +
+            $"- Changed some colors.{Environment.NewLine}" +
+            $"- Switched the scrollbars to custom ones, fixing the \"Jump to top\"-bug.{Environment.NewLine}" +
+            $"- Switched the checkboxes to toggles.{Environment.NewLine}" +
+            $"- Optimized the Drag & Drop performance.",            
+
             $"ADDED A STATISTICS MODULE{Environment.NewLine}{Environment.NewLine}" +
             $"- With each login the tool collects data that can be presented in a unique      and beautiful way here.{Environment.NewLine}" +
             $"- Started logging specific data of some webrequest:{Environment.NewLine}" +
@@ -47,7 +73,7 @@ namespace ExaltAccountManager
             $"- Copy the account-name & e-mail to clipboard by clicking on it.{Environment.NewLine}" +
             $"- Run the daily login task manually by clicking the button for it, in case{Environment.NewLine}   something went wrong and you want to restart it.{Environment.NewLine}" +
             $"- Improved UI/UX here and there.{Environment.NewLine}" +
-            $"- Synced llamas - they tend to wander of, please be carefull.{Environment.NewLine}{Environment.NewLine}",
+            $"- Synced llamas - they tend to wander of, please be carefull.",
 
             $"PROCESS DETECTION{Environment.NewLine}{Environment.NewLine}" +
             $"- Detecting running Exalt instances and shows the appropriate account as    logged in.{Environment.NewLine}{Environment.NewLine}" +
@@ -77,6 +103,16 @@ namespace ExaltAccountManager
             $"- Open multiple instances of Exalt at once with the click of a button!{Environment.NewLine}" +
             $"- AES 128 encrypted save-file.",
         };
+        List<string> releaseDates = new List<string>()
+        {
+            "26.08.2021",
+            "20.04.2021",
+            "11.03.2021",
+            "05.02.2021",
+            "12.06.2020",
+            "24.05.2020",
+            "19.05.2020"
+        };
 
 
         FrmMain frm;
@@ -95,7 +131,7 @@ namespace ExaltAccountManager
             bool isSecond = false;
             for (int i = 0; i < changelogsHeadline.Count; i++)
             {
-                ChangeLogEntry entry = new ChangeLogEntry(changelogsHeadline[i], changelogs[i], frm.useDarkmode, isSecond);
+                ChangeLogEntry entry = new ChangeLogEntry(changelogsHeadline[i], changelogs[i], releaseDates[i], frm.useDarkmode, isSecond);
                 flow.Controls.Add(entry);
                 flow.SetFlowBreak(entry, true);
                 isSecond = !isSecond;

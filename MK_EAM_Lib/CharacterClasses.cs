@@ -49,7 +49,8 @@
     public class CharacterClass
     {
         public CharClasses charClass;
-        public int bestFame;
+        public int bestBaseFame;
+        public int bestTotalFame;
         public int bestLevel;
     }
 

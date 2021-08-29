@@ -1,4 +1,6 @@
-﻿namespace MK_EAM_Lib
+﻿using System;
+
+namespace MK_EAM_Lib
 {
     [System.Serializable]
     public class AccountStats
@@ -44,11 +46,12 @@
                             lines[0] = lines[0].Substring(lines[0].IndexOf("=\"") + 2, lines[0].Length - (lines[0].IndexOf("=\"") + 2));
                             int key = System.Convert.ToInt32(lines[0].Substring(0, lines[0].Length - 1), 16);
                             int lvl = System.Convert.ToInt32(lines[1].Substring(lines[1].IndexOf("BestLevel>") + 10, lines[1].IndexOf("</BestLevel") - 10));
-                            int fam = System.Convert.ToInt32(lines[2].Substring(lines[2].IndexOf("BestFame>") + 9, lines[2].IndexOf("</BestFame>") - 9));
-                            classes.Add(new CharacterClass() { charClass = CharacterClassesUtil.dicClasses[key], bestLevel = lvl, bestFame = fam });
+                            int bfam = System.Convert.ToInt32(lines[2].Substring(lines[2].IndexOf("BestBaseFame>") + 13, lines[2].IndexOf("</BestBaseFame") - 13));
+                            int tfam = System.Convert.ToInt32(lines[3].Substring(lines[3].IndexOf("BestTotalFame>") + 14, lines[3].IndexOf("</BestTotalFame>") - 14));
+                            classes.Add(new CharacterClass() { charClass = CharacterClassesUtil.dicClasses[key], bestLevel = lvl, bestBaseFame = bfam, bestTotalFame = tfam });
                         }
                     }
-                    catch { }
+                    catch (Exception e) { Console.WriteLine(e.Message); }
                 }
             }
         }

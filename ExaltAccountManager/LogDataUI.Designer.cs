@@ -29,6 +29,7 @@ namespace ExaltAccountManager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pDate = new System.Windows.Forms.Panel();
             this.lDate = new System.Windows.Forms.Label();
             this.pTime = new System.Windows.Forms.Panel();
@@ -39,6 +40,7 @@ namespace ExaltAccountManager
             this.lMessage = new System.Windows.Forms.Label();
             this.pEventType = new System.Windows.Forms.Panel();
             this.lEventType = new System.Windows.Forms.Label();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.pDate.SuspendLayout();
             this.pTime.SuspendLayout();
             this.pSender.SuspendLayout();
@@ -54,6 +56,7 @@ namespace ExaltAccountManager
             this.pDate.Name = "pDate";
             this.pDate.Size = new System.Drawing.Size(80, 30);
             this.pDate.TabIndex = 0;
+            this.pDate.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // lDate
             // 
@@ -64,6 +67,7 @@ namespace ExaltAccountManager
             this.lDate.Size = new System.Drawing.Size(72, 16);
             this.lDate.TabIndex = 1;
             this.lDate.Text = "10.03.2021";
+            this.lDate.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // pTime
             // 
@@ -73,6 +77,7 @@ namespace ExaltAccountManager
             this.pTime.Name = "pTime";
             this.pTime.Size = new System.Drawing.Size(48, 30);
             this.pTime.TabIndex = 1;
+            this.pTime.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // lTime
             // 
@@ -83,6 +88,7 @@ namespace ExaltAccountManager
             this.lTime.Size = new System.Drawing.Size(40, 16);
             this.lTime.TabIndex = 1;
             this.lTime.Text = "00:00";
+            this.lTime.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // pSender
             // 
@@ -92,6 +98,7 @@ namespace ExaltAccountManager
             this.pSender.Name = "pSender";
             this.pSender.Size = new System.Drawing.Size(115, 30);
             this.pSender.TabIndex = 2;
+            this.pSender.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // lSender
             // 
@@ -103,6 +110,7 @@ namespace ExaltAccountManager
             this.lSender.Size = new System.Drawing.Size(110, 17);
             this.lSender.TabIndex = 1;
             this.lSender.Text = "TaskTrayTool";
+            this.lSender.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // pMessage
             // 
@@ -110,7 +118,7 @@ namespace ExaltAccountManager
             this.pMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pMessage.Location = new System.Drawing.Point(243, 0);
             this.pMessage.Name = "pMessage";
-            this.pMessage.Size = new System.Drawing.Size(413, 30);
+            this.pMessage.Size = new System.Drawing.Size(432, 30);
             this.pMessage.TabIndex = 3;
             // 
             // lMessage
@@ -119,20 +127,22 @@ namespace ExaltAccountManager
             this.lMessage.Font = new System.Drawing.Font("Century Schoolbook", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lMessage.Location = new System.Drawing.Point(0, 0);
             this.lMessage.Name = "lMessage";
-            this.lMessage.Size = new System.Drawing.Size(413, 30);
+            this.lMessage.Size = new System.Drawing.Size(432, 30);
             this.lMessage.TabIndex = 1;
             this.lMessage.Text = "Message";
             this.lMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lMessage.UseMnemonic = false;
+            this.lMessage.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // pEventType
             // 
             this.pEventType.Controls.Add(this.lEventType);
             this.pEventType.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pEventType.Location = new System.Drawing.Point(656, 0);
+            this.pEventType.Location = new System.Drawing.Point(675, 0);
             this.pEventType.Name = "pEventType";
-            this.pEventType.Size = new System.Drawing.Size(125, 30);
+            this.pEventType.Size = new System.Drawing.Size(115, 30);
             this.pEventType.TabIndex = 4;
+            this.pEventType.Click += new System.EventHandler(this.LogDataUI_Click);
             // 
             // lEventType
             // 
@@ -143,6 +153,14 @@ namespace ExaltAccountManager
             this.lEventType.Size = new System.Drawing.Size(94, 16);
             this.lEventType.TabIndex = 1;
             this.lEventType.Text = "ServiceStart";
+            this.lEventType.Click += new System.EventHandler(this.LogDataUI_Click);
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutomaticDelay = 150;
+            this.toolTip.AutoPopDelay = 15000;
+            this.toolTip.InitialDelay = 150;
+            this.toolTip.ReshowDelay = 30;
             // 
             // LogDataUI
             // 
@@ -156,7 +174,8 @@ namespace ExaltAccountManager
             this.Font = new System.Drawing.Font("Century Schoolbook", 7.875F);
             this.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
             this.Name = "LogDataUI";
-            this.Size = new System.Drawing.Size(781, 30);
+            this.Size = new System.Drawing.Size(790, 30);
+            this.Click += new System.EventHandler(this.LogDataUI_Click);
             this.pDate.ResumeLayout(false);
             this.pDate.PerformLayout();
             this.pTime.ResumeLayout(false);
@@ -181,5 +200,6 @@ namespace ExaltAccountManager
         private System.Windows.Forms.Label lMessage;
         private System.Windows.Forms.Panel pEventType;
         private System.Windows.Forms.Label lEventType;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

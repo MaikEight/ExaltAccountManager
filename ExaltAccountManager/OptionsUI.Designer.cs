@@ -57,7 +57,7 @@
             this.pOptionen.Dock = System.Windows.Forms.DockStyle.Left;
             this.pOptionen.Location = new System.Drawing.Point(0, 0);
             this.pOptionen.Name = "pOptionen";
-            this.pOptionen.Size = new System.Drawing.Size(100, 24);
+            this.pOptionen.Size = new System.Drawing.Size(90, 24);
             this.pOptionen.TabIndex = 0;
             this.pOptionen.Click += new System.EventHandler(this.ShowOptions);
             this.pOptionen.MouseEnter += new System.EventHandler(this.options_MouseEnter);
@@ -69,9 +69,9 @@
             this.lOptionen.Font = new System.Drawing.Font("Century Schoolbook", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lOptionen.Location = new System.Drawing.Point(13, 3);
             this.lOptionen.Name = "lOptionen";
-            this.lOptionen.Size = new System.Drawing.Size(74, 18);
+            this.lOptionen.Size = new System.Drawing.Size(64, 18);
             this.lOptionen.TabIndex = 1;
-            this.lOptionen.Text = "Optionen";
+            this.lOptionen.Text = "Options";
             this.lOptionen.Click += new System.EventHandler(this.ShowOptions);
             this.lOptionen.MouseEnter += new System.EventHandler(this.options_MouseEnter);
             this.lOptionen.MouseLeave += new System.EventHandler(this.options_MouseLeave);
@@ -80,7 +80,7 @@
             // 
             this.pAddAccount.Controls.Add(this.lAdd);
             this.pAddAccount.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pAddAccount.Location = new System.Drawing.Point(100, 0);
+            this.pAddAccount.Location = new System.Drawing.Point(90, 0);
             this.pAddAccount.Name = "pAddAccount";
             this.pAddAccount.Size = new System.Drawing.Size(125, 24);
             this.pAddAccount.TabIndex = 1;
@@ -105,7 +105,7 @@
             // 
             this.pDailyLogins.Controls.Add(this.lDaily);
             this.pDailyLogins.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pDailyLogins.Location = new System.Drawing.Point(225, 0);
+            this.pDailyLogins.Location = new System.Drawing.Point(215, 0);
             this.pDailyLogins.Name = "pDailyLogins";
             this.pDailyLogins.Size = new System.Drawing.Size(115, 24);
             this.pDailyLogins.TabIndex = 2;
@@ -130,7 +130,7 @@
             // 
             this.pLog.Controls.Add(this.lLog);
             this.pLog.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pLog.Location = new System.Drawing.Point(340, 0);
+            this.pLog.Location = new System.Drawing.Point(330, 0);
             this.pLog.Name = "pLog";
             this.pLog.Size = new System.Drawing.Size(61, 24);
             this.pLog.TabIndex = 3;
@@ -192,7 +192,7 @@
             // 
             this.pHelp.Controls.Add(this.lHelp);
             this.pHelp.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pHelp.Location = new System.Drawing.Point(401, 0);
+            this.pHelp.Location = new System.Drawing.Point(391, 0);
             this.pHelp.Name = "pHelp";
             this.pHelp.Size = new System.Drawing.Size(61, 24);
             this.pHelp.TabIndex = 5;

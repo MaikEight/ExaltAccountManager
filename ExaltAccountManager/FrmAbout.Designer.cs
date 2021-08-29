@@ -303,6 +303,7 @@ namespace ExaltAccountManager
             this.Controls.Add(this.pTop);
             this.Font = new System.Drawing.Font("Century Schoolbook", 7.875F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmAbout";
             this.Text = "About EAM";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Frm_Closing);

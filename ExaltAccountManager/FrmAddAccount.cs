@@ -8,13 +8,13 @@ namespace ExaltAccountManager
 {
     public partial class FrmAddAccount : Form
     {
-        AccountInfo info = new AccountInfo();
+        MK_EAM_Lib.AccountInfo info = new MK_EAM_Lib.AccountInfo();
         FrmMain frm;
         bool addNew = true;
         int index = -1;
         string startEmail = string.Empty;
 
-        public FrmAddAccount(FrmMain _frm)
+        public FrmAddAccount(FrmMain _frm, bool skipTheme = false)
         {
             InitializeComponent();
             frm = _frm;
@@ -22,10 +22,11 @@ namespace ExaltAccountManager
 
             ChangeLSaveText("Save");
 
-            ApplyTheme(frm.useDarkmode);
+            if (!skipTheme)
+                ApplyTheme(frm.useDarkmode);
         }
 
-        public FrmAddAccount(FrmMain _frm, AccountInfo _info)
+        public FrmAddAccount(FrmMain _frm, MK_EAM_Lib.AccountInfo _info)
         {
             InitializeComponent();
             frm = _frm;
@@ -43,6 +44,7 @@ namespace ExaltAccountManager
 
             index = frm.accounts.IndexOf(info);
             tbEmail.Focus();
+
             ApplyTheme(frm.useDarkmode);
         }
 
@@ -186,14 +188,19 @@ namespace ExaltAccountManager
                     frm.LogEvent(new LogData(frm.logs.Count + 1, "EAM ADD", LogEventType.AddAccount, $"Adding new account: {info.email}"));
                     frm.accounts.Add(info);
                     frm.AddAccountToOrders(info.email);
+                    frm.UpdateAccountInfos();
+                    Application.DoEvents();
+                    frm.snackbar.Show(frm, $"New Account added.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                 }
                 else
                 {
                     frm.LogEvent(new LogData(frm.logs.Count + 1, "EAM Edit", LogEventType.EditAccount, $"Account edited: {info.email}"));
                     frm.accounts[index] = info;
+                    frm.UpdateAccountInfos();
+                    Application.DoEvents();
+                    frm.snackbar.Show(frm, $"Account updated successfully.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                 }
 
-                frm.UpdateAccountInfos();
                 this.Close();
             }
             catch (Exception)
@@ -208,6 +215,7 @@ namespace ExaltAccountManager
         }
 
         #region Drag Form
+
         private Point MouseDownLocation;
         private void Drag_MouseDown(object sender, MouseEventArgs e)
         {
@@ -220,6 +228,7 @@ namespace ExaltAccountManager
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
                 this.Location = new Point(e.X + this.Left - MouseDownLocation.X, e.Y + this.Top - MouseDownLocation.Y);
         }
+
         #endregion
 
         private void timerResetSaveLabel_Tick(object sender, EventArgs e)

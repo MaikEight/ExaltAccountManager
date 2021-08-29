@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,12 @@ namespace EAM_Statistics
             InitializeComponent();
             frm = _frm;
             lVersion.Text = string.Format(lVersion.Text, frm.version);
+
+            if (!File.Exists(Path.Combine(Application.StartupPath, "flag.MPGH")))
+            {
+                linkWebsite.Text = "https://github.com/MaikEight/ExaltAccountManager";
+            }
+
             ApplyTheme(frm.useDarkmode);
 
             System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
@@ -77,7 +84,7 @@ namespace EAM_Statistics
             pbVersion.Image = isDarkmode ? Properties.Resources.baseline_tag_white_36dp : Properties.Resources.baseline_tag_black_36dp;
             pbDev.Image = isDarkmode ? Properties.Resources.ic_code_white_36dp : Properties.Resources.ic_code_black_36dp;
             pbWebsite.Image = isDarkmode ? Properties.Resources.ic_public_white_36dp : Properties.Resources.ic_public_black_36dp;
-            pbCopyright.Image = isDarkmode ? Properties.Resources.ic_copyright_white_36dp : Properties.Resources.ic_code_black_36dp;
+            pbCopyright.Image = isDarkmode ? Properties.Resources.ic_copyright_white_36dp : Properties.Resources.ic_copyright_black_36dp;
             pbLogo.Image = isDarkmode ? Properties.Resources.baseline_assessment_white_96 : Properties.Resources.baseline_assessment_black_96;
 
             foreach (Panel p in this.Controls.OfType<Panel>())

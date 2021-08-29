@@ -29,6 +29,13 @@ namespace EAM_Statistics
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UIAccountViewer));
+            Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState toggleState7 = new Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState();
+            Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState toggleState8 = new Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState();
+            Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState toggleState9 = new Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState();
+            Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState toggleState10 = new Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState();
+            Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState toggleState11 = new Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState();
+            Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState toggleState12 = new Bunifu.UI.WinForms.BunifuToggleSwitch.ToggleState();
             this.pAccount = new System.Windows.Forms.Panel();
             this.lAccountEmail = new System.Windows.Forms.Label();
             this.lAccounts = new System.Windows.Forms.Label();
@@ -48,6 +55,9 @@ namespace EAM_Statistics
             this.lAliveFameValue = new System.Windows.Forms.Label();
             this.mtpAliveFame = new EAM_Statistics.MaterialPanel();
             this.pBestClass = new System.Windows.Forms.Panel();
+            this.toggleBestClassByTotalFame = new Bunifu.UI.WinForms.BunifuToggleSwitch();
+            this.lBestToggleT = new System.Windows.Forms.Label();
+            this.lBestToggleB = new System.Windows.Forms.Label();
             this.lBestLevel = new System.Windows.Forms.Label();
             this.lBestLevelValue = new System.Windows.Forms.Label();
             this.lBestFameValue = new System.Windows.Forms.Label();
@@ -59,6 +69,10 @@ namespace EAM_Statistics
             this.pbReturn = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.mtpRadarChars = new EAM_Statistics.MaterialRadarChars();
             this.mtpCharacters = new EAM_Statistics.MaterialTopAccount();
+            this.toggleRadarCharsByTotalFame = new Bunifu.UI.WinForms.BunifuToggleSwitch();
+            this.lRadarToggleT = new System.Windows.Forms.Label();
+            this.lRadarToggleB = new System.Windows.Forms.Label();
+            this.lNoChars = new System.Windows.Forms.Label();
             this.pAccount.SuspendLayout();
             this.pTotalFame.SuspendLayout();
             this.pDataActuality.SuspendLayout();
@@ -252,6 +266,9 @@ namespace EAM_Statistics
             // 
             // pBestClass
             // 
+            this.pBestClass.Controls.Add(this.toggleBestClassByTotalFame);
+            this.pBestClass.Controls.Add(this.lBestToggleT);
+            this.pBestClass.Controls.Add(this.lBestToggleB);
             this.pBestClass.Controls.Add(this.lBestLevel);
             this.pBestClass.Controls.Add(this.lBestLevelValue);
             this.pBestClass.Controls.Add(this.lBestFameValue);
@@ -265,11 +282,75 @@ namespace EAM_Statistics
             this.pBestClass.Size = new System.Drawing.Size(200, 145);
             this.pBestClass.TabIndex = 21;
             // 
+            // toggleBestClassByTotalFame
+            // 
+            this.toggleBestClassByTotalFame.Animation = 5;
+            this.toggleBestClassByTotalFame.BackColor = System.Drawing.Color.Transparent;
+            this.toggleBestClassByTotalFame.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("toggleBestClassByTotalFame.BackgroundImage")));
+            this.toggleBestClassByTotalFame.Checked = true;
+            this.toggleBestClassByTotalFame.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.toggleBestClassByTotalFame.InnerCirclePadding = 3;
+            this.toggleBestClassByTotalFame.Location = new System.Drawing.Point(114, 11);
+            this.toggleBestClassByTotalFame.Margin = new System.Windows.Forms.Padding(5);
+            this.toggleBestClassByTotalFame.Name = "toggleBestClassByTotalFame";
+            this.toggleBestClassByTotalFame.Size = new System.Drawing.Size(42, 18);
+            this.toggleBestClassByTotalFame.TabIndex = 27;
+            this.toggleBestClassByTotalFame.ThumbMargin = 3;
+            toggleState7.BackColor = System.Drawing.Color.DarkGray;
+            toggleState7.BackColorInner = System.Drawing.Color.White;
+            toggleState7.BorderColor = System.Drawing.Color.DarkGray;
+            toggleState7.BorderColorInner = System.Drawing.Color.White;
+            toggleState7.BorderRadius = 17;
+            toggleState7.BorderRadiusInner = 11;
+            toggleState7.BorderThickness = 1;
+            toggleState7.BorderThicknessInner = 1;
+            this.toggleBestClassByTotalFame.ToggleStateDisabled = toggleState7;
+            toggleState8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState8.BackColorInner = System.Drawing.Color.White;
+            toggleState8.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState8.BorderColorInner = System.Drawing.Color.White;
+            toggleState8.BorderRadius = 17;
+            toggleState8.BorderRadiusInner = 11;
+            toggleState8.BorderThickness = 1;
+            toggleState8.BorderThicknessInner = 1;
+            this.toggleBestClassByTotalFame.ToggleStateOff = toggleState8;
+            toggleState9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState9.BackColorInner = System.Drawing.Color.White;
+            toggleState9.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState9.BorderColorInner = System.Drawing.Color.White;
+            toggleState9.BorderRadius = 17;
+            toggleState9.BorderRadiusInner = 11;
+            toggleState9.BorderThickness = 1;
+            toggleState9.BorderThicknessInner = 1;
+            this.toggleBestClassByTotalFame.ToggleStateOn = toggleState9;
+            this.toggleBestClassByTotalFame.Value = true;
+            this.toggleBestClassByTotalFame.CheckedChanged += new System.EventHandler<Bunifu.UI.WinForms.BunifuToggleSwitch.CheckedChangedEventArgs>(this.toggleBestClassByTotalFame_CheckedChanged);
+            // 
+            // lBestToggleT
+            // 
+            this.lBestToggleT.AutoSize = true;
+            this.lBestToggleT.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lBestToggleT.Location = new System.Drawing.Point(155, 11);
+            this.lBestToggleT.Name = "lBestToggleT";
+            this.lBestToggleT.Size = new System.Drawing.Size(37, 17);
+            this.lBestToggleT.TabIndex = 28;
+            this.lBestToggleT.Text = "Total";
+            // 
+            // lBestToggleB
+            // 
+            this.lBestToggleB.AutoSize = true;
+            this.lBestToggleB.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lBestToggleB.Location = new System.Drawing.Point(80, 11);
+            this.lBestToggleB.Name = "lBestToggleB";
+            this.lBestToggleB.Size = new System.Drawing.Size(36, 17);
+            this.lBestToggleB.TabIndex = 24;
+            this.lBestToggleB.Text = "Base";
+            // 
             // lBestLevel
             // 
             this.lBestLevel.AutoSize = true;
             this.lBestLevel.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lBestLevel.Location = new System.Drawing.Point(86, 94);
+            this.lBestLevel.Location = new System.Drawing.Point(86, 97);
             this.lBestLevel.Name = "lBestLevel";
             this.lBestLevel.Size = new System.Drawing.Size(65, 17);
             this.lBestLevel.TabIndex = 25;
@@ -279,7 +360,7 @@ namespace EAM_Statistics
             // 
             this.lBestLevelValue.AutoSize = true;
             this.lBestLevelValue.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lBestLevelValue.Location = new System.Drawing.Point(85, 112);
+            this.lBestLevelValue.Location = new System.Drawing.Point(85, 115);
             this.lBestLevelValue.Name = "lBestLevelValue";
             this.lBestLevelValue.Size = new System.Drawing.Size(28, 21);
             this.lBestLevelValue.TabIndex = 26;
@@ -289,7 +370,7 @@ namespace EAM_Statistics
             // 
             this.lBestFameValue.AutoSize = true;
             this.lBestFameValue.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lBestFameValue.Location = new System.Drawing.Point(85, 68);
+            this.lBestFameValue.Location = new System.Drawing.Point(85, 74);
             this.lBestFameValue.Name = "lBestFameValue";
             this.lBestFameValue.Size = new System.Drawing.Size(73, 21);
             this.lBestFameValue.TabIndex = 24;
@@ -299,7 +380,7 @@ namespace EAM_Statistics
             // 
             this.lBestFame.AutoSize = true;
             this.lBestFame.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lBestFame.Location = new System.Drawing.Point(86, 50);
+            this.lBestFame.Location = new System.Drawing.Point(86, 56);
             this.lBestFame.Name = "lBestFame";
             this.lBestFame.Size = new System.Drawing.Size(68, 17);
             this.lBestFame.TabIndex = 23;
@@ -307,7 +388,7 @@ namespace EAM_Statistics
             // 
             // pbBestClassImage
             // 
-            this.pbBestClassImage.Location = new System.Drawing.Point(12, 64);
+            this.pbBestClassImage.Location = new System.Drawing.Point(12, 66);
             this.pbBestClassImage.Name = "pbBestClassImage";
             this.pbBestClassImage.Size = new System.Drawing.Size(64, 64);
             this.pbBestClassImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -320,25 +401,25 @@ namespace EAM_Statistics
             this.lBestClass.Font = new System.Drawing.Font("Segoe UI Semilight", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lBestClass.Location = new System.Drawing.Point(10, 11);
             this.lBestClass.Name = "lBestClass";
-            this.lBestClass.Size = new System.Drawing.Size(50, 13);
+            this.lBestClass.Size = new System.Drawing.Size(64, 13);
             this.lBestClass.TabIndex = 2;
-            this.lBestClass.Text = "Best class";
+            this.lBestClass.Text = "Best class by";
             // 
             // lBestClassName
             // 
             this.lBestClassName.AutoSize = true;
             this.lBestClassName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lBestClassName.Location = new System.Drawing.Point(9, 30);
+            this.lBestClassName.Location = new System.Drawing.Point(9, 32);
             this.lBestClassName.Name = "lBestClassName";
-            this.lBestClassName.Size = new System.Drawing.Size(113, 21);
+            this.lBestClassName.Size = new System.Drawing.Size(64, 21);
             this.lBestClassName.TabIndex = 3;
-            this.lBestClassName.Text = "Necromancer";
+            this.lBestClassName.Text = "Wizard";
             // 
             // mtpBestClass
             // 
             this.mtpBestClass.BackColor = System.Drawing.Color.Transparent;
             this.mtpBestClass.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.mtpBestClass.Location = new System.Drawing.Point(0, 0);
+            this.mtpBestClass.Location = new System.Drawing.Point(0, -1);
             this.mtpBestClass.Margin = new System.Windows.Forms.Padding(2);
             this.mtpBestClass.Name = "mtpBestClass";
             this.mtpBestClass.Size = new System.Drawing.Size(200, 145);
@@ -386,11 +467,90 @@ namespace EAM_Statistics
             this.mtpCharacters.Size = new System.Drawing.Size(200, 410);
             this.mtpCharacters.TabIndex = 18;
             // 
+            // toggleRadarCharsByTotalFame
+            // 
+            this.toggleRadarCharsByTotalFame.Animation = 5;
+            this.toggleRadarCharsByTotalFame.BackColor = System.Drawing.Color.Transparent;
+            this.toggleRadarCharsByTotalFame.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("toggleRadarCharsByTotalFame.BackgroundImage")));
+            this.toggleRadarCharsByTotalFame.Checked = true;
+            this.toggleRadarCharsByTotalFame.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.toggleRadarCharsByTotalFame.InnerCirclePadding = 3;
+            this.toggleRadarCharsByTotalFame.Location = new System.Drawing.Point(529, 167);
+            this.toggleRadarCharsByTotalFame.Margin = new System.Windows.Forms.Padding(7);
+            this.toggleRadarCharsByTotalFame.Name = "toggleRadarCharsByTotalFame";
+            this.toggleRadarCharsByTotalFame.Size = new System.Drawing.Size(42, 18);
+            this.toggleRadarCharsByTotalFame.TabIndex = 30;
+            this.toggleRadarCharsByTotalFame.ThumbMargin = 3;
+            toggleState10.BackColor = System.Drawing.Color.DarkGray;
+            toggleState10.BackColorInner = System.Drawing.Color.White;
+            toggleState10.BorderColor = System.Drawing.Color.DarkGray;
+            toggleState10.BorderColorInner = System.Drawing.Color.White;
+            toggleState10.BorderRadius = 17;
+            toggleState10.BorderRadiusInner = 11;
+            toggleState10.BorderThickness = 1;
+            toggleState10.BorderThicknessInner = 1;
+            this.toggleRadarCharsByTotalFame.ToggleStateDisabled = toggleState10;
+            toggleState11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState11.BackColorInner = System.Drawing.Color.White;
+            toggleState11.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState11.BorderColorInner = System.Drawing.Color.White;
+            toggleState11.BorderRadius = 17;
+            toggleState11.BorderRadiusInner = 11;
+            toggleState11.BorderThickness = 1;
+            toggleState11.BorderThicknessInner = 1;
+            this.toggleRadarCharsByTotalFame.ToggleStateOff = toggleState11;
+            toggleState12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState12.BackColorInner = System.Drawing.Color.White;
+            toggleState12.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            toggleState12.BorderColorInner = System.Drawing.Color.White;
+            toggleState12.BorderRadius = 17;
+            toggleState12.BorderRadiusInner = 11;
+            toggleState12.BorderThickness = 1;
+            toggleState12.BorderThicknessInner = 1;
+            this.toggleRadarCharsByTotalFame.ToggleStateOn = toggleState12;
+            this.toggleRadarCharsByTotalFame.Value = true;
+            this.toggleRadarCharsByTotalFame.CheckedChanged += new System.EventHandler<Bunifu.UI.WinForms.BunifuToggleSwitch.CheckedChangedEventArgs>(this.toggleRadarCharsByTotalFame_CheckedChanged);
+            // 
+            // lRadarToggleT
+            // 
+            this.lRadarToggleT.AutoSize = true;
+            this.lRadarToggleT.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lRadarToggleT.Location = new System.Drawing.Point(570, 167);
+            this.lRadarToggleT.Name = "lRadarToggleT";
+            this.lRadarToggleT.Size = new System.Drawing.Size(37, 17);
+            this.lRadarToggleT.TabIndex = 31;
+            this.lRadarToggleT.Text = "Total";
+            // 
+            // lRadarToggleB
+            // 
+            this.lRadarToggleB.AutoSize = true;
+            this.lRadarToggleB.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lRadarToggleB.Location = new System.Drawing.Point(495, 167);
+            this.lRadarToggleB.Name = "lRadarToggleB";
+            this.lRadarToggleB.Size = new System.Drawing.Size(36, 17);
+            this.lRadarToggleB.TabIndex = 29;
+            this.lRadarToggleB.Text = "Base";
+            // 
+            // lNoChars
+            // 
+            this.lNoChars.AutoSize = true;
+            this.lNoChars.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lNoChars.Location = new System.Drawing.Point(218, 384);
+            this.lNoChars.Name = "lNoChars";
+            this.lNoChars.Size = new System.Drawing.Size(390, 20);
+            this.lNoChars.TabIndex = 32;
+            this.lNoChars.Text = "You need at least data from three different characters!";
+            this.lNoChars.Visible = false;
+            // 
             // UIAccountViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.lNoChars);
+            this.Controls.Add(this.toggleRadarCharsByTotalFame);
+            this.Controls.Add(this.lRadarToggleT);
+            this.Controls.Add(this.lRadarToggleB);
             this.Controls.Add(this.pbReturn);
             this.Controls.Add(this.pBestClass);
             this.Controls.Add(this.pAliveFame);
@@ -416,6 +576,7 @@ namespace EAM_Statistics
             ((System.ComponentModel.ISupportInitialize)(this.pbBestClassImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbReturn)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -450,5 +611,12 @@ namespace EAM_Statistics
         private System.Windows.Forms.Label lBestLevel;
         private System.Windows.Forms.Label lBestLevelValue;
         private Bunifu.UI.WinForms.BunifuPictureBox pbReturn;
+        private Bunifu.UI.WinForms.BunifuToggleSwitch toggleBestClassByTotalFame;
+        private System.Windows.Forms.Label lBestToggleT;
+        private System.Windows.Forms.Label lBestToggleB;
+        private Bunifu.UI.WinForms.BunifuToggleSwitch toggleRadarCharsByTotalFame;
+        private System.Windows.Forms.Label lRadarToggleT;
+        private System.Windows.Forms.Label lRadarToggleB;
+        private System.Windows.Forms.Label lNoChars;
     }
 }

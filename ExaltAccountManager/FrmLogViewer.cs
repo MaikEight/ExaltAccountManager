@@ -33,6 +33,7 @@ namespace ExaltAccountManager
             this.Controls.Add(head);
             head.Location = new Point(1, 48);
             head.Width = this.Width - 2;
+            scrollbar.Visible = true;
 
             LoadLogs(site, true);
             this.Controls.Remove(pLoad);
@@ -44,28 +45,30 @@ namespace ExaltAccountManager
             {
                 Color def = Color.FromArgb(32, 32, 32);
                 Color second = Color.FromArgb(23, 23, 23);
-                Color third = Color.FromArgb(230, 230, 230);
+                Color third = Color.FromArgb(0, 0, 0);
                 Color font = Color.White;
 
                 this.ForeColor = font;
-                this.BackColor = def;
-                pTop.BackColor = def;
-                pBox.BackColor = def;
+                this.BackColor = 
+                pTop.BackColor = 
+                pBox.BackColor = 
                 pLoad.BackColor = def;
 
-                //tbName.ForeColor = font;
-                //tbName.BackColor = def;
-
-                //tbEmail.ForeColor = font;
-                //tbEmail.BackColor = def;
-
-                //tbPassword.ForeColor = font;
-                //tbPassword.BackColor = def;
+                scrollbar.BorderColor = second;
+                scrollbar.BackgroundColor = def;
+                scrollbar.ThumbColor = third;
 
                 pbLogo.Image = Properties.Resources.ic_assignment_white_48dp;
                 pbClose.Image = Properties.Resources.ic_close_white_24dp;
                 pbMinimize.Image = Properties.Resources.baseline_minimize_white_24dp;
+                
                 p = new Pen(Color.White);
+            }
+            else
+            {
+                scrollbar.BorderColor = Color.Silver;
+                scrollbar.BackgroundColor = Color.White;
+                scrollbar.ThumbColor = Color.Gray;
             }
         }
 

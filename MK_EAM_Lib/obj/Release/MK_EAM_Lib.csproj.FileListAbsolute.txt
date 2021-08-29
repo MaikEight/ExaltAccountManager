@@ -1,6 +1,9 @@
 C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\bin\Release\MK_EAM_Lib.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\bin\Release\MK_EAM_Lib.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\obj\Release\MK_EAM_Lib.csprojAssemblyReference.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\obj\Release\MK_EAM_Lib.csproj.CoreCompileInputs.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\obj\Release\MK_EAM_Lib.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\obj\Release\MK_EAM_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\bin\Release\Newtonsoft.Json.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\bin\Release\Newtonsoft.Json.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\obj\Release\MK_EAM_Lib.csproj.AssemblyReference.cache
+C:\Users\Maik8\source\repos\ExaltAccountManager\MK_EAM_Lib\obj\Release\MK_EAM_Lib.csproj.CopyComplete

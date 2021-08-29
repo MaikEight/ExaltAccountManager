@@ -61,9 +61,8 @@ namespace EAM_Statistics
             animation1.TimeCoeff = 0F;
             animation1.TransparencyCoeff = 0F;
             this.bunifuTransition.DefaultAnimation = animation1;
-            this.bunifuTransition.Interval = 2;
+            this.bunifuTransition.Interval = 1;
             this.bunifuTransition.MaxAnimationTime = 750;
-            this.bunifuTransition.TimeStep = 0.01F;
             // 
             // FrmStatsLeftHost
             // 

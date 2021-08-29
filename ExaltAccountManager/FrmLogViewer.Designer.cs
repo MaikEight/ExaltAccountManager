@@ -38,6 +38,7 @@ namespace ExaltAccountManager
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.flow = new System.Windows.Forms.FlowLayoutPanel();
             this.pLoad = new System.Windows.Forms.Panel();
+            this.scrollbar = new Bunifu.UI.WinForms.BunifuVScrollBar();
             this.pTop.SuspendLayout();
             this.pBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).BeginInit();
@@ -129,18 +130,59 @@ namespace ExaltAccountManager
             this.flow.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.flow.AutoScroll = true;
             this.flow.Location = new System.Drawing.Point(1, 78);
             this.flow.Name = "flow";
-            this.flow.Size = new System.Drawing.Size(798, 421);
+            this.flow.Size = new System.Drawing.Size(790, 421);
             this.flow.TabIndex = 1;
             // 
             // pLoad
             // 
             this.pLoad.Location = new System.Drawing.Point(1, 48);
             this.pLoad.Name = "pLoad";
-            this.pLoad.Size = new System.Drawing.Size(798, 451);
+            this.pLoad.Size = new System.Drawing.Size(718, 451);
             this.pLoad.TabIndex = 7;
+            // 
+            // scrollbar
+            // 
+            this.scrollbar.AllowCursorChanges = true;
+            this.scrollbar.AllowHomeEndKeysDetection = false;
+            this.scrollbar.AllowIncrementalClickMoves = true;
+            this.scrollbar.AllowMouseDownEffects = true;
+            this.scrollbar.AllowMouseHoverEffects = true;
+            this.scrollbar.AllowScrollingAnimations = true;
+            this.scrollbar.AllowScrollKeysDetection = true;
+            this.scrollbar.AllowScrollOptionsMenu = false;
+            this.scrollbar.AllowShrinkingOnFocusLost = false;
+            this.scrollbar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.scrollbar.BackgroundColor = System.Drawing.Color.Silver;
+            this.scrollbar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scrollbar.BackgroundImage")));
+            this.scrollbar.BindingContainer = this.flow;
+            this.scrollbar.BorderColor = System.Drawing.Color.Silver;
+            this.scrollbar.BorderRadius = 0;
+            this.scrollbar.BorderThickness = 2;
+            this.scrollbar.DurationBeforeShrink = 2000;
+            this.scrollbar.LargeChange = 10;
+            this.scrollbar.Location = new System.Drawing.Point(791, 78);
+            this.scrollbar.Maximum = 100;
+            this.scrollbar.MaximumSize = new System.Drawing.Size(8, 451);
+            this.scrollbar.Minimum = 0;
+            this.scrollbar.MinimumThumbLength = 18;
+            this.scrollbar.Name = "scrollbar";
+            this.scrollbar.OnDisable.ScrollBarBorderColor = System.Drawing.Color.Silver;
+            this.scrollbar.OnDisable.ScrollBarColor = System.Drawing.Color.Transparent;
+            this.scrollbar.OnDisable.ThumbColor = System.Drawing.Color.Silver;
+            this.scrollbar.ScrollBarBorderColor = System.Drawing.Color.Silver;
+            this.scrollbar.ScrollBarColor = System.Drawing.Color.Silver;
+            this.scrollbar.ShrinkSizeLimit = 3;
+            this.scrollbar.Size = new System.Drawing.Size(8, 421);
+            this.scrollbar.SmallChange = 1;
+            this.scrollbar.TabIndex = 1;
+            this.scrollbar.ThumbColor = System.Drawing.Color.Gray;
+            this.scrollbar.ThumbLength = 41;
+            this.scrollbar.ThumbMargin = 1;
+            this.scrollbar.ThumbStyle = Bunifu.UI.WinForms.BunifuVScrollBar.ThumbStyles.Proportional;
+            this.scrollbar.Value = 0;
             // 
             // FrmLogViewer
             // 
@@ -151,6 +193,7 @@ namespace ExaltAccountManager
             this.Controls.Add(this.pLoad);
             this.Controls.Add(this.flow);
             this.Controls.Add(this.pTop);
+            this.Controls.Add(this.scrollbar);
             this.Font = new System.Drawing.Font("Century Schoolbook", 7.875F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -177,5 +220,6 @@ namespace ExaltAccountManager
         private System.Windows.Forms.PictureBox pbClose;
         private System.Windows.Forms.FlowLayoutPanel flow;
         private System.Windows.Forms.Panel pLoad;
+        private Bunifu.UI.WinForms.BunifuVScrollBar scrollbar;
     }
 }

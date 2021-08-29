@@ -16,7 +16,7 @@ namespace EAM_Statistics
 {
     public partial class FrmMain : Form
     {
-        public readonly Version version = new Version(1, 0, 0);
+        public readonly Version version = new Version(1, 0, 5);
 
         private UIDashboard dashboard;
         private UIAccountView accountView;
@@ -27,12 +27,13 @@ namespace EAM_Statistics
         public bool useDarkmode = false;
 
         public List<StatsMain> statsList = new List<StatsMain>();
-        public List<AccountInfo> accounts = new List<AccountInfo>();
+        public List<MK_EAM_Lib.AccountInfo> accounts = new List<MK_EAM_Lib.AccountInfo>();
 
-        public string optionsPath = Path.Combine(Application.StartupPath, "EAM.options");
-        public string accountsPath = Path.Combine(Application.StartupPath, "EAM.accounts");
-        public string accountStatsPath = Path.Combine(Application.StartupPath, "Stats");
-        public string pathLogs = Path.Combine(Application.StartupPath, "EAM.Logs");
+        public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
+        public string optionsPath = Path.Combine(saveFilePath, "EAM.options");
+        public string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
+        public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
+        public string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
 
         public List<LogData> logs = new List<LogData>();
 
@@ -94,7 +95,7 @@ namespace EAM_Statistics
 
             SwitchDesign(false);
 
-            LoadAccountInfos();
+            LoadAccountInfos(accountsPath);
             LoadStats();
             this.pMain.Controls.Add(dashboard);
             dashboard.LoadUI();
@@ -133,18 +134,23 @@ namespace EAM_Statistics
             MK_EAM_Lib.FormsUtils.ResumeDrawing(this);
         }
 
-        private void LoadAccountInfos()
+        public void LoadAccountInfos(string path)
         {
             try
             {
-                byte[] data = File.ReadAllBytes(accountsPath);
-                AesCryptographyService acs = new AesCryptographyService();
-                accounts = (List<AccountInfo>)ByteArrayToObject(acs.Decrypt(data));
+
+                try
+                {
+                    AccountSaveFile saveFile = (AccountSaveFile)ByteArrayToObject(File.ReadAllBytes(path));
+                    accounts = AccountSaveFile.Decrypt(saveFile);
+                }
+                catch
+                {
+                    LogEvent(new LogData(-1, "EAM Stats", LogEventType.StatsError, $"Failed to decrypt accounts."));
+                    LogEvent(new LogData(-1, "EAM Stats", LogEventType.StatsError, $"Failed to load AccountInfos."));
+                }
             }
-            catch
-            {
-                LogEvent(new LogData(logs.Count + 1, "EAM Stats", LogEventType.StatsError, $"Failed to load AccountInfos."));
-            }
+            catch (Exception e) { string ex = e.Message; }
         }
 
         public void SetTitleText(string title) => lTitle.Text = title;
@@ -192,7 +198,7 @@ namespace EAM_Statistics
             }
             catch
             {
-                LogEvent(new LogData(logs.Count + 1, "EAM Stats", LogEventType.StatsError, $"Failed to load data."));
+                LogEvent(new LogData(-1, "EAM Stats", LogEventType.StatsError, $"Failed to load data."));
             }
         }
 

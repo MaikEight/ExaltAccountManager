@@ -45,7 +45,7 @@ namespace ExaltAccountManager
             this.pAnswer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pAnswer.Location = new System.Drawing.Point(0, 36);
             this.pAnswer.Name = "pAnswer";
-            this.pAnswer.Size = new System.Drawing.Size(425, 164);
+            this.pAnswer.Size = new System.Drawing.Size(430, 164);
             this.pAnswer.TabIndex = 0;
             this.pAnswer.Click += new System.EventHandler(this.pbOpen_Click);
             this.pAnswer.Paint += new System.Windows.Forms.PaintEventHandler(this.pAnswer_Paint);
@@ -73,7 +73,7 @@ namespace ExaltAccountManager
             this.pQuestion.Dock = System.Windows.Forms.DockStyle.Top;
             this.pQuestion.Location = new System.Drawing.Point(0, 0);
             this.pQuestion.Name = "pQuestion";
-            this.pQuestion.Size = new System.Drawing.Size(425, 36);
+            this.pQuestion.Size = new System.Drawing.Size(430, 36);
             this.pQuestion.TabIndex = 1;
             this.pQuestion.Click += new System.EventHandler(this.pbOpen_Click);
             this.pQuestion.MouseEnter += new System.EventHandler(this.pbOpen_MouseEnter);
@@ -88,7 +88,7 @@ namespace ExaltAccountManager
             this.pbOpen.BorderRadius = 15;
             this.pbOpen.Image = global::ExaltAccountManager.Properties.Resources.ic_arrow_drop_down_black_36dp;
             this.pbOpen.IsCircle = true;
-            this.pbOpen.Location = new System.Drawing.Point(392, 3);
+            this.pbOpen.Location = new System.Drawing.Point(395, 3);
             this.pbOpen.Name = "pbOpen";
             this.pbOpen.Size = new System.Drawing.Size(30, 30);
             this.pbOpen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -121,7 +121,7 @@ namespace ExaltAccountManager
             this.Controls.Add(this.pQuestion);
             this.Font = new System.Drawing.Font("Century Schoolbook", 7.875F);
             this.Name = "HelpUI";
-            this.Size = new System.Drawing.Size(425, 200);
+            this.Size = new System.Drawing.Size(430, 200);
             this.MouseEnter += new System.EventHandler(this.pbOpen_MouseEnter);
             this.MouseLeave += new System.EventHandler(this.pbOpen_MouseLeave);
             this.pAnswer.ResumeLayout(false);

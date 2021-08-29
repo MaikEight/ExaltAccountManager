@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MK_EAM_Lib;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,18 +11,37 @@ namespace ExaltAccountManager
     {
         FrmMain frm;
         Pen p = new Pen(Color.Black);
+        string savedServerToJoin = string.Empty;
 
         public FrmOptions(FrmMain _frm)
         {
             InitializeComponent();
             frm = _frm;
-            checkCloseAfterConnect.Checked = frm.closeAfterConnect;
+            savedServerToJoin = frm.serverToJoin;
+
+            toggleCloseAfterConnect.Checked = frm.closeAfterConnect;
+            toggleRotmgUpdates.Checked = frm.notificationValues[0];
+            toggleEAMUpdate.Checked = frm.notificationValues[1];
+            toggleMessages.Checked = frm.notificationValues[2];
+            toggleKillswitch.Checked = frm.notificationValues[3];
+
             lPath.Text = frm.exePath;
+            lDefaultServer.Text = (string.IsNullOrEmpty(frm.serverToJoin) || frm.serverToJoin.Equals("Last")) ? "Last server (Deca default)" : frm.serverToJoin;
 
             System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
             gp.AddEllipse(-3f, -11f, lSave.Width + 6, lSave.Height + 22);
             Region rg = new Region(gp);
             lSave.Region = rg;
+
+            toolTip.SetToolTipIcon(pbHelp, Properties.Resources.ic_help_outline_black_36dp);
+            toolTip.SetToolTipTitle(pbHelp, "Notifications");
+            toolTip.SetToolTip(pbHelp, $"{Environment.NewLine}<b>Messages</b>{Environment.NewLine}" +
+                                       $"Informations about potential risks.{Environment.NewLine}{Environment.NewLine}" +
+                                       $"<b>Warnings</b>{Environment.NewLine}" +
+                                       $"Informations about bans that may occured due to EAM.{Environment.NewLine}{Environment.NewLine}" +
+                                       $"<b>Killswitch</b>{Environment.NewLine}" +
+                                       $"The killswitch will be activated if there are proven bans caused by the EAM.{Environment.NewLine}" +
+                                       $"<b>DON'T DEACTIVATE THIS UNLESS YOU KNOW WHAT YOU ARE DOING!</b>");
 
             ApplyTheme(frm.useDarkmode);
         }
@@ -37,26 +57,57 @@ namespace ExaltAccountManager
 
                 this.ForeColor = font;
                 this.BackColor = second;
-                lPath.BackColor = def;
-                lPath.ForeColor = font;
+                lPath.BackColor = lDefaultServer.BackColor = def;
+                lPath.ForeColor = lDefaultServer.ForeColor = font;
                 pTop.BackColor = def;
                 pBox.BackColor = def;
 
                 pbLogo.Image = Properties.Resources.ic_settings_white_48dp;
+                pbHelp.Image = Properties.Resources.ic_help_outline_white_36dp;
                 pbClose.Image = Properties.Resources.ic_close_white_24dp;
                 pbMinimize.Image = Properties.Resources.baseline_minimize_white_24dp;
 
                 btnChangeExePath.Image = Properties.Resources.ic_folder_open_white_18dp;
-                btnAddMuledump.Image = Properties.Resources.ic_add_to_photos_white_18dp;
-                btnChangeExePath.FlatAppearance.MouseOverBackColor = btnAddMuledump.FlatAppearance.MouseOverBackColor = Color.FromArgb(25, 225, 225, 225);
+
+                btnChangeServer.Image = Properties.Resources.list_white_24px_1;
+                btnChangeExePath.FlatAppearance.MouseOverBackColor = btnChangeServer.FlatAppearance.MouseOverBackColor = Color.FromArgb(25, 225, 225, 225);
+
+                toggleCloseAfterConnect.ForeColor =
+                toggleCloseAfterConnect.ToggleStateOn.BorderColor =
+                toggleCloseAfterConnect.ToggleStateOn.BackColor =
+                toggleRotmgUpdates.ForeColor =
+                toggleRotmgUpdates.ToggleStateOn.BorderColor =
+                toggleRotmgUpdates.ToggleStateOn.BackColor =
+                toggleEAMUpdate.ForeColor =
+                toggleEAMUpdate.ToggleStateOn.BorderColor =
+                toggleEAMUpdate.ToggleStateOn.BackColor =
+                toggleMessages.ForeColor =
+                toggleMessages.ToggleStateOn.BorderColor =
+                toggleMessages.ToggleStateOn.BackColor =
+                toggleKillswitch.ForeColor =
+                toggleKillswitch.ToggleStateOn.BorderColor =
+                toggleKillswitch.ToggleStateOn.BackColor = font;
+
+                toggleCloseAfterConnect.ToggleStateOn.BorderColorInner =
+                toggleCloseAfterConnect.ToggleStateOn.BackColorInner =
+                toggleRotmgUpdates.ToggleStateOn.BorderColorInner =
+                toggleRotmgUpdates.ToggleStateOn.BackColorInner =
+                toggleEAMUpdate.ToggleStateOn.BorderColorInner =
+                toggleEAMUpdate.ToggleStateOn.BackColorInner =
+                toggleMessages.ToggleStateOn.BorderColorInner =
+                toggleMessages.ToggleStateOn.BackColorInner =
+                toggleKillswitch.ToggleStateOn.BorderColorInner =
+                toggleKillswitch.ToggleStateOn.BackColorInner = def;
+
+                toggleMessages.ToggleStateOff.BackColor = toggleMessages.ToggleStateOff.BorderColor = Color.Orange;
+
+                toolTip.TitleForeColor = font;
+                toolTip.TextForeColor = Color.FromArgb(225, font.R, font.G, font.B);
+                toolTip.BackColor = def;
+                toolTip.SetToolTipIcon(pbHelp, Properties.Resources.ic_help_outline_white_36dp);
+
                 p = new Pen(Color.White);
             }
-        }
-
-        private void checkCloseAfterConnect_CheckedChanged(object sender, EventArgs e)
-        {
-            frm.closeAfterConnect = checkCloseAfterConnect.Checked;
-            SaveOptions();
         }
 
         private void btnChangeExePath_Click(object sender, EventArgs e)
@@ -71,19 +122,35 @@ namespace ExaltAccountManager
             {
                 if (File.Exists(diag.FileName))
                 {
-                    frm.exePath = diag.FileName;
                     lPath.Text = diag.FileName;
-                    SaveOptions();
                 }
             }
         }
 
         private void SaveOptions()
         {
-            OptionsData opt = new OptionsData();
-            opt.closeAfterConnection = frm.closeAfterConnect;
-            opt.exePath = frm.exePath;
-            frm.SaveOptions(opt);
+            frm.exePath = lPath.Text;
+            frm.notificationValues = new bool[]
+            {
+                toggleRotmgUpdates.Checked,
+                toggleEAMUpdate.Checked,
+                toggleMessages.Checked,
+                toggleKillswitch.Checked
+            };
+            OptionsData opt = new OptionsData()
+            {
+                closeAfterConnection = toggleCloseAfterConnect.Checked,
+                exePath = frm.exePath,
+                serverToJoin = frm.serverToJoin,
+                useDarkmode = frm.useDarkmode,
+                searchRotmgUpdates = toggleRotmgUpdates.Checked,
+                searchUpdateNotification = toggleEAMUpdate.Checked,
+                searchWarnings = toggleMessages.Checked,
+                deactivateKillswitch = toggleKillswitch.Checked
+            };
+            frm.SaveOptions(opt, true);
+
+            savedServerToJoin = (frm.serverToJoin.Equals("Last server (Deca default)")) ? "Last" : frm.serverToJoin;
         }
 
         #region Button Close / Minimize
@@ -171,16 +238,16 @@ namespace ExaltAccountManager
 
                     foreach (MuledumpAccounts a in accs)
                     {
-                        AccountInfo i = new AccountInfo(a);
+                        MK_EAM_Lib.AccountInfo i = new MK_EAM_Lib.AccountInfo(a);
 
-                        if (checkBoxAutoFill.Checked)
-                        {
-                            try
-                            {
-                                i = frm.GetAccountData(i);
-                            }
-                            catch { }
-                        }
+                        //if (checkBoxAutoFill.Checked)
+                        //{
+                        //    try
+                        //    {
+                        //        i = frm.GetAccountData(i);
+                        //    }
+                        //    catch { }
+                        //}
 
                         frm.accounts.Add(i);
                     }
@@ -275,21 +342,53 @@ namespace ExaltAccountManager
         private void Frm_Closing(object sender, FormClosingEventArgs e)
         {
             frm.lockForm = false;
+            frm.serverToJoin = savedServerToJoin;
         }
+
+        private void toggleCloseAfterConnect_CheckedChanged(object sender, Bunifu.UI.WinForms.BunifuToggleSwitch.CheckedChangedEventArgs e)
+        {
+            //frm.closeAfterConnect = toggleCloseAfterConnect.Checked;
+            //SaveOptions();
+        }
+
+        private void btnChangeExePath_MouseEnter(object sender, EventArgs e)
+        {
+            btnChangeExePath.Image = frm.useDarkmode ? Properties.Resources.ic_folder_white_18dp : Properties.Resources.ic_folder_black_18dp;
+        }
+
+        private void btnChangeExePath_MouseLeave(object sender, EventArgs e)
+        {
+            btnChangeExePath.Image = frm.useDarkmode ? Properties.Resources.ic_folder_open_white_18dp : Properties.Resources.ic_folder_open_black_18dp;
+        }
+
+        private void btnChangeServer_Click(object sender, EventArgs e)
+        {
+            frm.ShowServerListUI(null, this.Left + btnChangeServer.Left, this.Top + btnChangeServer.Top / 2);
+            lDefaultServer.Text = frm.serverToJoin;
+        }
+
+        private void lCloseAfter_Click(object sender, EventArgs e) => toggleCloseAfterConnect.Checked = !toggleCloseAfterConnect.Checked;
+
+        private void lRotmgUpdates_Click(object sender, EventArgs e) => toggleRotmgUpdates.Checked = !toggleRotmgUpdates.Checked;
+
+        private void lEAMUpdate_Click(object sender, EventArgs e) => toggleEAMUpdate.Checked = !toggleEAMUpdate.Checked;
+
+        private void lMessages_Click(object sender, EventArgs e) => toggleMessages.Checked = !toggleMessages.Checked;
+
+        private void lKillswitch_Click(object sender, EventArgs e) => toggleKillswitch.Checked = !toggleKillswitch.Checked;
     }
 
     [System.Serializable]
     public class OptionsData
     {
-        public string exePath;
-        public bool closeAfterConnection;
-        public bool useDarkmode;
-    }
+        public string exePath = string.Empty;
+        public bool closeAfterConnection = false;
+        public bool useDarkmode = true;
+        public string serverToJoin = "Last";
 
-    [System.Serializable]
-    public class MuledumpAccounts
-    {
-        public string mail;
-        public string password;
+        public bool searchRotmgUpdates = true;
+        public bool searchUpdateNotification = true;
+        public bool searchWarnings = true;
+        public bool deactivateKillswitch = true;
     }
 }

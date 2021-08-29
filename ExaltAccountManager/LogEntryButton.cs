@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager
@@ -30,6 +27,7 @@ namespace ExaltAccountManager
                 this.BackColor = Color.FromArgb(230, 230, 230);
                 this.ForeColor = Color.Black;
             }
+            btnShowMore.Image = frm.isDarkmode ? Properties.Resources.ic_rotate_right_white_24dp : Properties.Resources.ic_rotate_right_black_24dp;
         }        
 
         bool clicked = false;
@@ -40,5 +38,9 @@ namespace ExaltAccountManager
             clicked = true;
             frm.ShowMore();
         }
+
+        private void btnShowMore_MouseEnter(object sender, EventArgs e) => btnShowMore.Image = frm.isDarkmode ? Properties.Resources.ic_refresh_white_24dp : Properties.Resources.ic_refresh_black_24dp;
+
+        private void btnShowMore_MouseLeave(object sender, EventArgs e) => btnShowMore.Image = frm.isDarkmode ? Properties.Resources.ic_rotate_right_white_24dp : Properties.Resources.ic_rotate_right_black_24dp;
     }
 }

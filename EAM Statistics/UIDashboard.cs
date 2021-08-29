@@ -251,6 +251,12 @@ namespace EAM_Statistics
 
             this.ForeColor = font;
 
+            lAccountsHeadline.BackColor = lAmountOfAccounts.BackColor = 
+            lCharactersHeadline.BackColor = lAmountOfChars.BackColor =
+            lTotalFameHeadline.BackColor = lTotalFame.BackColor = lOverallTotalChange.BackColor =
+            lTotalAliveFameHeadline.BackColor = lTotalAliveFame.BackColor = lTotalAliveChange.BackColor =
+            lTotalLoginsHeadline.BackColor = lTotalLogins.BackColor = lTotalLoginsChange.BackColor = isDarkmode ? Color.FromArgb(30, 30, 30) : Color.FromArgb(253, 253, 253);
+
             if (isDarkmode)
             {
 

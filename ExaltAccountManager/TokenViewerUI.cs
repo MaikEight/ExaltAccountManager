@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MK_EAM_Lib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,12 +14,12 @@ namespace ExaltAccountManager
     public partial class TokenViewerUI : UserControl
     {
         FrmTokenViewer frmViewer;
-        AccountInfo info;
+        MK_EAM_Lib.AccountInfo info;
         string accountVerifyLink = "https://www.realmofthemadgod.com/account/verify?guid={0}&password={1}&clientToken={2}&game_net=Unity&play_platform=Unity&game_net_user_id=";
         string charListLink = "";
 
         bool isSecond = false;
-        public TokenViewerUI(FrmTokenViewer _frmViewer, AccountInfo _info, bool isDarkmode, bool _isSecond = false)
+        public TokenViewerUI(FrmTokenViewer _frmViewer, MK_EAM_Lib.AccountInfo _info, bool isDarkmode, bool _isSecond = false)
         {
             InitializeComponent();
             frmViewer = _frmViewer;
@@ -44,7 +45,7 @@ namespace ExaltAccountManager
                     if (info.accessToken != null && !string.IsNullOrEmpty(info.accessToken.token))
                     {
                         rtbAccessToken.Text = info.accessToken.token;
-                        DateTime cTime = AccessToken.UnixTimeStampToDateTime(double.Parse(info.accessToken.creationTime));
+                        DateTime cTime = MK_EAM_Lib.AccessToken.UnixTimeStampToDateTime(double.Parse(info.accessToken.creationTime));
                         lCreationTime.Text = $"{cTime.ToShortDateString()} {cTime.ToShortTimeString()}";
                         lValidFor.Text = $"{Math.Round((info.accessToken.validUntil - cTime).TotalHours, 2)} hours";
                         lValidUntil.Text = $"{info.accessToken.validUntil.ToShortDateString()} {info.accessToken.validUntil.ToShortTimeString()}";

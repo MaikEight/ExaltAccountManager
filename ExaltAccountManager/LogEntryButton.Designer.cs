@@ -49,6 +49,8 @@ namespace ExaltAccountManager
             this.btnShowMore.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.btnShowMore.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnShowMore.Font = new System.Drawing.Font("Century Schoolbook", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnShowMore.Image = global::ExaltAccountManager.Properties.Resources.ic_rotate_right_black_24dp;
+            this.btnShowMore.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnShowMore.Location = new System.Drawing.Point(291, 9);
             this.btnShowMore.Name = "btnShowMore";
             this.btnShowMore.Size = new System.Drawing.Size(200, 31);
@@ -56,6 +58,8 @@ namespace ExaltAccountManager
             this.btnShowMore.Text = "Load more entries";
             this.btnShowMore.UseVisualStyleBackColor = true;
             this.btnShowMore.Click += new System.EventHandler(this.btnShowMore_Click);
+            this.btnShowMore.MouseEnter += new System.EventHandler(this.btnShowMore_MouseEnter);
+            this.btnShowMore.MouseLeave += new System.EventHandler(this.btnShowMore_MouseLeave);
             // 
             // LogEntryButton
             // 
@@ -66,7 +70,7 @@ namespace ExaltAccountManager
             this.Font = new System.Drawing.Font("Century Schoolbook", 7.875F);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "LogEntryButton";
-            this.Size = new System.Drawing.Size(781, 50);
+            this.Size = new System.Drawing.Size(790, 50);
             this.ResumeLayout(false);
             this.PerformLayout();
 

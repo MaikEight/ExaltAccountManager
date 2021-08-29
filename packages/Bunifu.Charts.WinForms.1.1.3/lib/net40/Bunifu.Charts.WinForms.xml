@@ -1,0 +1,2645 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bunifu.Charts.WinForms</name>
+    </assembly>
+    <members>
+        <member name="T:Bunifu.Charts.WinForms.BunifuChartCanvas">
+            <summary>
+            Create stunning visualizations and responsive charts 
+            for your dashboards and data-centric applications.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:Bunifu.Charts.WinForms.BunifuChartCanvas"/>.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions">
+            <summary>
+            Provides a list of available position options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top">
+            <summary>
+            Top position.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.bottom">
+            <summary>
+            Bottom position.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.right">
+            <summary>
+            Right position.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.left">
+            <summary>
+            Left position.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions">
+            <summary>
+            Provides a list of legend alignment options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.center">
+            <summary>
+            Center alignment.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.start">
+            <summary>
+            Starting point alignemnt.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.end">
+            <summary>
+            Ending point alignment.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipModeOptions">
+            <summary>
+            Provides a list of supported tooltip modes.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipModeOptions.average">
+            <summary>
+            Calculates the average position for displaying the tooltip.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipModeOptions.nearest">
+            <summary>
+            Displays the tooltip at the nearest possible area.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions">
+            <summary>
+            Provides a list of supported chart animations.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.linear">
+            <summary>
+            Linear animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInQuad">
+            <summary>
+            Ease-in Quad animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuad">
+            <summary>
+            Ease-out Quad animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutQuad">
+            <summary>
+            Ease-in/out Quad animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInCubic">
+            <summary>
+            Ease-in Cubic animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutCubic">
+            <summary>
+            Ease-out Cubic animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutCubic">
+            <summary>
+            Ease-in/out Cubic animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInQuart">
+            <summary>
+            Ease-in Quart animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuart">
+            <summary>
+            Ease-out Quart animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutQuart">
+            <summary>
+            Ease-in/out Quart animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInQuint">
+            <summary>
+            Ease0in Quint animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutQuint">
+            <summary>
+            Ease-out Quint animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutQuint">
+            <summary>
+            Ease-in/out Quint animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInSine">
+            <summary>
+            Ease-in Sine animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutSine">
+            <summary>
+            Ease-out Sine animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutSine">
+            <summary>
+            Ease-in/out Sine animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInExpo">
+            <summary>
+            Ease-in Expo animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutExpo">
+            <summary>
+            Ease-out Expo animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutExpo">
+            <summary>
+            Ease-in/out Expo animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInCirc">
+            <summary>
+            Ease-in Circular animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutCirc">
+            <summary>
+            Ease-out Circular animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutCirc">
+            <summary>
+            Ease-in/out Circular animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInElastic">
+            <summary>
+            Ease-in Elastic animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutElastic">
+            <summary>
+            Ease-out Circular animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutElastic">
+            <summary>
+            Ease-in/out Elastic animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInBack">
+            <summary>
+            Ease-in Back animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutBack">
+            <summary>
+            Ease-out Back animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutBack">
+            <summary>
+            Ease-in/out Back animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInBounce">
+            <summary>
+            Ease-in Bounce animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutBounce">
+            <summary>
+            Ease-out Bounce animation.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeInOutBounce">
+            <summary>
+            Ease-in/out Bounce animation.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.Labels">
+            <summary>
+            Gets or sets the list of axis labels.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.Charts">
+            <summary>
+            Gets the list of charts being rendered in the canvas.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationDuration">
+            <summary>
+            Gets or sets the animation duration.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.CanvasPadding">
+            <summary>
+            Gets or sets the canvas padding.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationType">
+            <summary>
+            Gets or sets the rendering animation.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendDisplay">
+            <summary>
+            Gets or sets the legend's display mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendFullWidth">
+            <summary>
+            Gets or sets a value indicating whether the 
+            legend will occupy the canvase's full width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendRevese">
+            <summary>
+            Gets or sets a value indicating whether 
+            the legend will be displayed in reverse.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendRTL">
+            <summary>
+            Gets or sets a value indicating whether the legend 
+            will be displayed in RTL (Right-to-left) mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendForeColor">
+            <summary>
+            Gets or sets the legend's foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendFont">
+            <summary>
+            Gets or sets the legend's font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendPosition">
+            <summary>
+            Gets or sets the legend's position.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignment">
+            <summary>
+            Gets or sets the legend's alignment position.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TitlePadding">
+            <summary>
+            Gets or sets the title's padding.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TitleLineHeight">
+            <summary>
+            Gets or sets the title's line height.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.Title">
+            <summary>
+            Gets or sets the canvas title.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TitlePosition">
+            <summary>
+            Gets or sets the title's position.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipsEnabled">
+            <summary>
+            Gets or sets a value indicating whether tooltips are enabled.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipBackgroundColor">
+            <summary>
+            Gets or sets the tooltip background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipForeColor">
+            <summary>
+            Gets or sets the tooltip foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipFont">
+            <summary>
+            Gets or sets the tooltip font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipMode">
+            <summary>
+            Gets or sets the tooltip display mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.ShowXAxis">
+            <summary>
+            Gets or sets a value indicating whether the X-Axes will be shown.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesGridLines">
+            <summary>
+            Gets or sets a value indicating whether 
+            the X-Axes grid lines will be shown.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesBeginAtZero">
+            <summary>
+            Gets or sets a value indicating whether 
+            the X-Axes will begin at zero.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesStacked">
+            <summary>
+            Gets or sets a value indicating whether 
+            the X-Axes grid lines will be stacked.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesDrawTicks">
+            <summary>
+            Gets or sets a value indicating whether 
+            the X-Axes ticks will be drawn.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesLineWidth">
+            <summary>
+            Gets or sets the X-Axes line width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesZeroLineWidth">
+            <summary>
+            Gets or sets the X-Axes line width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesLabel">
+            <summary>
+            Gets or sets the X-Axes label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesGridColor">
+            <summary>
+            Gets or sets the X-Axes grid color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesZeroLineColor">
+            <summary>
+            Gets or sets the X-Axes zero-line color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesLabelForeColor">
+            <summary>
+            Gets or sets the X-Axes label foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesForeColor">
+            <summary>
+            Gets or sets the X-Axes foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesLabelFont">
+            <summary>
+            Gets or sets the X-Axes label font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.XAxesFont">
+            <summary>
+            Gets or sets the X-Axes font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.ShowYAxis">
+            <summary>
+            Gets or sets a value indicating whether the Y-Axes will be shown.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesGridLines">
+            <summary>
+            Gets or sets a value indicating whether 
+            the Y-Axes grid lines will be shown.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesStacked">
+            <summary>
+            Gets or sets a value indicating whether 
+            the Y-Axes grid lines will be stacked.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesDrawTicks">
+            <summary>
+            Gets or sets a value indicating whether 
+            the Y-Axes ticks will be drawn.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesLineWidth">
+            <summary>
+            Gets or sets the Y-Axes line width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesZeroLineWidth">
+            <summary>
+            Gets or sets the Y-Axes line width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesLabel">
+            <summary>
+            Gets or sets the Y-Axes label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesForeColor">
+            <summary>
+            Gets or sets the Y-Axes foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesLabelForeColor">
+            <summary>
+            Gets or sets the Y-Axes label foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesGridColor">
+            <summary>
+            Gets or sets the Y-Axes grid color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesZeroLineColor">
+            <summary>
+            Gets or sets the Y-Axes zero-line color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesLabelFont">
+            <summary>
+            Gets or sets the Y-Axes label font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesFont">
+            <summary>
+            Gets or sets the Y-Axes font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.BunifuChartCanvas.YAxesBeginAtZero">
+            <summary>
+            Gets or sets a value indicating whether the Y-Axes will begin at zero.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.Update(System.Boolean,System.Boolean)">
+            <summary>
+            Forces an update to the chart canvas.
+            </summary>
+            <param name="destroy">
+            Destroy or clear the canvas first?
+            </param>
+            <param name="emptyCanvas">
+            Empty the canvas area?
+            </param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.Clear">
+            <summary>
+            Clears the canvas areas of all the rendered charts.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.InvokeError(System.String)">
+            <summary>
+            Invokes an error message pointing to the canvas.
+            </summary>
+            <param name="error">
+            The error message to be displayed.
+            </param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.OnClick(System.String,System.String,System.Int32)">
+            <summary>
+            Raises a click event whenever a point in a chart series is clicked.
+            </summary>
+            <param name="label">The specific label.</param>
+            <param name="value">The specific value.</param>
+            <param name="index">The index/point in series.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.ToImage">
+            <summary>
+            Converts the canvas with all the charts rendered to an <see cref="T:System.Drawing.Image"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="E:Bunifu.Charts.WinForms.BunifuChartCanvas.PointClick">
+            <summary>
+            Occurs whenever a point in a chart series is clicked.
+            </summary>
+        </member>
+        <member name="E:Bunifu.Charts.WinForms.BunifuChartCanvas.ErrorRaised">
+            <summary>
+            Occurs whenever an error is raised.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.BunifuChartCanvas.ChartEvent">
+            <summary>
+            This is invoked whenever a chart event is raised.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.BunifuChartCanvas.BunifuChartCanvasActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.BunifuChartCanvas.BunifuChartCanvasActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.BunifuChartCanvasActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.BunifuChartCanvas.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.BunifuChartCanvas.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ResourceFinder">
+            <summary>
+            Resource finder class for Toolbox icons.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart">
+            <summary>
+            Customizable Bar chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart"/> class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.HoverBorderWidth">
+            <summary>
+            Gets or sets the chart hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.BorderSkipped">
+            <summary>
+            Gets or sets the skipped borders.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.HoverBackgroundColor">
+            <summary>
+            Gets or sets the chart hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.HoverBorderColor">
+            <summary>
+            Gets or sets the chart hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart">
+            <summary>
+            Customizable Bubble chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart"/> class.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles">
+            <summary>
+            Provides various supported cursor point style options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.Circle">
+            <summary>
+            Circular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.Cross">
+            <summary>
+            Cross-haired point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.CrossRot">
+            <summary>
+            Cross-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.Dash">
+            <summary>
+            Dashed point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.Line">
+            <summary>
+            Line point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.Rect">
+            <summary>
+            Rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.RectRounded">
+            <summary>
+            Rounded rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.RectRot">
+            <summary>
+            Rectangular-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.Star">
+            <summary>
+            Star point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyles.Triangle">
+            <summary>
+            Triangular point.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.HoverBorderWidth">
+            <summary>
+            Gets or sets the chart hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.HoverRadius">
+            <summary>
+            Gets or sets the chart hover radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Rotation">
+            <summary>
+            Gets or sets the chart rotation in degrees.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Radius">
+            <summary>
+            Gets or sets the chart radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.HitRadius">
+            <summary>
+            Gets or sets the chart point hit radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Order">
+            <summary>
+            Gets or sets the chart Z-order index.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.HoverBackgroundColor">
+            <summary>
+            Gets or sets the chart hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.HoverBorderColor">
+            <summary>
+            Gets or sets the chart hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.PointStyle">
+            <summary>
+            Gets or sets the chart cursor point style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuBubbleChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart">
+            <summary>
+            Customizable Doughnut chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart"/> class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.HoverBorderWidth">
+            <summary>
+            Gets or sets the chart hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.HoverBackgroundColor">
+            <summary>
+            Gets or sets the chart hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.HoverBorderColor">
+            <summary>
+            Gets or sets the chart hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuDoughnutChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart">
+            <summary>
+            Customizable Horizontal Bar chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart"/> class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.HoverBorderWidth">
+            <summary>
+            Gets or sets the chart hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.HoverBackgroundColor">
+            <summary>
+            Gets or sets the chart hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.HoverBorderColor">
+            <summary>
+            Gets or sets the chart hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.BorderSkipped">
+            <summary>
+            Gets or sets the skipped borders.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuHorizontalBarChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart">
+            <summary>
+            Customizable Line chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart"/> class.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.LineCaps">
+            <summary>
+            Provides the supported line cap options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.LineCaps.Butt">
+            <summary>
+            Butt line cap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.LineCaps.Round">
+            <summary>
+            Rounded line cap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.LineCaps.Rquare">
+            <summary>
+            Square line cap.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderJoinStyles">
+            <summary>
+            Provides the supported border join styles.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderJoinStyles.Bevel">
+            <summary>
+            Bevel style.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderJoinStyles.Round">
+            <summary>
+            Rounded style.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderJoinStyles.Miter">
+            <summary>
+            Miter style.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles">
+            <summary>
+            Provides various supported cursor point style options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.Circle">
+            <summary>
+            Circular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.Cross">
+            <summary>
+            Cross-haired point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.CrossRot">
+            <summary>
+            Cross-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.Dash">
+            <summary>
+            Dashed point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.Line">
+            <summary>
+            Line point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.Rect">
+            <summary>
+            Rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.RectRounded">
+            <summary>
+            Rounded rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.RectRot">
+            <summary>
+            Rectangular-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.Star">
+            <summary>
+            Star point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyles.Triangle">
+            <summary>
+            Triangular point.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLineStyles">
+            <summary>
+            Provides the supported stepped line options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLineStyles.SteppedLine">
+            <summary>
+            Diplay default stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLineStyles.False">
+            <summary>
+            Hide stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLineStyles.True">
+            <summary>
+            Show stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLineStyles.Before">
+            <summary>
+            Line to be displayed before.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLineStyles.Middle">
+            <summary>
+            Line to be displayed in the middle.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLineStyles.After">
+            <summary>
+            Line to be displayed after.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.CubicInterpolationModes">
+            <summary>
+            Provides various supported cubic interpolation modes.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.CubicInterpolationModes.Default">
+            <summary>
+            The default interpolation mode.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.CubicInterpolationModes.Monotone">
+            <summary>
+            Monotone interpolation mode.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.FillOptions">
+            <summary>
+            Provides various supported line-style fill options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.FillOptions.Origin">
+            <summary>
+            Fill from origin.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.FillOptions.Start">
+            <summary>
+            Fill from start.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.FillOptions.End">
+            <summary>
+            Fill from end.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.FillOptions.Blank">
+            <summary>
+            Have a blank fill.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.ShowLine">
+            <summary>
+            Gets or sets a value indicating whether 
+            the line chart will be shown.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SpanGaps">
+            <summary>
+            Gets or sets a value indicating 
+            whether to span line gaps.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderDash">
+            <summary>
+            Gets or sets the border dash format.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointBorderWidth">
+            <summary>
+            Gets or sets the chart point border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Order">
+            <summary>
+            Gets or sets the chart Z-order index.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointRadius">
+            <summary>
+            Gets or sets the chart point radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointHitRadius">
+            <summary>
+            Gets or sets the chart point hit radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointRotation">
+            <summary>
+            Gets or sets the chart point rotation in degrees.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointHoverBorderWidth">
+            <summary>
+            Gets or sets the chart point hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointHoverRadius">
+            <summary>
+            Gets or sets the chart point hover border radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderDashOffset">
+            <summary>
+            Gets or sets the border dash offset.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.LineTension">
+            <summary>
+            Gets or sets the line tension.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Fill">
+            <summary>
+            Gets or sets the fill style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointBackgroundColor">
+            <summary>
+            Gets or sets the point background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointBorderColor">
+            <summary>
+            Gets or sets the point border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointHoverBackgroundColor">
+            <summary>
+            Gets or sets the chart point hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointHoverBorderColor">
+            <summary>
+            Gets or sets the chart point hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderCapStyle">
+            <summary>
+            Gets or sets the border cap style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.PointStyle">
+            <summary>
+            Gets or sets the chart cursor point style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SteppedLine">
+            <summary>
+            Gets or sets the stepped line style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderJoin">
+            <summary>
+            Gets or sets the border join style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.CubicInterpolationMode">
+            <summary>
+            Gets or sets the line chart's 
+            cubic interpolation mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart">
+            <summary>
+            Customizable Pie chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart"/> class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.HoverBorderWidth">
+            <summary>
+            Gets or sets the chart hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.HoverBackgroundColor">
+            <summary>
+            Gets or sets the chart hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.HoverBorderColor">
+            <summary>
+            Gets or sets the chart hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPieChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart">
+            <summary>
+            Customizable Polar Area chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart"/> class.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BorderAlignmentOptions">
+            <summary>
+            Provides the supported border alignment options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BorderAlignmentOptions.Centre">
+            <summary>
+            Center aligned.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BorderAlignmentOptions.Linear">
+            <summary>
+            Linear aligned.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.HoverBorderWidth">
+            <summary>
+            Gets or sets the chart hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.HoverBackgroundColor">
+            <summary>
+            Gets or sets the chart hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.HoverBorderColor">
+            <summary>
+            Gets or sets the chart hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BorderAlign">
+            <summary>
+            Gets or sets the border alignment style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuPolarAreaChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart">
+            <summary>
+            Customizable Radar chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart"/> class.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.LineCaps">
+            <summary>
+            Provides the supported line cap options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.LineCaps.Butt">
+            <summary>
+            Butt line cap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.LineCaps.Round">
+            <summary>
+            Rounded line cap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.LineCaps.Rquare">
+            <summary>
+            Square line cap.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderJoinStyles">
+            <summary>
+            Provides the supported border join styles.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderJoinStyles.Bevel">
+            <summary>
+            Bevel style.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderJoinStyles.Round">
+            <summary>
+            Rounded style.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderJoinStyles.Miter">
+            <summary>
+            Miter style.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles">
+            <summary>
+            Provides various supported cursor point style options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.Circle">
+            <summary>
+            Circular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.Cross">
+            <summary>
+            Cross-haired point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.CrossRot">
+            <summary>
+            Cross-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.Dash">
+            <summary>
+            Dashed point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.Line">
+            <summary>
+            Line point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.Rect">
+            <summary>
+            Rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.RectRounded">
+            <summary>
+            Rounded rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.RectRot">
+            <summary>
+            Rectangular-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.Star">
+            <summary>
+            Star point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyles.Triangle">
+            <summary>
+            Triangular point.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLineStyles">
+            <summary>
+            Provides the supported stepped line options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLineStyles.SteppedLine">
+            <summary>
+            Diplay default stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLineStyles.False">
+            <summary>
+            Hide stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLineStyles.True">
+            <summary>
+            Show stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLineStyles.Before">
+            <summary>
+            Line to be displayed before.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLineStyles.Middle">
+            <summary>
+            Line to be displayed in the middle.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLineStyles.After">
+            <summary>
+            Line to be displayed after.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.CubicInterpolationModes">
+            <summary>
+            Provides various supported cubic interpolation modes.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.CubicInterpolationModes.Default">
+            <summary>
+            The default interpolation mode.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.CubicInterpolationModes.Monotone">
+            <summary>
+            Monotone interpolation mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.ShowLine">
+            <summary>
+            Gets or sets a value indicating whether 
+            the line chart will be shown.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SpanGaps">
+            <summary>
+            Gets or sets a value indicating 
+            whether to span line gaps.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderDash">
+            <summary>
+            Gets or sets the border dash format.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointBorderWidth">
+            <summary>
+            Gets or sets the chart point border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Order">
+            <summary>
+            Gets or sets the chart Z-order index.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointRadius">
+            <summary>
+            Gets or sets the chart point radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointHitRadius">
+            <summary>
+            Gets or sets the chart point hit radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointRotation">
+            <summary>
+            Gets or sets the chart point rotation in degrees.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointHoverBorderWidth">
+            <summary>
+            Gets or sets the chart point hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointHoverRadius">
+            <summary>
+            Gets or sets the chart point hover border radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderDashOffset">
+            <summary>
+            Gets or sets the border dash offset.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.LineTension">
+            <summary>
+            Gets or sets the line tension.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Fill">
+            <summary>
+            Gets or sets the fill style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointBackgroundColor">
+            <summary>
+            Gets or sets the point background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointBorderColor">
+            <summary>
+            Gets or sets the point border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointHoverBackgroundColor">
+            <summary>
+            Gets or sets the chart point hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointHoverBorderColor">
+            <summary>
+            Gets or sets the chart point hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderCapStyle">
+            <summary>
+            Gets or sets the border cap style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.PointStyle">
+            <summary>
+            Gets or sets the chart cursor point style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SteppedLine">
+            <summary>
+            Gets or sets the stepped line style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BorderJoin">
+            <summary>
+            Gets or sets the border join style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.CubicInterpolationMode">
+            <summary>
+            Gets or sets the line chart's 
+            cubic interpolation mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuRadarChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart">
+            <summary>
+            Customizable Scatter chart for .NET.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart"/> class.
+            </summary>
+            <param name="container">The container.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.Finalize">
+            <summary>
+            Clears this instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart"/> class.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.LineCaps">
+            <summary>
+            Provides the supported line cap options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.LineCaps.Butt">
+            <summary>
+            Butt line cap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.LineCaps.Round">
+            <summary>
+            Rounded line cap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.LineCaps.Rquare">
+            <summary>
+            Square line cap.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderJoinStyles">
+            <summary>
+            Provides the supported border join styles.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderJoinStyles.Bevel">
+            <summary>
+            Bevel style.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderJoinStyles.Round">
+            <summary>
+            Rounded style.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderJoinStyles.Miter">
+            <summary>
+            Miter style.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles">
+            <summary>
+            Provides various supported cursor point style options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.Circle">
+            <summary>
+            Circular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.Cross">
+            <summary>
+            Cross-haired point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.CrossRot">
+            <summary>
+            Cross-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.Dash">
+            <summary>
+            Dashed point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.Line">
+            <summary>
+            Line point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.Rect">
+            <summary>
+            Rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.RectRounded">
+            <summary>
+            Rounded rectangular point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.RectRot">
+            <summary>
+            Rectangular-rot point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.Star">
+            <summary>
+            Star point.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyles.Triangle">
+            <summary>
+            Triangular point.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLineStyles">
+            <summary>
+            Provides the supported stepped line options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLineStyles.SteppedLine">
+            <summary>
+            Diplay default stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLineStyles.False">
+            <summary>
+            Hide stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLineStyles.True">
+            <summary>
+            Show stepped line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLineStyles.Before">
+            <summary>
+            Line to be displayed before.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLineStyles.Middle">
+            <summary>
+            Line to be displayed in the middle.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLineStyles.After">
+            <summary>
+            Line to be displayed after.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.CubicInterpolationModes">
+            <summary>
+            Provides various supported cubic interpolation modes.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.CubicInterpolationModes.Default">
+            <summary>
+            The default interpolation mode.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.CubicInterpolationModes.Monotone">
+            <summary>
+            Monotone interpolation mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.ShowLine">
+            <summary>
+            Gets or sets a value indicating whether 
+            the line chart will be shown.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SpanGaps">
+            <summary>
+            Gets or sets a value indicating 
+            whether to span line gaps.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderWidth">
+            <summary>
+            Gets or sets the chart border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderDash">
+            <summary>
+            Gets or sets the border dash format.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointBorderWidth">
+            <summary>
+            Gets or sets the chart point border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointRadius">
+            <summary>
+            Gets or sets the chart point radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointHitRadius">
+            <summary>
+            Gets or sets the chart point hit radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointHoverBorderWidth">
+            <summary>
+            Gets or sets the chart point hover border width.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointHoverRadius">
+            <summary>
+            Gets or sets the chart point hover border radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderDashOffset">
+            <summary>
+            Gets or sets the border dash offset.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.LineTension">
+            <summary>
+            Gets or sets the line tension.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.Data">
+            <summary>
+            Gets or sets the chart data.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.Label">
+            <summary>
+            Gets or sets the chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.Fill">
+            <summary>
+            Gets or sets a value indicating whether 
+            the scatter elements will be filled.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BackgroundColor">
+            <summary>
+            Gets or sets the chart background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderColor">
+            <summary>
+            Gets or sets the chart border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointBackgroundColor">
+            <summary>
+            Gets or sets the point background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointBorderColor">
+            <summary>
+            Gets or sets the point border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointHoverBackgroundColor">
+            <summary>
+            Gets or sets the chart point hover background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointHoverBorderColor">
+            <summary>
+            Gets or sets the chart point hover border color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.PointStyle">
+            <summary>
+            Gets or sets the chart cursor point style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SteppedLine">
+            <summary>
+            Gets or sets the stepped line style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BorderJoin">
+            <summary>
+            Gets or sets the border join style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.CubicInterpolationMode">
+            <summary>
+            Gets or sets the line chart's 
+            cubic interpolation mode.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas where the chart will be rendered.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.Render">
+            <summary>
+            Renders the chart in the targeted canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.SetID(System.String)">
+            <summary>
+            Sets the chart ID.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.GetID">
+            <summary>
+            Gets the chart ID.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BunifuComponentActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BunifuComponentActionList"/> class.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.BunifuComponentActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.ChartTypes.BunifuScatterChart.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.IBunifuChart">
+            <summary>
+            This interface is used to implement a standard Bunifu Chart.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.IBunifuChart.Type">
+            <summary>
+            Gets the chart type.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.IBunifuChart.TargetCanvas">
+            <summary>
+            Gets or sets the target canvas.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.IBunifuChart.GetID">
+            <summary>
+            Gets the canvas ID.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.IBunifuChart.GetJSON">
+            <summary>
+            Gets the canvas JSON representation.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.IBunifuChart.SetID(System.String)">
+            <summary>
+            Sets the canvas ID.
+            </summary>
+            <param name="id">
+            The canvas ID.
+            </param>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.Legend">
+            <summary>
+            Represents a chart legend.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Legend.Labels">
+            <summary>
+            Gets or sets the labels options.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.Labels">
+            <summary>
+            Represents a chart label.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Labels.FontColor">
+            <summary>
+            Gets or sets the color of the font.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Labels.FontFamily">
+            <summary>
+            Gets or sets the font family.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Labels.FontSize">
+            <summary>
+            Gets or sets the size of the font.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.Labels.FontStyleOptions">
+            <summary>
+            Gets or sets the font style options.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Labels.FontStyle">
+            <summary>
+            Gets or sets the font style.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.Helpers.Logger">
+            <summary>
+            Provides logging services.
+            </summary>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.Helpers.Logger.Add(System.String)">
+            <summary>
+            Logs a specified status message.
+            </summary>
+            <param name="message">
+            The log message.
+            </param>
+        </member>
+        <member name="M:Bunifu.Charts.WinForms.Helpers.Logger.Clear">
+            <summary>
+            Clears the list of logged messages.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Properties.Resources.html">
+             <summary>
+               Looks up a localized string similar to &lt;html
+            &lt;head&gt;
+                &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=11&quot;&gt;
+            
+                &lt;script&gt;
+                    //script
+                &lt;/script&gt;
+                &lt;script&gt;
+                    //jquery
+                &lt;/script&gt;
+            &lt;/head&gt;
+              &lt;body id=&apos;body&apos; bgcolor=&quot;//bgcolor&quot; onload=&quot;window.external.HideLoader()&quot;&gt;
+            
+                  &lt;canvas id=&quot;Chart&quot;&gt;&lt;/canvas&gt;
+                  &lt;script&gt;
+            
+            
+                   var canvas = document.getElementById(&apos;Chart&apos;);
+                      var ctx = canvas.getContext(&apos;2d&apos;);
+            
+                      var config =  {
+                                        type: &apos;//type&apos;,
+                                     [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Properties.Resources.js">
+             <summary>
+               Looks up a localized string similar to /*!
+             * Chart.js v2.9.3
+             * https://www.chartjs.org
+             * (c) 2019 Chart.js Contributors
+             * Released under the MIT License
+             */
+            !function(t,e){&quot;object&quot;==typeof exports&amp;&amp;&quot;undefined&quot;!=typeof module?module.exports=e(function(){try{return require(&quot;moment&quot;)}catch(t){}}()):&quot;function&quot;==typeof define&amp;&amp;define.amd?define([&quot;require&quot;],(function(t){return e(function(){try{return t(&quot;moment&quot;)}catch(t){}}())})):(t=t||self).Chart=e(t.moment)}(this,(function(t){&quot;use strict&quot;;t=t&amp;&amp;t.hasOwnProperty(&quot;default&quot;)?t.default:t;var e= [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.Point3D">
+            <summary>
+            Establishes a 3D-point mark for drawing points within a chart.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Point3D.X">
+            <summary>
+            Gets or sets the x-axis point.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Point3D.Y">
+            <summary>
+            Gets or sets the y-axis point.
+            </summary>
+        </member>
+        <member name="P:Bunifu.Charts.WinForms.Point3D.Radius">
+            <summary>
+            Gets or sets the drawing radius.
+            </summary>
+        </member>
+        <member name="T:Bunifu.Charts.WinForms.Common">
+            <summary>
+            Includes all the common methods utilized when rendering charts.
+            </summary>
+        </member>
+    </members>
+</doc>

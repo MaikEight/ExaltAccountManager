@@ -1,5 +1,4 @@
-﻿using ExaltAccountManager;
-using MK_EAM_Lib;
+﻿using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,16 +17,18 @@ namespace EAM_Daily_Login_Service
 {
     class DailyLogin
     {
-        public static string pathCurl = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "curl", "curl.exe");
-        public static string accountsPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM.accounts");
-        public static string dailyLoginsPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM.DailyLogins");
-        public static string pathLogs = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM.Logs");
-        public static string pathDailyLoginsConfig = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM.DailyLogins");
-        public static string pathNotificationConfig = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM.NotificationOptions");
+        public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
+
+        public static string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
+        public static string dailyLoginsPath = Path.Combine(saveFilePath, "EAM.DailyLogins");
+        public static string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
+        public static string pathDailyLoginsConfig = Path.Combine(saveFilePath, "EAM.DailyLogins");
+        public static string pathNotificationConfig = Path.Combine(saveFilePath, "EAM.NotificationOptions");
         public static string pathEAMTasktrayToolEXE = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM Tasktray Tool", "EAM Tasktray Tool.exe");
-        public static string optionsPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM.options");
+        public static string optionsPath = Path.Combine(saveFilePath, "EAM.options");
         public static string userLoginStatsPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "EAM.LoginStats");
-        public static string accountStatsPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "Stats");
+        public static string accountStatsPath = Path.Combine(saveFilePath, "Stats");
+        public static string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
 
         public static string exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe");
         public static NotificationOptions notOptions;
@@ -188,7 +189,7 @@ namespace EAM_Daily_Login_Service
                             }
                             LogEvent(new LogData(0, "EAM Service", LogEventType.Login, $"Start login into account: {accountInfo.email}."));
 
-                            string arguments = string.Format("\"data:{{platform:Deca,guid:{0},token:{1},tokenTimestamp:{2},tokenExpiration:{3},env:4}}\"", StringToBase64String(accountInfo.email), StringToBase64String(accountInfo.accessToken.token), StringToBase64String(accountInfo.accessToken.creationTime), StringToBase64String(accountInfo.accessToken.expirationTime));
+                            string arguments = string.Format("\"data:{{platform:Deca,guid:{0},token:{1},tokenTimestamp:{2},tokenExpiration:{3},env:4,serverName:}}\"", StringToBase64String(accountInfo.email), StringToBase64String(accountInfo.accessToken.token), StringToBase64String(accountInfo.accessToken.creationTime), StringToBase64String(accountInfo.accessToken.expirationTime));
                             ProcessStartInfo info = new ProcessStartInfo();
                             info.Arguments = string.Format("-batchmode {0}", arguments);
                             info.FileName = exePath;
@@ -327,10 +328,19 @@ namespace EAM_Daily_Login_Service
                 LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to save stats for {info.email}."));
             }
         }
-
         private static CharListStats GetCharacterStatsFromRequest(string charList)
         {
             CharListStats s = new CharListStats();
+            try
+            {
+                ServerDataCollection serverData = ServerDataCollection.CreateNewCollection(charList);
+                File.WriteAllBytes(serverCollectionPath, ObjectToByteArray(serverData));
+            }
+            catch (Exception)
+            {
+                LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to parse / save servers."));
+            }
+
             try
             {
                 string[] chars = Regex.Split(charList, ("</Char>"));
@@ -348,7 +358,7 @@ namespace EAM_Daily_Login_Service
                 LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to parse CharList."));
             }
             return s;
-        }
+        }       
 
         private static string GetAccountStatsFilename(string email)
         {
@@ -442,7 +452,7 @@ namespace EAM_Daily_Login_Service
             {
                 try
                 {
-                    OptionsData opt = (OptionsData)ByteArrayToObject(File.ReadAllBytes(optionsPath));
+                    ExaltAccountManager.OptionsData opt = (ExaltAccountManager.OptionsData)ByteArrayToObject(File.ReadAllBytes(optionsPath));
                     if (!string.IsNullOrWhiteSpace(opt.exePath))
                         exePath = opt.exePath;
                 }
@@ -579,27 +589,36 @@ namespace EAM_Daily_Login_Service
 
         public static Tuple<string, string, string> GetClientAccessData(string resp)
         {
-            string token = "";
-            string timestamp = "";
-            string expiration = "";
+            try
+            {
+                string token = "";
+                string timestamp = "";
+                string expiration = "";
 
-            if (resp.Contains("<AccessToken>"))
-            {
-                token = resp.Substring(resp.IndexOf("<AccessToken>") + 13, resp.Length - (resp.IndexOf("<AccessToken>") + 13));
-                token = token.Substring(0, token.IndexOf("</AccessToken>"));
+                if (resp.Contains("<AccessToken>"))
+                {
+                    token = resp.Substring(resp.IndexOf("<AccessToken>") + 13, resp.Length - (resp.IndexOf("<AccessToken>") + 13));
+                    token = token.Substring(0, token.IndexOf("</AccessToken>"));
+                }
+                if (resp.Contains("<AccessTokenTimestamp>"))
+                {
+                    timestamp = resp.Substring(resp.IndexOf("<AccessTokenTimestamp>") + 22, resp.Length - (resp.IndexOf("<AccessTokenTimestamp>") + 22));
+                    timestamp = timestamp.Substring(0, timestamp.IndexOf("</AccessTokenTimestamp>"));
+                }
+                if (resp.Contains("<AccessTokenExpiration>"))
+                {
+                    expiration = resp.Substring(resp.IndexOf("<AccessTokenExpiration>") + 23, resp.Length - (resp.IndexOf("<AccessTokenExpiration>") + 23));
+                    expiration = expiration.Substring(0, expiration.IndexOf("</AccessTokenExpiration>"));
+                }
+
+                return new Tuple<string, string, string>(token, timestamp, expiration);
             }
-            if (resp.Contains("<AccessTokenTimestamp>"))
+            catch
             {
-                timestamp = resp.Substring(resp.IndexOf("<AccessTokenTimestamp>") + 22, resp.Length - (resp.IndexOf("<AccessTokenTimestamp>") + 22));
-                timestamp = timestamp.Substring(0, timestamp.IndexOf("</AccessTokenTimestamp>"));
-            }
-            if (resp.Contains("<AccessTokenExpiration>"))
-            {
-                expiration = resp.Substring(resp.IndexOf("<AccessTokenExpiration>") + 23, resp.Length - (resp.IndexOf("<AccessTokenExpiration>") + 23));
-                expiration = expiration.Substring(0, expiration.IndexOf("</AccessTokenExpiration>"));
+                LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to parse ClientAccessData!"));
             }
 
-            return new Tuple<string, string, string>(token, timestamp, expiration);
+            return new Tuple<string, string, string>(string.Empty, string.Empty, string.Empty);
         }
 
         public static string GetDeviceUniqueIdentifier()

@@ -16,14 +16,17 @@ namespace ExaltAccountManager
         Image closeArrow = Properties.Resources.ic_arrow_drop_up_black_36dp;
         private bool useDarkmode = false;
         bool isSecond = false;
+        FrmHelp frm;
+
         public HelpUI()
         {
             InitializeComponent();
         }
 
-        public HelpUI(string question, string answer, bool _isSecond = false)
+        public HelpUI(FrmHelp _frm, string question, string answer, bool _isSecond = false)
         {
             InitializeComponent();
+            frm = _frm;
             isSecond = _isSecond;
 
             LoadUI(question, answer);
@@ -79,13 +82,15 @@ namespace ExaltAccountManager
             }
             isOpen = !isOpen;
             pbOpen.Image = isOpen ? closeArrow : openArrow;
+
+            frm.Updateflow();
         }
 
         private void pAnswer_Paint(object sender, PaintEventArgs e)
         {
             Control s = sender as Control;
-            Point topLeft = new Point();
-            Point topRight = new Point(s.Width - 1, 0);
+            Point topLeft = new Point(3, 0);
+            Point topRight = new Point(s.Width - 4, 0);
 
             e.Graphics.DrawLine(p, topRight, topLeft);
         }

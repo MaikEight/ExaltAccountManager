@@ -35,6 +35,7 @@ namespace EAM_Statistics
 
             pMain.PanelColor = pMain.PanelColor2 = def;
             pMain.ShadowColor = useDarkmode ? Color.FromArgb(45, 20, 20, 20) : Color.FromArgb(25, 0, 0, 0);
+           
             this.ForeColor = font;
 
             MK_EAM_Lib.FormsUtils.ResumeDrawing(this);

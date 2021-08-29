@@ -63,6 +63,46 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap alphabetical_sorting_az_24px {
+            get {
+                object obj = ResourceManager.GetObject("alphabetical_sorting_az_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap alphabetical_sorting_az_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("alphabetical_sorting_az_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap alphabetical_sorting_za_24px {
+            get {
+                object obj = ResourceManager.GetObject("alphabetical_sorting_za_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap alphabetical_sorting_za_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("alphabetical_sorting_za_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap baseline_autorenew_black_36dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_autorenew_black_36dp", resourceCulture);
@@ -73,9 +113,49 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap baseline_autorenew_black_36dp_45G {
+            get {
+                object obj = ResourceManager.GetObject("baseline_autorenew_black_36dp_45G", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap baseline_autorenew_white_36dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_autorenew_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_autorenew_white_36dp_45G {
+            get {
+                object obj = ResourceManager.GetObject("baseline_autorenew_white_36dp_45G", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_delete_outline_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("baseline_delete_outline_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_delete_outline_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("baseline_delete_outline_white_36dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,6 +243,106 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap below_black_24px {
+            get {
+                object obj = ResourceManager.GetObject("below_black_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap below_black_48px {
+            get {
+                object obj = ResourceManager.GetObject("below_black_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap below_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("below_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap below_white_48px {
+            get {
+                object obj = ResourceManager.GetObject("below_white_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fingerprint_15px {
+            get {
+                object obj = ResourceManager.GetObject("fingerprint_15px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fingerprint_24px {
+            get {
+                object obj = ResourceManager.GetObject("fingerprint_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fingerprint_scan_24px {
+            get {
+                object obj = ResourceManager.GetObject("fingerprint_scan_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fingerprint_scan_white_24px_1 {
+            get {
+                object obj = ResourceManager.GetObject("fingerprint_scan_white_24px_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fingerprint_white_15px {
+            get {
+                object obj = ResourceManager.GetObject("fingerprint_white_15px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fingerprint_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("fingerprint_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_access_alarm_black_48dp {
             get {
                 object obj = ResourceManager.GetObject("ic_access_alarm_black_48dp", resourceCulture);
@@ -243,6 +423,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_add_circle_outline_black_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_add_circle_outline_black_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_add_to_photos_black_18dp {
             get {
                 object obj = ResourceManager.GetObject("ic_add_to_photos_black_18dp", resourceCulture);
@@ -253,9 +443,29 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_add_to_photos_black_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_add_to_photos_black_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_add_to_photos_white_18dp {
             get {
                 object obj = ResourceManager.GetObject("ic_add_to_photos_white_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_add_to_photos_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_add_to_photos_white_48dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -376,6 +586,46 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap ic_assignment_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("ic_assignment_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_beenhere_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_beenhere_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_beenhere_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_beenhere_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_block_black_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_block_black_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_block_white_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_block_white_18dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -533,6 +783,46 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_done_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_done_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_done_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_done_white_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_drafts_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_drafts_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_drafts_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_drafts_white_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_drag_handle_black_36dp {
             get {
                 object obj = ResourceManager.GetObject("ic_drag_handle_black_36dp", resourceCulture);
@@ -573,6 +863,96 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_email_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_email_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_email_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_email_white_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_fiber_new_black_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_fiber_new_black_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_fiber_new_white_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_fiber_new_white_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_filter_none_black_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_filter_none_black_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_filter_none_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_filter_none_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_fingerprint_black_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_fingerprint_black_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_fingerprint_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_fingerprint_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_folder_black_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_folder_black_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_folder_open_black_18dp {
             get {
                 object obj = ResourceManager.GetObject("ic_folder_open_black_18dp", resourceCulture);
@@ -593,6 +973,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_folder_white_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_folder_white_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_format_line_spacing_black_36dp {
             get {
                 object obj = ResourceManager.GetObject("ic_format_line_spacing_black_36dp", resourceCulture);
@@ -606,6 +996,86 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap ic_format_line_spacing_white_36dp {
             get {
                 object obj = ResourceManager.GetObject("ic_format_line_spacing_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_help_outline_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_help_outline_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_help_outline_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_help_outline_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_hourglass_empty_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_hourglass_empty_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_hourglass_empty_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_hourglass_empty_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_import_export_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_import_export_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_import_export_black_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_import_export_black_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_import_export_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_import_export_white_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_import_export_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_import_export_white_48dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -666,6 +1136,46 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap ic_live_help_white_36dp {
             get {
                 object obj = ResourceManager.GetObject("ic_live_help_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_new_releases_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_new_releases_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_new_releases_black_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_new_releases_black_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_new_releases_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_new_releases_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_new_releases_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_new_releases_white_48dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -773,6 +1283,46 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_refresh_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_refresh_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_refresh_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_refresh_white_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_rotate_right_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_rotate_right_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_rotate_right_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_rotate_right_white_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_save_black_18dp {
             get {
                 object obj = ResourceManager.GetObject("ic_save_black_18dp", resourceCulture);
@@ -786,6 +1336,26 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap ic_save_white_18dp {
             get {
                 object obj = ResourceManager.GetObject("ic_save_white_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_search_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_search_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_search_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_search_white_24dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -893,6 +1463,46 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap list_13px {
+            get {
+                object obj = ResourceManager.GetObject("list_13px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap list_24px {
+            get {
+                object obj = ResourceManager.GetObject("list_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap list_white_13px {
+            get {
+                object obj = ResourceManager.GetObject("list_white_13px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap list_white_24px_1 {
+            get {
+                object obj = ResourceManager.GetObject("list_white_24px_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap llama {
             get {
                 object obj = ResourceManager.GetObject("llama", resourceCulture);
@@ -916,6 +1526,326 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap Logo_NameOnly {
             get {
                 object obj = ResourceManager.GetObject("Logo_NameOnly", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap maintenance_black_48px {
+            get {
+                object obj = ResourceManager.GetObject("maintenance_black_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap maintenance_white_48px {
+            get {
+                object obj = ResourceManager.GetObject("maintenance_white_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap new_Outline_black_18px {
+            get {
+                object obj = ResourceManager.GetObject("new_Outline_black_18px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap new_Outline_white_18px {
+            get {
+                object obj = ResourceManager.GetObject("new_Outline_white_18px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_border_color_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_border_color_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_border_color_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_border_color_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_drag_indicator_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_drag_indicator_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_drag_indicator_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_drag_indicator_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_edit_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_edit_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_edit_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_edit_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_published_with_changes_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_published_with_changes_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_published_with_changes_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_published_with_changes_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_save_black_18dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_save_black_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_slow_motion_video_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_slow_motion_video_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_slow_motion_video_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_slow_motion_video_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_sync_problem_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_sync_problem_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_sync_problem_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_sync_problem_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_sync_problem_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_sync_problem_white_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap outline_sync_problem_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("outline_sync_problem_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap save_18p {
+            get {
+                object obj = ResourceManager.GetObject("save_18p", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap search_more_black_24px_2 {
+            get {
+                object obj = ResourceManager.GetObject("search_more_black_24px_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap search_more_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("search_more_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap server_18p {
+            get {
+                object obj = ResourceManager.GetObject("server_18p", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap server_18px {
+            get {
+                object obj = ResourceManager.GetObject("server_18px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sync_settings_30px {
+            get {
+                object obj = ResourceManager.GetObject("sync_settings_30px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sync_settings_white_30px {
+            get {
+                object obj = ResourceManager.GetObject("sync_settings_white_30px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap time_36px {
+            get {
+                object obj = ResourceManager.GetObject("time_36px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap time_black_36px {
+            get {
+                object obj = ResourceManager.GetObject("time_black_36px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_Icon_Discord2 {
+            get {
+                object obj = ResourceManager.GetObject("UI_Icon_Discord2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_Icon_SocialDiscord {
+            get {
+                object obj = ResourceManager.GetObject("UI_Icon_SocialDiscord", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_Icon_SocialDiscord_black {
+            get {
+                object obj = ResourceManager.GetObject("UI_Icon_SocialDiscord_black", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UI_Icon_SocialDiscord_black1 {
+            get {
+                object obj = ResourceManager.GetObject("UI_Icon_SocialDiscord_black1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

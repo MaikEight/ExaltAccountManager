@@ -19,12 +19,10 @@ namespace ExaltAccountManager
             frm = _frm;
 
             lVersion.Text = $"v{frm.version}";
+            linkMPGH.Text = frm.isMPGHVersion ? "https://www.mpgh.net/forum/member.php?u=1465031" : "https://github.com/MaikEight/ExaltAccountManager"; 
+
             ApplyTheme(frm.useDarkmode);
 
-            //System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
-            //gp.AddEllipse(-3f, -11f, pbDevName.Width + 6, pbDevName.Height + 22);
-            //Region rg = new Region(gp);
-            //pbDevName.Region = rg;
             System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
             int h = pbDevName.Height;
             int w = pbDevName.Width;
@@ -68,6 +66,9 @@ namespace ExaltAccountManager
                 pbVersion.Image = Properties.Resources.baseline_tag_white_36dp;
                 pbDev.Image = Properties.Resources.ic_code_white_36dp;
                 pbWeb.Image = Properties.Resources.ic_public_white_36dp;
+
+                if (frm.msg != null && frm.msg.type == MK_EAM_Lib.EAMNotificationMessageType.UpdateAvailable)
+                    lVersion.ForeColor = frm.useDarkmode ? Color.Orange : Color.DarkOrange;
 
                 p = new Pen(Color.White);
             }

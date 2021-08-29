@@ -25,6 +25,7 @@ namespace EAM_Statistics
         FrmStatsLeftHost statsHost;
         UICharacterViewer characterViewer;
         UIStatsLeft uiStats;
+        bool isLoading = true;
 
         public UIAccountViewer(UIAccountView _view, FrmMain _form, StatsMain _stats)
         {
@@ -39,6 +40,8 @@ namespace EAM_Statistics
 
         public void LoadUI(StatsMain _stats)
         {
+            isLoading = true;
+
             stats = _stats;
 
             #region ACCOUNT
@@ -132,17 +135,32 @@ namespace EAM_Statistics
 
             try
             {
-                List<CharacterClass> charStats = stats.stats[stats.stats.Count - 1].classes.OrderByDescending(o => o.bestFame).ToList();
+                List<CharacterClass> charStats = new List<CharacterClass>();
+                if (toggleBestClassByTotalFame.Checked)
+                {
+                    charStats = stats.stats[stats.stats.Count - 1].classes.OrderByDescending(o => o.bestTotalFame).ToList();
+                }
+                else
+                {
+                    charStats = stats.stats[stats.stats.Count - 1].classes.OrderByDescending(o => o.bestBaseFame).ToList();
+                }
 
                 lBestClassName.Text = charStats[0].charClass.ToString();
                 int index = form.charNames.IndexOf(lBestClassName.Text);
                 if (index > -1 && form.charImages.Count > index)
                     pbBestClassImage.Image = form.charImages[index];
 
-                lBestFameValue.Text = charStats[0].bestFame.ToString();
+                lBestFameValue.Text = toggleBestClassByTotalFame.Checked ? charStats[0].bestTotalFame.ToString() : charStats[0].bestBaseFame.ToString();
                 lBestLevelValue.Text = charStats[0].bestLevel.ToString();
             }
-            catch { }
+            catch 
+            {
+                lBestClassName.Text = "No data!";
+                pbBestClassImage.Image = null;
+
+                lBestFameValue.Text =
+                lBestLevelValue.Text = "";
+            }
 
             #endregion
 
@@ -154,15 +172,25 @@ namespace EAM_Statistics
                 List<string> valueNames = new List<string>();
                 List<Image> valueImgs = new List<Image>();
 
-                for (int i = 0; i < stats.stats[stats.stats.Count - 1].classes.Count; i++)
+                if (stats.stats[stats.stats.Count - 1].classes.Count >= 3)
                 {
-                    values.Add(stats.stats[stats.stats.Count - 1].classes[i].bestFame);
-                    valueNames.Add(stats.stats[stats.stats.Count - 1].classes[i].charClass.ToString());
-                    valueImgs.Add(form.charImages[(int)stats.stats[stats.stats.Count - 1].classes[i].charClass]);
-                }
+                    for (int i = 0; i < stats.stats[stats.stats.Count - 1].classes.Count; i++)
+                    {
+                        values.Add(toggleRadarCharsByTotalFame.Checked ? stats.stats[stats.stats.Count - 1].classes[i].bestTotalFame : stats.stats[stats.stats.Count - 1].classes[i].bestBaseFame);
+                        valueNames.Add(stats.stats[stats.stats.Count - 1].classes[i].charClass.ToString());
+                        valueImgs.Add(form.charImages[(int)stats.stats[stats.stats.Count - 1].classes[i].charClass]);
+                    }
 
-                mtpRadarChars.SetLabels("Radar chart: Best classes", lAmountName.Text);
-                mtpRadarChars.DrawValues(values.ToArray(), valueImgs.ToArray(), 24, valueNames.ToArray(), true);
+                    mtpRadarChars.SetLabels("Radar chart: Best classes", lAmountName.Text);
+                    mtpRadarChars.DrawValues(values.ToArray(), valueImgs.ToArray(), 24, valueNames.ToArray(), true);
+                }
+                else
+                {
+                    mtpRadarChars.SetLabels("Radar chart: Best classes", "");
+                    lNoChars.Visible = true;
+
+                    lRadarToggleB.Visible = lRadarToggleT.Visible = toggleRadarCharsByTotalFame.Visible = false;
+                }
             }
             catch { }
 
@@ -171,6 +199,10 @@ namespace EAM_Statistics
             pbReturn.Location = new Point((this.Width - pbReturn.Width) - 15, (this.Height - pbReturn.Height) - 15);
             this.Controls.SetChildIndex(mtpRadarChars, 5);
             this.Controls.SetChildIndex(pbReturn, 0);
+            if(lNoChars.Visible)
+                lNoChars.BringToFront();
+
+            isLoading = false;
         }
 
         public void CharacterClicked(object sender, DataGridViewCellMouseEventArgs e)
@@ -266,6 +298,14 @@ namespace EAM_Statistics
             foreach (MaterialRadarChars ui in this.Controls.OfType<MaterialRadarChars>())
                 ui.ApplyTheme(isDarkmode);
 
+            lAccounts.BackColor = lAmountName.BackColor = lAccountEmail.BackColor =
+            lTotalFame.BackColor = lTotalFameValue.BackColor =
+            lDataActuality.BackColor = lTimeOfLastDataset.BackColor = lDataActualityValue.BackColor =
+            lRadarToggleB.BackColor = lRadarToggleT.BackColor =
+            lAliveFame.BackColor = lAliveFameValue.BackColor =
+            lBestClass.BackColor = lBestToggleB.BackColor = lBestToggleT.BackColor = lBestClassName.BackColor = lBestFame.BackColor = lBestFameValue.BackColor = lBestLevel.BackColor = lBestLevelValue.BackColor = pbBestClassImage.BackColor =
+            lNoChars.BackColor = isDarkmode ? Color.FromArgb(30, 30, 30) : Color.FromArgb(253, 253, 253);
+
             if (shadow != null)            
                 shadow.ApplyTheme(isDarkmode);
             if (characterViewer != null)
@@ -321,6 +361,66 @@ namespace EAM_Statistics
         private void pbReturn_MouseUp(object sender, MouseEventArgs e)
         {
             pbReturn.BackColor = Color.FromArgb(128, 98, 0, 238);
+        }
+
+        private void toggleBestClassByTotalFame_CheckedChanged(object sender, Bunifu.UI.WinForms.BunifuToggleSwitch.CheckedChangedEventArgs e)
+        {
+            if (isLoading)
+                return;
+
+            #region Best class
+
+            try
+            {
+                List<CharacterClass> charStats = new List<CharacterClass>();
+                if (toggleBestClassByTotalFame.Checked)
+                {
+                    charStats = stats.stats[stats.stats.Count - 1].classes.OrderByDescending(o => o.bestTotalFame).ToList();
+                }
+                else
+                {
+                    charStats = stats.stats[stats.stats.Count - 1].classes.OrderByDescending(o => o.bestBaseFame).ToList();
+                }
+
+                lBestClassName.Text = charStats[0].charClass.ToString();
+                int index = form.charNames.IndexOf(lBestClassName.Text);
+                if (index > -1 && form.charImages.Count > index)
+                    pbBestClassImage.Image = form.charImages[index];
+
+                lBestFameValue.Text = toggleBestClassByTotalFame.Checked ? charStats[0].bestTotalFame.ToString() : charStats[0].bestBaseFame.ToString();
+                lBestLevelValue.Text = charStats[0].bestLevel.ToString();
+            }
+            catch { }
+
+            #endregion
+        }
+
+        private void toggleRadarCharsByTotalFame_CheckedChanged(object sender, Bunifu.UI.WinForms.BunifuToggleSwitch.CheckedChangedEventArgs e)
+        {
+            if (isLoading)
+                return;
+
+            #region Radar Char
+
+            try
+            {
+                List<int> values = new List<int>();
+                List<string> valueNames = new List<string>();
+                List<Image> valueImgs = new List<Image>();
+
+                for (int i = 0; i < stats.stats[stats.stats.Count - 1].classes.Count; i++)
+                {
+                    values.Add(toggleRadarCharsByTotalFame.Checked ? stats.stats[stats.stats.Count - 1].classes[i].bestTotalFame : stats.stats[stats.stats.Count - 1].classes[i].bestBaseFame);
+                    valueNames.Add(stats.stats[stats.stats.Count - 1].classes[i].charClass.ToString());
+                    valueImgs.Add(form.charImages[(int)stats.stats[stats.stats.Count - 1].classes[i].charClass]);
+                }
+
+                mtpRadarChars.SetLabels("Radar chart: Best classes", lAmountName.Text);
+                mtpRadarChars.DrawValues(values.ToArray(), valueImgs.ToArray(), 24, valueNames.ToArray(), true);
+            }
+            catch { }
+
+            #endregion
         }
     }
 }

@@ -34,8 +34,10 @@ namespace ExaltAccountManager
             $"If it for some reason does not start exalt, check if you have exalt installed. - if so, check if the path in the options is set correctly.{Environment.NewLine}{Environment.NewLine}" +
             $"If you already have started the game via the Exalt launcher, close all running Exalt sessions, close the Exalt Launcher and try again.",
 
-            $"Try to use the \"Renew\"-Button to the right of the \"Play\"-Button, this will request a new token for that account.{Environment.NewLine}{Environment.NewLine}" +
-            $"If it still does not work, delete and re-add the account.",
+            $"Try to use the \"Renew\"-Button to the right of the \"Play\"-Button, this will request a new token for that account.{Environment.NewLine}" +
+            $"If it still does not work, delete and re-add the account.{Environment.NewLine}{Environment.NewLine}" +
+            $"If none of your accounts work, try to use the \"HWID Tool\".{Environment.NewLine}" +
+            $"                                          Located here: More > HWID-Tool",
 
             $"Depending on the error-message I can help you with that, please write the error message you get here.{Environment.NewLine}" +
             $"You can also install it manually using the Windows Task Scheduler(mmc.exe).",
@@ -65,12 +67,17 @@ namespace ExaltAccountManager
             bool isSecond = false;
             for (int i = 0; i < questions.Count; i++)
             {
-                HelpUI ui = new HelpUI(questions[i], answers[i], isSecond);
+                HelpUI ui = new HelpUI(this, questions[i], answers[i], isSecond);
                 ui.ApplyTheme(frm.useDarkmode);
                 flow.Controls.Add(ui);
                 flow.SetFlowBreak(ui, true);
                 isSecond = !isSecond;
             }
+        }
+
+        public void Updateflow()
+        {
+            scrollbar.BindTo(flow);
         }
 
         public void ApplyTheme(bool isDarkmode)
@@ -82,12 +89,26 @@ namespace ExaltAccountManager
                 Color third = Color.FromArgb(0, 0, 0);
                 Color font = Color.White;
 
-                this.ForeColor = font;
+                this.ForeColor =
+                lMoreHelp.ForeColor =
+                pSozial.BorderColor = font;
+                pSozial.BackgroundColor = pSozialInner.BackColor = lMoreHelp.BackColor = second;
+
                 this.BackColor = third;
                 pTop.BackColor = def;
                 pBox.BackColor = def;
 
+                pbDiscord.BackColor = pbMail.BackColor = second;
+                pbMail.Image = Properties.Resources.ic_email_white_24dp;
+                pbDiscord.Image = Properties.Resources.UI_Icon_SocialDiscord;
+
+                linkDiscord.BackColor = linkMail.BackColor = pSozial.BackgroundColor;
+
                 lHeadline.ForeColor = font;
+
+                scrollbar.BorderColor = second;
+                scrollbar.BackgroundColor = def;
+                scrollbar.ThumbColor = third;
 
                 pbLogo.Image = Properties.Resources.ic_live_help_white_36dp;
                 pbClose.Image = Properties.Resources.ic_close_white_24dp;
@@ -213,5 +234,21 @@ namespace ExaltAccountManager
         {
             frm.lockForm = false;
         }
+
+        private void linkMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start("mailto:mail@maik8.de");
+
+        private void linkDiscord_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start("https://discord.gg/VNfxgPqbJ7");
+
+        private void pbDiscord_Click(object sender, EventArgs e) => linkDiscord_LinkClicked(linkDiscord, null);
+
+        private void pbMail_Click(object sender, EventArgs e) => linkMail_LinkClicked(linkMail, null);
+
+        private void pbMail_MouseEnter(object sender, EventArgs e) => pbMail.Image = frm.useDarkmode ? Properties.Resources.ic_drafts_white_24dp : Properties.Resources.ic_drafts_black_24dp;
+
+        private void pbMail_MouseLeave(object sender, EventArgs e) => pbMail.Image = frm.useDarkmode ? Properties.Resources.ic_email_white_24dp : Properties.Resources.ic_email_black_24dp;
+
+        private void pbDiscord_MouseEnter(object sender, EventArgs e) => pbDiscord.Image = Properties.Resources.UI_Icon_Discord2;
+
+        private void pbDiscord_MouseLeave(object sender, EventArgs e) => pbDiscord.Image = frm.useDarkmode ? Properties.Resources.UI_Icon_SocialDiscord : Properties.Resources.UI_Icon_SocialDiscord_black1;
     }
 }

@@ -1,3 +1,0 @@
-Start...
-Die Datei "C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\EAM.DailyLogins" konnte nicht gefunden werden.
-Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
