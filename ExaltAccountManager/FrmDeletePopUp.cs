@@ -141,6 +141,9 @@ namespace ExaltAccountManager
         {
             this.Visible = false;
             accUI.DeleteAccount();
+            
+            Application.DoEvents();
+
             this.Close();
         }
 

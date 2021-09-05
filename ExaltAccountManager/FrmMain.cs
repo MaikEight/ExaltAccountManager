@@ -21,7 +21,7 @@ namespace ExaltAccountManager
 {
     public partial class FrmMain : Form
     {
-        public readonly Version version = new Version(2, 2, 2);
+        public readonly Version version = new Version(2, 2, 3);
         bool openMoreUI = true;
 
         #region UIs
@@ -303,7 +303,7 @@ namespace ExaltAccountManager
 
                     try
                     {
-                        msg = EAMNotificationMessage.GetEAMNotificationMessage();
+                        msg = EAMNotificationMessage.GetEAMNotificationMessage($"{version.Major}_{version.Minor}_{version.Build}");
 
                         timerShowMessage.Start();
                     }
@@ -1264,14 +1264,75 @@ namespace ExaltAccountManager
             for (int i = 0; i < temp.Count; i++)
                 temp[i].ChangeScrollState(h > pMain.Height);
 
-
-            FormsUtils.ResumeDrawing(this);
             FormsUtils.ResumeDrawing(pMain);
+            FormsUtils.ResumeDrawing(this);
 
             dragMouseDownLocation = new Point(0, 0);
 
             //Stops saving the accounts on startup
             if (loading) return;
+            SaveAccounts();
+        }
+
+        public void AddNewAccountInfo(MK_EAM_Lib.AccountInfo info)
+        {
+            accounts.Add(info);
+            AddAccountToOrders(info.email);
+
+            #region Create colors
+
+            Color def = Color.FromArgb(255, 255, 255);
+            Color second = Color.FromArgb(250, 250, 250);
+            Color third = Color.FromArgb(240, 240, 240);
+            Color font = Color.Black;
+
+            if (useDarkmode)
+            {
+                def = Color.FromArgb(32, 32, 32);
+                second = Color.FromArgb(23, 23, 23);
+                third = Color.FromArgb(0, 0, 0);
+                font = Color.White;
+            }
+
+            #endregion
+
+            FormsUtils.SuspendDrawing(pMain);
+
+            AccountUI ui = new AccountUI(this, info);
+
+            ui.mouseDown += DragHandle_MouseDown;
+            ui.mouseMove += DragHandle_MouseMove;
+            ui.mouseUp += DragHandle_MouseUp;
+
+            pMain.Controls.Add(ui);
+            ui.Dock = DockStyle.Top;
+            ui.SendToBack();
+
+            if (accountUIs.Count % 2 == 1)
+            {
+                ui.BackColor = Color.FromArgb(250, 250, 250);
+                ui.isSecond = true;
+            }
+            else
+                ui.isSecond = false;
+
+            ui.Dock = DockStyle.None;
+            ui.Location = new Point(0, accountUIs.Count * ui.Height);
+            uiPoints.Add(ui.Location);
+            ui.isSecond = accountUIs.Count % 2 == 1;
+            ui.ApplyTheme(useDarkmode, def, second, third, font);
+
+            accountUIs.Add(ui);
+            int h = accountUIs.Count > 0 ? accountUIs.Count * accountUIs[accountUIs.Count - 1].Height : 0;
+            scrollbar.Visible = header.ScrollbarStateChanged(h > pMain.Height);
+            scrollbar.BindTo(pMain);
+
+            for (int i = 0; i < accountUIs.Count; i++)
+                accountUIs[i].ChangeScrollState(h > pMain.Height);
+
+            FormsUtils.ResumeDrawing(pMain);
+
+            dragMouseDownLocation = new Point(0, 0);
             SaveAccounts();
         }
 
@@ -1982,7 +2043,7 @@ namespace ExaltAccountManager
                             if (!notificationValues[2])
                                 return;
                             lockForm = true;
-                            
+
                             FrmMessage frmMsg = new FrmMessage(this, msg);
                             frmMsg.StartPosition = FormStartPosition.Manual;
                             frmMsg.Location = new Point(this.Location.X + ((this.Width - frmMsg.Width) / 2), this.Location.Y + ((this.Height - frmMsg.Height) / 2));

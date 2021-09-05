@@ -103,7 +103,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM S
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.CoreCompileInputs.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.CopyComplete
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.exe.config
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.dll.licenses
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.AssemblyReference.cache
@@ -257,3 +256,5 @@ C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM
 C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Newtonsoft.Json.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Newtonsoft.Json.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLoader.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLoader.xml

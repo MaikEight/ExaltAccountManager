@@ -10,7 +10,7 @@ namespace ExaltAccountManager
 {
     public partial class FrmDailyLoginOptions : Form
     {
-        FrmMain frm;
+        public FrmMain frm { get; }
         NotificationOptions opt;
 
         Pen p = new Pen(Color.Black);

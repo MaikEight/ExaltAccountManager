@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bunifu.UI.WinForms.BunifuSeparator</name>
+    </assembly>
+    <members>
+        <member name="T:Bunifu.UI.WinForms.BunifuSeparator">
+            <summary>
+            Add separator lines and dividers in your designs for organizing content.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuSeparator.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:Bunifu.UI.WinForms.BunifuSeparator"/>.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuSeparator.LineOrientation">
+            <summary>
+            Provides different line orientation options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Vertical">
+            <summary>
+            A vertical line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal">
+            <summary>
+            A horizontal line.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuSeparator.LineStyles">
+            <summary>
+            Provides different line style options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid">
+            <summary>
+            A solid line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Dash">
+            <summary>
+            A dashed line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Dot">
+            <summary>
+            A dotted line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.DashDot">
+            <summary>
+            A dashed and dotted recursive line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.DashDotDot">
+            <summary>
+            A dashed, dotted-dotted recursive line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.DoubleEdgeFaded">
+            <summary>
+            A stylish double edge faded line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.LeftEdgeFaded">
+            <summary>
+            A stylish left edge faded line.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.LineStyles.RightEdgeFaded">
+            <summary>
+            A stylish right edge faded line.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuSeparator.CapStyles">
+            <summary>
+            Provides different dash cap style options.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat">
+            <summary>
+            A flatcap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Round">
+            <summary>
+            A rounded cap.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Triangle">
+            <summary>
+            A triangular cap.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuSeparator.Orientation">
+            <summary>
+            Gets or sets the line's orientation.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuSeparator.LineStyle">
+            <summary>
+            Gets or sets the line's style format.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuSeparator.DashCap">
+            <summary>
+            Gets or sets the line's dash cap style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuSeparator.LineThickness">
+            <summary>
+            Gets or sets the line's thickness.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuSeparator.LineColor">
+            <summary>
+            Gets or sets the line's color.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuSeparator.Refresh">
+            <summary>
+            Forces the control to invalidate its client area and 
+            immediately redraw itself and any child controls.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuSeparator.BunifuControlDesignerActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.UI.WinForms.BunifuSeparator.BunifuControlDesignerActionList"/> class.
+            </summary>
+            <seealso cref="T:System.ComponentModel.Design.DesignerActionList" />
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuSeparator.BunifuControlDesignerActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuSeparator.BunifuControlDesignerActionList.Redraw">
+            <summary>
+            Forces the control to invalidate its client area and 
+            immediately redraw itself and any child controls.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuSeparator.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuSeparator.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuSeparator.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -135,7 +135,7 @@ namespace ExaltAccountManager
                         var logontrigger = new LogonTrigger
                         {
                             Delay = (de > 0) ? new TimeSpan(0, de, 0) : new TimeSpan(0),
-                            StartBoundary = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(-1).Day , 1, 0, 0),
+                            StartBoundary = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, DateTime.Now.AddDays(-1).Day , 1, 0, 0),
                             Enabled = true,
                             UserId = Environment.UserName
                         };
@@ -162,7 +162,7 @@ namespace ExaltAccountManager
                             timeTrigger = new DailyTrigger(1)
                             {
                                 DaysInterval = 1,
-                                StartBoundary = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(-1).Day, triggerHour, triggerMinute, 0),
+                                StartBoundary = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, DateTime.Now.AddDays(-1).AddDays(-1).Day, triggerHour, triggerMinute, 0),
                                 Enabled = true
                             };
                             task.Triggers.Add(timeTrigger);
@@ -185,7 +185,7 @@ namespace ExaltAccountManager
                             catch (Exception ex)
                             {
                                 frmLogins.LogEvent(new LogData(0, "EAM Task", LogEventType.Error, $"Task could NOT be installed correctly."));
-                                MessageBox.Show(this, $"Task could NOT be installed correctly. Help can also be found at MPGH.net from Maik8.{Environment.NewLine}Error Code{Environment.NewLine}{ex.Message}", "Task installation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show(this, $"Task could NOT be installed correctly. {(frmLogins.frm.isMPGHVersion ? "Help can also be found at MPGH.net from Maik8." : "Help can also be found via discord or email, please read the Help Menu for that.")}{Environment.NewLine}Error Code{Environment.NewLine}{ex.Message}", "Task installation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
 
                         }
@@ -195,7 +195,7 @@ namespace ExaltAccountManager
                             lIsInstalled.ForeColor = Color.Crimson;
 
                             frmLogins.LogEvent(new LogData(0, "EAM Task", LogEventType.Error, $"Task could NOT be installed correctly."));
-                            MessageBox.Show(this, $"Task could NOT be installed correctly. The file {taskpath} could not be found. Please ensure it is there and try again. Help can also be found at MPGH.net from Maik8.", "Task installation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(this, $"Task could NOT be installed correctly. The file {taskpath} could not be found. Please ensure it is there and try again. {(frmLogins.frm.isMPGHVersion ? "Help can also be found at MPGH.net from Maik8." : "Help can also be found via discord or email, please read the Help Menu for that.")}", "Task installation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     else
@@ -209,7 +209,7 @@ namespace ExaltAccountManager
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) { }
 
             try
             {
@@ -242,7 +242,7 @@ namespace ExaltAccountManager
                         catch (Exception ex)
                         {
                             frmLogins.LogEvent(new LogData(0, "EAM Task", LogEventType.Error, $"Failed to remove Task."));
-                            MessageBox.Show(this, $"Task was NOT uninstalled correctly. Try to do it manually, via the Windows Task Scheduler. Help can also be found at MPGH.net from Maik8. {Environment.NewLine}Error Code{Environment.NewLine}{ex.Message}", "Task installation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(this, $"Task was NOT uninstalled correctly. Try to do it manually, via the Windows Task Scheduler. {(frmLogins.frm.isMPGHVersion ? "Help can also be found at MPGH.net from Maik8." : "Help can also be found via discord or email, please read the Help Menu for that.")} {Environment.NewLine}Error Code{Environment.NewLine}{ex.Message}", "Task installation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     else

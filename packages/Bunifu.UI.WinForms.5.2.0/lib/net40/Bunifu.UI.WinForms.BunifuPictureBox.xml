@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bunifu.UI.WinForms.BunifuPictureBox</name>
+    </assembly>
+    <members>
+        <member name="T:Bunifu.UI.WinForms.BunifuPictureBox">
+            <summary>
+            Provides a customizable Picture Box with more styling options.
+            </summary>
+            <seealso cref="T:System.Windows.Forms.PictureBox" />
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuPictureBox.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.UI.WinForms.BunifuPictureBox" /> class.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuPictureBox.Types">
+            <summary>
+            Provides a list of shapes the 
+            control can be rendered in.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle">
+            <summary>
+            Circular design.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuPictureBox.Types.Square">
+            <summary>
+            Square design.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuPictureBox.Types.Custom">
+            <summary>
+            Custom design.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuPictureBox.AutoSizeHeight">
+            <summary>
+            Gets or sets a value indicating whether the 
+            PictureBox will be autosized on resize.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuPictureBox.BorderRadius">
+            <summary>
+            Gets or sets the border radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuPictureBox.Type">
+            <summary>
+            Gets or sets the control's shape.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuPictureBox.IsCircle">
+            <summary>
+            Gets a value indicating whether the control is rendered as a circle.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuPictureBox.AllowFocused">
+            <summary>
+            Gets or sets a value indicating 
+            whether control allows focus.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuPictureBox.DrawPictureBox(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Draws the picture box.
+            </summary>
+            <param name="pe">The <see cref="T:System.Windows.Forms.PaintEventArgs" /> instance containing the event data.</param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuPictureBox.RoundedRect(System.Drawing.Rectangle,System.Int32)">
+            <summary>
+            Roundeds the rect.
+            </summary>
+            <param name="bounds">The bounds.</param>
+            <param name="radius">The radius.</param>
+            <returns>GraphicsPath.</returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuPictureBox.ResizeControl">
+            <summary>
+            Auto-resizes the control's height based on its width.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuPictureBox.BunifuControlActionList.ChooseImage">
+            <summary>
+            Select the image displayed in the PictureBox.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuPictureBox.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuPictureBox.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuPictureBox.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.Properties.Resources.avatar">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+    </members>
+</doc>

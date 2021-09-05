@@ -109,6 +109,15 @@ namespace ExaltAccountManager
             isCreating = false;
         }
 
+        public void UpdateInfo(MK_EAM_Lib.AccountInfo info)
+        {
+            accountInfo = info;
+
+            lAccountName.Text = accountInfo.name;
+            lEmail.Text = accountInfo.email;
+            accountInfo.performSave = checkBox.Checked;
+        }
+
         public void AddProcess(Process p)
         {
             process = p;

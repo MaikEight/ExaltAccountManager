@@ -16,7 +16,7 @@ namespace EAM_Statistics
 {
     public partial class FrmMain : Form
     {
-        public readonly Version version = new Version(1, 0, 5);
+        public readonly Version version = new Version(1, 0, 6);
 
         private UIDashboard dashboard;
         private UIAccountView accountView;

@@ -82,12 +82,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\obj\Release\EAM_
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\ExaltAccountManager.exe
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\CsvHelper.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Microsoft.Win32.TaskScheduler.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Threading.Tasks.Extensions.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Microsoft.Bcl.HashCode.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Memory.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_RadarChart.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Numerics.Vectors.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Buffers.dll
@@ -95,14 +93,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Exal
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\ExaltAccountManager.exe.config
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\CsvHelper.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Microsoft.Win32.TaskScheduler.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.exe.config
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Microsoft.Bcl.AsyncInterfaces.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Threading.Tasks.Extensions.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Microsoft.Bcl.HashCode.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Memory.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_RadarChart.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Numerics.Vectors.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\System.Buffers.xml
@@ -241,3 +235,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Newt
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Newtonsoft.Json.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\obj\Release\EAM PingChecker.exe.licenses
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\obj\Release\EAM PingChecker.exe
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_RadarChart.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.dll.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_RadarChart.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Bunifu.UI.WinForms.BunifuLoader.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Bunifu.UI.WinForms.BunifuLoader.xml

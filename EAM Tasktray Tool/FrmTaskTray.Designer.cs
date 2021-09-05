@@ -92,7 +92,7 @@ namespace EAM_Tasktray_Tool
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(21, 11);
             this.label2.TabIndex = 7;
-            this.label2.Text = "v1.0";
+            this.label2.Text = "v1.1";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // pbMinimize
@@ -163,7 +163,6 @@ namespace EAM_Tasktray_Tool
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "EAM Task Tray Tool";
             this.TopMost = true;
-            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmTaskTray_FormClosing);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrmTaskTray_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).EndInit();

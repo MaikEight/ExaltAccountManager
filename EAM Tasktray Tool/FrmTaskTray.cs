@@ -13,9 +13,11 @@ namespace EAM_Tasktray_Tool
     public partial class FrmTaskTray : Form
     {
         Pen p = new Pen(Color.Black);
-        string pathEAMConfig = Path.Combine(Directory.GetParent(Application.StartupPath).FullName, "EAM.options");
-        string pathDailyLoginsConfig = Path.Combine(Directory.GetParent(Application.StartupPath).FullName, "EAM.DailyLogins");
-        string pathNotificationConfig = Path.Combine(Directory.GetParent(Application.StartupPath).FullName, "EAM.NotificationOptions");
+        private static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
+
+        string pathEAMConfig = Path.Combine(saveFilePath, "EAM.options");
+        string pathDailyLoginsConfig = Path.Combine(saveFilePath, "EAM.DailyLogins");
+        string pathNotificationConfig = Path.Combine(saveFilePath, "EAM.NotificationOptions");
         OptionsData options;
         NotificationOptions notOptions;
         DateTime lastUpdate;
@@ -29,7 +31,7 @@ namespace EAM_Tasktray_Tool
 
             LoadEAMConfig();
             LoadNotificationConfig();
-            fileSystemWatcher.Path = Path.Combine(Directory.GetParent(Application.StartupPath).FullName);
+            fileSystemWatcher.Path = saveFilePath;
             fileSystemWatcher.Filter = "EAM.DailyLogins";
             UpdateDailyLogins();
 

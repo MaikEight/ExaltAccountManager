@@ -46,6 +46,7 @@
             this.timerResetSaveLabel = new System.Windows.Forms.Timer(this.components);
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.lInfo = new System.Windows.Forms.Label();
+            this.loader = new Bunifu.UI.WinForms.BunifuLoader();
             this.pTop.SuspendLayout();
             this.pBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).BeginInit();
@@ -227,12 +228,39 @@
             this.lInfo.Text = "* = leave empty for auto-fill via webrequest";
             this.toolTip.SetToolTip(this.lInfo, "Name used only inside this tool.");
             // 
+            // loader
+            // 
+            this.loader.AllowStylePresets = true;
+            this.loader.BackColor = System.Drawing.Color.Transparent;
+            this.loader.CapStyle = Bunifu.UI.WinForms.BunifuLoader.CapStyles.Round;
+            this.loader.Color = System.Drawing.Color.DodgerBlue;
+            this.loader.Colors = new Bunifu.UI.WinForms.Bloom[0];
+            this.loader.Customization = "";
+            this.loader.DashWidth = 0.5F;
+            this.loader.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.loader.Image = null;
+            this.loader.Location = new System.Drawing.Point(103, 239);
+            this.loader.Name = "loader";
+            this.loader.NoRounding = false;
+            this.loader.Preset = Bunifu.UI.WinForms.BunifuLoader.StylePresets.Dotted;
+            this.loader.RingStyle = Bunifu.UI.WinForms.BunifuLoader.RingStyles.Solid;
+            this.loader.ShowText = false;
+            this.loader.Size = new System.Drawing.Size(40, 40);
+            this.loader.Speed = 7;
+            this.loader.TabIndex = 11;
+            this.loader.Text = "bunifuLoader2";
+            this.loader.TextPadding = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.loader.Thickness = 6;
+            this.loader.Transparent = true;
+            this.loader.Visible = false;
+            // 
             // FrmAddAccount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.ClientSize = new System.Drawing.Size(250, 300);
+            this.Controls.Add(this.loader);
             this.Controls.Add(this.lSave);
             this.Controls.Add(this.lInfo);
             this.Controls.Add(this.label3);
@@ -279,5 +307,6 @@
         private System.Windows.Forms.Timer timerResetSaveLabel;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label lInfo;
+        private Bunifu.UI.WinForms.BunifuLoader loader;
     }
 }

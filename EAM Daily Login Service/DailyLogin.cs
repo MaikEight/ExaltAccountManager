@@ -433,16 +433,21 @@ namespace EAM_Daily_Login_Service
         {
             try
             {
-                AesCryptographyService acs = new AesCryptographyService();
-                byte[] obj = ObjectToByteArray(accounts);
-                byte[] data = acs.Encrypt(obj);
-
-                File.WriteAllBytes(accountsPath, data);
-                LogEvent(new LogData(0, "EAM Service", LogEventType.SaveAccounts, $"Saving accounts."));
+                AccountSaveFile saveFile = AccountSaveFile.Encrypt(new AccountSaveFile(), ObjectToByteArray(accounts));
+                if (saveFile != null && string.IsNullOrEmpty(saveFile.error))
+                {
+                    File.WriteAllBytes(accountsPath, ObjectToByteArray(saveFile));
+                    LogEvent(new LogData(0, "EAM Service", LogEventType.SaveAccounts, $"Saving accounts."));
+                }
+                else
+                {
+                    LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to encrypt accounts!"));                    
+                    throw new Exception();
+                }
             }
             catch
             {
-                LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to save accounts!"));
+                LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to save accounts!"));                
             }
         }
 
@@ -490,15 +495,30 @@ namespace EAM_Daily_Login_Service
             {
                 try
                 {
-                    byte[] data = File.ReadAllBytes(accountsPath);
-                    AesCryptographyService acs = new AesCryptographyService();
-                    accounts = (List<AccountInfo>)ByteArrayToObject(acs.Decrypt(data));
+
+                    try
+                    {
+                        AccountSaveFile saveFile = (AccountSaveFile)ByteArrayToObject(File.ReadAllBytes(accountsPath));
+                        accounts = AccountSaveFile.Decrypt(saveFile);
+                    }
+                    catch
+                    {
+                        LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"Failed to decrypt accounts."));
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Log(ex.Message);
-                    LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"{ex.Message}"));
-                }
+                catch (Exception e) { string ex = e.Message; }
+
+                //try
+                //{
+                //    byte[] data = File.ReadAllBytes(accountsPath);
+                //    AesCryptographyService acs = new AesCryptographyService();
+                //    accounts = (List<AccountInfo>)ByteArrayToObject(acs.Decrypt(data));
+                //}
+                //catch (Exception ex)
+                //{
+                //    Log(ex.Message);
+                //    LogEvent(new LogData(0, "EAM Service", LogEventType.ServiceError, $"{ex.Message}"));
+                //}
             }
         }
 

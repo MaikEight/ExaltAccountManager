@@ -9,7 +9,8 @@ namespace ExaltAccountManager
     {
         List<string> changelogsHeadline = new List<string>()
         {
-            "v2.2 - Ping checker, Security improvements and more",
+            "v2.2.3 - Hotfix: Daily Auto Login",
+            "v2.2.2 - Ping checker, Security improvements and more",
             "v2.0 - Statistics, Changelog, Token viewer + QoL improvements",
             "v1.4 - \"Security improvements and QoL update\"",
             "v1.3 - The Daily Autologin Update!",
@@ -17,8 +18,17 @@ namespace ExaltAccountManager
             "v1.1 - Muledump import",
             "v1.0 - Exalt Account Manager"
         };
+
         List<string> changelogs = new List<string>()
         {
+            $"HOTFIX{Environment.NewLine}{Environment.NewLine}" +
+            $"- Fixed the Daily Auto Login task to work again.{Environment.NewLine}" +
+            $"- Fixed a small bug in the Task-Installer.{Environment.NewLine}{Environment.NewLine}" +
+            $"   Sorry for the inconvenience!{Environment.NewLine}{Environment.NewLine}" +
+            $"ADD / EDIT ACCOUNT{Environment.NewLine}{Environment.NewLine}" +
+            $"- Performance improvements by adding / editing accounts.{Environment.NewLine}",
+            $"- Added a loading UI.",
+
             $"ADDED A PING CHECKER MODULE{Environment.NewLine}{Environment.NewLine}" +
             $"- Ping every server and compare your ping time with the others.{Environment.NewLine}" +
             $"- Set favorites to quickly get an overview of the important servers.{Environment.NewLine}{Environment.NewLine}" +
@@ -47,7 +57,7 @@ namespace ExaltAccountManager
             $"- Changed some colors.{Environment.NewLine}" +
             $"- Switched the scrollbars to custom ones, fixing the \"Jump to top\"-bug.{Environment.NewLine}" +
             $"- Switched the checkboxes to toggles.{Environment.NewLine}" +
-            $"- Optimized the Drag & Drop performance.",            
+            $"- Optimized the Drag & Drop performance.",
 
             $"ADDED A STATISTICS MODULE{Environment.NewLine}{Environment.NewLine}" +
             $"- With each login the tool collects data that can be presented in a unique      and beautiful way here.{Environment.NewLine}" +
@@ -103,9 +113,11 @@ namespace ExaltAccountManager
             $"- Open multiple instances of Exalt at once with the click of a button!{Environment.NewLine}" +
             $"- AES 128 encrypted save-file.",
         };
+
         List<string> releaseDates = new List<string>()
         {
-            "26.08.2021",
+            "05.09.2021",
+            "28.08.2021",
             "20.04.2021",
             "11.03.2021",
             "05.02.2021",

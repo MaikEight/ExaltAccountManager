@@ -1,0 +1,1314 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bunifu.UI.WinForms.BunifuTextBox</name>
+    </assembly>
+    <members>
+        <member name="T:Bunifu.UI.WinForms.BunifuTextBox">
+            <summary>
+            Provides enhanced TextBox with customized styling 
+            properties and features for greater flexibility.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.#ctor">
+            <summary>
+            Creates a new <see cref="!:BunifuTextbox"/> control.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuTextBox._Style">
+            <summary>
+            Provides various styling options for Bunifu TextBox.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu">
+            <summary>
+            Uses the default Bunifu TextBox design.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuTextBox._Style.Material">
+            <summary>
+            Provides a custom Material TextBox design.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuTextBox.state">
+            <summary>
+            Provides various states supported by Bunifu TextBox.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuTextBox.state.idle">
+            <summary>
+            Represents the idle state.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuTextBox.state.hover">
+            <summary>
+            Represents the hover state.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuTextBox.state.active">
+            <summary>
+            Represents the active state.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuTextBox.state.disabled">
+            <summary>
+            Represents the disabled state.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the 
+            control control can respond to user interaction.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.ReadOnly">
+            <summary>
+            Gets or sets a value indicating whether 
+            text in the text box is read-only.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.AutoSizeHeight">
+            <summary>
+            Gets or sets a value indicating whether the 
+            control control can respond to user interaction.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.AnimationSpeed">
+            <summary>
+            Gets or sets the Button's animation speed (in milliseconds) 
+            when moving from one state to another.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.TextMarginLeft">
+            <summary>
+            Gets or sets the TextBox's left margin.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.TextMarginBottom">
+            <summary>
+            Gets or sets the TextBox's bottom margin.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.TextMarginTop">
+            <summary>
+            Gets or sets the TextBox's top margin.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.IconPadding">
+            <summary>
+            Gets or sets the TextBox's padding for
+            both the left and the right icon.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BorderThickness">
+            <summary>
+            Gets or sets the TextBox's border thickness.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BorderRadius">
+            <summary>
+            Gets or sets the the TextBox's border radius.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.PlaceholderText">
+            <summary>
+            Gets or sets the TextBox's placeholder.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.DefaultText">
+            <summary>
+            Gets or sets the text input.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.IconLeft">
+            <summary>
+            Gets or sets the TextBox's left icon.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.IconRight">
+            <summary>
+            Gets or sets the TextBox's right icon.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.PlaceholderForeColor">
+            <summary>
+            Gets or sets the placeholder's ForeColor.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.ForeColor">
+            <summary>
+            Gets or sets the TextBox's foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BorderColorDisabled">
+            <summary>
+            Gets or sets the TextBox's border color when disabled.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BorderColorIdle">
+            <summary>
+            Gets or sets the TextBox's border color when idle.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.FillColor">
+            <summary>
+            Gets or sets the TextBox's fill 
+            color or inner-background color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BorderColorHover">
+            <summary>
+            Gets or sets the TextBox's  
+            border color on mouse hover.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BorderColorActive">
+            <summary>
+            Gets or sets the TextBox's border 
+            color when active or focused.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.IconRightCursor">
+            <summary>
+            Gets or sets the TextBox's right icon cursor.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.IconLeftCursor">
+            <summary>
+            Gets or sets the TextBox's left icon cursor.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.Style">
+            <summary>
+            Gets or sets the TextBox style.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.Cursor">
+            <summary>
+            Represents the image used 
+            to paint the mouse pointer.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.DefaultFont">
+            <summary>
+            Gets or sets the font of the 
+            text displayed by the control.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.OnIdleState">
+            <summary>
+            Gets or sets the Textbox's idle state design.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.OnHoverState">
+            <summary>
+            Gets or sets the Textbox's hover state design.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.OnActiveState">
+            <summary>
+            Gets or sets the Textbox's active state design.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.OnDisabledState">
+            <summary>
+            Gets or sets the Textbox's disabled state design.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.Input">
+            <summary>
+            Gets the hosted input area.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.LeftIcon">
+            <summary>
+            Gets the left icon.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.RightIcon">
+            <summary>
+            Gets the right icon.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.isOnFocused">
+            <summary>
+            Gets a value indicating whether this instance is on focused.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.Text">
+            <summary>
+            Gets or sets the text associated with this control.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.TextPlaceholder">
+            <summary>
+            Gets or sets the TextBox's placeholder.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BackColor">
+            <summary>
+            Gets or sets the control's BackColor.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.BackgroundImage">
+            <summary>
+            Gets or sets the control's BackgroundImage.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.DrawingRectangle">
+            <summary>
+            Gets the TextBox's drawing rectangle.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.Focused">
+            <summary>
+            Gets a value indicating whether 
+            the control has input focus.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.CreateParams">
+            <summary>
+            Gets the list of created control parameters.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.ScrollBars">
+            <summary>
+            Indicates which scroll bars will be shown 
+            when the TextBox is set to multiline.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.AutoCompleteCustomSource">
+            <summary>
+            Gets or sets the automatic complete custom source.
+            </summary>
+            <value>
+            The automatic complete custom source.
+            </value>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.Font">
+            <summary>
+            Gets or sets the font of the text displayed by the control.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuTextBox.StateProperties">
+            <summary>
+            Provides options for use when creating a 
+            list of properties for use when defining a  
+            control's various activity states.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.StateProperties.ForeColor">
+            <summary>
+            Gets or sets the control's foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.StateProperties.PlaceholderForeColor">
+            <summary>
+            Gets or sets the control's placeholder foreground color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.StateProperties.FillColor">
+            <summary>
+            Gets or sets the control's background/fill color.
+            </summary>
+        </member>
+        <member name="P:Bunifu.UI.WinForms.BunifuTextBox.StateProperties.BorderColor">
+            <summary>
+            Gets or sets the control's border color.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.StateProperties.ToString">
+            <summary>
+            Returns a string containing the object's 
+            properties and their values.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Refresh">
+            <summary>
+            Redraws the control's layout.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Focus">
+            <summary>
+            Sets input focus to the control.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.ResetColors">
+            <summary>
+            Resets the control's assigned colors.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.ResizeControl">
+            <summary>
+            Adjusts the control to its appropriate size.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Reset">
+            <summary>
+            Inserts default placeholder, assigns placeholder 
+            style and sets cursor to the first position.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.ResetText">
+            <summary>
+            Resets the <see cref="P:Bunifu.UI.WinForms.BunifuTextBox.Text"/> property to its default value.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Clear">
+            <summary>
+            Clears all text from the text box control.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.ClearUndo">
+            <summary>
+            Clears information about the most recent 
+            operation from the undo buffer of the text box.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.AppendText(System.String)">
+            <summary>
+            Appends text to the current text of a text box.
+            </summary>
+            <param name="text">
+            The text to append to the current 
+            contents of the text box.
+            </param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Copy">
+            <summary>
+            Copies the current selection in 
+            the text box to the Clipboard.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Cut">
+            <summary>
+            Moves the current selection in 
+            the text box to the Clipboard.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.DeselectAll">
+            <summary>
+            Specifies that the value of the <see cref="P:Bunifu.UI.WinForms.BunifuTextBox.SelectionLength"/> 
+            property is zero so that no characters are selected in the control.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.GetCharFromPosition(System.Drawing.Point)">
+            <summary>
+            Retrieves the character that is closest to 
+            the specified location within the control.
+            </summary>
+            <param name="pt">The location from which to seek the nearest character.</param>
+            <returns>The character at the specified location.</returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.GetCharIndexFromPosition(System.Drawing.Point)">
+            <summary>
+            Retrieves the index of the character 
+            nearest to the specified location.
+            </summary>
+            <param name="pt">The location to search.</param>
+            <returns>
+            The zero-based character index 
+            at the specified location.
+            </returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.GetFirstCharIndexFromLine(System.Int32)">
+            <summary>
+            Retrieves the index of the first character of a given line.
+            </summary>
+            <param name="lineNumber">The line for which to get the index of its first character.</param>
+            <returns>
+            The zero-based index of the first 
+            character in the specified line.
+            </returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.GetFirstCharIndexOfCurrentLine">
+            <summary>
+            Retrieves the index of the first character of the current line.
+            </summary>
+            <returns>
+            The zero-based character 
+            index in the current line.
+            </returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.GetLineFromCharIndex(System.Int32)">
+            <summary>
+            Retrieves the line number from the specified 
+            character position within the text of the control.
+            </summary>
+            <param name="index">The character index position to search.</param>
+            <returns>
+            The zero-based line number in which  
+            the character index is located.
+            </returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.GetPositionFromCharIndex(System.Int32)">
+            <summary>
+            Retrieves the location within the control 
+            at the specified character index.
+            </summary>
+            <param name="index">
+            The index of the character for 
+            which to retrieve the location.
+            </param>
+            <returns>
+            The location of the specified character 
+            within the client rectangle of the control.
+            </returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Paste">
+            <summary>
+            Replaces the current selection in the text box 
+            with the contents of the Clipboard.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.ScrollToCaret">
+            <summary>
+            Scrolls the contents of the control 
+            to the current caret position.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Select(System.Int32,System.Int32)">
+            <summary>
+            Selects a range of text in the text box.
+            </summary>
+            <param name="start">
+            The position of the first character in the 
+            current text selection within the text box.
+            </param>
+            <param name="length">
+            The number of characters to select.
+            </param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.SelectAll">
+            <summary>
+            Selects all text in the text box.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.ToString">
+            <summary>
+            Returns a string that represents the <see cref="T:Bunifu.UI.WinForms.BunifuTextBox"/> control.
+            </summary>
+            <returns>
+            A string that represents the current <see cref="T:Bunifu.UI.WinForms.BunifuTextBox"/>. 
+            The string includes the type and the <see cref="T:Bunifu.UI.WinForms.BunifuTextBox"/> 
+            property of the control.
+            </returns>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Undo">
+            <summary>
+            Undoes the last edit operation in the text box.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.EnabledChanged">
+            <summary>
+            Occurs when the control's enabled state changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.TextChange">
+            <summary>
+            Occurs when the 'Text' property changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.TextChanged">
+            <summary>
+            Occurs when the 'Text' property changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.AcceptsTabChanged">
+            <summary>
+            Occurs when the property 'AcceptsTab' changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.BorderStyleChanged">
+            <summary>
+            Occurs when the 'BorderStyle' property changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.HideSelectionChanged">
+            <summary>
+            Occurs when the 'HideSelection' property changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.ModifiedChanged">
+            <summary>
+            Occurs when the 'Modified' property changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.ReadOnlyChanged">
+            <summary>
+            Occurs when the 'ReadOnly' property changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.TextAlignChanged">
+            <summary>
+            Occurs when the 'TextAlign' property changes.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.OnIconLeftClick">
+            <summary>
+            Occurs when the left icon is clicked.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.OnIconRightClick">
+            <summary>
+            Occurs when the right icon is clicked.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.KeyDown">
+            <summary>
+            Occurs when a key is first pressed.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.KeyPress">
+            <summary>
+            Occurs when the control has focus and 
+            the user presses and releases a key.
+            </summary>
+        </member>
+        <member name="E:Bunifu.UI.WinForms.BunifuTextBox.KeyUp">
+            <summary>
+            Occurs when a key is released.
+            </summary>
+        </member>
+        <member name="T:Bunifu.UI.WinForms.BunifuTextBox.BunifuControlActionList">
+            <summary>
+            Initializes a new instance of the <see cref="T:Bunifu.UI.WinForms.BunifuTextBox.BunifuControlActionList"/> class.
+            </summary>
+            <seealso cref="T:System.ComponentModel.Design.DesignerActionList" />
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.BunifuControlActionList.GetSortedActionItems">
+            <summary>
+            Implementation of this abstract method creates Smart Tag items,
+            associates their targets, and collects them into a list.
+            </summary>
+        </member>
+        <member name="F:Bunifu.UI.WinForms.BunifuTextBox.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bunifu.UI.WinForms.BunifuTextBox.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:System.Windows.Forms.PlaceholderTextBox">
+            <summary>
+            Provides a Windows TextBox control 
+            with enhanced placeholder capabilities.
+            </summary>
+        </member>
+        <member name="M:System.Windows.Forms.PlaceholderTextBox.#ctor">
+            <summary>
+            Initializes a new instance of the PlaceholderTextBox class.
+            </summary>
+        </member>
+        <member name="F:System.Windows.Forms.PlaceholderTextBox.avoidTextChanged">
+            <summary>
+            Flag to avoid the TextChanged Event. Don't access directly, use Method 'ActionWithoutTextChanged(Action act)' instead.
+            </summary>
+        </member>
+        <member name="F:System.Windows.Forms.PlaceholderTextBox.DEFAULT_PLACEHOLDER">
+            <summary>
+            Specifies the default placeholder text.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.SelectionEnabled">
+            <summary>
+            Gets or sets a value indicating whether selection of texts is enabled.
+            This is a necessary property applicable when the textbox is disabled.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.IsPlaceholderActive">
+            <summary>
+            Gets a value indicating whether the Placeholder is active.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.PlaceholderText">
+            <summary>
+            Gets or sets the placeholder in the PlaceholderTextBox.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.Text">
+            <summary>
+            Gets or sets the current text in the TextBox.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.MaxLength">
+            <summary>
+            Gets or sets the maximum text length allowed.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.PlaceholderTextColor">
+            <summary>
+            Gets or sets the foreground color of the control.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.TextColor">
+            <summary>
+            Gets or sets the foreground color of the control.
+            </summary>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderTextBox.ForeColor">
+            <summary>
+            Do not access directly. Use TextColor.
+            </summary>
+        </member>
+        <member name="E:System.Windows.Forms.PlaceholderTextBox.PlaceholderActiveChanged">
+            <summary>
+            Occurs when the value of the IsPlaceholderActive property has changed.
+            </summary>
+        </member>
+        <member name="M:System.Windows.Forms.PlaceholderTextBox.Reset">
+            <summary>
+            Inserts placeholder, assigns placeholder style and sets cursor to first position.
+            </summary>
+        </member>
+        <member name="M:System.Windows.Forms.PlaceholderTextBox.ActionWithoutTextChanged(System.Action)">
+            <summary>
+            Run an action with avoiding the TextChanged event.
+            </summary>
+            <param name="act">Specifies the action to run.</param>
+        </member>
+        <member name="M:System.Windows.Forms.PlaceholderTextBox.UpdateText">
+            <summary>
+            Updates control text.
+            </summary>
+        </member>
+        <member name="M:System.Windows.Forms.PlaceholderTextBox.WndProc(System.Windows.Forms.Message@)">
+            <summary>
+            Overrides the default window messages being broadcasted.
+            </summary>
+            <param name="m"></param>
+        </member>
+        <member name="M:System.Windows.Forms.PlaceholderTextBox.OnGotFocus(System.EventArgs)">
+            <summary>
+            This override helps avoid full text selection 
+            after first display with TabIndex = 0.
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="T:System.Windows.Forms.PlaceholderActiveChangedEventArgs">
+            <summary>
+            Provides data for the PlaceholderActiveChanged event.
+            </summary>
+        </member>
+        <member name="M:System.Windows.Forms.PlaceholderActiveChangedEventArgs.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the PlaceholderActiveChangedEventArgs class.
+            </summary>
+            <param name="isActive">Specifies whether the placeholder is currently active.</param>
+        </member>
+        <member name="P:System.Windows.Forms.PlaceholderActiveChangedEventArgs.IsActive">
+            <summary>
+            Gets the new value of the IsPlaceholderActive property.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Extensions.ColorExtensions">
+            <summary>
+            Provides a collection of methods that extend the .NET Color class.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.IManagedType">
+            <summary>
+            Interface for all types we can perform transitions on. 
+            Each type (e.g. int, double, Color) that we can perform a transition on 
+            needs to have its own class that implements this interface. These classes 
+            tell the transition system how to act on objects of that type.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.IManagedType.getManagedType">
+            <summary>
+            Returns the Type that the instance is managing.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.IManagedType.copy(System.Object)">
+            <summary>
+            Returns a deep copy of the object passed in. (In particular this is 
+            needed for types that are objects.)
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.IManagedType.getIntermediateValue(System.Object,System.Object,System.Double)">
+            <summary>
+            Returns an object holding the value between the start and end corresponding
+            to the percentage passed in. (Note: the percentage can be less than 0% or
+            greater than 100%.)
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ITransitionType.onTimer(System.Int32,System.Double@,System.Boolean@)">
+            <summary>
+            Called by the Transition framework when its timer ticks to pass in the
+            time (in ms) since the transition started. 
+            
+            You should return (in an out parameter) the percentage movement towards 
+            the destination value for the time passed in. Note: this does not need to
+            be a smooth transition from 0% to 100%. You can overshoot with values
+            greater than 100% or undershoot if you need to (for example, to have some
+            form of "elasticity").
+            
+            The percentage should be returned as (for example) 0.1 for 10%.
+            
+            You should return (in an out parameter) whether the transition has completed.
+            (This may not be at the same time as the percentage has moved to 100%.)
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.ManagedType_Color">
+            <summary>
+            Class that manages transitions for Color properties. For these we
+            need to transition the R, G, B and A sub-properties independently.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Color.getManagedType">
+            <summary>
+            Returns the type we are managing.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Color.copy(System.Object)">
+            <summary>
+            Returns a copy of the color object passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Color.getIntermediateValue(System.Object,System.Object,System.Double)">
+            <summary>
+            Creates an intermediate value for the colors depending on the percentage passed in.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.ManagedType_Double">
+            <summary>
+            Manages transitions for double properties.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Double.getManagedType">
+            <summary>
+             Returns the type managed by this class.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Double.copy(System.Object)">
+            <summary>
+            Returns a copy of the double passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Double.getIntermediateValue(System.Object,System.Object,System.Double)">
+            <summary>
+            Returns the value between start and end for the percentage passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Float.getManagedType">
+            <summary>
+            Returns the type we're managing.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Float.copy(System.Object)">
+            <summary>
+            Returns a copy of the float passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Float.getIntermediateValue(System.Object,System.Object,System.Double)">
+            <summary>
+            Returns the interpolated value for the percentage passed in.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.ManagedType_Int">
+            <summary>
+            Manages transitions for int properties.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Int.getManagedType">
+            <summary>
+            Returns the type we are managing.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Int.copy(System.Object)">
+            <summary>
+            Returns a copy of the int passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_Int.getIntermediateValue(System.Object,System.Object,System.Double)">
+            <summary>
+            Returns the value between the start and end for the percentage passed in.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.ManagedType_String">
+            <summary>
+            Manages transitions for strings. This doesn't make as much sense as transitions
+            on other types, but I like the way it looks!
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_String.getManagedType">
+            <summary>
+            Returns the type we're managing.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_String.copy(System.Object)">
+            <summary>
+            Returns a copy of the string passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.ManagedType_String.getIntermediateValue(System.Object,System.Object,System.Double)">
+            <summary>
+            Returns an "interpolated" string.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.Transition">
+            <summary>
+            Lets you perform animated transitions of properties on arbitrary objects. These 
+            will often be transitions of UI properties, for example an animated fade-in of 
+            a UI object, or an animated move of a UI object from one position to another.
+            
+            Each transition can simulataneously change multiple properties, including properties
+            across multiple objects.
+            
+            Example transition
+            ------------------
+            a.      Transition t = new Transition(new TransitionMethod_Linear(500));
+            b.      t.add(form1, "Width", 500);
+            c.      t.add(form1, "BackColor", Color.Red);
+            d.      t.run();
+              
+            Line a:         Creates a new transition. You specify the transition method.
+                            
+            Lines b. and c: Set the destination values of the properties you are animating.
+            
+            Line d:         Starts the transition.
+            
+            Transition methods
+            ------------------
+            TransitionMethod objects specify how the transition is made. Examples include
+            linear transition, ease-in-ease-out and so on. Different transition methods may
+            need different parameters.
+            
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.#cctor">
+            <summary>
+            You should register all managed-types here.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.Transition.Args">
+            <summary>
+            Args passed with the TransitionCompletedEvent.
+            </summary>
+        </member>
+        <member name="E:Utilities.BunifuTextBox.Transitions.Transition.TransitionCompletedEvent">
+            <summary>
+            Event raised when the transition hass completed.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.run(System.Object,System.String,System.Object,Utilities.BunifuTextBox.Transitions.ITransitionType)">
+            <summary>
+            Creates and immediately runs a transition on the property passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.run(System.Object,System.String,System.Object,System.Object,Utilities.BunifuTextBox.Transitions.ITransitionType)">
+            <summary>
+            Sets the property passed in to the initial value passed in, then creates and 
+            immediately runs a transition on it.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.runChain(Utilities.BunifuTextBox.Transitions.Transition[])">
+            <summary>
+            Creates a TransitionChain and runs it.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.#ctor(Utilities.BunifuTextBox.Transitions.ITransitionType)">
+            <summary>
+            Constructor. You pass in the object that holds the properties 
+            that you are performing transitions on.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.add(System.Object,System.String,System.Object)">
+            <summary>
+            Adds a property that should be animated as part of this transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.run">
+            <summary>
+            Starts the transition.
+            </summary>
+        </member>
+        <member name="P:Utilities.BunifuTextBox.Transitions.Transition.TransitionedProperties">
+            <summary>
+            Property that returns a list of information about each property managed
+            by this transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.removeProperty(Utilities.BunifuTextBox.Transitions.Transition.TransitionedPropertyInfo)">
+            <summary>
+            We remove the property with the info passed in from the transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.onTimer">
+            <summary>
+            Called when the transition timer ticks.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.setProperty(System.Object,Utilities.BunifuTextBox.Transitions.Transition.PropertyUpdateArgs)">
+            <summary>
+            Sets a property on the object passed in to the value passed in. This method
+            invokes itself on the GUI thread if the property is being invoked on a GUI 
+            object.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.isDisposed(System.Object)">
+            <summary>
+            Returns true if the object passed in is a Control and is disposed
+            or in the process of disposing. (If this is the case, we don't want
+            to make any changes to its properties.)
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Transition.registerType(Utilities.BunifuTextBox.Transitions.IManagedType)">
+            <summary>
+            Registers a transition-type. We hold them in a map.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionChain.runNextTransition">
+            <summary>
+            Runs the next transition in the list.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionChain.onTransitionCompleted(System.Object,Utilities.BunifuTextBox.Transitions.Transition.Args)">
+            <summary>
+            Called when the transition we have just run has completed.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionElement.#ctor(System.Double,System.Double,Utilities.BunifuTextBox.Transitions.InterpolationMethod)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="P:Utilities.BunifuTextBox.Transitions.TransitionElement.EndTime">
+            <summary>
+            The percentage of elapsed time, expressed as (for example) 75 for 75%.
+            </summary>
+        </member>
+        <member name="P:Utilities.BunifuTextBox.Transitions.TransitionElement.EndValue">
+            <summary>
+            The value of the animated properties at the EndTime. This is the percentage 
+            movement of the properties between their start and end values. This should
+            be expressed as (for example) 75 for 75%.
+            </summary>
+        </member>
+        <member name="P:Utilities.BunifuTextBox.Transitions.TransitionElement.InterpolationMethod">
+            <summary>
+            The interpolation method to use when moving between the previous value
+            and the current one.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionManager">
+            <summary>
+            This class is responsible for running transitions. It holds the timer that
+            triggers transaction animation. 
+            </summary><remarks>
+            This class is a singleton.
+            
+            We manage the transaction timer here so that we can have a single timer
+            across all transactions. If each transaction has its own timer, this creates
+            one thread for each transaction, and this can lead to too many threads in
+            an application.
+            
+            This class essentially just manages the timer for the transitions. It calls 
+            back into the running transitions, which do the actual work of the transition.
+            
+            </remarks>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionManager.getInstance">
+            <summary>
+            Singleton's getInstance method.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionManager.register(Utilities.BunifuTextBox.Transitions.Transition)">
+            <summary>
+            You register a transition with the manager here. This will start to run
+            the transition as the manager's timer ticks.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionManager.removeDuplicates(Utilities.BunifuTextBox.Transitions.Transition)">
+            <summary>
+            Checks if any existing transitions are acting on the same properties as the
+            transition passed in. If so, we remove the duplicated properties from the 
+            older transitions.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionManager.removeDuplicates(Utilities.BunifuTextBox.Transitions.Transition,Utilities.BunifuTextBox.Transitions.Transition)">
+            <summary>
+            Finds any properties in the old-transition that are also in the new one,
+            and removes them from the old one.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionManager.#ctor">
+            <summary>
+            Private constructor (for singleton).
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionManager.onTimerElapsed(System.Object,System.Timers.ElapsedEventArgs)">
+            <summary>
+            Called when the timer ticks.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionManager.onTransitionCompleted(System.Object,Utilities.BunifuTextBox.Transitions.Transition.Args)">
+            <summary>
+            Called when a transition has completed. 
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_Acceleration">
+            <summary>
+            Manages transitions under constant acceleration from a standing start.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Acceleration.#ctor(System.Int32)">
+            <summary>
+            Constructor. You pass in the time that the transition 
+            will take (in milliseconds).
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Acceleration.onTimer(System.Int32,System.Double@,System.Boolean@)">
+            <summary>
+            Works out the percentage completed given the time passed in.
+            This uses the formula:
+              s = ut + 1/2at^2
+            The initial velocity is 0, and the acceleration to get to 1.0
+            at t=1.0 is 2, so the formula just becomes:
+              s = t^2
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_Bounce">
+            <summary>
+            This transition bounces the property to a destination value and back to the
+            original value. It is accelerated to the destination and then decelerated back
+            as if being dropped with gravity and bouncing back against gravity.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Bounce.#ctor(System.Int32)">
+            <summary>
+            Constructor. You pass in the total time taken for the bounce.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_CriticalDamping">
+            <summary>
+            This transition animates with an exponential decay. This has a damping effect
+            similar to the motion of a needle on an electomagnetically controlled dial.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_CriticalDamping.#ctor(System.Int32)">
+            <summary>
+            Constructor. You pass in the time that the transition 
+            will take (in milliseconds).
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_CriticalDamping.onTimer(System.Int32,System.Double@,System.Boolean@)">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_Deceleration">
+            <summary>
+            Manages a transition starting from a high speed and decelerating to zero by
+            the end of the transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Deceleration.#ctor(System.Int32)">
+            <summary>
+            Constructor. You pass in the time that the transition 
+            will take (in milliseconds).
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Deceleration.onTimer(System.Int32,System.Double@,System.Boolean@)">
+            <summary>
+            Works out the percentage completed given the time passed in.
+            This uses the formula:
+              s = ut + 1/2at^2
+            The initial velocity is 2, and the acceleration to get to 1.0
+            at t=1.0 is -2, so the formula becomes:
+              s = t(2-t)
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_EaseInEaseOut">
+            <summary>
+            Manages an ease-in-ease-out transition. This accelerates during the first 
+            half of the transition, and then decelerates during the second half.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_EaseInEaseOut.#ctor(System.Int32)">
+            <summary>
+            Constructor. You pass in the time that the transition 
+            will take (in milliseconds).
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_EaseInEaseOut.onTimer(System.Int32,System.Double@,System.Boolean@)">
+            <summary>
+            Works out the percentage completed given the time passed in.
+            This uses the formula:
+              s = ut + 1/2at^2
+            We accelerate as at the rate needed (a=4) to get to 0.5 at t=0.5, and
+            then decelerate at the same rate to end up at 1.0 at t=1.0.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_Flash">
+            <summary>
+            This transition type 'flashes' the properties a specified number of times, ending
+            up by reverting them to their initial values. You specify the number of bounces and
+            the length of each bounce. 
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Flash.#ctor(System.Int32,System.Int32)">
+            <summary>
+            You specify the number of bounces and the time taken for each bounce.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_Linear">
+            <summary>
+            This class manages a linear transition. The percentage complete for the transition
+            increases linearly with time.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Linear.#ctor(System.Int32)">
+            <summary>
+            Constructor. You pass in the time (in milliseconds) that the
+            transition will take.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_Linear.onTimer(System.Int32,System.Double@,System.Boolean@)">
+            <summary>
+            We return the percentage completed.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_ThrowAndCatch">
+            <summary>
+            This transition bounces the property to a destination value and back to the
+            original value. It is decelerated to the destination and then acclerated back
+            as if being thrown against gravity and then descending back with gravity.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_ThrowAndCatch.#ctor(System.Int32)">
+            <summary>
+            Constructor. You pass in the total time taken for the bounce.
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.TransitionType_UserDefined">
+            <summary>
+            This class allows you to create user-defined transition types. You specify these
+            as a list of TransitionElements. Each of these defines: 
+            End time , End value, Interpolation method
+            
+            For example, say you want to make a bouncing effect with a decay:
+            
+            EndTime%    EndValue%   Interpolation
+            --------    ---------   -------------
+            50          100         Acceleration 
+            75          50          Deceleration
+            85          100         Acceleration
+            91          75          Deceleration
+            95          100         Acceleration
+            98          90          Deceleration
+            100         100         Acceleration
+            
+            The time values are expressed as a percentage of the overall transition time. This 
+            means that you can create a user-defined transition-type and then use it for transitions
+            of different lengths.
+            
+            The values are percentages of the values between the start and end values of the properties
+            being animated in the transitions. 0% is the start value and 100% is the end value.
+            
+            The interpolation is one of the values from the InterpolationMethod enum.
+            
+            So the example above accelerates to the destination (as if under gravity) by
+            t=50%, then bounces back up to half the initial height by t=75%, slowing down 
+            (as if against gravity) before falling down again and bouncing to decreasing 
+            heights each time.
+            
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_UserDefined.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_UserDefined.#ctor(System.Collections.Generic.IList{Utilities.BunifuTextBox.Transitions.TransitionElement},System.Int32)">
+            <summary>
+            Constructor. You pass in the list of TransitionElements and the total time
+            (in milliseconds) for the transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_UserDefined.setup(System.Collections.Generic.IList{Utilities.BunifuTextBox.Transitions.TransitionElement},System.Int32)">
+            <summary>
+            Sets up the transitions. 
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_UserDefined.onTimer(System.Int32,System.Double@,System.Boolean@)">
+            <summary>
+            Called to find the value for the movement of properties for the time passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.TransitionType_UserDefined.getElementInfo(System.Double,System.Double@,System.Double@,System.Double@,System.Double@,Utilities.BunifuTextBox.Transitions.InterpolationMethod@)">
+            <summary>
+            Returns the element info for the time-fraction passed in. 
+            </summary>
+        </member>
+        <member name="T:Utilities.BunifuTextBox.Transitions.Utility">
+            <summary>
+            A class holding static utility functions.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.getValue(System.Object,System.String)">
+            <summary>
+            Returns the value of the property passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.setValue(System.Object,System.String,System.Object)">
+            <summary>
+            Sets the value of the property passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.interpolate(System.Double,System.Double,System.Double)">
+            <summary>
+            Returns a value between d1 and d2 for the percentage passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.interpolate(System.Int32,System.Int32,System.Double)">
+            <summary>
+            Returns a value betweeen i1 and i2 for the percentage passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.interpolate(System.Single,System.Single,System.Double)">
+            <summary>
+            Returns a value betweeen f1 and f2 for the percentage passed in.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.convertLinearToEaseInEaseOut(System.Double)">
+            <summary>
+            Converts a fraction representing linear time to a fraction representing
+            the distance traveled under an ease-in-ease-out transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.convertLinearToAcceleration(System.Double)">
+            <summary>
+            Converts a fraction representing linear time to a fraction representing
+            the distance traveled under a constant acceleration transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.convertLinearToDeceleration(System.Double)">
+            <summary>
+            Converts a fraction representing linear time to a fraction representing
+            the distance traveled under a constant deceleration transition.
+            </summary>
+        </member>
+        <member name="M:Utilities.BunifuTextBox.Transitions.Utility.raiseEvent``1(System.EventHandler{``0},System.Object,``0)">
+            <summary>
+            Fires the event passed in in a thread-safe way. 
+            </summary><remarks>
+            This method loops through the targets of the event and invokes each in turn. If the
+            target supports ISychronizeInvoke (such as forms or controls) and is set to run 
+            on a different thread, then we call BeginInvoke to marshal the event to the target
+            thread. If the target does not support this interface (such as most non-form classes)
+            or we are on the same thread as the target, then the event is fired on the same
+            thread as this is called from.
+            </remarks>
+        </member>
+    </members>
+</doc>

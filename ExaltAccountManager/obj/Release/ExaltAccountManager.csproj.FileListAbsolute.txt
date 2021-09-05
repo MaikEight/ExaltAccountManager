@@ -106,7 +106,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuTransition.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuUserControl.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.Deprecated.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\EAM Statistics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\MK_RadarChart.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.1.5.3.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuButton.xml
@@ -139,9 +138,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuToolTip.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuTransition.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuUserControl.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\EAM Statistics.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\MK_RadarChart.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.ChangeLogEntry.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.FrmAbout.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.FrmChangelog.resources
@@ -151,7 +147,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.MoreToolsUI.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.TokenViewerUI.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.exe.licenses
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\EAM Statistics.exe.config
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.FrmHelp.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.HelpUI.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.csproj.AssemblyReference.cache
@@ -300,3 +295,9 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.FrmUpdater.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.SortAlphabeticalUI.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.FrmHWIDTool.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\EAM Statistics.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\EAM Statistics.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\EAM Statistics.dll.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\MK_RadarChart.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuLoader.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\Bunifu.UI.WinForms.BunifuLoader.xml

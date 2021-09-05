@@ -14,6 +14,9 @@ namespace ExaltAccountManager
         int index = -1;
         string startEmail = string.Empty;
 
+        bool waitForUI = false;
+        bool waitError = false;
+
         public FrmAddAccount(FrmMain _frm, bool skipTheme = false)
         {
             InitializeComponent();
@@ -137,7 +140,7 @@ namespace ExaltAccountManager
 
             info.name = tbName.Text;
             info.email = tbEmail.Text;
-            info.password = tbPassword.Text;
+            info.password = tbPassword.Text;            
 
             if (string.IsNullOrEmpty(info.email) || string.IsNullOrEmpty(info.password))
             {
@@ -151,12 +154,29 @@ namespace ExaltAccountManager
                 timerResetSaveLabel.Start();
                 return;
             }
+
+            lSave.Visible = false;
+            loader.Visible = true;
+
+            waitError = false;
+            waitForUI = true;
+
             try
             {
-                if (string.IsNullOrEmpty(info.name))
-                    info = frm.GetAccountData(info);
-                else
-                    info = frm.GetAccountData(info, false);
+                System.Threading.ThreadPool.QueueUserWorkItem(_ => GetAccountData());
+
+                while (waitForUI && !waitError)                
+                    Application.DoEvents();
+
+                //if (string.IsNullOrEmpty(info.name))
+                //    info = frm.GetAccountData(info);
+                //else
+                //    info = frm.GetAccountData(info, false);
+
+                if (waitError)
+                {
+                    throw new Exception();
+                }
 
                 if (string.IsNullOrEmpty(info.name) || !info.requestSuccessfull)
                 {
@@ -167,6 +187,9 @@ namespace ExaltAccountManager
                     lInfo.Visible = false;
                     isWaiting = true;
                     timerResetSaveLabel.Start();
+
+                    lSave.Visible = true;
+                    loader.Visible = false;
                     return;
                 }
 
@@ -180,15 +203,20 @@ namespace ExaltAccountManager
                     lInfo.Visible = false;
                     isWaiting = true;
                     timerResetSaveLabel.Start();
+
+                    lSave.Visible = true;
+                    loader.Visible = false;
                     return;
                 }
 
                 if (addNew)
                 {
                     frm.LogEvent(new LogData(frm.logs.Count + 1, "EAM ADD", LogEventType.AddAccount, $"Adding new account: {info.email}"));
-                    frm.accounts.Add(info);
-                    frm.AddAccountToOrders(info.email);
-                    frm.UpdateAccountInfos();
+                    //frm.accounts.Add(info);
+                    //frm.AddAccountToOrders(info.email);
+                    //frm.UpdateAccountInfos();
+                    frm.AddNewAccountInfo(info);
+
                     Application.DoEvents();
                     frm.snackbar.Show(frm, $"New Account added.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                 }
@@ -196,7 +224,19 @@ namespace ExaltAccountManager
                 {
                     frm.LogEvent(new LogData(frm.logs.Count + 1, "EAM Edit", LogEventType.EditAccount, $"Account edited: {info.email}"));
                     frm.accounts[index] = info;
-                    frm.UpdateAccountInfos();
+                    
+                    try
+                    {
+                        AccountUI ui = frm.accountUIs.Where(a => a.accountInfo.email.Equals(info.email)).First();
+                        ui.UpdateInfo(info);
+
+                        frm.SaveAccounts();
+                    }
+                    catch
+                    {
+                        frm.UpdateAccountInfos();
+                    }                    
+
                     Application.DoEvents();
                     frm.snackbar.Show(frm, $"Account updated successfully.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                 }
@@ -211,8 +251,28 @@ namespace ExaltAccountManager
                 isWaiting = true;
                 timerResetSaveLabel.Start();
                 frm.LogEvent(new LogData(frm.logs.Count + 1, (addNew) ? "EAM Add" : "EAM Edit", LogEventType.EAMError, $"Error while {((addNew) ? "adding a new" : "editing an")} account."));
+
+                lSave.Visible = true;
+                loader.Visible = false;
             }
         }
+        private void GetAccountData()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(info.name))
+                    info = frm.GetAccountData(info);
+                else
+                    info = frm.GetAccountData(info, false);
+            }
+            catch
+            {
+                waitError = true;
+                waitForUI = false;
+                return;
+            }
+            waitForUI = false;
+        }        
 
         #region Drag Form
 

@@ -10,7 +10,7 @@ namespace MK_EAM_Lib
     [System.Serializable]
     public class EAMNotificationMessage
     {
-        private const string url = "https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/EAMNotificationMessage";
+        private const string url = "https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/NotificationMessages/EAMNotificationMessage.{0}";
 
         public int id = -1;
         public EAMNotificationMessageType type;
@@ -20,28 +20,37 @@ namespace MK_EAM_Lib
         public string linkM = string.Empty;
         public bool forceShow = false;
 
-        public static EAMNotificationMessage GetEAMNotificationMessage()
+        public static EAMNotificationMessage GetEAMNotificationMessage(string version)
         {
             EAMNotificationMessage toRet = new EAMNotificationMessage()
             {
                 type = EAMNotificationMessageType.None
             };
 
-            string str = string.Empty;
-            System.Net.WebRequest request = System.Net.WebRequest.Create(url);
-            request.Credentials = System.Net.CredentialCache.DefaultCredentials;
-            request.CachePolicy = new System.Net.Cache.HttpRequestCachePolicy(System.Net.Cache.HttpRequestCacheLevel.BypassCache);
-            System.Net.WebResponse response = request.GetResponse();
-            using (System.IO.Stream dataStream = response.GetResponseStream())
+            try
             {
-                using (System.IO.StreamReader reader = new System.IO.StreamReader(dataStream))
+                string str = string.Empty;
+                System.Net.WebRequest request = System.Net.WebRequest.Create(string.Format(url, version));
+                request.Credentials = System.Net.CredentialCache.DefaultCredentials;
+                request.CachePolicy = new System.Net.Cache.HttpRequestCachePolicy(System.Net.Cache.HttpRequestCacheLevel.BypassCache);
+                System.Net.WebResponse response = request.GetResponse();
+                using (System.IO.Stream dataStream = response.GetResponseStream())
                 {
-                    JsonSerializer serializer = new JsonSerializer();
-                    toRet = (EAMNotificationMessage)serializer.Deserialize(reader, typeof(EAMNotificationMessage));
+                    using (System.IO.StreamReader reader = new System.IO.StreamReader(dataStream))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        toRet = (EAMNotificationMessage)serializer.Deserialize(reader, typeof(EAMNotificationMessage));
+                    }
                 }
+                response.Close();
             }
-            response.Close();
-            
+            catch
+            {
+                toRet = new EAMNotificationMessage()
+                {
+                    type = EAMNotificationMessageType.None
+                };
+            }
             return toRet;
         }
     }

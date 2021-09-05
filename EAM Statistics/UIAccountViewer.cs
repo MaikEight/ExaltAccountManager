@@ -102,7 +102,7 @@ namespace EAM_Statistics
                 mtpCharacters.Size = new Size(200, 410);
                 mtpCharacters.RowClicked += CharacterClicked;
             }
-            catch (Exception e){ string stack = e.StackTrace; }
+            catch (Exception e) { string stack = e.StackTrace; }
 
             #endregion
 
@@ -121,9 +121,16 @@ namespace EAM_Statistics
             try
             {
                 int aliveFame = 0;
-                for (int i = 0; i < stats.charList[form.statsList[form.statsList.Count - 1].charList.Count - 1].chars.Count; i++)
+                DateTime latestData = stats.charList.Max(c => c.date);
+                CharListStats chars = stats.charList.Where(cl => cl.date.Equals(latestData)).First();
+
+                //for (int i = 0; i < stats.charList[form.statsList[form.statsList.Count - 1].charList.Count - 1].chars.Count; i++)
+                //{
+                //    aliveFame += stats.charList[form.statsList[form.statsList.Count - 1].charList.Count - 1].chars[i].fame;
+                //}
+                for (int i = 0; i < chars.chars.Count; i++)
                 {
-                    aliveFame += stats.charList[form.statsList[form.statsList.Count - 1].charList.Count - 1].chars[i].fame;
+                    aliveFame += chars.chars[i].fame;
                 }
                 lAliveFameValue.Text = string.Format(lAliveFameValue.Text, aliveFame);
             }
@@ -153,7 +160,7 @@ namespace EAM_Statistics
                 lBestFameValue.Text = toggleBestClassByTotalFame.Checked ? charStats[0].bestTotalFame.ToString() : charStats[0].bestBaseFame.ToString();
                 lBestLevelValue.Text = charStats[0].bestLevel.ToString();
             }
-            catch 
+            catch
             {
                 lBestClassName.Text = "No data!";
                 pbBestClassImage.Image = null;
@@ -199,7 +206,7 @@ namespace EAM_Statistics
             pbReturn.Location = new Point((this.Width - pbReturn.Width) - 15, (this.Height - pbReturn.Height) - 15);
             this.Controls.SetChildIndex(mtpRadarChars, 5);
             this.Controls.SetChildIndex(pbReturn, 0);
-            if(lNoChars.Visible)
+            if (lNoChars.Visible)
                 lNoChars.BringToFront();
 
             isLoading = false;
@@ -241,9 +248,9 @@ namespace EAM_Statistics
 
         public void CloseStatsForms()
         {
-            if (statsHost != null)            
-                statsHost.Close();                
-            
+            if (statsHost != null)
+                statsHost.Close();
+
             if (shadow != null && charHost != null)
                 charHost.Location = new Point(shadow.Location.X + ((shadow.Width - charHost.Width) / 2), shadow.Location.Y + ((shadow.Height - charHost.Height) / 2));
 
@@ -306,12 +313,12 @@ namespace EAM_Statistics
             lBestClass.BackColor = lBestToggleB.BackColor = lBestToggleT.BackColor = lBestClassName.BackColor = lBestFame.BackColor = lBestFameValue.BackColor = lBestLevel.BackColor = lBestLevelValue.BackColor = pbBestClassImage.BackColor =
             lNoChars.BackColor = isDarkmode ? Color.FromArgb(30, 30, 30) : Color.FromArgb(253, 253, 253);
 
-            if (shadow != null)            
+            if (shadow != null)
                 shadow.ApplyTheme(isDarkmode);
             if (characterViewer != null)
                 characterViewer.ApplyTheme(isDarkmode);
             if (statsHost != null)
-                statsHost.ApplyTheme(isDarkmode);         
+                statsHost.ApplyTheme(isDarkmode);
             if (uiStats != null)
                 uiStats.ApplyTheme(isDarkmode);
 
@@ -351,7 +358,7 @@ namespace EAM_Statistics
         private void pbReturn_MouseLeave(object sender, EventArgs e)
         {
             pbReturn.BackColor = Color.FromArgb(175, 98, 0, 238);
-        }        
+        }
 
         private void pbReturn_MouseDown(object sender, MouseEventArgs e)
         {
