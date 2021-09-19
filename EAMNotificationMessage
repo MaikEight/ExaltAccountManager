@@ -4,5 +4,5 @@
 	"message":"In the last release (v2.2.2) the Auto Daily Login Feature is broken, so I made a Hotfix for it. This hotfix also contains some UI- & performance improvements for the Add / Edit Account function.",
 	"link":"https://github.com/MaikEight/ExaltAccountManager/releases/tag/v2.2.3",
 	"linkM":"https://www.mpgh.net/forum/showthread.php?t=1546424",
-	"forceShow":false
+	"forceShow":true
 }
