@@ -13,6 +13,21 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>ic_account_balance_wallet_black_48dp.ico</ApplicationIcon>
+    <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>ExaltAccountManager.Program</StartupObject>
@@ -44,122 +59,118 @@
       <HintPath>..\packages\Bunifu.Charts.WinForms.1.1.5\lib\net40\Bunifu.Charts.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="Bunifu.Licensing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f89b4760ba7dcb6b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.Charts.WinForms.1.1.5\lib\net40\Bunifu.Licensing.dll</HintPath>
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.Licensing.dll</HintPath>
     </Reference>
     <Reference Include="Bunifu.UI.WinForms.1.5.3, Version=1.5.3.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.1.5.3.dll</HintPath>
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.1.5.3.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuButton, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuButton.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuButton, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuButton.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuCheckBox, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuCheckBox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuCheckBox, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuCheckBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuCircleProgress, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuCircleProgress.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuCircleProgress, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuCircleProgress.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuColorTransition, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuColorTransition.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuColorTransition, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuColorTransition.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuDataGridView, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuDataGridView.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuDataGridView, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuDataGridView.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuDatePicker, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuDatePicker.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuDatePicker, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuDatePicker.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuDropdown, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuDropdown.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuDropdown, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuDropdown.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuFormDock, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuFormDock.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuFormDock, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuFormDock.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuGauge, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuGauge.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuGauge, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuGauge.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuGradientPanel, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuGradientPanel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuGradientPanel, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuGradientPanel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuGroupBox, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuGroupBox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuGroupBox, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuGroupBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuImageButton, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuImageButton.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuImageButton, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuImageButton.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuLabel, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuLabel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuLabel, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuLabel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuLoader, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuLoader.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuLoader, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuLoader.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuPages, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuPages.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuPages, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuPages.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuPanel, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuPanel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuPanel, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuPanel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuPictureBox, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuPictureBox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuPictureBox, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuPictureBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuProgressBar, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuProgressBar.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuProgressBar, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuProgressBar.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuRadioButton, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuRadioButton.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuRadioButton, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuRadioButton.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuRating, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuRating.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuRating, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuRating.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuScrollBar, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuScrollBar.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuScrollBar, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuScrollBar.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuSeparator, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuSeparator.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuSeparator, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuSeparator.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuShadowPanel, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuShadowPanel.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuShadowPanel, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuShadowPanel.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuShapes, Version=5.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuShapes.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuShapes, Version=5.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuShapes.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuSlider, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuSlider.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuSlider, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuSlider.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuSnackbar, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuSnackbar.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuSnackbar, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuSnackbar.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuTextBox, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuTextBox.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuTextBox, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuTextBox.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuToggleSwitch, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuToggleSwitch.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuToggleSwitch, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuToggleSwitch.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuToolTip, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuToolTip.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuToolTip, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuToolTip.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuTransition, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuTransition.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuTransition, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuTransition.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuUserControl, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.BunifuUserControl.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.BunifuUserControl, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.BunifuUserControl.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.Deprecated, Version=5.2.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bunifu.UI.WinForms.5.2.0\lib\net40\Bunifu.UI.WinForms.Deprecated.dll</HintPath>
+    <Reference Include="Bunifu.UI.WinForms.Deprecated, Version=5.3.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bunifu.UI.WinForms.5.3.0\lib\net40\Bunifu.UI.WinForms.Deprecated.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=27.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.27.1.1\lib\net47\CsvHelper.dll</HintPath>
+      <HintPath>..\packages\CsvHelper.27.2.1\lib\net47\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="EAM Statistics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\EAM Statistics\bin\Release\EAM Statistics.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.9.1.0, Culture=neutral, PublicKeyToken=e25603a88b3aa7da, processorArchitecture=MSIL">
-      <HintPath>..\packages\TaskScheduler.2.9.1\lib\net452\Microsoft.Win32.TaskScheduler.dll</HintPath>
+    <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.10.0.0, Culture=neutral, PublicKeyToken=e25603a88b3aa7da, processorArchitecture=MSIL">
+      <HintPath>..\packages\TaskScheduler.2.10.0\lib\net452\Microsoft.Win32.TaskScheduler.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -179,8 +190,8 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -202,16 +213,16 @@
     <Compile Include="AccountUI.Designer.cs">
       <DependentUpon>AccountUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="AccountUIHeader.cs">
+    <Compile Include="OLD\AccountUIHeader.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="AccountUIHeader.Designer.cs">
+    <Compile Include="OLD\AccountUIHeader.Designer.cs">
       <DependentUpon>AccountUIHeader.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChangeLogEntry.cs">
+    <Compile Include="OLD\ChangeLogEntry.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ChangeLogEntry.Designer.cs">
+    <Compile Include="OLD\ChangeLogEntry.Designer.cs">
       <DependentUpon>ChangeLogEntry.cs</DependentUpon>
     </Compile>
     <Compile Include="ColorChanger.cs">
@@ -220,70 +231,77 @@
     <Compile Include="ColorChanger.Designer.cs">
       <DependentUpon>ColorChanger.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmHWIDchanger.cs">
+    <Compile Include="ColorSheme.cs" />
+    <Compile Include="FrmControlHost.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmHWIDchanger.Designer.cs">
+    <Compile Include="FrmControlHost.Designer.cs">
+      <DependentUpon>FrmControlHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OLD\FrmHWIDchanger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OLD\FrmHWIDchanger.Designer.cs">
       <DependentUpon>FrmHWIDchanger.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmHWIDTool.cs">
+    <Compile Include="OLD\FrmHWIDTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmHWIDTool.Designer.cs">
+    <Compile Include="OLD\FrmHWIDTool.Designer.cs">
       <DependentUpon>FrmHWIDTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmImExport.cs">
+    <Compile Include="OLD\FrmImExport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmImExport.Designer.cs">
+    <Compile Include="OLD\FrmImExport.Designer.cs">
       <DependentUpon>FrmImExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmAbout.cs">
+    <Compile Include="OLD\FrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmAbout.Designer.cs">
+    <Compile Include="OLD\FrmAbout.Designer.cs">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmAddAccount.cs">
+    <Compile Include="OLD\FrmAddAccount.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmAddAccount.Designer.cs">
+    <Compile Include="OLD\FrmAddAccount.Designer.cs">
       <DependentUpon>FrmAddAccount.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmChangelog.cs">
+    <Compile Include="OLD\FrmChangelog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmChangelog.Designer.cs">
+    <Compile Include="OLD\FrmChangelog.Designer.cs">
       <DependentUpon>FrmChangelog.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmDailyLoginOptions.cs">
+    <Compile Include="OLD\FrmDailyLoginOptions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmDailyLoginOptions.Designer.cs">
+    <Compile Include="OLD\FrmDailyLoginOptions.Designer.cs">
       <DependentUpon>FrmDailyLoginOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmDeletePopUp.cs">
+    <Compile Include="OLD\FrmDeletePopUp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmDeletePopUp.Designer.cs">
+    <Compile Include="OLD\FrmDeletePopUp.Designer.cs">
       <DependentUpon>FrmDeletePopUp.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmHelp.cs">
+    <Compile Include="OLD\FrmHelp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmHelp.Designer.cs">
+    <Compile Include="OLD\FrmHelp.Designer.cs">
       <DependentUpon>FrmHelp.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmImportAskPass.cs">
+    <Compile Include="OLD\FrmImportAskPass.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmImportAskPass.Designer.cs">
+    <Compile Include="OLD\FrmImportAskPass.Designer.cs">
       <DependentUpon>FrmImportAskPass.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmLogViewer.cs">
+    <Compile Include="OLD\FrmLogViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmLogViewer.Designer.cs">
+    <Compile Include="OLD\FrmLogViewer.Designer.cs">
       <DependentUpon>FrmLogViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmMain.cs">
@@ -292,177 +310,366 @@
     <Compile Include="FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmMessage.cs">
+    <Compile Include="OLD\FrmMainOLD.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmMessage.Designer.cs">
+    <Compile Include="OLD\FrmMainOLD.Designer.cs">
+      <DependentUpon>FrmMainOLD.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OLD\FrmMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OLD\FrmMessage.Designer.cs">
       <DependentUpon>FrmMessage.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmOptions.cs">
+    <Compile Include="OLD\FrmOptions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmOptions.Designer.cs">
+    <Compile Include="OLD\FrmOptions.Designer.cs">
       <DependentUpon>FrmOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmSetup.cs">
+    <Compile Include="OLD\FrmSetup.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmSetup.Designer.cs">
+    <Compile Include="OLD\FrmSetup.Designer.cs">
       <DependentUpon>FrmSetup.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmTokenViewer.cs">
+    <Compile Include="FrmShadowHost.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmTokenViewer.Designer.cs">
+    <Compile Include="FrmShadowHost.Designer.cs">
+      <DependentUpon>FrmShadowHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OLD\FrmTokenViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OLD\FrmTokenViewer.Designer.cs">
       <DependentUpon>FrmTokenViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmUpdater.cs">
+    <Compile Include="OLD\FrmUpdater.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmUpdater.Designer.cs">
+    <Compile Include="OLD\FrmUpdater.Designer.cs">
       <DependentUpon>FrmUpdater.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelpUI.cs">
+    <Compile Include="OLD\HelpUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HelpUI.Designer.cs">
+    <Compile Include="OLD\HelpUI.Designer.cs">
       <DependentUpon>HelpUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogDataUI.cs">
+    <Compile Include="OLD\LogDataUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LogDataUI.Designer.cs">
+    <Compile Include="OLD\LogDataUI.Designer.cs">
       <DependentUpon>LogDataUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogEntryButton.cs">
+    <Compile Include="OLD\LogEntryButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LogEntryButton.Designer.cs">
+    <Compile Include="OLD\LogEntryButton.Designer.cs">
       <DependentUpon>LogEntryButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="MoreToolsUI.cs">
+    <Compile Include="OLD\MoreToolsUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MoreToolsUI.Designer.cs">
+    <Compile Include="OLD\MoreToolsUI.Designer.cs">
       <DependentUpon>MoreToolsUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsUI.cs">
+    <Compile Include="OLD\OptionsUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OptionsUI.Designer.cs">
+    <Compile Include="OLD\OptionsUI.Designer.cs">
       <DependentUpon>OptionsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoundPictureBox.cs">
+    <Compile Include="OLD\RoundPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FrmServerListChanger.cs">
+    <Compile Include="OLD\FrmServerListChanger.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmServerListChanger.Designer.cs">
+    <Compile Include="OLD\FrmServerListChanger.Designer.cs">
       <DependentUpon>FrmServerListChanger.cs</DependentUpon>
     </Compile>
-    <Compile Include="SortAlphabeticalUI.cs">
+    <Compile Include="OLD\SortAlphabeticalUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SortAlphabeticalUI.Designer.cs">
+    <Compile Include="OLD\SortAlphabeticalUI.Designer.cs">
       <DependentUpon>SortAlphabeticalUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="TokenViewerUI.cs">
+    <Compile Include="OLD\TokenViewerUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TokenViewerUI.Designer.cs">
+    <Compile Include="OLD\TokenViewerUI.Designer.cs">
       <DependentUpon>TokenViewerUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIDailyLoginsTimings.cs">
+    <Compile Include="OLD\UIDailyLoginsTimings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIDailyLoginsTimings.Designer.cs">
+    <Compile Include="OLD\UIDailyLoginsTimings.Designer.cs">
       <DependentUpon>UIDailyLoginsTimings.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIWindowsTask.cs">
+    <Compile Include="OLD\UIWindowsTask.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIWindowsTask.Designer.cs">
+    <Compile Include="OLD\UIWindowsTask.Designer.cs">
       <DependentUpon>UIWindowsTask.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleChangelog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleChangelog.Designer.cs">
+      <DependentUpon>EleChangelog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleCustomExport.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleCustomExport.Designer.cs">
+      <DependentUpon>EleCustomExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleCustomImport.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleCustomImport.Designer.cs">
+      <DependentUpon>EleCustomImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginsNotificationsettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginsNotificationsettings.Designer.cs">
+      <DependentUpon>EleDailyLoginsNotificationsettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginsResultsList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginsResultsList.Designer.cs">
+      <DependentUpon>EleDailyLoginsResultsList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginsTimingSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginsTimingSettings.Designer.cs">
+      <DependentUpon>EleDailyLoginsTimingSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginTaskInstaller.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDailyLoginTaskInstaller.Designer.cs">
+      <DependentUpon>EleDailyLoginTaskInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleDeleteAccount.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDeleteAccount.Designer.cs">
+      <DependentUpon>EleDeleteAccount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleEditAccount.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleEditAccount.Designer.cs">
+      <DependentUpon>EleEditAccount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleExport.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleExport.Designer.cs">
+      <DependentUpon>EleExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleGameUpdater.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleGameUpdater.Designer.cs">
+      <DependentUpon>EleGameUpdater.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleHWID-Tool.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleHWID-Tool.Designer.cs">
+      <DependentUpon>EleHWID-Tool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleImport.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleImport.Designer.cs">
+      <DependentUpon>EleImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleQNA.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleQNA.Designer.cs">
+      <DependentUpon>EleQNA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleSnackbarOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleSnackbarOptions.Designer.cs">
+      <DependentUpon>EleSnackbarOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleTokenViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleTokenViewer.Designer.cs">
+      <DependentUpon>EleTokenViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\Mini\MiniAccountDataOrderEntry.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\Mini\MiniAccountDataOrderEntry.Designer.cs">
+      <DependentUpon>MiniAccountDataOrderEntry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIDailyLogins.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIDailyLogins.Designer.cs">
+      <DependentUpon>UIDailyLogins.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIImportExport.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIImportExport.Designer.cs">
+      <DependentUpon>UIImportExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIAbout.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIAbout.Designer.cs">
+      <DependentUpon>UIAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIAccounts.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIAccounts.Designer.cs">
+      <DependentUpon>UIAccounts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIAddAccount.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIAddAccount.Designer.cs">
+      <DependentUpon>UIAddAccount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UITokenViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UITokenViewer.Designer.cs">
+      <DependentUpon>UITokenViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIChangelog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIChangelog.Designer.cs">
+      <DependentUpon>UIChangelog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIHelp.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIHelp.Designer.cs">
+      <DependentUpon>UIHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UILogs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UILogs.Designer.cs">
+      <DependentUpon>UILogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIModules.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIModules.Designer.cs">
+      <DependentUpon>UIModules.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIOptions.Designer.cs">
+      <DependentUpon>UIOptions.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="AccountUI.resx">
       <DependentUpon>AccountUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AccountUIHeader.resx">
+    <EmbeddedResource Include="OLD\AccountUIHeader.resx">
       <DependentUpon>AccountUIHeader.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ChangeLogEntry.resx">
+    <EmbeddedResource Include="OLD\ChangeLogEntry.resx">
       <DependentUpon>ChangeLogEntry.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ColorChanger.resx">
       <DependentUpon>ColorChanger.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmHWIDchanger.resx">
+    <EmbeddedResource Include="FrmControlHost.resx">
+      <DependentUpon>FrmControlHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OLD\FrmHWIDchanger.resx">
       <DependentUpon>FrmHWIDchanger.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmHWIDTool.resx">
+    <EmbeddedResource Include="OLD\FrmHWIDTool.resx">
       <DependentUpon>FrmHWIDTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmImExport.resx">
+    <EmbeddedResource Include="OLD\FrmImExport.resx">
       <DependentUpon>FrmImExport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmAbout.resx">
+    <EmbeddedResource Include="OLD\FrmAbout.resx">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmAddAccount.resx">
+    <EmbeddedResource Include="OLD\FrmAddAccount.resx">
       <DependentUpon>FrmAddAccount.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmChangelog.resx">
+    <EmbeddedResource Include="OLD\FrmChangelog.resx">
       <DependentUpon>FrmChangelog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmDailyLoginOptions.resx">
+    <EmbeddedResource Include="OLD\FrmDailyLoginOptions.resx">
       <DependentUpon>FrmDailyLoginOptions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmDeletePopUp.resx">
+    <EmbeddedResource Include="OLD\FrmDeletePopUp.resx">
       <DependentUpon>FrmDeletePopUp.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmHelp.resx">
+    <EmbeddedResource Include="OLD\FrmHelp.resx">
       <DependentUpon>FrmHelp.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmImportAskPass.resx">
+    <EmbeddedResource Include="OLD\FrmImportAskPass.resx">
       <DependentUpon>FrmImportAskPass.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmLogViewer.resx">
+    <EmbeddedResource Include="OLD\FrmLogViewer.resx">
       <DependentUpon>FrmLogViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmMessage.resx">
+    <EmbeddedResource Include="OLD\FrmMainOLD.resx">
+      <DependentUpon>FrmMainOLD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OLD\FrmMessage.resx">
       <DependentUpon>FrmMessage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmOptions.resx">
+    <EmbeddedResource Include="OLD\FrmOptions.resx">
       <DependentUpon>FrmOptions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmSetup.resx">
+    <EmbeddedResource Include="OLD\FrmSetup.resx">
       <DependentUpon>FrmSetup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmTokenViewer.resx">
+    <EmbeddedResource Include="FrmShadowHost.resx">
+      <DependentUpon>FrmShadowHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OLD\FrmTokenViewer.resx">
       <DependentUpon>FrmTokenViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmUpdater.resx">
+    <EmbeddedResource Include="OLD\FrmUpdater.resx">
       <DependentUpon>FrmUpdater.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HelpUI.resx">
+    <EmbeddedResource Include="OLD\HelpUI.resx">
       <DependentUpon>HelpUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LogDataUI.resx">
+    <EmbeddedResource Include="OLD\LogDataUI.resx">
       <DependentUpon>LogDataUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LogEntryButton.resx">
+    <EmbeddedResource Include="OLD\LogEntryButton.resx">
       <DependentUpon>LogEntryButton.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MoreToolsUI.resx">
+    <EmbeddedResource Include="OLD\MoreToolsUI.resx">
       <DependentUpon>MoreToolsUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OptionsUI.resx">
+    <EmbeddedResource Include="OLD\OptionsUI.resx">
       <DependentUpon>OptionsUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
@@ -476,20 +683,104 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="FrmServerListChanger.resx">
+    <EmbeddedResource Include="OLD\FrmServerListChanger.resx">
       <DependentUpon>FrmServerListChanger.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SortAlphabeticalUI.resx">
+    <EmbeddedResource Include="OLD\SortAlphabeticalUI.resx">
       <DependentUpon>SortAlphabeticalUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TokenViewerUI.resx">
+    <EmbeddedResource Include="OLD\TokenViewerUI.resx">
       <DependentUpon>TokenViewerUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIDailyLoginsTimings.resx">
+    <EmbeddedResource Include="OLD\UIDailyLoginsTimings.resx">
       <DependentUpon>UIDailyLoginsTimings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIWindowsTask.resx">
+    <EmbeddedResource Include="OLD\UIWindowsTask.resx">
       <DependentUpon>UIWindowsTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleChangelog.resx">
+      <DependentUpon>EleChangelog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleCustomExport.resx">
+      <DependentUpon>EleCustomExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleCustomImport.resx">
+      <DependentUpon>EleCustomImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDailyLoginsNotificationsettings.resx">
+      <DependentUpon>EleDailyLoginsNotificationsettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDailyLoginsResultsList.resx">
+      <DependentUpon>EleDailyLoginsResultsList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDailyLoginsTimingSettings.resx">
+      <DependentUpon>EleDailyLoginsTimingSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDailyLoginTaskInstaller.resx">
+      <DependentUpon>EleDailyLoginTaskInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDeleteAccount.resx">
+      <DependentUpon>EleDeleteAccount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleEditAccount.resx">
+      <DependentUpon>EleEditAccount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleExport.resx">
+      <DependentUpon>EleExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleGameUpdater.resx">
+      <DependentUpon>EleGameUpdater.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleHWID-Tool.resx">
+      <DependentUpon>EleHWID-Tool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleImport.resx">
+      <DependentUpon>EleImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleQNA.resx">
+      <DependentUpon>EleQNA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleSnackbarOptions.resx">
+      <DependentUpon>EleSnackbarOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleTokenViewer.resx">
+      <DependentUpon>EleTokenViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\Mini\MiniAccountDataOrderEntry.resx">
+      <DependentUpon>MiniAccountDataOrderEntry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIDailyLogins.resx">
+      <DependentUpon>UIDailyLogins.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIImportExport.resx">
+      <DependentUpon>UIImportExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIAbout.resx">
+      <DependentUpon>UIAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIAccounts.resx">
+      <DependentUpon>UIAccounts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIAddAccount.resx">
+      <DependentUpon>UIAddAccount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UITokenViewer.resx">
+      <DependentUpon>UITokenViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIChangelog.resx">
+      <DependentUpon>UIChangelog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIHelp.resx">
+      <DependentUpon>UIHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UILogs.resx">
+      <DependentUpon>UILogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIModules.resx">
+      <DependentUpon>UIModules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIOptions.resx">
+      <DependentUpon>UIOptions.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -527,7 +818,179 @@
     <None Include="Resources\ic_account_balance_wallet_black_48dp.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="account_balance_wallet-black-256dp.ico" />
+    <Content Include="account_balance_wallet-black-256dp_2.ico" />
+    <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
+    <Content Include="Logo.ico" />
+    <None Include="Resources\ic_expand_more_white_36dp.png" />
+    <None Include="Resources\birthday_cake_2_white_36px.png" />
+    <None Include="Resources\birthday_cake_1_white_36px.png" />
+    <None Include="Resources\birthday_cake_1_36px.png" />
+    <None Include="Resources\birthday_cake_2_36px.png" />
+    <None Include="Resources\unselected_white_36px.png" />
+    <None Include="Resources\selected_white_36px.png" />
+    <None Include="Resources\btn_icon_chest_2.png" />
+    <None Include="Resources\btn_icon_chest_1.png" />
+    <None Include="Resources\server_18p.png" />
+    <None Include="Resources\server_white_18px.png" />
+    <None Include="Resources\Snackbar_BottomLeft.PNG" />
+    <None Include="Resources\Snackbar_BottomCenter_white.PNG" />
+    <None Include="Resources\Snackbar_BottomCenter.PNG" />
+    <None Include="Resources\Snackbar_TopRight_white.PNG" />
+    <None Include="Resources\Snackbar_TopRight.PNG" />
+    <None Include="Resources\Snackbar_TopLeft_white.PNG" />
+    <None Include="Resources\Snackbar_TopLeft.PNG" />
+    <None Include="Resources\Snackbar_TopCenter_white.PNG" />
+    <None Include="Resources\Snackbar_TopCenter.PNG" />
+    <None Include="Resources\Snackbar_MiddleRight_white.PNG" />
+    <None Include="Resources\Snackbar_MiddleRight.PNG" />
+    <None Include="Resources\Snackbar_MiddleLeft_white.PNG" />
+    <None Include="Resources\Snackbar_MiddleLeft.PNG" />
+    <None Include="Resources\Snackbar_MiddleCenter_white.PNG" />
+    <None Include="Resources\Snackbar_MiddleCenter.PNG" />
+    <None Include="Resources\Snackbar_BottomRight_white.PNG" />
+    <None Include="Resources\Snackbar_BottomRight.PNG" />
+    <None Include="Resources\Snackbar_BottomLeft_white.PNG" />
+    <None Include="Resources\tag_window_white_24px.png" />
+    <None Include="Resources\tag_window_outline_white_24px.png" />
+    <None Include="Resources\TopRight_white.PNG" />
+    <None Include="Resources\TopRight.PNG" />
+    <None Include="Resources\TopLeft_white.PNG" />
+    <None Include="Resources\TopLeft.PNG" />
+    <None Include="Resources\TopCenter_white.PNG" />
+    <None Include="Resources\TopCenter.PNG" />
+    <None Include="Resources\MiddleRight_white.PNG" />
+    <None Include="Resources\MiddleRight.PNG" />
+    <None Include="Resources\MiddleLeft_white.PNG" />
+    <None Include="Resources\MiddleLeft.PNG" />
+    <None Include="Resources\MiddleCenter_white.PNG" />
+    <None Include="Resources\MiddleCenter.PNG" />
+    <None Include="Resources\BottomRight_white.PNG" />
+    <None Include="Resources\BottomRight.PNG" />
+    <None Include="Resources\BottomLeft_white.PNG" />
+    <None Include="Resources\BottomLeft.PNG" />
+    <None Include="Resources\BottomCenter_white.PNG" />
+    <None Include="Resources\BottomCenter.PNG" />
+    <None Include="Resources\toggle_on_24px.png" />
+    <None Include="Resources\toggle_off_24px.png" />
+    <None Include="Resources\toggle_on_white_24px.png" />
+    <None Include="Resources\toggle_off_White_24px.png" />
+    <None Include="Resources\renew_outline_white24px.png" />
+    <None Include="Resources\renew_white_24px.png" />
+    <None Include="Resources\add_white_24px.png" />
+    <None Include="Resources\add_outline_white_24px.png" />
+    <None Include="Resources\new_copy_outline_white_24px.png" />
+    <None Include="Resources\new_copy_white_24px.png" />
+    <None Include="Resources\cancel_white_24px.png" />
+    <None Include="Resources\cancel_outline_white_24px.png" />
+    <None Include="Resources\maintenance2_white_48px.png" />
+    <None Include="Resources\ic_play_circle_outline_white_24dp.png" />
+    <None Include="Resources\ic_playlist_play_white_24dp.png" />
+    <None Include="Resources\to_do_white_24px.png" />
+    <None Include="Resources\todo_list_white_24px.png" />
+    <None Include="Resources\delivery_time_white_24px.png" />
+    <None Include="Resources\time_machine_white_24px.png" />
+    <None Include="Resources\notification_white_24px.png" />
+    <None Include="Resources\notification_Outline_white_24px.png" />
+    <None Include="Resources\ic_tune_white_24dp.png" />
+    <None Include="Resources\export_outline_white_24px.png" />
+    <None Include="Resources\export_white_24px.png" />
+    <None Include="Resources\search_client_24px_2.png" />
+    <None Include="Resources\search_client_24px.png" />
+    <None Include="Resources\ic_arrow_forward_white_24dp.png" />
+    <None Include="Resources\search_in_list_24px.png" />
+    <None Include="Resources\unverified_account_24px.png" />
+    <None Include="Resources\verified_account_24px.png" />
+    <None Include="Resources\ok_36px.png" />
+    <None Include="Resources\ok_white_36px.png" />
+    <None Include="Resources\ic_hourglass_full_black_36dp.png" />
+    <None Include="Resources\ic_hourglass_full_white_36dp.png" />
+    <None Include="Resources\logo.png" />
+    <None Include="Resources\ic_do_not_disturb_white_36dp.png" />
+    <None Include="Resources\ic_do_not_disturb_black_36dp.png" />
+    <None Include="Resources\2.png" />
+    <None Include="Resources\1.png" />
+    <None Include="Resources\available_updates_white_24px.png" />
+    <None Include="Resources\update_left_rotation_white_24px.png" />
+    <None Include="Resources\available_updates_24px.png" />
+    <None Include="Resources\update_left_rotation_24px.png" />
+    <None Include="Resources\wallet_white.png" />
+    <None Include="Resources\wallet.png" />
+    <None Include="Resources\bmac2.png" />
+    <None Include="Resources\bmc2.png" />
+    <None Include="Resources\source_code_36px.png" />
+    <None Include="Resources\source_code_white_36px.png" />
+    <None Include="Resources\reddit.png" />
+    <None Include="Resources\realmeye.png" />
+    <None Include="Resources\bmac1.png" />
+    <None Include="Resources\Logo_NameOnly_2_Medium.jpg" />
+    <None Include="Resources\send_file_white_32px.png" />
+    <None Include="Resources\png_white_32px.png" />
+    <None Include="Resources\export_csv_white_32px.png" />
+    <None Include="Resources\bmc.png" />
+    <None Include="Resources\bmac.png" />
+    <None Include="Resources\ic_close_white_18dp.png" />
+    <None Include="Resources\ic_close_black_18dp.png" />
+    <None Include="Resources\ic_email_white_48dp.png" />
+    <None Include="Resources\ic_drafts_white_48dp.png" />
+    <None Include="Resources\ic_drafts_black_48dp.png" />
+    <None Include="Resources\ic_email_black_48dp1.png" />
+    <None Include="Resources\activity_history_white_24px_2.png" />
+    <None Include="Resources\activity_history_white_24px.png" />
+    <None Include="Resources\activity_history_outline_24px.png" />
+    <None Include="Resources\activity_history_24px.png" />
+    <None Include="Resources\ic_info_black_24dp.png" />
+    <None Include="Resources\ic_help_black_24dp.png" />
+    <None Include="Resources\ic_info_white_24dp.png" />
+    <None Include="Resources\ic_help_white_24dp.png" />
+    <None Include="Resources\settings_outline_24px.png" />
+    <None Include="Resources\settings_24px.png" />
+    <None Include="Resources\settings_white_24px.png" />
+    <None Include="Resources\settings_outline_white_24px.png" />
+    <None Include="Resources\dashboard_layout_white_24px.png" />
+    <None Include="Resources\dashboard_layout_outline_white_24px.png" />
+    <None Include="Resources\dashboard_layout_outline_24px.png" />
+    <None Include="Resources\dashboard_layout_24px.png" />
+    <None Include="Resources\add_user_outline_24px.png" />
+    <None Include="Resources\add_user_24px.png" />
+    <None Include="Resources\add_user_white_outline_24px.png" />
+    <None Include="Resources\add_user_white_24px.png" />
+    <None Include="Resources\ic_people_black_24dp.png" />
+    <None Include="Resources\ic_people_outline_black_24dp.png" />
+    <None Include="Resources\ic_people_white_24dp.png" />
+    <None Include="Resources\ic_people_outline_white_24dp.png" />
+    <None Include="Resources\ic_group_white_24dp.png" />
+    <None Include="Resources\ic_view_module_white_24dp.png" />
+    <None Include="Resources\ic_menu_white_24dp.png" />
+    <None Include="Resources\ic_help_outline_white_24dp.png" />
+    <None Include="Resources\ic_settings_white_24dp.png" />
+    <None Include="Resources\ic_person_add_white_24dp.png" />
+    <None Include="Resources\ic_group_add_white_24dp.png" />
+    <None Include="Resources\ic_info_outline_black_24dp2.png" />
+    <None Include="Resources\ic_menu_black_24dp.png" />
+    <None Include="Resources\ic_help_outline_black_24dp.png" />
+    <None Include="Resources\ic_settings_black_24dp.png" />
+    <None Include="Resources\ic_view_module_black_24dp.png" />
+    <None Include="Resources\ic_person_add_black_24dp.png" />
+    <None Include="Resources\ic_group_black_24dp.png" />
+    <None Include="Resources\save_Outline_36px.png" />
+    <None Include="Resources\save_36px.png" />
+    <None Include="Resources\u_turn_to_left_36px.png" />
+    <None Include="Resources\return_36_white.png" />
+    <None Include="Resources\OutlinePause_36px.png" />
+    <None Include="Resources\OutlinePause_36px1.png" />
+    <None Include="Resources\pause_36px.png" />
+    <None Include="Resources\ic_content_copy_white_24dp.png" />
+    <None Include="Resources\ic_info_outline_black_24dp1.png" />
+    <None Include="Resources\ic_info_outline_black_18dp.png" />
+    <None Include="Resources\ic_info_outline_white_18dp.png" />
+    <None Include="Resources\ic_filter_list_white_24dp.png" />
+    <None Include="Resources\ic_filter_list_black_24dp.png" />
+    <None Include="Resources\ic_filter_list_black_36dp.png" />
+    <None Include="Resources\ic_content_copy_black_24dp.png" />
+    <None Include="Resources\Play_36px_1.png" />
+    <None Include="Resources\OutlinePlay_36px.png" />
     <None Include="Resources\ic_fingerprint_black_48dp.png" />
     <None Include="Resources\ic_fingerprint_white_48dp.png" />
     <None Include="Resources\ic_help_outline_white_36dp.png" />
@@ -572,7 +1035,6 @@
     <None Include="Resources\list_white_13px.png" />
     <None Include="Resources\list_13px.png" />
     <None Include="Resources\server_18px.png" />
-    <None Include="Resources\server_18p.png" />
     <None Include="Resources\UI_Icon_Discord2.png" />
     <None Include="Resources\ic_email_white_24dp.png" />
     <None Include="Resources\ic_drafts_white_24dp.png" />
@@ -716,6 +1178,18 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 und x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

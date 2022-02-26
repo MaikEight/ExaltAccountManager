@@ -20,7 +20,12 @@ namespace MK_EAM_Lib
         public string linkM = string.Empty;
         public bool forceShow = false;
 
-        public static EAMNotificationMessage GetEAMNotificationMessage(string version)
+        public static void GetEAMNotificationMessage(string version, Action<EAMNotificationMessage> returnMethode)
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(_ => NotificationMessage(version, returnMethode));
+        }
+
+        private static void NotificationMessage(string version, Action<EAMNotificationMessage> returnMethode)
         {
             EAMNotificationMessage toRet = new EAMNotificationMessage()
             {
@@ -30,7 +35,7 @@ namespace MK_EAM_Lib
             try
             {
                 string str = string.Empty;
-                System.Net.WebRequest request = System.Net.WebRequest.Create(string.Format(url, version));
+                System.Net.WebRequest request = System.Net.WebRequest.Create(string.Format(url, version.Replace('.','_')));
                 request.Credentials = System.Net.CredentialCache.DefaultCredentials;
                 request.CachePolicy = new System.Net.Cache.HttpRequestCachePolicy(System.Net.Cache.HttpRequestCacheLevel.BypassCache);
                 System.Net.WebResponse response = request.GetResponse();
@@ -51,7 +56,9 @@ namespace MK_EAM_Lib
                     type = EAMNotificationMessageType.None
                 };
             }
-            return toRet;
+
+            if (returnMethode != null)
+                returnMethode(toRet);
         }
     }
 

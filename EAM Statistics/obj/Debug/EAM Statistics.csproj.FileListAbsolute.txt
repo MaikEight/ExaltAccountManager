@@ -117,8 +117,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM_Sta
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM_Statistics.UIAbout.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM_Statistics.FrmStatsLeftHost.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM_Statistics.UIStatsLeft.resources
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\EAM Statistics.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\EAM Statistics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\Bunifu.UI.WinForms.Deprecated.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM Statistics.csproj.AssemblyReference.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\CsvHelper.dll
@@ -141,5 +139,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\Newtons
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\Bunifu.UI.WinForms.BunifuLoader.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\Bunifu.UI.WinForms.BunifuLoader.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM Statistics.dll.licenses
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM Statistics.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\EAM Statistics.exe.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\EAM Statistics.exe
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM Statistics.exe.licenses
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Debug\EAM Statistics.exe
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\MK_EAM_Lib.dll.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\Bunifu.Charts.WinForms.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Debug\Bunifu.Charts.WinForms.xml

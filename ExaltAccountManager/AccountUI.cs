@@ -14,13 +14,13 @@ namespace ExaltAccountManager
 {
     public partial class AccountUI : UserControl
     {
-        FrmMain frm;
+        FrmMainOLD frm;
         public MK_EAM_Lib.AccountInfo accountInfo;
         public bool isSecond = false;
         Process process = null;
         public bool isRunning = false;
         private bool isCreating = true;
-        public AccountUI(FrmMain _frm)
+        public AccountUI(FrmMainOLD _frm)
         {
             InitializeComponent();
             frm = _frm;
@@ -42,7 +42,7 @@ namespace ExaltAccountManager
             isCreating = false;
         }
 
-        public AccountUI(FrmMain _frm, MK_EAM_Lib.AccountInfo _accountInfo)
+        public AccountUI(FrmMainOLD _frm, MK_EAM_Lib.AccountInfo _accountInfo)
         {
             InitializeComponent();
             frm = _frm;
@@ -104,7 +104,7 @@ namespace ExaltAccountManager
             toolTip.SetToolTip(lAccountName, "Click to copy the account-name to clipboard.");
 
             pbColor.Image = pbColor.InitialImage = pbColor.BackgroundImage = pbColor.ErrorImage = null;
-            pbColor.BackColor = accountInfo.color;
+            pbColor.BackColor = accountInfo.Color;
 
             isCreating = false;
         }
@@ -404,7 +404,7 @@ namespace ExaltAccountManager
                             frm.snackbar.Show(frm, $"Failed to stopping Instance from: {accountInfo.email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
                             pbPlay.Enabled = true;
 
-                            if (frm.timerLoadProcesses.Enabled)
+                            if (!frm.timerLoadProcesses.Enabled)
                                 frm.timerLoadProcesses.Start();
                         }
                     }
@@ -671,7 +671,7 @@ namespace ExaltAccountManager
         public void ChangeColor(Color clr)
         {
             pbColor.BackColor = clr;
-            frm.accounts[frm.accounts.IndexOf(accountInfo)].color = clr;
+            frm.accounts[frm.accounts.IndexOf(accountInfo)].Color = clr;
             frm.SaveAccounts();
         }
 
@@ -683,6 +683,11 @@ namespace ExaltAccountManager
         private void pbHWID_Click(object sender, EventArgs e)
         {
             //frm.ShowHWIDUI(this);
+        }
+
+        private void timerCheckProcess_Tick(object sender, EventArgs e)
+        {
+
         }
     }
 }

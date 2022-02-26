@@ -16,7 +16,7 @@ namespace EAM_Statistics
 {
     public partial class FrmMain : Form
     {
-        public readonly Version version = new Version(1, 0, 6);
+        public readonly Version version = new Version(1, 1, 2);
 
         private UIDashboard dashboard;
         private UIAccountView accountView;
@@ -57,7 +57,8 @@ namespace EAM_Statistics
             Properties.Resources.Ninja,
             Properties.Resources.Samurai,
             Properties.Resources.Bard,
-            Properties.Resources.Summoner
+            Properties.Resources.Summoner,
+            Properties.Resources.Kensei
         };
 
         public List<string> charNames = new List<string>()
@@ -78,7 +79,8 @@ namespace EAM_Statistics
             "Ninja",
             "Samurai",
             "Bard",
-            "Summoner"
+            "Summoner",
+            "Kensei"
         };
 
         #endregion
@@ -308,7 +310,8 @@ namespace EAM_Statistics
 
         private void pbClose_MouseEnter(object sender, EventArgs e)
         {
-            pbClose.BackColor = useDarkmode ? Color.FromArgb(225, 225, 50, 50) : Color.FromArgb(255, 205, 82, 82);
+            pbClose.BackColor = Color.Crimson;
+            //pbClose.BackColor = useDarkmode ? Color.FromArgb(225, 225, 50, 50) : Color.FromArgb(255, 205, 82, 82);
         }
 
         private void pbClose_MouseLeave(object sender, EventArgs e) => pbClose.BackColor = pRight.BackColor;
@@ -396,13 +399,15 @@ namespace EAM_Statistics
 
         private void CreateAccountButtons()
         {
+            const int maxButtons = 20;
             dicBtnToStatsMain.Clear();
 
             List<StatsMain> list = new List<StatsMain>();
             list.AddRange(statsList);
             list = list.OrderByDescending(o => o.stats.Count > 0 ? o.stats[o.stats.Count - 1].totalFame : -1).ToList();
             int h = 0;
-            for (int i = 0; i < list.Count; i++)
+
+            for (int i = 0; i < Math.Min(list.Count, maxButtons); i++)
             {
                 string name = GetAccountName(list[i].email);
                 Button btn = new Button()
@@ -436,7 +441,7 @@ namespace EAM_Statistics
             }
 
             pAccountButtons.Height = h;
-            pAccountButtons.Controls.SetChildIndex(pAccountBtnSpacer, list.Count*10 + 1 );
+            pAccountButtons.Controls.SetChildIndex(pAccountBtnSpacer, list.Count * 10 + 1);
         }
 
         private void AccountButton_Click(object sender, EventArgs e)
@@ -445,13 +450,13 @@ namespace EAM_Statistics
             {
                 FormsUtils.SuspendDrawing(pMain);
 
-                if(accountView == null || !pMain.Controls.Contains(accountView))
+                if (accountView == null || !pMain.Controls.Contains(accountView))
                     btnAccountView_Click(null, null);
                 accountView.OpenAccountViewer(dicBtnToStatsMain[(Button)sender]);
 
                 FormsUtils.ResumeDrawing(pMain);
             }
-            catch { }            
+            catch { }
         }
 
         public string GetAccountName(string mail)

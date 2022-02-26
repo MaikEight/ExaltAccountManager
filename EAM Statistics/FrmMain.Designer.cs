@@ -33,14 +33,24 @@ namespace EAM_Statistics
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.pSide = new System.Windows.Forms.Panel();
             this.pButtons = new System.Windows.Forms.Panel();
+            this.btnAbout = new System.Windows.Forms.Button();
+            this.scrollbar = new Bunifu.UI.WinForms.BunifuVScrollBar();
+            this.pAccountButtons = new System.Windows.Forms.Panel();
+            this.pAccountBtnSpacer = new System.Windows.Forms.Panel();
+            this.pSideBar = new System.Windows.Forms.PictureBox();
+            this.btnAccountView = new System.Windows.Forms.Button();
+            this.btnDashboard = new System.Windows.Forms.Button();
             this.pSpacer = new System.Windows.Forms.Panel();
             this.pHeader = new System.Windows.Forms.Panel();
             this.lHeaderStatistics = new System.Windows.Forms.Label();
             this.lEAMHead = new System.Windows.Forms.Label();
+            this.pbHeader = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.pTop = new System.Windows.Forms.Panel();
             this.lTitle = new System.Windows.Forms.Label();
             this.btnSwitchDesign = new System.Windows.Forms.Button();
             this.pRight = new System.Windows.Forms.Panel();
+            this.pbMinimize = new System.Windows.Forms.PictureBox();
+            this.pbClose = new System.Windows.Forms.PictureBox();
             this.bunifuDragControlPTop = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.bunifuDragControlPHeader = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.bunifuDragControlPbHeader = new Bunifu.Framework.UI.BunifuDragControl(this.components);
@@ -49,26 +59,16 @@ namespace EAM_Statistics
             this.bunifuElipseFrm = new Bunifu.Framework.UI.BunifuElipse(this.components);
             this.pMain = new System.Windows.Forms.Panel();
             this.bunifuDragControlLTitle = new Bunifu.Framework.UI.BunifuDragControl(this.components);
-            this.pAccountButtons = new System.Windows.Forms.Panel();
-            this.pAccountBtnSpacer = new System.Windows.Forms.Panel();
-            this.pbMinimize = new System.Windows.Forms.PictureBox();
-            this.pbClose = new System.Windows.Forms.PictureBox();
-            this.btnAbout = new System.Windows.Forms.Button();
-            this.pSideBar = new System.Windows.Forms.PictureBox();
-            this.btnAccountView = new System.Windows.Forms.Button();
-            this.btnDashboard = new System.Windows.Forms.Button();
-            this.pbHeader = new Bunifu.UI.WinForms.BunifuPictureBox();
-            this.scrollbar = new Bunifu.UI.WinForms.BunifuVScrollBar();
             this.pSide.SuspendLayout();
             this.pButtons.SuspendLayout();
+            this.pAccountButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).BeginInit();
             this.pHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
             this.pTop.SuspendLayout();
             this.pRight.SuspendLayout();
-            this.pAccountButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
             this.SuspendLayout();
             // 
             // pSide
@@ -96,6 +96,134 @@ namespace EAM_Statistics
             this.pButtons.Name = "pButtons";
             this.pButtons.Size = new System.Drawing.Size(175, 558);
             this.pButtons.TabIndex = 6;
+            // 
+            // btnAbout
+            // 
+            this.btnAbout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnAbout.FlatAppearance.BorderSize = 0;
+            this.btnAbout.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnAbout.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAbout.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAbout.Image = global::EAM_Statistics.Properties.Resources.ic_info_outline_black_24dp;
+            this.btnAbout.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAbout.Location = new System.Drawing.Point(0, 159);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(175, 36);
+            this.btnAbout.TabIndex = 6;
+            this.btnAbout.Text = "   About";
+            this.btnAbout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAbout.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            // 
+            // scrollbar
+            // 
+            this.scrollbar.AllowCursorChanges = true;
+            this.scrollbar.AllowHomeEndKeysDetection = false;
+            this.scrollbar.AllowIncrementalClickMoves = true;
+            this.scrollbar.AllowMouseDownEffects = true;
+            this.scrollbar.AllowMouseHoverEffects = true;
+            this.scrollbar.AllowScrollingAnimations = true;
+            this.scrollbar.AllowScrollKeysDetection = true;
+            this.scrollbar.AllowScrollOptionsMenu = true;
+            this.scrollbar.AllowShrinkingOnFocusLost = false;
+            this.scrollbar.BackgroundColor = System.Drawing.Color.Silver;
+            this.scrollbar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scrollbar.BackgroundImage")));
+            this.scrollbar.BindingContainer = null;
+            this.scrollbar.BorderColor = System.Drawing.Color.Silver;
+            this.scrollbar.BorderRadius = 14;
+            this.scrollbar.BorderThickness = 1;
+            this.scrollbar.DurationBeforeShrink = 2000;
+            this.scrollbar.LargeChange = 10;
+            this.scrollbar.Location = new System.Drawing.Point(172, -2);
+            this.scrollbar.Margin = new System.Windows.Forms.Padding(4);
+            this.scrollbar.Maximum = 100;
+            this.scrollbar.Minimum = 0;
+            this.scrollbar.MinimumThumbLength = 18;
+            this.scrollbar.Name = "scrollbar";
+            this.scrollbar.OnDisable.ScrollBarBorderColor = System.Drawing.Color.Silver;
+            this.scrollbar.OnDisable.ScrollBarColor = System.Drawing.Color.Transparent;
+            this.scrollbar.OnDisable.ThumbColor = System.Drawing.Color.Silver;
+            this.scrollbar.ScrollBarBorderColor = System.Drawing.Color.Silver;
+            this.scrollbar.ScrollBarColor = System.Drawing.Color.Silver;
+            this.scrollbar.ShrinkSizeLimit = 3;
+            this.scrollbar.Size = new System.Drawing.Size(3, 560);
+            this.scrollbar.SmallChange = 1;
+            this.scrollbar.TabIndex = 0;
+            this.scrollbar.ThumbColor = System.Drawing.Color.Gray;
+            this.scrollbar.ThumbLength = 55;
+            this.scrollbar.ThumbMargin = 1;
+            this.scrollbar.ThumbStyle = Bunifu.UI.WinForms.BunifuVScrollBar.ThumbStyles.Inset;
+            this.scrollbar.Value = 0;
+            this.scrollbar.Visible = false;
+            // 
+            // pAccountButtons
+            // 
+            this.pAccountButtons.Controls.Add(this.pAccountBtnSpacer);
+            this.pAccountButtons.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pAccountButtons.Location = new System.Drawing.Point(0, 72);
+            this.pAccountButtons.Name = "pAccountButtons";
+            this.pAccountButtons.Size = new System.Drawing.Size(175, 87);
+            this.pAccountButtons.TabIndex = 7;
+            this.pAccountButtons.Visible = false;
+            // 
+            // pAccountBtnSpacer
+            // 
+            this.pAccountBtnSpacer.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pAccountBtnSpacer.Location = new System.Drawing.Point(0, 0);
+            this.pAccountBtnSpacer.Name = "pAccountBtnSpacer";
+            this.pAccountBtnSpacer.Size = new System.Drawing.Size(10, 87);
+            this.pAccountBtnSpacer.TabIndex = 8;
+            // 
+            // pSideBar
+            // 
+            this.pSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.pSideBar.Location = new System.Drawing.Point(0, 3);
+            this.pSideBar.Name = "pSideBar";
+            this.pSideBar.Size = new System.Drawing.Size(5, 30);
+            this.pSideBar.TabIndex = 5;
+            this.pSideBar.TabStop = false;
+            // 
+            // btnAccountView
+            // 
+            this.btnAccountView.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnAccountView.FlatAppearance.BorderSize = 0;
+            this.btnAccountView.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnAccountView.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnAccountView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAccountView.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAccountView.Image = global::EAM_Statistics.Properties.Resources.ic_account_box_black_24dp;
+            this.btnAccountView.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAccountView.Location = new System.Drawing.Point(0, 36);
+            this.btnAccountView.Name = "btnAccountView";
+            this.btnAccountView.Size = new System.Drawing.Size(175, 36);
+            this.btnAccountView.TabIndex = 4;
+            this.btnAccountView.Text = "   Accounts";
+            this.btnAccountView.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAccountView.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnAccountView.UseVisualStyleBackColor = true;
+            this.btnAccountView.Click += new System.EventHandler(this.btnAccountView_Click);
+            // 
+            // btnDashboard
+            // 
+            this.btnDashboard.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDashboard.FlatAppearance.BorderSize = 0;
+            this.btnDashboard.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnDashboard.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDashboard.Image = global::EAM_Statistics.Properties.Resources.ic_dashboard_black_24dp;
+            this.btnDashboard.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDashboard.Location = new System.Drawing.Point(0, 0);
+            this.btnDashboard.Name = "btnDashboard";
+            this.btnDashboard.Size = new System.Drawing.Size(175, 36);
+            this.btnDashboard.TabIndex = 0;
+            this.btnDashboard.Text = "   Dashboard";
+            this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDashboard.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDashboard.UseVisualStyleBackColor = true;
+            this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
             // 
             // pSpacer
             // 
@@ -139,6 +267,22 @@ namespace EAM_Statistics
             this.lEAMHead.TabIndex = 2;
             this.lEAMHead.Text = "Exalt Account Manager";
             // 
+            // pbHeader
+            // 
+            this.pbHeader.AllowFocused = false;
+            this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbHeader.AutoSizeHeight = true;
+            this.pbHeader.BorderRadius = 0;
+            this.pbHeader.Image = global::EAM_Statistics.Properties.Resources.ic_assessment_white_48dp;
+            this.pbHeader.IsCircle = true;
+            this.pbHeader.Location = new System.Drawing.Point(6, 6);
+            this.pbHeader.Name = "pbHeader";
+            this.pbHeader.Size = new System.Drawing.Size(48, 48);
+            this.pbHeader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbHeader.TabIndex = 3;
+            this.pbHeader.TabStop = false;
+            this.pbHeader.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Square;
+            // 
             // pTop
             // 
             this.pTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
@@ -169,7 +313,7 @@ namespace EAM_Statistics
             this.btnSwitchDesign.Name = "btnSwitchDesign";
             this.btnSwitchDesign.Size = new System.Drawing.Size(103, 28);
             this.btnSwitchDesign.TabIndex = 1;
-            this.btnSwitchDesign.Text = "Switch Design";
+            this.btnSwitchDesign.Text = "Switch Theme";
             this.btnSwitchDesign.UseVisualStyleBackColor = true;
             this.btnSwitchDesign.Click += new System.EventHandler(this.btnSwitchDesign_Click);
             // 
@@ -182,6 +326,33 @@ namespace EAM_Statistics
             this.pRight.Name = "pRight";
             this.pRight.Size = new System.Drawing.Size(48, 24);
             this.pRight.TabIndex = 2;
+            // 
+            // pbMinimize
+            // 
+            this.pbMinimize.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pbMinimize.Image = global::EAM_Statistics.Properties.Resources.baseline_minimize_black_24dp;
+            this.pbMinimize.Location = new System.Drawing.Point(0, 0);
+            this.pbMinimize.Name = "pbMinimize";
+            this.pbMinimize.Size = new System.Drawing.Size(24, 24);
+            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbMinimize.TabIndex = 3;
+            this.pbMinimize.TabStop = false;
+            this.pbMinimize.Click += new System.EventHandler(this.pbMinimize_Click);
+            this.pbMinimize.MouseEnter += new System.EventHandler(this.pbMinimize_MouseEnter);
+            this.pbMinimize.MouseLeave += new System.EventHandler(this.pbMinimize_MouseLeave);
+            // 
+            // pbClose
+            // 
+            this.pbClose.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pbClose.Image = global::EAM_Statistics.Properties.Resources.ic_close_black_24dp;
+            this.pbClose.Location = new System.Drawing.Point(24, 0);
+            this.pbClose.Name = "pbClose";
+            this.pbClose.Size = new System.Drawing.Size(24, 24);
+            this.pbClose.TabIndex = 2;
+            this.pbClose.TabStop = false;
+            this.pbClose.Click += new System.EventHandler(this.pbClose_Click);
+            this.pbClose.MouseEnter += new System.EventHandler(this.pbClose_MouseEnter);
+            this.pbClose.MouseLeave += new System.EventHandler(this.pbClose_MouseLeave);
             // 
             // bunifuDragControlPTop
             // 
@@ -238,177 +409,6 @@ namespace EAM_Statistics
             this.bunifuDragControlLTitle.TargetControl = this.lTitle;
             this.bunifuDragControlLTitle.Vertical = true;
             // 
-            // pAccountButtons
-            // 
-            this.pAccountButtons.Controls.Add(this.pAccountBtnSpacer);
-            this.pAccountButtons.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pAccountButtons.Location = new System.Drawing.Point(0, 72);
-            this.pAccountButtons.Name = "pAccountButtons";
-            this.pAccountButtons.Size = new System.Drawing.Size(175, 87);
-            this.pAccountButtons.TabIndex = 7;
-            this.pAccountButtons.Visible = false;
-            // 
-            // pAccountBtnSpacer
-            // 
-            this.pAccountBtnSpacer.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pAccountBtnSpacer.Location = new System.Drawing.Point(0, 0);
-            this.pAccountBtnSpacer.Name = "pAccountBtnSpacer";
-            this.pAccountBtnSpacer.Size = new System.Drawing.Size(10, 87);
-            this.pAccountBtnSpacer.TabIndex = 8;
-            // 
-            // pbMinimize
-            // 
-            this.pbMinimize.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pbMinimize.Image = global::EAM_Statistics.Properties.Resources.baseline_minimize_black_24dp;
-            this.pbMinimize.Location = new System.Drawing.Point(0, 0);
-            this.pbMinimize.Name = "pbMinimize";
-            this.pbMinimize.Size = new System.Drawing.Size(24, 24);
-            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbMinimize.TabIndex = 3;
-            this.pbMinimize.TabStop = false;
-            this.pbMinimize.Click += new System.EventHandler(this.pbMinimize_Click);
-            this.pbMinimize.MouseEnter += new System.EventHandler(this.pbMinimize_MouseEnter);
-            this.pbMinimize.MouseLeave += new System.EventHandler(this.pbMinimize_MouseLeave);
-            // 
-            // pbClose
-            // 
-            this.pbClose.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pbClose.Image = global::EAM_Statistics.Properties.Resources.ic_close_black_24dp;
-            this.pbClose.Location = new System.Drawing.Point(24, 0);
-            this.pbClose.Name = "pbClose";
-            this.pbClose.Size = new System.Drawing.Size(24, 24);
-            this.pbClose.TabIndex = 2;
-            this.pbClose.TabStop = false;
-            this.pbClose.Click += new System.EventHandler(this.pbClose_Click);
-            this.pbClose.MouseEnter += new System.EventHandler(this.pbClose_MouseEnter);
-            this.pbClose.MouseLeave += new System.EventHandler(this.pbClose_MouseLeave);
-            // 
-            // btnAbout
-            // 
-            this.btnAbout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAbout.FlatAppearance.BorderSize = 0;
-            this.btnAbout.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnAbout.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAbout.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAbout.Image = global::EAM_Statistics.Properties.Resources.ic_info_outline_black_24dp;
-            this.btnAbout.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAbout.Location = new System.Drawing.Point(0, 159);
-            this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(175, 36);
-            this.btnAbout.TabIndex = 6;
-            this.btnAbout.Text = "   About";
-            this.btnAbout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAbout.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnAbout.UseVisualStyleBackColor = true;
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
-            // 
-            // pSideBar
-            // 
-            this.pSideBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.pSideBar.Location = new System.Drawing.Point(0, 3);
-            this.pSideBar.Name = "pSideBar";
-            this.pSideBar.Size = new System.Drawing.Size(5, 30);
-            this.pSideBar.TabIndex = 5;
-            this.pSideBar.TabStop = false;
-            // 
-            // btnAccountView
-            // 
-            this.btnAccountView.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnAccountView.FlatAppearance.BorderSize = 0;
-            this.btnAccountView.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnAccountView.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnAccountView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAccountView.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAccountView.Image = global::EAM_Statistics.Properties.Resources.ic_account_box_black_24dp;
-            this.btnAccountView.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAccountView.Location = new System.Drawing.Point(0, 36);
-            this.btnAccountView.Name = "btnAccountView";
-            this.btnAccountView.Size = new System.Drawing.Size(175, 36);
-            this.btnAccountView.TabIndex = 4;
-            this.btnAccountView.Text = "   Accounts";
-            this.btnAccountView.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAccountView.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnAccountView.UseVisualStyleBackColor = true;
-            this.btnAccountView.Click += new System.EventHandler(this.btnAccountView_Click);
-            // 
-            // btnDashboard
-            // 
-            this.btnDashboard.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnDashboard.FlatAppearance.BorderSize = 0;
-            this.btnDashboard.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnDashboard.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDashboard.Image = global::EAM_Statistics.Properties.Resources.ic_dashboard_black_24dp;
-            this.btnDashboard.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDashboard.Location = new System.Drawing.Point(0, 0);
-            this.btnDashboard.Name = "btnDashboard";
-            this.btnDashboard.Size = new System.Drawing.Size(175, 36);
-            this.btnDashboard.TabIndex = 0;
-            this.btnDashboard.Text = "   Dashboard";
-            this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDashboard.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnDashboard.UseVisualStyleBackColor = true;
-            this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
-            // 
-            // pbHeader
-            // 
-            this.pbHeader.AllowFocused = false;
-            this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pbHeader.AutoSizeHeight = true;
-            this.pbHeader.BorderRadius = 0;
-            this.pbHeader.Image = global::EAM_Statistics.Properties.Resources.ic_assessment_white_48dp;
-            this.pbHeader.IsCircle = true;
-            this.pbHeader.Location = new System.Drawing.Point(6, 6);
-            this.pbHeader.Name = "pbHeader";
-            this.pbHeader.Size = new System.Drawing.Size(48, 48);
-            this.pbHeader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbHeader.TabIndex = 3;
-            this.pbHeader.TabStop = false;
-            this.pbHeader.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Square;
-            // 
-            // scrollbar
-            // 
-            this.scrollbar.AllowCursorChanges = true;
-            this.scrollbar.AllowHomeEndKeysDetection = false;
-            this.scrollbar.AllowIncrementalClickMoves = true;
-            this.scrollbar.AllowMouseDownEffects = true;
-            this.scrollbar.AllowMouseHoverEffects = true;
-            this.scrollbar.AllowScrollingAnimations = true;
-            this.scrollbar.AllowScrollKeysDetection = true;
-            this.scrollbar.AllowScrollOptionsMenu = true;
-            this.scrollbar.AllowShrinkingOnFocusLost = false;
-            this.scrollbar.BackgroundColor = System.Drawing.Color.Silver;
-            this.scrollbar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scrollbar.BackgroundImage")));
-            this.scrollbar.BindingContainer = null;
-            this.scrollbar.BorderColor = System.Drawing.Color.Silver;
-            this.scrollbar.BorderRadius = 14;
-            this.scrollbar.BorderThickness = 1;
-            this.scrollbar.DurationBeforeShrink = 2000;
-            this.scrollbar.LargeChange = 10;
-            this.scrollbar.Location = new System.Drawing.Point(172, -2);
-            this.scrollbar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.scrollbar.Maximum = 100;
-            this.scrollbar.Minimum = 0;
-            this.scrollbar.MinimumThumbLength = 18;
-            this.scrollbar.Name = "scrollbar";
-            this.scrollbar.OnDisable.ScrollBarBorderColor = System.Drawing.Color.Silver;
-            this.scrollbar.OnDisable.ScrollBarColor = System.Drawing.Color.Transparent;
-            this.scrollbar.OnDisable.ThumbColor = System.Drawing.Color.Silver;
-            this.scrollbar.ScrollBarBorderColor = System.Drawing.Color.Silver;
-            this.scrollbar.ScrollBarColor = System.Drawing.Color.Silver;
-            this.scrollbar.ShrinkSizeLimit = 3;
-            this.scrollbar.Size = new System.Drawing.Size(3, 560);
-            this.scrollbar.SmallChange = 1;
-            this.scrollbar.TabIndex = 0;
-            this.scrollbar.ThumbColor = System.Drawing.Color.Gray;
-            this.scrollbar.ThumbLength = 55;
-            this.scrollbar.ThumbMargin = 1;
-            this.scrollbar.ThumbStyle = Bunifu.UI.WinForms.BunifuVScrollBar.ThumbStyles.Inset;
-            this.scrollbar.Value = 0;
-            this.scrollbar.Visible = false;
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -428,16 +428,16 @@ namespace EAM_Statistics
             this.LocationChanged += new System.EventHandler(this.FrmMain_LocationChanged);
             this.pSide.ResumeLayout(false);
             this.pButtons.ResumeLayout(false);
+            this.pAccountButtons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).EndInit();
             this.pHeader.ResumeLayout(false);
             this.pHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
             this.pTop.ResumeLayout(false);
             this.pTop.PerformLayout();
             this.pRight.ResumeLayout(false);
-            this.pAccountButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
             this.ResumeLayout(false);
 
         }

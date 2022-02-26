@@ -67,7 +67,7 @@ namespace EAM_PingChecker
             // 
             this.shadow.BackColor = System.Drawing.Color.White;
             this.shadow.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.shadow.BorderRadius = 5;
+            this.shadow.BorderRadius = 9;
             this.shadow.BorderThickness = 1;
             this.shadow.Controls.Add(this.label4);
             this.shadow.Controls.Add(this.lServerDataOnStartup);
@@ -89,7 +89,7 @@ namespace EAM_PingChecker
             this.shadow.PanelColor2 = System.Drawing.Color.White;
             this.shadow.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.shadow.ShadowDept = 2;
-            this.shadow.ShadowDepth = 2;
+            this.shadow.ShadowDepth = 4;
             this.shadow.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.shadow.ShadowTopLeftVisible = false;
             this.shadow.Size = new System.Drawing.Size(614, 182);
@@ -120,6 +120,7 @@ namespace EAM_PingChecker
             // toggleServerDataOnStartup
             // 
             this.toggleServerDataOnStartup.Animation = 5;
+            this.toggleServerDataOnStartup.AnimationSpeed = 5;
             this.toggleServerDataOnStartup.BackColor = System.Drawing.Color.Transparent;
             this.toggleServerDataOnStartup.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("toggleServerDataOnStartup.BackgroundImage")));
             this.toggleServerDataOnStartup.Checked = false;
@@ -268,6 +269,8 @@ namespace EAM_PingChecker
             // 
             // separator
             // 
+            this.separator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.separator.BackColor = System.Drawing.Color.Transparent;
             this.separator.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("separator.BackgroundImage")));
             this.separator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -297,7 +300,7 @@ namespace EAM_PingChecker
             // 
             this.shadow2.BackColor = System.Drawing.Color.White;
             this.shadow2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.shadow2.BorderRadius = 5;
+            this.shadow2.BorderRadius = 9;
             this.shadow2.BorderThickness = 1;
             this.shadow2.Controls.Add(this.lRefreshServerdata);
             this.shadow2.Controls.Add(this.toggleRefreshServerdata);
@@ -314,7 +317,7 @@ namespace EAM_PingChecker
             this.shadow2.PanelColor2 = System.Drawing.Color.White;
             this.shadow2.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.shadow2.ShadowDept = 2;
-            this.shadow2.ShadowDepth = 2;
+            this.shadow2.ShadowDepth = 4;
             this.shadow2.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.shadow2.ShadowTopLeftVisible = false;
             this.shadow2.Size = new System.Drawing.Size(614, 172);
@@ -334,6 +337,7 @@ namespace EAM_PingChecker
             // toggleRefreshServerdata
             // 
             this.toggleRefreshServerdata.Animation = 5;
+            this.toggleRefreshServerdata.AnimationSpeed = 5;
             this.toggleRefreshServerdata.BackColor = System.Drawing.Color.Transparent;
             this.toggleRefreshServerdata.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("toggleRefreshServerdata.BackgroundImage")));
             this.toggleRefreshServerdata.Checked = false;
@@ -424,6 +428,8 @@ namespace EAM_PingChecker
             this.dropAccounts.IndicatorAlignment = Bunifu.UI.WinForms.BunifuDropdown.Indicator.Right;
             this.dropAccounts.IndicatorColor = System.Drawing.Color.Gray;
             this.dropAccounts.IndicatorLocation = Bunifu.UI.WinForms.BunifuDropdown.Indicator.Right;
+            this.dropAccounts.IndicatorThickness = 2;
+            this.dropAccounts.IsDropdownOpened = false;
             this.dropAccounts.ItemBackColor = System.Drawing.Color.White;
             this.dropAccounts.ItemBorderColor = System.Drawing.Color.White;
             this.dropAccounts.ItemForeColor = System.Drawing.Color.Black;
@@ -454,6 +460,8 @@ namespace EAM_PingChecker
             // 
             // separator2
             // 
+            this.separator2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.separator2.BackColor = System.Drawing.Color.Transparent;
             this.separator2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("separator2.BackgroundImage")));
             this.separator2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -465,7 +473,7 @@ namespace EAM_PingChecker
             this.separator2.Margin = new System.Windows.Forms.Padding(4);
             this.separator2.Name = "separator2";
             this.separator2.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
-            this.separator2.Size = new System.Drawing.Size(230, 5);
+            this.separator2.Size = new System.Drawing.Size(594, 5);
             this.separator2.TabIndex = 2;
             // 
             // snackbar

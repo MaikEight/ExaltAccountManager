@@ -104,7 +104,7 @@ namespace EAM_PingChecker
             this.btnSwitchDesign.Name = "btnSwitchDesign";
             this.btnSwitchDesign.Size = new System.Drawing.Size(103, 28);
             this.btnSwitchDesign.TabIndex = 1;
-            this.btnSwitchDesign.Text = "Switch Design";
+            this.btnSwitchDesign.Text = "Switch Theme";
             this.btnSwitchDesign.UseVisualStyleBackColor = true;
             this.btnSwitchDesign.Click += new System.EventHandler(this.btnSwitchDesign_Click);
             // 

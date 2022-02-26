@@ -30,12 +30,17 @@ namespace EAM_PingChecker.UI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            Bunifu.UI.WinForms.BunifuAnimatorNS.Animation animation4 = new Bunifu.UI.WinForms.BunifuAnimatorNS.Animation();
+            Bunifu.UI.WinForms.BunifuAnimatorNS.Animation animation1 = new Bunifu.UI.WinForms.BunifuAnimatorNS.Animation();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServerPingUI));
             this.shadow = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.pbFavorite = new Bunifu.UI.WinForms.BunifuPictureBox();
+            this.pbGraphShown = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.lLoad = new System.Windows.Forms.Label();
             this.pButtons = new System.Windows.Forms.Panel();
+            this.pbShowGraph = new Bunifu.UI.WinForms.BunifuPictureBox();
+            this.pbRenew = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.lPing = new System.Windows.Forms.Label();
+            this.separator = new Bunifu.UI.WinForms.BunifuSeparator();
             this.lLoadText = new System.Windows.Forms.Label();
             this.lPingText = new System.Windows.Forms.Label();
             this.lServerName = new System.Windows.Forms.Label();
@@ -43,15 +48,10 @@ namespace EAM_PingChecker.UI
             this.transition = new Bunifu.UI.WinForms.BunifuTransition(this.components);
             this.timerAllowRefresh = new System.Windows.Forms.Timer(this.components);
             this.timerSwitchFav = new System.Windows.Forms.Timer(this.components);
-            this.pbFavorite = new Bunifu.UI.WinForms.BunifuPictureBox();
-            this.pbGraphShown = new Bunifu.UI.WinForms.BunifuPictureBox();
-            this.pbShowGraph = new Bunifu.UI.WinForms.BunifuPictureBox();
-            this.pbRenew = new Bunifu.UI.WinForms.BunifuPictureBox();
-            this.separator = new Bunifu.UI.WinForms.BunifuSeparator();
             this.shadow.SuspendLayout();
-            this.pButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbFavorite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbGraphShown)).BeginInit();
+            this.pButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbShowGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbRenew)).BeginInit();
             this.SuspendLayout();
@@ -60,7 +60,7 @@ namespace EAM_PingChecker.UI
             // 
             this.shadow.BackColor = System.Drawing.Color.White;
             this.shadow.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.shadow.BorderRadius = 5;
+            this.shadow.BorderRadius = 9;
             this.shadow.BorderThickness = 1;
             this.shadow.Controls.Add(this.pbFavorite);
             this.shadow.Controls.Add(this.pbGraphShown);
@@ -80,7 +80,7 @@ namespace EAM_PingChecker.UI
             this.shadow.PanelColor2 = System.Drawing.Color.White;
             this.shadow.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.shadow.ShadowDept = 2;
-            this.shadow.ShadowDepth = 2;
+            this.shadow.ShadowDepth = 4;
             this.shadow.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.shadow.ShadowTopLeftVisible = false;
             this.shadow.Size = new System.Drawing.Size(200, 100);
@@ -88,6 +88,44 @@ namespace EAM_PingChecker.UI
             this.shadow.TabIndex = 1;
             this.shadow.MouseEnter += new System.EventHandler(this.ServerPingUI_MouseEnter);
             this.shadow.MouseLeave += new System.EventHandler(this.ServerPingUI_MouseLeave);
+            // 
+            // pbFavorite
+            // 
+            this.pbFavorite.AllowFocused = false;
+            this.pbFavorite.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbFavorite.AutoSizeHeight = true;
+            this.pbFavorite.BorderRadius = 12;
+            this.transition.SetDecoration(this.pbFavorite, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
+            this.pbFavorite.Image = global::EAM_PingChecker.Properties.Resources.ic_star_border_black_24dp;
+            this.pbFavorite.IsCircle = true;
+            this.pbFavorite.Location = new System.Drawing.Point(168, 8);
+            this.pbFavorite.Name = "pbFavorite";
+            this.pbFavorite.Size = new System.Drawing.Size(24, 24);
+            this.pbFavorite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbFavorite.TabIndex = 12;
+            this.pbFavorite.TabStop = false;
+            this.pbFavorite.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
+            this.pbFavorite.Click += new System.EventHandler(this.pbFavorite_Click);
+            this.pbFavorite.MouseEnter += new System.EventHandler(this.pbFavorite_MouseEnter);
+            this.pbFavorite.MouseLeave += new System.EventHandler(this.pbFavorite_MouseLeave);
+            // 
+            // pbGraphShown
+            // 
+            this.pbGraphShown.AllowFocused = false;
+            this.pbGraphShown.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbGraphShown.AutoSizeHeight = true;
+            this.pbGraphShown.BorderRadius = 10;
+            this.transition.SetDecoration(this.pbGraphShown, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
+            this.pbGraphShown.Image = global::EAM_PingChecker.Properties.Resources.ic_expand_more_black_36dp;
+            this.pbGraphShown.IsCircle = true;
+            this.pbGraphShown.Location = new System.Drawing.Point(90, 78);
+            this.pbGraphShown.Name = "pbGraphShown";
+            this.pbGraphShown.Size = new System.Drawing.Size(20, 20);
+            this.pbGraphShown.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbGraphShown.TabIndex = 11;
+            this.pbGraphShown.TabStop = false;
+            this.pbGraphShown.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
+            this.pbGraphShown.Visible = false;
             // 
             // lLoad
             // 
@@ -116,6 +154,47 @@ namespace EAM_PingChecker.UI
             this.pButtons.MouseEnter += new System.EventHandler(this.ServerPingUI_MouseEnter);
             this.pButtons.MouseLeave += new System.EventHandler(this.ServerPingUI_MouseLeave);
             // 
+            // pbShowGraph
+            // 
+            this.pbShowGraph.AllowFocused = false;
+            this.pbShowGraph.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbShowGraph.AutoSizeHeight = true;
+            this.pbShowGraph.BackColor = System.Drawing.Color.White;
+            this.pbShowGraph.BorderRadius = 12;
+            this.transition.SetDecoration(this.pbShowGraph, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
+            this.pbShowGraph.Image = global::EAM_PingChecker.Properties.Resources.icons8_ecg_24px;
+            this.pbShowGraph.IsCircle = true;
+            this.pbShowGraph.Location = new System.Drawing.Point(0, 27);
+            this.pbShowGraph.Name = "pbShowGraph";
+            this.pbShowGraph.Size = new System.Drawing.Size(24, 24);
+            this.pbShowGraph.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbShowGraph.TabIndex = 11;
+            this.pbShowGraph.TabStop = false;
+            this.pbShowGraph.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
+            this.pbShowGraph.Click += new System.EventHandler(this.pbShowGraph_Click);
+            this.pbShowGraph.MouseEnter += new System.EventHandler(this.pbShowGraph_MouseEnter);
+            this.pbShowGraph.MouseLeave += new System.EventHandler(this.pbShowGraph_MouseLeave);
+            // 
+            // pbRenew
+            // 
+            this.pbRenew.AllowFocused = false;
+            this.pbRenew.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbRenew.AutoSizeHeight = true;
+            this.pbRenew.BorderRadius = 12;
+            this.transition.SetDecoration(this.pbRenew, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
+            this.pbRenew.Image = global::EAM_PingChecker.Properties.Resources.ic_cached_black_24dp;
+            this.pbRenew.IsCircle = true;
+            this.pbRenew.Location = new System.Drawing.Point(0, 0);
+            this.pbRenew.Name = "pbRenew";
+            this.pbRenew.Size = new System.Drawing.Size(24, 24);
+            this.pbRenew.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbRenew.TabIndex = 2;
+            this.pbRenew.TabStop = false;
+            this.pbRenew.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
+            this.pbRenew.Click += new System.EventHandler(this.pbRenew_Click);
+            this.pbRenew.MouseEnter += new System.EventHandler(this.pbRenew_MouseEnter);
+            this.pbRenew.MouseLeave += new System.EventHandler(this.pbRenew_MouseLeave);
+            // 
             // lPing
             // 
             this.lPing.AutoSize = true;
@@ -128,6 +207,25 @@ namespace EAM_PingChecker.UI
             this.lPing.Text = "---";
             this.lPing.MouseEnter += new System.EventHandler(this.ServerPingUI_MouseEnter);
             this.lPing.MouseLeave += new System.EventHandler(this.ServerPingUI_MouseLeave);
+            // 
+            // separator
+            // 
+            this.separator.BackColor = System.Drawing.Color.Transparent;
+            this.separator.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("separator.BackgroundImage")));
+            this.separator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.separator.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
+            this.transition.SetDecoration(this.separator, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
+            this.separator.LineColor = System.Drawing.Color.Silver;
+            this.separator.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
+            this.separator.LineThickness = 1;
+            this.separator.Location = new System.Drawing.Point(10, 30);
+            this.separator.Margin = new System.Windows.Forms.Padding(4);
+            this.separator.Name = "separator";
+            this.separator.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
+            this.separator.Size = new System.Drawing.Size(180, 5);
+            this.separator.TabIndex = 2;
+            this.separator.MouseEnter += new System.EventHandler(this.ServerPingUI_MouseEnter);
+            this.separator.MouseLeave += new System.EventHandler(this.ServerPingUI_MouseLeave);
             // 
             // lLoadText
             // 
@@ -177,24 +275,25 @@ namespace EAM_PingChecker.UI
             // 
             this.transition.AnimationType = Bunifu.UI.WinForms.BunifuAnimatorNS.AnimationType.HorizSlide;
             this.transition.Cursor = null;
-            animation4.AnimateOnlyDifferences = true;
-            animation4.BlindCoeff = ((System.Drawing.PointF)(resources.GetObject("animation4.BlindCoeff")));
-            animation4.LeafCoeff = 0F;
-            animation4.MaxTime = 1F;
-            animation4.MinTime = 0F;
-            animation4.MosaicCoeff = ((System.Drawing.PointF)(resources.GetObject("animation4.MosaicCoeff")));
-            animation4.MosaicShift = ((System.Drawing.PointF)(resources.GetObject("animation4.MosaicShift")));
-            animation4.MosaicSize = 0;
-            animation4.Padding = new System.Windows.Forms.Padding(0);
-            animation4.RotateCoeff = 0F;
-            animation4.RotateLimit = 0F;
-            animation4.ScaleCoeff = ((System.Drawing.PointF)(resources.GetObject("animation4.ScaleCoeff")));
-            animation4.SlideCoeff = ((System.Drawing.PointF)(resources.GetObject("animation4.SlideCoeff")));
-            animation4.TimeCoeff = 0F;
-            animation4.TransparencyCoeff = 0F;
-            this.transition.DefaultAnimation = animation4;
-            this.transition.MaxAnimationTime = 1000;
-            this.transition.TimeStep = 0.035F;
+            animation1.AnimateOnlyDifferences = true;
+            animation1.BlindCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.BlindCoeff")));
+            animation1.LeafCoeff = 0F;
+            animation1.MaxTime = 1F;
+            animation1.MinTime = 0F;
+            animation1.MosaicCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.MosaicCoeff")));
+            animation1.MosaicShift = ((System.Drawing.PointF)(resources.GetObject("animation1.MosaicShift")));
+            animation1.MosaicSize = 0;
+            animation1.Padding = new System.Windows.Forms.Padding(0);
+            animation1.RotateCoeff = 0F;
+            animation1.RotateLimit = 0F;
+            animation1.ScaleCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.ScaleCoeff")));
+            animation1.SlideCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.SlideCoeff")));
+            animation1.TimeCoeff = 0F;
+            animation1.TransparencyCoeff = 0F;
+            this.transition.DefaultAnimation = animation1;
+            this.transition.Interval = 3;
+            this.transition.MaxAnimationTime = 250;
+            this.transition.TimeStep = 0.05F;
             // 
             // timerAllowRefresh
             // 
@@ -205,104 +304,6 @@ namespace EAM_PingChecker.UI
             // 
             this.timerSwitchFav.Interval = 15;
             this.timerSwitchFav.Tick += new System.EventHandler(this.timerSwitchFav_Tick);
-            // 
-            // pbFavorite
-            // 
-            this.pbFavorite.AllowFocused = false;
-            this.pbFavorite.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pbFavorite.AutoSizeHeight = true;
-            this.pbFavorite.BorderRadius = 12;
-            this.transition.SetDecoration(this.pbFavorite, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
-            this.pbFavorite.Image = global::EAM_PingChecker.Properties.Resources.ic_star_border_black_24dp;
-            this.pbFavorite.IsCircle = true;
-            this.pbFavorite.Location = new System.Drawing.Point(168, 8);
-            this.pbFavorite.Name = "pbFavorite";
-            this.pbFavorite.Size = new System.Drawing.Size(24, 24);
-            this.pbFavorite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbFavorite.TabIndex = 12;
-            this.pbFavorite.TabStop = false;
-            this.pbFavorite.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
-            this.pbFavorite.Click += new System.EventHandler(this.pbFavorite_Click);
-            this.pbFavorite.MouseEnter += new System.EventHandler(this.pbFavorite_MouseEnter);
-            this.pbFavorite.MouseLeave += new System.EventHandler(this.pbFavorite_MouseLeave);
-            // 
-            // pbGraphShown
-            // 
-            this.pbGraphShown.AllowFocused = false;
-            this.pbGraphShown.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pbGraphShown.AutoSizeHeight = true;
-            this.pbGraphShown.BorderRadius = 10;
-            this.transition.SetDecoration(this.pbGraphShown, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
-            this.pbGraphShown.Image = global::EAM_PingChecker.Properties.Resources.ic_expand_more_black_36dp;
-            this.pbGraphShown.IsCircle = true;
-            this.pbGraphShown.Location = new System.Drawing.Point(90, 78);
-            this.pbGraphShown.Name = "pbGraphShown";
-            this.pbGraphShown.Size = new System.Drawing.Size(20, 20);
-            this.pbGraphShown.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbGraphShown.TabIndex = 11;
-            this.pbGraphShown.TabStop = false;
-            this.pbGraphShown.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
-            this.pbGraphShown.Visible = false;
-            // 
-            // pbShowGraph
-            // 
-            this.pbShowGraph.AllowFocused = false;
-            this.pbShowGraph.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pbShowGraph.AutoSizeHeight = true;
-            this.pbShowGraph.BackColor = System.Drawing.Color.White;
-            this.pbShowGraph.BorderRadius = 12;
-            this.transition.SetDecoration(this.pbShowGraph, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
-            this.pbShowGraph.Image = global::EAM_PingChecker.Properties.Resources.icons8_ecg_24px;
-            this.pbShowGraph.IsCircle = true;
-            this.pbShowGraph.Location = new System.Drawing.Point(0, 27);
-            this.pbShowGraph.Name = "pbShowGraph";
-            this.pbShowGraph.Size = new System.Drawing.Size(24, 24);
-            this.pbShowGraph.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbShowGraph.TabIndex = 11;
-            this.pbShowGraph.TabStop = false;
-            this.pbShowGraph.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
-            this.pbShowGraph.Click += new System.EventHandler(this.pbShowGraph_Click);
-            this.pbShowGraph.MouseEnter += new System.EventHandler(this.pbShowGraph_MouseEnter);
-            this.pbShowGraph.MouseLeave += new System.EventHandler(this.pbShowGraph_MouseLeave);
-            // 
-            // pbRenew
-            // 
-            this.pbRenew.AllowFocused = false;
-            this.pbRenew.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pbRenew.AutoSizeHeight = true;
-            this.pbRenew.BorderRadius = 12;
-            this.transition.SetDecoration(this.pbRenew, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
-            this.pbRenew.Image = global::EAM_PingChecker.Properties.Resources.ic_cached_black_24dp;
-            this.pbRenew.IsCircle = true;
-            this.pbRenew.Location = new System.Drawing.Point(0, 0);
-            this.pbRenew.Name = "pbRenew";
-            this.pbRenew.Size = new System.Drawing.Size(24, 24);
-            this.pbRenew.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbRenew.TabIndex = 2;
-            this.pbRenew.TabStop = false;
-            this.pbRenew.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
-            this.pbRenew.Click += new System.EventHandler(this.pbRenew_Click);
-            this.pbRenew.MouseEnter += new System.EventHandler(this.pbRenew_MouseEnter);
-            this.pbRenew.MouseLeave += new System.EventHandler(this.pbRenew_MouseLeave);
-            // 
-            // separator
-            // 
-            this.separator.BackColor = System.Drawing.Color.Transparent;
-            this.separator.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("separator.BackgroundImage")));
-            this.separator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.separator.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
-            this.transition.SetDecoration(this.separator, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
-            this.separator.LineColor = System.Drawing.Color.Silver;
-            this.separator.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
-            this.separator.LineThickness = 1;
-            this.separator.Location = new System.Drawing.Point(10, 30);
-            this.separator.Margin = new System.Windows.Forms.Padding(4);
-            this.separator.Name = "separator";
-            this.separator.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
-            this.separator.Size = new System.Drawing.Size(180, 5);
-            this.separator.TabIndex = 2;
-            this.separator.MouseEnter += new System.EventHandler(this.ServerPingUI_MouseEnter);
-            this.separator.MouseLeave += new System.EventHandler(this.ServerPingUI_MouseLeave);
             // 
             // ServerPingUI
             // 
@@ -319,9 +320,9 @@ namespace EAM_PingChecker.UI
             this.MouseLeave += new System.EventHandler(this.ServerPingUI_MouseLeave);
             this.shadow.ResumeLayout(false);
             this.shadow.PerformLayout();
-            this.pButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbFavorite)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbGraphShown)).EndInit();
+            this.pButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbShowGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbRenew)).EndInit();
             this.ResumeLayout(false);

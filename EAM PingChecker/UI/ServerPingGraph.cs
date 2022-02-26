@@ -84,8 +84,8 @@ namespace EAM_PingChecker.UI
             canvas.YAxesForeColor = canvas.YAxesLabelForeColor = canvas.YAxesZeroLineColor =
             dropInterval.ForeColor = font;
 
-            canvas.XAxesGridColor = useDarkmode ? Color.FromArgb(25, 255, 255, 255) : Color.FromArgb(25, 0, 0, 0);
-            canvas.YAxesGridColor = useDarkmode ? Color.FromArgb(100, 255, 255, 255) : Color.FromArgb(100, 0, 0, 0);
+            canvas.XAxesGridColor = useDarkmode ? Color.FromArgb(25, 200, 200, 200) : Color.FromArgb(25, 0, 0, 0);
+            canvas.YAxesGridColor = useDarkmode ? Color.FromArgb(25, 200, 200, 200) : Color.FromArgb(100, 0, 0, 0);
             canvas.Update();
 
             pbClose.Image = useDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;

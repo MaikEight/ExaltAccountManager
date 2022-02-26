@@ -146,7 +146,7 @@
         7jvTA3rQkdQ4ggmcAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="slideAlpha.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="sliderAlpha.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAP8AAAAYCAYAAAA1SSvwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABOSURBVHhe7dMxDQAgDEXB+kZBXeCmtmBgAgOkuUve1K4/
@@ -199,4 +199,10 @@
         X874SJIkSZIk72bsVBTtvioVRI5rqQAAAABJRU5ErkJggg==
 </value>
   </data>
+  <metadata name="bunifuElipse.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="bunifuElipseLHeadline.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>141, 17</value>
+  </metadata>
 </root>

@@ -64,7 +64,7 @@ namespace EAM_Statistics
             this.scrollbar.DurationBeforeShrink = 2000;
             this.scrollbar.LargeChange = 10;
             this.scrollbar.Location = new System.Drawing.Point(615, 0);
-            this.scrollbar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.scrollbar.Margin = new System.Windows.Forms.Padding(4);
             this.scrollbar.Maximum = 100;
             this.scrollbar.Minimum = 0;
             this.scrollbar.MinimumThumbLength = 18;
@@ -84,6 +84,7 @@ namespace EAM_Statistics
             this.scrollbar.ThumbStyle = Bunifu.UI.WinForms.BunifuVScrollBar.ThumbStyles.Inset;
             this.scrollbar.Value = 0;
             this.scrollbar.Visible = false;
+            this.scrollbar.Scroll += new System.EventHandler<Bunifu.UI.WinForms.BunifuVScrollBar.ScrollEventArgs>(this.scrollbar_Scroll);
             // 
             // UIAccountView
             // 

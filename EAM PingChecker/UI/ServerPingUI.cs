@@ -102,13 +102,22 @@ namespace EAM_PingChecker.UI
         {
             if (serverData != null && !string.IsNullOrEmpty(serverData.ip))
             {
-                PerformPingAsync(addToGraph);
+                Task.Run(() => PerformPingAsync(addToGraph));
             }
         }
 
         private async Task PerformPingAsync(bool addToGraph)
         {
             lastPing = await MK_EAM_Lib.PingServer.PingServerInfo(serverData);
+
+            SetLastPingToUI(addToGraph);
+        }
+
+        private bool SetLastPingToUI(bool addToGraph)
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<bool, bool>)SetLastPingToUI, addToGraph);
+
             if (lastPing == -1)
                 lPing.Text = "---";
             else
@@ -116,6 +125,8 @@ namespace EAM_PingChecker.UI
 
             if (addToGraph && graph != null)
                 graph.AddNewPing(lastPing);
+
+            return false;
         }
 
         private void timerHideShadowSide_Tick(object sender, EventArgs e)

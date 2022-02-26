@@ -29,6 +29,7 @@ namespace ExaltAccountManager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ColorChanger));
             Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties1 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
             Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties2 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
@@ -62,6 +63,8 @@ namespace ExaltAccountManager
             this.separator = new Bunifu.UI.WinForms.BunifuSeparator();
             this.scrollbar = new Bunifu.UI.WinForms.BunifuVScrollBar();
             this.pbClose = new System.Windows.Forms.PictureBox();
+            this.bunifuElipse = new Bunifu.Framework.UI.BunifuElipse(this.components);
+            this.bunifuElipseLHeadline = new Bunifu.Framework.UI.BunifuElipse(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,27 +73,27 @@ namespace ExaltAccountManager
             this.flow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.flow.Location = new System.Drawing.Point(1, 22);
             this.flow.Name = "flow";
-            this.flow.Size = new System.Drawing.Size(342, 113);
+            this.flow.Size = new System.Drawing.Size(341, 113);
             this.flow.TabIndex = 0;
             this.flow.Paint += new System.Windows.Forms.PaintEventHandler(this.flow_Paint);
             // 
             // lHeadline
             // 
-            this.lHeadline.Font = new System.Drawing.Font("Century Schoolbook", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lHeadline.Location = new System.Drawing.Point(1, 1);
+            this.lHeadline.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lHeadline.Location = new System.Drawing.Point(3, 1);
             this.lHeadline.Name = "lHeadline";
-            this.lHeadline.Size = new System.Drawing.Size(348, 19);
+            this.lHeadline.Size = new System.Drawing.Size(344, 21);
             this.lHeadline.TabIndex = 3;
             this.lHeadline.Text = "Account Color changer";
-            this.lHeadline.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lHeadline.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Century Schoolbook", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(123, 138);
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(128, 138);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(105, 16);
+            this.label2.Size = new System.Drawing.Size(96, 17);
             this.label2.TabIndex = 5;
             this.label2.Text = "Add new color";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -98,6 +101,7 @@ namespace ExaltAccountManager
             // btnAdd
             // 
             this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdd.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnAdd.Location = new System.Drawing.Point(320, 157);
             this.btnAdd.Name = "btnAdd";
@@ -114,11 +118,12 @@ namespace ExaltAccountManager
             this.tbAlpha.AnimationSpeed = 200;
             this.tbAlpha.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
             this.tbAlpha.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.None;
+            this.tbAlpha.AutoSizeHeight = true;
             this.tbAlpha.BackColor = System.Drawing.Color.White;
             this.tbAlpha.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("tbAlpha.BackgroundImage")));
-            this.tbAlpha.BorderColorActive = System.Drawing.Color.DodgerBlue;
+            this.tbAlpha.BorderColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbAlpha.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.tbAlpha.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            this.tbAlpha.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbAlpha.BorderColorIdle = System.Drawing.Color.Silver;
             this.tbAlpha.BorderRadius = 1;
             this.tbAlpha.BorderThickness = 1;
@@ -142,7 +147,7 @@ namespace ExaltAccountManager
             this.tbAlpha.Modified = false;
             this.tbAlpha.Multiline = false;
             this.tbAlpha.Name = "tbAlpha";
-            stateProperties1.BorderColor = System.Drawing.Color.DodgerBlue;
+            stateProperties1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties1.FillColor = System.Drawing.Color.Empty;
             stateProperties1.ForeColor = System.Drawing.Color.Empty;
             stateProperties1.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -152,7 +157,7 @@ namespace ExaltAccountManager
             stateProperties2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             stateProperties2.PlaceholderForeColor = System.Drawing.Color.DarkGray;
             this.tbAlpha.OnDisabledState = stateProperties2;
-            stateProperties3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            stateProperties3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties3.FillColor = System.Drawing.Color.Empty;
             stateProperties3.ForeColor = System.Drawing.Color.Empty;
             stateProperties3.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -191,11 +196,12 @@ namespace ExaltAccountManager
             this.tbBlue.AnimationSpeed = 200;
             this.tbBlue.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
             this.tbBlue.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.None;
+            this.tbBlue.AutoSizeHeight = true;
             this.tbBlue.BackColor = System.Drawing.Color.White;
             this.tbBlue.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("tbBlue.BackgroundImage")));
-            this.tbBlue.BorderColorActive = System.Drawing.Color.DodgerBlue;
+            this.tbBlue.BorderColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbBlue.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.tbBlue.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            this.tbBlue.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbBlue.BorderColorIdle = System.Drawing.Color.Silver;
             this.tbBlue.BorderRadius = 1;
             this.tbBlue.BorderThickness = 1;
@@ -219,7 +225,7 @@ namespace ExaltAccountManager
             this.tbBlue.Modified = false;
             this.tbBlue.Multiline = false;
             this.tbBlue.Name = "tbBlue";
-            stateProperties5.BorderColor = System.Drawing.Color.DodgerBlue;
+            stateProperties5.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties5.FillColor = System.Drawing.Color.Empty;
             stateProperties5.ForeColor = System.Drawing.Color.Empty;
             stateProperties5.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -229,7 +235,7 @@ namespace ExaltAccountManager
             stateProperties6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             stateProperties6.PlaceholderForeColor = System.Drawing.Color.DarkGray;
             this.tbBlue.OnDisabledState = stateProperties6;
-            stateProperties7.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            stateProperties7.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties7.FillColor = System.Drawing.Color.Empty;
             stateProperties7.ForeColor = System.Drawing.Color.Empty;
             stateProperties7.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -268,11 +274,12 @@ namespace ExaltAccountManager
             this.tbGreen.AnimationSpeed = 200;
             this.tbGreen.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
             this.tbGreen.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.None;
+            this.tbGreen.AutoSizeHeight = true;
             this.tbGreen.BackColor = System.Drawing.Color.White;
             this.tbGreen.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("tbGreen.BackgroundImage")));
-            this.tbGreen.BorderColorActive = System.Drawing.Color.DodgerBlue;
+            this.tbGreen.BorderColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbGreen.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.tbGreen.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            this.tbGreen.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbGreen.BorderColorIdle = System.Drawing.Color.Silver;
             this.tbGreen.BorderRadius = 1;
             this.tbGreen.BorderThickness = 1;
@@ -296,7 +303,7 @@ namespace ExaltAccountManager
             this.tbGreen.Modified = false;
             this.tbGreen.Multiline = false;
             this.tbGreen.Name = "tbGreen";
-            stateProperties9.BorderColor = System.Drawing.Color.DodgerBlue;
+            stateProperties9.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties9.FillColor = System.Drawing.Color.Empty;
             stateProperties9.ForeColor = System.Drawing.Color.Empty;
             stateProperties9.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -306,7 +313,7 @@ namespace ExaltAccountManager
             stateProperties10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             stateProperties10.PlaceholderForeColor = System.Drawing.Color.DarkGray;
             this.tbGreen.OnDisabledState = stateProperties10;
-            stateProperties11.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            stateProperties11.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties11.FillColor = System.Drawing.Color.Empty;
             stateProperties11.ForeColor = System.Drawing.Color.Empty;
             stateProperties11.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -345,11 +352,12 @@ namespace ExaltAccountManager
             this.tbRed.AnimationSpeed = 200;
             this.tbRed.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
             this.tbRed.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.None;
+            this.tbRed.AutoSizeHeight = true;
             this.tbRed.BackColor = System.Drawing.Color.White;
             this.tbRed.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("tbRed.BackgroundImage")));
-            this.tbRed.BorderColorActive = System.Drawing.Color.DodgerBlue;
+            this.tbRed.BorderColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbRed.BorderColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.tbRed.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            this.tbRed.BorderColorHover = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.tbRed.BorderColorIdle = System.Drawing.Color.Silver;
             this.tbRed.BorderRadius = 1;
             this.tbRed.BorderThickness = 1;
@@ -373,7 +381,7 @@ namespace ExaltAccountManager
             this.tbRed.Modified = false;
             this.tbRed.Multiline = false;
             this.tbRed.Name = "tbRed";
-            stateProperties13.BorderColor = System.Drawing.Color.DodgerBlue;
+            stateProperties13.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties13.FillColor = System.Drawing.Color.Empty;
             stateProperties13.ForeColor = System.Drawing.Color.Empty;
             stateProperties13.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -383,7 +391,7 @@ namespace ExaltAccountManager
             stateProperties14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             stateProperties14.PlaceholderForeColor = System.Drawing.Color.DarkGray;
             this.tbRed.OnDisabledState = stateProperties14;
-            stateProperties15.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            stateProperties15.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             stateProperties15.FillColor = System.Drawing.Color.Empty;
             stateProperties15.ForeColor = System.Drawing.Color.Empty;
             stateProperties15.PlaceholderForeColor = System.Drawing.Color.Empty;
@@ -415,7 +423,7 @@ namespace ExaltAccountManager
             this.tbRed.WordWrap = true;
             this.tbRed.TextChanged += new System.EventHandler(this.tbRed_TextChanged);
             // 
-            // slideAlpha
+            // sliderAlpha
             // 
             this.sliderAlpha.AllowCursorChanges = true;
             this.sliderAlpha.AllowHomeEndKeysDetection = false;
@@ -427,7 +435,7 @@ namespace ExaltAccountManager
             this.sliderAlpha.AllowScrollOptionsMenu = true;
             this.sliderAlpha.AllowShrinkingOnFocusLost = false;
             this.sliderAlpha.BackColor = System.Drawing.Color.Transparent;
-            this.sliderAlpha.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("slideAlpha.BackgroundImage")));
+            this.sliderAlpha.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("sliderAlpha.BackgroundImage")));
             this.sliderAlpha.BindingContainer = null;
             this.sliderAlpha.BorderRadius = 2;
             this.sliderAlpha.BorderThickness = 1;
@@ -436,13 +444,13 @@ namespace ExaltAccountManager
             this.sliderAlpha.DurationBeforeShrink = 2000;
             this.sliderAlpha.ElapsedColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.sliderAlpha.LargeChange = 10;
-            this.sliderAlpha.Location = new System.Drawing.Point(6, 240);
+            this.sliderAlpha.Location = new System.Drawing.Point(6, 239);
             this.sliderAlpha.Maximum = 255;
-            this.sliderAlpha.MaximumSize = new System.Drawing.Size(255, 24);
+            this.sliderAlpha.MaximumSize = new System.Drawing.Size(255, 23);
             this.sliderAlpha.Minimum = 0;
             this.sliderAlpha.MinimumSize = new System.Drawing.Size(0, 24);
             this.sliderAlpha.MinimumThumbLength = 18;
-            this.sliderAlpha.Name = "slideAlpha";
+            this.sliderAlpha.Name = "sliderAlpha";
             this.sliderAlpha.OnDisable.ScrollBarBorderColor = System.Drawing.Color.Silver;
             this.sliderAlpha.OnDisable.ScrollBarColor = System.Drawing.Color.Transparent;
             this.sliderAlpha.OnDisable.ThumbColor = System.Drawing.Color.Silver;
@@ -660,7 +668,7 @@ namespace ExaltAccountManager
             this.scrollbar.BorderThickness = 1;
             this.scrollbar.DurationBeforeShrink = 2000;
             this.scrollbar.LargeChange = 10;
-            this.scrollbar.Location = new System.Drawing.Point(344, 22);
+            this.scrollbar.Location = new System.Drawing.Point(342, 22);
             this.scrollbar.Maximum = 100;
             this.scrollbar.Minimum = 0;
             this.scrollbar.MinimumThumbLength = 18;
@@ -683,19 +691,29 @@ namespace ExaltAccountManager
             // pbClose
             // 
             this.pbClose.Image = global::ExaltAccountManager.Properties.Resources.ic_close_black_24dp;
-            this.pbClose.Location = new System.Drawing.Point(329, 1);
+            this.pbClose.Location = new System.Drawing.Point(330, 3);
             this.pbClose.Name = "pbClose";
-            this.pbClose.Size = new System.Drawing.Size(20, 20);
-            this.pbClose.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbClose.Size = new System.Drawing.Size(16, 16);
+            this.pbClose.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbClose.TabIndex = 15;
             this.pbClose.TabStop = false;
             this.pbClose.Click += new System.EventHandler(this.pbClose_Click);
             this.pbClose.MouseEnter += new System.EventHandler(this.pbClose_MouseEnter);
             this.pbClose.MouseLeave += new System.EventHandler(this.pbClose_MouseLeave);
             // 
+            // bunifuElipse
+            // 
+            this.bunifuElipse.ElipseRadius = 11;
+            this.bunifuElipse.TargetControl = this;
+            // 
+            // bunifuElipseLHeadline
+            // 
+            this.bunifuElipseLHeadline.ElipseRadius = 11;
+            this.bunifuElipseLHeadline.TargetControl = this.lHeadline;
+            // 
             // ColorChanger
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.pbClose);
@@ -714,7 +732,7 @@ namespace ExaltAccountManager
             this.Controls.Add(this.separator);
             this.Controls.Add(this.scrollbar);
             this.Controls.Add(this.flow);
-            this.Font = new System.Drawing.Font("Century Schoolbook", 7.875F);
+            this.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ColorChanger";
             this.Size = new System.Drawing.Size(350, 268);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ColorChanger_Paint);
@@ -742,5 +760,7 @@ namespace ExaltAccountManager
         private Bunifu.UI.WinForms.BunifuTextBox tbAlpha;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.PictureBox pbClose;
+        private Bunifu.Framework.UI.BunifuElipse bunifuElipse;
+        private Bunifu.Framework.UI.BunifuElipse bunifuElipseLHeadline;
     }
 }

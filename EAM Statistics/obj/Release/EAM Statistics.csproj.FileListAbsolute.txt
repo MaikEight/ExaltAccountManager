@@ -1,5 +1,3 @@
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.Licensing.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.1.5.3.dll
@@ -103,8 +101,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM S
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.CoreCompileInputs.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.CopyComplete
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.dll.licenses
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.AssemblyReference.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\CsvHelper.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll
@@ -258,3 +254,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Newto
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Newtonsoft.Json.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLoader.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLoader.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.exe.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.exe
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.exe.licenses
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.exe
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.Charts.WinForms.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Lib.dll.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.Charts.WinForms.xml

@@ -20,7 +20,7 @@ namespace EAM_PingChecker
 {
     public partial class FrmMain : Form
     {
-        public readonly Version version = new Version(1, 0, 0);
+        public readonly Version version = new Version(1, 1, 0);
 
         public bool useDarkmode = false;
         public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
@@ -31,6 +31,7 @@ namespace EAM_PingChecker
         public string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
         public string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
         public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
+        public string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
         public ServerFavorites favorites;
 
         public PingSaveFile pingSaveFile;
@@ -277,7 +278,6 @@ namespace EAM_PingChecker
             this.Update();
         }
 
-
         #region Button Close / Minimize
 
         private void pbMinimize_Click(object sender, EventArgs e) => this.WindowState = FormWindowState.Minimized;
@@ -287,10 +287,16 @@ namespace EAM_PingChecker
 
         private void pbClose_MouseEnter(object sender, EventArgs e)
         {
-            pbClose.BackColor = useDarkmode ? Color.FromArgb(225, 225, 50, 50) : Color.FromArgb(255, 205, 82, 82);
+            pbClose.BackColor = Color.Crimson;
+            pbClose.Image = Properties.Resources.ic_close_white_24dp;
         }
 
-        private void pbClose_MouseLeave(object sender, EventArgs e) => pbClose.BackColor = pRight.BackColor;
+        private void pbClose_MouseLeave(object sender, EventArgs e)
+        {
+            pbClose.BackColor = pRight.BackColor;
+            if (!useDarkmode)
+                pbClose.Image = Properties.Resources.ic_close_black_24dp;
+        }
 
         private void pbMinimize_MouseEnter(object sender, EventArgs e)
         {
@@ -404,11 +410,12 @@ namespace EAM_PingChecker
                 return;
             try
             {
+                LoadAccountInfos(accountsPath);
                 AccountInfo acc = accounts.Where(a => a.name.Equals(pingSaveFile.accountName)).First();
                 if (acc != null)
                 {
-                    acc = GetAccountData(acc);
-                    SaveAccounts();
+                    //acc = GetAccountData(acc);
+                    acc.PerformWebrequest(this, LogEvent, "Ping Checker", accountStatsPath, itemsSaveFilePath, GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(acc.Name), true, SaveAccounts);
                 }
                 else
                 {
@@ -416,7 +423,39 @@ namespace EAM_PingChecker
                     LogEvent(new LogData(-1, "Ping Checker", LogEventType.PingError, $"Couldn't find the auto-refresh account: {pingSaveFile.accountName}."));
                 }
             }
-            catch { }
+            catch { }            
+        }
+
+        public void SaveAccounts(AccountInfo _info = null)
+        {
+            try
+            {
+                if (_info.requestState != AccountInfo.RequestState.Success)
+                    return;
+                AccountSaveFile saveFile = AccountSaveFile.Encrypt(new AccountSaveFile(), ObjectToByteArray(accounts.ToList() as List<MK_EAM_Lib.AccountInfo>));
+                if (saveFile != null && string.IsNullOrEmpty(saveFile.error))
+                {
+                    File.WriteAllBytes(accountsPath, ObjectToByteArray(saveFile));
+                    LogEvent(new LogData(-1, "Ping Checker", LogEventType.SaveAccounts, $"Saving accounts."));
+                }
+                else
+                {
+                    LogEvent(new LogData(-1, "Ping Checker", LogEventType.PingError, $"Failed to encrypt accounts!"));                    
+                    throw new Exception();
+                }
+            }
+            catch
+            {
+                LogEvent(new LogData(-1, "Ping Checker", LogEventType.PingError, $"Failed to save accounts!"));                
+            }
+
+            UpdateServerUI();
+        }
+
+        private bool UpdateServerUI()
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<bool>)UpdateServerUI);
 
             if (uiDashboard != null)
                 uiDashboard.UpdateServer();
@@ -431,30 +470,7 @@ namespace EAM_PingChecker
                 timerRefreshData.Interval = 1800000;
                 timerRefreshData.Start();
             }
-        }
-
-        public void SaveAccounts()
-        {
-            try
-            {
-                AccountSaveFile saveFile = AccountSaveFile.Encrypt(new AccountSaveFile(), ObjectToByteArray(accounts));
-                if (saveFile != null && string.IsNullOrEmpty(saveFile.error))
-                {
-                    File.WriteAllBytes(accountsPath, ObjectToByteArray(saveFile));
-                    LogEvent(new LogData(-1, "Ping Checker", LogEventType.SaveAccounts, $"Saving accounts."));
-                }
-                else
-                {
-                    LogEvent(new LogData(-1, "Ping Checker", LogEventType.PingError, $"Failed to encrypt accounts!"));
-                    //snackbar.Show(this, $"Failed to encrypt accounts!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
-                    throw new Exception();
-                }
-            }
-            catch
-            {
-                LogEvent(new LogData(-1, "Ping Checker", LogEventType.PingError, $"Failed to save accounts!"));
-                //snackbar.Show(this, $"Failed to save accounts!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.BottomRight);
-            }
+            return false;
         }
 
         public MK_EAM_Lib.AccountInfo GetAccountData(MK_EAM_Lib.AccountInfo info)
@@ -480,11 +496,11 @@ namespace EAM_PingChecker
                 if (responseData.Contains("<Error>"))
                 {
                     //Error out
-                    info.requestSuccessfull = false;
+                    info.requestState = MK_EAM_Lib.AccountInfo.RequestState.Error;
                     return info;
                 }
                 else
-                    info.requestSuccessfull = true;
+                    info.requestState = MK_EAM_Lib.AccountInfo.RequestState.Success;
 
                 Tuple<string, string, string> tup = GetClientAccessData(responseData);
 

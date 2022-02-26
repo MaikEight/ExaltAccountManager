@@ -26,6 +26,9 @@ namespace EAM_PingChecker
 
             dropAccounts.SelectedIndex = 0;
 
+            if (frm.accounts == null)
+                frm.accounts = new List<MK_EAM_Lib.AccountInfo>();
+
             for (int i = 0; i < frm.accounts.Count; i++)
                 dropAccounts.Items.Add(frm.accounts[i].name);
 

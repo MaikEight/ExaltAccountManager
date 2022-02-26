@@ -30,13 +30,29 @@ namespace ExaltAccountManager
         private Bunifu.UI.WinForms.BunifuPictureBox pbDrawnBorder = null;
         private Bunifu.UI.WinForms.BunifuPictureBox pbTransparent = null;
 
-        public FrmMain frm;
+        public FrmMainOLD frmOld = null;
+        public FrmMain frm = null;
         public AccountUI ui = null;
+        public int accountIndex = -1;
+
+        public ColorChanger(FrmMainOLD _frm)
+        {
+            InitializeComponent();
+            frmOld = _frm;
+            LoadUIOld();
+        }
+
         public ColorChanger(FrmMain _frm)
         {
             InitializeComponent();
             frm = _frm;
+            frm.ThemeChanged += ApplyTheme;
 
+            LoadUI();
+        }
+
+        private void LoadUI()
+        {
             sliderRed.Size = sliderGreen.Size = sliderBlue.Size = sliderAlpha.Size = new Size(255, 24);
             tbRed.Size = tbGreen.Size = tbBlue.Size = tbAlpha.Size = new Size(45, 24);
 
@@ -54,16 +70,46 @@ namespace ExaltAccountManager
                 {
                     pbTransparent = pbColor;
                     pbTransparent.SizeMode = PictureBoxSizeMode.CenterImage;
-                    pbTransparent.Image = frm.useDarkmode ? Properties.Resources.ic_block_white_18dp : Properties.Resources.ic_block_black_18dp;
+                    pbTransparent.Image = frm.UseDarkmode ? Properties.Resources.ic_block_white_18dp : Properties.Resources.ic_block_black_18dp;
                 }
             }
 
             for (int i = 0; i < frm.accounts.Count; i++)
-                AddColorToUI(frm.accounts[i].color);
+                AddColorToUI(frm.accounts[i].Color);
 
-            ApplyTheme();
+            ApplyTheme(frm, null);
         }
 
+        private void LoadUIOld()
+        {
+            sliderRed.Size = sliderGreen.Size = sliderBlue.Size = sliderAlpha.Size = new Size(255, 24);
+            tbRed.Size = tbGreen.Size = tbBlue.Size = tbAlpha.Size = new Size(45, 24);
+
+            for (int i = 0; i < colors.Count; i++)
+            {
+                Bunifu.UI.WinForms.BunifuPictureBox pbColor = new Bunifu.UI.WinForms.BunifuPictureBox()
+                {
+                    Size = new Size(20, 20),
+                    BackColor = colors[i]
+                };
+                pbColor.Image = pbColor.InitialImage = pbColor.BackgroundImage = pbColor.ErrorImage = null;
+                pbColor.Click += pbColor_Click;
+                flow.Controls.Add(pbColor);
+                if (colors[i] == Color.Transparent)
+                {
+                    pbTransparent = pbColor;
+                    pbTransparent.SizeMode = PictureBoxSizeMode.CenterImage;
+                    pbTransparent.Image = frmOld.useDarkmode ? Properties.Resources.ic_block_white_18dp : Properties.Resources.ic_block_black_18dp;
+                }
+            }
+
+            for (int i = 0; i < frmOld.accounts.Count; i++)
+                AddColorToUI(frmOld.accounts[i].Color);
+
+            ApplyThemeOld();
+        }
+
+        [Obsolete]
         public void ShowUI(AccountUI _ui)
         {
             ui = _ui;
@@ -73,7 +119,7 @@ namespace ExaltAccountManager
 
             foreach (Bunifu.UI.WinForms.BunifuPictureBox pb in flow.Controls.OfType<Bunifu.UI.WinForms.BunifuPictureBox>())
             {
-                if (pb.BackColor == ui.accountInfo.color)
+                if (pb.BackColor == ui.accountInfo.Color)
                 {
                     pbDrawnBorder = pb;
                     AddColorToSlider(pbDrawnBorder.BackColor);
@@ -83,14 +129,65 @@ namespace ExaltAccountManager
             }
         }
 
-        public void ApplyTheme()
+        public void ShowUI(int index)
+        {
+            accountIndex = index;
+
+            foreach (Bunifu.UI.WinForms.BunifuPictureBox pb in flow.Controls.OfType<Bunifu.UI.WinForms.BunifuPictureBox>())
+            {
+                if (pb.BackColor == frm.accounts[index].Color)
+                {
+                    pbDrawnBorder = pb;
+                    AddColorToSlider(pbDrawnBorder.BackColor);
+                    flow.Update();
+                    break;
+                }
+            }
+
+            //this.Visible = true;
+        }
+
+        private void ApplyTheme(object sender, EventArgs e)
+        {
+            Color def = ColorScheme.GetColorDef(frm.UseDarkmode);
+            Color second = ColorScheme.GetColorSecond(frm.UseDarkmode);
+            Color third = ColorScheme.GetColorThird(frm.UseDarkmode);
+            Color font = ColorScheme.GetColorFont(frm.UseDarkmode);
+
+            pbClose.BackColor =
+            this.BackColor = frm.UseDarkmode ? third : def;
+            flow.BackColor = second;
+
+            this.ForeColor =
+            p.Color =
+            separator.LineColor = separator2.LineColor =
+            tbAlpha.ForeColor = tbRed.ForeColor = tbGreen.ForeColor = tbBlue.ForeColor =
+            font;
+
+            tbRed.BackColor = tbRed.OnIdleState.FillColor = tbRed.OnActiveState.FillColor = tbRed.OnDisabledState.FillColor = tbRed.OnHoverState.FillColor =
+            tbGreen.BackColor = tbGreen.OnIdleState.FillColor = tbGreen.OnActiveState.FillColor = tbGreen.OnDisabledState.FillColor = tbGreen.OnHoverState.FillColor =
+            tbBlue.BackColor = tbBlue.OnIdleState.FillColor = tbBlue.OnActiveState.FillColor = tbBlue.OnDisabledState.FillColor = tbBlue.OnHoverState.FillColor =
+            tbAlpha.BackColor = tbAlpha.OnIdleState.FillColor = tbAlpha.OnActiveState.FillColor = tbAlpha.OnDisabledState.FillColor = tbAlpha.OnHoverState.FillColor = def;
+
+            tbRed.OnIdleState.BorderColor = tbGreen.OnIdleState.BorderColor = tbBlue.OnIdleState.BorderColor = tbAlpha.OnIdleState.BorderColor = font;
+            //lHeadline.BackColor =
+            //pbClose.BackColor = third;
+
+            pbTransparent.Image = frm.UseDarkmode ? Properties.Resources.ic_block_white_18dp : Properties.Resources.ic_block_black_18dp;
+            pbClose.Image = frm.UseDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;
+
+            this.Invalidate();
+        }
+
+        [Obsolete]
+        public void ApplyThemeOld()
         {
             Color def = Color.FromArgb(255, 255, 255);
             Color second = Color.FromArgb(250, 250, 250);
             Color third = Color.FromArgb(230, 230, 230);
             Color font = Color.Black;
 
-            if (frm.useDarkmode)
+            if (frmOld.useDarkmode)
             {
                 def = Color.FromArgb(32, 32, 32);
                 second = Color.FromArgb(23, 23, 23);
@@ -114,8 +211,8 @@ namespace ExaltAccountManager
             lHeadline.BackColor =
             pbClose.BackColor = third;
 
-            pbTransparent.Image = frm.useDarkmode ? Properties.Resources.ic_block_white_18dp : Properties.Resources.ic_block_black_18dp;
-            pbClose.Image = frm.useDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;
+            pbTransparent.Image = frmOld.useDarkmode ? Properties.Resources.ic_block_white_18dp : Properties.Resources.ic_block_black_18dp;
+            pbClose.Image = frmOld.useDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;
         }
 
         public void AddColorToUI(Color clr)
@@ -137,10 +234,24 @@ namespace ExaltAccountManager
 
         private void pbColor_Click(object sender, EventArgs e)
         {
-            if (ui == null) return;
+            if ((frmOld != null && ui == null) || (frm == null && accountIndex == -1)) return;
 
             pbDrawnBorder = sender as Bunifu.UI.WinForms.BunifuPictureBox;
-            ui.ChangeColor(pbDrawnBorder.BackColor);
+
+            if (frmOld != null)
+                ui.ChangeColor(pbDrawnBorder.BackColor);
+            else
+            {
+                if (accountIndex >= 0)
+                {                    
+                    frm.UpdateDataGridViewGroup(accountIndex, pbDrawnBorder.BackColor);
+                }
+                else if (accountIndex == -99) //Add new Account
+                {
+                    frm.UpdateAddNewUserGroup(pbDrawnBorder.BackColor, pbDrawnBorder == pbTransparent);
+                }
+            }
+
             flow.Invalidate();
             AddColorToSlider(pbDrawnBorder.BackColor);
         }
@@ -270,8 +381,23 @@ namespace ExaltAccountManager
         Pen p = new Pen(Color.Black);
         private void ColorChanger_Paint(object sender, PaintEventArgs e)
         {
+            p.Width = 2f;
+
+            //e.Graphics.DrawArc(p, 0f, 0f, 11f, 11f, 180, 90);
+            //e.Graphics.DrawArc(p, (float)(this.Width - 13f), 0f, 11f, 11f, 270, 90);
+            //e.Graphics.DrawArc(p, (float)(this.Width - 13f), (float)(this.Height - 13.5f), 11f, 11f, 0, 90);
+            //e.Graphics.DrawArc(p, 0f, (float)(this.Height - 13.5f), 11f, 11f, 90, 90);
+
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            e.Graphics.DrawRectangle(p, new Rectangle(0, 0, this.Width - 1, this.Height - 1));
+
+            e.Graphics.DrawArc(p, 0f, 0f, 11f, 11f, 180, 90);
+            e.Graphics.DrawArc(p, (float)(this.Width - 13f), 0f, 11f, 11f, 270, 90);
+            e.Graphics.DrawArc(p, (float)(this.Width - 13f), (float)(this.Height - 13.5f), 11f, 11f, 0, 90);
+            e.Graphics.DrawArc(p, 0f, (float)(this.Height - 13.5f), 11f, 11f, 90, 90);
+
+            p.Width = 1f;
+
+            e.Graphics.DrawRectangles(p, new RectangleF[] { new RectangleF(0, 0, this.Width - 2f, this.Height - 2f) });
         }
 
         private void pbColor_Paint(object sender, PaintEventArgs e)
@@ -284,20 +410,33 @@ namespace ExaltAccountManager
 
         private void pbClose_Click(object sender, EventArgs e)
         {
-            frm.ShowColorChangerUI(ui, true);
+            if (frmOld != null)
+                frmOld.ShowColorChangerUI(ui, true);
+            else
+            {
+                accountIndex = -1;
+                this.Visible = false;
+            }
         }
 
         private void pbClose_MouseEnter(object sender, EventArgs e)
         {
-            if (frm.useDarkmode)
-                pbClose.BackColor = Color.FromArgb(225, 50, 50);
-            else
-                pbClose.BackColor = Color.IndianRed;
+            //if ((frmOld != null && frmOld.useDarkmode) || (frm != null && frm.UseDarkmode))
+            //    pbClose.BackColor = Color.FromArgb(225, 50, 50);
+            //else
+            //    pbClose.BackColor = Color.IndianRed;
+            if (!frm.UseDarkmode)
+                pbClose.Image = Properties.Resources.ic_close_white_24dp;
+
+            pbClose.BackColor = Color.Crimson;
         }
 
         private void pbClose_MouseLeave(object sender, EventArgs e)
         {
-            pbClose.BackColor = lHeadline.BackColor;
+            if (!frm.UseDarkmode)
+                pbClose.Image = Properties.Resources.ic_close_black_24dp;
+
+            pbClose.BackColor = this.BackColor;
         }
 
         #endregion

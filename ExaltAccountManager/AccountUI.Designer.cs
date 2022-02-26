@@ -354,6 +354,7 @@
             // timerCheckProcess
             // 
             this.timerCheckProcess.Interval = 500;
+            this.timerCheckProcess.Tick += new System.EventHandler(this.timerCheckProcess_Tick);
             // 
             // pDrag
             // 

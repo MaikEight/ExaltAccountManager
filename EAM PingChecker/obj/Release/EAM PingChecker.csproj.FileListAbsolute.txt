@@ -235,10 +235,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Newt
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Newtonsoft.Json.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\obj\Release\EAM PingChecker.exe.licenses
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\obj\Release\EAM PingChecker.exe
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_RadarChart.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\EAM Statistics.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_RadarChart.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Bunifu.UI.WinForms.BunifuLoader.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\Bunifu.UI.WinForms.BunifuLoader.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_EAM_Lib.dll.config

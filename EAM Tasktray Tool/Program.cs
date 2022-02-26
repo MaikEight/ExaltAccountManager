@@ -16,7 +16,7 @@ namespace EAM_Tasktray_Tool
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmTaskTray());
+            Application.Run(new FrmTaskTrayTool());
         }
     }
 }

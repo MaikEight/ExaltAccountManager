@@ -36,7 +36,7 @@ namespace EAM_Statistics
             // 
             this.pMain.BackColor = System.Drawing.Color.Transparent;
             this.pMain.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.pMain.BorderRadius = 5;
+            this.pMain.BorderRadius = 9;
             this.pMain.BorderThickness = 1;
             this.pMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pMain.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
@@ -48,7 +48,7 @@ namespace EAM_Statistics
             this.pMain.PanelColor2 = System.Drawing.Color.White;
             this.pMain.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.pMain.ShadowDept = 2;
-            this.pMain.ShadowDepth = 2;
+            this.pMain.ShadowDepth = 4;
             this.pMain.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.pMain.ShadowTopLeftVisible = false;
             this.pMain.Size = new System.Drawing.Size(200, 100);

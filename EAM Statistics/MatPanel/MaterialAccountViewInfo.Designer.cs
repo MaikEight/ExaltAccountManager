@@ -226,7 +226,6 @@ namespace EAM_Statistics.MatPanel
             this.Size = new System.Drawing.Size(200, 185);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

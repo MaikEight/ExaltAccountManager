@@ -33,6 +33,7 @@ namespace MK_EAM_Lib
             return save;
         }
 
+        //public static System.ComponentModel.BindingList<MK_EAM_Lib.AccountInfo> Decrypt(AccountSaveFile save)
         public static System.Collections.Generic.List<MK_EAM_Lib.AccountInfo> Decrypt(AccountSaveFile save)
         {
             if (save != null)
@@ -41,6 +42,7 @@ namespace MK_EAM_Lib
                 {
                     if (save.version == 2)
                         return (System.Collections.Generic.List<AccountInfo>)ByteArrayToObject(ProtectedData.Unprotect(save.accountsData, save.entropy, DataProtectionScope.CurrentUser));
+                        //return (System.ComponentModel.BindingList<MK_EAM_Lib.AccountInfo>)ByteArrayToObject(ProtectedData.Unprotect(save.accountsData, save.entropy, DataProtectionScope.CurrentUser));
                 }
                 catch { }
             }

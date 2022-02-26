@@ -21,6 +21,7 @@
             { 785, CharClasses.Samurai},
             { 796, CharClasses.Bard},
             { 817, CharClasses.Summoner},
+            { 818, CharClasses.Kensei},
         };
 
         public static readonly System.Collections.Generic.Dictionary<CharClasses, CharacterStats> dicCharClassToMaxStats = new System.Collections.Generic.Dictionary<CharClasses, CharacterStats>()
@@ -41,7 +42,8 @@
             {CharClasses.Ninja, new CharacterStats()        { maxHP = 720, maxMP = 252, atk = 70, def = 25, spd = 60, dex = 70, vit = 60, wis = 70 } },
             {CharClasses.Samurai, new CharacterStats()      { maxHP = 720, maxMP = 252, atk = 75, def = 30, spd = 55, dex = 50, vit = 60, wis = 60 } },
             {CharClasses.Bard, new CharacterStats()         { maxHP = 670, maxMP = 385, atk = 55, def = 25, spd = 55, dex = 70, vit = 45, wis = 75 } },
-            {CharClasses.Summoner, new CharacterStats()     { maxHP = 670, maxMP = 385, atk = 50, def = 25, spd = 60, dex = 75, vit = 40, wis = 75 } }
+            {CharClasses.Summoner, new CharacterStats()     { maxHP = 670, maxMP = 385, atk = 50, def = 25, spd = 60, dex = 75, vit = 40, wis = 75 } },
+            {CharClasses.Kensei, new CharacterStats()       { maxHP = 720, maxMP = 252, atk = 65, def = 25, spd = 60, dex = 65, vit = 60, wis = 50 } }
         };
     }
 
@@ -78,6 +80,13 @@
 
         public int xOf8 = 0;
 
+        /// <summary>
+        /// 0-3 = Current EQ
+        /// 4-11 = Inventroy
+        /// 12-19 = Backpack
+        /// </summary>
+        public int[] equipment = new int[20];
+
         public CharacterStats() { }
         public CharacterStats(string c)
         {
@@ -91,6 +100,20 @@
 
                 c = c.Substring(c.IndexOf("<CurrentFame>") + 13, c.Length - (c.IndexOf("<CurrentFame>") + 13));
                 fame = System.Convert.ToInt32(c.Substring(0, c.IndexOf("</CurrentFame>")));
+
+                c = c.Substring(c.IndexOf("<Equipment>") + 11, c.Length - (c.IndexOf("<Equipment>") + 11));
+                string eq = c.Substring(0, c.IndexOf("</Equipment>"));
+                string[] eqString = eq.Split(',');
+                for (int i = 0; i < eqString.Length; i++)
+                {
+                    if (i > equipment.Length)
+                        break;
+
+                    if (eqString[i].Contains("#"))
+                        eqString[i] = eqString[i].Substring(0, eqString[i].IndexOf("#"));
+
+                    int.TryParse(eqString[i], out equipment[i]);
+                }
 
                 c = c.Substring(c.IndexOf("<MaxHitPoints>") + 14, c.Length - (c.IndexOf("<MaxHitPoints>") + 14));
                 maxHP = System.Convert.ToInt32(c.Substring(0, c.IndexOf("</MaxHitPoints>")));
@@ -122,11 +145,17 @@
                 c = c.Substring(c.IndexOf("<MpRegen>") + 9, c.Length - (c.IndexOf("<MpRegen>") + 9));
                 wis = System.Convert.ToInt32(c.Substring(0, c.IndexOf("</MpRegen>")));
 
-                c = c.Substring(c.IndexOf("<HasBackpack>") + 13, c.Length - (c.IndexOf("<HasBackpack>") + 13));
-                hasBackpack = System.Convert.ToInt32(c.Substring(0, c.IndexOf("</HasBackpack>"))) == 1;
+                if (c.Contains("<HasBackpack>"))
+                {
+                    c = c.Substring(c.IndexOf("<HasBackpack>") + 13, c.Length - (c.IndexOf("<HasBackpack>") + 13));
+                    hasBackpack = System.Convert.ToInt32(c.Substring(0, c.IndexOf("</HasBackpack>"))) == 1;
+                }
 
-                c = c.Substring(c.IndexOf("<Has3Quickslots>") + 16, c.Length - (c.IndexOf("<Has3Quickslots>") + 16));
-                hasAdventurersBelt = System.Convert.ToInt32(c.Substring(0, c.IndexOf("</Has3Quickslots>"))) == 1;
+                if (c.Contains("<Has3Quickslots>"))
+                {
+                    c = c.Substring(c.IndexOf("<Has3Quickslots>") + 16, c.Length - (c.IndexOf("<Has3Quickslots>") + 16));
+                    hasAdventurersBelt = System.Convert.ToInt32(c.Substring(0, 1)) == 1;
+                }
 
                 CalculateXof8();
             }
@@ -153,22 +182,23 @@
     [System.Serializable]
     public enum CharClasses
     {
-        Rogue,
-        Archer,
-        Wizard,
-        Priest,
-        Warrior,
-        Knight,
-        Paladin,
-        Assassin,
-        Necromancer,
-        Huntress,
-        Mystic,
-        Trickster,
-        Sorcerer,
-        Ninja,
-        Samurai,
-        Bard,
-        Summoner
+        Rogue = 0,
+        Archer = 1,
+        Wizard = 2,
+        Priest = 3,
+        Warrior = 4,
+        Knight = 5,
+        Paladin = 6,
+        Assassin = 7,
+        Necromancer = 8,
+        Huntress = 9,
+        Mystic = 10,
+        Trickster = 11,
+        Sorcerer = 12,
+        Ninja = 13,
+        Samurai = 14,
+        Bard = 15,
+        Summoner = 16,
+        Kensei = 17
     }
 }

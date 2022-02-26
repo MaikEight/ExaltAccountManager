@@ -1,4 +1,8 @@
-﻿namespace MK_EAM_Lib
+﻿using CsvHelper.Configuration;
+using System.ComponentModel;
+using System.Globalization;
+
+namespace MK_EAM_Lib
 {
     [System.Serializable]
     public class ExportSaveFile
@@ -12,7 +16,7 @@
     public class ExportAccounts
     {
         public System.Collections.Generic.List<AccountInfo> accounts;
-        public AccountOrders accountOrders;
+        [System.Obsolete] public AccountOrders accountOrders;
         public System.Collections.Generic.List<string> statsFileName;
         public System.Collections.Generic.List<byte[]> statsFileData;
     }
@@ -23,7 +27,7 @@
         public ExportAccounts exportAccounts;
         public NotificationOptions notificationOptions;
         public byte[] options;
-        public DailyLogins dailyLogins;
+        public DailyLoginsOLD dailyLogins;
         public PingSaveFile pingSaveFile;
     }
 
@@ -33,16 +37,26 @@
         public string email { get; set; }
         public string password { get; set; }
         public string color { get; set; }
+        [Browsable(false)]
         public int orderID { get; set; }
 
         public ExportCSVAccount() { }
-        public ExportCSVAccount(AccountInfo info, int _orderID = -1, bool savePassword = false)
+        public ExportCSVAccount(AccountInfo info, bool savePassword = false, int _orderID = -1)
         {
             username = info.name;
             email = info.email;
             password = savePassword ? info.password : string.Empty;
-            color = "#" + info.color.R.ToString("X2") + info.color.G.ToString("X2") + info.color.B.ToString("X2");
+            color = "#" + info.Color.R.ToString("X2") + info.Color.G.ToString("X2") + info.Color.B.ToString("X2");
             orderID = _orderID;
+        }
+    }
+
+    public sealed class ExportCSVAccountMap : ClassMap<ExportCSVAccount>
+    {
+        public ExportCSVAccountMap()
+        {
+            AutoMap(CultureInfo.InvariantCulture);
+            Map(m => m.orderID).Ignore();
         }
     }
 

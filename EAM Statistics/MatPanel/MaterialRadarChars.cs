@@ -40,6 +40,8 @@ namespace EAM_Statistics
             radarChart.SetHeadline("");
             radarChart.ChangeShowValueBallsDirectly(false);
             radarChart.maxDistanceToPoint = 75d;
+            radarChart.ChangeFillColor(Color.FromArgb(125, 98, 0, 238));
+
             pChart.Controls.SetChildIndex(lTitle, 0);
         }
 
@@ -81,7 +83,7 @@ namespace EAM_Statistics
             pMain.ShadowColor = useDarkmode ? Color.FromArgb(45, 20, 20, 20) : Color.FromArgb(25, 0, 0, 0);
 
             radarChart.ChangeTheme(def, second, font);
-            radarChart.ChangeGridColor(useDarkmode ? Color.FromArgb(128, 200, 200, 200) : Color.FromArgb(128, 0, 0, 0));
+            radarChart.ChangeGridColor(useDarkmode ? Color.FromArgb(128, 200, 200, 200) : Color.FromArgb(128, 0, 0, 0));            
 
             this.ForeColor = font;
 

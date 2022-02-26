@@ -1,6 +1,3 @@
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Tasktray Tool.exe.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Tasktray Tool.exe
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Tasktray Tool.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\ExaltAccountManager.exe
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\MK_EAM_Lib.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Microsoft.Win32.TaskScheduler.dll
@@ -15,13 +12,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\it\M
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\pl\Microsoft.Win32.TaskScheduler.resources.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\ru\Microsoft.Win32.TaskScheduler.resources.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\zh-CN\Microsoft.Win32.TaskScheduler.resources.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM_Tasktray_Tool.FrmTaskTray.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM_Tasktray_Tool.Properties.Resources.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Tasktray Tool.csproj.GenerateResource.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Tasktray Tool.csproj.CoreCompileInputs.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Tasktray Tool.csproj.CopyComplete
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Tasktray Tool.exe
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Tasktray Tool.pdb
 C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Tasktray Tool.exe.config
 C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Tasktray Tool.exe
 C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Tasktray Tool.pdb
@@ -95,18 +89,51 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Newt
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuPages.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuCircleProgress.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Statistics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.1.5.3.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuShadowPanel.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\MK_RadarChart.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuDataGridView.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuButton.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Statistics.dll.config
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.1.5.3.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuShadowPanel.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\MK_RadarChart.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuDataGridView.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuButton.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuLoader.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuLoader.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuFormDock.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuFormDock.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuRadioButton.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuRadioButton.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuLabel.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuLabel.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\MK_EAM_Lib.dll.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.Charts.WinForms.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.Charts.WinForms.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM_Tasktray_Tool.FrmTaskTrayOLD.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM_Tasktray_Tool.FrmTaskTrayTool.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuColorTransition.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuDatePicker.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuGauge.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuGradientPanel.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuGroupBox.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuImageButton.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuProgressBar.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuRating.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuShapes.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuUserControl.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.Deprecated.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuColorTransition.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuDatePicker.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuGauge.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuGradientPanel.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuGroupBox.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuImageButton.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuProgressBar.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuRating.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuShapes.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\Bunifu.UI.WinForms.BunifuUserControl.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Notification Center.exe.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Notification Center.exe
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\EAM Notification Center.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Notification Center.exe.licenses
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Notification Center.exe
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Notification Center.pdb

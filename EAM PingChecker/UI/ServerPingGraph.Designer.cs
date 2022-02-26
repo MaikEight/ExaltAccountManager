@@ -58,7 +58,7 @@ namespace EAM_PingChecker.UI
             // 
             this.shadow.BackColor = System.Drawing.Color.White;
             this.shadow.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.shadow.BorderRadius = 5;
+            this.shadow.BorderRadius = 9;
             this.shadow.BorderThickness = 1;
             this.shadow.Controls.Add(this.pbClose);
             this.shadow.Controls.Add(this.lPingInterval);
@@ -83,7 +83,7 @@ namespace EAM_PingChecker.UI
             this.shadow.PanelColor2 = System.Drawing.Color.White;
             this.shadow.ShadowColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.shadow.ShadowDept = 2;
-            this.shadow.ShadowDepth = 2;
+            this.shadow.ShadowDepth = 4;
             this.shadow.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.shadow.ShadowTopLeftVisible = false;
             this.shadow.Size = new System.Drawing.Size(606, 300);
@@ -140,6 +140,8 @@ namespace EAM_PingChecker.UI
             this.dropInterval.IndicatorAlignment = Bunifu.UI.WinForms.BunifuDropdown.Indicator.Right;
             this.dropInterval.IndicatorColor = System.Drawing.Color.Gray;
             this.dropInterval.IndicatorLocation = Bunifu.UI.WinForms.BunifuDropdown.Indicator.Right;
+            this.dropInterval.IndicatorThickness = 2;
+            this.dropInterval.IsDropdownOpened = false;
             this.dropInterval.ItemBackColor = System.Drawing.Color.White;
             this.dropInterval.ItemBorderColor = System.Drawing.Color.White;
             this.dropInterval.ItemForeColor = System.Drawing.Color.Black;
@@ -339,9 +341,9 @@ namespace EAM_PingChecker.UI
             // 
             // lineChart
             // 
-            this.lineChart.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(0)))), ((int)(((byte)(179)))), ((int)(((byte)(219)))));
+            this.lineChart.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.lineChart.BorderCapStyle = Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.LineCaps.Butt;
-            this.lineChart.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.lineChart.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.lineChart.BorderDash = null;
             this.lineChart.BorderDashOffset = 0D;
             this.lineChart.BorderJoin = Bunifu.Charts.WinForms.ChartTypes.BunifuLineChart.BorderJoinStyles.Miter;

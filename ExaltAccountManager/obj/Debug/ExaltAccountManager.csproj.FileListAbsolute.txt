@@ -61,7 +61,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\Ex
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmAddAccount.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmDailyLoginOptions.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmLogViewer.resources
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmMain.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmOptions.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.LogDataUI.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.OptionsUI.resources
@@ -408,10 +407,38 @@ C:\Users\mkuehne\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.SortAlphabeticalUI.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmMessage.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmHWIDTool.resources
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\EAM Statistics.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_RadarChart.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\EAM Statistics.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_RadarChart.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\Bunifu.UI.WinForms.BunifuLoader.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\Bunifu.UI.WinForms.BunifuLoader.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmMainOLD.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmMain.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIAccounts.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIModules.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIAddAccount.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleDeleteAccount.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIOptions.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIHelp.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmShadowHost.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.FrmControlHost.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleQNA.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UILogs.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIAbout.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleGameUpdater.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.eleHWID_Tool.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleChangelog.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIChangelog.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleTokenViewer.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UITokenViewer.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIImportExport.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleImport.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleCustomImport.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.Mini.MiniAccountDataOrderEntry.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleEditAccount.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleExport.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleCustomExport.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIDailyLogins.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_Lib.dll.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleDailyLoginsNotificationsettings.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleDailyLoginsTimingSettings.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleDailyLoginTaskInstaller.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleDailyLoginsResultsList.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleSnackbarOptions.resources

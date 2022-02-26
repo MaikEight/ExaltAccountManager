@@ -33,7 +33,7 @@ namespace EAM_Statistics
             List<StatsMain> statsList = new List<StatsMain>();
             statsList.AddRange(form.statsList);
             statsList = statsList.OrderByDescending(o => o.stats.Count > 0 ? o.stats[o.stats.Count - 1].totalFame : -1).ToList();
-            
+
             bool needScrollbar = false;
             for (int i = 0; i < statsList.Count; i++)
             {
@@ -154,6 +154,12 @@ namespace EAM_Statistics
             }
 
             ApplyTheme(isDarkmode, def, second, third, font);
+        }
+        DateTime lastUpdate = DateTime.Now;
+        private void scrollbar_Scroll(object sender, Bunifu.UI.WinForms.BunifuVScrollBar.ScrollEventArgs e)
+        {
+            if ((DateTime.Now - lastUpdate).TotalMilliseconds > 300)
+                flow.Update();
         }
     }
 }
