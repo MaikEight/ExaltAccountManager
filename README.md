@@ -1,6 +1,13 @@
 # Exalt Account Manager
 
+![GitHub](https://img.shields.io/github/license/MaikEight/ExaltAccountManager?color=6200EE&label=License)
+<p align="center">
+  <img width="250" height="250" src="https://github.com/MaikEight/ExaltAccountManager/blob/master/ExaltAccountManager/Resources/1.png">
+</p>
+
+<br >
 The Exalt Account Manager (EAM for short) is a launcher for the game Realm of the mad god (ROTMG) Exalt version (Unity-client).
+It has alot of helpful features (see list below).
 
 ![Exalt Account Manager](https://i.imgur.com/3qLhiLR.png)
 
