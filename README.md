@@ -1,8 +1,23 @@
 # Exalt Account Manager
 
-![GitHub](https://img.shields.io/github/license/MaikEight/ExaltAccountManager?color=6200EE&label=License)
+![Project](https://img.shields.io/badge/dynamic/xml?style=flat&color=6200EE&label=Project&query=//*[@id="repository-container-header"]/div[1]/div/h2/strong/a&url=https%3A%2F%2Fgithub.com%2FMaikEight%2FExaltAccountManager)
+![GitHub](https://img.shields.io/github/license/MaikEight/ExaltAccountManager?label=License)
+![GitHub top language](https://img.shields.io/github/languages/top/MaikEight/ExaltAccountManager?label=C%23)
+![Lines of code](https://img.shields.io/tokei/lines/github/MaikEight/ExaltAccountManager?color=1A8ACA&label=Total%20lines)
+![Maintenance](https://img.shields.io/maintenance/yes/2023?label=Maintained)
+![GitHub last commit](https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit)
+
+
+![NetFrameworkVersion](https://img.shields.io/badge/.Net%20Framework%20Version-4.8.0-violet.svg?style=flat&logo=.NET&logoColor=967fe5&color=512BD4)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/MaikEight/ExaltAccountManager?label=Latest%20Release) 
+![GitHub Release Date](https://img.shields.io/github/release-date/MaikEight/ExaltAccountManager?label=Release%20date)
+![GitHub all releases](https://img.shields.io/github/downloads/MaikEight/ExaltAccountManager/total?label=Downloads)
+![Discord](https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord)
+
+<br >
+
 <p align="center">
-  <img width="250" height="250" src="https://github.com/MaikEight/ExaltAccountManager/blob/master/ExaltAccountManager/Resources/1.png">
+  <img width="250" height="250" src="https://github.com/MaikEight/ExaltAccountManager/blob/master/ExaltAccountManager/Resources/1.png">  
 </p>
 
 <br >
@@ -44,3 +59,5 @@ It has alot of helpful features (see list below).
 
 ## Missing a feature or found a bug?
 Just open an issue here, write an email (mail@maik8.de) or join the discord: https://discord.gg/VNfxgPqbJ7
+
+![Discord](https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord)
