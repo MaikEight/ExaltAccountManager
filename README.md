@@ -61,3 +61,5 @@ It has alot of helpful features (see list below).
 Just open an issue here, write an email (mail@maik8.de) or join the discord: https://discord.gg/VNfxgPqbJ7
 
 ![Discord](https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord)
+
+#### Big thanks to [Icons8](https://icons8.com/icons) for all the beautifull Icons / Images used in this project.
