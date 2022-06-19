@@ -1,6 +1,6 @@
 # Exalt Account Manager
 
-![Project](https://img.shields.io/badge/dynamic/xml?style=flat&color=6200EE&label=Project&query=//*[@id="repository-container-header"]/div[1]/div/h2/strong/a&url=https%3A%2F%2Fgithub.com%2FMaikEight%2FExaltAccountManager)
+![Project](https://img.shields.io/badge/Project-Exalt%20Account%20Manager-violet.svg?style=flat&color=6200EE)
 ![GitHub](https://img.shields.io/github/license/MaikEight/ExaltAccountManager?label=License)
 ![GitHub top language](https://img.shields.io/github/languages/top/MaikEight/ExaltAccountManager?label=C%23)
 ![Lines of code](https://img.shields.io/tokei/lines/github/MaikEight/ExaltAccountManager?color=1A8ACA&label=Total%20lines)
