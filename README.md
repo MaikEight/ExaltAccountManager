@@ -37,7 +37,6 @@
     src="https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit"
     alt="Last commit" />
 </a>
-<br >
 <a href="https://support.microsoft.com/en-us/topic/microsoft-net-framework-4-8-offline-installer-for-windows-9d23f658-3b97-68ab-d013-aa3c3e7495e0" style="display: inline">
   <img
     src="https://img.shields.io/badge/.Net%20Framework%20Version-4.8.0-violet.svg?style=flat&logo=.NET&logoColor=967fe5&color=512BD4"
@@ -72,7 +71,7 @@
 Exalt Account Manager (EAM for short) is a bundle of powerfull tools to manager all your accounts for the game "Realm of the mad god" (ROTMG) exalt version.
 EAM's main purpose is to be an upgrade to the original game launcher by offering a pain free multi-account experience.
 You can find an overview of the most prominent features down below.
-
+<br >
 <br >
 
 ![Exalt Account Manager](https://i.imgur.com/3qLhiLR.png)
@@ -110,11 +109,11 @@ You can find an overview of the most prominent features down below.
 
 ## Screenshots :camera_flash:
 
-Exalt Account Manager  | Statistics
-:---------------------:|:---------------------:
+Exalt Account Manager                                     | Statistics
+:--------------------------------------------------------:|:---------------------:
 ![Exalt Account Manager](https://i.imgur.com/3qLhiLR.png) | ![Statistics](https://i.imgur.com/ShvWVg9.png) 
-Ping Checker           | Vault Peeker
-![Ping checker](https://i.imgur.com/txUcbFT.gif) | ![Vault Peeker](https://i.imgur.com/IfFbpMy.png)
+Ping Checker                                              | Vault Peeker
+![Ping checker](https://i.imgur.com/txUcbFT.gif)          | ![Vault Peeker](https://i.imgur.com/IfFbpMy.png)
 
 ## You need support or have questions? :memo:
 Just join my discord server and leave me a message in the help-request / general channel and you will be surprised about the response times!
