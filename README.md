@@ -79,16 +79,16 @@ You can find an overview of the most prominent features down below.
 <br >
 
 ## Features :sparkles:
-- Quickly open exalt with different accounts.
-- Open multiple instances of Exalt at once with the click of a button!
-- Windows Data Protection API encrypted save-file.- 
+- Quickly open exalt with different accounts
+- Open multiple instances of Exalt at once with the click of a button
+- Windows Data Protection API encrypted save-file
 - Game Updater
-- Import accounts from a muledump formated-, .csv, .EAMexport or custom formated text file.
-- Automaticly fetch the Account name if you leave the username-textfield blank while adding an account.
-- Auto Daily Login for choosen accounts.
-- Detect running Exalt instances and the logged in account.
-- Create login-tokens at runtime.
-- GUI-Log.
+- Import accounts from a muledump formated-, .csv, .EAMexport or custom formated text file
+- Automaticly fetch the Account name if you leave the username-textfield blank while adding an account
+- Auto Daily Login for choosen accounts
+- Detect running Exalt instances and the logged in account
+- Create login-tokens at runtime
+- GUI-Log
 - Graphical statistics
 - Vault Peeker
 - Ping Checker
@@ -100,17 +100,17 @@ You can find an overview of the most prominent features down below.
 
 1. Make sure you have .Net Framework 4.8 installed.
    
-    You can get the installer from [Microsoft](https://support.microsoft.com/en-us/topic/microsoft-net-framework-4-8-offline-installer-for-windows-9d23f658-3b97-68ab-d013-aa3c3e7495e0).
-2. Download the latest release of EAM: [found here](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
+    You can get the installer directly from [Microsoft](https://support.microsoft.com/en-us/topic/microsoft-net-framework-4-8-offline-installer-for-windows-9d23f658-3b97-68ab-d013-aa3c3e7495e0).
+2. Download the latest release of EAM: [found here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
 
-       You want to download the Exalt_Account_Manager_VX.Y.Z.zip file
+       You want to download the Exalt_Account_Manager_VX.Y.Z.zip file.
 3. Unzip the release to anywhere you seem fit.
 4. Start the ExaltAccountManager.exe in there.
 
 ## Screenshots :camera_flash:
 
 Exalt Account Manager                                     | Statistics
-:--------------------------------------------------------:|:---------------------:
+:--------------------------------------------------------:|:------------------------------------------------:
 ![Exalt Account Manager](https://i.imgur.com/3qLhiLR.png) | ![Statistics](https://i.imgur.com/ShvWVg9.png) 
 Ping Checker                                              | Vault Peeker
 ![Ping checker](https://i.imgur.com/txUcbFT.gif)          | ![Vault Peeker](https://i.imgur.com/IfFbpMy.png)
@@ -140,7 +140,7 @@ If you want to contribut to this project, please leave me a message in discord a
 Preview-testers and feedback is important aswell, if you have a minute to write me your thought about EAM and how it could be improved, please do.
 
 If you want, you can donate a buck or two, any money generated will be re-invested into this project.
-Last puchase: The awesome, custom made application-logo 
+Last puchase: The awesome, custom made application-logo.
 
 <b>Any help is greatly appreciated</b>
 
