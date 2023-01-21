@@ -144,6 +144,22 @@ Last puchase: The awesome, custom made application-logo.
 
 <b>Any help is greatly appreciated</b>
 
+<a href="https://ko-fi.com/maik8">
+  <img
+    height='48'
+    src="https://storage.ko-fi.com/cdn/brandasset/kofi_bg_tag_dark.png"
+    alt="Ko-Fi"
+  />
+</a>
+
+<a href="https://www.buymeacoffee.com/Maik8">
+  <img
+    height='48'
+    src="https://i.imgur.com/tAUkwTQ.png"
+    alt="Ko-Fi"
+  />
+</a>
+
 ## Credits :green_heart:
 
 <b>Big</b> thanks to [Icons8](https://icons8.com/icons) for all the beautifull Icons / Images used in this project.
