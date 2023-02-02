@@ -212,7 +212,8 @@ namespace ExaltAccountManager
                         DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
                         break;
                 }
-
+                DiscordHelper.ApplyPresence();
+                
                 #endregion
 
                 pSideBar.Visible = !(uiState == UIState.Changelog || uiState == UIState.TokenViewer || uiState == UIState.ImportExport || uiState == UIState.DailyLogin || uiState == UIState.DailyNotifications);
@@ -317,10 +318,13 @@ namespace ExaltAccountManager
                 {
                     OptionsData.discordOptions = new DiscordOptions();
                 }
-                
-                DiscordHelper.Initialize(OptionsData.discordOptions, this);
 
-                #endregion 
+                DiscordHelper.Initialize(OptionsData.discordOptions,
+                                         this,
+                                         autoEvents: false,
+                                         _updateOnChange: false);
+
+                #endregion
 
                 #region Accounts
 
@@ -399,7 +403,7 @@ namespace ExaltAccountManager
         {
             timerLoadUI.Start();
             gameUpdater = new GameUpdater(OptionsData.exePath, lastUpdateCheckPath);
-            GameUpdater.Instance.OnUpdateRequired += UpdateRequiredInvoker;
+            GameUpdater.Instance.OnUpdateRequired += UpdateRequiredInvoker;            
         }
 
         public void ApplyTheme(object sender, EventArgs e)
@@ -1384,6 +1388,9 @@ namespace ExaltAccountManager
 
             timerLoadUI.Dispose();
             lHeaderEAM.Focus();
+
+            DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
+            DiscordHelper.ApplyPresence();
         }
 
         private bool UpdateRequired()
@@ -1526,6 +1533,30 @@ namespace ExaltAccountManager
             ImportExport = 10,
             DailyLogin = 11,
             DailyNotifications = 12,
+        }
+
+        private void FrmMain_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorDef(useDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, this.Height - 1, this.Width, this.Height - 1);
+            }
+        }
+
+        private void pBottom_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorSecond(useDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, pBottom.Height - 1, pBottom.Width, pBottom.Height - 1);
+            }
+        }
+
+        private void lVersion_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorSecond(useDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, lVersion.Height - 1, lVersion.Width, lVersion.Height - 1);
+            }
         }
     }
 }

@@ -209,3 +209,4 @@ C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Vault Peeker\obj\Deb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Vault Peeker\obj\Debug\EAM Vault Peeker.csproj.CopyComplete
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Vault Peeker\obj\Debug\EAM Vault Peeker.exe
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Vault Peeker\obj\Debug\EAM Vault Peeker.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\obj\Debug\EAM Vault Peeker.csproj.SuggestedBindingRedirects.cache

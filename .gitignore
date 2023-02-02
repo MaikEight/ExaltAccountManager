@@ -9,6 +9,10 @@ _Releases/
 StringToBase64/
 EAMBackup/
 
+Debug/
+Release/
+.cache
+.pdb
 
 # User-specific files
 *.rsuser

@@ -240,3 +240,9 @@ C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM PingChecker\bin\Debu
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM PingChecker\bin\Debug\MK_EAM_Discord_Lib.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM PingChecker\bin\Debug\DiscordRPC.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM PingChecker\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM_Discord_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\DiscordRPC.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM_Discord_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\DiscordRPC.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll

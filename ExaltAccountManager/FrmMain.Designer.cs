@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges5 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.pLeftSide = new System.Windows.Forms.Panel();
             this.pSideButtons = new System.Windows.Forms.Panel();
             this.pUpdate = new System.Windows.Forms.Panel();
@@ -143,11 +143,11 @@
             this.btnEAMUpdate.ColorContrastOnClick = 45;
             this.btnEAMUpdate.ColorContrastOnHover = 45;
             this.btnEAMUpdate.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.btnEAMUpdate.CustomizableEdges = borderEdges1;
+            borderEdges5.BottomLeft = true;
+            borderEdges5.BottomRight = true;
+            borderEdges5.TopLeft = true;
+            borderEdges5.TopRight = true;
+            this.btnEAMUpdate.CustomizableEdges = borderEdges5;
             this.btnEAMUpdate.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnEAMUpdate.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnEAMUpdate.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -231,6 +231,7 @@
             this.toolTip.SetToolTip(this.pBottom, "");
             this.toolTip.SetToolTipIcon(this.pBottom, null);
             this.toolTip.SetToolTipTitle(this.pBottom, "");
+            this.pBottom.Paint += new System.Windows.Forms.PaintEventHandler(this.pBottom_Paint);
             // 
             // lVersion
             // 
@@ -245,6 +246,7 @@
             this.toolTip.SetToolTip(this.lVersion, "");
             this.toolTip.SetToolTipIcon(this.lVersion, null);
             this.toolTip.SetToolTipTitle(this.lVersion, "");
+            this.lVersion.Paint += new System.Windows.Forms.PaintEventHandler(this.lVersion_Paint);
             // 
             // pSideBar
             // 
@@ -797,6 +799,7 @@
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.LocationChanged += new System.EventHandler(this.FrmMain_LocationChanged);
             this.SizeChanged += new System.EventHandler(this.FrmMain_SizeChanged);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrmMain_Paint);
             this.pLeftSide.ResumeLayout(false);
             this.pSideButtons.ResumeLayout(false);
             this.pUpdate.ResumeLayout(false);

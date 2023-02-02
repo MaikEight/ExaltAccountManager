@@ -258,3 +258,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Tasktray Tool\bin\De
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Tasktray Tool\bin\Debug\MK_EAM_Discord_Lib.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Tasktray Tool\bin\Debug\DiscordRPC.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Tasktray Tool\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\MK_EAM_Discord_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\DiscordRPC.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\MK_EAM_Discord_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\DiscordRPC.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Debug\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Debug\EAM Tasktray Tool.csproj.SuggestedBindingRedirects.cache

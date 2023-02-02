@@ -203,3 +203,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Daily Login Service\
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Daily Login Service\bin\Debug\MK_EAM_Discord_Lib.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Daily Login Service\bin\Debug\DiscordRPC.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\EAM Daily Login Service\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Discord_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\DiscordRPC.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Discord_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\DiscordRPC.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\obj\Debug\EAM Daily Login Service.csproj.SuggestedBindingRedirects.cache

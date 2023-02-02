@@ -620,3 +620,10 @@ C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\ExaltAccountManager\bin\
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\ExaltAccountManager\bin\Debug\MK_EAM_Discord_Lib.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\ExaltAccountManager\bin\Debug\DiscordRPC.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager - Kopie\ExaltAccountManager\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.csproj.SuggestedBindingRedirects.cache
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_Discord_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\DiscordRPC.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_Discord_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\DiscordRPC.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll

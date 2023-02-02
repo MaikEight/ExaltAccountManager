@@ -54,12 +54,10 @@ namespace ExaltAccountManager.UI
                 if (System.IO.File.Exists(frm.pingCheckerExePath))
                 {
                     ProcessStartInfo info = new ProcessStartInfo(frm.pingCheckerExePath);
-                    Process p = new Process()
-                    {
-                        StartInfo = info
-                    };
+                    Process p = DiscordHelper.AddProcessToWatchlist(info, "pingChecker");
                     p.Start();
                     DiscordHelper.OpenedPingChecker();
+                    
                 }
                 else
                     frm.ShowSnackbar("Failed to find the Ping Checker module.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
@@ -82,10 +80,7 @@ namespace ExaltAccountManager.UI
                 if (System.IO.File.Exists(frm.statisticsExePath))
                 {
                     ProcessStartInfo info = new ProcessStartInfo(frm.statisticsExePath);
-                    Process p = new Process()
-                    {
-                        StartInfo = info
-                    };
+                    Process p = DiscordHelper.AddProcessToWatchlist(info, "statistics");
                     p.Start();
                     DiscordHelper.OpenedStatistics();
                 }
@@ -105,10 +100,7 @@ namespace ExaltAccountManager.UI
                 if (System.IO.File.Exists(frm.vaultPeekerExePath))
                 {
                     ProcessStartInfo info = new ProcessStartInfo(frm.vaultPeekerExePath);
-                    Process p = new Process()
-                    {
-                        StartInfo = info
-                    };
+                    Process p = DiscordHelper.AddProcessToWatchlist(info, "vaultPeeker");
                     p.Start();
                     DiscordHelper.OpenedVaultPeeker();
                 }
