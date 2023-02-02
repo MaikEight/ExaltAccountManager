@@ -59,6 +59,7 @@ namespace ExaltAccountManager.UI
                         StartInfo = info
                     };
                     p.Start();
+                    DiscordHelper.OpenedPingChecker();
                 }
                 else
                     frm.ShowSnackbar("Failed to find the Ping Checker module.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
@@ -86,6 +87,7 @@ namespace ExaltAccountManager.UI
                         StartInfo = info
                     };
                     p.Start();
+                    DiscordHelper.OpenedStatistics();
                 }
                 else
                     frm.ShowSnackbar("Failed to find the statistics module.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
@@ -108,6 +110,7 @@ namespace ExaltAccountManager.UI
                         StartInfo = info
                     };
                     p.Start();
+                    DiscordHelper.OpenedVaultPeeker();
                 }
                 else
                     frm.ShowSnackbar("Failed to find the vault peeker module.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);

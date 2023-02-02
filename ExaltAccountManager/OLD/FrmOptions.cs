@@ -392,5 +392,16 @@ namespace ExaltAccountManager
         public bool deactivateKillswitch = true;
         
         public int snackbarPosition = 8;
+
+        public DiscordOptions discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
+    }
+
+    [System.Serializable]
+    public class DiscordOptions
+    {
+        public bool ShowAccountNames { get; set; } = true;
+        public bool ShowMenus { get; set; } = true;
+
+        public bool ShowState { get; set; } = true;
     }
 }

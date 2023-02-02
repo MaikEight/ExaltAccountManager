@@ -100,7 +100,7 @@ namespace ExaltAccountManager.UI
 
             if (toggleCustomAccountname.Checked)
                 info.name = tbCustomAccountname.Text;
-            info.email = tbEmail.Text.ToLower().Replace(" ", "");
+            info.email = tbEmail.Text.Replace(" ", "");
             info.password = tbPassword.Text;
 
             if (string.IsNullOrEmpty(info.email) || string.IsNullOrEmpty(info.password))

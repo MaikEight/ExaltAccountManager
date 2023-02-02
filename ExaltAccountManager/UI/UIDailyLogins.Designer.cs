@@ -56,7 +56,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.bunifuCards = new Bunifu.Framework.UI.BunifuCards();
             this.pData = new System.Windows.Forms.Panel();
-            this.chartCanvas = new Bunifu.Charts.WinForms.BunifuChartCanvas();
             this.pCardsTop = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.barChartSuccess = new Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart(this.components);
@@ -76,6 +75,7 @@
             this.timerAnimate = new System.Windows.Forms.Timer(this.components);
             this.panel7 = new System.Windows.Forms.Panel();
             this.timerCheckForTask = new System.Windows.Forms.Timer(this.components);
+            this.lNotAvailable = new System.Windows.Forms.Label();
             this.pTop.SuspendLayout();
             this.bunifuShadowPanel4.SuspendLayout();
             this.bunifuShadowPanel3.SuspendLayout();
@@ -442,80 +442,15 @@
             // 
             // pData
             // 
-            this.pData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.pData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pData.Controls.Add(this.chartCanvas);
+            this.pData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.pData.Controls.Add(this.lNotAvailable);
             this.pData.Location = new System.Drawing.Point(15, 58);
             this.pData.Name = "pData";
             this.pData.Size = new System.Drawing.Size(632, 241);
             this.pData.TabIndex = 10;
-            // 
-            // chartCanvas
-            // 
-            this.chartCanvas.AnimationDuration = 750;
-            this.chartCanvas.AnimationType = Bunifu.Charts.WinForms.BunifuChartCanvas.AnimationOptions.easeOutBack;
-            this.chartCanvas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.chartCanvas.CanvasPadding = new System.Windows.Forms.Padding(-5, 0, 200, 80);
-            this.chartCanvas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chartCanvas.Labels = new string[] {
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"};
-            this.chartCanvas.LegendAlignment = Bunifu.Charts.WinForms.BunifuChartCanvas.LegendAlignmentOptions.end;
-            this.chartCanvas.LegendDisplay = true;
-            this.chartCanvas.LegendFont = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chartCanvas.LegendForeColor = System.Drawing.Color.DarkGray;
-            this.chartCanvas.LegendFullWidth = true;
-            this.chartCanvas.LegendPosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
-            this.chartCanvas.LegendRevese = false;
-            this.chartCanvas.LegendRTL = false;
-            this.chartCanvas.Location = new System.Drawing.Point(0, 0);
-            this.chartCanvas.Margin = new System.Windows.Forms.Padding(0);
-            this.chartCanvas.Name = "chartCanvas";
-            this.chartCanvas.ShowXAxis = true;
-            this.chartCanvas.ShowYAxis = true;
-            this.chartCanvas.Size = new System.Drawing.Size(632, 241);
-            this.chartCanvas.TabIndex = 0;
-            this.chartCanvas.Title = "";
-            this.chartCanvas.TitleLineHeight = 1.2D;
-            this.chartCanvas.TitlePadding = 10;
-            this.chartCanvas.TitlePosition = Bunifu.Charts.WinForms.BunifuChartCanvas.PositionOptions.top;
-            this.chartCanvas.TooltipBackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chartCanvas.TooltipFont = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.chartCanvas.TooltipForeColor = System.Drawing.Color.WhiteSmoke;
-            this.chartCanvas.TooltipMode = Bunifu.Charts.WinForms.BunifuChartCanvas.TooltipModeOptions.nearest;
-            this.chartCanvas.TooltipsEnabled = true;
-            this.chartCanvas.XAxesBeginAtZero = true;
-            this.chartCanvas.XAxesDrawTicks = true;
-            this.chartCanvas.XAxesFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chartCanvas.XAxesForeColor = System.Drawing.SystemColors.ControlText;
-            this.chartCanvas.XAxesGridColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chartCanvas.XAxesGridLines = false;
-            this.chartCanvas.XAxesLabel = "Days ago";
-            this.chartCanvas.XAxesLabelFont = new System.Drawing.Font("Segoe UI", 12F);
-            this.chartCanvas.XAxesLabelForeColor = System.Drawing.SystemColors.ControlText;
-            this.chartCanvas.XAxesLineWidth = 0;
-            this.chartCanvas.XAxesStacked = true;
-            this.chartCanvas.XAxesZeroLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chartCanvas.XAxesZeroLineWidth = 1;
-            this.chartCanvas.YAxesBeginAtZero = true;
-            this.chartCanvas.YAxesDrawTicks = true;
-            this.chartCanvas.YAxesFont = new System.Drawing.Font("Segoe UI", 12F);
-            this.chartCanvas.YAxesForeColor = System.Drawing.SystemColors.ControlText;
-            this.chartCanvas.YAxesGridColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chartCanvas.YAxesGridLines = true;
-            this.chartCanvas.YAxesLabel = "# of Accounts";
-            this.chartCanvas.YAxesLabelFont = new System.Drawing.Font("Segoe UI", 12F);
-            this.chartCanvas.YAxesLabelForeColor = System.Drawing.SystemColors.ControlText;
-            this.chartCanvas.YAxesLineWidth = 1;
-            this.chartCanvas.YAxesStacked = false;
-            this.chartCanvas.YAxesZeroLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chartCanvas.YAxesZeroLineWidth = 1;
             // 
             // pCardsTop
             // 
@@ -1165,6 +1100,17 @@
             this.timerCheckForTask.Interval = 10000;
             this.timerCheckForTask.Tick += new System.EventHandler(this.timerCheckForTask_Tick);
             // 
+            // lNotAvailable
+            // 
+            this.lNotAvailable.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lNotAvailable.AutoSize = true;
+            this.lNotAvailable.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lNotAvailable.Location = new System.Drawing.Point(129, 108);
+            this.lNotAvailable.Name = "lNotAvailable";
+            this.lNotAvailable.Size = new System.Drawing.Size(372, 25);
+            this.lNotAvailable.TabIndex = 8;
+            this.lNotAvailable.Text = "Not available on server operating systems";
+            // 
             // UIDailyLogins
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -1230,7 +1176,6 @@
         private System.Windows.Forms.Label label2;
         private Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart barChartSuccess;
         private Bunifu.Charts.WinForms.ChartTypes.BunifuBarChart barChartFailed;
-        private Bunifu.Charts.WinForms.BunifuChartCanvas chartCanvas;
         private System.Windows.Forms.Panel pBottom;
         private System.Windows.Forms.Timer timerAnimate;
         private System.Windows.Forms.Panel panel7;
@@ -1246,5 +1191,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Timer timerCheckForTask;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnRunTaskNOW;
+        private System.Windows.Forms.Label lNotAvailable;
     }
 }

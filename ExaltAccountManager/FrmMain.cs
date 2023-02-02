@@ -140,51 +140,76 @@ namespace ExaltAccountManager
                     case UIState.Accounts:
                         btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_white_24dp : Properties.Resources.ic_people_black_24dp;
                         lTitle.Text = "Accounts";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
                         break;
                     case UIState.AddAccount:
                         btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_24px : Properties.Resources.add_user_24px;
                         lTitle.Text = "Add Account";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Settings);
                         break;
                     case UIState.Modules:
                         btnModules.Image = useDarkmode ? Properties.Resources.dashboard_layout_white_24px : Properties.Resources.dashboard_layout_24px;
                         lTitle.Text = "Modules";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Modules);
                         break;
                     case UIState.Options:
                         btnOptions.Image = useDarkmode ? Properties.Resources.settings_white_24px : Properties.Resources.settings_24px;
                         lTitle.Text = "Options";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Settings);
                         break;
                     case UIState.Help:
                         btnHelp.Image = useDarkmode ? Properties.Resources.ic_help_white_24dp : Properties.Resources.ic_help_black_24dp;
                         lTitle.Text = "Help";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Help);
                         break;
                     case UIState.Logs:
                         btnLogs.Image = useDarkmode ? Properties.Resources.activity_history_white_24px : Properties.Resources.activity_history_24px;
                         lTitle.Text = "Logs";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Logs);
                         break;
                     case UIState.AboutEAM:
                         btnAbout.Image = useDarkmode ? Properties.Resources.ic_info_white_24dp : Properties.Resources.ic_info_black_24dp;
                         lTitle.Text = "About Exalt Account Manager";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.About);
                         break;
                     case UIState.Updater:
                         lTitle.Text = "Updater";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Updater);
                         break;
                     case UIState.Changelog:
                         lTitle.Text = "Changelog";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Changelog);
                         break;
                     case UIState.TokenViewer:
                         lTitle.Text = "Token Viewer";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.TokenViewer);
                         break;
                     case UIState.ImportExport:
                         lTitle.Text = "Im- & Export";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
                         break;
                     case UIState.DailyLogin:
                         lTitle.Text = "Daily logins";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.DailyLogin);
                         break;
                     case UIState.DailyNotifications:
                         lTitle.Text = "Daily Login notification-settings";
                         break;
                     default:
                         this.MinimumSize = defaultMinimumsize;
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
                         break;
                 }
 
@@ -287,6 +312,13 @@ namespace ExaltAccountManager
                     }
                     catch { }
                 }
+
+                if (OptionsData.discordOptions == null)
+                {
+                    OptionsData.discordOptions = new DiscordOptions();
+                }
+                
+                DiscordHelper.Initialize(OptionsData.discordOptions, this);
 
                 #endregion 
 
@@ -456,6 +488,8 @@ namespace ExaltAccountManager
             toolTip.BackColor = def;
             toolTip.TitleForeColor = font;
             toolTip.TextForeColor = useDarkmode ? Color.WhiteSmoke : Color.FromArgb(64, 64, 64);
+
+            DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
         }
 
         private void NotificationMessage(EAMNotificationMessage msg)
