@@ -2,24 +2,21 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
     public partial class UIDailyLogins : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
 
-        DailyLogins dailyLogins = new DailyLogins();
+        private DailyLogins dailyLogins = new DailyLogins();
 
         private Bunifu.Charts.WinForms.BunifuChartCanvas chartCanvas = null;
         
@@ -178,7 +175,7 @@ namespace ExaltAccountManager.UI
             return IsOS(OS_ANYSERVER);
         }
 
-        const int OS_ANYSERVER = 29;
+        private const int OS_ANYSERVER = 29;
 
         [DllImport("shlwapi.dll", SetLastError = true, EntryPoint = "#437")]
         private static extern bool IsOS(int os);

@@ -1,12 +1,9 @@
 ﻿using ExaltAccountManager.UI.Elements;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
@@ -15,21 +12,26 @@ namespace ExaltAccountManager.UI
     {
         private static FrmMain frm;
 
-        Elements.EleQNA eleQNA;
+        private Elements.EleQNA eleQNA;
 
-        BindingList<QNA> questions = new BindingList<QNA>()
+        private BindingList<QNA> questions = new BindingList<QNA>()
         {
             new QNA() { Question = "Why does Exalt not start?",
                         Answer = $"If it for some reason does not start exalt, check if you have exalt installed. - if so, check if the path in the options is set correctly.{Environment.NewLine}{Environment.NewLine}" +
                                  $"If you already have started the game via the Exalt launcher, close all running Exalt sessions, close the Exalt Launcher and try again.",
                         Type = QuestionType.Help },
             new QNA() { Question = "Exalt tells me something about a token...",
-                        Answer= $"Try to use the \"Renew\"-Button right under the \"Play\"-Button, this will request a new token for that account.{Environment.NewLine}" +
-                                $"If it still does not work, delete and Re-Add the account.{Environment.NewLine}{Environment.NewLine}" +
-                                $"If none of your accounts work, try to use the \"HWID Tool\".{Environment.NewLine}",
+                        Answer = $"Try to use the \"Renew\"-Button right under the \"Play\"-Button, this will request a new token for that account.{Environment.NewLine}" +
+                                 $"If it still does not work, delete and Re-Add the account.{Environment.NewLine}{Environment.NewLine}" +
+                                 $"If none of your accounts work, try to use the \"HWID Tool\".{Environment.NewLine}",
                         ButtonImage = Properties.Resources.fingerprint_white_24px,
                         ButtonText = "Show HWID-Tool",
                         Action = Button_HWID_Click,
+                        Type = QuestionType.Help },
+            new QNA() { Question = "The game won't start, game.exe was not found.",
+                        Answer = $"Please open the options and check if the \"Path to RotMG Exalt.exe\" is set correctly.{Environment.NewLine}" +
+                                 $"If set correctly, please change it to whatever, save it and change it back to the correct path, after that save and restart EAM.{Environment.NewLine}{Environment.NewLine}" +
+                                 $"Default path is: \"C:\\Users\\%username%\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe\".",                        
                         Type = QuestionType.Help },
             new QNA() { Question = "The Daily login task fails to install.",
                         Answer = $"Start the EAM with administrator privileges and try again.{Environment.NewLine}" +
@@ -253,14 +255,14 @@ namespace ExaltAccountManager.UI
     {
         Miscellaneous = 0,
         Account = 1,
-        Bug = 2,
-        DailyLogin = 3,
-        Help = 4,
+        Help = 2,
+        Bug = 3,
+        DailyLogin = 4,
         Ping = 5,
         Statistics = 6,
         Update = 7,
-        Message,
-        Warning,
-        Stop,
+        Message = 8,
+        Warning = 9,
+        Stop = 10,
     }
 }
