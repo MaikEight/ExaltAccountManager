@@ -381,9 +381,9 @@
             this.lRenewToken.Font = new System.Drawing.Font("Segoe UI Black", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lRenewToken.Location = new System.Drawing.Point(56, 65);
             this.lRenewToken.Name = "lRenewToken";
-            this.lRenewToken.Size = new System.Drawing.Size(138, 25);
+            this.lRenewToken.Size = new System.Drawing.Size(131, 25);
             this.lRenewToken.TabIndex = 10;
-            this.lRenewToken.Text = "Renew Token";
+            this.lRenewToken.Text = "Refresh data";
             this.toolTip.SetToolTip(this.lRenewToken, "Renewal of the login-token as well as \r\nfetching all account and character data.\r" +
         "\n");
             this.toolTip.SetToolTipIcon(this.lRenewToken, global::ExaltAccountManager.Properties.Resources.baseline_autorenew_black_36dp);

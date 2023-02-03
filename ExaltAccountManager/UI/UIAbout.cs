@@ -58,6 +58,7 @@ namespace ExaltAccountManager.UI
         {
             pbDevIcon.Image = Properties.Resources.llama;
             frm.SwitchLlamaState(true);
+            DiscordHelper.SetLlamaState();
             timerLlama.Start();
         }
 

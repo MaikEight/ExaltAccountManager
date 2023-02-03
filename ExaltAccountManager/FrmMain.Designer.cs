@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges5 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.pLeftSide = new System.Windows.Forms.Panel();
             this.pSideButtons = new System.Windows.Forms.Panel();
             this.pUpdate = new System.Windows.Forms.Panel();
@@ -61,6 +61,7 @@
             this.timerLogBlink = new System.Windows.Forms.Timer(this.components);
             this.timerLoadUI = new System.Windows.Forms.Timer(this.components);
             this.toolTip = new Bunifu.UI.WinForms.BunifuToolTip(this.components);
+            this.timerDiscordUpdater = new System.Windows.Forms.Timer(this.components);
             this.pLeftSide.SuspendLayout();
             this.pSideButtons.SuspendLayout();
             this.pUpdate.SuspendLayout();
@@ -143,11 +144,11 @@
             this.btnEAMUpdate.ColorContrastOnClick = 45;
             this.btnEAMUpdate.ColorContrastOnHover = 45;
             this.btnEAMUpdate.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges5.BottomLeft = true;
-            borderEdges5.BottomRight = true;
-            borderEdges5.TopLeft = true;
-            borderEdges5.TopRight = true;
-            this.btnEAMUpdate.CustomizableEdges = borderEdges5;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.btnEAMUpdate.CustomizableEdges = borderEdges1;
             this.btnEAMUpdate.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnEAMUpdate.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnEAMUpdate.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -779,6 +780,11 @@
             this.toolTip.ToolTipPosition = new System.Drawing.Point(0, 0);
             this.toolTip.ToolTipTitle = null;
             // 
+            // timerDiscordUpdater
+            // 
+            this.timerDiscordUpdater.Interval = 5000;
+            this.timerDiscordUpdater.Tick += new System.EventHandler(this.timerDiscordUpdater_Tick);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -848,5 +854,6 @@
         private System.Windows.Forms.Panel pBottom;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnEAMUpdate;
         private System.Windows.Forms.Panel pUpdate;
+        private System.Windows.Forms.Timer timerDiscordUpdater;
     }
 }

@@ -1219,6 +1219,8 @@ namespace ExaltAccountManager
                     eleGameUpdater = new EleGameUpdater(this);
 
                 ShowShadowForm(eleGameUpdater);
+                DiscordHelper.UpdateMenu(DiscordHelper.Menu.Updater);
+                DiscordHelper.ApplyPresence();
             }
             lHeaderEAM.Focus();
         }
@@ -1391,6 +1393,8 @@ namespace ExaltAccountManager
 
             DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
             DiscordHelper.ApplyPresence();
+
+            timerDiscordUpdater.Start();
         }
 
         private bool UpdateRequired()
@@ -1505,6 +1509,7 @@ namespace ExaltAccountManager
                             break;
                     }
                 }
+                uiState = uiStateVal;
             }
         }
 
@@ -1557,6 +1562,11 @@ namespace ExaltAccountManager
             {
                 e.Graphics.DrawLine(p, 0, lVersion.Height - 1, lVersion.Width, lVersion.Height - 1);
             }
+        }
+
+        private void timerDiscordUpdater_Tick(object sender, EventArgs e)
+        {
+            DiscordHelper.ApplyPresence();
         }
     }
 }

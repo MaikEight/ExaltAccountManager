@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
 namespace ExaltAccountManager
 {
@@ -33,7 +32,7 @@ namespace ExaltAccountManager
 
         private static Menu menu;
         private static string lastState = "Starting up...✨";
-        private static string lastImageKey = "eam_darkmode";
+        
         private static string imageKey { get => frm.UseDarkmode ? "eam_darkmode" : "eam_lightmode"; }
 
         private static FrmMain frm;
@@ -43,17 +42,32 @@ namespace ExaltAccountManager
         {
             discordOptions = _discordOptions;
             frm = _frm;
+            frm.ThemeChanged += Frm_ThemeChanged;
             updateOnChange = _updateOnChange;
 
             Discord.Initialize(APPLICATION_ID, autoEvents: autoEvents);
             Discord.UpdateOnChange = false;
             Discord.AddButton("Get Exalt Account Manager here", "https://github.com/MaikEight/ExaltAccountManager/releases/latest");
-
+            
+            Discord.Timestamp = startupTime;
+            Discord.UseTimestamp = true;
             Discord.Details = "The better rotmg-launcher!💪";
             SetState(discordOptions.ShowState ? "Starting up...✨" : DEFAULT_STATE);
             Discord.LargeImageKey = imageKey;
             Discord.LargeImageText = "Exalt Account Manager";
             Discord.UpdateOnChange = updateOnChange;
+            Discord.ApplyPresence();
+        }
+
+        private static void Frm_ThemeChanged(object sender, EventArgs e)
+        {
+            Discord.LargeImageKey = imageKey;
+            Discord.ApplyPresence();
+        }
+
+        public static void SetLlamaState()
+        {
+            Discord.State = lastState = "Found the Llama! 🦙";
             Discord.ApplyPresence();
         }
 
@@ -272,7 +286,7 @@ namespace ExaltAccountManager
         public static void UpdateMenu(Menu _menu)
         {
             menu = _menu;            
-            Discord.LargeImageKey = lastImageKey = imageKey;            
+            Discord.LargeImageKey = imageKey;            
 
             if (discordOptions.ShowState)
             {
@@ -280,7 +294,7 @@ namespace ExaltAccountManager
                 {
                     case Menu.Accounts:
                         Discord.Details = "The better rotmg-launcher!💪";
-                        SetState(discordOptions.ShowMenus ? "Selection accounts 📁" : DEFAULT_STATE);
+                        SetState(discordOptions.ShowMenus ? "Selecting accounts 📁" : DEFAULT_STATE);
                         break;
                     case Menu.Settings:
                         SetState(discordOptions.ShowMenus ? "Playing with settings ⚙" : DEFAULT_STATE);

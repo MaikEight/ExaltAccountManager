@@ -12,11 +12,37 @@ namespace ExaltAccountManager.UI
 
         private BindingList<ChangelogEntry> changelogEntries = new BindingList<ChangelogEntry>()
         {
+            new ChangelogEntry()
+            {
+              ReleaseDate = new DateTime(2023, 03, 01),
+              Version = new Version(3, 1, 0),
+              Name = "Captcha support, UX improvements, bug fixes and much more",
+              Description = $"<b>CAPTCHA SUPPORT</b>{Environment.NewLine}{Environment.NewLine}" +
+                            $"- Added a new module for captcha solving.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}" +
+                            $"- Added Discord-RPC support.{Environment.NewLine}" +
+                            $"- Supports live-state tracking.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>ANALYTICS</b>{Environment.NewLine}" +
+                            $"- Added anonym analytics for the EAM-usage.{Environment.NewLine}" +
+                            $"- Any data collected is anonym and does NOT contain login informations.{Environment.NewLine}" +
+                            $"- All collected data is sent & stored encrypted.{Environment.NewLine}" +
+                            $"- All collected data is used for improving EAM and it's features only.{Environment.NewLine}" +   
+                            $"- You can opt-out in the settings.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>EAM MICROSERVICE</b>{Environment.NewLine}" +
+                            $"- Added an REST-API that is running on a VPS.{Environment.NewLine}" +
+                            $"ℹ️ The API is used to collect EAM-analytics data, provide notification messages,{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eam-update-checks, character-stats-updates,{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vault peeker-item-updates and more!{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>BUG FIXES</b>{Environment.NewLine}" +
+                            $"- Fixed a critical bug during opening of the daily login menu on windows server.{Environment.NewLine}" +
+                            $"- Removed the \"White line\" at the bottom of EAM during darkmode."  
+
+            },
             new ChangelogEntry() {
                 ReleaseDate = new DateTime(2022, 02, 26),
-                Version = new Version(3, 0, 0),
+                Version = new Version(3, 0, 0),                       
                 Name = "Complete overhaul, Muledump Replica: Vault Peeker and more",
-                Description = $"<b>COMPLETE OVERHAUL</b>{Environment.NewLine}{Environment.NewLine}  " +
+                Description = $"<b>COMPLETE OVERHAUL</b>{Environment.NewLine}{Environment.NewLine}" +
                               $"- Completely changed the UI.{Environment.NewLine}" +
                               $"- Re-Wrote most of the Code.{Environment.NewLine}" +
                               $"- Improved Account-Handling.{Environment.NewLine}{Environment.NewLine}" +
