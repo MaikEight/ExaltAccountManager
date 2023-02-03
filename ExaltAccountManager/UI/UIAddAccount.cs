@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIAddAccount : UserControl
+    public sealed partial class UIAddAccount : UserControl
     {
         private FrmMain frm;
         private ColorChanger colorChanger;

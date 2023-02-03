@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleChangelog : UserControl
+    public sealed partial class EleChangelog : UserControl
     {
         public ChangelogEntry Entry
         {
@@ -23,7 +17,7 @@ namespace ExaltAccountManager.UI.Elements
         }
         private ChangelogEntry entry = new ChangelogEntry();
 
-        FrmMain frm;
+        private FrmMain frm;
 
         public EleChangelog(FrmMain _frm)
         {

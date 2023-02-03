@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager
 {
-    public partial class FrmControlHost : Form
+    public sealed partial class FrmControlHost : Form
     {
         private FrmMain frm;
         private Control ctrToHost = null;

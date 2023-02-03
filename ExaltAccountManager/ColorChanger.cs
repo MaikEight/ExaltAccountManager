@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager
 {
-    public partial class ColorChanger : UserControl
+    public sealed partial class ColorChanger : UserControl
     {
         public List<Color> colors = new List<Color>()
         {
@@ -383,11 +379,6 @@ namespace ExaltAccountManager
         {
             p.Width = 2f;
 
-            //e.Graphics.DrawArc(p, 0f, 0f, 11f, 11f, 180, 90);
-            //e.Graphics.DrawArc(p, (float)(this.Width - 13f), 0f, 11f, 11f, 270, 90);
-            //e.Graphics.DrawArc(p, (float)(this.Width - 13f), (float)(this.Height - 13.5f), 11f, 11f, 0, 90);
-            //e.Graphics.DrawArc(p, 0f, (float)(this.Height - 13.5f), 11f, 11f, 90, 90);
-
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
             e.Graphics.DrawArc(p, 0f, 0f, 11f, 11f, 180, 90);
@@ -421,10 +412,6 @@ namespace ExaltAccountManager
 
         private void pbClose_MouseEnter(object sender, EventArgs e)
         {
-            //if ((frmOld != null && frmOld.useDarkmode) || (frm != null && frm.UseDarkmode))
-            //    pbClose.BackColor = Color.FromArgb(225, 50, 50);
-            //else
-            //    pbClose.BackColor = Color.IndianRed;
             if (!frm.UseDarkmode)
                 pbClose.Image = Properties.Resources.ic_close_white_24dp;
 
@@ -447,7 +434,6 @@ namespace ExaltAccountManager
 
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             e.Graphics.DrawEllipse(p, new Rectangle(pbDrawnBorder.Left - 1, pbDrawnBorder.Top - 1, pbDrawnBorder.Width + 1, pbDrawnBorder.Height + 1));
-            //e.Graphics.DrawRectangle(p, new Rectangle(pbDrawnBorder.Left, pbDrawnBorder.Top, pbDrawnBorder.Width - 1, pbDrawnBorder.Height - 1));
         }
     }
 }

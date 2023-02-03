@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIAbout : UserControl
+    public sealed partial class UIAbout : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
 
         public UIAbout(FrmMain _frm)
         {

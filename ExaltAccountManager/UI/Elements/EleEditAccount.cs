@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleEditAccount : UserControl
+    public sealed partial class EleEditAccount : UserControl
     {
-        FrmMain frm;
-        MK_EAM_Lib.AccountInfo accountInfo;
-        bool showInVP = false;
+        private FrmMain frm;
+        private MK_EAM_Lib.AccountInfo accountInfo;
+        private bool showInVP = false;
 
         public EleEditAccount(FrmMain _frm, MK_EAM_Lib.AccountInfo info, bool _showInVP)
         {

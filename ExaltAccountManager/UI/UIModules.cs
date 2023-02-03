@@ -7,15 +7,15 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIModules : UserControl
+    public sealed partial class UIModules : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
 
-        EleHWID_Tool eleHWID_Tool = null;
-        UIChangelog uiChangelog = null;
-        UITokenViewer uiTokenViewer = null;
-        UIImportExport uiImportExport = null;
-        UIDailyLogins uiDailyLogins = null;
+        private EleHWID_Tool eleHWID_Tool = null;
+        private UIChangelog uiChangelog = null;
+        private UITokenViewer uiTokenViewer = null;
+        private UIImportExport uiImportExport = null;
+        private UIDailyLogins uiDailyLogins = null;
 
         public UIModules(FrmMain _frm)
         {
@@ -160,7 +160,6 @@ namespace ExaltAccountManager.UI
                 uiImportExport = new UIImportExport(frm) { Dock = DockStyle.Fill };
 
             frm.AddContrtolToPContent(uiImportExport, 10);
-        }
-        
+        }        
     }
 }

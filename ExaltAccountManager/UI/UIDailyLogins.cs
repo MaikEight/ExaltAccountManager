@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIDailyLogins : UserControl
+    public sealed partial class UIDailyLogins : UserControl
     {
         private FrmMain frm;
 

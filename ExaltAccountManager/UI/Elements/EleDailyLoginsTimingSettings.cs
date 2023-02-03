@@ -1,20 +1,14 @@
 ﻿using MK_EAM_Lib;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleDailyLoginsTimingSettings : UserControl
+    public sealed partial class EleDailyLoginsTimingSettings : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
         public EleDailyLoginsTimingSettings(FrmMain _frm)
         {
             InitializeComponent();

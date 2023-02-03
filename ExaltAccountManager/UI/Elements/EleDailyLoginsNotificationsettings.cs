@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MK_EAM_Lib;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleDailyLoginsNotificationsettings : UserControl
+    public sealed partial class EleDailyLoginsNotificationsettings : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
 
         public EleDailyLoginsNotificationsettings(FrmMain _frm)
         {

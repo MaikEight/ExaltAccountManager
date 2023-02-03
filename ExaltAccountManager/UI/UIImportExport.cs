@@ -1,22 +1,16 @@
 ﻿using ExaltAccountManager.UI.Elements;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIImportExport : UserControl
+    public sealed partial class UIImportExport : UserControl
     {
-        EleImport eleImport = null;
-        EleExport eleExport = null;
+        private EleImport eleImport = null;
+        private EleExport eleExport = null;
 
-        FrmMain frm;
+        private FrmMain frm;
 
         public UIImportExport(FrmMain _frm)
         {

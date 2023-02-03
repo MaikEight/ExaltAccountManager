@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleCustomImport : UserControl
+    public sealed partial class EleCustomImport : UserControl
     {
-        FrmMain frm;
-        EleImport eleImport;
+        private FrmMain frm;
+        private EleImport eleImport;
 
-        Mini.MiniAccountDataOrderEntry miniEmail;
-        Mini.MiniAccountDataOrderEntry miniPassword;
-        Mini.MiniAccountDataOrderEntry miniAccountname;
-        Mini.MiniAccountDataOrderEntry miniGroup;
+        private Mini.MiniAccountDataOrderEntry miniEmail;
+        private Mini.MiniAccountDataOrderEntry miniPassword;
+        private Mini.MiniAccountDataOrderEntry miniAccountname;
+        private Mini.MiniAccountDataOrderEntry miniGroup;
 
-        Mini.MiniAccountDataOrderEntry SelectedMini
+        private Mini.MiniAccountDataOrderEntry SelectedMini
         {
             get => selectedMiniValue;
             set
@@ -50,10 +48,10 @@ namespace ExaltAccountManager.UI.Elements
         }
         Mini.MiniAccountDataOrderEntry selectedMiniValue = null;
 
-        int miniAmount = 2;
-        bool isInit = true;
-        string path = string.Empty;
-        List<MK_EAM_Lib.AccountInfo> accounts = new List<MK_EAM_Lib.AccountInfo>();
+        private int miniAmount = 2;
+        private bool isInit = true;
+        private string path = string.Empty;
+        private List<MK_EAM_Lib.AccountInfo> accounts = new List<MK_EAM_Lib.AccountInfo>();
 
         public EleCustomImport(FrmMain _frm, EleImport _eleImport, string _path)
         {

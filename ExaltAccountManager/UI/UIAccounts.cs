@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIAccounts : UserControl
+    public sealed partial class UIAccounts : UserControl
     {
         private FrmMain frm;
 
@@ -424,8 +424,7 @@ namespace ExaltAccountManager.UI
 
                         p.EnableRaisingEvents = true;
                         p.Exited += ProcessExit;
-
-                        //if (dataGridView.SelectedRows.Count > 0 && frm.accounts[dataGridView.SelectedRows[0].Index] == _info)
+                        
                         if (dataGridView.SelectedRows.Count > 0 && GetAccountInfo(dataGridView.SelectedRows[0].Index) == _info)
                         {
                             btnPlay.Image = Properties.Resources.OutlinePause_36px;

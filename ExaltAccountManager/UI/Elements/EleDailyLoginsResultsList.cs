@@ -1,26 +1,23 @@
 ﻿using MK_EAM_Lib;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleDailyLoginsResultsList : UserControl
+    public sealed partial class EleDailyLoginsResultsList : UserControl
     {
-        FrmMain frm;
-        bool isInit = false;
+        private FrmMain frm;
+        private bool isInit = false;
 
-        BindingSource bindingSource = new BindingSource();
-        BindingList<DailyData> bindingListResults = new BindingList<DailyData>();
-        BindingList<DailyAccountData> bindingListDetails = new BindingList<DailyAccountData>();
+        private BindingSource bindingSource = new BindingSource();
+        private BindingList<DailyData> bindingListResults = new BindingList<DailyData>();
+        private BindingList<DailyAccountData> bindingListDetails = new BindingList<DailyAccountData>();
 
         public EleDailyLoginsResultsList(FrmMain _frm)
         {
@@ -30,10 +27,6 @@ namespace ExaltAccountManager.UI.Elements
             this.Disposed += (object sender, EventArgs e) => frm.ThemeChanged -= ApplyTheme;
 
             dataGridView.MouseWheel += dataGridView_MouseWheel;
-
-            //pDatagridview.Controls.Add(btnBack);
-            //btnBack.Location = new System.Drawing.Point(pDatagridview.Width - btnBack.Width, pDatagridview.Height - btnBack.Height);
-            //btnBack.BringToFront();
 
             ApplyTheme(frm, null);
 

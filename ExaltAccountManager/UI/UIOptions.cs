@@ -1,30 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIOptions : UserControl
+    public sealed partial class UIOptions : UserControl
     {
         private FrmMain frm;
         private bool isInit = true;
-
-        //private bool[] changes = new bool[]
-        //{
-        //    false, //exePath
-        //    false, //server
-        //    false, //Close EAM after connect
-        //    false, //Search for ROTMG Updates
-        //    false, //Get EAM-Update Notifications
-        //    false, //Get Messages and Warnings
-        //    false  //Killswitch
-        //};
 
         private bool HasChanges 
         {
@@ -218,7 +202,11 @@ namespace ExaltAccountManager.UI
 
         private void tbPath_TextChanged(object sender, EventArgs e)
         {
-
+            if (tbPath.Text.Contains("%username%") && !string.IsNullOrEmpty(Environment.UserName))
+            {
+                tbPath.Text = tbPath.Text.Replace("%username%", Environment.UserName);
+                tbPath.SelectionStart = tbPath.Text.Length;
+            }
         }
 
         private void btnSnackbar_Click(object sender, EventArgs e)

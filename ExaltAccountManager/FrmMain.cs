@@ -10,15 +10,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager
 {
-    public partial class FrmMain : Form
+    public sealed partial class FrmMain : Form
     {
         public readonly Version version = new Version(3, 0, 0);
         public event EventHandler ThemeChanged;
@@ -43,7 +41,7 @@ namespace ExaltAccountManager
         private Size defaultMinimumsize = new Size(0, 0);
 
         public bool loading = false;
-        LogData lastLogData = new LogData(-1, "", LogEventType.EAMError, "") { time = new DateTime() };
+        private LogData lastLogData = new LogData(-1, "", LogEventType.EAMError, "") { time = new DateTime() };
 
         public BindingList<MK_EAM_Lib.AccountInfo> accounts = new BindingList<MK_EAM_Lib.AccountInfo>();
         public ServerDataCollection serverData
@@ -226,8 +224,6 @@ namespace ExaltAccountManager
 
         #region Paths
 
-        //public string exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe");
-
         public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
 
         public string optionsPath = Path.Combine(saveFilePath, "EAM.options");
@@ -252,7 +248,6 @@ namespace ExaltAccountManager
         private string[] flagPaths = new string[]
         {
              Path.Combine(Application.StartupPath, "flag.ScreenshotMode"),
-             Path.Combine(Application.StartupPath, "flag.MPGH")
         };
 
         #endregion
@@ -260,7 +255,6 @@ namespace ExaltAccountManager
         #region Flags
 
         public bool screenshotMode = false;
-        public bool isMPGHVersion = false;
 
         #endregion
 
@@ -517,12 +511,12 @@ namespace ExaltAccountManager
                             if (!OptionsData.searchUpdateNotification)
                                 return;
                             showUI = true;
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
                             notMessage = new QNA()
                             {
                                 Question = "Exalt Account Manager Update available",
                                 Answer = msg.message,
-                                ButtonText = isMPGHVersion ? "Show release on MPGH" : "Show release on Github",
+                                ButtonText =  "Show release on Github",
                                 ButtonImage = Properties.Resources.update_left_rotation_white_24px,
                                 Type = QuestionType.Update,
                                 Action = (object sender, EventArgs e) => System.Diagnostics.Process.Start(linkUpdate)
@@ -538,7 +532,7 @@ namespace ExaltAccountManager
                                 return;
 
                             showUI = true;
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
 
                             notMessage = new QNA()
                             {
@@ -560,7 +554,7 @@ namespace ExaltAccountManager
                                 return;
 
                             showUI = true;
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
 
                             notMessage = new QNA()
                             {
@@ -587,7 +581,7 @@ namespace ExaltAccountManager
                             }
                             pContent.Controls.Clear();
 
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
 
                             notMessage = new QNA()
                             {
@@ -669,9 +663,6 @@ namespace ExaltAccountManager
                         {
                             case 0: //Screenshot Mode
                                 screenshotMode = true;
-                                break;
-                            case 1: //isMPGH release
-                                isMPGHVersion = true;
                                 break;
                             default:
                                 break;

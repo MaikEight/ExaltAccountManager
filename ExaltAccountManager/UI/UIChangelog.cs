@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIChangelog : UserControl
+    public sealed partial class UIChangelog : UserControl
     {
         private FrmMain frm;
         private Elements.EleChangelog eleChangelog;
@@ -300,7 +300,7 @@ namespace ExaltAccountManager.UI
         }
     }
 
-    public class ChangelogEntry
+    public sealed class ChangelogEntry
     {
         public Version Version { get; set; } = new Version();
         public string Name { get; set; } = string.Empty;

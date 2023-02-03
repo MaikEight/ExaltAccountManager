@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleDeleteAccount : UserControl
+    public sealed partial class EleDeleteAccount : UserControl
     {
-        FrmMain frm;
-        UIAccounts uiAccounts;
-        MK_EAM_Lib.AccountInfo accountInfo;
+        private FrmMain frm;
+        private UIAccounts uiAccounts;
+        private MK_EAM_Lib.AccountInfo accountInfo;
 
         public EleDeleteAccount(FrmMain _frm, UIAccounts _uiAccounts)
         {

@@ -1,12 +1,11 @@
 ﻿using ExaltAccountManager.UI.Elements;
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UITokenViewer : UserControl
+    public sealed partial class UITokenViewer : UserControl
     {
         private FrmMain frm;
         private EleTokenViewer eleTokenViewer;

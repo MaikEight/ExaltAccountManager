@@ -6,21 +6,19 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleImport : UserControl
+    public sealed partial class EleImport : UserControl
     {
-        FrmMain frm;
-        BindingList<MK_EAM_Lib.AccountInfo> importAccounts = new BindingList<MK_EAM_Lib.AccountInfo>();
-        BindingSource bindingSource = new BindingSource();
-        bool isInit = true;
-        EleCustomImport eleCustomImport = null;
+        private FrmMain frm;
+        private BindingList<MK_EAM_Lib.AccountInfo> importAccounts = new BindingList<MK_EAM_Lib.AccountInfo>();
+        private BindingSource bindingSource = new BindingSource();
+        private bool isInit = true;
+        private EleCustomImport eleCustomImport = null;
 
-        UIStates UIState
+        private UIStates UIState
         {
             get => uiStateValue;
             set
@@ -80,7 +78,7 @@ namespace ExaltAccountManager.UI.Elements
                 }
             }
         }
-        UIStates uiStateValue = UIStates.None;
+        private UIStates uiStateValue = UIStates.None;
 
         public EleImport(FrmMain _frm)
         {
@@ -506,7 +504,7 @@ namespace ExaltAccountManager.UI.Elements
             ShowAccounts
         }
 
-        string importFilePath = string.Empty;
+        private string importFilePath = string.Empty;
         private void btnPasswordOK_Click(object sender, EventArgs e)
         {
             btnPasswordOK.Enabled = false;

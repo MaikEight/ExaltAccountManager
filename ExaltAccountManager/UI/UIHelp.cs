@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIHelp : UserControl
+    public sealed partial class UIHelp : UserControl
     {
         private static FrmMain frm;
 
@@ -237,7 +237,7 @@ namespace ExaltAccountManager.UI
         }
     }
 
-    public class QNA
+    public sealed class QNA
     {
         public QuestionType Type { get; set; } = QuestionType.Help;
         public string Question { get; set; } = string.Empty;
