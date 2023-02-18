@@ -25,7 +25,7 @@ namespace ExaltAccountManager.UI
                             $"<b>ANALYTICS</b>{Environment.NewLine}" +
                             $"- Added anonym analytics for the EAM-usage.{Environment.NewLine}" +
                             $"- Any data collected is anonym and does NOT contain login informations.{Environment.NewLine}" +
-                            $"- All collected data is sent & stored encrypted.{Environment.NewLine}" +
+                            $"- All collected data is sent encrypted (SSL) to the server.{Environment.NewLine}" +
                             $"- All collected data is used for improving EAM and it's features only.{Environment.NewLine}" +   
                             $"- You can opt-out in the settings.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>EAM MICROSERVICE</b>{Environment.NewLine}" +
@@ -35,7 +35,8 @@ namespace ExaltAccountManager.UI
                             $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vault peeker-item-updates and more!{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>BUG FIXES</b>{Environment.NewLine}" +
                             $"- Fixed a critical bug during opening of the daily login menu on windows server.{Environment.NewLine}" +
-                            $"- Removed the \"White line\" at the bottom of EAM during darkmode."  
+                            $"- Fixed the taskbar-icon not minimizing EAM-windows.{Environment.NewLine}" +
+                            $"- Removed the \"White line\" at the bottom of EAM during darkmode."
 
             },
             new ChangelogEntry() {

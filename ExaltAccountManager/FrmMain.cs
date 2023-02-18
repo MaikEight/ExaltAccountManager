@@ -22,6 +22,7 @@ namespace ExaltAccountManager
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
+        
         public bool UseDarkmode
         {
             get => useDarkmode;
@@ -35,7 +36,7 @@ namespace ExaltAccountManager
                 toolTip.SetToolTipTitle(btnSwitchDesign, useDarkmode ? "Switch to daymode" : "Switch to darkmode");
                 toolTip.SetToolTip(btnSwitchDesign, useDarkmode ? "Burn your eyes!" : "Come to the dark side, we have cookies!");
             }
-        }
+        }        
         private bool useDarkmode = false;
 
         private Size defaultMinimumsize = new Size(0, 0);
@@ -74,8 +75,8 @@ namespace ExaltAccountManager
                 if (uiOptions != null)
                     uiOptions.ApplyOptions();
             }
-        }
-        private OptionsData optionsDataValue = new OptionsData();
+        }        
+        private OptionsData optionsDataValue = new OptionsData();        
         public NotificationOptions notOpt = new NotificationOptions();
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
         private GameUpdater gameUpdater { get; set; }
@@ -259,6 +260,24 @@ namespace ExaltAccountManager
         #endregion
 
         private string linkUpdate = string.Empty;
+
+        #region Borderless Form Minimize On Taskbar Icon Click
+
+        const int WS_MINIMIZEBOX = 0x20000;
+        const int CS_DBLCLKS = 0x8;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.Style |= WS_MINIMIZEBOX;
+                cp.ClassStyle |= CS_DBLCLKS;
+                return cp;
+            }
+        }
+
+        #endregion
 
         public FrmMain()
         {
