@@ -16,11 +16,26 @@ namespace EAM_Updater
 {
     public partial class FrmMain : Form
     {
+        private readonly Version version = new Version(1, 0, 0);
         private const string BACKUP_LINK = "https://github.com/MaikEight/ExaltAccountManager/releases/latest";
         private string[] arguments = null;
         public FrmMain(string[] args)
         {
+            //Bitmap bmp = (Bitmap)Bitmap.FromFile(@"C:\Users\Maik8\Pictures\MaterialUI\White\person_white_24px.png");
+            //ImageConverter converter = new ImageConverter();
+            //byte[] data = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            //StringBuilder sb = new StringBuilder();
+            //sb.Append("[");
+            //foreach (byte b in data)
+            //{
+            //    sb.Append(b.ToString() + ", ");
+            //}
+            //sb.Append("]");
+            //string t = sb.ToString();
+            //Console.WriteLine(t);
+
             InitializeComponent();
+            lVersion.Text = string.Format(lVersion.Text, version.ToString());
 
             if (args == null || args.Length == 0)
             {
@@ -43,7 +58,7 @@ namespace EAM_Updater
 
                 if (restartRequired)
                 {
-                    Process.Start(Application.StartupPath, $"{arguments[0]} ${MK_EAM_Updater_Lib.Updater.tempFilePath}");
+                    Process.Start(Application.ExecutablePath, $"{arguments[0]} ${MK_EAM_Updater_Lib.Updater.tempFilePath}");
                     Environment.Exit(0);
                 }
                 else

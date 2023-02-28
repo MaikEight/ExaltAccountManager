@@ -10,21 +10,23 @@ namespace ExaltAccountManager.UI
         private FrmMain frm;
         private bool isInit = true;
 
-        private bool HasChanges 
-        {
-            get => hasChanges;
-            set
-            {
-                hasChanges = value;
+        public bool[] GameUpdateAndNotifications = { true, true, true, true };
 
-                if (frm != null)
-                {
+        //private bool HasChanges 
+        //{
+        //    get => hasChanges;
+        //    set
+        //    {
+        //        hasChanges = value;
 
-                }
-            }
+        //        if (frm != null)
+        //        {
 
-        }
-        private bool hasChanges = false;
+        //        }
+        //    }
+
+        //}
+        //private bool hasChanges = false;
 
         public UIOptions(FrmMain _frm)
         {
@@ -32,7 +34,9 @@ namespace ExaltAccountManager.UI
             frm = _frm;
             frm.ThemeChanged += ApplyTheme;
 
-            LoadServers();         
+            btnSave.Anchor = lSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            
+            LoadServers();
 
             ApplyTheme(frm, null);
 
@@ -86,26 +90,28 @@ namespace ExaltAccountManager.UI
             isInit = true;
 
             tbPath.Text = frm.OptionsData.exePath;
-            
+
             if (frm.OptionsData.serverToJoin == null)
                 frm.OptionsData.serverToJoin = string.Empty;
             if (dropServers.Items.Contains(frm.OptionsData.serverToJoin))
                 dropServers.SelectedItem = frm.OptionsData.serverToJoin;
             else
             {
-                if (dropServers.Items.Count == 0)                
-                    dropServers.Items.Add("Last server (Deca default)");                
+                if (dropServers.Items.Count == 0)
+                    dropServers.Items.Add("Last server (Deca default)");
                 //if (frm.OptionsData.serverToJoin.Equals("Last"))
-                    dropServers.SelectedIndex = 0;
+                dropServers.SelectedIndex = 0;
 
             }
-
             toggleCloseEAMAftergameStart.Checked = frm.OptionsData.closeAfterConnection;
-            
-            toggleSearchForRotmgUpdates.Checked = frm.OptionsData.searchRotmgUpdates;
-            toggleGetEAMUpdateNotifications.Checked = frm.OptionsData.searchUpdateNotification;
-            toggleGetMessagesAndWarnings.Checked = frm.OptionsData.searchWarnings;
-            toggleUseEAMKillswitch.Checked = frm.OptionsData.deactivateKillswitch;
+
+            GameUpdateAndNotifications = new bool[]
+            {
+                frm.OptionsData.searchRotmgUpdates,
+                frm.OptionsData.searchUpdateNotification,
+                frm.OptionsData.searchWarnings,
+                frm.OptionsData.deactivateKillswitch
+            };
 
             toggleUseDarkmode.Checked = frm.UseDarkmode;
 
@@ -135,6 +141,8 @@ namespace ExaltAccountManager.UI
 
         private void btnChangePath_Click(object sender, EventArgs e)
         {
+            lHeadline.Focus();
+
             try
             {
                 OpenFileDialog diag = new OpenFileDialog();
@@ -145,14 +153,14 @@ namespace ExaltAccountManager.UI
 
                 if (diag.ShowDialog() == DialogResult.OK)
                 {
-                    if (System.IO.File.Exists(diag.FileName))                    
-                        tbPath.Text = diag.FileName;                    
+                    if (System.IO.File.Exists(diag.FileName))
+                        tbPath.Text = diag.FileName;
                 }
             }
             catch
             {
                 frm.ShowSnackbar("An error occured during the open file dialog.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
-            }
+            }            
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -164,10 +172,10 @@ namespace ExaltAccountManager.UI
 
                 serverToJoin = dropServers.SelectedItem.ToString().StartsWith("Last") ? "Last" : dropServers.SelectedItem.ToString(),
 
-                searchRotmgUpdates = toggleSearchForRotmgUpdates.Checked,
-                searchUpdateNotification = toggleGetEAMUpdateNotifications.Checked,
-                searchWarnings = toggleGetMessagesAndWarnings.Checked,
-                deactivateKillswitch = toggleUseEAMKillswitch.Checked,
+                searchRotmgUpdates = GameUpdateAndNotifications[0],
+                searchUpdateNotification = GameUpdateAndNotifications[1],
+                searchWarnings = GameUpdateAndNotifications[2],
+                deactivateKillswitch = GameUpdateAndNotifications[3],
 
                 useDarkmode = frm.UseDarkmode
             };
@@ -179,16 +187,20 @@ namespace ExaltAccountManager.UI
         {
             btnSave.Image = Properties.Resources.save_36px;
             lSaveOptions.ForeColor = Color.FromArgb(85, 85, 85);
+            lSave.Visible = true;
         }
 
         private void btnSave_MouseLeave(object sender, EventArgs e)
         {
             btnSave.Image = Properties.Resources.save_Outline_36px;
             lSaveOptions.ForeColor = this.ForeColor;
+            lSave.Visible = false;
         }
 
         private void btnSetDefaultPath_Click(object sender, EventArgs e)
         {
+            lHeadline.Focus();
+
             tbPath.Text = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe");
         }
 
@@ -211,8 +223,30 @@ namespace ExaltAccountManager.UI
 
         private void btnSnackbar_Click(object sender, EventArgs e)
         {
+            lHeadline.Focus();
+
             Elements.EleSnackbarOptions eleSnackbarOptions = new Elements.EleSnackbarOptions(frm);
             frm.ShowShadowForm(eleSnackbarOptions);
-        }        
+        }
+
+        private void btnGameUpdaterAndNotificationSettings_Click(object sender, EventArgs e)
+        {
+            lHeadline.Focus();
+
+            frm.ShowShadowForm(new Elements.EleGameUpdateAndNotifications(frm));
+        }
+
+        private void btnDiscord_Click(object sender, EventArgs e)
+        {
+            lHeadline.Focus();
+
+            frm.ShowShadowForm(new Elements.EleDiscordSettings(frm));
+        }
+
+        private void bunifuButton1_Click(object sender, EventArgs e)
+        {
+            lHeadline.Focus();
+
+        }
     }
 }

@@ -313,17 +313,17 @@ namespace ExaltAccountManager.UI
 
                         try
                         {
-                            timerLoadProcesses.Stop();                            
+                            timerLoadProcesses.Stop();
                             frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.StopExalt, $"Stopping exalt instance from: {GetAccountInfo(dataGridView.SelectedRows[0].Index).email}."));
                             while (searchProcesses)
                                 Application.DoEvents();
-                            
+
                             dicAccountsToProcesses[GetAccountInfo(dataGridView.SelectedRows[0].Index)].Kill();
 
                             timerLoadProcesses.Start();
                         }
                         catch
-                        {                            
+                        {
                             frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.EAMError, $"Failed to stopping exalt instance from: {GetAccountInfo(dataGridView.SelectedRows[0].Index).email}."));
                             frm.ShowSnackbar($"Failed to stopping exalt instance from: {GetAccountInfo(dataGridView.SelectedRows[0].Index).email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
 
@@ -424,13 +424,20 @@ namespace ExaltAccountManager.UI
 
                         p.EnableRaisingEvents = true;
                         p.Exited += ProcessExit;
-                        
+
                         if (dataGridView.SelectedRows.Count > 0 && GetAccountInfo(dataGridView.SelectedRows[0].Index) == _info)
                         {
                             btnPlay.Image = Properties.Resources.OutlinePause_36px;
                             lStartGame.Text = "Close the game";
                         }
                     }
+                }
+
+                if (frm.OptionsData.discordOptions.ShowState)
+                {
+                    string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
+                    DiscordHelper.SetState(state);
+                    DiscordHelper.ApplyPresence();
                 }
             }
             catch
@@ -535,13 +542,13 @@ namespace ExaltAccountManager.UI
             btnRenewToken.AnimationSpeed = 0;
             timerRenewChangeColor.Start();
             MK_EAM_Lib.AccountInfo info = GetAccountInfo(dataGridView.SelectedRows[0].Index);
-            
+
             dicLockRenewInfoToTime.Add(info, DateTime.Now.AddSeconds(60));
-            
+
             info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(info.Name), true, RenewTokenFinished);
 
             if (!timerReactivateRenewToken.Enabled)
-                timerReactivateRenewToken.Start();         
+                timerReactivateRenewToken.Start();
         }
 
         private void RenewTokenFinished(MK_EAM_Lib.AccountInfo _info) => RenewTokenFinished_Invoker(_info);
@@ -583,7 +590,7 @@ namespace ExaltAccountManager.UI
                 if (dicLockRenewInfoToTime[acc] < DateTime.Now)
                 {
                     dicLockRenewInfoToTime.Remove(acc);
-                    
+
                     if (GetAccountInfo(dataGridView.SelectedRows[0].Index).email.Equals(acc.email))
                     {
                         btnRenewToken.BackColor = btnRenewToken.BackgroundColor = btnRenewToken.BorderColor = Color.FromArgb(156, 95, 244);
@@ -924,7 +931,7 @@ namespace ExaltAccountManager.UI
 
                                 process.EnableRaisingEvents = true;
                                 process.Exited += ProcessExit;
-                                
+
                                 if (dataGridView.SelectedRows.Count > 0 && GetAccountInfo(dataGridView.SelectedRows[0].Index) == q)
                                 {
                                     btnPlay.Image = Properties.Resources.OutlinePause_36px;
@@ -983,6 +990,30 @@ namespace ExaltAccountManager.UI
                 {
                     btnPlay.Image = Properties.Resources.OutlinePlay_36px;
                     lStartGame.Text = "Start game";
+                }
+
+                if (frm.OptionsData.discordOptions.ShowAccountNames)
+                {
+                    if (DiscordHelper.LastState.Contains(_info.Name))
+                    {
+                        if (dicProcessesToAccounts.Keys.Count > 1)
+                        {
+                            foreach (var item in dicProcessesToAccounts)
+                            {
+                                if (item.Value.Email != _info.Email)
+                                {
+                                    string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
+                                    DiscordHelper.SetState(state);
+                                    DiscordHelper.ApplyPresence();
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            DiscordHelper.UpdateMenu(null);
+                        }
+                    }
                 }
             }
             catch { }

@@ -15,11 +15,11 @@ namespace MK_EAM_Updater_Lib
         private static string appPath = string.Empty;
 
         /// <summary>
-        /// Returns true if a restart of the update-process is needed.
+        /// Perform an Update of EAM.
         /// </summary>
-        /// <param name="applicationPath"></param>
-        /// <param name="latestVersionDownloadLink"></param>
-        /// <returns></returns>
+        /// <param name="applicationPath">Path to the current EAM-Installation.</param>
+        /// <param name="latestVersionDownloadLink">Link to the .zip file of the new version.</param>
+        /// <returns>True if a restart of the update-process is needed,</returns>
         public static bool PerformUpdate(string applicationPath, string latestVersionDownloadLink)
         {
             appPath = applicationPath;
@@ -42,30 +42,14 @@ namespace MK_EAM_Updater_Lib
             Log("Moving update files...");
 
             List<string> failedFiles = new List<string>();
-            //string mainUpdateFileFolder = string.Empty;
-            //var dirs = Directory.GetDirectories(updatePath);
-            //foreach (var dir in dirs)
-            //{
-            //    string d = dir.Replace(updatePath, "");
-            //    if (d.StartsWith("ExaltAccountManager"))
-            //    {
-            //        mainUpdateFileFolder = d;
-            //        break;
-            //    }
-            //}
             string mainUpdateFileFolder = Directory.GetDirectories(updatePath).Where(d => d.Replace(updatePath, "").TrimStart('\\').StartsWith("ExaltAccountManager")).FirstOrDefault();
             string[] files = Directory.GetFiles(updatePath, "*.*", SearchOption.AllDirectories);
+
             foreach (string file in files)
             {
                 try
                 {
                     string relativePath = file.Replace(mainUpdateFileFolder, "");
-                    //string relativePath = file.Replace(updatePath, "");
-                    //int pos = relativePath.IndexOf(mainUpdateFileFolder);
-                    //if (pos != -1)
-                    //{
-                    //    relativePath = relativePath.Substring(0, pos) + relativePath.Substring(pos + mainUpdateFileFolder.Length);
-                    //}
                     relativePath = relativePath.TrimStart('\\');
                     string destinationPath = Path.Combine(applicationPath, relativePath);
                     if (!Directory.Exists(Path.GetDirectoryName(destinationPath)))

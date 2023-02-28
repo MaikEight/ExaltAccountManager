@@ -379,7 +379,7 @@ namespace ExaltAccountManager
     }
 
     [System.Serializable]
-    public class OptionsData
+    public sealed class OptionsData
     {
         public string exePath = string.Empty;
         public bool closeAfterConnection = false;
@@ -394,14 +394,22 @@ namespace ExaltAccountManager
         public int snackbarPosition = 8;
 
         public DiscordOptions discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
+        public AnalyticsOptions analyticsOptions = new AnalyticsOptions() { OptOut = false, Anonymization = false };
     }
 
     [System.Serializable]
-    public class DiscordOptions
+    public sealed class DiscordOptions
     {
         public bool ShowAccountNames { get; set; } = true;
         public bool ShowMenus { get; set; } = true;
 
         public bool ShowState { get; set; } = true;
+    }
+
+    [System.Serializable]
+    public sealed class AnalyticsOptions
+    {
+        public bool OptOut { get; set; } = false;
+        public bool Anonymization { get; set; } = false;
     }
 }

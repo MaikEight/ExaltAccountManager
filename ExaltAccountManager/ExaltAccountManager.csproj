@@ -466,6 +466,12 @@
     <Compile Include="UI\Elements\EleDeleteAccount.Designer.cs">
       <DependentUpon>EleDeleteAccount.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Elements\EleDiscordSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDiscordSettings.Designer.cs">
+      <DependentUpon>EleDiscordSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Elements\EleEditAccount.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -477,6 +483,12 @@
     </Compile>
     <Compile Include="UI\Elements\EleExport.Designer.cs">
       <DependentUpon>EleExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\EleGameUpdateAndNotifications.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleGameUpdateAndNotifications.Designer.cs">
+      <DependentUpon>EleGameUpdateAndNotifications.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Elements\EleGameUpdater.cs">
       <SubType>UserControl</SubType>
@@ -723,11 +735,17 @@
     <EmbeddedResource Include="UI\Elements\EleDeleteAccount.resx">
       <DependentUpon>EleDeleteAccount.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDiscordSettings.resx">
+      <DependentUpon>EleDiscordSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleEditAccount.resx">
       <DependentUpon>EleEditAccount.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleExport.resx">
       <DependentUpon>EleExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleGameUpdateAndNotifications.resx">
+      <DependentUpon>EleGameUpdateAndNotifications.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleGameUpdater.resx">
       <DependentUpon>EleGameUpdater.cs</DependentUpon>
@@ -824,6 +842,12 @@
     <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
     <Content Include="Logo.ico" />
+    <None Include="Resources\search_property_outline_white_24px.png" />
+    <None Include="Resources\search_property_white_24px.png" />
+    <None Include="Resources\discord_new_outline_white_24px.png" />
+    <None Include="Resources\discord_new_white_24px.png" />
+    <None Include="Resources\installing_updates_outline_white_24px.png" />
+    <None Include="Resources\installing_updates_white_24px.png" />
     <None Include="Resources\ic_expand_more_white_36dp.png" />
     <None Include="Resources\birthday_cake_2_white_36px.png" />
     <None Include="Resources\birthday_cake_1_white_36px.png" />
@@ -1179,6 +1203,10 @@
     <ProjectReference Include="..\MK_EAM_Lib\MK_EAM_Lib.csproj">
       <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
       <Name>MK_EAM_Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MK_EAM_Updater_Lib\MK_EAM_Updater_Lib.csproj">
+      <Project>{9c19752e-0ef2-489c-a6ff-eeaafa06dcc4}</Project>
+      <Name>MK_EAM_Updater_Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

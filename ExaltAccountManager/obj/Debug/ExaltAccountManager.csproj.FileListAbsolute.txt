@@ -627,3 +627,7 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\DiscordRPC.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\DiscordRPC.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_Updater_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_Updater_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleGameUpdateAndNotifications.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleDiscordSettings.resources

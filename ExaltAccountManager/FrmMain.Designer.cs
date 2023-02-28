@@ -794,6 +794,7 @@
             this.Controls.Add(this.pContent);
             this.Controls.Add(this.pTop);
             this.Controls.Add(this.pLeftSide);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

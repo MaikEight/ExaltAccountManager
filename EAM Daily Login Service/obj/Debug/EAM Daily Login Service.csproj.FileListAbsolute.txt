@@ -210,3 +210,5 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debu
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\DiscordRPC.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\obj\Debug\EAM Daily Login Service.csproj.SuggestedBindingRedirects.cache
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Updater_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Updater_Lib.pdb

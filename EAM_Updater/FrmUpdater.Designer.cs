@@ -32,7 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.lText = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lVersion = new System.Windows.Forms.Label();
             this.pbImage = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             this.SuspendLayout();
@@ -65,15 +65,15 @@
             this.lText.Text = "Please wait ...";
             this.lText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label3
+            // lVersion
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI Semilight", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(171, 103);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(117, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "EAM Updater by Maik8";
+            this.lVersion.Font = new System.Drawing.Font("Segoe UI Semilight", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lVersion.Location = new System.Drawing.Point(4, 104);
+            this.lVersion.Name = "lVersion";
+            this.lVersion.Size = new System.Drawing.Size(285, 13);
+            this.lVersion.TabIndex = 3;
+            this.lVersion.Text = "EAM Updater v{0} by Maik8";
+            this.lVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // pbImage
             // 
@@ -93,7 +93,7 @@
             this.ClientSize = new System.Drawing.Size(287, 117);
             this.ControlBox = false;
             this.Controls.Add(this.pbImage);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lVersion);
             this.Controls.Add(this.lText);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.label1);
@@ -117,7 +117,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label lText;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lVersion;
         private System.Windows.Forms.PictureBox pbImage;
     }
 }

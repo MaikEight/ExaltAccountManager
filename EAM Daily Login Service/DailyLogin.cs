@@ -53,6 +53,8 @@ namespace EAM_Daily_Login_Service
         private static Dictionary<System.Timers.Timer, Process> dicTimerToProcess = new Dictionary<System.Timers.Timer, Process>();
         private static Dictionary<System.Timers.Timer, string> dicTimerToEmail = new Dictionary<System.Timers.Timer, string>();
 
+        private static bool isForcedLogin = false;
+
         #region Show/Hide Window
 
         [DllImport("kernel32.dll")]
@@ -89,7 +91,7 @@ namespace EAM_Daily_Login_Service
                     }
 
                     if (!(args != null && args[0].Equals("force")))
-                    {
+                    {                        
                         if (dailyLogins.DailyDatas.Count > 0)
                         {
                             DailyData lastDay = dailyLogins.DailyDatas.OrderByDescending(d => d.Date).FirstOrDefault();
@@ -102,6 +104,7 @@ namespace EAM_Daily_Login_Service
                     }
                     else
                     {
+                        isForcedLogin = true;
                         LogEvent(new LogData("Daily Login Service", LogEventType.ServiceInfo, "Daily login force started!"));
                     }
                 }
@@ -323,7 +326,7 @@ namespace EAM_Daily_Login_Service
 
         private static void StartLogins()
         {
-            dailyLogins.DailyDatas.Add(new DailyData() { AccountData = new List<DailyAccountData>(), Date = DateTime.Now });
+            dailyLogins.DailyDatas.Add(new DailyData() { AccountData = new List<DailyAccountData>(), Date = DateTime.Now, ManualStart = isForcedLogin });
             SaveDailyLoginsData();
 
             if (notOpt.useTaskTrayTool)

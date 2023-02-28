@@ -22,6 +22,13 @@ namespace ExaltAccountManager.UI
                             $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}" +
                             $"- Added Discord-RPC support.{Environment.NewLine}" +
                             $"- Supports live-state tracking.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>DAILY LOGINS</b>{Environment.NewLine}" +
+                            $"- Changed the \"Run manually\" panel to use a toggle instead." +
+                            $"- Fixed the Graph to actually work now... hopefully{Environment.NewLine}" +
+                            $"- Fixed the \"Last Run\" and \"Results\" panels to display information{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Thanks to <b>Ykao</b> for pointing me to this.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>OPTIONS</b>{Environment.NewLine}" +
+                            $"- Added new buttons to allow for changing notification or privacy settings.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>ANALYTICS</b>{Environment.NewLine}" +
                             $"- Added anonym analytics for the EAM-usage.{Environment.NewLine}" +
                             $"- Any data collected is anonym and does NOT contain login informations.{Environment.NewLine}" +
@@ -36,6 +43,7 @@ namespace ExaltAccountManager.UI
                             $"<b>BUG FIXES</b>{Environment.NewLine}" +
                             $"- Fixed a critical bug during opening of the daily login menu on windows server.{Environment.NewLine}" +
                             $"- Fixed the taskbar-icon not minimizing EAM-windows.{Environment.NewLine}" +
+                            $"- Fixed the button-sidebar not moving when the game-update button is added.{Environment.NewLine}" +
                             $"- Removed the \"White line\" at the bottom of EAM during darkmode."
 
             },

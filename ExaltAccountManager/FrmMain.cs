@@ -22,7 +22,7 @@ namespace ExaltAccountManager
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
-        
+
         public bool UseDarkmode
         {
             get => useDarkmode;
@@ -36,7 +36,7 @@ namespace ExaltAccountManager
                 toolTip.SetToolTipTitle(btnSwitchDesign, useDarkmode ? "Switch to daymode" : "Switch to darkmode");
                 toolTip.SetToolTip(btnSwitchDesign, useDarkmode ? "Burn your eyes!" : "Come to the dark side, we have cookies!");
             }
-        }        
+        }
         private bool useDarkmode = false;
 
         private Size defaultMinimumsize = new Size(0, 0);
@@ -75,8 +75,8 @@ namespace ExaltAccountManager
                 if (uiOptions != null)
                     uiOptions.ApplyOptions();
             }
-        }        
-        private OptionsData optionsDataValue = new OptionsData();        
+        }
+        private OptionsData optionsDataValue = new OptionsData();
         public NotificationOptions notOpt = new NotificationOptions();
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
         private GameUpdater gameUpdater { get; set; }
@@ -212,7 +212,7 @@ namespace ExaltAccountManager
                         break;
                 }
                 DiscordHelper.ApplyPresence();
-                
+
                 #endregion
 
                 pSideBar.Visible = !(uiState == UIState.Changelog || uiState == UIState.TokenViewer || uiState == UIState.ImportExport || uiState == UIState.DailyLogin || uiState == UIState.DailyNotifications);
@@ -279,8 +279,33 @@ namespace ExaltAccountManager
 
         #endregion
 
-        public FrmMain()
+        public FrmMain(string[] args)
         {
+            #region Arguments
+
+            if (args?.Length > 0)
+            {
+                switch (args[0])
+                {
+                    case "update":
+                        {
+                            if (args.Length >= 2)
+                            {
+                                string tempUpdatePath = args[1];
+                                MK_EAM_Updater_Lib.Updater.MoveUpdateFiles(Application.StartupPath, tempUpdatePath);
+
+                                System.Diagnostics.Process.Start(Application.ExecutablePath);
+                                Environment.Exit(0);
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            #endregion
+
             InitializeComponent();
 
             defaultMinimumsize = this.MinimumSize = new Size(this.MinimumSize.Width, 576);
@@ -309,6 +334,28 @@ namespace ExaltAccountManager
                         OptionsData = (OptionsData)ByteArrayToObject(File.ReadAllBytes(optionsPath));
                         UseDarkmode = OptionsData.useDarkmode;
                         SnackbarPosition = (Bunifu.UI.WinForms.BunifuSnackbar.Positions)OptionsData.snackbarPosition;
+
+                        bool toSave = false;
+                        if (OptionsData.discordOptions == null)
+                        {
+                            toSave = true;
+                            OptionsData.discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
+                        }
+
+                        if (OptionsData.analyticsOptions == null)
+                        {
+                            toSave = true;
+                            OptionsData.analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false };
+                        }
+
+                        if (toSave)
+                        {
+                            try
+                            {
+                                File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
+                            }
+                            catch { }                            
+                        }
                     }
                     catch { }
                 }
@@ -320,7 +367,9 @@ namespace ExaltAccountManager
                         {
                             exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                             closeAfterConnection = false,
-                            snackbarPosition = 8
+                            snackbarPosition = 8,
+                            discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
+                            analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                         };
                         File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
                     }
@@ -416,7 +465,7 @@ namespace ExaltAccountManager
         {
             timerLoadUI.Start();
             gameUpdater = new GameUpdater(OptionsData.exePath, lastUpdateCheckPath);
-            GameUpdater.Instance.OnUpdateRequired += UpdateRequiredInvoker;            
+            GameUpdater.Instance.OnUpdateRequired += UpdateRequiredInvoker;
         }
 
         public void ApplyTheme(object sender, EventArgs e)
@@ -535,7 +584,7 @@ namespace ExaltAccountManager
                             {
                                 Question = "Exalt Account Manager Update available",
                                 Answer = msg.message,
-                                ButtonText =  "Show release on Github",
+                                ButtonText = "Show release on Github",
                                 ButtonImage = Properties.Resources.update_left_rotation_white_24px,
                                 Type = QuestionType.Update,
                                 Action = (object sender, EventArgs e) => System.Diagnostics.Process.Start(linkUpdate)
@@ -775,7 +824,6 @@ namespace ExaltAccountManager
 
         #endregion
 
-
         #region SaveAccounts
 
         public bool SaveAccounts()
@@ -848,6 +896,14 @@ namespace ExaltAccountManager
                 LogEvent(new LogData(-1, "EAM Options", LogEventType.EAMError, $"Failed to save options!"));
                 LogButtonBlink();
                 ShowSnackbar($"Failed to save options!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
+            }
+        }
+
+        public void UpdateUIOptionsData()
+        {
+            if (OptionsData != null)
+            {
+                uiOptions?.ApplyOptions();
             }
         }
 
@@ -1368,7 +1424,7 @@ namespace ExaltAccountManager
                 uiModules = new UIModules(this);
 
             if (uiOptions == null)
-                uiOptions = new UIOptions(this);
+                uiOptions = new UIOptions(this) { Dock = DockStyle.Fill };
 
             if (OptionsData.searchRotmgUpdates)
             {
@@ -1413,6 +1469,9 @@ namespace ExaltAccountManager
                 return (bool)this.Invoke((Func<bool>)UpdateRequired);
 
             btnGameUpdater.Visible = GameUpdater.Instance.UpdateRequired;
+
+            pSideBar.Top += btnGameUpdater.Height + 2;
+
             if (GameUpdater.Instance.UpdateRequired)
                 ShowSnackbar("Game-update available.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 12500);
 

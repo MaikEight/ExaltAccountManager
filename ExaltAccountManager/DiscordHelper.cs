@@ -31,13 +31,13 @@ namespace ExaltAccountManager
         private static bool vaultPeekerOpen = false;
 
         private static Menu menu;
-        private static string lastState = "Starting up...✨";
-        
+        public static string LastState { get; internal set; } = "Starting up...✨";
+
         private static string imageKey { get => frm.UseDarkmode ? "eam_darkmode" : "eam_lightmode"; }
 
         private static FrmMain frm;
         private static bool updateOnChange = true;
-        
+
         public static void Initialize(DiscordOptions _discordOptions, FrmMain _frm, bool autoEvents = false, bool _updateOnChange = true)
         {
             discordOptions = _discordOptions;
@@ -48,7 +48,7 @@ namespace ExaltAccountManager
             Discord.Initialize(APPLICATION_ID, autoEvents: autoEvents);
             Discord.UpdateOnChange = false;
             Discord.AddButton("Get Exalt Account Manager here", "https://github.com/MaikEight/ExaltAccountManager/releases/latest");
-            
+
             Discord.Timestamp = startupTime;
             Discord.UseTimestamp = true;
             Discord.Details = "The better rotmg-launcher!💪";
@@ -67,7 +67,7 @@ namespace ExaltAccountManager
 
         public static void SetLlamaState()
         {
-            Discord.State = lastState = "Found the Llama! 🦙";
+            Discord.State = LastState = "Found the Llama! 🦙";
             Discord.ApplyPresence();
         }
 
@@ -75,19 +75,19 @@ namespace ExaltAccountManager
 
         private static string GetLastState()
         {
-            return lastState;
+            return LastState;
         }
 
-        private static void SetState(string state)
+        public static void SetState(string state, bool ignoreModules = false)
         {
-            if (statisticsOpen || pingCheckerOpen || vaultPeekerOpen)
+            if (!ignoreModules && (statisticsOpen || pingCheckerOpen || vaultPeekerOpen))
             {
-                lastState = state;
+                LastState = state;
                 return;
             }
 
-            Discord.State = lastState = state;
-        }        
+            Discord.State = LastState = state;
+        }
 
         #region Statistics
 
@@ -231,7 +231,7 @@ namespace ExaltAccountManager
 
 
         #region ProcessWatcher
-        
+
         private static Dictionary<Process, string> processes = new Dictionary<Process, string>();
         public static Process AddProcessToWatchlist(ProcessStartInfo info, string type)
         {
@@ -250,9 +250,9 @@ namespace ExaltAccountManager
         {
             var p = (Process)sender;
             p.Exited -= P_Exited;
-            
+
             string key = processes[p];
-            
+
             processes.Remove(p);
 
             if (!processes.Values.Contains(key))
@@ -283,12 +283,16 @@ namespace ExaltAccountManager
 
         #region Menus
 
-        public static void UpdateMenu(Menu _menu)
+        public static void UpdateMenu(Menu? _menu)
         {
-            menu = _menu;            
-            Discord.LargeImageKey = imageKey;            
+            if (_menu != null)
+            {
+                menu = (Menu)_menu;
+            }
 
-            if (discordOptions.ShowState)
+            Discord.LargeImageKey = imageKey;
+
+            if (discordOptions.ShowState && discordOptions.ShowMenus)
             {
                 switch (menu)
                 {

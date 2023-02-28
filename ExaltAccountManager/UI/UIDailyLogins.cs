@@ -37,7 +37,7 @@ namespace ExaltAccountManager.UI
 
             frm.ThemeChanged += ApplyTheme;
             this.Disposed += (object sender, EventArgs e) => frm.ThemeChanged -= ApplyTheme;
-            ApplyTheme(frm, null);
+            
 
             if (File.Exists(frm.dailyLoginsPath))
             {
@@ -55,6 +55,7 @@ namespace ExaltAccountManager.UI
                     frm.ShowSnackbar("Failed to load daily logins data.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
                 }
             }
+            ApplyTheme(frm, null);
         }
 
         public void ApplyTheme(object sender, EventArgs e)
@@ -228,8 +229,10 @@ namespace ExaltAccountManager.UI
             {
                 lLastRun.Text = "Never";
                 lLastResults.Text = "N/A";
-                //btnShowDetails.Enabled = false;
             }
+
+            success.Reverse();
+            failed.Reverse();
 
             barChartSuccess.Data = success;
             barChartFailed.Data = failed;
@@ -256,7 +259,7 @@ namespace ExaltAccountManager.UI
                 labels[i] = DateTime.Now.AddDays(-i).DayOfWeek.ToString();
             }
 
-            return labels;
+            return labels.Reverse().ToArray();
         }
 
         private void btnNotificationSettings_Click(object sender, EventArgs e)
@@ -276,15 +279,20 @@ namespace ExaltAccountManager.UI
 
         private void btnRunTaskNOW_Click(object sender, EventArgs e)
         {
-            if (!btnRunTaskAll.Visible)
+            if (!pRefreshAll.Visible)
             {
-                btnRunTaskAll.Location = new Point(12, 12);
-                btnRunTaskAll.Visible = true;
-                btnRunTaskAll.BringToFront();
+                pRefreshAll.Location = new Point(12, 12);
+                pRefreshAll.Visible = true;
+                pRefreshAll.BringToFront();
                 btnRunTaskNOW.Text = "Run task now";
                 return;
             }
 
+            if (toggleRefreshAll.Checked)
+            {
+                btnRunTaskAll_Click(sender, e);
+                return;
+            }
             StartTask();
         }
 
@@ -328,7 +336,7 @@ namespace ExaltAccountManager.UI
         {
             timerCheckForTask.Stop();
 
-            btnRunTaskAll.Enabled = false;
+            //btnRunTaskAll.Enabled = false;
             btnRunTaskNOW.Enabled = false;
             try
             {
@@ -348,14 +356,14 @@ namespace ExaltAccountManager.UI
                 {
                     frm.LogEvent(new LogData("EAM", LogEventType.EAMError, "Failed to find the Daily Login Service executable."));
                     frm.ShowSnackbar("Failed to find the Daily Login Service executable.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
-                    btnRunTaskAll.Enabled = true;
+                    //btnRunTaskAll.Enabled = true;
                 }
             }
             catch
             {
                 frm.LogEvent(new LogData("EAM", LogEventType.EAMError, "Failed to start the Daily Login Service."));
                 frm.ShowSnackbar("Failed to start the Daily Login Service.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
-                btnRunTaskAll.Enabled = true;
+                //btnRunTaskAll.Enabled = true;
             }
 
             timerCheckForTask.Start();
@@ -368,8 +376,8 @@ namespace ExaltAccountManager.UI
 
         private void timerCheckForTask_Tick(object sender, EventArgs e)
         {
-            btnRunTaskNOW.Enabled =
-            btnRunTaskAll.Enabled = !CheckIfTaskIsRunning();
+            btnRunTaskNOW.Enabled = !CheckIfTaskIsRunning();
+            //btnRunTaskAll.Enabled = 
         }
 
         private bool CheckIfTaskIsRunning()
