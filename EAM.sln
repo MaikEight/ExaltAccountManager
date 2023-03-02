@@ -23,9 +23,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK_EAM_Discord_Lib", "MK_EA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK_EAM_Analytics", "MK_EAM_Analytics\MK_EAM_Analytics.csproj", "{EDDC50BF-5B06-4824-90E3-B7660F7D926E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK_EAM_Updater_Lib", "MK_EAM_Updater_Lib\MK_EAM_Updater_Lib.csproj", "{9C19752E-0EF2-489C-A6FF-EEAAFA06DCC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK_EAM_Updater_Lib", "MK_EAM_Updater_Lib\MK_EAM_Updater_Lib.csproj", "{9C19752E-0EF2-489C-A6FF-EEAAFA06DCC4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAM_Updater", "EAM_Updater\EAM_Updater.csproj", "{799346D1-368B-4439-86D9-5548B3B13A0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8FF59C9E-1113-411D-945C-24D15685B2A6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

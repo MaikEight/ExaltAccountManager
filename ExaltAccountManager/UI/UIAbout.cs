@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MK_EAM_Analytics;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -55,6 +56,11 @@ namespace ExaltAccountManager.UI
             frm.SwitchLlamaState(true);
             DiscordHelper.SetLlamaState();
             timerLlama.Start();
+
+            if (!frm.OptionsData.analyticsOptions.OptOut)
+            {
+                AnalyticsClient.Instance?.UpdateLlamaFound();
+            }
         }
 
         private void pbLinkSourceCode_Click(object sender, EventArgs e) => linkSourceCode_LinkClicked(null, null);

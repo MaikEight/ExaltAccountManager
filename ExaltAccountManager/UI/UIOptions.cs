@@ -243,10 +243,11 @@ namespace ExaltAccountManager.UI
             frm.ShowShadowForm(new Elements.EleDiscordSettings(frm));
         }
 
-        private void bunifuButton1_Click(object sender, EventArgs e)
+        private void btnAnalytics_Click(object sender, EventArgs e)
         {
             lHeadline.Focus();
 
+            frm.ShowShadowForm(new Elements.EleAnalyticsSettings(frm));
         }
     }
 }

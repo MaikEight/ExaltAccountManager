@@ -603,6 +603,26 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap document_outline_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("document_outline_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap document_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("document_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap export_csv_white_32px {
             get {
                 object obj = ResourceManager.GetObject("export_csv_white_32px", resourceCulture);
@@ -2263,6 +2283,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_smiling_48px {
+            get {
+                object obj = ResourceManager.GetObject("icons8_smiling_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap installing_updates_outline_white_24px {
             get {
                 object obj = ResourceManager.GetObject("installing_updates_outline_white_24px", resourceCulture);
@@ -2726,6 +2756,16 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap return_36_white {
             get {
                 object obj = ResourceManager.GetObject("return_36_white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sad_48px {
+            get {
+                object obj = ResourceManager.GetObject("sad_48px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

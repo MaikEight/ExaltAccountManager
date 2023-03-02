@@ -803,6 +803,7 @@
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Exalt Account Manager";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.LocationChanged += new System.EventHandler(this.FrmMain_LocationChanged);
             this.SizeChanged += new System.EventHandler(this.FrmMain_SizeChanged);

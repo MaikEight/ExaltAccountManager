@@ -1,6 +1,7 @@
 ﻿using Bunifu.UI.WinForms;
 using ExaltAccountManager.UI;
 using ExaltAccountManager.UI.Elements;
+using MK_EAM_Analytics;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
@@ -466,6 +468,12 @@ namespace ExaltAccountManager
             timerLoadUI.Start();
             gameUpdater = new GameUpdater(OptionsData.exePath, lastUpdateCheckPath);
             GameUpdater.Instance.OnUpdateRequired += UpdateRequiredInvoker;
+
+            if (!OptionsData.analyticsOptions.OptOut)
+            {
+                new AnalyticsClient(null);
+                AnalyticsClient.Instance?.StartSession(accounts.Count, GetAnalyticsClientIdHash(), version);
+            }
         }
 
         public void ApplyTheme(object sender, EventArgs e)
@@ -1039,6 +1047,25 @@ namespace ExaltAccountManager
             return ret;
         }
 
+        public string GetAnalyticsClientIdHash()
+        {
+            if (OptionsData.analyticsOptions.Anonymization)
+                return "--ANONYMIZED--";
+
+            return QuickHash(System.Security.Principal.WindowsIdentity.GetCurrent().User.Value);            
+        }
+
+        public string GetAnalyticsEmailHash(string email) => QuickHash(email);
+        private string QuickHash(string secret)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var secretBytes = Encoding.UTF8.GetBytes(secret);
+                var secretHash = md5.ComputeHash(secretBytes);
+                return new System.Numerics.BigInteger(secretHash.Reverse().ToArray()).ToString("x2");
+            }
+        }
+
         public string GetAccountStatsFilename(string email)
         {
             try
@@ -1076,6 +1103,11 @@ namespace ExaltAccountManager
             accounts.Add(info);
 
             SaveAndUpdateAccounts();
+
+            if(!OptionsData.analyticsOptions.OptOut)
+            {
+                AnalyticsClient.Instance?.UpdateAmountOfAccounts(accounts.Count);
+            }
 
             return false;
         }
@@ -1121,7 +1153,17 @@ namespace ExaltAccountManager
 
         #region Button Close
 
-        private void pbClose_Click(object sender, EventArgs e) => Environment.Exit(0);
+        private void pbClose_Click(object sender, EventArgs e)
+        {
+            this.Visible = false;
+
+            if (!OptionsData.analyticsOptions.OptOut)
+            {
+                _ = AnalyticsClient.Instance?.EndSeesion();
+            }
+
+            Environment.Exit(0);
+        }
 
         private void pbClose_MouseDown(object sender, MouseEventArgs e) => pbClose.BackColor = Color.Red;
 
@@ -1636,6 +1678,15 @@ namespace ExaltAccountManager
         private void timerDiscordUpdater_Tick(object sender, EventArgs e)
         {
             DiscordHelper.ApplyPresence();
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Visible = false;
+            if (!OptionsData.analyticsOptions.OptOut)
+            {
+                _ = AnalyticsClient.Instance?.EndSeesion().Result;
+            }
         }
     }
 }

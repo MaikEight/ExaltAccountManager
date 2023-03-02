@@ -1,4 +1,5 @@
 ﻿using ExaltAccountManager.UI.Elements;
+using MK_EAM_Analytics;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -57,7 +58,12 @@ namespace ExaltAccountManager.UI
                     Process p = DiscordHelper.AddProcessToWatchlist(info, "pingChecker");
                     p.Start();
                     DiscordHelper.OpenedPingChecker();
-                    
+
+                    if (!frm.OptionsData.analyticsOptions.OptOut)
+                    {
+                        AnalyticsClient.Instance?.AddModuleOpened(MK_EAM_Analytics.Request.ModuleType.PingChecker);
+                    }
+
                 }
                 else
                     frm.ShowSnackbar("Failed to find the Ping Checker module.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
@@ -83,6 +89,11 @@ namespace ExaltAccountManager.UI
                     Process p = DiscordHelper.AddProcessToWatchlist(info, "statistics");
                     p.Start();
                     DiscordHelper.OpenedStatistics();
+
+                    if (!frm.OptionsData.analyticsOptions.OptOut)
+                    {
+                        AnalyticsClient.Instance?.AddModuleOpened(MK_EAM_Analytics.Request.ModuleType.Statistics);
+                    }
                 }
                 else
                     frm.ShowSnackbar("Failed to find the statistics module.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
@@ -103,6 +114,11 @@ namespace ExaltAccountManager.UI
                     Process p = DiscordHelper.AddProcessToWatchlist(info, "vaultPeeker");
                     p.Start();
                     DiscordHelper.OpenedVaultPeeker();
+
+                    if (!frm.OptionsData.analyticsOptions.OptOut)
+                    {
+                        AnalyticsClient.Instance?.AddModuleOpened(MK_EAM_Analytics.Request.ModuleType.VaultPeeker);
+                    }
                 }
                 else
                     frm.ShowSnackbar("Failed to find the vault peeker module.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
@@ -147,6 +163,11 @@ namespace ExaltAccountManager.UI
                 uiDailyLogins = new UIDailyLogins(frm) { Dock = DockStyle.Fill };
 
             frm.AddContrtolToPContent(uiDailyLogins, 11);
+
+            if (!frm.OptionsData.analyticsOptions.OptOut)
+            {
+                AnalyticsClient.Instance?.AddModuleOpened(MK_EAM_Analytics.Request.ModuleType.DailyLogin);
+            }
         }
 
         private void btnImportExport_Click(object sender, EventArgs e)

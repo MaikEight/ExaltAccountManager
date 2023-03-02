@@ -418,6 +418,12 @@
     <Compile Include="OLD\UIWindowsTask.Designer.cs">
       <DependentUpon>UIWindowsTask.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Elements\EleAnalyticsSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleAnalyticsSettings.Designer.cs">
+      <DependentUpon>EleAnalyticsSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Elements\EleChangelog.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -711,6 +717,9 @@
     <EmbeddedResource Include="OLD\UIWindowsTask.resx">
       <DependentUpon>UIWindowsTask.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleAnalyticsSettings.resx">
+      <DependentUpon>EleAnalyticsSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleChangelog.resx">
       <DependentUpon>EleChangelog.cs</DependentUpon>
     </EmbeddedResource>
@@ -801,6 +810,9 @@
     <EmbeddedResource Include="UI\UIOptions.resx">
       <DependentUpon>UIOptions.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -842,6 +854,10 @@
     <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
     <Content Include="Logo.ico" />
+    <None Include="Resources\icons8_smiling_48px.png" />
+    <None Include="Resources\sad_48px.png" />
+    <None Include="Resources\document_white_24px.png" />
+    <None Include="Resources\document_outline_white_24px.png" />
     <None Include="Resources\search_property_outline_white_24px.png" />
     <None Include="Resources\search_property_white_24px.png" />
     <None Include="Resources\discord_new_outline_white_24px.png" />
@@ -1196,6 +1212,10 @@
     <None Include="Resources\llama.gif" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MK_EAM_Analytics\MK_EAM_Analytics.csproj">
+      <Project>{EDDC50BF-5B06-4824-90E3-B7660F7D926E}</Project>
+      <Name>MK_EAM_Analytics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MK_EAM_Discord_Lib\MK_EAM_Discord_Lib.csproj">
       <Project>{C49DC956-09E5-4CCF-A753-86ADCD5F94C7}</Project>
       <Name>MK_EAM_Discord_Lib</Name>

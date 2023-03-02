@@ -1,4 +1,5 @@
-﻿using MK_EAM_Lib;
+﻿using MK_EAM_Analytics;
+using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -438,6 +439,11 @@ namespace ExaltAccountManager.UI
                     string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
                     DiscordHelper.SetState(state);
                     DiscordHelper.ApplyPresence();
+                }
+
+                if (!frm.OptionsData.analyticsOptions.OptOut)
+                {
+                    AnalyticsClient.Instance?.AddLogin(frm.GetAnalyticsEmailHash(_info.Email), GetServerName(_info.serverName));
                 }
             }
             catch

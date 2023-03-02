@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ExaltAccountManager")]
-[assembly: AssemblyCopyright("Copyright © 2021 @ Maik8")]
+[assembly: AssemblyCopyright("Copyright © 2023 @ Maik8")]
 [assembly: AssemblyTrademark("Maik8")]
 [assembly: AssemblyCulture("")]
 

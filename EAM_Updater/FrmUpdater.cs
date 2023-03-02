@@ -21,16 +21,14 @@ namespace EAM_Updater
         private string[] arguments = null;
         public FrmMain(string[] args)
         {
-            //Bitmap bmp = (Bitmap)Bitmap.FromFile(@"C:\Users\Maik8\Pictures\MaterialUI\White\person_white_24px.png");
+            //Bitmap bmp = (Bitmap)Bitmap.FromFile(@"C:\Users\Maik8\Pictures\MaterialUI\White\calendar_white_24px.png");
             //ImageConverter converter = new ImageConverter();
             //byte[] data = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
             //StringBuilder sb = new StringBuilder();
-            //sb.Append("[");
             //foreach (byte b in data)
             //{
             //    sb.Append(b.ToString() + ", ");
             //}
-            //sb.Append("]");
             //string t = sb.ToString();
             //Console.WriteLine(t);
 
