@@ -177,3 +177,14 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Rele
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Lib.dll.config
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\Bunifu.Charts.WinForms.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\Bunifu.UI.WinForms.BunifuLabel.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Analytics.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Discord_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Updater_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\DiscordRPC.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Analytics.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Discord_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Updater_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\DiscordRPC.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\obj\Release\EAM Daily Login Service.csproj.SuggestedBindingRedirects.cache

@@ -206,3 +206,14 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Release\EA
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Release\EAM Notification Center.exe.licenses
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Release\EAM Notification Center.exe
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Release\EAM Notification Center.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_Analytics.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_Discord_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_Updater_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\DiscordRPC.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_Analytics.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_Discord_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_Updater_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\DiscordRPC.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\DiscordRPC.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Release\EAM Tasktray Tool.csproj.SuggestedBindingRedirects.cache

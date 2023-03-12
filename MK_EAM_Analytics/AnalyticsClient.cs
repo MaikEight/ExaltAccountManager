@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace MK_EAM_Analytics
 {
-    public class AnalyticsClient
+    public sealed class AnalyticsClient
     {
         public static AnalyticsClient Instance { get; private set; }
 

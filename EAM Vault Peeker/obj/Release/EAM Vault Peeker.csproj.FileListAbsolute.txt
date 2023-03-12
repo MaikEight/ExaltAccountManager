@@ -103,3 +103,4 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\bin\Release\Sys
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\bin\Release\System.Numerics.Vectors.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\bin\Release\System.Buffers.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\obj\Release\EAM Vault Peeker.csproj.SuggestedBindingRedirects.cache

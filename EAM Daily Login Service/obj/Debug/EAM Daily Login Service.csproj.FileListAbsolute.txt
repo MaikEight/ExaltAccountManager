@@ -212,3 +212,5 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debu
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\obj\Debug\EAM Daily Login Service.csproj.SuggestedBindingRedirects.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Updater_Lib.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Updater_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Analytics.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Analytics.pdb

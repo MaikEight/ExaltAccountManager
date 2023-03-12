@@ -1,0 +1,60 @@
+﻿using MK_EAM_General_Services_Lib.News.Data;
+using MK_EAM_General_Services_Lib.News.Responses;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MK_EAM_General_Services_Lib
+{
+    public sealed class GeneralServicesClient
+    {
+        public static GeneralServicesClient Instance { get; private set; }
+
+        public string BASE_URL { get; private set; } = "https://localhost:5001/"; //https://api.exalt-account-manager.eu:44322/
+
+        public GeneralServicesClient(string baseUrl)
+        {
+            if (GeneralServicesClient.Instance == null)
+            {
+                GeneralServicesClient.Instance = this;
+                if (!string.IsNullOrEmpty(baseUrl))
+                    GeneralServicesClient.Instance.BASE_URL = baseUrl;
+                return;
+            }
+            throw new NotSupportedException("More than one instance of GeneralServicesClient detected!");
+        }
+
+        public async Task<List<NewsData>> GetNews(DateTime startTime, int amount = 5)
+        {
+            #region GetNews
+
+            News.Requests.GetNewsRequest req = new News.Requests.GetNewsRequest()
+            {
+                StartTime = startTime,
+                Amount = amount,
+            };
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPostRequest(BASE_URL + "v1/news", req);
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    GetNewsResponse gnr = JsonConvert.DeserializeObject<GetNewsResponse>(await responseMessage.Content.ReadAsStringAsync());                    
+                    return gnr.News;
+                }
+            }
+            catch { }
+
+            return new List<NewsData>();
+
+            #endregion
+        }
+    }
+}

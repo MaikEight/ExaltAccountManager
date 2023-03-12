@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK_EAM_General_Services_Lib", "MK_EAM_General_Services_Lib\MK_EAM_General_Services_Lib.csproj", "{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +88,10 @@ Global
 		{799346D1-368B-4439-86D9-5548B3B13A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{799346D1-368B-4439-86D9-5548B3B13A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{799346D1-368B-4439-86D9-5548B3B13A0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
