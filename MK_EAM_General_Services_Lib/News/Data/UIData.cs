@@ -5,7 +5,6 @@ namespace MK_EAM_General_Services_Lib.News.Data
     [System.Serializable]
     public class UIData
     {
-        
     }
 
     [System.Serializable]

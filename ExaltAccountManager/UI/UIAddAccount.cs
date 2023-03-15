@@ -24,6 +24,7 @@ namespace ExaltAccountManager.UI
             colorChanger.BringToFront();
 
             frm.ThemeChanged += ApplyTheme;
+            this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
             ApplyTheme(frm, null);
         }
 

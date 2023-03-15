@@ -84,6 +84,7 @@ namespace ExaltAccountManager
         private GameUpdater gameUpdater { get; set; }
 
         private UIAccounts uiAccounts;
+        private UIEAMNews uiEAMNews;
         private UIAddAccount uiAddAccounts;
         private UIModules uiModules;
         private UIOptions uiOptions;
@@ -105,6 +106,9 @@ namespace ExaltAccountManager
                 {
                     case UIState.Accounts:
                         btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_outline_white_24dp : Properties.Resources.ic_people_outline_black_24dp;
+                        break;
+                    case UIState.News:
+                        btnNews.Image = useDarkmode ? Properties.Resources.news_outline_white_24px : Properties.Resources.news_outline_black_24px;
                         break;
                     case UIState.AddAccount:
                         btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_outline_24px : Properties.Resources.add_user_outline_24px;
@@ -143,6 +147,12 @@ namespace ExaltAccountManager
                         lTitle.Text = "Accounts";
 
                         DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
+                        break;
+                    case UIState.News:
+                        btnNews.Image = useDarkmode ? Properties.Resources.news_white_24px : Properties.Resources.news_black_24px;
+                        lTitle.Text = "News";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.News);
                         break;
                     case UIState.AddAccount:
                         btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_24px : Properties.Resources.add_user_24px;
@@ -356,7 +366,7 @@ namespace ExaltAccountManager
                             {
                                 File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
                             }
-                            catch { }                            
+                            catch { }
                         }
                     }
                     catch { }
@@ -472,7 +482,7 @@ namespace ExaltAccountManager
             if (!OptionsData.analyticsOptions.OptOut)
             {
                 new AnalyticsClient(null);
-                AnalyticsClient.Instance?.StartSession(accounts.Count, GetAnalyticsClientIdHash(), version);
+                AnalyticsClient.Instance?.StartSession(accounts.Count, GetAPIClientIdHash(), version);
             }
         }
 
@@ -496,6 +506,7 @@ namespace ExaltAccountManager
             #region Button Images
 
             btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_outline_white_24dp : Properties.Resources.ic_people_outline_black_24dp;
+            btnNews.Image = useDarkmode ? Properties.Resources.news_outline_white_24px : Properties.Resources.news_outline_black_24px;
             btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_outline_24px : Properties.Resources.add_user_outline_24px;
             btnModules.Image = useDarkmode ? Properties.Resources.dashboard_layout_outline_white_24px : Properties.Resources.dashboard_layout_outline_24px;
             btnOptions.Image = useDarkmode ? Properties.Resources.settings_outline_white_24px : Properties.Resources.settings_outline_24px;
@@ -508,6 +519,9 @@ namespace ExaltAccountManager
             {
                 case UIState.Accounts:
                     btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_white_24dp : Properties.Resources.ic_people_black_24dp;
+                    break;
+                case UIState.News:
+                    btnNews.Image = useDarkmode ? Properties.Resources.news_white_24px : Properties.Resources.news_black_24px;
                     break;
                 case UIState.AddAccount:
                     btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_24px : Properties.Resources.add_user_24px;
@@ -1047,12 +1061,12 @@ namespace ExaltAccountManager
             return ret;
         }
 
-        public string GetAnalyticsClientIdHash()
+        public string GetAPIClientIdHash(bool isForAnalytics = true)
         {
-            if (OptionsData.analyticsOptions.Anonymization)
+            if (isForAnalytics && OptionsData.analyticsOptions.Anonymization)
                 return "--ANONYMIZED--";
 
-            return QuickHash(System.Security.Principal.WindowsIdentity.GetCurrent().User.Value);            
+            return QuickHash(GetDeviceUniqueIdentifier(true) + System.Security.Principal.WindowsIdentity.GetCurrent().User.Value);
         }
 
         public string GetAnalyticsEmailHash(string email) => QuickHash(email);
@@ -1104,7 +1118,7 @@ namespace ExaltAccountManager
 
             SaveAndUpdateAccounts();
 
-            if(!OptionsData.analyticsOptions.OptOut)
+            if (!OptionsData.analyticsOptions.OptOut)
             {
                 AnalyticsClient.Instance?.UpdateAmountOfAccounts(accounts.Count);
             }
@@ -1205,6 +1219,23 @@ namespace ExaltAccountManager
                 pContent.Controls.Add(uiAccounts);
 
                 uiState = UIState.Accounts;
+            }
+            lHeaderEAM.Focus();
+        }
+
+        private void btnNews_Click(object sender, EventArgs e)
+        {
+            if (uiState != UIState.News)
+            {
+                pSideBar.Top = (sender as Control).Top + 5;
+
+                if (uiEAMNews == null)
+                    uiEAMNews = new UIEAMNews(this) { Dock = DockStyle.Fill };
+
+                pContent.Controls.Clear();
+                pContent.Controls.Add(uiEAMNews);
+
+                uiState = UIState.News;
             }
             lHeaderEAM.Focus();
         }
@@ -1343,6 +1374,18 @@ namespace ExaltAccountManager
         {
             if (uiStateVal != UIState.Accounts)
                 btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_outline_white_24dp : Properties.Resources.ic_people_outline_black_24dp;
+        }
+
+        private void btnNews_MouseEnter(object sender, EventArgs e)
+        {
+            if (uiStateVal != UIState.News)
+                btnNews.Image = useDarkmode ? Properties.Resources.news_white_24px : Properties.Resources.news_black_24px;
+        }
+
+        private void btnNews_MouseLeave(object sender, EventArgs e)
+        {
+            if (uiStateVal != UIState.News)
+                btnNews.Image = useDarkmode ? Properties.Resources.news_outline_white_24px : Properties.Resources.news_outline_black_24px;
         }
 
         private void btnAddAccount_MouseEnter(object sender, EventArgs e)
@@ -1649,6 +1692,7 @@ namespace ExaltAccountManager
             ImportExport = 10,
             DailyLogin = 11,
             DailyNotifications = 12,
+            News = 13,
         }
 
         private void FrmMain_Paint(object sender, PaintEventArgs e)

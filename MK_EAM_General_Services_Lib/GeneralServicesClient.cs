@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MK_EAM_General_Services_Lib
@@ -28,26 +27,26 @@ namespace MK_EAM_General_Services_Lib
             throw new NotSupportedException("More than one instance of GeneralServicesClient detected!");
         }
 
-        public async Task<List<NewsData>> GetNews(DateTime startTime, int amount = 5)
+        public async Task<List<NewsData>> GetNews(DateTime startTime, string clientIdHash, int amount = 5)
         {
-            #region GetNews
-
-            News.Requests.GetNewsRequest req = new News.Requests.GetNewsRequest()
-            {
-                StartTime = startTime,
-                Amount = amount,
-            };
+            #region GetNews            
 
             try
             {
-                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPostRequest(BASE_URL + "v1/news", req);
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + $"v1/news?startTime={startTime}&amount={amount}&clientIdHash={clientIdHash}");
 
                 HttpResponseMessage responseMessage = await resp;
                 responseMessage.EnsureSuccessStatusCode();
                 if (responseMessage.StatusCode == HttpStatusCode.OK)
                 {
-                    GetNewsResponse gnr = JsonConvert.DeserializeObject<GetNewsResponse>(await responseMessage.Content.ReadAsStringAsync());                    
-                    return gnr.News;
+                    GetNewsResponse gnr = JsonConvert.DeserializeObject<GetNewsResponse>(await responseMessage.Content.ReadAsStringAsync(), new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.Auto
+                    });
+                    if (gnr != null && gnr.News != null)
+                    {
+                        return gnr.News;
+                    }
                 }
             }
             catch { }

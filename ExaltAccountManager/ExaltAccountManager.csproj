@@ -504,6 +504,12 @@
     <Compile Include="UI\Elements\EleDiscordSettings.Designer.cs">
       <DependentUpon>EleDiscordSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Elements\EleEAMNewsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleEAMNewsView.Designer.cs">
+      <DependentUpon>EleEAMNewsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Elements\EleEditAccount.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -569,6 +575,12 @@
     </Compile>
     <Compile Include="UI\UIDailyLogins.Designer.cs">
       <DependentUpon>UIDailyLogins.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UIEAMNews.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\UIEAMNews.Designer.cs">
+      <DependentUpon>UIEAMNews.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\UIImportExport.cs">
       <SubType>UserControl</SubType>
@@ -773,6 +785,9 @@
     <EmbeddedResource Include="UI\Elements\EleDiscordSettings.resx">
       <DependentUpon>EleDiscordSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleEAMNewsView.resx">
+      <DependentUpon>EleEAMNewsView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleEditAccount.resx">
       <DependentUpon>EleEditAccount.cs</DependentUpon>
     </EmbeddedResource>
@@ -805,6 +820,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UIDailyLogins.resx">
       <DependentUpon>UIDailyLogins.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UIEAMNews.resx">
+      <DependentUpon>UIEAMNews.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UIImportExport.resx">
       <DependentUpon>UIImportExport.cs</DependentUpon>
@@ -881,6 +899,10 @@
     <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
     <Content Include="Logo.ico" />
+    <None Include="Resources\news_white_24px.png" />
+    <None Include="Resources\news_outline_white_24px.png" />
+    <None Include="Resources\news_outline_black_24px.png" />
+    <None Include="Resources\news_black_black_18px.png" />
     <None Include="Resources\icons8_smiling_48px.png" />
     <None Include="Resources\sad_48px.png" />
     <None Include="Resources\document_white_24px.png" />
@@ -1246,6 +1268,10 @@
     <ProjectReference Include="..\MK_EAM_Discord_Lib\MK_EAM_Discord_Lib.csproj">
       <Project>{C49DC956-09E5-4CCF-A753-86ADCD5F94C7}</Project>
       <Name>MK_EAM_Discord_Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MK_EAM_General_Services_Lib\MK_EAM_General_Services_Lib.csproj">
+      <Project>{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}</Project>
+      <Name>MK_EAM_General_Services_Lib</Name>
     </ProjectReference>
     <ProjectReference Include="..\MK_EAM_Lib\MK_EAM_Lib.csproj">
       <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>

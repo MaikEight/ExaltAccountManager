@@ -300,6 +300,10 @@ namespace ExaltAccountManager
                         Discord.Details = "The better rotmg-launcher!💪";
                         SetState(discordOptions.ShowMenus ? "Selecting accounts 📁" : DEFAULT_STATE);
                         break;
+                    case Menu.News:
+                        Discord.Details = "The better rotmg-launcher!💪";
+                        SetState(discordOptions.ShowMenus ? "Reading what's up 📮" : DEFAULT_STATE);
+                        break;
                     case Menu.Settings:
                         SetState(discordOptions.ShowMenus ? "Playing with settings ⚙" : DEFAULT_STATE);
                         break;
@@ -345,6 +349,7 @@ namespace ExaltAccountManager
         public enum Menu
         {
             Accounts,
+            News,
             Settings,
             Modules,
             Updater,
@@ -354,7 +359,7 @@ namespace ExaltAccountManager
             DailyLogin,
             Logs,
             About,
-            Llama
+            Llama,
         }
     }
 }

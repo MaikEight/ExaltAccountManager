@@ -634,3 +634,7 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\Ex
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleAnalyticsSettings.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_Analytics.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_Analytics.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_General_Services_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Debug\MK_EAM_General_Services_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.Elements.EleEAMNewsView.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Debug\ExaltAccountManager.UI.UIEAMNews.resources

@@ -18,6 +18,7 @@ namespace ExaltAccountManager.UI.Elements
     public partial class EleAnalyticsSettings : UserControl
     {
         private FrmMain frm;
+        private Thread worker;
         public EleAnalyticsSettings(FrmMain _frm)
         {
             InitializeComponent();
@@ -74,7 +75,7 @@ namespace ExaltAccountManager.UI.Elements
             frm.SaveOptions(frm.OptionsData, true);
             frm.UpdateUIOptionsData();
         }
-        Thread worker;
+        
         private void btnRequestData_Click(object sender, EventArgs e)
         {
             btnRequestData.Enabled =
@@ -91,7 +92,7 @@ namespace ExaltAccountManager.UI.Elements
             worker = new Thread(new ThreadStart(async () =>
             {
 
-                var task = AnalyticsClient.Instance?.GetUserData(frm.GetAnalyticsClientIdHash());
+                var task = AnalyticsClient.Instance?.GetUserData(frm.GetAPIClientIdHash());
                 var data = await task;
                 if (data != null)
                 {
@@ -158,7 +159,7 @@ namespace ExaltAccountManager.UI.Elements
                 {
                     didDelete = true;
                     //Send Delete
-                    var task = AnalyticsClient.Instance?.DeleteUser(frm.GetAnalyticsClientIdHash());
+                    var task = AnalyticsClient.Instance?.DeleteUser(frm.GetAPIClientIdHash());
                     bool result = await task;
                     if (result)
                     {
