@@ -546,6 +546,12 @@
     <Compile Include="UI\Elements\EleImport.Designer.cs">
       <DependentUpon>EleImport.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Elements\EleNewsPoll.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleNewsPoll.Designer.cs">
+      <DependentUpon>EleNewsPoll.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Elements\EleQNA.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -569,6 +575,12 @@
     </Compile>
     <Compile Include="UI\Elements\Mini\MiniAccountDataOrderEntry.Designer.cs">
       <DependentUpon>MiniAccountDataOrderEntry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Elements\Mini\MiniNewsPollEntry.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\Mini\MiniNewsPollEntry.Designer.cs">
+      <DependentUpon>MiniNewsPollEntry.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\UIDailyLogins.cs">
       <SubType>UserControl</SubType>
@@ -806,6 +818,9 @@
     <EmbeddedResource Include="UI\Elements\EleImport.resx">
       <DependentUpon>EleImport.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleNewsPoll.resx">
+      <DependentUpon>EleNewsPoll.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleQNA.resx">
       <DependentUpon>EleQNA.cs</DependentUpon>
     </EmbeddedResource>
@@ -817,6 +832,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\Mini\MiniAccountDataOrderEntry.resx">
       <DependentUpon>MiniAccountDataOrderEntry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\Mini\MiniNewsPollEntry.resx">
+      <DependentUpon>MiniNewsPollEntry.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UIDailyLogins.resx">
       <DependentUpon>UIDailyLogins.cs</DependentUpon>

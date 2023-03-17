@@ -1,4 +1,5 @@
 ﻿using ExaltAccountManager.UI.Elements;
+using ExaltAccountManager.UI.Elements.Mini;
 using MK_EAM_Analytics;
 using MK_EAM_General_Services_Lib;
 using MK_EAM_General_Services_Lib.News.Data;
@@ -15,12 +16,14 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIEAMNews : UserControl
+    public sealed partial class UIEAMNews : UserControl
     {
         private FrmMain frm;
 
         private List<NewsData> news = new List<NewsData>();
-        private List<EleEAMNewsView> newsViews= new List<EleEAMNewsView>();
+        private List<EleEAMNewsView> newsViews = new List<EleEAMNewsView>();
+
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public UIEAMNews(FrmMain _frm)
         {
@@ -33,55 +36,90 @@ namespace ExaltAccountManager.UI
             this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
             ApplyTheme(frm, null);
 
-            FetchNews(DateTime.MinValue, frm.GetAPIClientIdHash(false), 5);
+            PollUIData pollUIData = new PollUIData()
+            {
+                Headline = "What do you think about the new polls?",
+                EntrieImageUrls = new string[]
+                {
+                    null, null, null
+                },
+                EntrieTexts = new string[]
+                {
+                    "Awesome",
+                    "Good",
+                    "Mehh",
+                },
+                PollData = new PollData()
+                {
+                    StartDate = DateTime.Now.AddDays(-1),
+                    EndDate = DateTime.Now.AddDays(3),
+                    Entries = new int[] { 5, 2, 0 },
+                    EntriesAmount = 3,
+                    Name = "Test",
+                    OwnEntry = 0,
+                    PollId = Guid.NewGuid()
+                }
+            };
 
-            //List<NewsData> data = new List<NewsData>()
-            //{
-            //    new NewsData()
-            //    {   
-            //        Id = Guid.NewGuid(),
-            //        Title = "Test",
-            //        Date = DateTime.Now,
-            //        Importance = 1,
-            //        newsEntries = new List<NewsEntry>()
-            //        {
-            //            new NewsEntry()
-            //            {
-            //                NewsId = Guid.NewGuid(),
-            //                OrderId = 0,
-            //                TypeId = 1,
-            //                UiData = new TextUIData()
-            //                {
-            //                    Text  = "Headline"
-            //                }
-            //            },
-            //            new NewsEntry()
-            //            {
-            //                NewsId = Guid.NewGuid(),
-            //                OrderId = 1,
-            //                TypeId = 100,                          
-            //                UiData = new ImageUIData()
-            //                {
-            //                    ImageUrl = "https://storage.ko-fi.com/cdn/useruploads/jpg_d9bc68fe-12db-48eb-a16c-b0af0776abb8cover.jpg?v=14bacd10-c3dc-48b6-ba95-0678b622bb76",                                
-            //                    PictureBoxSizeMode = 4,
-            //                    MaxSize = new Size(0, 200),
-            //                    MinSize = new Size(1, 1)
-            //                }
-            //            },
-            //            new NewsEntry()
-            //            {
-            //                NewsId = Guid.NewGuid(),
-            //                OrderId = 1,
-            //                TypeId = 0,
-            //                UiData = new TextUIData()
-            //                {
-            //                    Text  = "Message here"
-            //                }
-            //            }
-            //        }
-            //    }
-            //};
-            //RenderNews(data);
+            //EleNewsPoll poll = new EleNewsPoll(frm, pollUIData);
+            //flow.Controls.Add(poll);
+
+            //FetchNews(DateTime.MinValue, frm.GetAPIClientIdHash(false), 5);
+
+            List<NewsData> data = new List<NewsData>()
+            {
+                new NewsData()
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "The Exalt Account Manager news section is here 🎉",
+                    Date = DateTime.Now,
+                    Importance = 1,
+                    newsEntries = new List<NewsEntry>()
+                    {
+                        new NewsEntry()
+                        {
+                            NewsId = Guid.NewGuid(),
+                            OrderId = 1,
+                            TypeId = 1,
+                            UiData = new TextUIData()
+                            {
+                                Text  = "What are the news for?"
+                            }
+                        },
+                        new NewsEntry()
+                        {
+                            NewsId = Guid.NewGuid(),
+                            OrderId = 0,
+                            TypeId = 100,
+                            UiData = new ImageUIData()
+                            {
+                                ImageUrl = "https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/ExaltAccountManager/Resources/1.png",
+                                PictureBoxSizeMode = 4,
+                                MaxSize = new Size(0, 200),
+                                MinSize = new Size(1, 1)
+                            }
+                        },
+                        new NewsEntry()
+                        {
+                            NewsId = Guid.NewGuid(),
+                            OrderId = 2,
+                            TypeId = 0,
+                            UiData = new TextUIData()
+                            {
+                                Text  = "Finally the news section is getting into shape and it even got polls!\nThis feature allows for better and simpler collection of user-feedback aswell as broadcasting messages or news with every EAM-User."
+                            }
+                        },
+                        new NewsEntry()
+                        {                            
+                            NewsId = Guid.NewGuid(),
+                            OrderId = 3,
+                            TypeId = 200,
+                            UiData = pollUIData
+                        },                        
+                    }
+                }
+            };
+            RenderNews(data);
         }
 
         public void ApplyTheme(object sender, EventArgs e)
@@ -101,34 +139,48 @@ namespace ExaltAccountManager.UI
 
         private void RenderNews(List<NewsData> data)
         {
-            for (int i = 0; i < data.Count; i++)
+            for (int i = data.Count - 1; i >= 0 ; i--)
             {
-                EleEAMNewsView view = new EleEAMNewsView(frm, data[i]);
+                EleEAMNewsView view = new EleEAMNewsView(frm, data[i])
+                {
+                    Dock = DockStyle.Top
+                };
                 newsViews.Add(view);
-                flow.Controls.Add(view);
-                flow.SetFlowBreak(view, true);
+                pNews.Controls.Add(view);
             }
         }
 
-        private Thread worker;
         private void FetchNews(DateTime date, string clientIdHash, int amount)
-        {
-            if (worker != null)
+        {          
+            if (cancellationTokenSource != null && !cancellationTokenSource.IsCancellationRequested)
             {
-                try
-                {
-                    worker.Abort();
-                }
-                catch { }
+                cancellationTokenSource.Cancel();
             }
-            worker = new Thread(new ThreadStart(async () =>
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(10000);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object obj) =>
             {
+                CancellationToken token = (CancellationToken)obj;
                 var task = GeneralServicesClient.Instance?.GetNews(date, clientIdHash, amount);
-                List<NewsData> data = await task;
-                OnNewsFetchedInvoker(data);
-            }));
-            worker.IsBackground = true;
-            worker.Start();
+                while (!task.IsCompleted)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        OnNewsFetchedInvoker(new List<NewsData>());
+                        frm.LogEvent(new MK_EAM_Lib.LogData(
+                            "EAM News",
+                            MK_EAM_Lib.LogEventType.APIError, 
+                            "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount));
+                        
+                        return;
+                    }
+
+                    Task.Delay(50).Wait();
+                }
+                OnNewsFetchedInvoker(task.Result);
+            }), cancellationTokenSource.Token);
         }
 
         private void OnNewsFetchedInvoker(List<NewsData> data)

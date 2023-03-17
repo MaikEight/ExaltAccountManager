@@ -100,6 +100,7 @@ namespace MK_EAM_Lib
         PingInfo,
         GameUpdate,
         ServiceInfo,
-        ServiceEnd
+        ServiceEnd,
+        APIError,
     }
 }

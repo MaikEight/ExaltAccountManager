@@ -20,7 +20,7 @@ namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 0, 0);
+        public readonly Version version = new Version(3, 1, 0);
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
@@ -321,7 +321,7 @@ namespace ExaltAccountManager
             InitializeComponent();
 
             defaultMinimumsize = this.MinimumSize = new Size(this.MinimumSize.Width, 576);
-            lVersion.Text = $"EAM v{version} by Maik8";
+            lVersion.Text = $"EAM v{version} PREVIEW by Maik8";
 
             bool isNewInstall = false;
 

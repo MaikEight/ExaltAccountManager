@@ -120,9 +120,9 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="spacer.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAApEAAAAFCAYAAAAdQ7e3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAzSURBVGhD7dYxDQBADMPA8EcVZv3lCXTodieZgwMAAAAA
-        cK/tSJIkSZv+SgIAAAAAnEke8KFVKNGfH4QAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAApsAAAAFCAYAAAAKYSd+AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA0SURBVGhD7dYxDQBADMPA8EcVZv3lKXSodCeZgwMAAAAA
+        cE/bkSRJkjb6ywkAAAAAcEbyAHgfdZ5I6saVAAAAAElFTkSuQmCC
 </value>
   </data>
 </root>

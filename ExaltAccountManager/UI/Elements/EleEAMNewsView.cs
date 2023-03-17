@@ -13,7 +13,7 @@ namespace ExaltAccountManager.UI.Elements
         public NewsData NewsData { get; internal set; }
         private FrmMain frm;
         private List<Control> controls = new List<Control>();
-
+        private Dictionary<PictureBox, ImageUIData> dicPbsToImageUIData = new Dictionary<PictureBox, ImageUIData>();
         public EleEAMNewsView(FrmMain _frm, NewsData newsData)
         {
             InitializeComponent();
@@ -61,13 +61,20 @@ namespace ExaltAccountManager.UI.Elements
                             TextUIData data = (TextUIData)entry.UiData;
                             Label lbl = new Label()
                             {
+                                AutoSize = true,
                                 MaximumSize = new Size(this.Width - 20, 10000),
+                                UseMnemonic= true,                                
+                                Dock = DockStyle.Top
                             };
                             lbl.Text = data.Text;
                             controls.Add(lbl);
-                            this.Controls.Add(lbl);
-                            lbl.Location = p;
-                            p.Y = lbl.Bottom + 5;
+                            pContent.Controls.Add(lbl);
+                            lbl.BringToFront();
+
+                            Panel spacer = new Panel() { Size = new Size(1, 10), Dock = DockStyle.Top };
+                            controls.Add(spacer);
+                            pContent.Controls.Add(spacer);
+                            spacer.BringToFront();
                         }
                         break;
                     case NewsType.Headline:
@@ -75,14 +82,21 @@ namespace ExaltAccountManager.UI.Elements
                             TextUIData data = (TextUIData)entry.UiData;
                             Label lbl = new Label()
                             {
-                                MaximumSize = new Size(this.Width - 20, 1000),
-                                Font = new Font("Segoe UI", 12f, FontStyle.Bold)
+                                AutoSize = true,
+                                MaximumSize = new Size(this.Width - 20, 10000),
+                                Font = new Font("Segoe UI", 12f, FontStyle.Bold),
+                                UseMnemonic = true,
+                                Dock = DockStyle.Top
                             };
                             lbl.Text = data.Text;
                             controls.Add(lbl);
-                            this.Controls.Add(lbl);
-                            lbl.Location = p;
-                            p.Y = lbl.Bottom + 10;
+                            pContent.Controls.Add(lbl);
+                            lbl.BringToFront();
+
+                            Panel spacer = new Panel() { Size = new Size(1, 10), Dock = DockStyle.Top };
+                            controls.Add(spacer); 
+                            pContent.Controls.Add(spacer);
+                            spacer.BringToFront();
                         }
                         break;
                     case NewsType.Image:
@@ -101,21 +115,39 @@ namespace ExaltAccountManager.UI.Elements
                             {
                                 MaximumSize = max,
                                 MinimumSize = min,
-                                SizeMode = (PictureBoxSizeMode)data.PictureBoxSizeMode
+                                SizeMode = (PictureBoxSizeMode)data.PictureBoxSizeMode,
+                                Dock= DockStyle.Top,
                             };
-                            pb.Width = this.Width - 20;
+
                             pb.Load(data.ImageUrl);
                             pb.Height = pb.Image.Width > this.Width - 20 ?(int)((double)pb.Image.Height / ((double)pb.Image.Width / ((double)this.Width - 20d)) ): 0;
                             controls.Add(pb);
-                            this.Controls.Add(pb);
-                            pb.Location = p;
-                            p.Y = pb.Bottom + 5;
+                            dicPbsToImageUIData.Add(pb, data);
+                            pContent.Controls.Add(pb);
+                            pb.BringToFront();
+
+                            Panel spacer = new Panel() { Size = new Size(1, 10), Dock = DockStyle.Top };
+                            controls.Add(spacer);
+                            pContent.Controls.Add(spacer);
+                            spacer.BringToFront();
                         }
                         break;
                     case NewsType.Poll:
                         {
                             PollUIData data = (PollUIData)entry.UiData;
+                            EleNewsPoll newsPoll = new EleNewsPoll(frm, data) 
+                            {
+                                Dock = DockStyle.Top 
+                            };
 
+                            controls.Add(newsPoll);
+                            pContent.Controls.Add(newsPoll);
+                            newsPoll.BringToFront();
+
+                            Panel spacer = new Panel() { Size = new Size(1, 10), Dock = DockStyle.Top };
+                            controls.Add(spacer);
+                            pContent.Controls.Add(spacer);
+                            spacer.BringToFront();
                         }
                         break;
                     default:
@@ -123,7 +155,38 @@ namespace ExaltAccountManager.UI.Elements
                 }
             }
 
-            this.Height = p.Y + 10;
+            if (controls.Count > 0)
+            {
+                pContent.Controls.Remove(controls[controls.Count - 1]);
+                controls[controls.Count - 1].Dispose();
+                controls.RemoveAt(controls.Count - 1);
+            }
+
+            pContent.Height = controls.Max(c => c.Bottom);
+            this.Height = pContent.Bottom + this.Padding.Bottom;
+        }
+
+        private void EleEAMNewsView_SizeChanged(object sender, EventArgs e)
+        {            
+            Size maxSize = new Size(pContent.Width, 10000);
+            foreach (Label lbl in controls.OfType<Label>())
+            {
+                lbl.MaximumSize = maxSize;
+            }
+
+            foreach (PictureBox pb in controls.OfType<PictureBox>())
+            {
+                ImageUIData data = dicPbsToImageUIData[pb];
+
+                Size max = new Size(this.Width - 20, 0);
+                max.Width = data.MaxSize.Width == 0 ? max.Width : data.MaxSize.Width;
+                max.Height = data.MaxSize.Height == 0 ? max.Height : data.MaxSize.Height;
+
+                pb.MaximumSize = max;
+            }
+
+            pContent.Height = controls.Max(c => c.Bottom);
+            this.Height = pContent.Bottom + this.Padding.Bottom;
         }
     }
 }
