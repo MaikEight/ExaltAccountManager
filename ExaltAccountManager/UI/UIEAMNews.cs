@@ -64,7 +64,7 @@ namespace ExaltAccountManager.UI
             //EleNewsPoll poll = new EleNewsPoll(frm, pollUIData);
             //flow.Controls.Add(poll);
 
-            //FetchNews(DateTime.MinValue, frm.GetAPIClientIdHash(false), 5);
+            FetchNews(DateTime.MinValue, frm.GetAPIClientIdHash(false), 5);
 
             List<NewsData> data = new List<NewsData>()
             {
@@ -110,12 +110,12 @@ namespace ExaltAccountManager.UI
                             }
                         },
                         new NewsEntry()
-                        {                            
+                        {
                             NewsId = Guid.NewGuid(),
                             OrderId = 3,
                             TypeId = 200,
                             UiData = pollUIData
-                        },                        
+                        },
                     }
                 }
             };
@@ -139,7 +139,7 @@ namespace ExaltAccountManager.UI
 
         private void RenderNews(List<NewsData> data)
         {
-            for (int i = data.Count - 1; i >= 0 ; i--)
+            for (int i = data.Count - 1; i >= 0; i--)
             {
                 EleEAMNewsView view = new EleEAMNewsView(frm, data[i])
                 {
@@ -151,7 +151,7 @@ namespace ExaltAccountManager.UI
         }
 
         private void FetchNews(DateTime date, string clientIdHash, int amount)
-        {          
+        {
             if (cancellationTokenSource != null && !cancellationTokenSource.IsCancellationRequested)
             {
                 cancellationTokenSource.Cancel();
@@ -160,7 +160,7 @@ namespace ExaltAccountManager.UI
             cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(10000);
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object obj) =>
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
             {
                 CancellationToken token = (CancellationToken)obj;
                 var task = GeneralServicesClient.Instance?.GetNews(date, clientIdHash, amount);
@@ -171,15 +171,26 @@ namespace ExaltAccountManager.UI
                         OnNewsFetchedInvoker(new List<NewsData>());
                         frm.LogEvent(new MK_EAM_Lib.LogData(
                             "EAM News",
-                            MK_EAM_Lib.LogEventType.APIError, 
+                            MK_EAM_Lib.LogEventType.APIError,
                             "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount));
-                        
+
                         return;
                     }
 
-                    Task.Delay(50).Wait();
+                    await Task.Delay(50, token);
                 }
-                OnNewsFetchedInvoker(task.Result);
+                List<NewsData> result = task.Result;
+                if (result != null && result.Count > 0)
+                {
+                    OnNewsFetchedInvoker(result);
+                    return;
+                }
+
+                OnNewsFetchedInvoker(new List<NewsData>());
+                frm.LogEvent(new MK_EAM_Lib.LogData(
+                            "EAM News",
+                            MK_EAM_Lib.LogEventType.APIError,
+                            "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount));
             }), cancellationTokenSource.Token);
         }
 

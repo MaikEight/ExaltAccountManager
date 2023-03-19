@@ -55,5 +55,40 @@ namespace MK_EAM_General_Services_Lib
 
             #endregion
         }
+
+        public async Task<PollData> PostPoll(Guid pollId, int entryId, string clientIdHash)
+        {
+            #region PostPoll
+
+            MK_EAM_General_Services_Lib.News.Requests.PostNewsPollRequest req = new News.Requests.PostNewsPollRequest()
+            {
+                ClientIdHash = clientIdHash,
+                EntryId = entryId,
+                PollId = pollId
+            };
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPostRequest(BASE_URL + "/v1/news/poll", req);
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.Created)
+                {
+                    PostNewResponse pnr = JsonConvert.DeserializeObject<PostNewResponse>(await responseMessage.Content.ReadAsStringAsync());
+
+                    if (pnr != null && pnr.Success)
+                    {
+                        return pnr.PollData;
+                    }
+                    return null;
+                }
+            }
+            catch { }
+
+            return null;
+
+            #endregion
+        }
     }
 }

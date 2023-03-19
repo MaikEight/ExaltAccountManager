@@ -61,10 +61,21 @@ namespace ExaltAccountManager.UI.Elements.Mini
             pbOwnChoice.Image = frm.UseDarkmode ? Properties.Resources.Checkmark_white_28px : Properties.Resources.Checkmark_black_28px;
         }
 
+        public int GetEntryNumber() => entryNumber;
+
         public void SetReveal(bool _reveal)
         {
             pPercentage.Visible = reveal = _reveal;
 
+            this.Invalidate();
+        }
+
+        public void UpdateVotes(int votes, int totalVotes)
+        {
+            this.votes = votes;
+            this.allVotes = totalVotes;
+
+            lResults.Text = (allVotes == 0 ? 0 : (Math.Round((float)votes / (float)allVotes * 100f))) + "%";
             this.Invalidate();
         }
 

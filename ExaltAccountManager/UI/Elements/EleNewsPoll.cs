@@ -88,7 +88,32 @@ namespace ExaltAccountManager.UI.Elements
 
             entry.IsOwnVote = true;
 
-            //TODO: Send Vote to Server
+            MK_EAM_General_Services_Lib.GeneralServicesClient.Instance.PostPoll(
+                pollUIData.PollData.PollId,
+                entry.GetEntryNumber(),
+                frm.GetAPIClientIdHash());
+        }
+
+
+        private void UpdateEntryDataInvoker(PollData data)
+        {
+            UpdateEntryData(data);
+        }
+
+        private bool UpdateEntryData(PollData data)
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<PollData, bool>)UpdateEntryData, data);
+
+            int totalVotes = data.Entries.Sum();
+
+            pollEntries.ForEach((entry) =>
+            {
+                if (data.Entries.Length > entry.GetEntryNumber())
+                    entry.UpdateVotes(data.Entries[entry.GetEntryNumber()], totalVotes);
+            });
+
+            return false;
         }
 
         private void EleNewsPoll_SizeChanged(object sender, EventArgs e)
