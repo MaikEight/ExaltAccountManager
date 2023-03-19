@@ -17,6 +17,7 @@ namespace ExaltAccountManager.UI.Elements
         private FrmMain frm;
         private PollUIData pollUIData;
         private List<MiniNewsPollEntry> pollEntries = new List<MiniNewsPollEntry>();
+        private bool revealed = false;
 
         public EleNewsPoll(FrmMain _frm, PollUIData _pollUIData)
         {
@@ -29,7 +30,6 @@ namespace ExaltAccountManager.UI.Elements
 
             LoadUI();
 
-            Console.WriteLine("### EleNewsPoll UI Done");
             frm.ThemeChanged += ApplyTheme;
             this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
             ApplyTheme(frm, null);
@@ -50,6 +50,8 @@ namespace ExaltAccountManager.UI.Elements
         private void LoadUI()
         {
             int allVotes = pollUIData.PollData.Entries.Sum();
+            revealed = pollUIData.PollData.OwnEntry >= 0;
+
             for (int i = pollUIData.PollData.Entries.Length - 1; i >= 0; i--)
             {
                 MiniNewsPollEntry entry = new MiniNewsPollEntry(
@@ -59,16 +61,34 @@ namespace ExaltAccountManager.UI.Elements
                     allVotes,
                     pollUIData.PollData.OwnEntry == i,
                     pollUIData.EntrieTexts[i],
-                    pollUIData.PollData.OwnEntry >= 0)
+                    revealed)
                 {
                     Dock = DockStyle.Top
                 };
+
+                entry.OnClick += Entry_OnClick;
+                entry.Disposed -= Entry_OnClick;
 
                 pollEntries.Add(entry);
                 pContent.Controls.Add(entry);
             }
 
             this.Height = pContent.Top + pollEntries.Max(entry => entry.Bottom) + this.Padding.Bottom;
+        }
+
+        private void Entry_OnClick(object sender, EventArgs e)
+        {
+            MiniNewsPollEntry entry = (MiniNewsPollEntry)sender;
+            if (entry.IsOwnVote)
+                return;
+
+            revealed = true;
+
+            pollEntries.ForEach(en => { en.IsOwnVote = false; en.SetReveal(revealed); });
+
+            entry.IsOwnVote = true;
+
+            //TODO: Send Vote to Server
         }
 
         private void EleNewsPoll_SizeChanged(object sender, EventArgs e)

@@ -56,7 +56,7 @@ namespace ExaltAccountManager.UI
                     Entries = new int[] { 5, 2, 0 },
                     EntriesAmount = 3,
                     Name = "Test",
-                    OwnEntry = 0,
+                    OwnEntry = -1,
                     PollId = Guid.NewGuid()
                 }
             };

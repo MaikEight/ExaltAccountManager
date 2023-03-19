@@ -533,6 +533,26 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Checkmark_black_28px {
+            get {
+                object obj = ResourceManager.GetObject("Checkmark_black_28px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Checkmark_white_28px {
+            get {
+                object obj = ResourceManager.GetObject("Checkmark_white_28px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap dashboard_layout_24px {
             get {
                 object obj = ResourceManager.GetObject("dashboard_layout_24px", resourceCulture);

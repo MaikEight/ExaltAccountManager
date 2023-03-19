@@ -17,7 +17,16 @@ namespace ExaltAccountManager.UI.Elements.Mini
         private int entryNumber = -1;
         private int votes = 0;
         private int allVotes = 0;
+        public bool IsOwnVote
+        {
+            get => isOwnVote;
+            set
+            {
+                isOwnVote = pbOwnChoice.Visible = value;
+            }
+        }
         private bool isOwnVote = false;
+
         private string entryText = "";
         private bool reveal = false;
         public event EventHandler OnClick;
@@ -29,7 +38,7 @@ namespace ExaltAccountManager.UI.Elements.Mini
             this.entryNumber = _entryNumber;
             this.votes = _votes;
             this.allVotes = allVotes;
-            this.isOwnVote = isOwnVote;
+            this.IsOwnVote = isOwnVote;
             this.entryText = entryText;
             this.reveal = _reveal;
 
@@ -37,7 +46,7 @@ namespace ExaltAccountManager.UI.Elements.Mini
 
             lChoice.Text = entryText;
             lResults.Text = (allVotes == 0 ? 0 : (Math.Round((float)votes / (float)allVotes * 100f))) + "%";
-            radioOwnChoice.Visible = isOwnVote;
+            pbOwnChoice.Visible = isOwnVote;
 
             frm.ThemeChanged += ApplyTheme;
             this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
@@ -48,6 +57,8 @@ namespace ExaltAccountManager.UI.Elements.Mini
         {
             this.BackColor = ColorScheme.GetColorDef(frm.UseDarkmode);
             this.ForeColor = ColorScheme.GetColorFont(frm.UseDarkmode);
+
+            pbOwnChoice.Image = frm.UseDarkmode ? Properties.Resources.Checkmark_white_28px : Properties.Resources.Checkmark_black_28px;
         }
 
         public void SetReveal(bool _reveal)
@@ -55,11 +66,6 @@ namespace ExaltAccountManager.UI.Elements.Mini
             pPercentage.Visible = reveal = _reveal;
 
             this.Invalidate();
-        }
-
-        public void SetOwnVote(bool _isOwnVote)
-        {
-            radioOwnChoice.Visible = isOwnVote = _isOwnVote;
         }
 
         private void MiniNewsPollEntry_Paint(object sender, PaintEventArgs e)
@@ -70,8 +76,8 @@ namespace ExaltAccountManager.UI.Elements.Mini
             //Draw border
             using (Pen p = new System.Drawing.Pen(ColorScheme.GetColorSecond(frm.UseDarkmode), 1))
             {
-                var lines = entryNumber == 0 ? 
-                new Point[] 
+                var lines = entryNumber == 0 ?
+                new Point[]
                 {
                         new Point(0, 0),
                         new Point(0, this.Height - 1),

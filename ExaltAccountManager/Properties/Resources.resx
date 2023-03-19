@@ -127,6 +127,9 @@
   <data name="dashboard_layout_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\dashboard_layout_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icons8_smiling_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons8_smiling_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ic_search_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_search_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -141,6 +144,9 @@
   </data>
   <data name="ic_add_to_photos_white_48dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_add_to_photos_white_48dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="outline_edit_white_36dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\outline_edit_white_36dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_assessment_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_assessment_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -256,9 +262,6 @@
   <data name="ic_help_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_help_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="UI_Icon_SocialDiscord" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\UI_Icon_SocialDiscord.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="server_white_18px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\server_white_18px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -279,6 +282,9 @@
   </data>
   <data name="available_updates_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\available_updates_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="news_outline_black_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\news_outline_black_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_rotate_right_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_rotate_right_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -409,6 +415,9 @@
   <data name="search_client_24px_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\search_client_24px_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="news_outline_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\news_outline_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="todo_list_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\todo_list_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -424,8 +433,8 @@
   <data name="ic_visibility_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_visibility_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Snackbar_MiddleRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Snackbar_MiddleRight.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="fingerprint_white_15px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\fingerprint_white_15px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_info_white_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_info_white_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -441,9 +450,6 @@
   </data>
   <data name="bmac2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bmac2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="notification_Outline_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\notification_Outline_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_do_not_disturb_black_36dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_do_not_disturb_black_36dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -499,6 +505,9 @@
   <data name="ic_import_export_white_48dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_import_export_white_48dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ic_delete_forever_black_48dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_delete_forever_black_48dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ic_email_black_48dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_email_black_48dp1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -508,14 +517,14 @@
   <data name="ic_menu_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_menu_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="news_black_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\news_black_black_18px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="alphabetical_sorting_za_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\alphabetical_sorting_za_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_not_interested_white_18dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_not_interested_white_18dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fingerprint_white_15px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fingerprint_white_15px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_code_black_36dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_code_black_36dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -546,6 +555,9 @@
   </data>
   <data name="png_white_32px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\png_white_32px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_build_white_18dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_build_white_18dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="add_outline_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\add_outline_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -703,6 +715,9 @@
   <data name="Snackbar_MiddleLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Snackbar_MiddleLeft.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="news_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\news_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="below_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\below_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -778,8 +793,8 @@
   <data name="bmc2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bmc2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ic_email_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_email_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="UI_Icon_SocialDiscord" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UI_Icon_SocialDiscord.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Snackbar_MiddleLeft_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Snackbar_MiddleLeft_white.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -847,8 +862,8 @@
   <data name="ic_filter_list_black_36dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_filter_list_black_36dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ic_build_white_18dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_build_white_18dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Snackbar_MiddleRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Snackbar_MiddleRight.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_delete_forever_white_36dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_delete_forever_white_36dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -946,8 +961,8 @@
   <data name="outline_sync_problem_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\outline_sync_problem_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ic_delete_forever_black_48dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_delete_forever_black_48dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ic_email_black_24dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_email_black_24dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_fingerprint_white_48dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_fingerprint_white_48dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1042,8 +1057,8 @@
   <data name="OutlinePlay_36px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\OutlinePlay_36px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="outline_edit_white_36dp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\outline_edit_white_36dp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="notification_Outline_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\notification_Outline_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="list_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\list_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1120,19 +1135,10 @@
   <data name="new_Outline_black_18px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\new_Outline_black_18px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8_smiling_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons8_smiling_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Checkmark_white_28px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Checkmark_white_28px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="news_black_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\news_black_black_18px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="news_outline_black_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\news_outline_black_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="news_outline_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\news_outline_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="news_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\news_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Checkmark_black_28px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Checkmark_black_28px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
