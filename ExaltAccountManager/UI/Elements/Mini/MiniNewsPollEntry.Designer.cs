@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lChoice = new System.Windows.Forms.Label();
             this.pPercentage = new System.Windows.Forms.Panel();
-            this.lResults = new System.Windows.Forms.Label();
             this.pbOwnChoice = new System.Windows.Forms.PictureBox();
+            this.lResults = new System.Windows.Forms.Label();
+            this.timerAnimation = new System.Windows.Forms.Timer(this.components);
             this.pPercentage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbOwnChoice)).BeginInit();
             this.SuspendLayout();
@@ -67,6 +69,21 @@
             this.pPercentage.MouseEnter += new System.EventHandler(this.MiniNewsPollEntry_MouseEnter);
             this.pPercentage.MouseLeave += new System.EventHandler(this.MiniNewsPollEntry_MouseLeave);
             // 
+            // pbOwnChoice
+            // 
+            this.pbOwnChoice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbOwnChoice.Image = global::ExaltAccountManager.Properties.Resources.Checkmark_black_28px;
+            this.pbOwnChoice.Location = new System.Drawing.Point(9, 9);
+            this.pbOwnChoice.Name = "pbOwnChoice";
+            this.pbOwnChoice.Size = new System.Drawing.Size(28, 28);
+            this.pbOwnChoice.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbOwnChoice.TabIndex = 29;
+            this.pbOwnChoice.TabStop = false;
+            this.pbOwnChoice.Visible = false;
+            this.pbOwnChoice.Click += new System.EventHandler(this.MiniNewsPollEntry_Click);
+            this.pbOwnChoice.MouseEnter += new System.EventHandler(this.MiniNewsPollEntry_MouseEnter);
+            this.pbOwnChoice.MouseLeave += new System.EventHandler(this.MiniNewsPollEntry_MouseLeave);
+            // 
             // lResults
             // 
             this.lResults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -81,17 +98,10 @@
             this.lResults.MouseEnter += new System.EventHandler(this.MiniNewsPollEntry_MouseEnter);
             this.lResults.MouseLeave += new System.EventHandler(this.MiniNewsPollEntry_MouseLeave);
             // 
-            // pbOwnChoice
+            // timerAnimation
             // 
-            this.pbOwnChoice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbOwnChoice.Image = global::ExaltAccountManager.Properties.Resources.Checkmark_black_28px;
-            this.pbOwnChoice.Location = new System.Drawing.Point(9, 9);
-            this.pbOwnChoice.Name = "pbOwnChoice";
-            this.pbOwnChoice.Size = new System.Drawing.Size(28, 28);
-            this.pbOwnChoice.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbOwnChoice.TabIndex = 29;
-            this.pbOwnChoice.TabStop = false;
-            this.pbOwnChoice.Visible = false;
+            this.timerAnimation.Interval = 25;
+            this.timerAnimation.Tick += new System.EventHandler(this.timerAnimation_Tick);
             // 
             // MiniNewsPollEntry
             // 
@@ -121,5 +131,6 @@
         private System.Windows.Forms.Panel pPercentage;
         private System.Windows.Forms.Label lResults;
         private System.Windows.Forms.PictureBox pbOwnChoice;
+        private System.Windows.Forms.Timer timerAnimation;
     }
 }

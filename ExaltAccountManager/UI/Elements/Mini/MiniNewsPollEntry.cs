@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Utilities.BunifuButton.Transitions;
 
 namespace ExaltAccountManager.UI.Elements.Mini
 {
@@ -29,6 +30,11 @@ namespace ExaltAccountManager.UI.Elements.Mini
 
         private string entryText = "";
         private bool reveal = false;
+        private bool isFirstRevealed = false;
+        private DateTime animationEndTime = DateTime.MinValue;
+        private DateTime animationStartTime = DateTime.MinValue;
+        private int msAnimationDuration = 500;
+
         public event EventHandler OnClick;
         public MiniNewsPollEntry(FrmMain _frm, int _entryNumber, int _votes, int allVotes, bool isOwnVote, string entryText, bool _reveal)
         {
@@ -65,8 +71,15 @@ namespace ExaltAccountManager.UI.Elements.Mini
 
         public void SetReveal(bool _reveal)
         {
-            pPercentage.Visible = reveal = _reveal;
+            if (_reveal && !isFirstRevealed)
+            {
+                animationStartTime = DateTime.Now;
+                animationEndTime = DateTime.Now.AddMilliseconds(msAnimationDuration);
+                //currentFrame = 0;
+                timerAnimation.Start();
+            }
 
+            pPercentage.Visible = reveal = _reveal;
             this.Invalidate();
         }
 
@@ -82,10 +95,26 @@ namespace ExaltAccountManager.UI.Elements.Mini
         private void MiniNewsPollEntry_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            DrawResultbar(e.Graphics, (float)votes / (float)allVotes * 100f);
+            float percentage = (float)votes / (float)allVotes * 100f;
+            if (reveal && !isFirstRevealed)
+            {
+                if (DateTime.Now < animationEndTime)
+                {
+                    TimeSpan totalTimespan = animationEndTime - animationStartTime;
+                    TimeSpan elapsedTimespan = DateTime.Now - animationStartTime;
+
+                    float elapsedPercentage = (float)elapsedTimespan.TotalMilliseconds / (float)totalTimespan.TotalMilliseconds;
+                    percentage = elapsedPercentage * percentage;                 
+                }
+                else
+                {
+                    isFirstRevealed = true;
+                }
+            }
+            DrawResultbar(e.Graphics, percentage);
 
             //Draw border
-            using (Pen p = new System.Drawing.Pen(ColorScheme.GetColorSecond(frm.UseDarkmode), 1))
+            using (Pen p = new System.Drawing.Pen(frm.UseDarkmode ? ColorScheme.GetColorSecond(frm.UseDarkmode) : ColorScheme.GetColorThird(frm.UseDarkmode), 1))
             {
                 var lines = entryNumber == 0 ?
                 new Point[]
@@ -134,6 +163,16 @@ namespace ExaltAccountManager.UI.Elements.Mini
         private void MiniNewsPollEntry_Click(object sender, EventArgs e)
         {
             OnClick?.Invoke(this, e);
+        }
+
+        private void timerAnimation_Tick(object sender, EventArgs e)
+        {
+            this.Invalidate();
+            if (!isFirstRevealed)
+            {
+                return;
+            }
+            timerAnimation.Stop();
         }
     }
 }

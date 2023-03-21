@@ -69,11 +69,11 @@ namespace MK_EAM_General_Services_Lib
 
             try
             {
-                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPostRequest(BASE_URL + "/v1/news/poll", req);
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPostRequest(BASE_URL + "v1/news/poll", req);
 
                 HttpResponseMessage responseMessage = await resp;
                 responseMessage.EnsureSuccessStatusCode();
-                if (responseMessage.StatusCode == HttpStatusCode.Created)
+                if (responseMessage.StatusCode == HttpStatusCode.Accepted)
                 {
                     PostNewResponse pnr = JsonConvert.DeserializeObject<PostNewResponse>(await responseMessage.Content.ReadAsStringAsync());
 

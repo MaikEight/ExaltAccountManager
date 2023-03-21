@@ -70,7 +70,7 @@
             this.Controls.Add(this.pSpacer);
             this.Controls.Add(this.lQuestion);
             this.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "EleNewsPoll";
             this.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.Size = new System.Drawing.Size(471, 250);

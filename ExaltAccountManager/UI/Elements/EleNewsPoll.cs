@@ -1,4 +1,5 @@
 ﻿using ExaltAccountManager.UI.Elements.Mini;
+using MK_EAM_General_Services_Lib;
 using MK_EAM_General_Services_Lib.News.Data;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,6 +20,7 @@ namespace ExaltAccountManager.UI.Elements
         private PollUIData pollUIData;
         private List<MiniNewsPollEntry> pollEntries = new List<MiniNewsPollEntry>();
         private bool revealed = false;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public EleNewsPoll(FrmMain _frm, PollUIData _pollUIData)
         {
@@ -88,15 +91,76 @@ namespace ExaltAccountManager.UI.Elements
 
             entry.IsOwnVote = true;
 
-            MK_EAM_General_Services_Lib.GeneralServicesClient.Instance.PostPoll(
-                pollUIData.PollData.PollId,
-                entry.GetEntryNumber(),
-                frm.GetAPIClientIdHash());
-        }
+            if (cancellationTokenSource != null && !cancellationTokenSource.IsCancellationRequested)
+            {
+                cancellationTokenSource.Cancel();
+            }
 
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(7500);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+                try
+                {
+                    Task<PollData> task = GeneralServicesClient.Instance?.PostPoll(
+                            pollUIData.PollData.PollId,
+                            entry.GetEntryNumber(),
+                            frm.GetAPIClientIdHash());
+
+                    while (!task.IsCompleted)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            UpdateEntryDataInvoker(new PollData()
+                            {
+                                PollId = Guid.Empty
+                            });
+
+                            frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM News Poll",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to vote for poll: data: " + pollUIData?.PollData?.PollId));
+
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
+                    }
+
+                    PollData result = task.Result;
+                    if (result != null && result.PollId != Guid.Empty)
+                    {
+                        UpdateEntryDataInvoker(result);
+                        return;
+                    }
+
+                    UpdateEntryDataInvoker(new PollData()
+                    {
+                        PollId = Guid.Empty
+                    });
+
+                    frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM News Poll",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to vote for poll: data: " + pollUIData?.PollData?.PollId));
+                }
+                catch (Exception ex)
+                {
+                    frm.LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM News Poll",
+                               MK_EAM_Lib.LogEventType.APIError,
+                               "Failed to vote for poll: data: " + pollUIData?.PollData?.PollId + Environment.NewLine + "Exception: " + ex.Message));
+                }
+            }), cancellationTokenSource.Token);
+        }
 
         private void UpdateEntryDataInvoker(PollData data)
         {
+            if (data == null || data.Entries == null || data.Entries.Length == 0)
+                return;
+
             UpdateEntryData(data);
         }
 

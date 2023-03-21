@@ -158,39 +158,49 @@ namespace ExaltAccountManager.UI
             }
 
             cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(10000);
+            cancellationTokenSource.CancelAfter(7500);
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
             {
                 CancellationToken token = (CancellationToken)obj;
-                var task = GeneralServicesClient.Instance?.GetNews(date, clientIdHash, amount);
-                while (!task.IsCompleted)
+                try
                 {
-                    if (token.IsCancellationRequested)
+                    var task = GeneralServicesClient.Instance?.GetNews(date, clientIdHash, amount);
+                    while (!task.IsCompleted)
                     {
-                        OnNewsFetchedInvoker(new List<NewsData>());
-                        frm.LogEvent(new MK_EAM_Lib.LogData(
-                            "EAM News",
-                            MK_EAM_Lib.LogEventType.APIError,
-                            "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount));
+                        if (token.IsCancellationRequested)
+                        {
+                            OnNewsFetchedInvoker(new List<NewsData>());
+                            frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM News",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount));
 
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
+                    }
+                    List<NewsData> result = task.Result;
+                    if (result != null && result.Count > 0)
+                    {
+                        OnNewsFetchedInvoker(result);
                         return;
                     }
 
-                    await Task.Delay(50, token);
+                    OnNewsFetchedInvoker(new List<NewsData>());
+                    frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM News",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount));
                 }
-                List<NewsData> result = task.Result;
-                if (result != null && result.Count > 0)
+                catch (Exception ex)
                 {
-                    OnNewsFetchedInvoker(result);
-                    return;
+                    frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM News",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount + Environment.NewLine + "Exception: " + ex.Message));
                 }
-
-                OnNewsFetchedInvoker(new List<NewsData>());
-                frm.LogEvent(new MK_EAM_Lib.LogData(
-                            "EAM News",
-                            MK_EAM_Lib.LogEventType.APIError,
-                            "Failed to fetch news: data: " + date.ToString("dd.MM.yyyy") + ", amount: " + amount));
             }), cancellationTokenSource.Token);
         }
 
