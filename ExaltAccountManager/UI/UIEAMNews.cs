@@ -1,15 +1,9 @@
 ﻿using ExaltAccountManager.UI.Elements;
-using ExaltAccountManager.UI.Elements.Mini;
-using MK_EAM_Analytics;
 using MK_EAM_General_Services_Lib;
 using MK_EAM_General_Services_Lib.News.Data;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,7 +24,7 @@ namespace ExaltAccountManager.UI
             InitializeComponent();
             frm = _frm;
 
-            _ = new GeneralServicesClient("https://localhost:7066/");
+            _ = new GeneralServicesClient(frm.API_BASE_URL);
 
             frm.ThemeChanged += ApplyTheme;
             this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;

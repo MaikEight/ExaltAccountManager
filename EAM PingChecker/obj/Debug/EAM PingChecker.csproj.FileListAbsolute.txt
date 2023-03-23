@@ -250,3 +250,5 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM_Updater_Lib.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM_Analytics.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM_Updater_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM_General_Services_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Debug\MK_EAM_General_Services_Lib.pdb

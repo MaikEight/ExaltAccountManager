@@ -103,7 +103,6 @@ namespace EAM_Statistics
 
         #endregion
 
-
         public FrmMain()
         {
             InitializeComponent();
@@ -207,7 +206,25 @@ namespace EAM_Statistics
         {
             try
             {
-                foreach (string f in Directory.GetFiles(accountStatsPath))
+                string[] filePaths = Directory.GetFiles(accountStatsPath);
+
+                string[] filePathsWithExposedEmails = filePaths.Where(fn => fn.EndsWith(".EAMstats")).ToArray();
+
+                for (int i = 0; i < filePathsWithExposedEmails.Length; i++)
+                {
+                    try
+                    {
+                        string pathWithObfuscatedFilename = Path.Combine(Path.GetDirectoryName(filePathsWithExposedEmails[i]), MK_EAM_Lib.AccountInfo.GetAccountStatsFilenameObfuscated(Path.GetFileName(filePathsWithExposedEmails[i])));
+
+                        RenameFile(filePathsWithExposedEmails[i], pathWithObfuscatedFilename);
+
+                        if (File.Exists(pathWithObfuscatedFilename))                        
+                            File.Delete(filePathsWithExposedEmails[i]);                        
+                    }
+                    catch { }
+                }
+
+                foreach (string f in Directory.GetFiles(accountStatsPath).Where(fn => !fn.EndsWith(".EAMstats")).ToArray())
                 {
                     try
                     {
@@ -220,6 +237,12 @@ namespace EAM_Statistics
             catch
             {
                 LogEvent(new LogData(-1, "EAM Stats", LogEventType.StatsError, $"Failed to load data."));
+            }
+
+            void RenameFile(string filePath, string newName)
+            {
+                if (!File.Exists(newName))
+                    File.Move(filePath, newName);
             }
         }
 

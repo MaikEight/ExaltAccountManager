@@ -217,3 +217,5 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\Di
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\DiscordRPC.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\obj\Release\EAM Tasktray Tool.csproj.SuggestedBindingRedirects.cache
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_General_Services_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Tasktray Tool\bin\Release\MK_EAM_General_Services_Lib.pdb

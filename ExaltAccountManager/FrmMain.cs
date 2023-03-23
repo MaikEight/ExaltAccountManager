@@ -80,6 +80,7 @@ namespace ExaltAccountManager
         }
         private OptionsData optionsDataValue = new OptionsData();
         public NotificationOptions notOpt = new NotificationOptions();
+        public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
         private GameUpdater gameUpdater { get; set; }
 
@@ -265,12 +266,6 @@ namespace ExaltAccountManager
 
         #endregion
 
-        #region Flags
-
-        public bool screenshotMode = false;
-
-        #endregion
-
         private string linkUpdate = string.Empty;
 
         #region Borderless Form Minimize On Taskbar Icon Click
@@ -325,8 +320,6 @@ namespace ExaltAccountManager
 
             bool isNewInstall = false;
 
-            LoadFlags();
-
             if (!Directory.Exists(saveFilePath))
             {
                 Directory.CreateDirectory(saveFilePath);
@@ -334,6 +327,12 @@ namespace ExaltAccountManager
             }
 
             isNewInstall = (isNewInstall || (!File.Exists(accountsPath) && !File.Exists(optionsPath)));
+
+            try
+            {
+                API_BASE_URL = File.ReadAllText(Path.Combine(Application.StartupPath, "MK_EAM_API_DATA"));
+            }
+            catch { API_BASE_URL = "https://api.exalt-account-manager.eu/"; }
 
             if (!isNewInstall)
             {
@@ -481,7 +480,7 @@ namespace ExaltAccountManager
 
             if (!OptionsData.analyticsOptions.OptOut)
             {
-                new AnalyticsClient(null);
+                new AnalyticsClient(API_BASE_URL + "v1/Analytics");
                 AnalyticsClient.Instance?.StartSession(accounts.Count, GetAPIClientIdHash(), version);
             }
         }
@@ -737,37 +736,6 @@ namespace ExaltAccountManager
 
             return false;
         }
-
-        #region Load Flags
-
-        private void LoadFlags()
-        {
-
-            for (int i = 0; i < flagPaths.Length; i++)
-            {
-                try
-                {
-                    if (File.Exists(flagPaths[i]))
-                    {
-                        switch (i)
-                        {
-                            case 0: //Screenshot Mode
-                                screenshotMode = true;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-                catch
-                {
-                    LogEvent(new LogData(-1, "EAM", LogEventType.EAMError, $"Failed to load flags."));
-                }
-            }
-
-        }
-
-        #endregion
 
         #region LoadServerData
 

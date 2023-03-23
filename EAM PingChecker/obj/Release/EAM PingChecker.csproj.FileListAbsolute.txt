@@ -248,3 +248,5 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_E
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\DiscordRPC.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\DiscordRPC.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_EAM_General_Services_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM PingChecker\bin\Release\MK_EAM_General_Services_Lib.pdb

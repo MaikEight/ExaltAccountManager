@@ -342,8 +342,9 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.UI.Elements.EleAnalyticsSettings.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.UI.Elements.EleDiscordSettings.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.UI.Elements.EleGameUpdateAndNotifications.resources
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\ExaltAccountManager.exe.manifest
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\ExaltAccountManager.application
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.TrustInfo.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.exe.manifest
-C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.application
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\MK_EAM_General_Services_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\MK_EAM_General_Services_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.UI.Elements.EleEAMNewsView.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.UI.Elements.EleNewsPoll.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.UI.Elements.Mini.MiniNewsPollEntry.resources
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.UI.UIEAMNews.resources

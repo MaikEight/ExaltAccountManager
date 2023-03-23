@@ -13,7 +13,7 @@ namespace MK_EAM_General_Services_Lib
     {
         public static GeneralServicesClient Instance { get; private set; }
 
-        public string BASE_URL { get; private set; } = "https://localhost:5001/"; //https://api.exalt-account-manager.eu:44322/
+        public string BASE_URL { get; private set; } = "https://localhost:5001/";
 
         public GeneralServicesClient(string baseUrl)
         {

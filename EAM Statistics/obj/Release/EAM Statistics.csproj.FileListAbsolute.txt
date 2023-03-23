@@ -272,3 +272,5 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Disco
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\DiscordRPC.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.SuggestedBindingRedirects.cache
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_General_Services_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_General_Services_Lib.pdb

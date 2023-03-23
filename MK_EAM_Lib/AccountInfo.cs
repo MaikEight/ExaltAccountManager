@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace MK_EAM_Lib
 {
@@ -69,7 +70,7 @@ namespace MK_EAM_Lib
 
         [Browsable(false)]
         public bool requestSuccessfull = true;
-        
+
         [Browsable(false)]
         public RequestState requestState { get; set; } = RequestState.None;
 
@@ -285,24 +286,39 @@ namespace MK_EAM_Lib
                 CharListStats s = GetCharacterStatsFromRequest(LogEvent, logSender, charList);
 
                 StatsMain main = new StatsMain();
-                string path = Path.Combine(accountStatsPath, fileName);
-                if (File.Exists(path))
+                string pathWithExposedMail = Path.Combine(accountStatsPath, fileName);
+                string pathObfucated = Path.Combine(accountStatsPath, GetAccountStatsFilenameObfuscated(fileName));
+
+                if (File.Exists(pathObfucated))
                 {
                     try
                     {
-                        main = (StatsMain)ByteArrayToObject(File.ReadAllBytes(path));
+                        main = (StatsMain)ByteArrayToObject(File.ReadAllBytes(pathObfucated));
                     }
                     catch { main.email = email; }
                 }
                 else
                 {
-                    main.email = email;
+                    if (File.Exists(pathWithExposedMail))
+                    {
+                        try
+                        {
+                            main = (StatsMain)ByteArrayToObject(File.ReadAllBytes(pathWithExposedMail));
+                            File.WriteAllBytes(pathObfucated, ObjectToByteArray(main));
+                            File.Delete(pathWithExposedMail);
+                        }
+                        catch { main.email = email; }
+                    }
+                    else
+                    {
+                        main.email = email;
+                    }
                 }
 
                 main.stats.Add(stats);
                 main.charList.Add(s);
 
-                File.WriteAllBytes(path, ObjectToByteArray(main));
+                File.WriteAllBytes(pathWithExposedMail, ObjectToByteArray(main));
             }
             catch
             {
@@ -387,7 +403,7 @@ namespace MK_EAM_Lib
             }
             catch { }
             return string.Empty;
-        }
+        }        
 
         public enum RequestState
         {
@@ -414,6 +430,26 @@ namespace MK_EAM_Lib
                 default:
                     return "Error";
             }
+        }
+
+        public static string GetAccountStatsFilenameObfuscated(string filename)
+        {
+            try
+            {
+                return Convert.ToBase64String(Encoding.UTF8.GetBytes(filename)).Replace('/', '-');
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        public static string DeobfuscateAccountStatsFilename(string filename)
+        {
+            try
+            {
+                return Encoding.UTF8.GetString(Convert.FromBase64String(filename.Replace('-', '/')));
+            }
+            catch { }
+            return string.Empty;
         }
     }
 }

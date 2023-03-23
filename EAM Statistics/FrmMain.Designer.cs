@@ -56,7 +56,6 @@ namespace EAM_Statistics
             this.bunifuDragControlPbHeader = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.bunifuDragControlLEAMHead = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.bunifuDragControlLHeaderStatistics = new Bunifu.Framework.UI.BunifuDragControl(this.components);
-            this.bunifuElipseFrm = new Bunifu.Framework.UI.BunifuElipse(this.components);
             this.pMain = new System.Windows.Forms.Panel();
             this.bunifuDragControlLTitle = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.pSide.SuspendLayout();
@@ -389,11 +388,6 @@ namespace EAM_Statistics
             this.bunifuDragControlLHeaderStatistics.TargetControl = this.lHeaderStatistics;
             this.bunifuDragControlLHeaderStatistics.Vertical = true;
             // 
-            // bunifuElipseFrm
-            // 
-            this.bunifuElipseFrm.ElipseRadius = 5;
-            this.bunifuElipseFrm.TargetControl = this;
-            // 
             // pMain
             // 
             this.pMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -458,7 +452,6 @@ namespace EAM_Statistics
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControlPbHeader;
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControlLEAMHead;
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControlLHeaderStatistics;
-        private Bunifu.Framework.UI.BunifuElipse bunifuElipseFrm;
         private System.Windows.Forms.Panel pMain;
         private System.Windows.Forms.Button btnDashboard;
         private System.Windows.Forms.Panel pSpacer;

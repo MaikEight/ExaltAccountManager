@@ -19,7 +19,7 @@ namespace MK_EAM_Analytics
 
         public Guid SessionId { get; private set; } = Guid.Parse("45414D00-0000-0000-0000-004D61696B38");
         public bool NewVersionAvailable { get; private set; }
-        public string BASE_URL { get; private set; } = "https://localhost:7066/v1/Analytics"; //https://api.exalt-account-manager.eu:44322/v1/Analytics
+        public string BASE_URL { get; private set; } = "https://localhost:7066/v1/Analytics";
 
         public AnalyticsClient(string baseUrl)
         {
