@@ -11,6 +11,7 @@ namespace ExaltAccountManager.UI.Elements
         private FrmMain frm;
         private MK_EAM_Lib.AccountInfo accountInfo;
         private bool showInVP = false;
+        private bool passwordShownState = false;
 
         public EleEditAccount(FrmMain _frm, MK_EAM_Lib.AccountInfo info, bool _showInVP)
         {
@@ -20,6 +21,7 @@ namespace ExaltAccountManager.UI.Elements
             frm.ThemeChanged += ApplyTheme;
             accountInfo = info;
             showInVP = _showInVP;
+            tbPassword.OnIconRightClick += tbPassword_OnIconRightClick;
 
             LoadServers();
 
@@ -180,5 +182,22 @@ namespace ExaltAccountManager.UI.Elements
         private void pbClose_MouseDown(object sender, MouseEventArgs e) => pbClose.BackColor = Color.Red;
 
         #endregion
+
+        private void tbPassword_OnIconRightClick(object sender, EventArgs e)
+        {
+            passwordShownState = !passwordShownState;
+
+            if (passwordShownState)
+            {
+                tbPassword.IconRight = frm.UseDarkmode ? Properties.Resources.ic_visibility_off_white_24dp : Properties.Resources.ic_visibility_off_black_24dp;
+                tbPassword.UseSystemPasswordChar = false;
+                tbPassword.PasswordChar = ' ';
+            }
+            else
+            {
+                tbPassword.IconRight = frm.UseDarkmode ? Properties.Resources.ic_visibility_white_24dp : Properties.Resources.ic_visibility_black_24dp;
+                tbPassword.UseSystemPasswordChar = true;
+            }
+        }
     }
 }

@@ -100,7 +100,7 @@
             // 
             // timerAnimation
             // 
-            this.timerAnimation.Interval = 25;
+            this.timerAnimation.Interval = 15;
             this.timerAnimation.Tick += new System.EventHandler(this.timerAnimation_Tick);
             // 
             // MiniNewsPollEntry

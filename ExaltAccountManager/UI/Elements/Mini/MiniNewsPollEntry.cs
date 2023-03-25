@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Utilities.BunifuButton.Transitions;
 
 namespace ExaltAccountManager.UI.Elements.Mini
 {
@@ -104,7 +104,7 @@ namespace ExaltAccountManager.UI.Elements.Mini
                     TimeSpan elapsedTimespan = DateTime.Now - animationStartTime;
 
                     float elapsedPercentage = (float)elapsedTimespan.TotalMilliseconds / (float)totalTimespan.TotalMilliseconds;
-                    percentage = elapsedPercentage * percentage;                 
+                    percentage = elapsedPercentage * percentage;
                 }
                 else
                 {
@@ -140,7 +140,6 @@ namespace ExaltAccountManager.UI.Elements.Mini
         {
             if (!reveal)
                 return;
-
             float fillWidth = ((float)Width * percentage) / 100f;
             Color fillColor = Color.FromArgb(175, 98, 0, 238);
 

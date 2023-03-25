@@ -554,13 +554,15 @@ namespace ExaltAccountManager
             BunifuSnackbar.CustomizationOptions opt = new BunifuSnackbar.CustomizationOptions()
             {
                 ActionBackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
-                BackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
                 ActionBorderColor = UseDarkmode ? Color.FromArgb(15, 15, 15) : Color.White,
+                ActionForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,                
+                BackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
                 BorderColor = UseDarkmode ? Color.FromArgb(15, 15, 15) : Color.White,
-                ActionForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,
                 ForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,
-                CloseIconColor = Color.FromArgb(246, 255, 237)
+                CloseIconColor = Color.FromArgb(246, 255, 237),
+                ActionBorderRadius = 9,                          
             };
+
             snackbar.ErrorOptions = opt;
             snackbar.ErrorOptions.CloseIconColor = Color.FromArgb(255, 204, 199);
             snackbar.WarningOptions = opt;
@@ -664,7 +666,7 @@ namespace ExaltAccountManager
                             if (!OptionsData.deactivateKillswitch)
                                 return;
 
-                            foreach (Button btn in pSideButtons.Controls.OfType<Button>())
+                            foreach (System.Windows.Forms.Button btn in pSideButtons.Controls.OfType<System.Windows.Forms.Button>())
                             {
                                 btn.Enabled = false;
                             }
@@ -1069,9 +1071,7 @@ namespace ExaltAccountManager
             if (this.InvokeRequired)
                 return (bool)this.Invoke((Func<string, Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes, int, bool>)ShowSnackbar, message, msgType, duration);
 
-            snackbar.Show(this, message, msgType, duration, "X", SnackbarPosition);
-            //snackbar.Show(this, message, msgType, duration, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.TopCenter);
-
+            snackbar.Show(this, message, msgType, duration, null, SnackbarPosition);
             return false;
         }
 

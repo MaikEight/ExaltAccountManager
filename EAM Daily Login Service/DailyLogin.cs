@@ -9,7 +9,6 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace EAM_Daily_Login_Service

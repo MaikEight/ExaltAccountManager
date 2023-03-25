@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EAM_PingChecker
@@ -21,10 +15,7 @@ namespace EAM_PingChecker
             frm = _frm;
             lVersion.Text = string.Format(lVersion.Text, frm.version);
 
-            if (!File.Exists(Path.Combine(Application.StartupPath, "flag.MPGH")))
-            {
-                linkWebsite.Text = "https://github.com/MaikEight/ExaltAccountManager";
-            }
+            linkWebsite.Text = "https://github.com/MaikEight/ExaltAccountManager";
 
             ApplyTheme(frm.useDarkmode, ColorScheme.GetColorDef(frm.useDarkmode), ColorScheme.GetColorSecond(frm.useDarkmode), ColorScheme.GetColorThird(frm.useDarkmode), ColorScheme.GetColorFont(frm.useDarkmode));
 
@@ -69,8 +60,8 @@ namespace EAM_PingChecker
             pbCopyright.Image = isDarkmode ? Properties.Resources.ic_copyright_white_36dp : Properties.Resources.ic_copyright_black_36dp;
             pbLogo.Image = isDarkmode ? Properties.Resources.time_white_96px : Properties.Resources.time_black_96px;
 
-            foreach (Bunifu.UI.WinForms.BunifuShadowPanel ui in this.Controls.OfType<Bunifu.UI.WinForms.BunifuShadowPanel>())            
-                ui.BackColor = ui.PanelColor = ui.PanelColor2 = def;            
+            foreach (Bunifu.UI.WinForms.BunifuShadowPanel ui in this.Controls.OfType<Bunifu.UI.WinForms.BunifuShadowPanel>())
+                ui.BackColor = ui.PanelColor = ui.PanelColor2 = def;
 
             MK_EAM_Lib.FormsUtils.ResumeDrawing(this);
         }

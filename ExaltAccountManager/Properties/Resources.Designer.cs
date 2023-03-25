@@ -2243,6 +2243,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_visibility_black_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_visibility_black_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_visibility_black_24dp {
             get {
                 object obj = ResourceManager.GetObject("ic_visibility_black_24dp", resourceCulture);
@@ -2256,6 +2266,36 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap ic_visibility_black_48dp {
             get {
                 object obj = ResourceManager.GetObject("ic_visibility_black_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_visibility_off_black_18dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_visibility_off_black_18dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_visibility_off_black_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_visibility_off_black_24dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_visibility_off_white_24dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_visibility_off_white_24dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
