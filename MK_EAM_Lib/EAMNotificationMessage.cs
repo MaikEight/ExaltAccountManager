@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MK_EAM_Lib
 {
     [System.Serializable]
-    public class EAMNotificationMessage
+    public sealed class EAMNotificationMessage
     {
         private const string url = "https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/NotificationMessages/EAMNotificationMessage.{0}";
 
@@ -72,7 +72,7 @@ namespace MK_EAM_Lib
     }
 
     [System.Serializable]
-    public class EAMNotificationMessageSaveFile
+    public sealed class EAMNotificationMessageSaveFile
     {
         public List<int> knownIDs = new List<int>();
         public DateTime lastCheck = new DateTime(2000, 1, 1);

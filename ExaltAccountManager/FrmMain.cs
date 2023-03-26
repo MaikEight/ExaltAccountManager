@@ -2,6 +2,8 @@
 using ExaltAccountManager.UI;
 using ExaltAccountManager.UI.Elements;
 using MK_EAM_Analytics;
+using MK_EAM_General_Services_Lib.News.Data;
+using MK_EAM_General_Services_Lib;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,9 @@ using System.Management;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace ExaltAccountManager
 {
@@ -24,6 +28,7 @@ namespace ExaltAccountManager
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public bool UseDarkmode
         {
@@ -328,11 +333,18 @@ namespace ExaltAccountManager
 
             isNewInstall = (isNewInstall || (!File.Exists(accountsPath) && !File.Exists(optionsPath)));
 
+            #region API Base URL
+
             try
             {
-                API_BASE_URL = File.ReadAllText(Path.Combine(Application.StartupPath, "MK_EAM_API_DATA"));
+                API_BASE_URL = "https://api.exalt-account-manager.eu/";
+                string fileName = Path.Combine(Application.StartupPath, "MK_EAM_API_DATA");
+                if (File.Exists(fileName))
+                    API_BASE_URL = File.ReadAllText(fileName);
             }
             catch { API_BASE_URL = "https://api.exalt-account-manager.eu/"; }
+
+            #endregion
 
             if (!isNewInstall)
             {
@@ -483,10 +495,114 @@ namespace ExaltAccountManager
                 new AnalyticsClient(API_BASE_URL + "v1/Analytics");
                 AnalyticsClient.Instance?.StartSession(accounts.Count, GetAPIClientIdHash(), version);
             }
+
+            _ = new GeneralServicesClient(API_BASE_URL);
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(10000);
+            
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+                try
+                {
+                    Task<Version> task = GeneralServicesClient.Instance?.GetLatestEamVersion();
+                    while (!task.IsCompleted)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            OnAPIResponseLatestEamVersion(new Version(0, 0, 0));
+                            LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to fetch latest EAM-Version."));
+
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
+                    }
+                    Version latestVersion = task.Result;
+                    OnAPIResponseLatestEamVersion(latestVersion);
+                }
+                catch (Exception ex)
+                {
+                    LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.APIError,
+                               "Failed to fetch latest EAM-Version." + Environment.NewLine + "Exception: " + ex.Message));
+                }
+            }), cancellationTokenSource.Token);
         }
+
+        private void OnAPIResponseLatestEamVersion(Version latestVersion)
+        {
+            if (latestVersion == null)
+            {
+                LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.APIError,
+                               "Fetched EAM-Version is null."));
+                return;
+            }
+
+            if (version < latestVersion)
+            {
+                //Update needed!
+                ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+                {
+                    CancellationToken token = (CancellationToken)obj;
+                    try
+                    {
+                        Task<MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse> task = GeneralServicesClient.Instance?.GetEamReleaseInfo();
+                        while (!task.IsCompleted)
+                        {
+                            if (token.IsCancellationRequested)
+                            {                                
+                                LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to fetch EAM release information."));
+
+                                return;
+                            }
+
+                            await Task.Delay(50, token);
+                        }
+                        MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse response = task.Result;
+                        ShowEamUpdateNoticeInvoker(response.ReleaseLink, response.ReleaseDownloadLink);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                                   "EAM",
+                                   MK_EAM_Lib.LogEventType.APIError,
+                                   "Failed to fetch EAM release information." + Environment.NewLine + "Exception: " + ex.Message));
+                    }
+                }), cancellationTokenSource.Token);
+            }
+        }
+
+        private void ShowEamUpdateNoticeInvoker(string releaselink, string directDownloadLink)
+        {
+            
+        }
+
+        private bool ShowEamUpdateNotice(string releaselink, string directDownloadLink)
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<string,string, bool>)ShowEamUpdateNotice, releaselink, directDownloadLink);
+
+
+
+            return false;
+        }
+
 
         public void ApplyTheme(object sender, EventArgs e)
         {
+            #region ApplyTheme
+
             Color def = ColorScheme.GetColorDef(useDarkmode);
             Color second = ColorScheme.GetColorSecond(useDarkmode);
             Color third = ColorScheme.GetColorThird(useDarkmode);
@@ -555,12 +671,12 @@ namespace ExaltAccountManager
             {
                 ActionBackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
                 ActionBorderColor = UseDarkmode ? Color.FromArgb(15, 15, 15) : Color.White,
-                ActionForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,                
+                ActionForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,
                 BackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
                 BorderColor = UseDarkmode ? Color.FromArgb(15, 15, 15) : Color.White,
                 ForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,
                 CloseIconColor = Color.FromArgb(246, 255, 237),
-                ActionBorderRadius = 9,                          
+                ActionBorderRadius = 9,
             };
 
             snackbar.ErrorOptions = opt;
@@ -579,6 +695,8 @@ namespace ExaltAccountManager
             toolTip.TextForeColor = useDarkmode ? Color.WhiteSmoke : Color.FromArgb(64, 64, 64);
 
             DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
+
+            #endregion
         }
 
         private void NotificationMessage(EAMNotificationMessage msg)
@@ -590,9 +708,7 @@ namespace ExaltAccountManager
             {
                 QNA notMessage = new QNA();
                 bool showUI = false;
-                notificationSaveFile.forceCheck = msg.forceShow;
-                notificationSaveFile.lastCheckWasStop = msg.type == EAMNotificationMessageType.Stop;
-                notificationSaveFile.knownIDs.Add(msg.id);
+
                 switch (msg.type)
                 {
                     case EAMNotificationMessageType.None:

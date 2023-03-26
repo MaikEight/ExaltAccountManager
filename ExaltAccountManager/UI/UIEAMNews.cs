@@ -159,7 +159,7 @@ namespace ExaltAccountManager.UI
                 CancellationToken token = (CancellationToken)obj;
                 try
                 {
-                    var task = GeneralServicesClient.Instance?.GetNews(date, clientIdHash, amount);
+                    Task<List<NewsData>> task = GeneralServicesClient.Instance?.GetNews(date, clientIdHash, amount);
                     while (!task.IsCompleted)
                     {
                         if (token.IsCancellationRequested)

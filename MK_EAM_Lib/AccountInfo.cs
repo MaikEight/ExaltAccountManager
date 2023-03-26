@@ -8,7 +8,7 @@ using System.Text;
 namespace MK_EAM_Lib
 {
     [System.Serializable]
-    public class AccountInfo
+    public sealed class AccountInfo
     {
         [Browsable(false)]
         public int orderID = -1;

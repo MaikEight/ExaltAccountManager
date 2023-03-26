@@ -1,4 +1,5 @@
-﻿using MK_EAM_General_Services_Lib.News.Data;
+﻿using MK_EAM_General_Services_Lib.General.Responses;
+using MK_EAM_General_Services_Lib.News.Data;
 using MK_EAM_General_Services_Lib.News.Responses;
 using Newtonsoft.Json;
 using System;
@@ -25,6 +26,50 @@ namespace MK_EAM_General_Services_Lib
                 return;
             }
             throw new NotSupportedException("More than one instance of GeneralServicesClient detected!");
+        }
+
+        public async Task<Version> GetLatestEamVersion()
+        {
+            #region GetLatestEamVersion            
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + "v1/ExaltAccountManager/version");
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<Version>(await responseMessage.Content.ReadAsStringAsync());
+                }
+            }
+            catch { }
+
+            return new Version(0, 0, 0);
+
+            #endregion
+        }
+
+        public async Task<EAMReleaseInfoResponse> GetEamReleaseInfo()
+        {
+            #region GetEamReleaseInfo            
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + "v1/ExaltAccountManager/release");
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {                    
+                    return JsonConvert.DeserializeObject<EAMReleaseInfoResponse>(await responseMessage.Content.ReadAsStringAsync());
+                }
+            }
+            catch { }
+
+            return new EAMReleaseInfoResponse();
+
+            #endregion
         }
 
         public async Task<List<NewsData>> GetNews(DateTime startTime, string clientIdHash, int amount = 5)
