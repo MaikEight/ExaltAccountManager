@@ -2,6 +2,7 @@
 using MK_EAM_General_Services_Lib;
 using MK_EAM_General_Services_Lib.News.Data;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
@@ -24,44 +25,35 @@ namespace ExaltAccountManager.UI
             InitializeComponent();
             frm = _frm;
 
-            _ = new GeneralServicesClient(frm.API_BASE_URL);
-
             frm.ThemeChanged += ApplyTheme;
             this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
             ApplyTheme(frm, null);
-
-            PollUIData pollUIData = new PollUIData()
-            {
-                Headline = "What do you think about the new polls?",
-                EntrieImageUrls = new string[]
-                {
-                    null, null, null
-                },
-                EntrieTexts = new string[]
-                {
-                    "Awesome",
-                    "Good",
-                    "Mehh",
-                },
-                PollData = new PollData()
-                {
-                    StartDate = DateTime.Now.AddDays(-1),
-                    EndDate = DateTime.Now.AddDays(3),
-                    Entries = new int[] { 5, 2, 0 },
-                    EntriesAmount = 3,
-                    Name = "Test",
-                    OwnEntry = -1,
-                    PollId = Guid.NewGuid()
-                }
-            };
 
             //EleNewsPoll poll = new EleNewsPoll(frm, pollUIData);
             //flow.Controls.Add(poll);
 
             FetchNews(DateTime.MinValue, frm.GetAPIClientIdHash(false), 5);
+        }
 
-            List<NewsData> data = new List<NewsData>()
-            {
+        public void ApplyTheme(object sender, EventArgs e)
+        {
+            Color def = ColorScheme.GetColorDef(frm.UseDarkmode);
+            Color second = ColorScheme.GetColorSecond(frm.UseDarkmode);
+            Color third = ColorScheme.GetColorThird(frm.UseDarkmode);
+            Color font = ColorScheme.GetColorFont(frm.UseDarkmode);
+
+            MK_EAM_Lib.FormsUtils.SuspendDrawing(this);
+
+            this.BackColor = def;
+            this.ForeColor = font;
+
+            MK_EAM_Lib.FormsUtils.ResumeDrawing(this);
+        }
+
+        private void RenderNews(List<NewsData> data)
+        {
+
+            data.Add(
                 new NewsData()
                 {
                     Id = Guid.NewGuid(),
@@ -108,40 +100,73 @@ namespace ExaltAccountManager.UI
                             NewsId = Guid.NewGuid(),
                             OrderId = 3,
                             TypeId = 200,
-                            UiData = pollUIData
+                            UiData = new PollUIData()
+            {
+                Headline = "What do you think about the new polls?",
+                EntrieImageUrls = new string[]
+                {
+                    null, null, null
+                },
+                EntrieTexts = new string[]
+                {
+                    "Awesome",
+                    "Good",
+                    "Mehh",
+                },
+                PollData = new PollData()
+                {
+                    StartDate = DateTime.Now.AddDays(-1),
+                    EndDate = DateTime.Now.AddDays(3),
+                    Entries = new int[] { 5, 2, 0 },
+                    EntriesAmount = 3,
+                    Name = "Test",
+                    OwnEntry = -1,
+                    PollId = Guid.NewGuid()
+                }
+            }
                         },
                     }
                 }
-            };
-            RenderNews(data);
-        }
+            );
 
-        public void ApplyTheme(object sender, EventArgs e)
-        {
-            Color def = ColorScheme.GetColorDef(frm.UseDarkmode);
-            Color second = ColorScheme.GetColorSecond(frm.UseDarkmode);
-            Color third = ColorScheme.GetColorThird(frm.UseDarkmode);
-            Color font = ColorScheme.GetColorFont(frm.UseDarkmode);
+            int maxBottom = 0;
+            int index = 0;
 
-            MK_EAM_Lib.FormsUtils.SuspendDrawing(this);
+            foreach (Control c in pNews.Controls)
+            {
+                c.Dispose();
+            }
+            pNews.Controls.Clear();
 
-            this.BackColor = def;
-            this.ForeColor = font;
-
-            MK_EAM_Lib.FormsUtils.ResumeDrawing(this);
-        }
-
-        private void RenderNews(List<NewsData> data)
-        {
             for (int i = data.Count - 1; i >= 0; i--)
             {
+                if (i < data.Count - 1)
+                {
+                    Panel p = new Panel()
+                    {
+                        Size = new Size(this.Width, 15),
+                        Dock = DockStyle.Top,
+                    };
+                    pNews.Controls.Add(p);
+                    pNews.Controls.SetChildIndex(p, index);
+                    index++;
+                }
+
                 EleEAMNewsView view = new EleEAMNewsView(frm, data[i])
                 {
                     Dock = DockStyle.Top
                 };
                 newsViews.Add(view);
                 pNews.Controls.Add(view);
+                pNews.Controls.SetChildIndex(view, index);
+                index++;
+
+                maxBottom = Math.Max(maxBottom, view.Bottom);
             }
+
+            pNews.Height = maxBottom - 20;
+
+            scrollbar.BindTo(pNews);
         }
 
         private void FetchNews(DateTime date, string clientIdHash, int amount)

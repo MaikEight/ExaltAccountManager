@@ -17,7 +17,7 @@ namespace MK_EAM_Analytics
     {
         public static AnalyticsClient Instance { get; private set; }
 
-        public Guid SessionId { get; private set; } = Guid.Parse("45414D00-0000-0000-0000-004D61696B38");
+        public Guid SessionId { get; private set; } = Guid.Parse("45414D20-0000-6279-0000-204D61696B38");
         public bool NewVersionAvailable { get; private set; }
         public string BASE_URL { get; private set; } = "https://localhost:7066/v1/Analytics";
 

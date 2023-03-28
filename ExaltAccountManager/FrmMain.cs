@@ -19,12 +19,14 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 1, 0);
+        public readonly Version version = new Version(2, 1, 0);
+        public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
@@ -549,51 +551,61 @@ namespace ExaltAccountManager
             if (version < latestVersion)
             {
                 //Update needed!
-                ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
-                {
-                    CancellationToken token = (CancellationToken)obj;
-                    try
-                    {
-                        Task<MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse> task = GeneralServicesClient.Instance?.GetEamReleaseInfo();
-                        while (!task.IsCompleted)
-                        {
-                            if (token.IsCancellationRequested)
-                            {                                
-                                LogEvent(new MK_EAM_Lib.LogData(
-                                    "EAM",
-                                    MK_EAM_Lib.LogEventType.APIError,
-                                    "Failed to fetch EAM release information."));
-
-                                return;
-                            }
-
-                            await Task.Delay(50, token);
-                        }
-                        MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse response = task.Result;
-                        ShowEamUpdateNoticeInvoker(response.ReleaseLink, response.ReleaseDownloadLink);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogEvent(new MK_EAM_Lib.LogData(
-                                   "EAM",
-                                   MK_EAM_Lib.LogEventType.APIError,
-                                   "Failed to fetch EAM release information." + Environment.NewLine + "Exception: " + ex.Message));
-                    }
-                }), cancellationTokenSource.Token);
+                ShowEamUpdateNoticeInvoker();
             }
         }
 
-        private void ShowEamUpdateNoticeInvoker(string releaselink, string directDownloadLink)
+        private void PerformEamUpdateInvoker(string releaselink, string directDownloadLink)
         {
-            
+            PerformEamUpdate(releaselink, directDownloadLink);
         }
 
-        private bool ShowEamUpdateNotice(string releaselink, string directDownloadLink)
+        private bool PerformEamUpdate(string releaselink, string directDownloadLink)
         {
             if (this.InvokeRequired)
-                return (bool)this.Invoke((Func<string,string, bool>)ShowEamUpdateNotice, releaselink, directDownloadLink);
+                return (bool)this.Invoke((Func<string, string, bool>)PerformEamUpdate, releaselink, directDownloadLink);
 
+            try
+            {                
+                string updaterPath = Path.Combine(Application.StartupPath, "EAM_Updater.exe");
+                if (File.Exists(updaterPath))
+                {
+                    LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.UpdateEAM,
+                               "Starting EAM_Updater."));
+                    ProcessStartInfo info = new ProcessStartInfo(updaterPath);
+                    info.Arguments = directDownloadLink;
+                    Process.Start(info);
 
+                    Environment.Exit(0);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.Error,
+                               "Failed to start the EAM_Updater. Exception: " + ex.Message));
+
+                ShowSnackbar("Failed to start the EAM_Updater.", BunifuSnackbar.MessageTypes.Error, 7500);
+            }
+            
+
+            return false;
+        }
+
+        private void ShowEamUpdateNoticeInvoker()
+        {
+            ShowEamUpdateNotice();
+        }
+
+        private bool ShowEamUpdateNotice()
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<bool>)ShowEamUpdateNotice);
+
+            ExaltAccountManagerUpdateAvailable();
 
             return false;
         }
@@ -728,7 +740,7 @@ namespace ExaltAccountManager
                                 Type = QuestionType.Update,
                                 Action = (object sender, EventArgs e) => System.Diagnostics.Process.Start(linkUpdate)
                             };
-                            GameUpdateAvailable();
+                            ExaltAccountManagerUpdateAvailable();
 
                             notificationSaveFile.forceCheck = true;
                         }
@@ -832,17 +844,76 @@ namespace ExaltAccountManager
             }
         }
 
-        private void GameUpdateAvailable()
+        private void ExaltAccountManagerUpdateAvailable()
         {
             lVersion.ForeColor = UseDarkmode ? Color.Orange : Color.DarkOrange;
             pUpdate.Visible = true;
+
+            ShowSnackbar("New EAM-Version available.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 12500);
         }
 
         private void btnEAMUpdate_Click(object sender, EventArgs e)
-        {
-            if (eleEAMUpdate != null)
-                eleEAMUpdate = new EleQNA(this);
-            ShowShadowForm(eleEAMUpdate);
+        {            
+            if (!cancellationTokenSource.IsCancellationRequested)
+            {
+                cancellationTokenSource.Cancel();
+            }
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(7500);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+                try
+                {
+                    Task<MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse> task = GeneralServicesClient.Instance?.GetEamReleaseInfo();
+                    while (!task.IsCompleted)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to fetch EAM release information."));
+
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
+                    }
+                    MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse response = task.Result;
+                    if (response == null || response.ReleaseLink == null || response.ReleaseDownloadLink == null)
+                    {
+                        throw new ArgumentNullException(
+                            "Params: " + response == null ? 
+                            "response" : 
+                            (response.ReleaseLink == null ? 
+                                "ReleaseLink" : 
+                                "" + 
+                             response.ReleaseDownloadLink == null ? 
+                                "ReleaseDownloadLink" : 
+                                ""), "Response from server is NULL or contains a NULL-Value.");
+                    }
+                    PerformEamUpdateInvoker(response.ReleaseLink, response.ReleaseDownloadLink);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.APIError,
+                               "Failed to fetch EAM release information, update process canceled." + Environment.NewLine + "Exception: " + ex.Message));
+
+                    System.Diagnostics.Process.Start(GITHUB_PROJECT_URL);
+
+                    MessageBox.Show(
+                        "The automatic update failed, please download the update on GitHub.", 
+                        "An error occured", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Error);                    
+                }
+            }), cancellationTokenSource.Token);
         }
 
         private bool NotificationMessageInvoker(EAMNotificationMessage msg)

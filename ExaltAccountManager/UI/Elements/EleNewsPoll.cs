@@ -107,7 +107,7 @@ namespace ExaltAccountManager.UI.Elements
                     Task<PollData> task = GeneralServicesClient.Instance?.PostPoll(
                             pollUIData.PollData.PollId,
                             entry.GetEntryNumber(),
-                            frm.GetAPIClientIdHash());
+                            frm.GetAPIClientIdHash(false));
 
                     while (!task.IsCompleted)
                     {

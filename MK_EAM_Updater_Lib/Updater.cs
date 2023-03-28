@@ -42,7 +42,19 @@ namespace MK_EAM_Updater_Lib
             Log("Moving update files...");
 
             List<string> failedFiles = new List<string>();
+
+            if (string.IsNullOrEmpty(updatePath) || !Directory.Exists(updatePath))
+            {
+                return false;
+            }
+
             string mainUpdateFileFolder = Directory.GetDirectories(updatePath).Where(d => d.Replace(updatePath, "").TrimStart('\\').StartsWith("ExaltAccountManager")).FirstOrDefault();
+            
+            if (string.IsNullOrEmpty(mainUpdateFileFolder))
+            {
+                return false;
+            }
+            
             string[] files = Directory.GetFiles(updatePath, "*.*", SearchOption.AllDirectories);
 
             foreach (string file in files)

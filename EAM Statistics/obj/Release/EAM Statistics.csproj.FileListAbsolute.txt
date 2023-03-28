@@ -1,84 +1,6 @@
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.Licensing.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.1.5.3.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuButton.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuCheckBox.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuCircleProgress.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuColorTransition.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuDataGridView.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuDatePicker.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuDropdown.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuFormDock.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuGauge.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuGradientPanel.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuGroupBox.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuImageButton.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLabel.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuPages.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuPanel.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuPictureBox.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuProgressBar.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuRadioButton.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuRating.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuScrollBar.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuSeparator.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuShadowPanel.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuShapes.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuSlider.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuSnackbar.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuTextbox.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuToggleSwitch.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuToolTip.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuTransition.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuUserControl.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.Deprecated.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\ExaltAccountManager.exe
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Lib.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_RadarChart.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Win32.TaskScheduler.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\ExaltAccountManager.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\ExaltAccountManager.exe.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Lib.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.1.5.3.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuButton.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuCheckBox.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuCircleProgress.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuColorTransition.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuDataGridView.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuDatePicker.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuDropdown.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuFormDock.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuGauge.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuGradientPanel.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuGroupBox.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuImageButton.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLabel.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuPages.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuPanel.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuPictureBox.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuProgressBar.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuRadioButton.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuRating.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuScrollBar.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuSeparator.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuShadowPanel.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuShapes.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuSlider.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuSnackbar.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuTextbox.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuToggleSwitch.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuToolTip.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuTransition.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuUserControl.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_RadarChart.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Win32.TaskScheduler.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\de\Microsoft.Win32.TaskScheduler.resources.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\es\Microsoft.Win32.TaskScheduler.resources.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\fr\Microsoft.Win32.TaskScheduler.resources.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\it\Microsoft.Win32.TaskScheduler.resources.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\pl\Microsoft.Win32.TaskScheduler.resources.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\ru\Microsoft.Win32.TaskScheduler.resources.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\zh-CN\Microsoft.Win32.TaskScheduler.resources.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM_Statistics.FrmCharHost.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM_Statistics.FrmMain.resources
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM_Statistics.FrmShadowHost.resources
@@ -102,14 +24,6 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM S
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.CopyComplete
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.AssemblyReference.cache
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\CsvHelper.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Threading.Tasks.Extensions.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Bcl.HashCode.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Memory.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Numerics.Vectors.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Buffers.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\CsvHelper.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Bcl.AsyncInterfaces.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Threading.Tasks.Extensions.xml
@@ -250,27 +164,38 @@ C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM
 C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.CopyComplete
 C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.dll
 C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Newtonsoft.Json.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Newtonsoft.Json.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLoader.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.BunifuLoader.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.exe.config
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\EAM Statistics.exe
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.exe.licenses
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.exe
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.Charts.WinForms.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Lib.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.Charts.WinForms.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Analytics.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Discord_Lib.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Updater_Lib.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\DiscordRPC.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Analytics.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Discord_Lib.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_Updater_Lib.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\DiscordRPC.pdb
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\DiscordRPC.xml
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\zh-Hant\Microsoft.Win32.TaskScheduler.resources.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.SuggestedBindingRedirects.cache
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_General_Services_Lib.dll
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\MK_EAM_General_Services_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Bunifu.UI.WinForms.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Win32.Registry.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Win32.Registry.AccessControl.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\Microsoft.Win32.SystemEvents.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\RestSharp.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.CodeDom.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Configuration.ConfigurationManager.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Data.Odbc.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Data.OleDb.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Data.SqlClient.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Diagnostics.EventLog.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Diagnostics.PerformanceCounter.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Drawing.Common.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.IO.FileSystem.AccessControl.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.IO.Packaging.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.IO.Ports.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Security.AccessControl.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Security.Cryptography.Cng.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Security.Cryptography.Pkcs.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Security.Cryptography.ProtectedData.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Security.Cryptography.Xml.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Security.Permissions.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Security.Principal.Windows.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.ServiceModel.Syndication.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.ServiceProcess.ServiceController.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Text.Encoding.CodePages.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\bin\Release\System.Threading.AccessControl.xml
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Statistics\obj\Release\EAM Statistics.csproj.Fody.CopyLocal.cache

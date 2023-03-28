@@ -14,14 +14,17 @@ namespace ExaltAccountManager.UI.Elements
         private FrmMain frm;
         private List<Control> controls = new List<Control>();
         private Dictionary<PictureBox, ImageUIData> dicPbsToImageUIData = new Dictionary<PictureBox, ImageUIData>();
+
         public EleEAMNewsView(FrmMain _frm, NewsData newsData)
         {
             InitializeComponent();
             NewsData = newsData;
             frm = _frm;
+
             frm.ThemeChanged += ApplyTheme;
             this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
             ApplyTheme(frm, null);
+
             LoadUI();
         }
 
@@ -50,7 +53,9 @@ namespace ExaltAccountManager.UI.Elements
 
             Point p = new Point(10, spacer.Bottom + 10);
 
-            NewsData.newsEntries = NewsData.newsEntries.OrderBy(e => e.OrderId).ToList();
+            NewsData.newsEntries = NewsData.newsEntries
+                                           .OrderBy(e => e.OrderId)
+                                           .ToList();
 
             foreach (NewsEntry entry in NewsData.newsEntries)
             {

@@ -1,4 +1,6 @@
 ﻿using MK_EAM_Analytics;
+using MK_EAM_General_Services_Lib.News.Data;
+using MK_EAM_General_Services_Lib;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ namespace ExaltAccountManager.UI.Elements
     public partial class EleAnalyticsSettings : UserControl
     {
         private FrmMain frm;
-        private Thread worker;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         public EleAnalyticsSettings(FrmMain _frm)
         {
             InitializeComponent();
@@ -80,40 +82,65 @@ namespace ExaltAccountManager.UI.Elements
         {
             btnRequestData.Enabled =
             btnDelete.Enabled = false;
-            if (worker != null)
+            if (!cancellationTokenSource.IsCancellationRequested)
             {
-                try
-                {
-                    worker.Abort();
-                }
-                catch { }
+                cancellationTokenSource.Cancel();
             }
 
-            worker = new Thread(new ThreadStart(async () =>
-            {
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(7500);
 
-                var task = AnalyticsClient.Instance?.GetUserData(frm.GetAPIClientIdHash());
-                var data = await task;
-                if (data != null)
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+
+                try
                 {
-                    string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-                    try
+                    Task<MK_EAM_Analytics.Response.Data.User> task = AnalyticsClient.Instance?.GetUserData(frm.GetAPIClientIdHash());
+                    while (!task.IsCompleted)
                     {
-                        string path = System.IO.Path.Combine(Application.StartupPath, "AnalyticsUserData.txt");
-                        if (System.IO.File.Exists(path))
-                            System.IO.File.Delete(path);
-                        System.IO.File.WriteAllText(path, json);
-                        Process.Start(path);
+                        if (token.IsCancellationRequested)
+                        {
+                            frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM News",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to request own userdata"));
+
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
                     }
-                    catch
+                    MK_EAM_Analytics.Response.Data.User result = task.Result;
+                    if (result != null)
                     {
-                        MessageBox.Show(json, "Your Data (save mode)", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                        try
+                        {
+                            string path = System.IO.Path.Combine(Application.StartupPath, "AnalyticsUserData.txt");
+                            if (System.IO.File.Exists(path))
+                                System.IO.File.Delete(path);
+                            System.IO.File.WriteAllText(path, json);
+                            Process.Start(path);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(json, "Your Data (save mode)", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        OnRequestedDataReceivedInvoker();
+                        return;
                     }
-                    OnRequestedDataReceivedInvoker();
+
+                    frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM News",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Either the process to fetch your data failed or no data could be found."));
                 }
-            }));
-            worker.IsBackground = true;
-            worker.Start();
+                catch { }
+
+                MessageBox.Show("Either the process to fetch your data failed or no data could be found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }), cancellationTokenSource.Token);
         }
 
 
@@ -137,61 +164,86 @@ namespace ExaltAccountManager.UI.Elements
             btnRequestData.Enabled = 
             btnDelete.Enabled = false;
 
-            if (worker != null)
+            if (!cancellationTokenSource.IsCancellationRequested)
             {
+                cancellationTokenSource.Cancel();
+            }
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(7500);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+
                 try
                 {
-                    worker.Abort();
-                }
-                catch { }
-            }
-            worker = new Thread(new ThreadStart(async () =>
-            {
-                bool didDelete = false;
+                    bool didDelete = false;
 
-                if (MessageBox.Show(
-                "Are you sure you want to delete all collected data?",
-                "Delete all data?",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button2)
-                == DialogResult.Yes)
-                {
-                    didDelete = true;
-                    //Send Delete
-                    var task = AnalyticsClient.Instance?.DeleteUser(frm.GetAPIClientIdHash());
-                    bool result = await task;
-                    if (result)
+                    if (MessageBox.Show(
+                    "Are you sure you want to delete all collected data?",
+                    "Delete all data?",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button2)
+                    == DialogResult.Yes)
                     {
-                        MessageBox.Show(
-                            "All data has been deleted.",
-                            "Success",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-
-                        //Ask to turn of analytics
-                        if (!frm.OptionsData.analyticsOptions.OptOut && MessageBox.Show("Do you want to disable sending of analytics data?", "Disable analytics?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                        didDelete = true;
+                        //Send Delete
+                        Task<bool> task = AnalyticsClient.Instance?.DeleteUser(frm.GetAPIClientIdHash());
+                        while (!task.IsCompleted)
                         {
-                            frm.OptionsData.analyticsOptions.OptOut = true;
-                            frm.SaveOptions(frm.OptionsData, true);
+                            if (token.IsCancellationRequested)
+                            {
+                                didDelete = false;
+
+                                frm.LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM News",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to delete own userdata"));
+
+                                MessageBox.Show(
+                                    "Failed to delete data. \nPlease try again later.",
+                                    "Error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            await Task.Delay(50, token);
+                        }
+                        bool result = task.Result;
+
+                        if (result)
+                        {
+                            MessageBox.Show(
+                                "All data has been deleted.",
+                                "Success",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+
+                            //Ask to turn of analytics
+                            if (!frm.OptionsData.analyticsOptions.OptOut && MessageBox.Show("Do you want to disable sending of analytics data?", "Disable analytics?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                            {
+                                frm.OptionsData.analyticsOptions.OptOut = true;
+                                frm.SaveOptions(frm.OptionsData, true);
+                            }
+                        }
+                        else
+                        {
+                            didDelete = false;
+                            MessageBox.Show(
+                                "Failed to delete data. \nPlease try again later.",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
                         }
                     }
-                    else
-                    {
-                        didDelete = false;
-                        MessageBox.Show(
-                            "Failed to delete data. \nPlease try again later.",
-                            "Error",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    }
-                }
 
-                OnUserDeletedInvoker(didDelete);
-            }));
-            worker.IsBackground = true;
-            worker.Start();
-            
+                    OnUserDeletedInvoker(didDelete);
+                }
+                catch { }
+            }), cancellationTokenSource.Token);            
         }
 
         private void OnUserDeletedInvoker(bool didDelete)

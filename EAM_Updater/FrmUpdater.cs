@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace EAM_Updater
 {
@@ -21,17 +15,6 @@ namespace EAM_Updater
         private string[] arguments = null;
         public FrmMain(string[] args)
         {
-            //Bitmap bmp = (Bitmap)Bitmap.FromFile(@"C:\Users\Maik8\Pictures\MaterialUI\White\calendar_white_24px.png");
-            //ImageConverter converter = new ImageConverter();
-            //byte[] data = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
-            //StringBuilder sb = new StringBuilder();
-            //foreach (byte b in data)
-            //{
-            //    sb.Append(b.ToString() + ", ");
-            //}
-            //string t = sb.ToString();
-            //Console.WriteLine(t);
-
             InitializeComponent();
             lVersion.Text = string.Format(lVersion.Text, version.ToString());
 
@@ -63,10 +46,10 @@ namespace EAM_Updater
                 {
                     MK_EAM_Updater_Lib.Updater.CleanupTemp(MK_EAM_Updater_Lib.Updater.tempFilePath);
 
-                    string eamPath = Path.Combine(Application.StartupPath, "ExaltAccountManager.exe");
+                    string eamPath = Path.Combine(Application.StartupPath, "ExaltAccountManager.exe");                    
                     if (File.Exists(eamPath))
                     {
-                        Process.Start(eamPath);
+                        Process.Start(eamPath, "update");
                     }
                     Environment.Exit(0);
                 }
@@ -92,11 +75,11 @@ namespace EAM_Updater
                 {
                     Process.Start(Application.StartupPath, $"{arguments[0]} ${MK_EAM_Updater_Lib.Updater.tempFilePath} ${tries.ToString()}");
                     Environment.Exit(0);
+                    return;
                 }
-                else
-                {
-                    MK_EAM_Updater_Lib.Updater.CleanupTemp(MK_EAM_Updater_Lib.Updater.tempFilePath);
-                }
+                MK_EAM_Updater_Lib.Updater.CleanupTemp(MK_EAM_Updater_Lib.Updater.tempFilePath);
+                Process.Start(Path.Combine(Application.StartupPath, "ExaltAccountManager.exe"), "update");
+                Environment.Exit(0);
             }
         }
     }

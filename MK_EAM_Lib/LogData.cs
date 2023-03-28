@@ -102,5 +102,6 @@ namespace MK_EAM_Lib
         ServiceInfo,
         ServiceEnd,
         APIError,
+        UpdateEAM,
     }
 }
