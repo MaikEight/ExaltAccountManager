@@ -25,7 +25,7 @@ namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(2, 1, 0);
+        public readonly Version version = new Version(3, 1, 0);
         public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
         public event EventHandler ThemeChanged;
 
@@ -1791,6 +1791,9 @@ namespace ExaltAccountManager
                     {
                         case UIState.Accounts:
                             pSideBar.Top = btnAccounts.Top + 5;
+                            break;
+                        case UIState.News:
+                            pSideBar.Top = btnNews.Top + 5;
                             break;
                         case UIState.AddAccount:
                             pSideBar.Top = btnAddAccount.Top + 5;
