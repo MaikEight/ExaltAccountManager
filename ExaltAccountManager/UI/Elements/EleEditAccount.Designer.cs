@@ -50,16 +50,16 @@
             this.shadow = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.toggleShowinVP = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
             this.label4 = new System.Windows.Forms.Label();
+            this.pbClose = new Bunifu.UI.WinForms.BunifuPictureBox();
+            this.btnSave = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.label2 = new System.Windows.Forms.Label();
+            this.tbAccountname = new Bunifu.UI.WinForms.BunifuTextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.tbPassword = new Bunifu.UI.WinForms.BunifuTextBox();
+            this.tbEmail = new Bunifu.UI.WinForms.BunifuTextBox();
             this.lMail = new System.Windows.Forms.Label();
             this.lName = new System.Windows.Forms.Label();
             this.toolTip = new Bunifu.UI.WinForms.BunifuToolTip(this.components);
-            this.pbClose = new Bunifu.UI.WinForms.BunifuPictureBox();
-            this.btnSave = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
-            this.tbAccountname = new Bunifu.UI.WinForms.BunifuTextBox();
-            this.tbPassword = new Bunifu.UI.WinForms.BunifuTextBox();
-            this.tbEmail = new Bunifu.UI.WinForms.BunifuTextBox();
             this.shadow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
             this.SuspendLayout();
@@ -231,94 +231,6 @@
             this.toolTip.SetToolTipIcon(this.label4, null);
             this.toolTip.SetToolTipTitle(this.label4, "");
             // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 11);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(135, 30);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "Edit Account";
-            this.toolTip.SetToolTip(this.label2, "");
-            this.toolTip.SetToolTipIcon(this.label2, null);
-            this.toolTip.SetToolTipTitle(this.label2, "");
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 56);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 21);
-            this.label1.TabIndex = 19;
-            this.label1.Text = "Accountname";
-            this.toolTip.SetToolTip(this.label1, "");
-            this.toolTip.SetToolTipIcon(this.label1, null);
-            this.toolTip.SetToolTipTitle(this.label1, "");
-            // 
-            // lMail
-            // 
-            this.lMail.AutoSize = true;
-            this.lMail.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lMail.Location = new System.Drawing.Point(12, 195);
-            this.lMail.Name = "lMail";
-            this.lMail.Size = new System.Drawing.Size(76, 21);
-            this.lMail.TabIndex = 16;
-            this.lMail.Text = "Password";
-            this.toolTip.SetToolTip(this.lMail, "");
-            this.toolTip.SetToolTipIcon(this.lMail, null);
-            this.toolTip.SetToolTipTitle(this.lMail, "");
-            // 
-            // lName
-            // 
-            this.lName.AutoSize = true;
-            this.lName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lName.Location = new System.Drawing.Point(12, 124);
-            this.lName.Name = "lName";
-            this.lName.Size = new System.Drawing.Size(54, 21);
-            this.lName.TabIndex = 15;
-            this.lName.Text = "E-Mail";
-            this.toolTip.SetToolTip(this.lName, "");
-            this.toolTip.SetToolTipIcon(this.lName, null);
-            this.toolTip.SetToolTipTitle(this.lName, "");
-            // 
-            // toolTip
-            // 
-            this.toolTip.Active = true;
-            this.toolTip.AlignTextWithTitle = false;
-            this.toolTip.AllowAutoClose = false;
-            this.toolTip.AllowFading = true;
-            this.toolTip.AutoCloseDuration = 5000;
-            this.toolTip.BackColor = System.Drawing.SystemColors.Control;
-            this.toolTip.BorderColor = System.Drawing.Color.Gainsboro;
-            this.toolTip.ClickToShowDisplayControl = false;
-            this.toolTip.ConvertNewlinesToBreakTags = true;
-            this.toolTip.DisplayControl = null;
-            this.toolTip.EntryAnimationSpeed = 350;
-            this.toolTip.ExitAnimationSpeed = 200;
-            this.toolTip.GenerateAutoCloseDuration = false;
-            this.toolTip.IconMargin = 6;
-            this.toolTip.InitialDelay = 0;
-            this.toolTip.Name = "toolTip";
-            this.toolTip.Opacity = 1D;
-            this.toolTip.OverrideToolTipTitles = false;
-            this.toolTip.Padding = new System.Windows.Forms.Padding(10);
-            this.toolTip.ReshowDelay = 100;
-            this.toolTip.ShowAlways = true;
-            this.toolTip.ShowBorders = false;
-            this.toolTip.ShowIcons = true;
-            this.toolTip.ShowShadows = true;
-            this.toolTip.Tag = null;
-            this.toolTip.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolTip.TextForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.toolTip.TextMargin = 2;
-            this.toolTip.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.toolTip.TitleForeColor = System.Drawing.Color.Black;
-            this.toolTip.ToolTipPosition = new System.Drawing.Point(0, 0);
-            this.toolTip.ToolTipTitle = null;
-            // 
             // pbClose
             // 
             this.pbClose.AllowFocused = false;
@@ -439,6 +351,20 @@
             this.btnSave.UseDefaultRadiusAndThickness = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 11);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(135, 30);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "Edit Account";
+            this.toolTip.SetToolTip(this.label2, "");
+            this.toolTip.SetToolTipIcon(this.label2, null);
+            this.toolTip.SetToolTipTitle(this.label2, "");
+            // 
             // tbAccountname
             // 
             this.tbAccountname.AcceptsReturn = false;
@@ -517,6 +443,19 @@
             this.tbAccountname.UseSystemPasswordChar = false;
             this.tbAccountname.WordWrap = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(12, 56);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(105, 21);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Accountname";
+            this.toolTip.SetToolTip(this.label1, "");
+            this.toolTip.SetToolTipIcon(this.label1, null);
+            this.toolTip.SetToolTipTitle(this.label1, "");
+            // 
             // tbPassword
             // 
             this.tbPassword.AcceptsReturn = false;
@@ -542,7 +481,7 @@
             this.tbPassword.IconLeft = null;
             this.tbPassword.IconLeftCursor = System.Windows.Forms.Cursors.IBeam;
             this.tbPassword.IconPadding = 11;
-            this.tbPassword.IconRight = global::ExaltAccountManager.Properties.Resources.ic_visibility_black_24dp;
+            this.tbPassword.IconRight = null;
             this.tbPassword.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.tbPassword.Lines = new string[0];
             this.tbPassword.Location = new System.Drawing.Point(16, 215);
@@ -594,7 +533,6 @@
             this.toolTip.SetToolTipTitle(this.tbPassword, "");
             this.tbPassword.UseSystemPasswordChar = true;
             this.tbPassword.WordWrap = true;
-            this.tbPassword.OnIconRightClick += new System.EventHandler(this.tbPassword_OnIconRightClick);
             // 
             // tbEmail
             // 
@@ -675,6 +613,67 @@
             this.toolTip.SetToolTipTitle(this.tbEmail, "");
             this.tbEmail.UseSystemPasswordChar = false;
             this.tbEmail.WordWrap = true;
+            // 
+            // lMail
+            // 
+            this.lMail.AutoSize = true;
+            this.lMail.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lMail.Location = new System.Drawing.Point(12, 195);
+            this.lMail.Name = "lMail";
+            this.lMail.Size = new System.Drawing.Size(76, 21);
+            this.lMail.TabIndex = 16;
+            this.lMail.Text = "Password";
+            this.toolTip.SetToolTip(this.lMail, "");
+            this.toolTip.SetToolTipIcon(this.lMail, null);
+            this.toolTip.SetToolTipTitle(this.lMail, "");
+            // 
+            // lName
+            // 
+            this.lName.AutoSize = true;
+            this.lName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lName.Location = new System.Drawing.Point(12, 124);
+            this.lName.Name = "lName";
+            this.lName.Size = new System.Drawing.Size(54, 21);
+            this.lName.TabIndex = 15;
+            this.lName.Text = "E-Mail";
+            this.toolTip.SetToolTip(this.lName, "");
+            this.toolTip.SetToolTipIcon(this.lName, null);
+            this.toolTip.SetToolTipTitle(this.lName, "");
+            // 
+            // toolTip
+            // 
+            this.toolTip.Active = true;
+            this.toolTip.AlignTextWithTitle = false;
+            this.toolTip.AllowAutoClose = false;
+            this.toolTip.AllowFading = true;
+            this.toolTip.AutoCloseDuration = 5000;
+            this.toolTip.BackColor = System.Drawing.SystemColors.Control;
+            this.toolTip.BorderColor = System.Drawing.Color.Gainsboro;
+            this.toolTip.ClickToShowDisplayControl = false;
+            this.toolTip.ConvertNewlinesToBreakTags = true;
+            this.toolTip.DisplayControl = null;
+            this.toolTip.EntryAnimationSpeed = 350;
+            this.toolTip.ExitAnimationSpeed = 200;
+            this.toolTip.GenerateAutoCloseDuration = false;
+            this.toolTip.IconMargin = 6;
+            this.toolTip.InitialDelay = 0;
+            this.toolTip.Name = "toolTip";
+            this.toolTip.Opacity = 1D;
+            this.toolTip.OverrideToolTipTitles = false;
+            this.toolTip.Padding = new System.Windows.Forms.Padding(10);
+            this.toolTip.ReshowDelay = 100;
+            this.toolTip.ShowAlways = true;
+            this.toolTip.ShowBorders = false;
+            this.toolTip.ShowIcons = true;
+            this.toolTip.ShowShadows = true;
+            this.toolTip.Tag = null;
+            this.toolTip.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolTip.TextForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.toolTip.TextMargin = 2;
+            this.toolTip.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.toolTip.TitleForeColor = System.Drawing.Color.Black;
+            this.toolTip.ToolTipPosition = new System.Drawing.Point(0, 0);
+            this.toolTip.ToolTipTitle = null;
             // 
             // EleEditAccount
             // 
