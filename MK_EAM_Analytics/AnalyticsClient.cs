@@ -21,6 +21,8 @@ namespace MK_EAM_Analytics
         public bool NewVersionAvailable { get; private set; }
         public string BASE_URL { get; private set; } = "https://localhost:7066/v1/Analytics";
 
+        private System.Timers.Timer timerHeartBeat = null;
+
         public AnalyticsClient(string baseUrl)
         {
             if (AnalyticsClient.Instance == null)
@@ -28,9 +30,40 @@ namespace MK_EAM_Analytics
                 AnalyticsClient.Instance = this;
                 if (!string.IsNullOrEmpty(baseUrl))
                     AnalyticsClient.Instance.BASE_URL = baseUrl;
+
+                timerHeartBeat = new System.Timers.Timer(59_000);
+                timerHeartBeat.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+                {
+                    _ = HeartBeat();
+                };
+                timerHeartBeat.Start();
+
                 return;
             }
             throw new NotSupportedException("More than one instance of AnalyticsClient detected!");
+        }
+
+        private async Task<bool> HeartBeat()
+        {
+            if (SessionId == Guid.Empty)
+                return false;
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPatchRequest(BASE_URL + "/heartbeat", SessionId);
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch { }
+
+            return false;
         }
 
         public async Task<bool> StartSession(int amountOfAccounts, string clientIdHash, Version clientVersion)
@@ -45,7 +78,7 @@ namespace MK_EAM_Analytics
                 AmountOfAccounts = amountOfAccounts,
                 ClientIdHash = clientIdHash,
                 ClientVersion = clientVersion,
-            };            
+            };
 
             try
             {

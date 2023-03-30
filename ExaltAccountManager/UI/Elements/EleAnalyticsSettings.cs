@@ -76,6 +76,11 @@ namespace ExaltAccountManager.UI.Elements
 
             frm.SaveOptions(frm.OptionsData, true);
             frm.UpdateUIOptionsData();
+
+            if (frm.OptionsData.analyticsOptions.OptOut && AnalyticsClient.Instance?.SessionId != Guid.Empty)
+            {
+                AnalyticsClient.Instance.EndSeesion();
+            }
         }
         
         private void btnRequestData_Click(object sender, EventArgs e)
@@ -287,5 +292,10 @@ namespace ExaltAccountManager.UI.Elements
         private void pbClose_MouseDown(object sender, MouseEventArgs e) => pbClose.BackColor = Color.Red;
 
         #endregion
+
+        private void toggleAnonymize_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
