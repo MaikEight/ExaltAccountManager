@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 namespace MK_EAM_General_Services_Lib.Utils
 {
     public static class WebrequestUtils
-    {
-        //TODO: REMOVE HttpClientHandler and use a proper certificate
+    {      
+        private static HttpClientHandler handler = new HttpClientHandler()
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+        };
+
+        private static bool UseHandler(string url) => url.StartsWith("https://localhost");
 
         public static async Task<HttpResponseMessage> SendPostRequest(string url, object data)
         {
-            var handler = new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
-            };
-            using (var client = new HttpClient(handler))
+            using (var client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
             {
                 string json = JsonConvert.SerializeObject(data);
                 var content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
@@ -25,11 +26,7 @@ namespace MK_EAM_General_Services_Lib.Utils
 
         public static async Task<HttpResponseMessage> SendGetRequest(string url)
         {
-            var handler = new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
-            };
-            using (var client = new System.Net.Http.HttpClient(handler))
+            using (var client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
             {
                 return await client.GetAsync(url);
             }
@@ -37,11 +34,7 @@ namespace MK_EAM_General_Services_Lib.Utils
 
         public static async Task<HttpResponseMessage> SendDeleteRequest(string url, object data)
         {
-            var handler = new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
-            };
-            using (var client = new System.Net.Http.HttpClient(handler))
+            using (var client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
                 string json = JsonConvert.SerializeObject(data);
