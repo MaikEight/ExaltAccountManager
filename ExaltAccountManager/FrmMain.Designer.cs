@@ -63,6 +63,7 @@
             this.timerLoadUI = new System.Windows.Forms.Timer(this.components);
             this.toolTip = new Bunifu.UI.WinForms.BunifuToolTip(this.components);
             this.timerDiscordUpdater = new System.Windows.Forms.Timer(this.components);
+            this.bunifuElipselHasChanges = new Bunifu.Framework.UI.BunifuElipse(this.components);
             this.pLeftSide.SuspendLayout();
             this.pSideButtons.SuspendLayout();
             this.pUpdate.SuspendLayout();
@@ -368,6 +369,7 @@
             this.toolTip.SetToolTipTitle(this.btnOptions, "");
             this.btnOptions.UseVisualStyleBackColor = true;
             this.btnOptions.Click += new System.EventHandler(this.btnOptions_Click);
+            this.btnOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.btnOptions_Paint);
             this.btnOptions.MouseEnter += new System.EventHandler(this.btnOptions_MouseEnter);
             this.btnOptions.MouseLeave += new System.EventHandler(this.btnOptions_MouseLeave);
             // 
@@ -815,6 +817,10 @@
             this.timerDiscordUpdater.Interval = 5000;
             this.timerDiscordUpdater.Tick += new System.EventHandler(this.timerDiscordUpdater_Tick);
             // 
+            // bunifuElipselHasChanges
+            // 
+            this.bunifuElipselHasChanges.ElipseRadius = 12;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -888,5 +894,6 @@
         private System.Windows.Forms.Panel pUpdate;
         private System.Windows.Forms.Timer timerDiscordUpdater;
         private System.Windows.Forms.Button btnNews;
+        private Bunifu.Framework.UI.BunifuElipse bunifuElipselHasChanges;
     }
 }

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 namespace MK_EAM_Analytics.Utils
 {
     public static class WebrequestUtils
-    {        
-
+    {    
         private static bool UseHandler(string url) => url.StartsWith("https://localhost");
 
         public static async Task<HttpResponseMessage> SendPostRequest(string url, object data)

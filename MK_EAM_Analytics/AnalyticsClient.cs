@@ -1,15 +1,10 @@
 ﻿using MK_EAM_Analytics.Response;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using MK_EAM_Analytics.Request;
-using MK_EAM_Analytics.Response.Data;
-using System.Security.Cryptography;
-using System.Linq;
 
 namespace MK_EAM_Analytics
 {
@@ -17,9 +12,11 @@ namespace MK_EAM_Analytics
     {
         public static AnalyticsClient Instance { get; private set; }
 
+        public string BASE_URL { get; private set; } = "https://localhost:7066/v1/Analytics";
+        public const int HEARTBEAT_INTERVAL_IN_MS = 59_000;
+
         public Guid SessionId { get; private set; } = Guid.Parse("45414D20-0000-6279-0000-204D61696B38");
         public bool NewVersionAvailable { get; private set; }
-        public string BASE_URL { get; private set; } = "https://localhost:7066/v1/Analytics";
 
         private System.Timers.Timer timerHeartBeat = null;
 
@@ -31,7 +28,7 @@ namespace MK_EAM_Analytics
                 if (!string.IsNullOrEmpty(baseUrl))
                     AnalyticsClient.Instance.BASE_URL = baseUrl;
 
-                timerHeartBeat = new System.Timers.Timer(59_000);
+                timerHeartBeat = new System.Timers.Timer(HEARTBEAT_INTERVAL_IN_MS);
                 timerHeartBeat.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
                 {
                     _ = HeartBeat();

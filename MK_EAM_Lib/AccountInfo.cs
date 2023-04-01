@@ -1,9 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MK_EAM_Lib
 {
@@ -108,30 +113,42 @@ namespace MK_EAM_Lib
             }
         }
 
-        private void _PerformWebrequest(Action<LogData> LogEvent, string logSender, string accountStatsPath, string itemsSaveFilePath, string uniqueID, bool getName = true, Action<AccountInfo> callback = null)
+        private async void _PerformWebrequest(Action<LogData> LogEvent, string logSender, string accountStatsPath, string itemsSaveFilePath, string uniqueID, bool getName = true, Action<AccountInfo> callback = null)
         {
             try
             {
                 string webPath = string.Format("https://www.realmofthemadgod.com/account/verify?guid={0}&password={1}&clientToken={2}&game_net=Unity&play_platform=Unity&game_net_user_id=", WebUtility.UrlEncode(email), WebUtility.UrlEncode(password), uniqueID);
                 string responseData = string.Empty;
 
-                WebRequest request = WebRequest.Create(webPath);
-                request.Credentials = CredentialCache.DefaultCredentials;
-                WebResponse response = request.GetResponse();
-                using (System.IO.Stream dataStream = response.GetResponseStream())
-                using (System.IO.StreamReader reader = new System.IO.StreamReader(dataStream))
-                    responseData = reader.ReadToEnd();
-                response.Close();
+                Dictionary<string, string> values = new Dictionary<string, string>
+                {
+                    { "guid", email },
+                    { "password", password },
+                    { "clientToken", uniqueID },
+                    { "game_net", "Unity" },
+                    { "play_platform", "Unity" },
+                    { "game_net_user_id", "" }
+                };
+                FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+
+                Task<HttpResponseMessage> response = SendPostRequest("https://www.realmofthemadgod.com/account/verify", content, "form");
+                HttpResponseMessage responseMessage = await response;
+                responseMessage.EnsureSuccessStatusCode();
+
+                responseData = await responseMessage.Content.ReadAsStringAsync();
 
                 if (responseData.Contains("<Error>"))
                 {
                     //Error out
-                    //requestSuccessfull = false;
 
                     if (responseData.Contains("passwordError"))//<Error>WebChangePasswordDialog.passwordError</Error>                    
                         requestState = RequestState.WrongPassword;
                     else if (responseData.ToLower().Contains("wait"))//<Error>Internal error, please wait 5 minutes to try again!</Error>                    
                         requestState = RequestState.TooManyRequests;
+                    else if (responseData.Contains("CaptchaLock"))//<Error>CaptchaLock</Error>
+                        requestState = RequestState.Captcha;
                     else
                         requestState = RequestState.Error;
 
@@ -158,15 +175,31 @@ namespace MK_EAM_Lib
                 {
                     if (LogEvent != null)
                         LogEvent(new LogData(-1, logSender, LogEventType.WebRequest, $"Sending \"char/list\" for {email}."));
-                    string link = $"https://www.realmofthemadgod.com/char/list?do_login=false&accessToken={WebUtility.UrlEncode(accessToken.token)}&game_net=Unity&play_platform=Unity&game_net_user_id=&muleDump=true&__source=jakcodex-v965";
-                    request = WebRequest.Create(link);
-                    request.Credentials = CredentialCache.DefaultCredentials;
-                    response = request.GetResponse();
-                    string charList = "";
-                    using (System.IO.Stream dataStream = response.GetResponseStream())
-                    using (System.IO.StreamReader reader = new System.IO.StreamReader(dataStream))
-                        charList = reader.ReadToEnd();
-                    response.Close();
+                    
+                    response = null;
+                    values = null;
+                    content = null;
+                    responseMessage = null;
+
+                    values = new Dictionary<string, string>
+                    {
+                        { "do_login", "false" },
+                        { "accessToken", accessToken.token },
+                        { "game_net", "Unity" },
+                        { "play_platform", "Unity" },
+                        { "game_net_user_id", "" },
+                        { "muleDump", "true" },
+                        { "__source", "jakcodex-v965" }
+                    };
+                    content = new FormUrlEncodedContent(values);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+
+                    response = SendPostRequest("https://www.realmofthemadgod.com/char/list", content, "form");
+                    responseMessage = await response;
+                    responseMessage.EnsureSuccessStatusCode();
+
+                    string charList = await responseMessage.Content.ReadAsStringAsync();
 
                     SaveAccountStats(LogEvent, logSender, accountStatsPath, itemsSaveFilePath, responseData, charList, callback);
                 }
@@ -176,15 +209,38 @@ namespace MK_EAM_Lib
                         LogEvent(new LogData(-1, logSender, LogEventType.EAMError, $"Failed to get stats for {email}."));
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception e)
             {
                 requestState = RequestState.Error;
+
+                if (LogEvent != null)
+                    LogEvent(new LogData(-1, logSender, LogEventType.EAMError, $"Failed to refresh data. Exception: " + e.Message));
             }
 
             sender = null;
 
             if (callback != null)
                 callback(this);
+        }
+
+        public static async Task<HttpResponseMessage> SendPostRequest(string url, object data, string contentType)
+        {
+            using (var client = new HttpClient())
+            {
+                if (contentType.Equals("json"))
+                {
+                    string json = JsonConvert.SerializeObject(data);
+                    var content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
+                    return await client.PostAsync(url, content);
+                }
+
+                if (contentType.Equals("form"))
+                {
+                    return await client.PostAsync(url, (FormUrlEncodedContent)data);
+                }
+
+                return null;
+            }
         }
 
         public Tuple<string, string, string> GetClientAccessData(Action<LogData> LogEvent, string logSender, string resp)
@@ -403,7 +459,7 @@ namespace MK_EAM_Lib
             }
             catch { }
             return string.Empty;
-        }        
+        }
 
         public enum RequestState
         {
@@ -411,7 +467,8 @@ namespace MK_EAM_Lib
             WrongPassword = 1,
             TooManyRequests = 2,
             Error = 3,
-            None
+            None = 4,
+            Captcha = 5,
         }
         public static string RequestStateToString(RequestState state)
         {

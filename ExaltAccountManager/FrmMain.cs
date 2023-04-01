@@ -86,6 +86,7 @@ namespace ExaltAccountManager
             }
         }
         private OptionsData optionsDataValue = new OptionsData();
+        private bool drawConfigChangesIcon = false;
         public NotificationOptions notOpt = new NotificationOptions();
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
@@ -589,8 +590,7 @@ namespace ExaltAccountManager
                                "Failed to start the EAM_Updater. Exception: " + ex.Message));
 
                 ShowSnackbar("Failed to start the EAM_Updater.", BunifuSnackbar.MessageTypes.Error, 7500);
-            }
-            
+            }            
 
             return false;
         }
@@ -1061,14 +1061,6 @@ namespace ExaltAccountManager
 
                 if (showSnackbarNotification)
                     ShowSnackbar($"Options saved successfully!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 3000);
-
-                //if (msg != null && msg.type == EAMNotificationMessageType.UpdateAvailable)
-                //{
-                //    lUpdateAvailable.Visible = true;
-                //    lVersion.ForeColor = useDarkmode ? Color.Orange : Color.DarkOrange;
-                //    notificationSaveFile.forceCheck = true;
-                //    updateLink = isMPGHVersion ? msg.linkM : msg.link;
-                //}
             }
             catch
             {
@@ -1084,6 +1076,13 @@ namespace ExaltAccountManager
             {
                 uiOptions?.ApplyOptions();
             }
+        }
+
+        public void UpdateHasConfigChangesUI(bool state)
+        {
+            drawConfigChangesIcon = state;
+            
+            btnOptions.Invalidate();
         }
 
         #endregion
@@ -1888,6 +1887,22 @@ namespace ExaltAccountManager
             if (!OptionsData.analyticsOptions.OptOut)
             {
                 _ = AnalyticsClient.Instance?.EndSeesion().Result;
+            }
+        }
+
+        private void btnOptions_Paint(object sender, PaintEventArgs e)
+        {
+            if(!drawConfigChangesIcon)
+                return;
+
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            using(Pen pColor = new Pen(Color.FromArgb(98, 0, 238)))
+            using (Pen pFont = new Pen(ColorScheme.GetColorFont(useDarkmode)))
+            {
+                e.Graphics.FillEllipse(pColor.Brush, btnOptions.Width - 52f, 6f, 26.5f, 26.5f);
+                e.Graphics.DrawImage( Properties.Resources.ic_save_white_18dp, btnOptions.Width - 47, 11, 18, 18);
             }
         }
     }

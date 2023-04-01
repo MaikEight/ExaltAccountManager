@@ -1,19 +1,12 @@
 ﻿using MK_EAM_Analytics;
-using MK_EAM_General_Services_Lib.News.Data;
-using MK_EAM_General_Services_Lib;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ExaltAccountManager.UI.Elements
 {
@@ -21,6 +14,7 @@ namespace ExaltAccountManager.UI.Elements
     {
         private FrmMain frm;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
         public EleAnalyticsSettings(FrmMain _frm)
         {
             InitializeComponent();
@@ -292,10 +286,5 @@ namespace ExaltAccountManager.UI.Elements
         private void pbClose_MouseDown(object sender, MouseEventArgs e) => pbClose.BackColor = Color.Red;
 
         #endregion
-
-        private void toggleAnonymize_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

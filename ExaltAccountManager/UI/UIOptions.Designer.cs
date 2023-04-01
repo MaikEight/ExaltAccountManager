@@ -56,9 +56,6 @@
             this.btnDiscord = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.btnGameUpdaterAndNotificationSettings = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.label6 = new System.Windows.Forms.Label();
-            this.bunifuShadowPanel4 = new Bunifu.UI.WinForms.BunifuShadowPanel();
-            this.lSaveOptions = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.btnSave = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
             this.bunifuShadowPanel5 = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.btnSnackbar = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
@@ -66,11 +63,15 @@
             this.toggleUseDarkmode = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
             this.label12 = new System.Windows.Forms.Label();
             this.lSave = new System.Windows.Forms.Label();
+            this.bunifuShadowPanel4 = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.toggleAlwaysRefreshDataOnLogin = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
+            this.label3 = new System.Windows.Forms.Label();
             this.bunifuShadowPanel1.SuspendLayout();
             this.bunifuShadowPanel2.SuspendLayout();
             this.bunifuShadowPanel3.SuspendLayout();
-            this.bunifuShadowPanel4.SuspendLayout();
             this.bunifuShadowPanel5.SuspendLayout();
+            this.bunifuShadowPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // lHeadline
@@ -405,7 +406,7 @@
             this.bunifuShadowPanel2.ShadowDepth = 4;
             this.bunifuShadowPanel2.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.bunifuShadowPanel2.ShadowTopLeftVisible = false;
-            this.bunifuShadowPanel2.Size = new System.Drawing.Size(450, 145);
+            this.bunifuShadowPanel2.Size = new System.Drawing.Size(282, 145);
             this.bunifuShadowPanel2.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.bunifuShadowPanel2.TabIndex = 17;
             // 
@@ -424,6 +425,7 @@
             this.toggleCloseEAMAftergameStart.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
             this.toggleCloseEAMAftergameStart.UncheckedSwitchColor = System.Drawing.Color.White;
             this.toggleCloseEAMAftergameStart.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleCloseEAMAftergameStart.CheckedChanged += new System.EventHandler(this.toggleCloseEAMAftergameStart_CheckedChanged);
             // 
             // label4
             // 
@@ -481,6 +483,7 @@
             this.dropServers.Text = null;
             this.dropServers.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
             this.dropServers.TextLeftMargin = 5;
+            this.dropServers.SelectedIndexChanged += new System.EventHandler(this.dropServers_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -806,51 +809,6 @@
             this.label6.Text = "Privacy settings";
             this.label6.UseMnemonic = false;
             // 
-            // bunifuShadowPanel4
-            // 
-            this.bunifuShadowPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bunifuShadowPanel4.BackColor = System.Drawing.Color.White;
-            this.bunifuShadowPanel4.BorderColor = System.Drawing.Color.WhiteSmoke;
-            this.bunifuShadowPanel4.BorderRadius = 9;
-            this.bunifuShadowPanel4.BorderThickness = 1;
-            this.bunifuShadowPanel4.Controls.Add(this.lSaveOptions);
-            this.bunifuShadowPanel4.Controls.Add(this.label11);
-            this.bunifuShadowPanel4.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
-            this.bunifuShadowPanel4.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.bunifuShadowPanel4.Location = new System.Drawing.Point(482, 330);
-            this.bunifuShadowPanel4.Name = "bunifuShadowPanel4";
-            this.bunifuShadowPanel4.PanelColor = System.Drawing.Color.White;
-            this.bunifuShadowPanel4.PanelColor2 = System.Drawing.Color.White;
-            this.bunifuShadowPanel4.ShadowColor = System.Drawing.Color.DarkGray;
-            this.bunifuShadowPanel4.ShadowDept = 2;
-            this.bunifuShadowPanel4.ShadowDepth = 4;
-            this.bunifuShadowPanel4.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
-            this.bunifuShadowPanel4.ShadowTopLeftVisible = false;
-            this.bunifuShadowPanel4.Size = new System.Drawing.Size(185, 123);
-            this.bunifuShadowPanel4.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
-            this.bunifuShadowPanel4.TabIndex = 19;
-            this.bunifuShadowPanel4.Visible = false;
-            // 
-            // lSaveOptions
-            // 
-            this.lSaveOptions.AutoSize = true;
-            this.lSaveOptions.Font = new System.Drawing.Font("Segoe UI Black", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lSaveOptions.Location = new System.Drawing.Point(56, 62);
-            this.lSaveOptions.Name = "lSaveOptions";
-            this.lSaveOptions.Size = new System.Drawing.Size(119, 23);
-            this.lSaveOptions.TabIndex = 17;
-            this.lSaveOptions.Text = "Save options";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(12, 12);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(104, 21);
-            this.label11.TabIndex = 7;
-            this.label11.Text = "Save options";
-            // 
             // btnSave
             // 
             this.btnSave.AllowAnimations = true;
@@ -882,6 +840,7 @@
             this.btnSave.Size = new System.Drawing.Size(50, 50);
             this.btnSave.Style = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.ButtonStyles.Round;
             this.btnSave.TabIndex = 16;
+            this.btnSave.Visible = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             this.btnSave.MouseEnter += new System.EventHandler(this.btnSave_MouseEnter);
             this.btnSave.MouseLeave += new System.EventHandler(this.btnSave_MouseLeave);
@@ -899,7 +858,7 @@
             this.bunifuShadowPanel5.Controls.Add(this.label12);
             this.bunifuShadowPanel5.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
             this.bunifuShadowPanel5.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.bunifuShadowPanel5.Location = new System.Drawing.Point(466, 183);
+            this.bunifuShadowPanel5.Location = new System.Drawing.Point(293, 183);
             this.bunifuShadowPanel5.Name = "bunifuShadowPanel5";
             this.bunifuShadowPanel5.PanelColor = System.Drawing.Color.White;
             this.bunifuShadowPanel5.PanelColor2 = System.Drawing.Color.White;
@@ -1056,15 +1015,78 @@
             this.lSave.Text = "Save options";
             this.lSave.Visible = false;
             // 
+            // bunifuShadowPanel4
+            // 
+            this.bunifuShadowPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bunifuShadowPanel4.BackColor = System.Drawing.Color.White;
+            this.bunifuShadowPanel4.BorderColor = System.Drawing.Color.WhiteSmoke;
+            this.bunifuShadowPanel4.BorderRadius = 9;
+            this.bunifuShadowPanel4.BorderThickness = 1;
+            this.bunifuShadowPanel4.Controls.Add(this.label1);
+            this.bunifuShadowPanel4.Controls.Add(this.toggleAlwaysRefreshDataOnLogin);
+            this.bunifuShadowPanel4.Controls.Add(this.label3);
+            this.bunifuShadowPanel4.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
+            this.bunifuShadowPanel4.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
+            this.bunifuShadowPanel4.Location = new System.Drawing.Point(495, 183);
+            this.bunifuShadowPanel4.Name = "bunifuShadowPanel4";
+            this.bunifuShadowPanel4.PanelColor = System.Drawing.Color.White;
+            this.bunifuShadowPanel4.PanelColor2 = System.Drawing.Color.White;
+            this.bunifuShadowPanel4.ShadowColor = System.Drawing.Color.DarkGray;
+            this.bunifuShadowPanel4.ShadowDept = 2;
+            this.bunifuShadowPanel4.ShadowDepth = 4;
+            this.bunifuShadowPanel4.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
+            this.bunifuShadowPanel4.ShadowTopLeftVisible = false;
+            this.bunifuShadowPanel4.Size = new System.Drawing.Size(172, 124);
+            this.bunifuShadowPanel4.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
+            this.bunifuShadowPanel4.TabIndex = 22;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(12, 41);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(154, 42);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "Always Refresh data \r\non game start";
+            this.label1.UseMnemonic = false;
+            // 
+            // toggleAlwaysRefreshDataOnLogin
+            // 
+            this.toggleAlwaysRefreshDataOnLogin.BackColor = System.Drawing.Color.Transparent;
+            this.toggleAlwaysRefreshDataOnLogin.Checked = false;
+            this.toggleAlwaysRefreshDataOnLogin.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
+            this.toggleAlwaysRefreshDataOnLogin.CheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleAlwaysRefreshDataOnLogin.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleAlwaysRefreshDataOnLogin.Location = new System.Drawing.Point(16, 89);
+            this.toggleAlwaysRefreshDataOnLogin.Name = "toggleAlwaysRefreshDataOnLogin";
+            this.toggleAlwaysRefreshDataOnLogin.OutlineThickness = 2;
+            this.toggleAlwaysRefreshDataOnLogin.Size = new System.Drawing.Size(44, 19);
+            this.toggleAlwaysRefreshDataOnLogin.TabIndex = 20;
+            this.toggleAlwaysRefreshDataOnLogin.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
+            this.toggleAlwaysRefreshDataOnLogin.UncheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleAlwaysRefreshDataOnLogin.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleAlwaysRefreshDataOnLogin.CheckedChanged += new System.EventHandler(this.toggleAlwaysRefreshDataOnLogin_CheckedChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(12, 12);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(51, 21);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Login";
+            // 
             // UIOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.bunifuShadowPanel4);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.lSave);
             this.Controls.Add(this.bunifuShadowPanel5);
-            this.Controls.Add(this.bunifuShadowPanel4);
             this.Controls.Add(this.bunifuShadowPanel3);
             this.Controls.Add(this.bunifuShadowPanel2);
             this.Controls.Add(this.lHeadline);
@@ -1080,10 +1102,10 @@
             this.bunifuShadowPanel2.PerformLayout();
             this.bunifuShadowPanel3.ResumeLayout(false);
             this.bunifuShadowPanel3.PerformLayout();
-            this.bunifuShadowPanel4.ResumeLayout(false);
-            this.bunifuShadowPanel4.PerformLayout();
             this.bunifuShadowPanel5.ResumeLayout(false);
             this.bunifuShadowPanel5.PerformLayout();
+            this.bunifuShadowPanel4.ResumeLayout(false);
+            this.bunifuShadowPanel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1102,10 +1124,7 @@
         private System.Windows.Forms.Label label2;
         private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel3;
         private System.Windows.Forms.Label label6;
-        private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel4;
-        private System.Windows.Forms.Label label11;
         private Bunifu.UI.WinForms.BunifuButton.BunifuIconButton btnSave;
-        private System.Windows.Forms.Label lSaveOptions;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnSetDefaultPath;
         private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel5;
         private System.Windows.Forms.Label label5;
@@ -1116,5 +1135,9 @@
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnDiscord;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnAnalytics;
         private System.Windows.Forms.Label lSave;
+        private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel4;
+        private System.Windows.Forms.Label label1;
+        private Bunifu.UI.WinForms.BunifuToggleSwitch2 toggleAlwaysRefreshDataOnLogin;
+        private System.Windows.Forms.Label label3;
     }
 }

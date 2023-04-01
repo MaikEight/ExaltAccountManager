@@ -386,6 +386,8 @@ namespace ExaltAccountManager
         public bool useDarkmode = false;
         public string serverToJoin = "Last";
 
+        public bool alwaysrefreshDataOnLogin = false;
+
         public bool searchRotmgUpdates = true;
         public bool searchUpdateNotification = true;
         public bool searchWarnings = true;

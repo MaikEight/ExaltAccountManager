@@ -63,7 +63,7 @@ namespace ExaltAccountManager.UI
             tbPath.BackColor = tbPath.FillColor = tbPath.OnIdleState.FillColor = tbPath.OnHoverState.FillColor = tbPath.OnActiveState.FillColor = tbPath.OnDisabledState.FillColor =
             def;
 
-            this.ForeColor = lSaveOptions.ForeColor =
+            this.ForeColor =
             tbPath.ForeColor = tbPath.OnActiveState.ForeColor = tbPath.OnDisabledState.ForeColor = tbPath.OnHoverState.ForeColor = tbPath.OnIdleState.ForeColor =
             font;
 
@@ -114,6 +114,7 @@ namespace ExaltAccountManager.UI
             };
 
             toggleUseDarkmode.Checked = frm.UseDarkmode;
+            toggleAlwaysRefreshDataOnLogin.Checked = frm.OptionsData.alwaysrefreshDataOnLogin;
 
             isInit = false;
         }
@@ -137,6 +138,16 @@ namespace ExaltAccountManager.UI
             isInit = false;
 
             return false;
+        }
+
+        private void HasChanges()
+        {
+            if (isInit)
+                return;
+
+            btnSave.Visible = true;
+
+            frm.UpdateHasConfigChangesUI(true);
         }
 
         private void btnChangePath_Click(object sender, EventArgs e)
@@ -169,8 +180,9 @@ namespace ExaltAccountManager.UI
             {
                 exePath = tbPath.Text,
                 closeAfterConnection = toggleCloseEAMAftergameStart.Checked,
-
                 serverToJoin = dropServers.SelectedItem.ToString().StartsWith("Last") ? "Last" : dropServers.SelectedItem.ToString(),
+
+                alwaysrefreshDataOnLogin = toggleAlwaysRefreshDataOnLogin.Checked,
 
                 searchRotmgUpdates = GameUpdateAndNotifications[0],
                 searchUpdateNotification = GameUpdateAndNotifications[1],
@@ -181,19 +193,19 @@ namespace ExaltAccountManager.UI
             };
 
             frm.SaveOptions(frm.OptionsData, true);
+            btnSave.Visible = false;
+            frm.UpdateHasConfigChangesUI(false);
         }
 
         private void btnSave_MouseEnter(object sender, EventArgs e)
         {
             btnSave.Image = Properties.Resources.save_36px;
-            lSaveOptions.ForeColor = Color.FromArgb(85, 85, 85);
             lSave.Visible = true;
         }
 
         private void btnSave_MouseLeave(object sender, EventArgs e)
         {
             btnSave.Image = Properties.Resources.save_Outline_36px;
-            lSaveOptions.ForeColor = this.ForeColor;
             lSave.Visible = false;
         }
 
@@ -219,6 +231,8 @@ namespace ExaltAccountManager.UI
                 tbPath.Text = tbPath.Text.Replace("%username%", Environment.UserName);
                 tbPath.SelectionStart = tbPath.Text.Length;
             }
+
+            HasChanges();
         }
 
         private void btnSnackbar_Click(object sender, EventArgs e)
@@ -248,6 +262,21 @@ namespace ExaltAccountManager.UI
             lHeadline.Focus();
 
             frm.ShowShadowForm(new Elements.EleAnalyticsSettings(frm));
+        }
+
+        private void dropServers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            HasChanges();
+        }
+
+        private void toggleCloseEAMAftergameStart_CheckedChanged(object sender, EventArgs e)
+        {
+            HasChanges();
+        }
+
+        private void toggleAlwaysRefreshDataOnLogin_CheckedChanged(object sender, EventArgs e)
+        {
+            HasChanges();
         }
     }
 }

@@ -354,7 +354,7 @@ namespace ExaltAccountManager.UI
                                     catch { cTime = new DateTime(2000, 1, 1); }
 
                                     string hwid = frm.GetDeviceUniqueIdentifier();
-                                    if (cTime.Date < DateTime.Now.Date || info.accessToken.validUntil < DateTime.Now || string.IsNullOrEmpty(info.accessToken.clientToken) || !info.accessToken.clientToken.Equals(hwid))
+                                    if (frm.OptionsData.alwaysrefreshDataOnLogin || cTime.Date < DateTime.Now.Date || info.accessToken.validUntil < DateTime.Now.AddHours(1) || string.IsNullOrEmpty(info.accessToken.clientToken) || !info.accessToken.clientToken.Equals(hwid))
                                     {
                                         info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, hwid, false, true, StartGameForAccountInvoker);
                                     }

@@ -32,7 +32,9 @@ namespace ExaltAccountManager.UI
                             $"- Fixed the \"Last Run\" and \"Results\" panels to display information.{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;Thanks to <b>Ykao</b> for pointing me to this.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>OPTIONS</b>{Environment.NewLine}" +
-                            $"- Added new buttons to allow for changing notification and privacy settings.{Environment.NewLine}{Environment.NewLine}" +
+                            $"- Added a new toggle that allows to always refresh the data on login.{Environment.NewLine}" +
+                            $"- Added new buttons to allow for changing notification and privacy settings.{Environment.NewLine}" +
+                            $"- Added an indicator for unsaved changes.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>SECURITY</b>{Environment.NewLine}" +
                             $"- Finally got a code signing certificate to sign EAM-Files.{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;This should remove the \"Windows SmartScreen\" (on most systems).{Environment.NewLine}{Environment.NewLine}" +
