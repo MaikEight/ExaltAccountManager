@@ -42,6 +42,8 @@ namespace MK_EAM_Analytics
 
         private async Task<bool> HeartBeat()
         {
+            #region HeartBeat
+
             if (SessionId == Guid.Empty)
                 return false;
 
@@ -61,6 +63,8 @@ namespace MK_EAM_Analytics
             catch { }
 
             return false;
+
+            #endregion
         }
 
         public async Task<bool> StartSession(int amountOfAccounts, string clientIdHash, Version clientVersion)

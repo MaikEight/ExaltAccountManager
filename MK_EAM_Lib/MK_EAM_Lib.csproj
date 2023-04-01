@@ -79,6 +79,7 @@
     <Compile Include="AccountSaveFile.cs" />
     <Compile Include="AccountStats.cs" />
     <Compile Include="AesCryptographyService.cs" />
+    <Compile Include="CaptchaSolverUtils.cs" />
     <Compile Include="CharacterClasses.cs" />
     <Compile Include="CharListStats.cs" />
     <Compile Include="DailyLogins.cs" />
