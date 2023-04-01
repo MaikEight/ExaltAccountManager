@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK_EAM_General_Services_Lib
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{29E5CE25-2BF3-4AE0-AAC1-ACDB71419435}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK_EAM_Captcha_Solver_UI_Lib", "MK_EAM_Captcha_Solver_UI_Lib\MK_EAM_Captcha_Solver_UI_Lib.csproj", "{1BA65C66-977B-4642-BB70-A5ADB813B0A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,10 @@ Global
 		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BA65C66-977B-4642-BB70-A5ADB813B0A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BA65C66-977B-4642-BB70-A5ADB813B0A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BA65C66-977B-4642-BB70-A5ADB813B0A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BA65C66-977B-4642-BB70-A5ADB813B0A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +110,7 @@ Global
 		{EDDC50BF-5B06-4824-90E3-B7660F7D926E} = {29E5CE25-2BF3-4AE0-AAC1-ACDB71419435}
 		{9C19752E-0EF2-489C-A6FF-EEAAFA06DCC4} = {29E5CE25-2BF3-4AE0-AAC1-ACDB71419435}
 		{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F} = {29E5CE25-2BF3-4AE0-AAC1-ACDB71419435}
+		{1BA65C66-977B-4642-BB70-A5ADB813B0A3} = {29E5CE25-2BF3-4AE0-AAC1-ACDB71419435}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D61C4B34-772E-4C38-B3C8-4F8C367D52A9}

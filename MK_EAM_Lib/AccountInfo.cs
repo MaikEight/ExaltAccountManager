@@ -132,7 +132,6 @@ namespace MK_EAM_Lib
                 FormUrlEncodedContent content = new FormUrlEncodedContent(values);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-
                 Task<HttpResponseMessage> response = SendPostRequest("https://www.realmofthemadgod.com/account/verify", content, "form");
                 HttpResponseMessage responseMessage = await response;
                 responseMessage.EnsureSuccessStatusCode();
@@ -157,25 +156,24 @@ namespace MK_EAM_Lib
 
                     sender = null;
 
-                    if (callback != null)
-                        callback(this);
+                    callback?.Invoke(null);
 
                     return;
                 }
-                else
-                    requestState = RequestState.Success;
 
-                if (getName && responseData.Contains("<Account>"))
-                    name = responseData.Substring(responseData.IndexOf("<Name>") + 6, responseData.IndexOf("</Name>") - 6 - responseData.IndexOf("<Name>"));
+                requestState = RequestState.Success;
 
                 System.Tuple<string, string, string> tup = GetClientAccessData(LogEvent, logSender, responseData);
-
                 accessToken = new MK_EAM_Lib.AccessToken(tup.Item1, tup.Item2, tup.Item3, uniqueID);
+
+                if (getName && responseData.Contains("<Account>") && responseData.Contains("<Name>") )
+                    name = responseData.Substring(responseData.IndexOf("<Name>") + 6, responseData.IndexOf("</Name>") - 6 - responseData.IndexOf("<Name>"));
+  
                 try
                 {
                     if (LogEvent != null)
                         LogEvent(new LogData(-1, logSender, LogEventType.WebRequest, $"Sending \"char/list\" for {email}."));
-                    
+
                     response = null;
                     values = null;
                     content = null;
@@ -193,7 +191,6 @@ namespace MK_EAM_Lib
                     };
                     content = new FormUrlEncodedContent(values);
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-
 
                     response = SendPostRequest("https://www.realmofthemadgod.com/char/list", content, "form");
                     responseMessage = await response;
@@ -219,8 +216,7 @@ namespace MK_EAM_Lib
 
             sender = null;
 
-            if (callback != null)
-                callback(this);
+            callback?.Invoke(null);
         }
 
         public static async Task<HttpResponseMessage> SendPostRequest(string url, object data, string contentType)
@@ -294,8 +290,7 @@ namespace MK_EAM_Lib
 
                     sender = null;
 
-                    if (callback != null)
-                        callback(this);
+                    callback?.Invoke(null);
 
                     return;
                 }

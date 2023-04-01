@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -15,8 +13,8 @@ namespace MK_EAM_Lib
         public const string URL_CAPTCHA_REFRESH = "https://www.realmofthemadgod.com/captcha/refreshChallenge";
 
         public async static Task<CaptchaRefreshResponse> RequestChallenge(AccountInfo acc)
-        {            
-            var values = new Dictionary<string, string>
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>
             {
                 { "guid", acc.Email },
                 { "password", acc.password },
@@ -41,7 +39,7 @@ namespace MK_EAM_Lib
         public async static Task<bool> SubmitSolution(AccountInfo acc, PointF[] points)
         {
             string data = GetDataFromPoints(points);
-            var values = new Dictionary<string, string>
+            Dictionary<string, string> values = new Dictionary<string, string>
             {
                 { "guid", acc.Email },
                 { "password", acc.password },
@@ -69,6 +67,7 @@ namespace MK_EAM_Lib
         private static string GetDataFromPoints(PointF[] points)
         {
             StringBuilder sb = new StringBuilder();
+
             sb.Append("[[");
             sb.Append(points[0].X.ToString("0.000").Replace(',', '.'));
             sb.Append(", ");
@@ -82,13 +81,13 @@ namespace MK_EAM_Lib
             sb.Append(", ");
             sb.Append(points[2].Y.ToString("0.000").Replace(',', '.'));
             sb.Append("]]");
-
+            
             return sb.ToString();
         }
 
         private static async Task<HttpResponseMessage> SendPostRequest(string url, FormUrlEncodedContent data)
         {     
-            using (var client = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {                
                 return await client.PostAsync(url, data);
             }
