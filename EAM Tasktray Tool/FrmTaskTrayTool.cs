@@ -24,6 +24,8 @@ namespace EAM_Tasktray_Tool
         private bool UseDarkmode = false;
         private NotificationOptions notificationOptions;
 
+        private bool didShowFailedToFindData = false;
+
         public FrmTaskTrayTool()
         {
             InitializeComponent();
@@ -147,8 +149,11 @@ namespace EAM_Tasktray_Tool
                         progressbar.Visible = false;
                         lProgressBlock.Visible = true;
 
-                        if (notificationOptions.showNotificationOnError)
+                        if (!didShowFailedToFindData && notificationOptions.showNotificationOnError)
+                        {
+                            didShowFailedToFindData = true;
                             ShowNotification("Daily Logins failed to find data", "Failed to find data to display.", 0);
+                        }
                     }
                 }
                 else
