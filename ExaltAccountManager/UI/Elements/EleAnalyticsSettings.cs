@@ -24,7 +24,7 @@ namespace ExaltAccountManager.UI.Elements
             toggleAnonymize.Checked = frm.OptionsData.analyticsOptions.Anonymization;
             toggleSendAnalytics.Checked = !frm.OptionsData.analyticsOptions.OptOut;
 
-            if (frm.OptionsData.analyticsOptions.OptOut || frm.OptionsData.analyticsOptions.Anonymization || AnalyticsClient.Instance == null)
+            if (frm.OptionsData.analyticsOptions.OptOut || frm.OptionsData.analyticsOptions.Anonymization || AnalyticsClient.Instance == null || AnalyticsClient.Instance?.SessionId == Guid.Empty || AnalyticsClient.Instance?.SessionId == Guid.Parse("45414D20-0000-6279-0000-204D61696B38"))
             {
                 btnRequestData.Enabled =
                 btnDelete.Enabled = false;

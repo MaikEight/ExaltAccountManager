@@ -16,7 +16,7 @@ namespace MK_EAM_Analytics.Utils
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
             };
 
-            using (var client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
+            using (HttpClient client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
             {                
                 string json = JsonConvert.SerializeObject(data);
                 var content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
@@ -31,7 +31,7 @@ namespace MK_EAM_Analytics.Utils
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
             };
 
-            using (var client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
+            using (HttpClient client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
             {
                 return await client.GetAsync(url);
             }
@@ -44,7 +44,7 @@ namespace MK_EAM_Analytics.Utils
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
             };
 
-            using (var client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
+            using (HttpClient client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
                 string json = JsonConvert.SerializeObject(data);
@@ -61,7 +61,7 @@ namespace MK_EAM_Analytics.Utils
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
             };
 
-            using (var client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
+            using (HttpClient client = UseHandler(url) ? new HttpClient(handler) : new HttpClient())
             {
                 HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), url);
                 string json = JsonConvert.SerializeObject(data);

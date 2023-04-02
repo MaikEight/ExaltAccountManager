@@ -37,22 +37,22 @@
             this.pbClose = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pHeader = new System.Windows.Forms.Panel();
+            this.lBeta = new System.Windows.Forms.Label();
+            this.lHeaderCaptchaAid = new System.Windows.Forms.Label();
             this.lEAMHead = new System.Windows.Forms.Label();
             this.pbHeader = new Bunifu.UI.WinForms.BunifuPictureBox();
-            this.lHeaderCaptchaAid = new System.Windows.Forms.Label();
             this.pMessage = new System.Windows.Forms.Panel();
             this.lMessage = new System.Windows.Forms.Label();
             this.pContent = new System.Windows.Forms.Panel();
             this.pCaptcha = new System.Windows.Forms.Panel();
             this.pActions = new System.Windows.Forms.Panel();
+            this.lTriesLeft = new System.Windows.Forms.Label();
             this.btnReset = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.btnSubmit = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.pbCaptchaMain = new System.Windows.Forms.PictureBox();
             this.pbCaptchaQuestion = new System.Windows.Forms.PictureBox();
             this.pCaptchaText = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
-            this.lTriesLeft = new System.Windows.Forms.Label();
-            this.lBeta = new System.Windows.Forms.Label();
             this.formDock = new Bunifu.UI.WinForms.BunifuFormDock();
             this.pTopContent.SuspendLayout();
             this.pTop.SuspendLayout();
@@ -145,6 +145,28 @@
             this.pHeader.Size = new System.Drawing.Size(175, 64);
             this.pHeader.TabIndex = 4;
             // 
+            // lBeta
+            // 
+            this.lBeta.AutoSize = true;
+            this.lBeta.Font = new System.Drawing.Font("Segoe UI Semibold", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lBeta.ForeColor = System.Drawing.Color.White;
+            this.lBeta.Location = new System.Drawing.Point(142, 42);
+            this.lBeta.Name = "lBeta";
+            this.lBeta.Size = new System.Drawing.Size(25, 12);
+            this.lBeta.TabIndex = 5;
+            this.lBeta.Text = "BETA";
+            // 
+            // lHeaderCaptchaAid
+            // 
+            this.lHeaderCaptchaAid.AutoSize = true;
+            this.lHeaderCaptchaAid.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lHeaderCaptchaAid.ForeColor = System.Drawing.Color.White;
+            this.lHeaderCaptchaAid.Location = new System.Drawing.Point(60, 25);
+            this.lHeaderCaptchaAid.Name = "lHeaderCaptchaAid";
+            this.lHeaderCaptchaAid.Size = new System.Drawing.Size(104, 21);
+            this.lHeaderCaptchaAid.TabIndex = 4;
+            this.lHeaderCaptchaAid.Text = "Captcha Aid";
+            // 
             // lEAMHead
             // 
             this.lEAMHead.AutoSize = true;
@@ -172,17 +194,6 @@
             this.pbHeader.TabStop = false;
             this.pbHeader.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Square;
             // 
-            // lHeaderCaptchaAid
-            // 
-            this.lHeaderCaptchaAid.AutoSize = true;
-            this.lHeaderCaptchaAid.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lHeaderCaptchaAid.ForeColor = System.Drawing.Color.White;
-            this.lHeaderCaptchaAid.Location = new System.Drawing.Point(60, 25);
-            this.lHeaderCaptchaAid.Name = "lHeaderCaptchaAid";
-            this.lHeaderCaptchaAid.Size = new System.Drawing.Size(104, 21);
-            this.lHeaderCaptchaAid.TabIndex = 4;
-            this.lHeaderCaptchaAid.Text = "Captcha Aid";
-            // 
             // pMessage
             // 
             this.pMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
@@ -203,7 +214,7 @@
             this.lMessage.Margin = new System.Windows.Forms.Padding(0);
             this.lMessage.MaximumSize = new System.Drawing.Size(290, 0);
             this.lMessage.Name = "lMessage";
-            this.lMessage.Size = new System.Drawing.Size(285, 63);
+            this.lMessage.Size = new System.Drawing.Size(281, 63);
             this.lMessage.TabIndex = 8;
             this.lMessage.Text = "You need to solve a captcha to log in or refresh the data of the account: \r\n{0}";
             this.lMessage.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -218,6 +229,7 @@
             this.pContent.Padding = new System.Windows.Forms.Padding(5, 0, 5, 5);
             this.pContent.Size = new System.Drawing.Size(300, 427);
             this.pContent.TabIndex = 2;
+            this.pContent.Paint += new System.Windows.Forms.PaintEventHandler(this.pContent_Paint);
             // 
             // pCaptcha
             // 
@@ -242,6 +254,21 @@
             this.pActions.Size = new System.Drawing.Size(290, 41);
             this.pActions.TabIndex = 3;
             this.pActions.Visible = false;
+            // 
+            // lTriesLeft
+            // 
+            this.lTriesLeft.AutoEllipsis = true;
+            this.lTriesLeft.AutoSize = true;
+            this.lTriesLeft.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lTriesLeft.Location = new System.Drawing.Point(109, 5);
+            this.lTriesLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.lTriesLeft.MaximumSize = new System.Drawing.Size(290, 0);
+            this.lTriesLeft.Name = "lTriesLeft";
+            this.lTriesLeft.Size = new System.Drawing.Size(62, 34);
+            this.lTriesLeft.TabIndex = 26;
+            this.lTriesLeft.Text = "Tries left\r\n{0}";
+            this.lTriesLeft.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lTriesLeft.UseMnemonic = false;
             // 
             // btnReset
             // 
@@ -473,32 +500,6 @@
             this.label2.Text = "Find the following";
             this.label2.UseMnemonic = false;
             // 
-            // lTriesLeft
-            // 
-            this.lTriesLeft.AutoEllipsis = true;
-            this.lTriesLeft.AutoSize = true;
-            this.lTriesLeft.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lTriesLeft.Location = new System.Drawing.Point(109, 5);
-            this.lTriesLeft.Margin = new System.Windows.Forms.Padding(0);
-            this.lTriesLeft.MaximumSize = new System.Drawing.Size(290, 0);
-            this.lTriesLeft.Name = "lTriesLeft";
-            this.lTriesLeft.Size = new System.Drawing.Size(62, 34);
-            this.lTriesLeft.TabIndex = 26;
-            this.lTriesLeft.Text = "Tries left\r\n{0}";
-            this.lTriesLeft.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.lTriesLeft.UseMnemonic = false;
-            // 
-            // lBeta
-            // 
-            this.lBeta.AutoSize = true;
-            this.lBeta.Font = new System.Drawing.Font("Segoe UI Semibold", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lBeta.ForeColor = System.Drawing.Color.White;
-            this.lBeta.Location = new System.Drawing.Point(142, 42);
-            this.lBeta.Name = "lBeta";
-            this.lBeta.Size = new System.Drawing.Size(25, 12);
-            this.lBeta.TabIndex = 5;
-            this.lBeta.Text = "BETA";
-            // 
             // formDock
             // 
             this.formDock.AllowFormDragging = true;
@@ -535,7 +536,7 @@
             this.formDock.ShowDockingIndicators = false;
             this.formDock.TitleBarOptions.AllowFormDragging = true;
             this.formDock.TitleBarOptions.BunifuFormDock = this.formDock;
-            this.formDock.TitleBarOptions.DoubleClickToExpandWindow = true;
+            this.formDock.TitleBarOptions.DoubleClickToExpandWindow = false;
             this.formDock.TitleBarOptions.TitleBarControl = this.pTop;
             this.formDock.TitleBarOptions.UseBackColorOnDockingIndicators = false;
             // 
@@ -555,6 +556,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "FrmCaptchaSolver";
             this.Activated += new System.EventHandler(this.FrmCaptchaSolver_Activated);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrmCaptchaSolver_Paint);
             this.pTopContent.ResumeLayout(false);
             this.pTop.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).EndInit();

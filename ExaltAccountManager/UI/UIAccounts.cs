@@ -399,22 +399,7 @@ namespace ExaltAccountManager.UI
 
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
             {
-                FrmCaptchaSolver frmCaptchaSolver = new FrmCaptchaSolver(_info, frm.UseDarkmode);
-                frmCaptchaSolver.StartPosition = FormStartPosition.CenterParent;
-                DialogResult result = frmCaptchaSolver.ShowDialog(frm);
-
-                switch (result)
-                {
-                    case DialogResult.OK:
-                        _info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), false, true, StartGameForAccountInvoker);
-                        return false;
-                    case DialogResult.Cancel:
-                        return false;
-                    case DialogResult.Abort:
-                        return false;
-                    default:
-                        return false;
-                }
+                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), false, true, StartGameForAccountInvoker);
             }
 
             if (_info.requestState != MK_EAM_Lib.AccountInfo.RequestState.Success)
@@ -574,18 +559,23 @@ namespace ExaltAccountManager.UI
 
             dicLockRenewInfoToTime.Add(info, DateTime.Now.AddSeconds(60));
 
-            info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(info.Name), true, RenewTokenFinished);
+            info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(info.Name), true, RenewTokenFinished_Invoker);
 
             if (!timerReactivateRenewToken.Enabled)
                 timerReactivateRenewToken.Start();
         }
 
-        private void RenewTokenFinished(MK_EAM_Lib.AccountInfo _info) => RenewTokenFinished_Invoker(_info);
+        private void RenewTokenFinished_Invoker(MK_EAM_Lib.AccountInfo _info) => RenewTokenFinished(_info);
 
-        private bool RenewTokenFinished_Invoker(MK_EAM_Lib.AccountInfo _info)
+        private bool RenewTokenFinished(MK_EAM_Lib.AccountInfo _info)
         {
             if (this.InvokeRequired)
-                return (bool)this.Invoke((Func<MK_EAM_Lib.AccountInfo, bool>)RenewTokenFinished_Invoker, _info);
+                return (bool)this.Invoke((Func<MK_EAM_Lib.AccountInfo, bool>)RenewTokenFinished, _info);
+
+            if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
+            {
+                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(_info.Name), true, RenewTokenFinished_Invoker);
+            }
 
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Success)
                 frm.ShowSnackbar("Data refreshed successfully.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 3000);
@@ -830,8 +820,14 @@ namespace ExaltAccountManager.UI
         {
             if (dataGridView.SelectedRows.Count > 0)
             {
-                Clipboard.SetText(GetAccountInfo(dataGridView.SelectedRows[0].Index).name);
-                frm.ShowSnackbar("Accountname copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                string name = GetAccountInfo(dataGridView.SelectedRows[0].Index).name;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    Clipboard.SetText(name);
+                    frm.ShowSnackbar("Accountname copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                }
+                else
+                    frm.ShowSnackbar("No Accountname found.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
             }
             else
                 frm.ShowSnackbar("Please select an account first.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
@@ -841,8 +837,14 @@ namespace ExaltAccountManager.UI
         {
             if (dataGridView.SelectedRows.Count > 0)
             {
-                Clipboard.SetText(GetAccountInfo(dataGridView.SelectedRows[0].Index).email);
-                frm.ShowSnackbar("E-Mail copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                string email = GetAccountInfo(dataGridView.SelectedRows[0].Index).email;
+                if (!string.IsNullOrEmpty(email))
+                {
+                    Clipboard.SetText(email);
+                    frm.ShowSnackbar("E-Mail copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                }
+                else
+                    frm.ShowSnackbar("No E-Mail found.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
             }
             else
                 frm.ShowSnackbar("Please select an account first.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);

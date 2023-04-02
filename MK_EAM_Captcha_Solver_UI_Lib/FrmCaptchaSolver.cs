@@ -47,7 +47,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         {
             InitializeComponent();
 
-            formDock.SubscribeControlsToDragEvents(new Control[] { pHeader, pbHeader, lEAMHead, lHeaderCaptchaAid, lBeta });
+            formDock.SubscribeControlsToDragEvents(new Control[] { pHeader, pbHeader, lEAMHead, lHeaderCaptchaAid, lBeta });            
 
             accountInfo = _accountInfo;
             UseDarkmode = useDarkmode;
@@ -331,6 +331,22 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             if (accountInfo == null)
             {
                 this.Close();
+            }
+        }
+
+        private void FrmCaptchaSolver_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorDef(UseDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, this.Height - 1, this.Width, this.Height - 1);
+            }
+        }
+
+        private void pContent_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorDef(UseDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, pContent.Height - 1, pContent.Width, pContent.Height - 1);
             }
         }
     }

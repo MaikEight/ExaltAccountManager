@@ -216,6 +216,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CaptchaSolverUtils.cs" />
     <Compile Include="ColorScheme.cs" />
     <Compile Include="FrmCaptchaSolver.cs">
       <SubType>Form</SubType>

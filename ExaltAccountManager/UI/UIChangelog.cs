@@ -16,8 +16,12 @@ namespace ExaltAccountManager.UI
             {
               ReleaseDate = new DateTime(2023, 04, 04),
               Version = new Version(3, 1, 0),
-              Name = "News, UX improvements, bug fixes and much more",
-              Description = $"<b>EAM UPDATER</b>{Environment.NewLine}{Environment.NewLine}" +
+              Name = "Captcha Support, News, UX improvements, bug fixes and more",
+              Description = $"<b>CAPTCHA AID</b>{Environment.NewLine}{Environment.NewLine}" +
+                            $"- Added support for captcha solving.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;This is NO automation tool.{Environment.NewLine}" +
+                            $"ℹ️ The Captcha Aid tool is still in beta, please report feedback.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>EAM UPDATER</b>{Environment.NewLine}" +
                             $"- Added an updater to EAM, no manuall downloads needed anymore!{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>EAM NEWS</b>{Environment.NewLine}" +
                             $"- Added a new system display custom news.{Environment.NewLine}" +
@@ -55,6 +59,8 @@ namespace ExaltAccountManager.UI
                             $"- Fixed the taskbar-icon not minimizing EAM-windows.{Environment.NewLine}" +
                             $"- Fixed the button-sidebar not moving when the game-update button is added.{Environment.NewLine}" +
                             $"- Fixed a bug of the Notification Center that spamed Windows-Notifications.{Environment.NewLine}" +
+                            $"- Fixed a crashing bug that occured when copying an empty accountname / email {Environment.NewLine}" +
+                            $"- Fixed a bug that mad the task installer not working properly.{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;Thanks to <b>arhippa</b> for reporting the issue.{Environment.NewLine}" +
                             $"- Removed the \"White line\" at the bottom of EAM during darkmode."
             },

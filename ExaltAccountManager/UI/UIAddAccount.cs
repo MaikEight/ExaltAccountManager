@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MK_EAM_Captcha_Solver_UI_Lib;
+using System;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -123,6 +124,11 @@ namespace ExaltAccountManager.UI
 
         private void RequestDone(MK_EAM_Lib.AccountInfo _info)
         {
+            if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
+            {
+                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), !toggleCustomAccountname.Checked, true, RequestDone);
+            }
+
             if (string.IsNullOrEmpty(_info.name) || _info.requestState != MK_EAM_Lib.AccountInfo.RequestState.Success)
             {
                 frm.ShowSnackbar("Email or password are not correct.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Warning, 5000);

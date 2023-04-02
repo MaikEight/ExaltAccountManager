@@ -537,8 +537,6 @@ namespace ExaltAccountManager
                                "Failed to fetch latest EAM-Version." + Environment.NewLine + "Exception: " + ex.Message));
                 }
             }), cancellationTokenSource.Token);
-
-            
         }
 
         private void OnAPIResponseLatestEamVersion(Version latestVersion)

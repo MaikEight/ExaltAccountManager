@@ -9,5 +9,8 @@ namespace MK_EAM_Analytics.Data
         public System.DateTime StartTime { get; set; }
         public System.DateTime EndTime { get; set; }
         public bool HasEnded { get; set; }
+        public string Continent { get; set; }
+        public string Country { get; set; }
+        public string City { get; set; }
     }
 }
