@@ -20,6 +20,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MK_EAM_Captcha_Solver_UI_Lib;
 
 namespace ExaltAccountManager
 {
@@ -324,7 +325,7 @@ namespace ExaltAccountManager
             InitializeComponent();
 
             defaultMinimumsize = this.MinimumSize = new Size(this.MinimumSize.Width, 576);
-            lVersion.Text = $"EAM v{version} PREVIEW by Maik8";
+            lVersion.Text = $"EAM v{version}_R3 PREVIEW by Maik8";
 
             bool isNewInstall = false;
 
@@ -536,6 +537,8 @@ namespace ExaltAccountManager
                                "Failed to fetch latest EAM-Version." + Environment.NewLine + "Exception: " + ex.Message));
                 }
             }), cancellationTokenSource.Token);
+
+            
         }
 
         private void OnAPIResponseLatestEamVersion(Version latestVersion)

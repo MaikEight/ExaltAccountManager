@@ -11,6 +11,7 @@ namespace MK_EAM_Lib
     public static class CaptchaSolverUtils
     {
         public const string URL_CAPTCHA_REFRESH = "https://www.realmofthemadgod.com/captcha/refreshChallenge";
+        public const string URL_CAPTCHA_SUBMIT = "https://www.realmofthemadgod.com/captcha/submitSolution";
 
         public async static Task<CaptchaRefreshResponse> RequestChallenge(AccountInfo acc)
         {
@@ -29,8 +30,17 @@ namespace MK_EAM_Lib
                 Task<HttpResponseMessage> response = SendPostRequest(URL_CAPTCHA_REFRESH, content);
                 HttpResponseMessage responseMessage = await response;
                 responseMessage.EnsureSuccessStatusCode();
-
-                return JsonConvert.DeserializeObject<CaptchaRefreshResponse>(await responseMessage.Content.ReadAsStringAsync());
+                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                
+                string[] vs = responseString.Split(',');
+                for (int i = 0; i < vs.Length; i++)
+                    vs[i] = vs[i].Trim();
+                return new CaptchaRefreshResponse()
+                {
+                    qimg = vs[0].Split('\'')[3],
+                    img = vs[1].Split('\'')[3],
+                    submitsLeft = int.Parse(vs[2].Split(':')[1].TrimEnd('}'))
+                };
             }
             catch { }
             return null;
@@ -52,7 +62,7 @@ namespace MK_EAM_Lib
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
             try
             {
-                Task<HttpResponseMessage> response = SendPostRequest(URL_CAPTCHA_REFRESH, content);
+                Task<HttpResponseMessage> response = SendPostRequest(URL_CAPTCHA_SUBMIT, content);
                 HttpResponseMessage responseMessage = await response;
                 responseMessage.EnsureSuccessStatusCode();
 

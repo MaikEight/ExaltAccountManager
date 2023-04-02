@@ -156,7 +156,8 @@ namespace MK_EAM_Lib
 
                     sender = null;
 
-                    callback?.Invoke(null);
+                    if (callback != null)
+                        callback(this);
 
                     return;
                 }
@@ -166,9 +167,9 @@ namespace MK_EAM_Lib
                 System.Tuple<string, string, string> tup = GetClientAccessData(LogEvent, logSender, responseData);
                 accessToken = new MK_EAM_Lib.AccessToken(tup.Item1, tup.Item2, tup.Item3, uniqueID);
 
-                if (getName && responseData.Contains("<Account>") && responseData.Contains("<Name>") )
+                if (getName && responseData.Contains("<Account>") && responseData.Contains("<Name>"))
                     name = responseData.Substring(responseData.IndexOf("<Name>") + 6, responseData.IndexOf("</Name>") - 6 - responseData.IndexOf("<Name>"));
-  
+
                 try
                 {
                     if (LogEvent != null)
@@ -216,7 +217,8 @@ namespace MK_EAM_Lib
 
             sender = null;
 
-            callback?.Invoke(null);
+            if (callback != null)
+                callback(this);
         }
 
         public static async Task<HttpResponseMessage> SendPostRequest(string url, object data, string contentType)
@@ -290,7 +292,8 @@ namespace MK_EAM_Lib
 
                     sender = null;
 
-                    callback?.Invoke(null);
+                    if (callback != null)
+                        callback(this);
 
                     return;
                 }
@@ -479,6 +482,8 @@ namespace MK_EAM_Lib
                     return "Error";
                 case RequestState.None:
                     return "None";
+                case RequestState.Captcha:
+                    return "Captcha required";
                 default:
                     return "Error";
             }

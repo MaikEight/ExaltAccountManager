@@ -280,3 +280,4 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\System.Text.Encoding.CodePages.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\System.Threading.AccessControl.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\obj\Release\ExaltAccountManager.csproj.Fody.CopyLocal.cache
+C:\Users\Maik8\source\repos\ExaltAccountManager\ExaltAccountManager\bin\Release\MK_EAM_Captcha_Solver_UI_Lib.dll.config

@@ -14,7 +14,7 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
-              ReleaseDate = new DateTime(2023, 04, 01),
+              ReleaseDate = new DateTime(2023, 04, 04),
               Version = new Version(3, 1, 0),
               Name = "News, UX improvements, bug fixes and much more",
               Description = $"<b>EAM UPDATER</b>{Environment.NewLine}{Environment.NewLine}" +
@@ -28,11 +28,12 @@ namespace ExaltAccountManager.UI
                             $"- Supports live-state tracking.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>DAILY LOGINS</b>{Environment.NewLine}" +
                             $"- Changed the \"Run manually\" panel to use a toggle instead.{Environment.NewLine}" +
-                            $"- Fixed the Graph toactually work now... hopefully{Environment.NewLine}" +
+                            $"- Fixed the Graph to actually work now... hopefully{Environment.NewLine}" +
                             $"- Fixed the \"Last Run\" and \"Results\" panels to display information.{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;Thanks to <b>Ykao</b> for pointing me to this.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>OPTIONS</b>{Environment.NewLine}" +
                             $"- Added a new toggle that allows to always refresh the data on login.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Big thanks to <b>Tadus</b> for reporting and testing.{Environment.NewLine}" +
                             $"- Added new buttons to allow for changing notification and privacy settings.{Environment.NewLine}" +
                             $"- Added an indicator for unsaved changes.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>SECURITY</b>{Environment.NewLine}" +
@@ -53,8 +54,9 @@ namespace ExaltAccountManager.UI
                             $"- Fixed a critical bug during opening of the daily login menu on windows server.{Environment.NewLine}" +
                             $"- Fixed the taskbar-icon not minimizing EAM-windows.{Environment.NewLine}" +
                             $"- Fixed the button-sidebar not moving when the game-update button is added.{Environment.NewLine}" +
+                            $"- Fixed a bug of the Notification Center that spamed Windows-Notifications.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Thanks to <b>arhippa</b> for reporting the issue.{Environment.NewLine}" +
                             $"- Removed the \"White line\" at the bottom of EAM during darkmode."
-
             },
             new ChangelogEntry() {
                 ReleaseDate = new DateTime(2022, 02, 26),

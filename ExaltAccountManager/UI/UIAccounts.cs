@@ -1,4 +1,5 @@
 ﻿using MK_EAM_Analytics;
+using MK_EAM_Captcha_Solver_UI_Lib;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
@@ -343,25 +344,23 @@ namespace ExaltAccountManager.UI
                             if (System.IO.File.Exists(frm.OptionsData.exePath))
                             {
                                 MK_EAM_Lib.AccountInfo info = GetAccountInfo(dataGridView.SelectedRows[0].Index);
-
+                                DateTime cTime = new DateTime(2000, 1, 1);
                                 if (info.accessToken != null)
                                 {
-                                    DateTime cTime = new DateTime(2000, 1, 1);
                                     try
                                     {
                                         cTime = MK_EAM_Lib.AccessToken.UnixTimeStampToDateTime(Convert.ToDouble(info.accessToken.creationTime));
                                     }
                                     catch { cTime = new DateTime(2000, 1, 1); }
-
-                                    string hwid = frm.GetDeviceUniqueIdentifier();
-                                    if (frm.OptionsData.alwaysrefreshDataOnLogin || cTime.Date < DateTime.Now.Date || info.accessToken.validUntil < DateTime.Now.AddHours(1) || string.IsNullOrEmpty(info.accessToken.clientToken) || !info.accessToken.clientToken.Equals(hwid))
-                                    {
-                                        info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, hwid, false, true, StartGameForAccountInvoker);
-                                    }
-                                    else
-                                    {
-                                        StartGameForAccount(info);
-                                    }
+                                }
+                                string hwid = frm.GetDeviceUniqueIdentifier();
+                                if (frm.OptionsData.alwaysrefreshDataOnLogin || info.accessToken == null || cTime.Date < DateTime.Now.Date || info.accessToken.validUntil < DateTime.Now.AddHours(1) || string.IsNullOrEmpty(info.accessToken.clientToken) || !info.accessToken.clientToken.Equals(hwid))
+                                {
+                                    info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, hwid, false, true, StartGameForAccountInvoker);
+                                }
+                                else
+                                {
+                                    StartGameForAccount(info);
                                 }
                             }
                             else
@@ -397,6 +396,30 @@ namespace ExaltAccountManager.UI
         {
             if (this.InvokeRequired)
                 return (bool)this.Invoke((Func<MK_EAM_Lib.AccountInfo, bool>)StartGameForAccount, _info);
+
+            if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
+            {
+                FrmCaptchaSolver frmCaptchaSolver = new FrmCaptchaSolver(_info, frm.UseDarkmode);
+                frmCaptchaSolver.StartPosition = FormStartPosition.CenterParent;
+                DialogResult result = frmCaptchaSolver.ShowDialog(frm);
+
+                switch (result)
+                {
+                    case DialogResult.OK:
+                        _info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), false, true, StartGameForAccountInvoker);
+                        return false;
+                    case DialogResult.Cancel:
+                        return false;
+                    case DialogResult.Abort:
+                        return false;
+                    default:
+                        return false;
+                }
+            }
+
+            if (_info.requestState != MK_EAM_Lib.AccountInfo.RequestState.Success)
+                return false;
+
             try
             {
                 frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.Login, $"Start login into account: {_info.email}."));
