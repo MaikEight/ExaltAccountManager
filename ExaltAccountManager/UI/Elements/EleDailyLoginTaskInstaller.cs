@@ -133,11 +133,19 @@ namespace ExaltAccountManager.UI.Elements
 
                         DailyTrigger timeTrigger = null;
                         if (triggerSuccess)
-                        {
+                        {       
+                            DateTime startBoundary = new DateTime(
+                                DateTime.Now.AddDays(-2).Year,
+                                DateTime.Now.AddDays(-2).Month,
+                                DateTime.Now.AddDays(-2).Day,
+                                triggerHour,
+                                triggerMinute,
+                                10);
+
                             timeTrigger = new DailyTrigger(1)
                             {
                                 DaysInterval = 1,
-                                StartBoundary = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, DateTime.Now.AddDays(-1).AddDays(-1).Day, triggerHour, triggerMinute, 0),
+                                StartBoundary = startBoundary,
                                 Enabled = true
                             };
                             task.Triggers.Add(timeTrigger);
