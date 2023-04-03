@@ -74,6 +74,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.bunifuElipse = new Bunifu.Framework.UI.BunifuElipse(this.components);
             this.toolTip = new Bunifu.UI.WinForms.BunifuToolTip(this.components);
+            this.timerResetOnError = new System.Windows.Forms.Timer(this.components);
             this.bunifuCards.SuspendLayout();
             this.pData.SuspendLayout();
             this.pDatagrid.SuspendLayout();
@@ -92,15 +93,19 @@
             this.bunifuCards.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.bunifuCards.BorderRadius = 11;
             this.bunifuCards.BottomSahddow = true;
+            this.bunifuCards.BottomShadow = true;
             this.bunifuCards.color = System.Drawing.Color.FromArgb(((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.bunifuCards.Controls.Add(this.pData);
             this.bunifuCards.Controls.Add(this.pCardsTop);
             this.bunifuCards.Controls.Add(this.label2);
             this.bunifuCards.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bunifuCards.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.bunifuCards.LeftSahddow = true;
+            this.bunifuCards.LeftShadow = true;
             this.bunifuCards.Location = new System.Drawing.Point(9, 3);
             this.bunifuCards.Name = "bunifuCards";
             this.bunifuCards.RightSahddow = true;
+            this.bunifuCards.RightShadow = true;
             this.bunifuCards.ShadowDepth = 20;
             this.bunifuCards.Size = new System.Drawing.Size(659, 487);
             this.bunifuCards.TabIndex = 11;
@@ -933,6 +938,11 @@
             this.toolTip.ToolTipPosition = new System.Drawing.Point(0, 0);
             this.toolTip.ToolTipTitle = null;
             // 
+            // timerResetOnError
+            // 
+            this.timerResetOnError.Interval = 2500;
+            this.timerResetOnError.Tick += new System.EventHandler(this.timerResetOnError_Tick);
+            // 
             // EleImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -1000,5 +1010,6 @@
         private Bunifu.UI.WinForms.BunifuButton.BunifuIconButton btnDeleteSelected;
         private Bunifu.UI.WinForms.BunifuButton.BunifuIconButton btnImport;
         private Bunifu.UI.WinForms.BunifuToolTip toolTip;
+        private System.Windows.Forms.Timer timerResetOnError;
     }
 }

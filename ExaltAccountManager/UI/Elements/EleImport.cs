@@ -1,4 +1,5 @@
-﻿using MK_EAM_Lib;
+﻿using CsvHelper;
+using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -72,6 +73,20 @@ namespace ExaltAccountManager.UI.Elements
                         pDragDrop.AllowDrop =
                         pImport.AllowDrop =
                         lDND.AllowDrop = false;
+                        break;
+                    case UIStates.ShowImportFailed:
+                        pDatagrid.Visible =
+                        pImportPassword.Visible = false;
+                        pDragDrop.Location = new Point(175, 58);
+                        pDragDrop.Visible =
+                        pbImport.Visible =
+                        btnChangePath.Enabled =
+                        pFilterParent.Visible = true;
+
+                        lDND.Text = "Import failed!";
+                        lDND.ForeColor = Color.Crimson;
+
+                        timerResetOnError.Start();
                         break;
                     default:
                         break;
@@ -257,19 +272,31 @@ namespace ExaltAccountManager.UI.Elements
                                 }
                             }
                         }
-                        catch { }
+                        catch { UIState = UIStates.ShowImportFailed; }
                         break;
                     case ".csv":
                         try
                         {
                             using (var reader = new StreamReader(path))
-                            using (var csv = new CsvHelper.CsvReader(reader, new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)))
+                            using (var csv = new CsvHelper.CsvReader(reader, new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture) { MissingFieldFound = null}))
                             {
+                                csv.Read();
+                                csv.ReadHeader();
+                                
+                                if (!csv.HeaderRecord.Contains("username") || !csv.HeaderRecord.Contains("color") || !csv.HeaderRecord.Contains("orderID"))
+                                {
+                                    reader.BaseStream.Position = 0;
+                                }
+
                                 List<ExportCSVAccount> records = csv.GetRecords<ExportCSVAccount>().ToList();
                                 int filtered = 0;
                                 int skippedAccs = 0;
-                                List<MK_EAM_Lib.AccountInfo> accs = new List<MK_EAM_Lib.AccountInfo>();
+                                List<MK_EAM_Lib.AccountInfo> accs = new List<MK_EAM_Lib.AccountInfo>();                               
                                 records = records.OrderBy(r => r.orderID).ToList();
+
+                                List<ExportCSVAccount> toRemove = records.Where(r => r.email.ToLower().Equals("email") || r.email.ToLower().Equals("username")).ToList();
+                                toRemove.ForEach(r => { records.Remove(r); });
+
                                 List<string> emails = frm.accounts.Select(a => a.email).ToList();
 
                                 for (int i = 0; i < records.Count; i++)
@@ -293,7 +320,7 @@ namespace ExaltAccountManager.UI.Elements
                                     frm.ShowSnackbar($"Loading successfull.{Environment.NewLine}Please select the accounts you want to import.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000);
                             }
                         }
-                        catch { }
+                        catch { UIState = UIStates.ShowImportFailed; }
                         break;
                     case ".js": //muledump
                         try
@@ -359,7 +386,7 @@ namespace ExaltAccountManager.UI.Elements
                             else
                                 frm.ShowSnackbar($"Loading successfull.{Environment.NewLine}Please select the accounts you want to import.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000);
                         }
-                        catch { }
+                        catch { UIState = UIStates.ShowImportFailed; }
                         break;
                     case ".txt":
                         {
@@ -416,6 +443,8 @@ namespace ExaltAccountManager.UI.Elements
                 frm.ShowSnackbar("File not supported!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Warning, 5000);
                 importFilePath = string.Empty;
                 _password = string.Empty;
+
+                UIState = UIStates.ShowImportFailed;
             }
         }
 
@@ -501,7 +530,8 @@ namespace ExaltAccountManager.UI.Elements
             None,
             WaitForFile,
             WaitForPassword,
-            ShowAccounts
+            ShowAccounts,
+            ShowImportFailed
         }
 
         private string importFilePath = string.Empty;
@@ -586,6 +616,13 @@ namespace ExaltAccountManager.UI.Elements
         private void tbPassword_TextChanged(object sender, EventArgs e)
         {
             btnPasswordOK.Enabled = tbPassword.Text.Length >= 3;
+        }
+
+        private void timerResetOnError_Tick(object sender, EventArgs e)
+        {
+            timerResetOnError.Stop();
+
+            UIState = UIStates.WaitForFile;
         }
     }
 }
