@@ -93,11 +93,14 @@ namespace ExaltAccountManager.UI
 
         private void btnAddAccount_Click(object sender, EventArgs e)
         {
-            if (!btnAddAccount.Enabled) return;
+            if (!btnAddAccount.Enabled) 
+                return;
+
             btnAddAccount.Enabled = false;
 
             if (toggleCustomAccountname.Checked)
                 info.name = tbCustomAccountname.Text;
+
             info.email = tbEmail.Text.Replace(" ", "");
             info.password = tbPassword.Text;
 
@@ -137,7 +140,7 @@ namespace ExaltAccountManager.UI
             else if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Success)
             {
                 _info.Color = info.Color;
-                _info.performSave = toggleLogin.Checked;
+                _info.performSave = !toggleLogin.Checked;
 
                 frm.AddAccount(_info);
                 ResetUI();

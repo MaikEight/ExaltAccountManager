@@ -54,6 +54,9 @@ namespace ExaltAccountManager.UI
                             $"ℹ️ The API is used to collect EAM-analytics data, provide notification messages,{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eam-update-checks, character-stats-updates (soon™),{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vault peeker-item-updates and more!{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>IMPORTER</b>{Environment.NewLine}" +
+                            $"- Added a brief Error-Message, if the import failed.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;This avoids the UI to become stuck at \"Importing, please wait...\".{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>BUG FIXES</b>{Environment.NewLine}" +
                             $"- Fixed a critical bug during opening of the daily login menu on windows server.{Environment.NewLine}" +
                             $"- Fixed the taskbar-icon not minimizing EAM-windows.{Environment.NewLine}" +
@@ -62,6 +65,9 @@ namespace ExaltAccountManager.UI
                             $"- Fixed a crashing bug that occured when copying an empty accountname / email {Environment.NewLine}" +
                             $"- Fixed a bug that mad the task installer not working properly.{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;Thanks to <b>arhippa</b> for reporting the issue.{Environment.NewLine}" +
+                            $"- Fixed a bug when importing .csv with missing headers.{Environment.NewLine}" +
+                            $"- Fixed a bug that made the \"Daily Autologin\"-Toggle being reversed.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Thanks to <b>Ykao</b> for reporting the issue.{Environment.NewLine}" +
                             $"- Removed the \"White line\" at the bottom of EAM during darkmode."
             },
             new ChangelogEntry() {
