@@ -187,12 +187,6 @@
     <None Include="Resources\ic_filter_none_white_24dp.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MK_EAM_Lib\MK_EAM_Lib.csproj">
-      <Project>{63C8EBA3-8DCD-46BD-98D0-58F3190C5B6F}</Project>
-      <Name>MK_EAM_Lib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\baseline_minimize_white_24dp.png" />
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +243,12 @@
     <None Include="Resources\shtrs Loot Balloon Bridge.png" />
     <None Include="Resources\Potions.png" />
     <None Include="Resources\Vault Portal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\MK_EAM_Lib\MK_EAM_Lib.csproj">
+      <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
+      <Name>MK_EAM_Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

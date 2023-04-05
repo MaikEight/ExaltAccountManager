@@ -24,8 +24,7 @@ namespace EAM_Installer
                 dirs.Add(new Dir(target, new DirFiles(d + @"\*.*")));
             }
 
-            Dir dir = new Dir(directoryPath,
-                            dirs.ToArray());
+            Dir dir = new Dir(directoryPath, dirs.ToArray());
 
             Project project = new Project(
             productName,

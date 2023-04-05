@@ -331,7 +331,7 @@
       <Project>{4DAA2462-CE82-491D-A823-B839036566D5}</Project>
       <Name>ExaltAccountManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MK_EAM_Lib\MK_EAM_Lib.csproj">
+    <ProjectReference Include="..\Libraries\MK_EAM_Lib\MK_EAM_Lib.csproj">
       <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
       <Name>MK_EAM_Lib</Name>
     </ProjectReference>

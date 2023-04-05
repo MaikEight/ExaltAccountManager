@@ -1342,32 +1342,6 @@
     <None Include="Resources\llama.gif" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MK_EAM_Analytics\MK_EAM_Analytics.csproj">
-      <Project>{EDDC50BF-5B06-4824-90E3-B7660F7D926E}</Project>
-      <Name>MK_EAM_Analytics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MK_EAM_Captcha_Solver_UI_Lib\MK_EAM_Captcha_Solver_UI_Lib.csproj">
-      <Project>{1BA65C66-977B-4642-BB70-A5ADB813B0A3}</Project>
-      <Name>MK_EAM_Captcha_Solver_UI_Lib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MK_EAM_Discord_Lib\MK_EAM_Discord_Lib.csproj">
-      <Project>{C49DC956-09E5-4CCF-A753-86ADCD5F94C7}</Project>
-      <Name>MK_EAM_Discord_Lib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MK_EAM_General_Services_Lib\MK_EAM_General_Services_Lib.csproj">
-      <Project>{A6D4EB82-C89B-4657-9921-4BA2DC7CE05F}</Project>
-      <Name>MK_EAM_General_Services_Lib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MK_EAM_Lib\MK_EAM_Lib.csproj">
-      <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
-      <Name>MK_EAM_Lib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MK_EAM_Updater_Lib\MK_EAM_Updater_Lib.csproj">
-      <Project>{9c19752e-0ef2-489c-a6ff-eeaafa06dcc4}</Project>
-      <Name>MK_EAM_Updater_Lib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
@@ -1381,6 +1355,32 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\MK_EAM_Analytics\MK_EAM_Analytics.csproj">
+      <Project>{7af5d68e-dd5f-490f-b9e2-d8745f1907b9}</Project>
+      <Name>MK_EAM_Analytics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\MK_EAM_Captcha_Solver_UI_Lib\MK_EAM_Captcha_Solver_UI_Lib.csproj">
+      <Project>{1ba65c66-977b-4642-bb70-a5adb813b0a3}</Project>
+      <Name>MK_EAM_Captcha_Solver_UI_Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\MK_EAM_Discord_Lib\MK_EAM_Discord_Lib.csproj">
+      <Project>{c49dc956-09e5-4ccf-a753-86adcd5f94c7}</Project>
+      <Name>MK_EAM_Discord_Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\MK_EAM_General_Services_Lib\MK_EAM_General_Services_Lib.csproj">
+      <Project>{32d75bdd-ce16-4569-8131-8136eb13ad8f}</Project>
+      <Name>MK_EAM_General_Services_Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\MK_EAM_Lib\MK_EAM_Lib.csproj">
+      <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
+      <Name>MK_EAM_Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\MK_EAM_Updater_Lib\MK_EAM_Updater_Lib.csproj">
+      <Project>{554960c0-cbb0-48fa-b7cc-584890a28829}</Project>
+      <Name>MK_EAM_Updater_Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.4.0.2\build\Fody.targets" Condition="Exists('..\packages\Fody.4.0.2\build\Fody.targets')" />
