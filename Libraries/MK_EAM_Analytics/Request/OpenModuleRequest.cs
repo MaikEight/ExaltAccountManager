@@ -12,6 +12,7 @@ namespace MK_EAM_Analytics.Request
         Statistics = 0,
         PingChecker = 1,
         VaultPeeker = 2,
-        DailyLogin = 3
+        DailyLogin = 3,
+        Captcha = 4,
     }
 }

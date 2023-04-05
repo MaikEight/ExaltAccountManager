@@ -20,7 +20,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using MK_EAM_Captcha_Solver_UI_Lib;
 
 namespace ExaltAccountManager
 {

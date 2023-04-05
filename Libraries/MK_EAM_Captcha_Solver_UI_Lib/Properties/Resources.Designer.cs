@@ -143,9 +143,9 @@ namespace MK_EAM_Captcha_Solver_UI_Lib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap puzzle_outline_white_48px {
+        internal static System.Drawing.Bitmap puzzle_white_48px {
             get {
-                object obj = ResourceManager.GetObject("puzzle_outline_white_48px", resourceCulture);
+                object obj = ResourceManager.GetObject("puzzle_white_48px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +153,9 @@ namespace MK_EAM_Captcha_Solver_UI_Lib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap puzzle_white_48px {
+        internal static System.Drawing.Bitmap puzzle_white_48px1 {
             get {
-                object obj = ResourceManager.GetObject("puzzle_white_48px", resourceCulture);
+                object obj = ResourceManager.GetObject("puzzle_white_48px1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

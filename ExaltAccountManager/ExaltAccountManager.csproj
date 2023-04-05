@@ -1362,7 +1362,7 @@
       <Name>MK_EAM_Analytics</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\MK_EAM_Captcha_Solver_UI_Lib\MK_EAM_Captcha_Solver_UI_Lib.csproj">
-      <Project>{1ba65c66-977b-4642-bb70-a5adb813b0a3}</Project>
+      <Project>{c1d5866a-373f-46f7-a287-d637908e99d5}</Project>
       <Name>MK_EAM_Captcha_Solver_UI_Lib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\MK_EAM_Discord_Lib\MK_EAM_Discord_Lib.csproj">

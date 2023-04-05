@@ -5,7 +5,7 @@ using System.Windows.Forms;
 namespace MK_EAM_Captcha_Solver_UI_Lib
 {
     public static class CaptchaSolverUiUtils
-    {                           
+    {
         /// <summary>
         /// Show the captcha solver form.
         /// </summary>
@@ -26,7 +26,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             FrmCaptchaSolver frmCaptchaSolver = new FrmCaptchaSolver(info, useDarkmode);
             frmCaptchaSolver.StartPosition = FormStartPosition.CenterParent;
             DialogResult result = frmCaptchaSolver.ShowDialog(owner);
-            
+
             switch (result)
             {
                 case DialogResult.OK:

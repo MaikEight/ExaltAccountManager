@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
 using MK_EAM_Analytics.Request;
+using MK_EAM_Analytics.Data;
+using System.Drawing;
 
 namespace MK_EAM_Analytics
 {
@@ -294,6 +296,37 @@ namespace MK_EAM_Analytics
             catch { }
 
             return null;
+
+            #endregion
+        }
+
+        public async Task<bool> AddCaptchaResult(DateTime startTime, CaptchaResult captchaResult, byte[] qimg, byte[] img, PointF[] data)
+        {
+            #region AddCaptchaResult
+
+            if (SessionId == Guid.Empty)
+                return false;
+
+            MK_EAM_Analytics.Request.CaptchaResultRequest req = new Request.CaptchaResultRequest()
+            {
+               SessionId = SessionId,
+               StartTime = startTime,
+               CaptchaResult = captchaResult,
+               qimg = qimg,
+               img = img,
+               data = data
+            };
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPostRequest(BASE_URL + "/captcha", req);
+                await resp;
+                HttpResponseMessage responseMessage = resp.Result;
+                responseMessage.EnsureSuccessStatusCode();
+                return responseMessage.StatusCode == HttpStatusCode.Accepted;
+            }
+            catch { }
+            return false;
 
             #endregion
         }

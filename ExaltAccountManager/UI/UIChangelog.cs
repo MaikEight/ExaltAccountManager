@@ -16,11 +16,13 @@ namespace ExaltAccountManager.UI
             {
               ReleaseDate = new DateTime(2023, 04, 04),
               Version = new Version(3, 1, 0),
-              Name = "Captcha Support, News, UX improvements, bug fixes and more",
+              Name = "Captcha Support, News, installer, bug fixes and much more",
               Description = $"<b>CAPTCHA AID</b>{Environment.NewLine}{Environment.NewLine}" +
                             $"- Added support for captcha solving.{Environment.NewLine}" +
                             $"&nbsp;&nbsp;&nbsp;This is NO automation tool.{Environment.NewLine}" +
                             $"ℹ️ The Captcha Aid tool is still in beta, please report feedback.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>INSTALLER</b>{Environment.NewLine}" +
+                            $"- Added a new simple installer for EAM.{Environment.NewLine}{Environment.NewLine}" + 
                             $"<b>EAM UPDATER</b>{Environment.NewLine}" +
                             $"- Added an updater to EAM, no manuall downloads needed anymore!{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>EAM NEWS</b>{Environment.NewLine}" +
