@@ -735,3 +735,27 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/EAM_Installer/Exalt Account Manager.msi
+/EAM Tasktray Tool/obj/Debug/EAM Tasktray Tool.csproj.AssemblyReference.cache
+/EAM Tasktray Tool/obj/Debug/EAM Notification Center.pdb
+/EAM Tasktray Tool/obj/Debug/EAM Notification Center.exe
+/EAM Tasktray Tool/obj/Release/EAM Tasktray Tool.csproj.FileListAbsolute.txt
+/EAM Tasktray Tool/obj/Release/EAM Tasktray Tool.csproj.AssemblyReference.cache
+/EAM Tasktray Tool/obj/Release/EAM Notification Center.pdb
+/EAM Tasktray Tool/obj/Release/EAM Notification Center.exe
+/EAM Vault Peeker/obj/Debug/EAM Vault Peeker.csproj.AssemblyReference.cache
+/EAM Vault Peeker/obj/Release/EAM Vault Peeker.csproj.FileListAbsolute.txt
+/EAM Vault Peeker/obj/Release/EAM Vault Peeker.csproj.AssemblyReference.cache
+/ExaltAccountManager/obj/Debug/ExaltAccountManager.pdb
+/ExaltAccountManager/obj/Debug/ExaltAccountManager.exe
+/ExaltAccountManager/obj/Debug/ExaltAccountManager.csproj.AssemblyReference.cache
+/ExaltAccountManager/obj/Release/ExaltAccountManager.pdb
+/ExaltAccountManager/obj/Release/ExaltAccountManager.exe
+/ExaltAccountManager/obj/Release/ExaltAccountManager.csproj.GenerateResource.cache
+/ExaltAccountManager/obj/Release/ExaltAccountManager.csproj.FileListAbsolute.txt
+/ExaltAccountManager/obj/Release/ExaltAccountManager.csproj.AssemblyReference.cache
+/ExaltAccountManager/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+/EAM Statistics/obj/Release/EAM Statistics.pdb
+/EAM Statistics/obj/Release/EAM Statistics.exe
+/EAM Statistics/obj/Release/EAM Statistics.csproj.FileListAbsolute.txt
+/EAM Statistics/obj/Release/EAM Statistics.csproj.AssemblyReference.cache
