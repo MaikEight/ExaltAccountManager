@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Principal;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -27,29 +29,39 @@ namespace EAM_Updater
             Thread updateThread = new Thread(UpdateThread);
             updateThread.IsBackground = true;
             updateThread.Start();
+
+            this.TopLevel = true;
         }
 
         private void UpdateThread()
         {
             if (arguments.Length == 1)
             {
-                bool restartRequired = MK_EAM_Updater_Lib.Updater.PerformUpdate(Application.StartupPath, arguments[0]);
-
-                if (restartRequired)
+                try
                 {
-                    Process.Start(Application.ExecutablePath, $"{arguments[0]} ${MK_EAM_Updater_Lib.Updater.tempFilePath}");
-                    Environment.Exit(0);
-                }
-                else
-                {
-                    MK_EAM_Updater_Lib.Updater.CleanupTemp(MK_EAM_Updater_Lib.Updater.tempFilePath);
+                    bool restartRequired = MK_EAM_Updater_Lib.Updater.PerformUpdate(Application.StartupPath, arguments[0]);
 
-                    string eamPath = Path.Combine(Application.StartupPath, "ExaltAccountManager.exe");                    
-                    if (File.Exists(eamPath))
+                    if (restartRequired)
                     {
-                        Process.Start(eamPath, "update");
+                        Process.Start(Application.ExecutablePath, $"{arguments[0]} ${MK_EAM_Updater_Lib.Updater.tempFilePath}");
+                        Environment.Exit(0);
                     }
-                    Environment.Exit(0);
+                    else
+                    {
+                        MK_EAM_Updater_Lib.Updater.CleanupTemp(MK_EAM_Updater_Lib.Updater.tempFilePath);
+
+                        string eamPath = Path.Combine(Application.StartupPath, "ExaltAccountManager.exe");
+                        if (File.Exists(eamPath))
+                        {
+                            Process.Start(eamPath, "update");
+                        }
+                        Environment.Exit(0);
+                    }
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    RestartAsAdmin();
+                    return;
                 }
             }
             if (arguments.Length >= 2)
@@ -67,18 +79,63 @@ namespace EAM_Updater
                     Environment.Exit(1);
                     return;
                 }
-                bool restartRequired = MK_EAM_Updater_Lib.Updater.MoveUpdateFiles(arguments[0], arguments[1]);
-
-                if (restartRequired)
+                try
                 {
-                    Process.Start(Application.StartupPath, $"{arguments[0]} ${MK_EAM_Updater_Lib.Updater.tempFilePath} ${tries.ToString()}");
+                    bool restartRequired = MK_EAM_Updater_Lib.Updater.MoveUpdateFiles(arguments[0], arguments[1]);
+
+                    if (restartRequired)
+                    {
+                        Process.Start(Application.StartupPath, $"{arguments[0]} ${MK_EAM_Updater_Lib.Updater.tempFilePath} ${tries.ToString()}");
+                        Environment.Exit(0);
+                        return;
+                    }
+                    MK_EAM_Updater_Lib.Updater.CleanupTemp(MK_EAM_Updater_Lib.Updater.tempFilePath);
+                    Process.Start(Path.Combine(Application.StartupPath, "ExaltAccountManager.exe"), "update");
                     Environment.Exit(0);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    RestartAsAdmin();
                     return;
                 }
-                MK_EAM_Updater_Lib.Updater.CleanupTemp(MK_EAM_Updater_Lib.Updater.tempFilePath);
-                Process.Start(Path.Combine(Application.StartupPath, "ExaltAccountManager.exe"), "update");
-                Environment.Exit(0);
             }
+        }
+
+        private bool IsAdministrator()
+        {
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
+        private void RestartAsAdmin()
+        {
+            if (IsAdministrator())
+                return;
+
+            StringBuilder sb = new StringBuilder();
+            if (arguments?.Length > 0)
+            {
+                foreach (string arg in arguments)
+                {
+                    sb.Append(arg + " ");
+                }
+            }
+
+            string args = sb.ToString().TrimEnd();
+
+            Process process = new Process
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    FileName = Application.ExecutablePath,
+                    Arguments = args,
+                    Verb = "runas"
+                }
+            };
+
+            process.Start();
+            Environment.Exit(0);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace MK_EAM_Updater_Lib
     {
         private static string logPath = string.Empty;
         public static string tempFilePath { get; internal set; } = Path.Combine(Path.GetTempPath(), "ExaltAccountManager");
-        private static string appPath = string.Empty;
 
         /// <summary>
         /// Perform an Update of EAM.
@@ -21,7 +20,6 @@ namespace MK_EAM_Updater_Lib
         /// <returns>True if a restart of the update-process is needed,</returns>
         public static bool PerformUpdate(string applicationPath, string latestVersionDownloadLink)
         {
-            appPath = applicationPath;
 
             Log("Starting update process...");
             Log("Application path: " + applicationPath);
@@ -48,12 +46,12 @@ namespace MK_EAM_Updater_Lib
             }
 
             string mainUpdateFileFolder = Directory.GetDirectories(updatePath).Where(d => d.Replace(updatePath, "").TrimStart('\\').StartsWith("ExaltAccountManager")).FirstOrDefault();
-            
+
             if (string.IsNullOrEmpty(mainUpdateFileFolder))
             {
                 return false;
             }
-            
+
             string[] files = Directory.GetFiles(updatePath, "*.*", SearchOption.AllDirectories);
 
             foreach (string file in files)
@@ -68,7 +66,12 @@ namespace MK_EAM_Updater_Lib
 
                     File.Copy(file, destinationPath, true);
                 }
-                catch 
+                catch (UnauthorizedAccessException e)
+                {
+                    //Admin privs. needed
+                    throw e;
+                }
+                catch (Exception)
                 {
                     Log("Failed to move file: " + file);
                     failedFiles.Add(file);
@@ -90,7 +93,12 @@ namespace MK_EAM_Updater_Lib
                         File.Delete(file);
                     }
                 }
-                catch
+                catch (UnauthorizedAccessException e)
+                {
+                    //Admin privs. needed
+                    throw e;
+                }
+                catch (Exception)
                 {
                     Log("Failed to delete file: " + file);
                 }
@@ -112,6 +120,11 @@ namespace MK_EAM_Updater_Lib
                 Directory.Delete(tempPath, true);
                 return true;
             }
+            catch (UnauthorizedAccessException e)
+            {
+                //Admin privs. needed
+                throw e;
+            }
             catch (Exception e)
             {
                 Log("Failed to delete temp path: " + tempPath);
@@ -130,6 +143,11 @@ namespace MK_EAM_Updater_Lib
                 try
                 {
                     Directory.Delete(tempFilePath, true);
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    //Admin privs. needed
+                    throw e;
                 }
                 catch (Exception e)
                 {
@@ -170,6 +188,11 @@ namespace MK_EAM_Updater_Lib
                     }
                 }
             }
+            catch (UnauthorizedAccessException e)
+            {
+                //Admin privs. needed
+                throw e;
+            }
             catch (Exception e)
             {
                 Log("Failed to download latest version, see reason below.");
@@ -186,14 +209,18 @@ namespace MK_EAM_Updater_Lib
                 }
                 Environment.Exit(1);
             }
-
-        }
+        }        
 
         private static void Log(string message)
         {
             if (logPath == null || string.IsNullOrEmpty(logPath))
             {
-                logPath = Path.Combine(appPath, $"_updatelog_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.log");
+                string tempFolderPath = Path.Combine(Path.GetTempPath(), "EAM_Update");
+                logPath = Path.Combine(tempFolderPath, $"_updatelog_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.log");
+
+                if (!Directory.Exists(tempFolderPath))
+                    Directory.CreateDirectory(tempFolderPath);
+
                 if (File.Exists(logPath))
                     File.Delete(logPath);
             }
