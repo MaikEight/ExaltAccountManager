@@ -343,6 +343,26 @@ namespace EAM_Vault_Peeker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_info_outline_black_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_info_outline_black_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_info_outline_white_36dp {
+            get {
+                object obj = ResourceManager.GetObject("ic_info_outline_white_36dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ic_public_black_36dp {
             get {
                 object obj = ResourceManager.GetObject("ic_public_black_36dp", resourceCulture);

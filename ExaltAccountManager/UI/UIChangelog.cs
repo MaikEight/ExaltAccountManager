@@ -14,7 +14,7 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
-              ReleaseDate = new DateTime(2023, 04, 04),
+              ReleaseDate = new DateTime(2023, 04, 09),
               Version = new Version(3, 1, 0),
               Name = "Captcha Support, News, installer, bug fixes and much more",
               Description = $"<b>CAPTCHA AID</b>{Environment.NewLine}{Environment.NewLine}" +

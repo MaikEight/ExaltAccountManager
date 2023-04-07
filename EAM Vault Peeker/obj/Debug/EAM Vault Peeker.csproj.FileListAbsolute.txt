@@ -148,3 +148,5 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\obj\Debug\EAM V
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\obj\Debug\EAM Vault Peeker.exe
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\obj\Debug\EAM Vault Peeker.pdb
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\obj\Debug\EAM Vault Peeker.exe.licenses
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\bin\Debug\MK_EAM_General_Services_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Vault Peeker\bin\Debug\MK_EAM_General_Services_Lib.pdb

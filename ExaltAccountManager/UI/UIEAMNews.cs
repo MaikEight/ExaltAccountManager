@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MK_EAM_Lib;
 
 namespace ExaltAccountManager.UI
 {
@@ -29,9 +30,6 @@ namespace ExaltAccountManager.UI
             this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
             ApplyTheme(frm, null);
 
-            //EleNewsPoll poll = new EleNewsPoll(frm, pollUIData);
-            //flow.Controls.Add(poll);
-
             FetchNews(DateTime.MinValue, frm.GetAPIClientIdHash(false), 5);
         }
 
@@ -44,7 +42,7 @@ namespace ExaltAccountManager.UI
 
             MK_EAM_Lib.FormsUtils.SuspendDrawing(this);
 
-            this.BackColor = def;
+            this.BackColor = frm.UseDarkmode ? def : third;
             this.ForeColor = font;
 
             MK_EAM_Lib.FormsUtils.ResumeDrawing(this);
@@ -101,33 +99,33 @@ namespace ExaltAccountManager.UI
                             OrderId = 3,
                             TypeId = 200,
                             UiData = new PollUIData()
-            {
-                Headline = "What do you think about the new polls?",
-                EntrieImageUrls = new string[]
-                {
-                    null, null, null
-                },
-                EntrieTexts = new string[]
-                {
-                    "Awesome",
-                    "Good",
-                    "Mehh",
-                },
-                PollData = new PollData()
-                {
-                    StartDate = DateTime.Now.AddDays(-1),
-                    EndDate = DateTime.Now.AddDays(3),
-                    Entries = new int[] { 5, 2, 0 },
-                    EntriesAmount = 3,
-                    Name = "Test",
-                    OwnEntry = -1,
-                    PollId = Guid.NewGuid()
-                }
-            }
+                            {
+                                Headline = "What do you think about the new polls?",
+                                EntrieImageUrls = new string[]
+                                {
+                                    null, null, null
+                                },
+                                EntrieTexts = new string[]
+                                {
+                                    "Awesome addition",
+                                    "Nice to have",
+                                    "Mehh",
+                                    "Unnecessary",
+                                },
+                                PollData = new PollData()
+                                {
+                                    StartDate = DateTime.Now.AddDays(-1),
+                                    EndDate = DateTime.Now.AddDays(3),
+                                    Entries = new int[] { 5, 2, 1, 0 },
+                                    EntriesAmount = 4,
+                                    Name = "Test",
+                                    OwnEntry = -1,
+                                    PollId = Guid.NewGuid()
+                                }
+                            }
                         },
                     }
-                }
-            );
+                });
 
             int maxBottom = 0;
             int index = 0;
@@ -137,6 +135,9 @@ namespace ExaltAccountManager.UI
                 c.Dispose();
             }
             pNews.Controls.Clear();
+
+            pNews.SuspendLayout();
+            FormsUtils.SuspendDrawing(pNews);
 
             for (int i = data.Count - 1; i >= 0; i--)
             {
@@ -164,7 +165,21 @@ namespace ExaltAccountManager.UI
                 maxBottom = Math.Max(maxBottom, view.Bottom);
             }
 
-            pNews.Height = maxBottom - 20;
+            Panel pSpacer = new Panel()
+            {
+                Size = new Size(this.Width, 20),
+            };
+            pNews.Controls.Add(pSpacer);
+            pNews.Controls.SetChildIndex(pSpacer, index);
+
+            //foreach (Control c in pNews.Controls)
+            //{
+            //    maxBottom = Math.Max(maxBottom, c.Bottom);
+            //}
+            //pNews.Height = maxBottom;
+
+            pNews.ResumeLayout();
+            FormsUtils.ResumeDrawing(pNews);
 
             scrollbar.BindTo(pNews);
         }

@@ -50,7 +50,7 @@
             this.pContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pContent.Location = new System.Drawing.Point(0, 32);
             this.pContent.Name = "pContent";
-            this.pContent.Size = new System.Drawing.Size(471, 218);
+            this.pContent.Size = new System.Drawing.Size(667, 218);
             this.pContent.TabIndex = 2;
             // 
             // pSpacer
@@ -58,7 +58,7 @@
             this.pSpacer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pSpacer.Location = new System.Drawing.Point(0, 22);
             this.pSpacer.Name = "pSpacer";
-            this.pSpacer.Size = new System.Drawing.Size(471, 10);
+            this.pSpacer.Size = new System.Drawing.Size(667, 10);
             this.pSpacer.TabIndex = 3;
             // 
             // EleNewsPoll
@@ -73,7 +73,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "EleNewsPoll";
             this.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.Size = new System.Drawing.Size(471, 250);
+            this.Size = new System.Drawing.Size(667, 250);
             this.SizeChanged += new System.EventHandler(this.EleNewsPoll_SizeChanged);
             this.ResumeLayout(false);
             this.PerformLayout();

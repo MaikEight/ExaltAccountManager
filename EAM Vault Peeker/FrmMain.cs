@@ -1,4 +1,6 @@
 ﻿using EAM_Vault_Peeker.UI;
+using MK_EAM_General_Services_Lib;
+using MK_EAM_General_Services_Lib.General.Responses;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,8 @@ namespace EAM_Vault_Peeker
 {
     public partial class FrmMain : Form
     {
-        public Version version { get; } = new Version(1, 0, 9);
+        public Version version { get; } = new Version(1, 0, 10);
+        public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
 
         public bool useDarkmode = true;
         public Image renders = null;
@@ -37,7 +40,7 @@ namespace EAM_Vault_Peeker
         private UIState uiState = UIState.Accounts;
 
         public List<StatsMain> statsList = new List<StatsMain>();
-        public List<string> activeVaultPeekerAccounts = new List<string>();        
+        public List<string> activeVaultPeekerAccounts = new List<string>();
 
         #region Path
 
@@ -250,6 +253,22 @@ namespace EAM_Vault_Peeker
             // this.Padding = new Padding(borderSize);         //Border size
             this.BackColor = Color.FromArgb(112, 18, 217);  //trannsparent color
 
+
+            #region API Base URL
+
+            try
+            {
+                API_BASE_URL = "https://api.exalt-account-manager.eu/";
+                string fileName = Path.Combine(Application.StartupPath, "MK_EAM_API_DATA");
+                if (File.Exists(fileName))
+                    API_BASE_URL = File.ReadAllText(fileName);
+            }
+            catch { API_BASE_URL = "https://api.exalt-account-manager.eu/"; }
+
+            #endregion
+
+            _ = new GeneralServicesClient(API_BASE_URL);
+
             ReadItems();
 
             if (File.Exists(itemsSaveFilePath))
@@ -300,26 +319,21 @@ namespace EAM_Vault_Peeker
         {
             try
             {
-                string responseData = string.Empty;
+                Task<MK_EAM_General_Services_Lib.General.Responses.GetVaultPeekerHashOfFilesResponse> result = GeneralServicesClient.Instance?.GetVaultPeekerHashOfFiles();
 
-                System.Net.WebRequest request = System.Net.WebRequest.Create("https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/NotificationMessages/Vault_Peeker/hash.txt");
-                request.Credentials = System.Net.CredentialCache.DefaultCredentials;
-                System.Net.Cache.HttpRequestCachePolicy noCachePolicy = new System.Net.Cache.HttpRequestCachePolicy(System.Net.Cache.HttpRequestCacheLevel.NoCacheNoStore);
-                request.CachePolicy = noCachePolicy;
-                System.Net.WebResponse response = request.GetResponse();
-                using (System.IO.Stream dataStream = response.GetResponseStream())
-                using (System.IO.StreamReader reader = new System.IO.StreamReader(dataStream))
-                    responseData = reader.ReadToEnd();
-                response.Close();
-                string[] webHashs = responseData.TrimEnd('\n').Split('|');
-                bool[] needsUpdate = new bool[] { false, false };
+                GetVaultPeekerHashOfFilesResponse hashOfFiles = result.Result;
+                if (string.IsNullOrEmpty(hashOfFiles.rendersPng) || string.IsNullOrEmpty(hashOfFiles.itemsCfg))
+                {
+                    return;
+                }
+                bool[] needsUpdate = new bool[] { true, true };
 
                 if (File.Exists(pathRenders))
                 {
                     try
                     {
                         string h = GetMD5AsString(pathRenders);
-                        needsUpdate[0] = !webHashs[0].Equals(h);
+                        needsUpdate[0] = !hashOfFiles.rendersPng.Equals(h);
                     }
                     catch { needsUpdate[0] = true; }
                 }
@@ -329,17 +343,32 @@ namespace EAM_Vault_Peeker
                     try
                     {
                         string h = GetMD5AsString(pathItems);
-                        needsUpdate[1] = !webHashs[1].Equals(h);
+                        needsUpdate[1] = !hashOfFiles.itemsCfg.Equals(h);
                     }
                     catch { needsUpdate[1] = true; }
                 }
 
                 if (needsUpdate.Contains(true))
                 {
-                    using (System.Net.WebClient client = new System.Net.WebClient())
+                    Task<GetFileResponse> pngResponse = GeneralServicesClient.Instance?.GetVaultPeekerRendersPng();
+                    Task<GetFileResponse> itemsCfgResponse = GeneralServicesClient.Instance?.GetVaultPeekerItemsConfig();
+
+                    GetFileResponse png = pngResponse.Result;
+                    if (png != null && png.data != null)
                     {
-                        client.DownloadFile("https://github.com/MaikEight/ExaltAccountManager/raw/master/NotificationMessages/Vault_Peeker/renders.png", pathNEWRenders);
-                        client.DownloadFile("https://github.com/MaikEight/ExaltAccountManager/raw/master/NotificationMessages/Vault_Peeker/items.cfg", pathNEWItems);
+                        if (File.Exists(pathNEWRenders))
+                            File.Delete(pathNEWRenders);
+
+                        File.WriteAllBytes(pathNEWRenders, png.data);
+                    }
+
+                    GetFileResponse items = itemsCfgResponse.Result;
+                    if (items != null && items.data != null)
+                    {
+                        if (File.Exists(pathNEWItems))
+                            File.Delete(pathNEWItems);
+
+                        File.WriteAllBytes(pathNEWItems, items.data);
                     }
                 }
             }
@@ -364,7 +393,7 @@ namespace EAM_Vault_Peeker
             {
                 if (File.Exists(pathNEWItems))
                 {
-                    if(File.Exists(pathItems))
+                    if (File.Exists(pathItems))
                         File.Delete(pathItems);
                     File.Move(pathNEWItems, pathItems);
                 }
@@ -590,8 +619,8 @@ namespace EAM_Vault_Peeker
 
         private void FrmMain_ResizeEnd(object sender, EventArgs e)
         {
-            if (uiState == UIState.Accounts)            
-                accountsUI.ResizeEnd();            
+            if (uiState == UIState.Accounts)
+                accountsUI.ResizeEnd();
             else if (uiState == UIState.Totals)
                 totalsUI.ResizeEnd();
         }

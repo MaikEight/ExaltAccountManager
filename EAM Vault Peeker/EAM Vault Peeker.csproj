@@ -191,6 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon_chest.ico" />
+    <None Include="Resources\ic_info_outline_white_36dp.png" />
+    <None Include="Resources\ic_info_outline_black_36dp.png" />
     <None Include="Resources\Bard.png" />
     <None Include="Resources\Assasin.png" />
     <None Include="Resources\Archer.png" />
@@ -245,6 +247,10 @@
     <None Include="Resources\Vault Portal.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\MK_EAM_General_Services_Lib\MK_EAM_General_Services_Lib.csproj">
+      <Project>{32d75bdd-ce16-4569-8131-8136eb13ad8f}</Project>
+      <Name>MK_EAM_General_Services_Lib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\MK_EAM_Lib\MK_EAM_Lib.csproj">
       <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
       <Name>MK_EAM_Lib</Name>

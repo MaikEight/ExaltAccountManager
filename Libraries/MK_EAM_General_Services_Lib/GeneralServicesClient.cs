@@ -72,6 +72,73 @@ namespace MK_EAM_General_Services_Lib
             #endregion
         }
 
+        public async Task<GetVaultPeekerHashOfFilesResponse> GetVaultPeekerHashOfFiles()
+        {
+            #region GetVaultPeekerHashOfFiles
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + "v1/VaultPeeker/GetHashOfFiles");
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    string json = await responseMessage.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<GetVaultPeekerHashOfFilesResponse>(json);
+                }
+            }
+            catch { }
+
+            return new GetVaultPeekerHashOfFilesResponse();
+
+            #endregion
+        }
+
+        public async Task<GetFileResponse> GetVaultPeekerRendersPng()
+        {
+            #region GetVaultPeekerGetRendersPng
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + "v1/VaultPeeker/GetRendersPng");
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<GetFileResponse>(await responseMessage.Content.ReadAsStringAsync());
+                }
+            }
+            catch { }
+
+            return new GetFileResponse();
+
+            #endregion
+        }
+
+        public async Task<GetFileResponse> GetVaultPeekerItemsConfig()
+        {
+            #region GetVaultPeekerItemsConfig
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + "v1/VaultPeeker/GetItemsConfig");
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<GetFileResponse>(await responseMessage.Content.ReadAsStringAsync());
+                }
+            }
+            catch { }
+
+            return new GetFileResponse();
+
+            #endregion
+        }
+
         public async Task<List<NewsData>> GetNews(DateTime startTime, string clientIdHash, int amount = 5)
         {
             #region GetNews            

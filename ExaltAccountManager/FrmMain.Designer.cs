@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.pLeftSide = new System.Windows.Forms.Panel();
             this.pSideButtons = new System.Windows.Forms.Panel();
             this.pUpdate = new System.Windows.Forms.Panel();
@@ -141,16 +141,16 @@
             this.btnEAMUpdate.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnEAMUpdate.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnEAMUpdate.BackgroundImage")));
             this.btnEAMUpdate.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.btnEAMUpdate.ButtonText = "EAM Update available";
+            this.btnEAMUpdate.ButtonText = "Update EAM";
             this.btnEAMUpdate.ButtonTextMarginLeft = 0;
             this.btnEAMUpdate.ColorContrastOnClick = 45;
             this.btnEAMUpdate.ColorContrastOnHover = 45;
             this.btnEAMUpdate.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges2.BottomLeft = true;
-            borderEdges2.BottomRight = true;
-            borderEdges2.TopLeft = true;
-            borderEdges2.TopRight = true;
-            this.btnEAMUpdate.CustomizableEdges = borderEdges2;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.btnEAMUpdate.CustomizableEdges = borderEdges1;
             this.btnEAMUpdate.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnEAMUpdate.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnEAMUpdate.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));

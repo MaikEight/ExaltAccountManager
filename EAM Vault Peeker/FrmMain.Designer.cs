@@ -50,6 +50,7 @@ namespace EAM_Vault_Peeker
             this.pbClose = new System.Windows.Forms.PictureBox();
             this.pContent = new System.Windows.Forms.Panel();
             this.bunifuFormDock1 = new Bunifu.UI.WinForms.BunifuFormDock();
+            this.label1 = new System.Windows.Forms.Label();
             this.pSide.SuspendLayout();
             this.pButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).BeginInit();
@@ -163,6 +164,7 @@ namespace EAM_Vault_Peeker
             // pHeader
             // 
             this.pHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.pHeader.Controls.Add(this.label1);
             this.pHeader.Controls.Add(this.pictureBox1);
             this.pHeader.Controls.Add(this.lHeaderStatistics);
             this.pHeader.Controls.Add(this.lEAMHead);
@@ -341,6 +343,17 @@ namespace EAM_Vault_Peeker
             this.bunifuFormDock1.TitleBarOptions.TitleBarControl = this.pTop;
             this.bunifuFormDock1.TitleBarOptions.UseBackColorOnDockingIndicators = false;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(109, 45);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(51, 12);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Deprecated";
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -400,6 +413,7 @@ namespace EAM_Vault_Peeker
         private System.Windows.Forms.Panel pContent;
         private Bunifu.UI.WinForms.BunifuFormDock bunifuFormDock1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

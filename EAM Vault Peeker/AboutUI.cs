@@ -61,7 +61,7 @@ namespace EAM_Vault_Peeker
             pbVersion.Image = frm.useDarkmode ? Properties.Resources.baseline_tag_white_36dp : Properties.Resources.baseline_tag_black_36dp;
             pbDev.Image = frm.useDarkmode ? Properties.Resources.ic_code_white_36dp : Properties.Resources.ic_code_black_36dp;
             pbWebsite.Image = frm.useDarkmode ? Properties.Resources.ic_public_white_36dp : Properties.Resources.ic_public_black_36dp;
-            pbCopyright.Image = frm.useDarkmode ? Properties.Resources.ic_copyright_white_36dp : Properties.Resources.ic_copyright_black_36dp;
+            pbInfo.Image = frm.useDarkmode ? Properties.Resources.ic_info_outline_white_36dp : Properties.Resources.ic_info_outline_black_36dp;
             pbLogo.Image = frm.useDarkmode ? Properties.Resources.btn_icon_chest_1 : Properties.Resources.btn_icon_chest_2;
 
             foreach (Bunifu.UI.WinForms.BunifuShadowPanel ui in this.Controls.OfType<Bunifu.UI.WinForms.BunifuShadowPanel>())
@@ -72,19 +72,19 @@ namespace EAM_Vault_Peeker
 
         private void pbDeveloper_Click(object sender, EventArgs e)
         {
-            lTool.Text = "< > Maik8 </>";
+            lTool.Text = "<> Maik8 </>";
 
             pbProgram.Image =
             pbVersion.Image =
             pbDev.Image =
             pbWebsite.Image =
             pbLogo.Image =
-            pbCopyright.Image = Properties.Resources.llama;
+            pbInfo.Image = Properties.Resources.llama;
 
             pbVersion.SizeMode =
             pbDev.SizeMode =
             pbWebsite.SizeMode =
-            pbCopyright.SizeMode = PictureBoxSizeMode.Zoom;
+            pbInfo.SizeMode = PictureBoxSizeMode.Zoom;
 
             timerReset.Start();
         }
@@ -98,7 +98,7 @@ namespace EAM_Vault_Peeker
             pbVersion.SizeMode =
             pbDev.SizeMode =
             pbWebsite.SizeMode =
-            pbCopyright.SizeMode = PictureBoxSizeMode.Normal;
+            pbInfo.SizeMode = PictureBoxSizeMode.Normal;
 
             ApplyTheme(null, null);
         }

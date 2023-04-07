@@ -323,7 +323,7 @@ namespace MK_EAM_Analytics
                 await resp;
                 HttpResponseMessage responseMessage = resp.Result;
                 responseMessage.EnsureSuccessStatusCode();
-                return responseMessage.StatusCode == HttpStatusCode.Accepted;
+                return responseMessage.StatusCode == HttpStatusCode.OK;
             }
             catch { }
             return false;

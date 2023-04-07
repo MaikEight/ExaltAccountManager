@@ -40,10 +40,12 @@
             // 
             // pNews
             // 
-            this.pNews.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pNews.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pNews.Location = new System.Drawing.Point(0, 0);
             this.pNews.Name = "pNews";
-            this.pNews.Size = new System.Drawing.Size(649, 22);
+            this.pNews.Size = new System.Drawing.Size(649, 530);
             this.pNews.TabIndex = 1;
             // 
             // scrollbar
@@ -67,7 +69,7 @@
             this.scrollbar.DurationBeforeShrink = 2000;
             this.scrollbar.LargeChange = 10;
             this.scrollbar.Location = new System.Drawing.Point(669, 0);
-            this.scrollbar.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.scrollbar.Margin = new System.Windows.Forms.Padding(7);
             this.scrollbar.Maximum = 100;
             this.scrollbar.MaximumSize = new System.Drawing.Size(8, 0);
             this.scrollbar.Minimum = 0;
