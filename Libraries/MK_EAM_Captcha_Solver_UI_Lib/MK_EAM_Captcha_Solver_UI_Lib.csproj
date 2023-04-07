@@ -233,6 +233,9 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FrmCaptchaSolver.resx">
+      <DependentUpon>FrmCaptchaSolver.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -274,6 +277,10 @@
     <None Include="Resources\baseline_minimize_black_24dp.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MK_EAM_Analytics\MK_EAM_Analytics.csproj">
+      <Project>{7af5d68e-dd5f-490f-b9e2-d8745f1907b9}</Project>
+      <Name>MK_EAM_Analytics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MK_EAM_Lib\MK_EAM_Lib.csproj">
       <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
       <Name>MK_EAM_Lib</Name>

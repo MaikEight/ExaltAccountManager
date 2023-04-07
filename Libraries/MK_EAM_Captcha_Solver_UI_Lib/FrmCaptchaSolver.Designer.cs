@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmCaptchaSolver));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges7 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges8 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.pTopContent = new System.Windows.Forms.Panel();
             this.pTop = new System.Windows.Forms.Panel();
             this.pbMinimize = new System.Windows.Forms.PictureBox();
@@ -94,7 +94,7 @@
             // pbMinimize
             // 
             this.pbMinimize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbMinimize.Image = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.baseline_minimize_black_24dp;
+            this.pbMinimize.Image = ((System.Drawing.Image)(resources.GetObject("pbMinimize.Image")));
             this.pbMinimize.Location = new System.Drawing.Point(77, 0);
             this.pbMinimize.Name = "pbMinimize";
             this.pbMinimize.Size = new System.Drawing.Size(24, 24);
@@ -110,7 +110,7 @@
             // pbClose
             // 
             this.pbClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbClose.Image = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.ic_close_black_24dp;
+            this.pbClose.Image = ((System.Drawing.Image)(resources.GetObject("pbClose.Image")));
             this.pbClose.Location = new System.Drawing.Point(101, 0);
             this.pbClose.Name = "pbClose";
             this.pbClose.Size = new System.Drawing.Size(24, 24);
@@ -184,7 +184,6 @@
             this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pbHeader.AutoSizeHeight = true;
             this.pbHeader.BorderRadius = 0;
-            this.pbHeader.Image = ((System.Drawing.Image)(resources.GetObject("pbHeader.Image")));
             this.pbHeader.IsCircle = true;
             this.pbHeader.Location = new System.Drawing.Point(6, 6);
             this.pbHeader.Name = "pbHeader";
@@ -289,11 +288,11 @@
             this.btnReset.ColorContrastOnClick = 45;
             this.btnReset.ColorContrastOnHover = 45;
             this.btnReset.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges7.BottomLeft = true;
-            borderEdges7.BottomRight = true;
-            borderEdges7.TopLeft = true;
-            borderEdges7.TopRight = true;
-            this.btnReset.CustomizableEdges = borderEdges7;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.btnReset.CustomizableEdges = borderEdges1;
             this.btnReset.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnReset.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnReset.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -301,7 +300,7 @@
             this.btnReset.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Hover;
             this.btnReset.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReset.ForeColor = System.Drawing.Color.White;
-            this.btnReset.IconLeft = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.back_to_white_36px_1;
+            this.btnReset.IconLeft = ((System.Drawing.Image)(resources.GetObject("btnReset.IconLeft")));
             this.btnReset.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnReset.IconLeftCursor = System.Windows.Forms.Cursors.Default;
             this.btnReset.IconLeftPadding = new System.Windows.Forms.Padding(15, 3, 1, 3);
@@ -316,7 +315,7 @@
             this.btnReset.IdleBorderRadius = 5;
             this.btnReset.IdleBorderThickness = 1;
             this.btnReset.IdleFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnReset.IdleIconLeftImage = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.back_to_white_36px_1;
+            this.btnReset.IdleIconLeftImage = ((System.Drawing.Image)(resources.GetObject("btnReset.IdleIconLeftImage")));
             this.btnReset.IdleIconRightImage = null;
             this.btnReset.IndicateFocus = false;
             this.btnReset.Location = new System.Drawing.Point(5, 5);
@@ -335,7 +334,7 @@
             this.btnReset.onHoverState.BorderThickness = 1;
             this.btnReset.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnReset.onHoverState.ForeColor = System.Drawing.Color.White;
-            this.btnReset.onHoverState.IconLeftImage = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.back_to_white_36px;
+            this.btnReset.onHoverState.IconLeftImage = ((System.Drawing.Image)(resources.GetObject("btnReset.onHoverState.IconLeftImage")));
             this.btnReset.onHoverState.IconRightImage = null;
             this.btnReset.OnIdleState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnReset.OnIdleState.BorderRadius = 5;
@@ -343,7 +342,7 @@
             this.btnReset.OnIdleState.BorderThickness = 1;
             this.btnReset.OnIdleState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnReset.OnIdleState.ForeColor = System.Drawing.Color.White;
-            this.btnReset.OnIdleState.IconLeftImage = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.back_to_white_36px_1;
+            this.btnReset.OnIdleState.IconLeftImage = ((System.Drawing.Image)(resources.GetObject("btnReset.OnIdleState.IconLeftImage")));
             this.btnReset.OnIdleState.IconRightImage = null;
             this.btnReset.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnReset.OnPressedState.BorderRadius = 5;
@@ -381,11 +380,11 @@
             this.btnSubmit.ColorContrastOnClick = 45;
             this.btnSubmit.ColorContrastOnHover = 45;
             this.btnSubmit.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges8.BottomLeft = true;
-            borderEdges8.BottomRight = true;
-            borderEdges8.TopLeft = true;
-            borderEdges8.TopRight = true;
-            this.btnSubmit.CustomizableEdges = borderEdges8;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.btnSubmit.CustomizableEdges = borderEdges2;
             this.btnSubmit.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnSubmit.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnSubmit.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -394,7 +393,7 @@
             this.btnSubmit.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Hover;
             this.btnSubmit.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSubmit.ForeColor = System.Drawing.Color.White;
-            this.btnSubmit.IconLeft = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.Check_Circle_white_36px_1;
+            this.btnSubmit.IconLeft = ((System.Drawing.Image)(resources.GetObject("btnSubmit.IconLeft")));
             this.btnSubmit.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSubmit.IconLeftCursor = System.Windows.Forms.Cursors.Default;
             this.btnSubmit.IconLeftPadding = new System.Windows.Forms.Padding(15, 3, 1, 3);
@@ -409,7 +408,7 @@
             this.btnSubmit.IdleBorderRadius = 5;
             this.btnSubmit.IdleBorderThickness = 1;
             this.btnSubmit.IdleFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.btnSubmit.IdleIconLeftImage = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.Check_Circle_white_36px_1;
+            this.btnSubmit.IdleIconLeftImage = ((System.Drawing.Image)(resources.GetObject("btnSubmit.IdleIconLeftImage")));
             this.btnSubmit.IdleIconRightImage = null;
             this.btnSubmit.IndicateFocus = false;
             this.btnSubmit.Location = new System.Drawing.Point(177, 5);
@@ -428,7 +427,7 @@
             this.btnSubmit.onHoverState.BorderThickness = 1;
             this.btnSubmit.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnSubmit.onHoverState.ForeColor = System.Drawing.Color.White;
-            this.btnSubmit.onHoverState.IconLeftImage = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.Check_Circle_white_36px;
+            this.btnSubmit.onHoverState.IconLeftImage = ((System.Drawing.Image)(resources.GetObject("btnSubmit.onHoverState.IconLeftImage")));
             this.btnSubmit.onHoverState.IconRightImage = null;
             this.btnSubmit.OnIdleState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnSubmit.OnIdleState.BorderRadius = 5;
@@ -436,7 +435,7 @@
             this.btnSubmit.OnIdleState.BorderThickness = 1;
             this.btnSubmit.OnIdleState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnSubmit.OnIdleState.ForeColor = System.Drawing.Color.White;
-            this.btnSubmit.OnIdleState.IconLeftImage = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.Check_Circle_white_36px_1;
+            this.btnSubmit.OnIdleState.IconLeftImage = ((System.Drawing.Image)(resources.GetObject("btnSubmit.OnIdleState.IconLeftImage")));
             this.btnSubmit.OnIdleState.IconRightImage = null;
             this.btnSubmit.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnSubmit.OnPressedState.BorderRadius = 5;
@@ -551,6 +550,7 @@
             this.Controls.Add(this.pTopContent);
             this.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmCaptchaSolver";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

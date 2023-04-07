@@ -1,11 +1,8 @@
 ﻿using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,7 +11,6 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
 {
     public partial class FrmCaptchaSolver : Form
     {
-
         #region Borderless Form Minimize On Taskbar Icon Click
 
         const int WS_MINIMIZEBOX = 0x20000;
@@ -43,6 +39,8 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         private int currentPoint = 0;
         private bool isLoading = false;
 
+        private DateTime startTime = DateTime.Now;
+
         public FrmCaptchaSolver(AccountInfo _accountInfo, bool useDarkmode = false)
         {
             InitializeComponent();
@@ -55,6 +53,14 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             if (accountInfo == null)
             {
                 this.DialogResult = DialogResult.Abort;
+
+                _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                startTime,
+                MK_EAM_Analytics.Data.CaptchaResult.Aborted,
+                null,
+                null,
+                null);
+
                 return;
             }
 
@@ -100,12 +106,16 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                     {
                         if (token.IsCancellationRequested)
                         {
-                            //OnAPIResponseLatestEamVersion(new Version(0, 0, 0));
-                            //LogEvent(new MK_EAM_Lib.LogData(
-                            //    "EAM",
-                            //    MK_EAM_Lib.LogEventType.APIError,
-                            //    "Failed to fetch latest EAM-Version."));
+                            this.DialogResult = DialogResult.Abort;
 
+                            _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                            DateTime.Now,
+                            MK_EAM_Analytics.Data.CaptchaResult.Error,
+                            null,
+                            null,
+                            null);
+
+                            this.Close();
                             return;
                         }
 
@@ -116,16 +126,24 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                 }
                 catch (Exception ex)
                 {
-                    //LogEvent(new MK_EAM_Lib.LogData(
-                    //           "EAM",
-                    //           MK_EAM_Lib.LogEventType.APIError,
-                    //           "Failed to fetch latest EAM-Version." + Environment.NewLine + "Exception: " + ex.Message));
+                    this.DialogResult = DialogResult.Abort;
+
+                    _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                    DateTime.Now,
+                    MK_EAM_Analytics.Data.CaptchaResult.Aborted,
+                    null,
+                    null,
+                    null);
+
+                    this.Close();
+                    return;
                 }
             }), cancellationTokenSource.Token);
         }
 
         private void RequestChallengeUpdateUIInvoker(CaptchaSolverUtils.CaptchaRefreshResponse captchaRefresh)
         {
+            startTime = DateTime.Now;
             RequestChallengeUpdateUI(captchaRefresh);
         }
 
@@ -137,9 +155,16 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             if (captchaRefresh == null)
             {
                 this.DialogResult = DialogResult.No;
-                MessageBox.Show("You have exceeded the amount of tries. Please try again later.", "Tries exceeded", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
+                MessageBox.Show("You may have exceeded the amount of tries. Please try again later.", "Tries exceeded", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                startTime,
+                MK_EAM_Analytics.Data.CaptchaResult.Failed,
+                null,
+                null,
+                null);
+
+                this.Close();
                 return false;
             }
 
@@ -161,6 +186,13 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         {
             this.Visible = false;
             DialogResult = DialogResult.Cancel;
+
+            _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+            startTime,
+            MK_EAM_Analytics.Data.CaptchaResult.Aborted,
+            null,
+            null,
+            null);
 
             this.Close();
         }
@@ -244,39 +276,61 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                     {
                         if (token.IsCancellationRequested)
                         {
-                            //OnAPIResponseLatestEamVersion(new Version(0, 0, 0));
-                            //LogEvent(new MK_EAM_Lib.LogData(
-                            //    "EAM",
-                            //    MK_EAM_Lib.LogEventType.APIError,
-                            //    "Failed to fetch latest EAM-Version."));
+                            this.DialogResult = DialogResult.Abort;
 
+                            _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                            startTime,
+                            MK_EAM_Analytics.Data.CaptchaResult.Aborted,
+                            null,
+                            null,
+                            null);
+
+                            MessageBox.Show("The request timed out. Please try again later.", "Request timed out", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            this.Close();
                             return;
                         }
 
                         await Task.Delay(50, token);
                     }
                     bool result = task.Result;
-                    SubmitUpdateUIInvoker(result);
+                    SubmitUpdateUIInvoker(result, _points);
                 }
                 catch (Exception ex)
                 {
-                    //LogEvent(new MK_EAM_Lib.LogData(
-                    //           "EAM",
-                    //           MK_EAM_Lib.LogEventType.APIError,
-                    //           "Failed to fetch latest EAM-Version." + Environment.NewLine + "Exception: " + ex.Message));
+                    this.DialogResult = DialogResult.Abort;
+
+                    _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                    startTime,
+                    MK_EAM_Analytics.Data.CaptchaResult.Aborted,
+                    null,
+                    null,
+                    null);
+
+                    MessageBox.Show("An error occured while submitting the result. Please try again later.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    
+                    this.Close();
+                    return;
                 }
             }), cancellationTokenSource.Token);
         }
 
-        private void SubmitUpdateUIInvoker(bool result)
+        private void SubmitUpdateUIInvoker(bool result, PointF[] points)
         {
-            SubmitUpdateUI(result);
+            SubmitUpdateUI(result, points);
         }
 
-        private bool SubmitUpdateUI(bool result)
+        private bool SubmitUpdateUI(bool result, PointF[] points)
         {
             if (this.InvokeRequired)
-                return (bool)this.Invoke((Func<bool, bool>)SubmitUpdateUI, result);
+                return (bool)this.Invoke((Func<bool, PointF[], bool>)SubmitUpdateUI, result, points);
+
+            _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                startTime, 
+                result ? MK_EAM_Analytics.Data.CaptchaResult.Success : MK_EAM_Analytics.Data.CaptchaResult.Failed, 
+                ImageToByteArray(pbCaptchaQuestion.Image), 
+                ImageToByteArray(pbCaptchaMain.Image), 
+                points);
 
             if (result)
             {
@@ -330,6 +384,15 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         {
             if (accountInfo == null)
             {
+                DialogResult = DialogResult.Abort;
+
+                _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
+                DateTime.Now,
+                MK_EAM_Analytics.Data.CaptchaResult.Aborted,
+                null,
+                null,
+                null);
+
                 this.Close();
             }
         }
@@ -348,6 +411,12 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             {
                 e.Graphics.DrawLine(p, 0, pContent.Height - 1, pContent.Width, pContent.Height - 1);
             }
+        }
+
+        private byte[] ImageToByteArray(Image img)
+        {
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(img, typeof(byte[]));
         }
     }
 }
