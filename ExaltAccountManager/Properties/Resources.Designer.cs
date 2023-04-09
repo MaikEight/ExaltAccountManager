@@ -513,6 +513,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bunifu {
+            get {
+                object obj = ResourceManager.GetObject("bunifu", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cancel_outline_white_24px {
             get {
                 object obj = ResourceManager.GetObject("cancel_outline_white_24px", resourceCulture);
@@ -553,6 +563,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CSV_Helper {
+            get {
+                object obj = ResourceManager.GetObject("CSV_Helper", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap dashboard_layout_24px {
             get {
                 object obj = ResourceManager.GetObject("dashboard_layout_24px", resourceCulture);
@@ -586,6 +606,16 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap dashboard_layout_white_24px {
             get {
                 object obj = ResourceManager.GetObject("dashboard_layout_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap deca {
+            get {
+                object obj = ResourceManager.GetObject("deca", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -636,6 +666,16 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap document_white_24px {
             get {
                 object obj = ResourceManager.GetObject("document_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap dotNET_Logo {
+            get {
+                object obj = ResourceManager.GetObject("dotNET_Logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -726,6 +766,36 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap fingerprint_white_24px {
             get {
                 object obj = ResourceManager.GetObject("fingerprint_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fody {
+            get {
+                object obj = ResourceManager.GetObject("fody", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap heart_outline_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("heart_outline_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap heart_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("heart_white_24px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2343,6 +2413,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8 {
+            get {
+                object obj = ResourceManager.GetObject("icons8", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_smiling_48px {
             get {
                 object obj = ResourceManager.GetObject("icons8_smiling_48px", resourceCulture);
@@ -2566,6 +2646,16 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap news_white_24px {
             get {
                 object obj = ResourceManager.GetObject("news_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap newtonsoft {
+            get {
+                object obj = ResourceManager.GetObject("newtonsoft", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2856,6 +2946,16 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap return_36_white {
             get {
                 object obj = ResourceManager.GetObject("return_36_white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rotmg {
+            get {
+                object obj = ResourceManager.GetObject("rotmg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3303,6 +3403,16 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap TaskScheduler {
+            get {
+                object obj = ResourceManager.GetObject("TaskScheduler", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap time_36px {
             get {
                 object obj = ResourceManager.GetObject("time_36px", resourceCulture);
@@ -3506,6 +3616,16 @@ namespace ExaltAccountManager.Properties {
         internal static System.Drawing.Bitmap wallet_white {
             get {
                 object obj = ResourceManager.GetObject("wallet_white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap wixsharp_logo {
+            get {
+                object obj = ResourceManager.GetObject("wixsharp_logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -512,6 +512,12 @@
     <Compile Include="UI\Elements\EleChangelog.Designer.cs">
       <DependentUpon>EleChangelog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Elements\EleCredits.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleCredits.Designer.cs">
+      <DependentUpon>EleCredits.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Elements\EleCustomExport.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -829,6 +835,9 @@
     <EmbeddedResource Include="UI\Elements\EleChangelog.resx">
       <DependentUpon>EleChangelog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleCredits.resx">
+      <DependentUpon>EleCredits.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleCustomExport.resx">
       <DependentUpon>EleCustomExport.cs</DependentUpon>
     </EmbeddedResource>
@@ -973,6 +982,18 @@
     <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
     <Content Include="Logo.ico" />
+    <None Include="Resources\rotmg.png" />
+    <None Include="Resources\deca.png" />
+    <None Include="Resources\icons8.png" />
+    <None Include="Resources\wixsharp_logo.png" />
+    <None Include="Resources\TaskScheduler.png" />
+    <None Include="Resources\bunifu.png" />
+    <None Include="Resources\CSV_Helper.png" />
+    <None Include="Resources\fody.png" />
+    <None Include="Resources\newtonsoft.png" />
+    <None Include="Resources\dotNET_Logo.png" />
+    <None Include="Resources\heart_white_24px.png" />
+    <None Include="Resources\heart_outline_white_24px.png" />
     <None Include="Resources\ic_visibility_off_white_24dp.png" />
     <None Include="Resources\ic_visibility_off_black_24dp.png" />
     <None Include="Resources\ic_visibility_off_black_18dp.png" />

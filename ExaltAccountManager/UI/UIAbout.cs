@@ -126,5 +126,10 @@ namespace ExaltAccountManager.UI
         {
             pbThanks.Image = frm.UseDarkmode ? Properties.Resources.birthday_cake_1_white_36px : Properties.Resources.birthday_cake_1_36px;
         }
+
+        private void btnShowCredits_Click(object sender, EventArgs e)
+        {
+            frm.ShowShadowForm(new Elements.EleCredits(frm));
+        }
     }
 }

@@ -450,6 +450,7 @@
             this.toolTip.SetToolTipTitle(this.btnNews, "");
             this.btnNews.UseVisualStyleBackColor = true;
             this.btnNews.Click += new System.EventHandler(this.btnNews_Click);
+            this.btnNews.Paint += new System.Windows.Forms.PaintEventHandler(this.btnNews_Paint);
             this.btnNews.MouseEnter += new System.EventHandler(this.btnNews_MouseEnter);
             this.btnNews.MouseLeave += new System.EventHandler(this.btnNews_MouseLeave);
             // 

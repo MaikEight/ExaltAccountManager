@@ -31,71 +31,87 @@
             this.components = new System.ComponentModel.Container();
             Bunifu.Framework.UI.BunifuElipse bunifuElipse;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UIAbout));
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            this.pbDeveloper = new System.Windows.Forms.PictureBox();
             this.bunifuShadowPanel3 = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.pbDevIcon = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.bunifuSeparator3 = new Bunifu.UI.WinForms.BunifuSeparator();
             this.bunifuShadowPanel2 = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.pbVersion = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.bunifuSeparator2 = new Bunifu.UI.WinForms.BunifuSeparator();
             this.lVesionNumber = new System.Windows.Forms.Label();
             this.bunifuShadowPanel1 = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.pbProgram = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.bunifuSeparator1 = new Bunifu.UI.WinForms.BunifuSeparator();
             this.lProgram = new System.Windows.Forms.Label();
             this.bunifuShadowPanel4 = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.linkReddit = new System.Windows.Forms.LinkLabel();
             this.linkRealmeye = new System.Windows.Forms.LinkLabel();
+            this.pbReddit = new System.Windows.Forms.PictureBox();
+            this.pbRealmeye = new System.Windows.Forms.PictureBox();
             this.linkEmail = new System.Windows.Forms.LinkLabel();
+            this.pbEmail = new System.Windows.Forms.PictureBox();
             this.linkDiscord = new System.Windows.Forms.LinkLabel();
+            this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.linkBuyMeACoffe = new System.Windows.Forms.LinkLabel();
+            this.pbBMAC = new System.Windows.Forms.PictureBox();
             this.linkSourceCode = new System.Windows.Forms.LinkLabel();
+            this.pbLinkSourceCode = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.bunifuSeparator4 = new Bunifu.UI.WinForms.BunifuSeparator();
             this.label4 = new System.Windows.Forms.Label();
             this.timerLlama = new System.Windows.Forms.Timer(this.components);
             this.pEAM = new System.Windows.Forms.Panel();
-            this.bunifuShadowPanel5 = new Bunifu.UI.WinForms.BunifuShadowPanel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.pbThanks = new System.Windows.Forms.PictureBox();
-            this.bunifuSeparator5 = new Bunifu.UI.WinForms.BunifuSeparator();
             this.pbEAM = new System.Windows.Forms.PictureBox();
-            this.pbReddit = new System.Windows.Forms.PictureBox();
-            this.pbRealmeye = new System.Windows.Forms.PictureBox();
-            this.pbEmail = new System.Windows.Forms.PictureBox();
-            this.pbDiscord = new System.Windows.Forms.PictureBox();
-            this.pbBMAC = new System.Windows.Forms.PictureBox();
-            this.pbLinkSourceCode = new System.Windows.Forms.PictureBox();
-            this.bunifuSeparator4 = new Bunifu.UI.WinForms.BunifuSeparator();
-            this.pbVersion = new System.Windows.Forms.PictureBox();
-            this.bunifuSeparator2 = new Bunifu.UI.WinForms.BunifuSeparator();
-            this.pbProgram = new System.Windows.Forms.PictureBox();
-            this.bunifuSeparator1 = new Bunifu.UI.WinForms.BunifuSeparator();
-            this.pbDeveloper = new System.Windows.Forms.PictureBox();
-            this.pbDevIcon = new System.Windows.Forms.PictureBox();
-            this.bunifuSeparator3 = new Bunifu.UI.WinForms.BunifuSeparator();
+            this.bunifuShadowPanel5 = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.pbThanks = new System.Windows.Forms.PictureBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.bunifuSeparator5 = new Bunifu.UI.WinForms.BunifuSeparator();
+            this.label6 = new System.Windows.Forms.Label();
+            this.bunifuShadowPanel6 = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.btnShowCredits = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.label8 = new System.Windows.Forms.Label();
+            this.bunifuSeparator6 = new Bunifu.UI.WinForms.BunifuSeparator();
             bunifuElipse = new Bunifu.Framework.UI.BunifuElipse(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).BeginInit();
             this.bunifuShadowPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDevIcon)).BeginInit();
             this.bunifuShadowPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbVersion)).BeginInit();
             this.bunifuShadowPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbProgram)).BeginInit();
             this.bunifuShadowPanel4.SuspendLayout();
-            this.pEAM.SuspendLayout();
-            this.bunifuShadowPanel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbThanks)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbEAM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbReddit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbRealmeye)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbEmail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBMAC)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbLinkSourceCode)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbVersion)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbProgram)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDevIcon)).BeginInit();
+            this.pEAM.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbEAM)).BeginInit();
+            this.bunifuShadowPanel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbThanks)).BeginInit();
+            this.bunifuShadowPanel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // bunifuElipse
             // 
             bunifuElipse.ElipseRadius = 5;
             bunifuElipse.TargetControl = this.pbDeveloper;
+            // 
+            // pbDeveloper
+            // 
+            this.pbDeveloper.Image = global::ExaltAccountManager.Properties.Resources.Logo_NameOnly_2_Medium;
+            this.pbDeveloper.Location = new System.Drawing.Point(61, 57);
+            this.pbDeveloper.Name = "pbDeveloper";
+            this.pbDeveloper.Size = new System.Drawing.Size(138, 36);
+            this.pbDeveloper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbDeveloper.TabIndex = 23;
+            this.pbDeveloper.TabStop = false;
+            this.pbDeveloper.Click += new System.EventHandler(this.pbDev_Click);
             // 
             // bunifuShadowPanel3
             // 
@@ -123,6 +139,16 @@
             this.bunifuShadowPanel3.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.bunifuShadowPanel3.TabIndex = 22;
             // 
+            // pbDevIcon
+            // 
+            this.pbDevIcon.Image = global::ExaltAccountManager.Properties.Resources.ic_code_black_36dp;
+            this.pbDevIcon.Location = new System.Drawing.Point(17, 57);
+            this.pbDevIcon.Name = "pbDevIcon";
+            this.pbDevIcon.Size = new System.Drawing.Size(36, 36);
+            this.pbDevIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbDevIcon.TabIndex = 19;
+            this.pbDevIcon.TabStop = false;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -134,6 +160,24 @@
             this.label2.TabIndex = 12;
             this.label2.Text = "Developer";
             this.label2.UseMnemonic = false;
+            // 
+            // bunifuSeparator3
+            // 
+            this.bunifuSeparator3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.bunifuSeparator3.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuSeparator3.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator3.BackgroundImage")));
+            this.bunifuSeparator3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.bunifuSeparator3.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
+            this.bunifuSeparator3.LineColor = System.Drawing.Color.Silver;
+            this.bunifuSeparator3.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
+            this.bunifuSeparator3.LineThickness = 1;
+            this.bunifuSeparator3.Location = new System.Drawing.Point(16, 39);
+            this.bunifuSeparator3.Margin = new System.Windows.Forms.Padding(5);
+            this.bunifuSeparator3.Name = "bunifuSeparator3";
+            this.bunifuSeparator3.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
+            this.bunifuSeparator3.Size = new System.Drawing.Size(207, 10);
+            this.bunifuSeparator3.TabIndex = 13;
             // 
             // bunifuShadowPanel2
             // 
@@ -157,9 +201,19 @@
             this.bunifuShadowPanel2.ShadowDepth = 4;
             this.bunifuShadowPanel2.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.bunifuShadowPanel2.ShadowTopLeftVisible = false;
-            this.bunifuShadowPanel2.Size = new System.Drawing.Size(326, 110);
+            this.bunifuShadowPanel2.Size = new System.Drawing.Size(184, 110);
             this.bunifuShadowPanel2.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.bunifuShadowPanel2.TabIndex = 23;
+            // 
+            // pbVersion
+            // 
+            this.pbVersion.Image = global::ExaltAccountManager.Properties.Resources.baseline_tag_black_36dp;
+            this.pbVersion.Location = new System.Drawing.Point(17, 57);
+            this.pbVersion.Name = "pbVersion";
+            this.pbVersion.Size = new System.Drawing.Size(36, 36);
+            this.pbVersion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbVersion.TabIndex = 19;
+            this.pbVersion.TabStop = false;
             // 
             // label1
             // 
@@ -173,15 +227,33 @@
             this.label1.Text = "Version";
             this.label1.UseMnemonic = false;
             // 
+            // bunifuSeparator2
+            // 
+            this.bunifuSeparator2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.bunifuSeparator2.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuSeparator2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator2.BackgroundImage")));
+            this.bunifuSeparator2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.bunifuSeparator2.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
+            this.bunifuSeparator2.LineColor = System.Drawing.Color.Silver;
+            this.bunifuSeparator2.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
+            this.bunifuSeparator2.LineThickness = 1;
+            this.bunifuSeparator2.Location = new System.Drawing.Point(16, 39);
+            this.bunifuSeparator2.Margin = new System.Windows.Forms.Padding(5);
+            this.bunifuSeparator2.Name = "bunifuSeparator2";
+            this.bunifuSeparator2.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
+            this.bunifuSeparator2.Size = new System.Drawing.Size(152, 10);
+            this.bunifuSeparator2.TabIndex = 13;
+            // 
             // lVesionNumber
             // 
             this.lVesionNumber.AutoSize = true;
             this.lVesionNumber.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold);
             this.lVesionNumber.Location = new System.Drawing.Point(59, 60);
             this.lVesionNumber.Name = "lVesionNumber";
-            this.lVesionNumber.Size = new System.Drawing.Size(120, 30);
+            this.lVesionNumber.Size = new System.Drawing.Size(116, 30);
             this.lVesionNumber.TabIndex = 18;
-            this.lVesionNumber.Text = "EAM v3.0.0";
+            this.lVesionNumber.Text = "EAM v3.1.0";
             // 
             // bunifuShadowPanel1
             // 
@@ -209,6 +281,16 @@
             this.bunifuShadowPanel1.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.bunifuShadowPanel1.TabIndex = 22;
             // 
+            // pbProgram
+            // 
+            this.pbProgram.Image = global::ExaltAccountManager.Properties.Resources.logo;
+            this.pbProgram.Location = new System.Drawing.Point(17, 57);
+            this.pbProgram.Name = "pbProgram";
+            this.pbProgram.Size = new System.Drawing.Size(36, 36);
+            this.pbProgram.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbProgram.TabIndex = 19;
+            this.pbProgram.TabStop = false;
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -220,6 +302,24 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "Projectname";
             this.label7.UseMnemonic = false;
+            // 
+            // bunifuSeparator1
+            // 
+            this.bunifuSeparator1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.bunifuSeparator1.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuSeparator1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator1.BackgroundImage")));
+            this.bunifuSeparator1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.bunifuSeparator1.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
+            this.bunifuSeparator1.LineColor = System.Drawing.Color.Silver;
+            this.bunifuSeparator1.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
+            this.bunifuSeparator1.LineThickness = 1;
+            this.bunifuSeparator1.Location = new System.Drawing.Point(16, 39);
+            this.bunifuSeparator1.Margin = new System.Windows.Forms.Padding(5);
+            this.bunifuSeparator1.Name = "bunifuSeparator1";
+            this.bunifuSeparator1.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
+            this.bunifuSeparator1.Size = new System.Drawing.Size(294, 10);
+            this.bunifuSeparator1.TabIndex = 13;
             // 
             // lProgram
             // 
@@ -303,215 +403,6 @@
             this.linkRealmeye.MouseEnter += new System.EventHandler(this.pbRealmeye_MouseEnter);
             this.linkRealmeye.MouseLeave += new System.EventHandler(this.pbRealmeye_MouseLeave);
             // 
-            // linkEmail
-            // 
-            this.linkEmail.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkEmail.AutoSize = true;
-            this.linkEmail.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkEmail.LinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkEmail.Location = new System.Drawing.Point(280, 103);
-            this.linkEmail.MaximumSize = new System.Drawing.Size(220, 0);
-            this.linkEmail.Name = "linkEmail";
-            this.linkEmail.Size = new System.Drawing.Size(187, 30);
-            this.linkEmail.TabIndex = 26;
-            this.linkEmail.TabStop = true;
-            this.linkEmail.Text = "Write me an email";
-            this.linkEmail.VisitedLinkColor = System.Drawing.Color.Purple;
-            this.linkEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkEmail_LinkClicked);
-            this.linkEmail.MouseEnter += new System.EventHandler(this.pbEmail_MouseEnter);
-            this.linkEmail.MouseLeave += new System.EventHandler(this.pbEmail_MouseLeave);
-            // 
-            // linkDiscord
-            // 
-            this.linkDiscord.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkDiscord.AutoSize = true;
-            this.linkDiscord.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkDiscord.LinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkDiscord.Location = new System.Drawing.Point(280, 60);
-            this.linkDiscord.MaximumSize = new System.Drawing.Size(220, 0);
-            this.linkDiscord.Name = "linkDiscord";
-            this.linkDiscord.Size = new System.Drawing.Size(166, 30);
-            this.linkDiscord.TabIndex = 24;
-            this.linkDiscord.TabStop = true;
-            this.linkDiscord.Text = "Join my Discord";
-            this.linkDiscord.VisitedLinkColor = System.Drawing.Color.Purple;
-            this.linkDiscord.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkDiscord_LinkClicked);
-            this.linkDiscord.MouseEnter += new System.EventHandler(this.pbDiscord_MouseEnter);
-            this.linkDiscord.MouseLeave += new System.EventHandler(this.pbDiscord_MouseLeave);
-            // 
-            // linkBuyMeACoffe
-            // 
-            this.linkBuyMeACoffe.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkBuyMeACoffe.AutoSize = true;
-            this.linkBuyMeACoffe.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkBuyMeACoffe.LinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkBuyMeACoffe.Location = new System.Drawing.Point(58, 103);
-            this.linkBuyMeACoffe.MaximumSize = new System.Drawing.Size(220, 0);
-            this.linkBuyMeACoffe.Name = "linkBuyMeACoffe";
-            this.linkBuyMeACoffe.Size = new System.Drawing.Size(167, 30);
-            this.linkBuyMeACoffe.TabIndex = 22;
-            this.linkBuyMeACoffe.TabStop = true;
-            this.linkBuyMeACoffe.Text = "Buy me a coffee";
-            this.linkBuyMeACoffe.VisitedLinkColor = System.Drawing.Color.Purple;
-            this.linkBuyMeACoffe.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkBuyMeACoffe_LinkClicked);
-            this.linkBuyMeACoffe.MouseEnter += new System.EventHandler(this.pbBMAC_MouseEnter);
-            this.linkBuyMeACoffe.MouseLeave += new System.EventHandler(this.pbBMAC_MouseLeave);
-            // 
-            // linkSourceCode
-            // 
-            this.linkSourceCode.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkSourceCode.AutoSize = true;
-            this.linkSourceCode.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkSourceCode.LinkColor = System.Drawing.SystemColors.HotTrack;
-            this.linkSourceCode.Location = new System.Drawing.Point(58, 60);
-            this.linkSourceCode.MaximumSize = new System.Drawing.Size(220, 0);
-            this.linkSourceCode.Name = "linkSourceCode";
-            this.linkSourceCode.Size = new System.Drawing.Size(131, 30);
-            this.linkSourceCode.TabIndex = 20;
-            this.linkSourceCode.TabStop = true;
-            this.linkSourceCode.Text = "Source code";
-            this.linkSourceCode.VisitedLinkColor = System.Drawing.Color.Purple;
-            this.linkSourceCode.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkSourceCode_LinkClicked);
-            this.linkSourceCode.MouseEnter += new System.EventHandler(this.pbLinkSourceCode_MouseEnter);
-            this.linkSourceCode.MouseLeave += new System.EventHandler(this.pbLinkSourceCode_MouseLeave);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(12, 12);
-            this.label3.MaximumSize = new System.Drawing.Size(176, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 30);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Links";
-            this.label3.UseMnemonic = false;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI Black", 33F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(125, 35);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(529, 60);
-            this.label4.TabIndex = 25;
-            this.label4.Text = "Exalt Account Manager";
-            // 
-            // timerLlama
-            // 
-            this.timerLlama.Interval = 2500;
-            this.timerLlama.Tick += new System.EventHandler(this.timerLlama_Tick);
-            // 
-            // pEAM
-            // 
-            this.pEAM.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.pEAM.Controls.Add(this.pbEAM);
-            this.pEAM.Controls.Add(this.label4);
-            this.pEAM.Location = new System.Drawing.Point(12, 408);
-            this.pEAM.Name = "pEAM";
-            this.pEAM.Size = new System.Drawing.Size(655, 130);
-            this.pEAM.TabIndex = 27;
-            // 
-            // bunifuShadowPanel5
-            // 
-            this.bunifuShadowPanel5.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuShadowPanel5.BorderColor = System.Drawing.Color.WhiteSmoke;
-            this.bunifuShadowPanel5.BorderRadius = 9;
-            this.bunifuShadowPanel5.BorderThickness = 1;
-            this.bunifuShadowPanel5.Controls.Add(this.label8);
-            this.bunifuShadowPanel5.Controls.Add(this.pbThanks);
-            this.bunifuShadowPanel5.Controls.Add(this.label5);
-            this.bunifuShadowPanel5.Controls.Add(this.bunifuSeparator5);
-            this.bunifuShadowPanel5.Controls.Add(this.label6);
-            this.bunifuShadowPanel5.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
-            this.bunifuShadowPanel5.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.bunifuShadowPanel5.Location = new System.Drawing.Point(254, 125);
-            this.bunifuShadowPanel5.Margin = new System.Windows.Forms.Padding(0);
-            this.bunifuShadowPanel5.Name = "bunifuShadowPanel5";
-            this.bunifuShadowPanel5.PanelColor = System.Drawing.Color.White;
-            this.bunifuShadowPanel5.PanelColor2 = System.Drawing.Color.White;
-            this.bunifuShadowPanel5.ShadowColor = System.Drawing.Color.DarkGray;
-            this.bunifuShadowPanel5.ShadowDept = 2;
-            this.bunifuShadowPanel5.ShadowDepth = 4;
-            this.bunifuShadowPanel5.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
-            this.bunifuShadowPanel5.ShadowTopLeftVisible = false;
-            this.bunifuShadowPanel5.Size = new System.Drawing.Size(413, 123);
-            this.bunifuShadowPanel5.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
-            this.bunifuShadowPanel5.TabIndex = 28;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(12, 12);
-            this.label5.MaximumSize = new System.Drawing.Size(176, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(80, 30);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "Thanks";
-            this.label5.UseMnemonic = false;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(59, 57);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(333, 34);
-            this.label6.TabIndex = 18;
-            this.label6.Text = "A big thank you to all who took the time to test the\r\npre-versions and provided m" +
-    "e with valueable feedback!";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Segoe UI Black", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(23, 97);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(364, 15);
-            this.label8.TabIndex = 20;
-            this.label8.Text = "A special THANKS goes to envy for his continuous support!";
-            // 
-            // pbThanks
-            // 
-            this.pbThanks.Image = global::ExaltAccountManager.Properties.Resources.birthday_cake_1_36px;
-            this.pbThanks.Location = new System.Drawing.Point(17, 57);
-            this.pbThanks.Name = "pbThanks";
-            this.pbThanks.Size = new System.Drawing.Size(36, 36);
-            this.pbThanks.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbThanks.TabIndex = 19;
-            this.pbThanks.TabStop = false;
-            this.pbThanks.MouseEnter += new System.EventHandler(this.pbThanks_MouseEnter);
-            this.pbThanks.MouseLeave += new System.EventHandler(this.pbThanks_MouseLeave);
-            // 
-            // bunifuSeparator5
-            // 
-            this.bunifuSeparator5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.bunifuSeparator5.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuSeparator5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator5.BackgroundImage")));
-            this.bunifuSeparator5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.bunifuSeparator5.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
-            this.bunifuSeparator5.LineColor = System.Drawing.Color.Silver;
-            this.bunifuSeparator5.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
-            this.bunifuSeparator5.LineThickness = 1;
-            this.bunifuSeparator5.Location = new System.Drawing.Point(16, 39);
-            this.bunifuSeparator5.Margin = new System.Windows.Forms.Padding(5);
-            this.bunifuSeparator5.Name = "bunifuSeparator5";
-            this.bunifuSeparator5.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
-            this.bunifuSeparator5.Size = new System.Drawing.Size(381, 10);
-            this.bunifuSeparator5.TabIndex = 13;
-            // 
-            // pbEAM
-            // 
-            this.pbEAM.Image = global::ExaltAccountManager.Properties.Resources.logo;
-            this.pbEAM.Location = new System.Drawing.Point(2, 1);
-            this.pbEAM.Name = "pbEAM";
-            this.pbEAM.Size = new System.Drawing.Size(128, 128);
-            this.pbEAM.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbEAM.TabIndex = 26;
-            this.pbEAM.TabStop = false;
-            // 
             // pbReddit
             // 
             this.pbReddit.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -540,6 +431,24 @@
             this.pbRealmeye.MouseEnter += new System.EventHandler(this.pbRealmeye_MouseEnter);
             this.pbRealmeye.MouseLeave += new System.EventHandler(this.pbRealmeye_MouseLeave);
             // 
+            // linkEmail
+            // 
+            this.linkEmail.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkEmail.AutoSize = true;
+            this.linkEmail.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkEmail.LinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkEmail.Location = new System.Drawing.Point(280, 103);
+            this.linkEmail.MaximumSize = new System.Drawing.Size(220, 0);
+            this.linkEmail.Name = "linkEmail";
+            this.linkEmail.Size = new System.Drawing.Size(187, 30);
+            this.linkEmail.TabIndex = 26;
+            this.linkEmail.TabStop = true;
+            this.linkEmail.Text = "Write me an email";
+            this.linkEmail.VisitedLinkColor = System.Drawing.Color.Purple;
+            this.linkEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkEmail_LinkClicked);
+            this.linkEmail.MouseEnter += new System.EventHandler(this.pbEmail_MouseEnter);
+            this.linkEmail.MouseLeave += new System.EventHandler(this.pbEmail_MouseLeave);
+            // 
             // pbEmail
             // 
             this.pbEmail.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -553,6 +462,24 @@
             this.pbEmail.Click += new System.EventHandler(this.pbEmail_Click);
             this.pbEmail.MouseEnter += new System.EventHandler(this.pbEmail_MouseEnter);
             this.pbEmail.MouseLeave += new System.EventHandler(this.pbEmail_MouseLeave);
+            // 
+            // linkDiscord
+            // 
+            this.linkDiscord.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkDiscord.AutoSize = true;
+            this.linkDiscord.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkDiscord.LinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkDiscord.Location = new System.Drawing.Point(280, 60);
+            this.linkDiscord.MaximumSize = new System.Drawing.Size(220, 0);
+            this.linkDiscord.Name = "linkDiscord";
+            this.linkDiscord.Size = new System.Drawing.Size(166, 30);
+            this.linkDiscord.TabIndex = 24;
+            this.linkDiscord.TabStop = true;
+            this.linkDiscord.Text = "Join my Discord";
+            this.linkDiscord.VisitedLinkColor = System.Drawing.Color.Purple;
+            this.linkDiscord.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkDiscord_LinkClicked);
+            this.linkDiscord.MouseEnter += new System.EventHandler(this.pbDiscord_MouseEnter);
+            this.linkDiscord.MouseLeave += new System.EventHandler(this.pbDiscord_MouseLeave);
             // 
             // pbDiscord
             // 
@@ -568,6 +495,24 @@
             this.pbDiscord.MouseEnter += new System.EventHandler(this.pbDiscord_MouseEnter);
             this.pbDiscord.MouseLeave += new System.EventHandler(this.pbDiscord_MouseLeave);
             // 
+            // linkBuyMeACoffe
+            // 
+            this.linkBuyMeACoffe.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkBuyMeACoffe.AutoSize = true;
+            this.linkBuyMeACoffe.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkBuyMeACoffe.LinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkBuyMeACoffe.Location = new System.Drawing.Point(58, 103);
+            this.linkBuyMeACoffe.MaximumSize = new System.Drawing.Size(220, 0);
+            this.linkBuyMeACoffe.Name = "linkBuyMeACoffe";
+            this.linkBuyMeACoffe.Size = new System.Drawing.Size(167, 30);
+            this.linkBuyMeACoffe.TabIndex = 22;
+            this.linkBuyMeACoffe.TabStop = true;
+            this.linkBuyMeACoffe.Text = "Buy me a coffee";
+            this.linkBuyMeACoffe.VisitedLinkColor = System.Drawing.Color.Purple;
+            this.linkBuyMeACoffe.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkBuyMeACoffe_LinkClicked);
+            this.linkBuyMeACoffe.MouseEnter += new System.EventHandler(this.pbBMAC_MouseEnter);
+            this.linkBuyMeACoffe.MouseLeave += new System.EventHandler(this.pbBMAC_MouseLeave);
+            // 
             // pbBMAC
             // 
             this.pbBMAC.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -582,6 +527,24 @@
             this.pbBMAC.MouseEnter += new System.EventHandler(this.pbBMAC_MouseEnter);
             this.pbBMAC.MouseLeave += new System.EventHandler(this.pbBMAC_MouseLeave);
             // 
+            // linkSourceCode
+            // 
+            this.linkSourceCode.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkSourceCode.AutoSize = true;
+            this.linkSourceCode.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkSourceCode.LinkColor = System.Drawing.SystemColors.HotTrack;
+            this.linkSourceCode.Location = new System.Drawing.Point(58, 60);
+            this.linkSourceCode.MaximumSize = new System.Drawing.Size(220, 0);
+            this.linkSourceCode.Name = "linkSourceCode";
+            this.linkSourceCode.Size = new System.Drawing.Size(131, 30);
+            this.linkSourceCode.TabIndex = 20;
+            this.linkSourceCode.TabStop = true;
+            this.linkSourceCode.Text = "Source code";
+            this.linkSourceCode.VisitedLinkColor = System.Drawing.Color.Purple;
+            this.linkSourceCode.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkSourceCode_LinkClicked);
+            this.linkSourceCode.MouseEnter += new System.EventHandler(this.pbLinkSourceCode_MouseEnter);
+            this.linkSourceCode.MouseLeave += new System.EventHandler(this.pbLinkSourceCode_MouseLeave);
+            // 
             // pbLinkSourceCode
             // 
             this.pbLinkSourceCode.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -595,6 +558,18 @@
             this.pbLinkSourceCode.Click += new System.EventHandler(this.pbLinkSourceCode_Click);
             this.pbLinkSourceCode.MouseEnter += new System.EventHandler(this.pbLinkSourceCode_MouseEnter);
             this.pbLinkSourceCode.MouseLeave += new System.EventHandler(this.pbLinkSourceCode_MouseLeave);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(12, 12);
+            this.label3.MaximumSize = new System.Drawing.Size(176, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(60, 30);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Links";
+            this.label3.UseMnemonic = false;
             // 
             // bunifuSeparator4
             // 
@@ -614,106 +589,273 @@
             this.bunifuSeparator4.Size = new System.Drawing.Size(625, 10);
             this.bunifuSeparator4.TabIndex = 13;
             // 
-            // pbVersion
+            // label4
             // 
-            this.pbVersion.Image = global::ExaltAccountManager.Properties.Resources.baseline_tag_black_36dp;
-            this.pbVersion.Location = new System.Drawing.Point(17, 57);
-            this.pbVersion.Name = "pbVersion";
-            this.pbVersion.Size = new System.Drawing.Size(36, 36);
-            this.pbVersion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbVersion.TabIndex = 19;
-            this.pbVersion.TabStop = false;
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI Black", 33F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(125, 35);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(529, 60);
+            this.label4.TabIndex = 25;
+            this.label4.Text = "Exalt Account Manager";
             // 
-            // bunifuSeparator2
+            // timerLlama
             // 
-            this.bunifuSeparator2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.timerLlama.Interval = 2500;
+            this.timerLlama.Tick += new System.EventHandler(this.timerLlama_Tick);
+            // 
+            // pEAM
+            // 
+            this.pEAM.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.pEAM.Controls.Add(this.pbEAM);
+            this.pEAM.Controls.Add(this.label4);
+            this.pEAM.Location = new System.Drawing.Point(12, 408);
+            this.pEAM.Name = "pEAM";
+            this.pEAM.Size = new System.Drawing.Size(655, 130);
+            this.pEAM.TabIndex = 27;
+            // 
+            // pbEAM
+            // 
+            this.pbEAM.Image = global::ExaltAccountManager.Properties.Resources.logo;
+            this.pbEAM.Location = new System.Drawing.Point(2, 1);
+            this.pbEAM.Name = "pbEAM";
+            this.pbEAM.Size = new System.Drawing.Size(128, 128);
+            this.pbEAM.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbEAM.TabIndex = 26;
+            this.pbEAM.TabStop = false;
+            // 
+            // bunifuShadowPanel5
+            // 
+            this.bunifuShadowPanel5.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuShadowPanel5.BorderColor = System.Drawing.Color.WhiteSmoke;
+            this.bunifuShadowPanel5.BorderRadius = 9;
+            this.bunifuShadowPanel5.BorderThickness = 1;
+            this.bunifuShadowPanel5.Controls.Add(this.pbThanks);
+            this.bunifuShadowPanel5.Controls.Add(this.label5);
+            this.bunifuShadowPanel5.Controls.Add(this.bunifuSeparator5);
+            this.bunifuShadowPanel5.Controls.Add(this.label6);
+            this.bunifuShadowPanel5.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
+            this.bunifuShadowPanel5.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
+            this.bunifuShadowPanel5.Location = new System.Drawing.Point(254, 125);
+            this.bunifuShadowPanel5.Margin = new System.Windows.Forms.Padding(0);
+            this.bunifuShadowPanel5.Name = "bunifuShadowPanel5";
+            this.bunifuShadowPanel5.PanelColor = System.Drawing.Color.White;
+            this.bunifuShadowPanel5.PanelColor2 = System.Drawing.Color.White;
+            this.bunifuShadowPanel5.ShadowColor = System.Drawing.Color.DarkGray;
+            this.bunifuShadowPanel5.ShadowDept = 2;
+            this.bunifuShadowPanel5.ShadowDepth = 4;
+            this.bunifuShadowPanel5.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
+            this.bunifuShadowPanel5.ShadowTopLeftVisible = false;
+            this.bunifuShadowPanel5.Size = new System.Drawing.Size(413, 123);
+            this.bunifuShadowPanel5.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
+            this.bunifuShadowPanel5.TabIndex = 28;
+            // 
+            // pbThanks
+            // 
+            this.pbThanks.Image = global::ExaltAccountManager.Properties.Resources.birthday_cake_1_36px;
+            this.pbThanks.Location = new System.Drawing.Point(17, 57);
+            this.pbThanks.Name = "pbThanks";
+            this.pbThanks.Size = new System.Drawing.Size(36, 36);
+            this.pbThanks.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbThanks.TabIndex = 19;
+            this.pbThanks.TabStop = false;
+            this.pbThanks.MouseEnter += new System.EventHandler(this.pbThanks_MouseEnter);
+            this.pbThanks.MouseLeave += new System.EventHandler(this.pbThanks_MouseLeave);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(12, 12);
+            this.label5.MaximumSize = new System.Drawing.Size(176, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(80, 30);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Thanks";
+            this.label5.UseMnemonic = false;
+            // 
+            // bunifuSeparator5
+            // 
+            this.bunifuSeparator5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bunifuSeparator2.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuSeparator2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator2.BackgroundImage")));
-            this.bunifuSeparator2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.bunifuSeparator2.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
-            this.bunifuSeparator2.LineColor = System.Drawing.Color.Silver;
-            this.bunifuSeparator2.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
-            this.bunifuSeparator2.LineThickness = 1;
-            this.bunifuSeparator2.Location = new System.Drawing.Point(16, 39);
-            this.bunifuSeparator2.Margin = new System.Windows.Forms.Padding(5);
-            this.bunifuSeparator2.Name = "bunifuSeparator2";
-            this.bunifuSeparator2.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
-            this.bunifuSeparator2.Size = new System.Drawing.Size(294, 10);
-            this.bunifuSeparator2.TabIndex = 13;
+            this.bunifuSeparator5.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuSeparator5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator5.BackgroundImage")));
+            this.bunifuSeparator5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.bunifuSeparator5.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
+            this.bunifuSeparator5.LineColor = System.Drawing.Color.Silver;
+            this.bunifuSeparator5.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
+            this.bunifuSeparator5.LineThickness = 1;
+            this.bunifuSeparator5.Location = new System.Drawing.Point(16, 39);
+            this.bunifuSeparator5.Margin = new System.Windows.Forms.Padding(5);
+            this.bunifuSeparator5.Name = "bunifuSeparator5";
+            this.bunifuSeparator5.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
+            this.bunifuSeparator5.Size = new System.Drawing.Size(381, 10);
+            this.bunifuSeparator5.TabIndex = 13;
             // 
-            // pbProgram
+            // label6
             // 
-            this.pbProgram.Image = global::ExaltAccountManager.Properties.Resources.logo;
-            this.pbProgram.Location = new System.Drawing.Point(17, 57);
-            this.pbProgram.Name = "pbProgram";
-            this.pbProgram.Size = new System.Drawing.Size(36, 36);
-            this.pbProgram.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbProgram.TabIndex = 19;
-            this.pbProgram.TabStop = false;
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(59, 57);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(333, 34);
+            this.label6.TabIndex = 18;
+            this.label6.Text = "A big thank you to all who took the time to test the\r\npre-versions and provided m" +
+    "e with valueable feedback!";
             // 
-            // bunifuSeparator1
+            // bunifuShadowPanel6
             // 
-            this.bunifuSeparator1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.bunifuShadowPanel6.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuShadowPanel6.BorderColor = System.Drawing.Color.WhiteSmoke;
+            this.bunifuShadowPanel6.BorderRadius = 9;
+            this.bunifuShadowPanel6.BorderThickness = 1;
+            this.bunifuShadowPanel6.Controls.Add(this.btnShowCredits);
+            this.bunifuShadowPanel6.Controls.Add(this.label8);
+            this.bunifuShadowPanel6.Controls.Add(this.bunifuSeparator6);
+            this.bunifuShadowPanel6.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
+            this.bunifuShadowPanel6.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
+            this.bunifuShadowPanel6.Location = new System.Drawing.Point(530, 10);
+            this.bunifuShadowPanel6.Margin = new System.Windows.Forms.Padding(0);
+            this.bunifuShadowPanel6.Name = "bunifuShadowPanel6";
+            this.bunifuShadowPanel6.PanelColor = System.Drawing.Color.White;
+            this.bunifuShadowPanel6.PanelColor2 = System.Drawing.Color.White;
+            this.bunifuShadowPanel6.ShadowColor = System.Drawing.Color.DarkGray;
+            this.bunifuShadowPanel6.ShadowDept = 2;
+            this.bunifuShadowPanel6.ShadowDepth = 4;
+            this.bunifuShadowPanel6.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
+            this.bunifuShadowPanel6.ShadowTopLeftVisible = false;
+            this.bunifuShadowPanel6.Size = new System.Drawing.Size(136, 110);
+            this.bunifuShadowPanel6.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
+            this.bunifuShadowPanel6.TabIndex = 24;
+            // 
+            // btnShowCredits
+            // 
+            this.btnShowCredits.AllowAnimations = true;
+            this.btnShowCredits.AllowMouseEffects = true;
+            this.btnShowCredits.AllowToggling = false;
+            this.btnShowCredits.AnimationSpeed = 200;
+            this.btnShowCredits.AutoGenerateColors = false;
+            this.btnShowCredits.AutoRoundBorders = false;
+            this.btnShowCredits.AutoSizeLeftIcon = true;
+            this.btnShowCredits.AutoSizeRightIcon = true;
+            this.btnShowCredits.BackColor = System.Drawing.Color.Transparent;
+            this.btnShowCredits.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnShowCredits.BackgroundImage")));
+            this.btnShowCredits.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnShowCredits.ButtonText = "View";
+            this.btnShowCredits.ButtonTextMarginLeft = 0;
+            this.btnShowCredits.ColorContrastOnClick = 45;
+            this.btnShowCredits.ColorContrastOnHover = 45;
+            this.btnShowCredits.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.btnShowCredits.CustomizableEdges = borderEdges1;
+            this.btnShowCredits.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.btnShowCredits.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.btnShowCredits.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btnShowCredits.DisabledForecolor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.btnShowCredits.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Hover;
+            this.btnShowCredits.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnShowCredits.ForeColor = System.Drawing.Color.White;
+            this.btnShowCredits.IconLeft = global::ExaltAccountManager.Properties.Resources.heart_outline_white_24px;
+            this.btnShowCredits.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnShowCredits.IconLeftCursor = System.Windows.Forms.Cursors.Default;
+            this.btnShowCredits.IconLeftPadding = new System.Windows.Forms.Padding(11, 3, 3, 3);
+            this.btnShowCredits.IconMarginLeft = 11;
+            this.btnShowCredits.IconPadding = 6;
+            this.btnShowCredits.IconRight = null;
+            this.btnShowCredits.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnShowCredits.IconRightCursor = System.Windows.Forms.Cursors.Default;
+            this.btnShowCredits.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
+            this.btnShowCredits.IconSize = 25;
+            this.btnShowCredits.IdleBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.IdleBorderRadius = 5;
+            this.btnShowCredits.IdleBorderThickness = 1;
+            this.btnShowCredits.IdleFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.IdleIconLeftImage = global::ExaltAccountManager.Properties.Resources.heart_outline_white_24px;
+            this.btnShowCredits.IdleIconRightImage = null;
+            this.btnShowCredits.IndicateFocus = false;
+            this.btnShowCredits.Location = new System.Drawing.Point(17, 57);
+            this.btnShowCredits.Name = "btnShowCredits";
+            this.btnShowCredits.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.btnShowCredits.OnDisabledState.BorderRadius = 5;
+            this.btnShowCredits.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnShowCredits.OnDisabledState.BorderThickness = 1;
+            this.btnShowCredits.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btnShowCredits.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.btnShowCredits.OnDisabledState.IconLeftImage = null;
+            this.btnShowCredits.OnDisabledState.IconRightImage = null;
+            this.btnShowCredits.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.onHoverState.BorderRadius = 5;
+            this.btnShowCredits.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnShowCredits.onHoverState.BorderThickness = 1;
+            this.btnShowCredits.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.onHoverState.ForeColor = System.Drawing.Color.White;
+            this.btnShowCredits.onHoverState.IconLeftImage = global::ExaltAccountManager.Properties.Resources.heart_white_24px;
+            this.btnShowCredits.onHoverState.IconRightImage = null;
+            this.btnShowCredits.OnIdleState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.OnIdleState.BorderRadius = 5;
+            this.btnShowCredits.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnShowCredits.OnIdleState.BorderThickness = 1;
+            this.btnShowCredits.OnIdleState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.OnIdleState.ForeColor = System.Drawing.Color.White;
+            this.btnShowCredits.OnIdleState.IconLeftImage = global::ExaltAccountManager.Properties.Resources.heart_outline_white_24px;
+            this.btnShowCredits.OnIdleState.IconRightImage = null;
+            this.btnShowCredits.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.OnPressedState.BorderRadius = 5;
+            this.btnShowCredits.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnShowCredits.OnPressedState.BorderThickness = 1;
+            this.btnShowCredits.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnShowCredits.OnPressedState.ForeColor = System.Drawing.Color.White;
+            this.btnShowCredits.OnPressedState.IconLeftImage = null;
+            this.btnShowCredits.OnPressedState.IconRightImage = null;
+            this.btnShowCredits.Size = new System.Drawing.Size(102, 36);
+            this.btnShowCredits.TabIndex = 20;
+            this.btnShowCredits.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnShowCredits.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            this.btnShowCredits.TextMarginLeft = 0;
+            this.btnShowCredits.TextPadding = new System.Windows.Forms.Padding(0, 0, 17, 0);
+            this.btnShowCredits.UseDefaultRadiusAndThickness = true;
+            this.btnShowCredits.Click += new System.EventHandler(this.btnShowCredits_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(12, 12);
+            this.label8.MaximumSize = new System.Drawing.Size(176, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(80, 30);
+            this.label8.TabIndex = 12;
+            this.label8.Text = "Credits";
+            this.label8.UseMnemonic = false;
+            // 
+            // bunifuSeparator6
+            // 
+            this.bunifuSeparator6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.bunifuSeparator1.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuSeparator1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator1.BackgroundImage")));
-            this.bunifuSeparator1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.bunifuSeparator1.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
-            this.bunifuSeparator1.LineColor = System.Drawing.Color.Silver;
-            this.bunifuSeparator1.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
-            this.bunifuSeparator1.LineThickness = 1;
-            this.bunifuSeparator1.Location = new System.Drawing.Point(16, 39);
-            this.bunifuSeparator1.Margin = new System.Windows.Forms.Padding(5);
-            this.bunifuSeparator1.Name = "bunifuSeparator1";
-            this.bunifuSeparator1.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
-            this.bunifuSeparator1.Size = new System.Drawing.Size(294, 10);
-            this.bunifuSeparator1.TabIndex = 13;
-            // 
-            // pbDeveloper
-            // 
-            this.pbDeveloper.Image = global::ExaltAccountManager.Properties.Resources.Logo_NameOnly_2_Medium;
-            this.pbDeveloper.Location = new System.Drawing.Point(61, 57);
-            this.pbDeveloper.Name = "pbDeveloper";
-            this.pbDeveloper.Size = new System.Drawing.Size(138, 36);
-            this.pbDeveloper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbDeveloper.TabIndex = 23;
-            this.pbDeveloper.TabStop = false;
-            this.pbDeveloper.Click += new System.EventHandler(this.pbDev_Click);
-            // 
-            // pbDevIcon
-            // 
-            this.pbDevIcon.Image = global::ExaltAccountManager.Properties.Resources.ic_code_black_36dp;
-            this.pbDevIcon.Location = new System.Drawing.Point(17, 57);
-            this.pbDevIcon.Name = "pbDevIcon";
-            this.pbDevIcon.Size = new System.Drawing.Size(36, 36);
-            this.pbDevIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbDevIcon.TabIndex = 19;
-            this.pbDevIcon.TabStop = false;
-            // 
-            // bunifuSeparator3
-            // 
-            this.bunifuSeparator3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.bunifuSeparator3.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuSeparator3.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator3.BackgroundImage")));
-            this.bunifuSeparator3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.bunifuSeparator3.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
-            this.bunifuSeparator3.LineColor = System.Drawing.Color.Silver;
-            this.bunifuSeparator3.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
-            this.bunifuSeparator3.LineThickness = 1;
-            this.bunifuSeparator3.Location = new System.Drawing.Point(16, 39);
-            this.bunifuSeparator3.Margin = new System.Windows.Forms.Padding(5);
-            this.bunifuSeparator3.Name = "bunifuSeparator3";
-            this.bunifuSeparator3.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
-            this.bunifuSeparator3.Size = new System.Drawing.Size(207, 10);
-            this.bunifuSeparator3.TabIndex = 13;
+            this.bunifuSeparator6.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuSeparator6.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bunifuSeparator6.BackgroundImage")));
+            this.bunifuSeparator6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.bunifuSeparator6.DashCap = Bunifu.UI.WinForms.BunifuSeparator.CapStyles.Flat;
+            this.bunifuSeparator6.LineColor = System.Drawing.Color.Silver;
+            this.bunifuSeparator6.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
+            this.bunifuSeparator6.LineThickness = 1;
+            this.bunifuSeparator6.Location = new System.Drawing.Point(16, 39);
+            this.bunifuSeparator6.Margin = new System.Windows.Forms.Padding(5);
+            this.bunifuSeparator6.Name = "bunifuSeparator6";
+            this.bunifuSeparator6.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Horizontal;
+            this.bunifuSeparator6.Size = new System.Drawing.Size(104, 10);
+            this.bunifuSeparator6.TabIndex = 13;
             // 
             // UIAbout
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.bunifuShadowPanel6);
             this.Controls.Add(this.bunifuShadowPanel5);
             this.Controls.Add(this.pEAM);
             this.Controls.Add(this.bunifuShadowPanel4);
@@ -724,30 +866,32 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "UIAbout";
             this.Size = new System.Drawing.Size(677, 550);
+            ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).EndInit();
             this.bunifuShadowPanel3.ResumeLayout(false);
             this.bunifuShadowPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDevIcon)).EndInit();
             this.bunifuShadowPanel2.ResumeLayout(false);
             this.bunifuShadowPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbVersion)).EndInit();
             this.bunifuShadowPanel1.ResumeLayout(false);
             this.bunifuShadowPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbProgram)).EndInit();
             this.bunifuShadowPanel4.ResumeLayout(false);
             this.bunifuShadowPanel4.PerformLayout();
-            this.pEAM.ResumeLayout(false);
-            this.pEAM.PerformLayout();
-            this.bunifuShadowPanel5.ResumeLayout(false);
-            this.bunifuShadowPanel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbThanks)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbEAM)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbReddit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbRealmeye)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbEmail)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBMAC)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbLinkSourceCode)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbVersion)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbProgram)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDevIcon)).EndInit();
+            this.pEAM.ResumeLayout(false);
+            this.pEAM.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbEAM)).EndInit();
+            this.bunifuShadowPanel5.ResumeLayout(false);
+            this.bunifuShadowPanel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbThanks)).EndInit();
+            this.bunifuShadowPanel6.ResumeLayout(false);
+            this.bunifuShadowPanel6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -788,10 +932,13 @@
         private System.Windows.Forms.LinkLabel linkRealmeye;
         private System.Windows.Forms.Panel pEAM;
         private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel5;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.PictureBox pbThanks;
         private System.Windows.Forms.Label label5;
         private Bunifu.UI.WinForms.BunifuSeparator bunifuSeparator5;
         private System.Windows.Forms.Label label6;
+        private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel6;
+        private System.Windows.Forms.Label label8;
+        private Bunifu.UI.WinForms.BunifuSeparator bunifuSeparator6;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnShowCredits;
     }
 }

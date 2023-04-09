@@ -249,9 +249,20 @@ namespace ExaltAccountManager.UI
                 return (bool)this.Invoke((Func<List<NewsData>, bool>)OnNewsFetched, data);
 
             news.AddRange(data);
+            UpdateHasNewNews();
             RenderNews(data);
 
             return false;
+        }
+
+        public void UpdateHasNewNews()
+        {
+            if (news?.Count > 0)
+            {
+                frm.HasNewNews = news.Max(d => d.Date) >= frm.LastNewsViewed;
+                return;
+            }
+            frm.HasNewNews = false;
         }
     }
 }

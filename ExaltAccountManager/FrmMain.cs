@@ -89,6 +89,17 @@ namespace ExaltAccountManager
         public NotificationOptions notOpt = new NotificationOptions();
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
+        public bool HasNewNews 
+        {
+            get => hasNewNews;
+            set
+            {
+                hasNewNews = value;
+                btnNews.Invalidate();
+            }
+        }
+        private bool hasNewNews = false;
+        public DateTime LastNewsViewed { get; internal set; } = DateTime.MinValue;
         private GameUpdater gameUpdater { get; set; }
 
         private UIAccounts uiAccounts;
@@ -255,6 +266,7 @@ namespace ExaltAccountManager
         public string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
         public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
         public string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
+        public string pathNews = Path.Combine(saveFilePath, "EAM.News");
         public string lastUpdateCheckPath = Path.Combine(saveFilePath, "EAM.LastUpdateCheck");
         public string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
         public string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
@@ -345,6 +357,21 @@ namespace ExaltAccountManager
                     API_BASE_URL = File.ReadAllText(fileName);
             }
             catch { API_BASE_URL = "https://api.exalt-account-manager.eu/"; }
+
+            #endregion
+
+            #region LatestNewsViews
+
+            try
+            {
+                LastNewsViewed = DateTime.MinValue;
+                if (File.Exists(pathNews))
+                {
+                    long.TryParse(File.ReadAllText(pathNews), out long ticks);
+                    LastNewsViewed = new DateTime(ticks);
+                }
+            }
+            catch { LastNewsViewed = DateTime.MinValue; }
 
             #endregion
 
@@ -502,7 +529,7 @@ namespace ExaltAccountManager
 
             cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(10000);
-            
+
             ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
             {
                 CancellationToken token = (CancellationToken)obj;
@@ -566,7 +593,7 @@ namespace ExaltAccountManager
                 return (bool)this.Invoke((Func<string, string, bool>)PerformEamUpdate, releaselink, directDownloadLink);
 
             try
-            {                
+            {
                 string updaterPath = Path.Combine(Application.StartupPath, "EAM_Updater.exe");
                 if (File.Exists(updaterPath))
                 {
@@ -589,7 +616,7 @@ namespace ExaltAccountManager
                                "Failed to start the EAM_Updater. Exception: " + ex.Message));
 
                 ShowSnackbar("Failed to start the EAM_Updater.", BunifuSnackbar.MessageTypes.Error, 7500);
-            }            
+            }
 
             return false;
         }
@@ -852,7 +879,7 @@ namespace ExaltAccountManager
         }
 
         private void btnEAMUpdate_Click(object sender, EventArgs e)
-        {            
+        {
             if (!cancellationTokenSource.IsCancellationRequested)
             {
                 cancellationTokenSource.Cancel();
@@ -885,13 +912,13 @@ namespace ExaltAccountManager
                     if (response == null || response.ReleaseLink == null || response.ReleaseDownloadLink == null)
                     {
                         throw new ArgumentNullException(
-                            "Params: " + response == null ? 
-                            "response" : 
-                            (response.ReleaseLink == null ? 
-                                "ReleaseLink" : 
-                                "" + 
-                             response.ReleaseDownloadLink == null ? 
-                                "ReleaseDownloadLink" : 
+                            "Params: " + response == null ?
+                            "response" :
+                            (response.ReleaseLink == null ?
+                                "ReleaseLink" :
+                                "" +
+                             response.ReleaseDownloadLink == null ?
+                                "ReleaseDownloadLink" :
                                 ""), "Response from server is NULL or contains a NULL-Value.");
                     }
                     PerformEamUpdateInvoker(response.ReleaseLink, response.ReleaseDownloadLink);
@@ -907,10 +934,10 @@ namespace ExaltAccountManager
                     System.Diagnostics.Process.Start(GITHUB_PROJECT_URL);
 
                     MessageBox.Show(
-                        "The automatic update failed, please download the update on GitHub.", 
-                        "An error occured", 
-                        MessageBoxButtons.OK, 
-                        MessageBoxIcon.Error);                    
+                        "The automatic update failed, please download the update on GitHub.",
+                        "An error occured",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                 }
             }), cancellationTokenSource.Token);
         }
@@ -1080,7 +1107,7 @@ namespace ExaltAccountManager
         public void UpdateHasConfigChangesUI(bool state)
         {
             drawConfigChangesIcon = state;
-            
+
             btnOptions.Invalidate();
         }
 
@@ -1387,6 +1414,7 @@ namespace ExaltAccountManager
 
                 pContent.Controls.Clear();
                 pContent.Controls.Add(uiEAMNews);
+                SaveNewsViewed();
 
                 uiState = UIState.News;
             }
@@ -1699,6 +1727,20 @@ namespace ExaltAccountManager
             DiscordHelper.ApplyPresence();
 
             timerDiscordUpdater.Start();
+
+            if (uiEAMNews == null)
+                uiEAMNews = new UIEAMNews(this);
+        }
+
+        public void SaveNewsViewed()
+        {
+            LastNewsViewed = DateTime.Now;
+            try
+            {
+                File.WriteAllText(pathNews, LastNewsViewed.Ticks.ToString());
+                uiEAMNews?.UpdateHasNewNews();
+            }
+            catch { }
         }
 
         private bool UpdateRequired()
@@ -1891,17 +1933,30 @@ namespace ExaltAccountManager
 
         private void btnOptions_Paint(object sender, PaintEventArgs e)
         {
-            if(!drawConfigChangesIcon)
+            if (!drawConfigChangesIcon)
                 return;
 
             e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            using(Pen pColor = new Pen(Color.FromArgb(98, 0, 238)))
+            using (Pen pColor = new Pen(Color.FromArgb(98, 0, 238)))
             using (Pen pFont = new Pen(ColorScheme.GetColorFont(useDarkmode)))
             {
                 e.Graphics.FillEllipse(pColor.Brush, btnOptions.Width - 52f, 6f, 26.5f, 26.5f);
-                e.Graphics.DrawImage( Properties.Resources.ic_save_white_18dp, btnOptions.Width - 47, 11, 18, 18);
+                e.Graphics.DrawImage(Properties.Resources.ic_save_white_18dp, btnOptions.Width - 47, 11, 18, 18);
+            }
+        }
+
+        private void btnNews_Paint(object sender, PaintEventArgs e)
+        {
+            if (!HasNewNews)
+                return;
+
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            using (Pen pColor = new Pen(Color.Crimson))
+            {
+                e.Graphics.FillEllipse(pColor.Brush, 33f, 26f, 9f, 9f);
             }
         }
     }
