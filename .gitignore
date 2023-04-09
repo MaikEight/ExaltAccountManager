@@ -737,3 +737,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ExaltAccountManager/obj/Debug/TempPE/Properties.Resources.Designer.cs.dll
+/ExaltAccountManager/obj/Debug/ExaltAccountManager.Properties.Resources.resources
+/ExaltAccountManager/obj/Debug/ExaltAccountManager.csproj.GenerateResource.cache
+/ExaltAccountManager/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/ExaltAccountManager/obj/Release/TempPE/Properties.Resources.Designer.cs.dll
+/ExaltAccountManager/obj/Release/ExaltAccountManager.UI.UIAbout.resources
+/ExaltAccountManager/obj/Release/ExaltAccountManager.Properties.Resources.resources
+/ExaltAccountManager/obj/Release/ExaltAccountManager.csproj.CoreCompileInputs.cache
