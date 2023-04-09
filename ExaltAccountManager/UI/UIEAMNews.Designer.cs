@@ -40,9 +40,7 @@
             // 
             // pNews
             // 
-            this.pNews.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pNews.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pNews.Location = new System.Drawing.Point(0, 0);
             this.pNews.Name = "pNews";
             this.pNews.Size = new System.Drawing.Size(649, 530);

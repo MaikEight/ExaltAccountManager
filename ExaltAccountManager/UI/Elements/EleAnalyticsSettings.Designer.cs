@@ -29,10 +29,12 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EleAnalyticsSettings));
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges4 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges5 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges6 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.shadow = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.btnViewPrivacyPolicy = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.lSendData = new System.Windows.Forms.Label();
             this.bunifuPanel1 = new Bunifu.UI.WinForms.BunifuPanel();
             this.lInfo = new System.Windows.Forms.Label();
@@ -60,6 +62,7 @@
             this.shadow.BorderColor = System.Drawing.Color.WhiteSmoke;
             this.shadow.BorderRadius = 9;
             this.shadow.BorderThickness = 1;
+            this.shadow.Controls.Add(this.btnViewPrivacyPolicy);
             this.shadow.Controls.Add(this.lSendData);
             this.shadow.Controls.Add(this.bunifuPanel1);
             this.shadow.Controls.Add(this.bunifuSeparator2);
@@ -84,9 +87,103 @@
             this.shadow.ShadowDepth = 4;
             this.shadow.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.shadow.ShadowTopLeftVisible = false;
-            this.shadow.Size = new System.Drawing.Size(414, 265);
+            this.shadow.Size = new System.Drawing.Size(414, 302);
             this.shadow.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.shadow.TabIndex = 21;
+            // 
+            // btnViewPrivacyPolicy
+            // 
+            this.btnViewPrivacyPolicy.AllowAnimations = true;
+            this.btnViewPrivacyPolicy.AllowMouseEffects = true;
+            this.btnViewPrivacyPolicy.AllowToggling = false;
+            this.btnViewPrivacyPolicy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnViewPrivacyPolicy.AnimationSpeed = 200;
+            this.btnViewPrivacyPolicy.AutoGenerateColors = false;
+            this.btnViewPrivacyPolicy.AutoRoundBorders = false;
+            this.btnViewPrivacyPolicy.AutoSizeLeftIcon = true;
+            this.btnViewPrivacyPolicy.AutoSizeRightIcon = true;
+            this.btnViewPrivacyPolicy.BackColor = System.Drawing.Color.Transparent;
+            this.btnViewPrivacyPolicy.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnViewPrivacyPolicy.BackgroundImage")));
+            this.btnViewPrivacyPolicy.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnViewPrivacyPolicy.ButtonText = "View privacy policy";
+            this.btnViewPrivacyPolicy.ButtonTextMarginLeft = 0;
+            this.btnViewPrivacyPolicy.ColorContrastOnClick = 45;
+            this.btnViewPrivacyPolicy.ColorContrastOnHover = 45;
+            this.btnViewPrivacyPolicy.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.btnViewPrivacyPolicy.CustomizableEdges = borderEdges1;
+            this.btnViewPrivacyPolicy.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.btnViewPrivacyPolicy.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.btnViewPrivacyPolicy.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btnViewPrivacyPolicy.DisabledForecolor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.btnViewPrivacyPolicy.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Hover;
+            this.btnViewPrivacyPolicy.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViewPrivacyPolicy.ForeColor = System.Drawing.Color.White;
+            this.btnViewPrivacyPolicy.IconLeft = global::ExaltAccountManager.Properties.Resources.privacy_policy_outline_white_24px;
+            this.btnViewPrivacyPolicy.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnViewPrivacyPolicy.IconLeftCursor = System.Windows.Forms.Cursors.Default;
+            this.btnViewPrivacyPolicy.IconLeftPadding = new System.Windows.Forms.Padding(15, 3, 1, 3);
+            this.btnViewPrivacyPolicy.IconMarginLeft = 11;
+            this.btnViewPrivacyPolicy.IconPadding = 6;
+            this.btnViewPrivacyPolicy.IconRight = null;
+            this.btnViewPrivacyPolicy.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnViewPrivacyPolicy.IconRightCursor = System.Windows.Forms.Cursors.Default;
+            this.btnViewPrivacyPolicy.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
+            this.btnViewPrivacyPolicy.IconSize = 10;
+            this.btnViewPrivacyPolicy.IdleBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.IdleBorderRadius = 5;
+            this.btnViewPrivacyPolicy.IdleBorderThickness = 1;
+            this.btnViewPrivacyPolicy.IdleFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.IdleIconLeftImage = global::ExaltAccountManager.Properties.Resources.privacy_policy_outline_white_24px;
+            this.btnViewPrivacyPolicy.IdleIconRightImage = null;
+            this.btnViewPrivacyPolicy.IndicateFocus = false;
+            this.btnViewPrivacyPolicy.Location = new System.Drawing.Point(16, 259);
+            this.btnViewPrivacyPolicy.Name = "btnViewPrivacyPolicy";
+            this.btnViewPrivacyPolicy.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.btnViewPrivacyPolicy.OnDisabledState.BorderRadius = 5;
+            this.btnViewPrivacyPolicy.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnViewPrivacyPolicy.OnDisabledState.BorderThickness = 1;
+            this.btnViewPrivacyPolicy.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btnViewPrivacyPolicy.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.btnViewPrivacyPolicy.OnDisabledState.IconLeftImage = null;
+            this.btnViewPrivacyPolicy.OnDisabledState.IconRightImage = null;
+            this.btnViewPrivacyPolicy.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.onHoverState.BorderRadius = 5;
+            this.btnViewPrivacyPolicy.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnViewPrivacyPolicy.onHoverState.BorderThickness = 1;
+            this.btnViewPrivacyPolicy.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.onHoverState.ForeColor = System.Drawing.Color.White;
+            this.btnViewPrivacyPolicy.onHoverState.IconLeftImage = global::ExaltAccountManager.Properties.Resources.privacy_policy_white_24px;
+            this.btnViewPrivacyPolicy.onHoverState.IconRightImage = null;
+            this.btnViewPrivacyPolicy.OnIdleState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.OnIdleState.BorderRadius = 5;
+            this.btnViewPrivacyPolicy.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnViewPrivacyPolicy.OnIdleState.BorderThickness = 1;
+            this.btnViewPrivacyPolicy.OnIdleState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.OnIdleState.ForeColor = System.Drawing.Color.White;
+            this.btnViewPrivacyPolicy.OnIdleState.IconLeftImage = global::ExaltAccountManager.Properties.Resources.privacy_policy_outline_white_24px;
+            this.btnViewPrivacyPolicy.OnIdleState.IconRightImage = null;
+            this.btnViewPrivacyPolicy.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.OnPressedState.BorderRadius = 5;
+            this.btnViewPrivacyPolicy.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnViewPrivacyPolicy.OnPressedState.BorderThickness = 1;
+            this.btnViewPrivacyPolicy.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnViewPrivacyPolicy.OnPressedState.ForeColor = System.Drawing.Color.White;
+            this.btnViewPrivacyPolicy.OnPressedState.IconLeftImage = null;
+            this.btnViewPrivacyPolicy.OnPressedState.IconRightImage = null;
+            this.btnViewPrivacyPolicy.Size = new System.Drawing.Size(382, 31);
+            this.btnViewPrivacyPolicy.TabIndex = 33;
+            this.btnViewPrivacyPolicy.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnViewPrivacyPolicy.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            this.btnViewPrivacyPolicy.TextMarginLeft = 0;
+            this.btnViewPrivacyPolicy.TextPadding = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.btnViewPrivacyPolicy.UseDefaultRadiusAndThickness = true;
+            this.btnViewPrivacyPolicy.Click += new System.EventHandler(this.btnViewPrivacyPolicy_Click);
             // 
             // lSendData
             // 
@@ -180,11 +277,11 @@
             this.btnDelete.ColorContrastOnClick = 45;
             this.btnDelete.ColorContrastOnHover = 45;
             this.btnDelete.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges4.BottomLeft = true;
-            borderEdges4.BottomRight = true;
-            borderEdges4.TopLeft = true;
-            borderEdges4.TopRight = true;
-            this.btnDelete.CustomizableEdges = borderEdges4;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.btnDelete.CustomizableEdges = borderEdges2;
             this.btnDelete.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnDelete.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnDelete.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -274,11 +371,11 @@
             this.btnRequestData.ColorContrastOnClick = 45;
             this.btnRequestData.ColorContrastOnHover = 45;
             this.btnRequestData.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges5.BottomLeft = true;
-            borderEdges5.BottomRight = true;
-            borderEdges5.TopLeft = true;
-            borderEdges5.TopRight = true;
-            this.btnRequestData.CustomizableEdges = borderEdges5;
+            borderEdges3.BottomLeft = true;
+            borderEdges3.BottomRight = true;
+            borderEdges3.TopLeft = true;
+            borderEdges3.TopRight = true;
+            this.btnRequestData.CustomizableEdges = borderEdges3;
             this.btnRequestData.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnRequestData.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnRequestData.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -368,11 +465,11 @@
             this.btnSave.ColorContrastOnClick = 45;
             this.btnSave.ColorContrastOnHover = 45;
             this.btnSave.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges6.BottomLeft = true;
-            borderEdges6.BottomRight = true;
-            borderEdges6.TopLeft = true;
-            borderEdges6.TopRight = true;
-            this.btnSave.CustomizableEdges = borderEdges6;
+            borderEdges4.BottomLeft = true;
+            borderEdges4.BottomRight = true;
+            borderEdges4.TopLeft = true;
+            borderEdges4.TopRight = true;
+            this.btnSave.CustomizableEdges = borderEdges4;
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnSave.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnSave.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -534,7 +631,7 @@
             this.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "EleAnalyticsSettings";
-            this.Size = new System.Drawing.Size(414, 265);
+            this.Size = new System.Drawing.Size(414, 302);
             this.shadow.ResumeLayout(false);
             this.shadow.PerformLayout();
             this.bunifuPanel1.ResumeLayout(false);
@@ -563,5 +660,6 @@
         private System.Windows.Forms.Label lInfo;
         private Bunifu.UI.WinForms.BunifuPictureBox pbInfoDaily;
         private System.Windows.Forms.PictureBox pbState;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnViewPrivacyPolicy;
     }
 }

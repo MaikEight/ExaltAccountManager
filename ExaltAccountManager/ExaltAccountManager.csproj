@@ -982,6 +982,8 @@
     <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
     <Content Include="Logo.ico" />
+    <None Include="Resources\privacy_policy_white_24px.png" />
+    <None Include="Resources\privacy_policy_outline_white_24px.png" />
     <None Include="Resources\rotmg.png" />
     <None Include="Resources\deca.png" />
     <None Include="Resources\icons8.png" />

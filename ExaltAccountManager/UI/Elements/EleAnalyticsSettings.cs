@@ -1,8 +1,10 @@
 ﻿using MK_EAM_Analytics;
+using MK_EAM_General_Services_Lib;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace ExaltAccountManager.UI.Elements
     {
         private FrmMain frm;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
+        private const string privacyPolicyFilename = "EAM_Privacy_Policy.txt";
         public EleAnalyticsSettings(FrmMain _frm)
         {
             InitializeComponent();
@@ -76,7 +78,7 @@ namespace ExaltAccountManager.UI.Elements
                 AnalyticsClient.Instance.EndSeesion();
             }
         }
-        
+
         private void btnRequestData_Click(object sender, EventArgs e)
         {
             btnRequestData.Enabled =
@@ -160,7 +162,7 @@ namespace ExaltAccountManager.UI.Elements
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            btnRequestData.Enabled = 
+            btnRequestData.Enabled =
             btnDelete.Enabled = false;
 
             if (!cancellationTokenSource.IsCancellationRequested)
@@ -197,7 +199,7 @@ namespace ExaltAccountManager.UI.Elements
                                 didDelete = false;
 
                                 frm.LogEvent(new MK_EAM_Lib.LogData(
-                                    "EAM News",
+                                    "EAM Analytics",
                                     MK_EAM_Lib.LogEventType.APIError,
                                     "Failed to delete own userdata"));
 
@@ -242,7 +244,7 @@ namespace ExaltAccountManager.UI.Elements
                     OnUserDeletedInvoker(didDelete);
                 }
                 catch { }
-            }), cancellationTokenSource.Token);            
+            }), cancellationTokenSource.Token);
         }
 
         private void OnUserDeletedInvoker(bool didDelete)
@@ -261,7 +263,7 @@ namespace ExaltAccountManager.UI.Elements
                 toggleSendAnalytics.Checked = !frm.OptionsData.analyticsOptions.OptOut;
             }
 
-            btnRequestData.Enabled = 
+            btnRequestData.Enabled =
             btnDelete.Enabled = !didDelete;
 
             return false;
@@ -286,5 +288,125 @@ namespace ExaltAccountManager.UI.Elements
         private void pbClose_MouseDown(object sender, MouseEventArgs e) => pbClose.BackColor = Color.Red;
 
         #endregion
+
+        private void btnViewPrivacyPolicy_Click(object sender, EventArgs e)
+        {
+            btnViewPrivacyPolicy.Enabled = false;
+
+            if (!cancellationTokenSource.IsCancellationRequested)
+            {
+                cancellationTokenSource.Cancel();
+            }
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(7500);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+
+                try
+                {
+
+                    Task<MK_EAM_General_Services_Lib.General.Responses.GetFileResponse> task =
+                        GeneralServicesClient.Instance?.GetPrivacyPolicy();
+
+                    string path = Path.Combine(FrmMain.saveFilePath, privacyPolicyFilename);
+
+                    while (!task.IsCompleted)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            frm.LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM Analytics",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to request privacy policy."));
+
+                            if (File.Exists(path))
+                            {
+                                OpenPrivacyPolicy(path);
+                            }
+                            else
+                            {
+                                MessageBox.Show(
+                                    "Failed to open privacy policy.\nPlease try again later.\nIf this problem persists, please get in touch via Discord or email to get a copy of the privacy policy.\nE-Mail: mail@maik8.de",
+                                    "Error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                            }
+
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
+                    }
+                    MK_EAM_General_Services_Lib.General.Responses.GetFileResponse result = task.Result;
+
+                    if (result != null && result.data != null)
+                    {
+                        
+                        try
+                        {
+                            if (File.Exists(path))
+                            {
+                                File.Delete(path);
+                            }
+                            File.WriteAllBytes(path, result.data);
+
+                            OpenPrivacyPolicy(path);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show(
+                                    "Failed to download the latest privacy policy.\nPlease try again later.\nIf this problem persists, please get in touch via Discord or email to get a copy of the privacy policy.\nE-Mail: mail@maik8.de",
+                                    "Error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+
+                            if (File.Exists(path))
+                                OpenPrivacyPolicy(path);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "Failed to open privacy policy.\nPlease try again later.\nIf this problem persists, please get in touch via Discord or email to get a copy of the privacy policy.\nE-Mail: mail@maik8.de",
+                            "Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+
+                        if (File.Exists(path))
+                            OpenPrivacyPolicy(path);
+                    }
+
+                    OnViewedPrivacyPolicyInvoker();
+                }
+                catch { }
+            }), cancellationTokenSource.Token);
+        }
+
+        private void OnViewedPrivacyPolicyInvoker()
+        {
+            OnViewedPrivacyPolicy();
+        }
+
+        private bool OnViewedPrivacyPolicy()
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<bool>)OnViewedPrivacyPolicy);
+
+            btnViewPrivacyPolicy.Enabled = true;
+
+            return false;
+        }
+
+        private void OpenPrivacyPolicy(string path)
+        {
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = "notepad.exe",
+                Arguments = path
+            });
+        }
     }
 }

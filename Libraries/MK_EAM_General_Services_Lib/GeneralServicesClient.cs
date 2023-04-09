@@ -139,6 +139,28 @@ namespace MK_EAM_General_Services_Lib
             #endregion
         }
 
+        public async Task<GetFileResponse> GetPrivacyPolicy()
+        {
+            #region GetPrivacyPolicy
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + "v1/ExaltAccountManager/privacy/policy");
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<GetFileResponse>(await responseMessage.Content.ReadAsStringAsync());
+                }
+            }
+            catch { }
+
+            return new GetFileResponse();
+
+            #endregion
+        }
+
         public async Task<List<NewsData>> GetNews(DateTime startTime, string clientIdHash, int amount = 5)
         {
             #region GetNews            

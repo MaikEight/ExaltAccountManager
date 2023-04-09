@@ -278,11 +278,6 @@ namespace ExaltAccountManager
         public string vaultPeekerExePath = Path.Combine(Application.StartupPath, "EAM Vault Peeker.exe");
         public string dailyServiceExePath = Path.Combine(Application.StartupPath, "DailyService", "EAM Daily Login Service.exe");
 
-        private string[] flagPaths = new string[]
-        {
-             Path.Combine(Application.StartupPath, "flag.ScreenshotMode"),
-        };
-
         #endregion
 
         private string linkUpdate = string.Empty;
@@ -1687,7 +1682,7 @@ namespace ExaltAccountManager
                 uiAddAccounts = new UIAddAccount(this);
 
             if (uiModules == null)
-                uiModules = new UIModules(this);
+                uiModules = new UIModules(this) { Dock = DockStyle.Fill };
 
             if (uiOptions == null)
                 uiOptions = new UIOptions(this) { Dock = DockStyle.Fill };
@@ -1729,7 +1724,7 @@ namespace ExaltAccountManager
             timerDiscordUpdater.Start();
 
             if (uiEAMNews == null)
-                uiEAMNews = new UIEAMNews(this);
+                uiEAMNews = new UIEAMNews(this) { Dock = DockStyle.Fill };
         }
 
         public void SaveNewsViewed()

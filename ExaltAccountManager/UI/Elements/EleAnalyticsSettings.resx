@@ -118,6 +118,17 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnViewPrivacyPolicy.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAX4AAAAfCAYAAADgBaa3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEDSURBVHhe7dixSQRBGIbhP7EgY3M7MJXdO9BKrgcrMBUV
+        BAMR9IyuE9nbswOdNd4K5nsGnlmG+eMXdmpZmzqdjzXfjXU8ANCj+e66psv/6G/reDHU9Nku3poHALrU
+        Gj/vh/q+qqHm+3Z4XRkCoC9PzXu1bfkNWBsAoD8H4QfIIvwAYYQfIIzwA4QRfoAwwg8QRvgBwgg/QBjh
+        Bwgj/ABhhB8gjPADhBF+gDDCDxBG+AHCCD9AGOEHCCP8AGGEHyCM8AOEEX6AMMIPEEb4AcIIP0CYQ23q
+        +DzU9LJyCUBfHseavlr4T5ux5v3KAABdmT7ad1fL2tbPbTssTz4A9Gt3U79nfx1mTeKmrBHxAAAAAElF
+        TkSuQmCC
+</value>
+  </data>
   <data name="bunifuPanel1.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAANgAAABzCAYAAAD6+8zAAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
