@@ -184,6 +184,7 @@
             this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pbHeader.AutoSizeHeight = true;
             this.pbHeader.BorderRadius = 0;
+            this.pbHeader.Image = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.puzzle_white_48px1;
             this.pbHeader.IsCircle = true;
             this.pbHeader.Location = new System.Drawing.Point(6, 6);
             this.pbHeader.Name = "pbHeader";
