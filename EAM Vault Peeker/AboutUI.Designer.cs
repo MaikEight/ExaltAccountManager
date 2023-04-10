@@ -157,7 +157,7 @@
             this.linkWebsite.Size = new System.Drawing.Size(210, 32);
             this.linkWebsite.TabIndex = 13;
             this.linkWebsite.TabStop = true;
-            this.linkWebsite.Text = "https://www.mpgh.net/forum/member.php?u=1465031";
+            this.linkWebsite.Text = "https://github.com/MaikEight/ExaltAccountManager";
             this.linkWebsite.VisitedLinkColor = System.Drawing.Color.Purple;
             // 
             // label3
