@@ -21,10 +21,6 @@ namespace EAM_Vault_Peeker
             frm = _frm;
             lVersion.Text = string.Format(lVersion.Text, frm.version);
 
-            if (!System.IO.File.Exists(System.IO.Path.Combine(Application.StartupPath, "flag.MPGH")))
-            {
-                linkWebsite.Text = "https://github.com/MaikEight/ExaltAccountManager";
-            }
             ApplyTheme(null, null);
 
             frm.ThemeChanged += ApplyTheme;

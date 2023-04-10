@@ -20,11 +20,6 @@ namespace EAM_Statistics
             frm = _frm;
             lVersion.Text = string.Format(lVersion.Text, frm.version);
 
-            if (!File.Exists(Path.Combine(Application.StartupPath, "flag.MPGH")))
-            {
-                linkWebsite.Text = "https://github.com/MaikEight/ExaltAccountManager";
-            }
-
             ApplyTheme(frm.useDarkmode);
 
             System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
