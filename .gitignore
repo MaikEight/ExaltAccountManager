@@ -769,3 +769,6 @@ FodyWeavers.xsd
 /EAM Vault Peeker/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
 /ExaltAccountManager/obj/Debug/ExaltAccountManager.csproj.FileListAbsolute.txt
 /ExaltAccountManager/obj/Debug/ExaltAccountManager.csproj.CoreCompileInputs.cache
+/EAM Daily Login Service/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+/.vs/EAM/v17/fileList.bin
+/.vs/EAM/DesignTimeBuild/.dtbcache.v2
