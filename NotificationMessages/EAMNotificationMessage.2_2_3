@@ -1,8 +1,8 @@
 {
-	"id":1,
+	"id":2,
 	"type":1,
-	"message":"Version 3.0.0 is now available, it includes: the Vault Peeker (Muledump replica), new and faster UI aswell as many, many other improvements!",
-	"link":"https://github.com/MaikEight/ExaltAccountManager/releases/tag/v3.0.0",
-	"linkM":"https://github.com/MaikEight/ExaltAccountManager/releases/tag/v3.0.0",
+	"message":"Version 3.1.0 is now available, it includes: Captcha Support, News, Installer, bug fixes and much more!",
+	"link":"https://github.com/MaikEight/ExaltAccountManager/releases/latest",
+	"linkM":"https://github.com/MaikEight/ExaltAccountManager/releases/latest",
 	"forceShow":true
 }
