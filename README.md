@@ -113,7 +113,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 
 \# | Installer 🚀 | Zip file 📦️
 :-:|:--------:|:--------:
-3\. |  Download Exalt_Account_Manager_VX.Y.Z_Installer.msi | Download Exalt_Account_Manager_VX.Y.Z.zip
+3\. |  Download Exalt_Account_Manager_VX.Y.Z_Installer.msi | Download Exalt_Account_Manager_VX_Y_Z.zip
 4\. |  Run the installer and follow the instructions. | Unzip the release to anywhere you seem fit. 
 5\. |  You will find a shortcut on your desktop. | Start the ExaltAccountManager.exe in there.
 
