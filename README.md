@@ -167,7 +167,7 @@ Last puchase: The awesome, custom made application-logo.
 
 ## Credits 💚
 
-<b>Big</b> thanks to [Icons8](https://icons8.com/icons) for all the beautifull Icons / Images used in this project.
+<b>Big</b> thanks to [Icons8](https://icons8.com/icons) for all the beautiful Icons / Images used in this project.
 
 And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the commits & markdown files. 
 
