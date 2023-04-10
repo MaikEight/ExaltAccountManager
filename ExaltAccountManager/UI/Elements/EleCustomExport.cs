@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleCustomExport : UserControl
+    public sealed partial class EleCustomExport : UserControl
     {
-        FrmMain frm;
-        EleExport eleExport;
+        private FrmMain frm;
+        private EleExport eleExport;
 
-        Mini.MiniAccountDataOrderEntry miniEmail;
-        Mini.MiniAccountDataOrderEntry miniPassword;
-        Mini.MiniAccountDataOrderEntry miniAccountname;
-        Mini.MiniAccountDataOrderEntry miniGroup;
+        private Mini.MiniAccountDataOrderEntry miniEmail;
+        private Mini.MiniAccountDataOrderEntry miniPassword;
+        private Mini.MiniAccountDataOrderEntry miniAccountname;
+        private Mini.MiniAccountDataOrderEntry miniGroup;
 
-        Mini.MiniAccountDataOrderEntry SelectedMini
+        private Mini.MiniAccountDataOrderEntry SelectedMini
         {
             get => selectedMiniValue;
             set
@@ -48,10 +46,10 @@ namespace ExaltAccountManager.UI.Elements
         }
         Mini.MiniAccountDataOrderEntry selectedMiniValue = null;
 
-        int miniAmount = 2;
-        bool isInit = true;
+        private int miniAmount = 2;
+        private bool isInit = true;
 
-        List<MK_EAM_Lib.AccountInfo> accounts = new List<MK_EAM_Lib.AccountInfo>();
+        private List<MK_EAM_Lib.AccountInfo> accounts = new List<MK_EAM_Lib.AccountInfo>();
 
         public EleCustomExport(FrmMain _frm, EleExport _eleExport, List<MK_EAM_Lib.AccountInfo> _accounts)
         {
@@ -205,7 +203,6 @@ namespace ExaltAccountManager.UI.Elements
             flowData.Controls.SetChildIndex(SelectedMini, GetMiniIndex(SelectedMini) - 1);
             UpdateSelectionTextAndButtons();
         }
-
 
         private void btnForward_Click(object sender, EventArgs e)
         {

@@ -1,6 +1,8 @@
 ﻿using Bunifu.UI.WinForms;
 using ExaltAccountManager.UI;
 using ExaltAccountManager.UI.Elements;
+using MK_EAM_Analytics;
+using MK_EAM_General_Services_Lib;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
@@ -10,20 +12,25 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ExaltAccountManager
 {
-    public partial class FrmMain : Form
+    public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 0, 0);
+        public readonly Version version = new Version(3, 1, 0);
+        public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
         public bool UseDarkmode
         {
             get => useDarkmode;
@@ -43,7 +50,7 @@ namespace ExaltAccountManager
         private Size defaultMinimumsize = new Size(0, 0);
 
         public bool loading = false;
-        LogData lastLogData = new LogData(-1, "", LogEventType.EAMError, "") { time = new DateTime() };
+        private LogData lastLogData = new LogData(-1, "", LogEventType.EAMError, "") { time = new DateTime() };
 
         public BindingList<MK_EAM_Lib.AccountInfo> accounts = new BindingList<MK_EAM_Lib.AccountInfo>();
         public ServerDataCollection serverData
@@ -78,11 +85,25 @@ namespace ExaltAccountManager
             }
         }
         private OptionsData optionsDataValue = new OptionsData();
+        private bool drawConfigChangesIcon = false;
         public NotificationOptions notOpt = new NotificationOptions();
+        public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
+        public bool HasNewNews 
+        {
+            get => hasNewNews;
+            set
+            {
+                hasNewNews = value;
+                btnNews.Invalidate();
+            }
+        }
+        private bool hasNewNews = false;
+        public DateTime LastNewsViewed { get; internal set; } = DateTime.MinValue;
         private GameUpdater gameUpdater { get; set; }
 
         private UIAccounts uiAccounts;
+        private UIEAMNews uiEAMNews;
         private UIAddAccount uiAddAccounts;
         private UIModules uiModules;
         private UIOptions uiOptions;
@@ -104,6 +125,9 @@ namespace ExaltAccountManager
                 {
                     case UIState.Accounts:
                         btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_outline_white_24dp : Properties.Resources.ic_people_outline_black_24dp;
+                        break;
+                    case UIState.News:
+                        btnNews.Image = useDarkmode ? Properties.Resources.news_outline_white_24px : Properties.Resources.news_outline_black_24px;
                         break;
                     case UIState.AddAccount:
                         btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_outline_24px : Properties.Resources.add_user_outline_24px;
@@ -140,53 +164,85 @@ namespace ExaltAccountManager
                     case UIState.Accounts:
                         btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_white_24dp : Properties.Resources.ic_people_black_24dp;
                         lTitle.Text = "Accounts";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
+                        break;
+                    case UIState.News:
+                        btnNews.Image = useDarkmode ? Properties.Resources.news_white_24px : Properties.Resources.news_black_24px;
+                        lTitle.Text = "News";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.News);
                         break;
                     case UIState.AddAccount:
                         btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_24px : Properties.Resources.add_user_24px;
                         lTitle.Text = "Add Account";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Settings);
                         break;
                     case UIState.Modules:
                         btnModules.Image = useDarkmode ? Properties.Resources.dashboard_layout_white_24px : Properties.Resources.dashboard_layout_24px;
                         lTitle.Text = "Modules";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Modules);
                         break;
                     case UIState.Options:
                         btnOptions.Image = useDarkmode ? Properties.Resources.settings_white_24px : Properties.Resources.settings_24px;
                         lTitle.Text = "Options";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Settings);
                         break;
                     case UIState.Help:
                         btnHelp.Image = useDarkmode ? Properties.Resources.ic_help_white_24dp : Properties.Resources.ic_help_black_24dp;
                         lTitle.Text = "Help";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Help);
                         break;
                     case UIState.Logs:
                         btnLogs.Image = useDarkmode ? Properties.Resources.activity_history_white_24px : Properties.Resources.activity_history_24px;
                         lTitle.Text = "Logs";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Logs);
                         break;
                     case UIState.AboutEAM:
                         btnAbout.Image = useDarkmode ? Properties.Resources.ic_info_white_24dp : Properties.Resources.ic_info_black_24dp;
                         lTitle.Text = "About Exalt Account Manager";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.About);
                         break;
                     case UIState.Updater:
                         lTitle.Text = "Updater";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Updater);
                         break;
                     case UIState.Changelog:
                         lTitle.Text = "Changelog";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Changelog);
                         break;
                     case UIState.TokenViewer:
                         lTitle.Text = "Token Viewer";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.TokenViewer);
                         break;
                     case UIState.ImportExport:
                         lTitle.Text = "Im- & Export";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
                         break;
                     case UIState.DailyLogin:
                         lTitle.Text = "Daily logins";
+
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.DailyLogin);
                         break;
                     case UIState.DailyNotifications:
                         lTitle.Text = "Daily Login notification-settings";
                         break;
                     default:
                         this.MinimumSize = defaultMinimumsize;
+                        DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
                         break;
                 }
+                DiscordHelper.ApplyPresence();
 
                 #endregion
 
@@ -200,8 +256,6 @@ namespace ExaltAccountManager
 
         #region Paths
 
-        //public string exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe");
-
         public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
 
         public string optionsPath = Path.Combine(saveFilePath, "EAM.options");
@@ -212,10 +266,12 @@ namespace ExaltAccountManager
         public string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
         public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
         public string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
+        public string pathNews = Path.Combine(saveFilePath, "EAM.News");
         public string lastUpdateCheckPath = Path.Combine(saveFilePath, "EAM.LastUpdateCheck");
         public string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
         public string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
         public string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
+        public string privacyPolicyPath = Path.Combine(saveFilePath, "EAM_Privacy_Policy.txt");
         public string activeVaultPeekerAccountsPath = Path.Combine(saveFilePath, "EAM.ActiveVaultPeekerAccounts");
         public string getClientHWIDToolPath = Path.Combine(Application.StartupPath, "EAM_GetClientHWID");
         public string pingCheckerExePath = Path.Combine(Application.StartupPath, "EAM PingChecker.exe");
@@ -223,33 +279,61 @@ namespace ExaltAccountManager
         public string vaultPeekerExePath = Path.Combine(Application.StartupPath, "EAM Vault Peeker.exe");
         public string dailyServiceExePath = Path.Combine(Application.StartupPath, "DailyService", "EAM Daily Login Service.exe");
 
-        private string[] flagPaths = new string[]
-        {
-             Path.Combine(Application.StartupPath, "flag.ScreenshotMode"),
-             Path.Combine(Application.StartupPath, "flag.MPGH")
-        };
-
-        #endregion
-
-        #region Flags
-
-        public bool screenshotMode = false;
-        public bool isMPGHVersion = false;
-
         #endregion
 
         private string linkUpdate = string.Empty;
 
-        public FrmMain()
+        #region Borderless Form Minimize On Taskbar Icon Click
+
+        const int WS_MINIMIZEBOX = 0x20000;
+        const int CS_DBLCLKS = 0x8;
+
+        protected override CreateParams CreateParams
         {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.Style |= WS_MINIMIZEBOX;
+                cp.ClassStyle |= CS_DBLCLKS;
+                return cp;
+            }
+        }
+
+        #endregion
+
+        public FrmMain(string[] args)
+        {
+            #region Arguments
+
+            if (args?.Length > 0)
+            {
+                switch (args[0])
+                {
+                    case "update":
+                        {
+                            if (args.Length >= 2)
+                            {
+                                string tempUpdatePath = args[1];
+                                MK_EAM_Updater_Lib.Updater.MoveUpdateFiles(Application.StartupPath, tempUpdatePath);
+
+                                System.Diagnostics.Process.Start(Application.ExecutablePath);
+                                Environment.Exit(0);
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            #endregion
+
             InitializeComponent();
 
             defaultMinimumsize = this.MinimumSize = new Size(this.MinimumSize.Width, 576);
             lVersion.Text = $"EAM v{version} by Maik8";
 
             bool isNewInstall = false;
-
-            LoadFlags();
 
             if (!Directory.Exists(saveFilePath))
             {
@@ -258,6 +342,34 @@ namespace ExaltAccountManager
             }
 
             isNewInstall = (isNewInstall || (!File.Exists(accountsPath) && !File.Exists(optionsPath)));
+
+            #region API Base URL
+
+            try
+            {
+                API_BASE_URL = "https://api.exalt-account-manager.eu/";
+                string fileName = Path.Combine(Application.StartupPath, "MK_EAM_API_DATA");
+                if (File.Exists(fileName))
+                    API_BASE_URL = File.ReadAllText(fileName);
+            }
+            catch { API_BASE_URL = "https://api.exalt-account-manager.eu/"; }
+
+            #endregion
+
+            #region LatestNewsViews
+
+            try
+            {
+                LastNewsViewed = DateTime.MinValue;
+                if (File.Exists(pathNews))
+                {
+                    long.TryParse(File.ReadAllText(pathNews), out long ticks);
+                    LastNewsViewed = new DateTime(ticks);
+                }
+            }
+            catch { LastNewsViewed = DateTime.MinValue; }
+
+            #endregion
 
             if (!isNewInstall)
             {
@@ -270,6 +382,28 @@ namespace ExaltAccountManager
                         OptionsData = (OptionsData)ByteArrayToObject(File.ReadAllBytes(optionsPath));
                         UseDarkmode = OptionsData.useDarkmode;
                         SnackbarPosition = (Bunifu.UI.WinForms.BunifuSnackbar.Positions)OptionsData.snackbarPosition;
+
+                        bool toSave = false;
+                        if (OptionsData.discordOptions == null)
+                        {
+                            toSave = true;
+                            OptionsData.discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
+                        }
+
+                        if (OptionsData.analyticsOptions == null)
+                        {
+                            toSave = true;
+                            OptionsData.analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false };
+                        }
+
+                        if (toSave)
+                        {
+                            try
+                            {
+                                File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
+                            }
+                            catch { }
+                        }
                     }
                     catch { }
                 }
@@ -281,14 +415,26 @@ namespace ExaltAccountManager
                         {
                             exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                             closeAfterConnection = false,
-                            snackbarPosition = 8
+                            snackbarPosition = 8,
+                            discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
+                            analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                         };
                         File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
                     }
                     catch { }
                 }
 
-                #endregion 
+                if (OptionsData.discordOptions == null)
+                {
+                    OptionsData.discordOptions = new DiscordOptions();
+                }
+
+                DiscordHelper.Initialize(OptionsData.discordOptions,
+                                         this,
+                                         autoEvents: false,
+                                         _updateOnChange: false);
+
+                #endregion
 
                 #region Accounts
 
@@ -368,10 +514,129 @@ namespace ExaltAccountManager
             timerLoadUI.Start();
             gameUpdater = new GameUpdater(OptionsData.exePath, lastUpdateCheckPath);
             GameUpdater.Instance.OnUpdateRequired += UpdateRequiredInvoker;
+
+            if (!OptionsData.analyticsOptions.OptOut)
+            {
+                new AnalyticsClient(API_BASE_URL + "v1/Analytics");
+                AnalyticsClient.Instance?.StartSession(accounts.Count, GetAPIClientIdHash(), version);
+            }
+
+            _ = new GeneralServicesClient(API_BASE_URL);
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(10000);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+                try
+                {
+                    Task<Version> task = GeneralServicesClient.Instance?.GetLatestEamVersion();
+                    while (!task.IsCompleted)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            OnAPIResponseLatestEamVersion(new Version(0, 0, 0));
+                            LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to fetch latest EAM-Version."));
+
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
+                    }
+                    Version latestVersion = task.Result;
+                    OnAPIResponseLatestEamVersion(latestVersion);
+                }
+                catch (Exception ex)
+                {
+                    LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.APIError,
+                               "Failed to fetch latest EAM-Version." + Environment.NewLine + "Exception: " + ex.Message));
+                }
+            }), cancellationTokenSource.Token);
         }
+
+        private void OnAPIResponseLatestEamVersion(Version latestVersion)
+        {
+            if (latestVersion == null)
+            {
+                LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.APIError,
+                               "Fetched EAM-Version is null."));
+                return;
+            }
+
+            if (version < latestVersion)
+            {
+                //Update needed!
+                ShowEamUpdateNoticeInvoker();
+            }
+        }
+
+        private void PerformEamUpdateInvoker(string releaselink, string directDownloadLink)
+        {
+            PerformEamUpdate(releaselink, directDownloadLink);
+        }
+
+        private bool PerformEamUpdate(string releaselink, string directDownloadLink)
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<string, string, bool>)PerformEamUpdate, releaselink, directDownloadLink);
+
+            try
+            {
+                string updaterPath = Path.Combine(Application.StartupPath, "EAM_Updater.exe");
+                if (File.Exists(updaterPath))
+                {
+                    LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.UpdateEAM,
+                               "Starting EAM_Updater."));
+                    ProcessStartInfo info = new ProcessStartInfo(updaterPath);
+                    info.Arguments = directDownloadLink;
+                    Process.Start(info);
+
+                    Environment.Exit(0);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.Error,
+                               "Failed to start the EAM_Updater. Exception: " + ex.Message));
+
+                ShowSnackbar("Failed to start the EAM_Updater.", BunifuSnackbar.MessageTypes.Error, 7500);
+            }
+
+            return false;
+        }
+
+        private void ShowEamUpdateNoticeInvoker()
+        {
+            ShowEamUpdateNotice();
+        }
+
+        private bool ShowEamUpdateNotice()
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<bool>)ShowEamUpdateNotice);
+
+            ExaltAccountManagerUpdateAvailable();
+
+            return false;
+        }
+
 
         public void ApplyTheme(object sender, EventArgs e)
         {
+            #region ApplyTheme
+
             Color def = ColorScheme.GetColorDef(useDarkmode);
             Color second = ColorScheme.GetColorSecond(useDarkmode);
             Color third = ColorScheme.GetColorThird(useDarkmode);
@@ -390,6 +655,7 @@ namespace ExaltAccountManager
             #region Button Images
 
             btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_outline_white_24dp : Properties.Resources.ic_people_outline_black_24dp;
+            btnNews.Image = useDarkmode ? Properties.Resources.news_outline_white_24px : Properties.Resources.news_outline_black_24px;
             btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_outline_24px : Properties.Resources.add_user_outline_24px;
             btnModules.Image = useDarkmode ? Properties.Resources.dashboard_layout_outline_white_24px : Properties.Resources.dashboard_layout_outline_24px;
             btnOptions.Image = useDarkmode ? Properties.Resources.settings_outline_white_24px : Properties.Resources.settings_outline_24px;
@@ -402,6 +668,9 @@ namespace ExaltAccountManager
             {
                 case UIState.Accounts:
                     btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_white_24dp : Properties.Resources.ic_people_black_24dp;
+                    break;
+                case UIState.News:
+                    btnNews.Image = useDarkmode ? Properties.Resources.news_white_24px : Properties.Resources.news_black_24px;
                     break;
                 case UIState.AddAccount:
                     btnAddAccount.Image = useDarkmode ? Properties.Resources.add_user_white_24px : Properties.Resources.add_user_24px;
@@ -435,13 +704,15 @@ namespace ExaltAccountManager
             BunifuSnackbar.CustomizationOptions opt = new BunifuSnackbar.CustomizationOptions()
             {
                 ActionBackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
-                BackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
                 ActionBorderColor = UseDarkmode ? Color.FromArgb(15, 15, 15) : Color.White,
-                BorderColor = UseDarkmode ? Color.FromArgb(15, 15, 15) : Color.White,
                 ActionForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,
+                BackColor = UseDarkmode ? Color.FromArgb(8, 8, 8) : Color.White,
+                BorderColor = UseDarkmode ? Color.FromArgb(15, 15, 15) : Color.White,
                 ForeColor = UseDarkmode ? Color.FromArgb(170, 170, 170) : Color.Black,
-                CloseIconColor = Color.FromArgb(246, 255, 237)
+                CloseIconColor = Color.FromArgb(246, 255, 237),
+                ActionBorderRadius = 9,
             };
+
             snackbar.ErrorOptions = opt;
             snackbar.ErrorOptions.CloseIconColor = Color.FromArgb(255, 204, 199);
             snackbar.WarningOptions = opt;
@@ -456,6 +727,10 @@ namespace ExaltAccountManager
             toolTip.BackColor = def;
             toolTip.TitleForeColor = font;
             toolTip.TextForeColor = useDarkmode ? Color.WhiteSmoke : Color.FromArgb(64, 64, 64);
+
+            DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
+
+            #endregion
         }
 
         private void NotificationMessage(EAMNotificationMessage msg)
@@ -467,9 +742,7 @@ namespace ExaltAccountManager
             {
                 QNA notMessage = new QNA();
                 bool showUI = false;
-                notificationSaveFile.forceCheck = msg.forceShow;
-                notificationSaveFile.lastCheckWasStop = msg.type == EAMNotificationMessageType.Stop;
-                notificationSaveFile.knownIDs.Add(msg.id);
+
                 switch (msg.type)
                 {
                     case EAMNotificationMessageType.None:
@@ -479,17 +752,17 @@ namespace ExaltAccountManager
                             if (!OptionsData.searchUpdateNotification)
                                 return;
                             showUI = true;
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
                             notMessage = new QNA()
                             {
                                 Question = "Exalt Account Manager Update available",
                                 Answer = msg.message,
-                                ButtonText = isMPGHVersion ? "Show release on MPGH" : "Show release on Github",
+                                ButtonText = "Show release on Github",
                                 ButtonImage = Properties.Resources.update_left_rotation_white_24px,
                                 Type = QuestionType.Update,
                                 Action = (object sender, EventArgs e) => System.Diagnostics.Process.Start(linkUpdate)
                             };
-                            GameUpdateAvailable();
+                            ExaltAccountManagerUpdateAvailable();
 
                             notificationSaveFile.forceCheck = true;
                         }
@@ -500,7 +773,7 @@ namespace ExaltAccountManager
                                 return;
 
                             showUI = true;
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
 
                             notMessage = new QNA()
                             {
@@ -522,7 +795,7 @@ namespace ExaltAccountManager
                                 return;
 
                             showUI = true;
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
 
                             notMessage = new QNA()
                             {
@@ -543,13 +816,13 @@ namespace ExaltAccountManager
                             if (!OptionsData.deactivateKillswitch)
                                 return;
 
-                            foreach (Button btn in pSideButtons.Controls.OfType<Button>())
+                            foreach (System.Windows.Forms.Button btn in pSideButtons.Controls.OfType<System.Windows.Forms.Button>())
                             {
                                 btn.Enabled = false;
                             }
                             pContent.Controls.Clear();
 
-                            linkUpdate = isMPGHVersion ? msg.linkM : msg.link;
+                            linkUpdate = msg.link;
 
                             notMessage = new QNA()
                             {
@@ -593,17 +866,76 @@ namespace ExaltAccountManager
             }
         }
 
-        private void GameUpdateAvailable()
+        private void ExaltAccountManagerUpdateAvailable()
         {
             lVersion.ForeColor = UseDarkmode ? Color.Orange : Color.DarkOrange;
             pUpdate.Visible = true;
+
+            ShowSnackbar("New EAM-Version available.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 12500);
         }
 
         private void btnEAMUpdate_Click(object sender, EventArgs e)
         {
-            if (eleEAMUpdate != null)
-                eleEAMUpdate = new EleQNA(this);
-            ShowShadowForm(eleEAMUpdate);
+            if (!cancellationTokenSource.IsCancellationRequested)
+            {
+                cancellationTokenSource.Cancel();
+            }
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(7500);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+            {
+                CancellationToken token = (CancellationToken)obj;
+                try
+                {
+                    Task<MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse> task = GeneralServicesClient.Instance?.GetEamReleaseInfo();
+                    while (!task.IsCompleted)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            LogEvent(new MK_EAM_Lib.LogData(
+                                "EAM",
+                                MK_EAM_Lib.LogEventType.APIError,
+                                "Failed to fetch EAM release information."));
+
+                            return;
+                        }
+
+                        await Task.Delay(50, token);
+                    }
+                    MK_EAM_General_Services_Lib.General.Responses.EAMReleaseInfoResponse response = task.Result;
+                    if (response == null || response.ReleaseLink == null || response.ReleaseDownloadLink == null)
+                    {
+                        throw new ArgumentNullException(
+                            "Params: " + response == null ?
+                            "response" :
+                            (response.ReleaseLink == null ?
+                                "ReleaseLink" :
+                                "" +
+                             response.ReleaseDownloadLink == null ?
+                                "ReleaseDownloadLink" :
+                                ""), "Response from server is NULL or contains a NULL-Value.");
+                    }
+                    PerformEamUpdateInvoker(response.ReleaseLink, response.ReleaseDownloadLink);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    LogEvent(new MK_EAM_Lib.LogData(
+                               "EAM",
+                               MK_EAM_Lib.LogEventType.APIError,
+                               "Failed to fetch EAM release information, update process canceled." + Environment.NewLine + "Exception: " + ex.Message));
+
+                    System.Diagnostics.Process.Start(GITHUB_PROJECT_URL);
+
+                    MessageBox.Show(
+                        "The automatic update failed, please download the update on GitHub.",
+                        "An error occured",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }), cancellationTokenSource.Token);
         }
 
         private bool NotificationMessageInvoker(EAMNotificationMessage msg)
@@ -615,40 +947,6 @@ namespace ExaltAccountManager
 
             return false;
         }
-
-        #region Load Flags
-
-        private void LoadFlags()
-        {
-
-            for (int i = 0; i < flagPaths.Length; i++)
-            {
-                try
-                {
-                    if (File.Exists(flagPaths[i]))
-                    {
-                        switch (i)
-                        {
-                            case 0: //Screenshot Mode
-                                screenshotMode = true;
-                                break;
-                            case 1: //isMPGH release
-                                isMPGHVersion = true;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-                catch
-                {
-                    LogEvent(new LogData(-1, "EAM", LogEventType.EAMError, $"Failed to load flags."));
-                }
-            }
-
-        }
-
-        #endregion
 
         #region LoadServerData
 
@@ -727,7 +1025,6 @@ namespace ExaltAccountManager
 
         #endregion
 
-
         #region SaveAccounts
 
         public bool SaveAccounts()
@@ -786,14 +1083,6 @@ namespace ExaltAccountManager
 
                 if (showSnackbarNotification)
                     ShowSnackbar($"Options saved successfully!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 3000);
-
-                //if (msg != null && msg.type == EAMNotificationMessageType.UpdateAvailable)
-                //{
-                //    lUpdateAvailable.Visible = true;
-                //    lVersion.ForeColor = useDarkmode ? Color.Orange : Color.DarkOrange;
-                //    notificationSaveFile.forceCheck = true;
-                //    updateLink = isMPGHVersion ? msg.linkM : msg.link;
-                //}
             }
             catch
             {
@@ -801,6 +1090,21 @@ namespace ExaltAccountManager
                 LogButtonBlink();
                 ShowSnackbar($"Failed to save options!", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
             }
+        }
+
+        public void UpdateUIOptionsData()
+        {
+            if (OptionsData != null)
+            {
+                uiOptions?.ApplyOptions();
+            }
+        }
+
+        public void UpdateHasConfigChangesUI(bool state)
+        {
+            drawConfigChangesIcon = state;
+
+            btnOptions.Invalidate();
         }
 
         #endregion
@@ -935,6 +1239,25 @@ namespace ExaltAccountManager
             return ret;
         }
 
+        public string GetAPIClientIdHash(bool isForAnalytics = true)
+        {
+            if (isForAnalytics && OptionsData.analyticsOptions.Anonymization)
+                return "--ANONYMIZED--";
+
+            return QuickHash(GetDeviceUniqueIdentifier(true) + System.Security.Principal.WindowsIdentity.GetCurrent().User.Value);
+        }
+
+        public string GetAnalyticsEmailHash(string email) => QuickHash(email);
+        private string QuickHash(string secret)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var secretBytes = Encoding.UTF8.GetBytes(secret);
+                var secretHash = md5.ComputeHash(secretBytes);
+                return new System.Numerics.BigInteger(secretHash.Reverse().ToArray()).ToString("x2");
+            }
+        }
+
         public string GetAccountStatsFilename(string email)
         {
             try
@@ -956,9 +1279,7 @@ namespace ExaltAccountManager
             if (this.InvokeRequired)
                 return (bool)this.Invoke((Func<string, Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes, int, bool>)ShowSnackbar, message, msgType, duration);
 
-            snackbar.Show(this, message, msgType, duration, "X", SnackbarPosition);
-            //snackbar.Show(this, message, msgType, duration, "X", Bunifu.UI.WinForms.BunifuSnackbar.Positions.TopCenter);
-
+            snackbar.Show(this, message, msgType, duration, null, SnackbarPosition);
             return false;
         }
 
@@ -972,6 +1293,11 @@ namespace ExaltAccountManager
             accounts.Add(info);
 
             SaveAndUpdateAccounts();
+
+            if (!OptionsData.analyticsOptions.OptOut)
+            {
+                AnalyticsClient.Instance?.UpdateAmountOfAccounts(accounts.Count);
+            }
 
             return false;
         }
@@ -1017,7 +1343,17 @@ namespace ExaltAccountManager
 
         #region Button Close
 
-        private void pbClose_Click(object sender, EventArgs e) => Environment.Exit(0);
+        private void pbClose_Click(object sender, EventArgs e)
+        {
+            this.Visible = false;
+
+            if (!OptionsData.analyticsOptions.OptOut)
+            {
+                _ = AnalyticsClient.Instance?.EndSeesion();
+            }
+
+            Environment.Exit(0);
+        }
 
         private void pbClose_MouseDown(object sender, MouseEventArgs e) => pbClose.BackColor = Color.Red;
 
@@ -1059,6 +1395,24 @@ namespace ExaltAccountManager
                 pContent.Controls.Add(uiAccounts);
 
                 uiState = UIState.Accounts;
+            }
+            lHeaderEAM.Focus();
+        }
+
+        private void btnNews_Click(object sender, EventArgs e)
+        {
+            if (uiState != UIState.News)
+            {
+                pSideBar.Top = (sender as Control).Top + 5;
+
+                if (uiEAMNews == null)
+                    uiEAMNews = new UIEAMNews(this) { Dock = DockStyle.Fill };
+
+                pContent.Controls.Clear();
+                pContent.Controls.Add(uiEAMNews);
+                SaveNewsViewed();
+
+                uiState = UIState.News;
             }
             lHeaderEAM.Focus();
         }
@@ -1181,6 +1535,8 @@ namespace ExaltAccountManager
                     eleGameUpdater = new EleGameUpdater(this);
 
                 ShowShadowForm(eleGameUpdater);
+                DiscordHelper.UpdateMenu(DiscordHelper.Menu.Updater);
+                DiscordHelper.ApplyPresence();
             }
             lHeaderEAM.Focus();
         }
@@ -1195,6 +1551,18 @@ namespace ExaltAccountManager
         {
             if (uiStateVal != UIState.Accounts)
                 btnAccounts.Image = useDarkmode ? Properties.Resources.ic_people_outline_white_24dp : Properties.Resources.ic_people_outline_black_24dp;
+        }
+
+        private void btnNews_MouseEnter(object sender, EventArgs e)
+        {
+            if (uiStateVal != UIState.News)
+                btnNews.Image = useDarkmode ? Properties.Resources.news_white_24px : Properties.Resources.news_black_24px;
+        }
+
+        private void btnNews_MouseLeave(object sender, EventArgs e)
+        {
+            if (uiStateVal != UIState.News)
+                btnNews.Image = useDarkmode ? Properties.Resources.news_outline_white_24px : Properties.Resources.news_outline_black_24px;
         }
 
         private void btnAddAccount_MouseEnter(object sender, EventArgs e)
@@ -1315,10 +1683,10 @@ namespace ExaltAccountManager
                 uiAddAccounts = new UIAddAccount(this);
 
             if (uiModules == null)
-                uiModules = new UIModules(this);
+                uiModules = new UIModules(this) { Dock = DockStyle.Fill };
 
             if (uiOptions == null)
-                uiOptions = new UIOptions(this);
+                uiOptions = new UIOptions(this) { Dock = DockStyle.Fill };
 
             if (OptionsData.searchRotmgUpdates)
             {
@@ -1350,6 +1718,88 @@ namespace ExaltAccountManager
 
             timerLoadUI.Dispose();
             lHeaderEAM.Focus();
+
+            DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
+            DiscordHelper.ApplyPresence();
+
+            timerDiscordUpdater.Start();
+
+            if (uiEAMNews == null)
+                uiEAMNews = new UIEAMNews(this) { Dock = DockStyle.Fill };
+
+            //Check if privacy policy exists & create if not
+            if (!File.Exists(privacyPolicyPath) || (DateTime.Now - File.GetLastWriteTime(privacyPolicyPath)) > TimeSpan.FromDays(3))
+            {
+                #region Privacy Policy
+
+                if (!cancellationTokenSource.IsCancellationRequested)
+                {
+                    cancellationTokenSource.Cancel();
+                }
+
+                cancellationTokenSource = new CancellationTokenSource();
+                cancellationTokenSource.CancelAfter(7500);
+
+                ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+                {
+                    CancellationToken token = (CancellationToken)obj;
+
+                    try
+                    {
+
+                        Task<MK_EAM_General_Services_Lib.General.Responses.GetFileResponse> task =
+                            GeneralServicesClient.Instance?.GetPrivacyPolicy();
+
+                        while (!task.IsCompleted)
+                        {
+                            if (token.IsCancellationRequested)
+                            {
+                                LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to request privacy policy."));                                
+
+                                return;
+                            }
+
+                            await Task.Delay(50, token);
+                        }
+                        MK_EAM_General_Services_Lib.General.Responses.GetFileResponse result = task.Result;
+
+                        if (result != null && result.data != null)
+                        {
+                            File.WriteAllBytes(privacyPolicyPath, result.data);
+                        }
+                        else
+                        {
+                            LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to request privacy policy."));
+                        }
+                    }
+                    catch 
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to request privacy policy."));
+                    }
+                }), cancellationTokenSource.Token);
+
+                #endregion
+            }
+        }
+
+        public void SaveNewsViewed()
+        {
+            LastNewsViewed = DateTime.Now;
+            try
+            {
+                File.WriteAllText(pathNews, LastNewsViewed.Ticks.ToString());
+                uiEAMNews?.UpdateHasNewNews();
+            }
+            catch { }
         }
 
         private bool UpdateRequired()
@@ -1358,6 +1808,9 @@ namespace ExaltAccountManager
                 return (bool)this.Invoke((Func<bool>)UpdateRequired);
 
             btnGameUpdater.Visible = GameUpdater.Instance.UpdateRequired;
+
+            pSideBar.Top += btnGameUpdater.Height + 2;
+
             if (GameUpdater.Instance.UpdateRequired)
                 ShowSnackbar("Game-update available.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 12500);
 
@@ -1438,6 +1891,9 @@ namespace ExaltAccountManager
                         case UIState.Accounts:
                             pSideBar.Top = btnAccounts.Top + 5;
                             break;
+                        case UIState.News:
+                            pSideBar.Top = btnNews.Top + 5;
+                            break;
                         case UIState.AddAccount:
                             pSideBar.Top = btnAddAccount.Top + 5;
                             break;
@@ -1464,6 +1920,7 @@ namespace ExaltAccountManager
                             break;
                     }
                 }
+                uiState = uiStateVal;
             }
         }
 
@@ -1492,6 +1949,74 @@ namespace ExaltAccountManager
             ImportExport = 10,
             DailyLogin = 11,
             DailyNotifications = 12,
+            News = 13,
+        }
+
+        private void FrmMain_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorDef(useDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, this.Height - 1, this.Width, this.Height - 1);
+            }
+        }
+
+        private void pBottom_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorSecond(useDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, pBottom.Height - 1, pBottom.Width, pBottom.Height - 1);
+            }
+        }
+
+        private void lVersion_Paint(object sender, PaintEventArgs e)
+        {
+            using (Pen p = new Pen(ColorScheme.GetColorSecond(useDarkmode)))
+            {
+                e.Graphics.DrawLine(p, 0, lVersion.Height - 1, lVersion.Width, lVersion.Height - 1);
+            }
+        }
+
+        private void timerDiscordUpdater_Tick(object sender, EventArgs e)
+        {
+            DiscordHelper.ApplyPresence();
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Visible = false;
+            if (!OptionsData.analyticsOptions.OptOut)
+            {
+                _ = AnalyticsClient.Instance?.EndSeesion().Result;
+            }
+        }
+
+        private void btnOptions_Paint(object sender, PaintEventArgs e)
+        {
+            if (!drawConfigChangesIcon)
+                return;
+
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            using (Pen pColor = new Pen(Color.FromArgb(98, 0, 238)))
+            using (Pen pFont = new Pen(ColorScheme.GetColorFont(useDarkmode)))
+            {
+                e.Graphics.FillEllipse(pColor.Brush, btnOptions.Width - 52f, 6f, 26.5f, 26.5f);
+                e.Graphics.DrawImage(Properties.Resources.ic_save_white_18dp, btnOptions.Width - 47, 11, 18, 18);
+            }
+        }
+
+        private void btnNews_Paint(object sender, PaintEventArgs e)
+        {
+            if (!HasNewNews)
+                return;
+
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            using (Pen pColor = new Pen(Color.Crimson))
+            {
+                e.Graphics.FillEllipse(pColor.Brush, 33f, 26f, 9f, 9f);
+            }
         }
     }
 }

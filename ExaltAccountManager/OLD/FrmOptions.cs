@@ -379,12 +379,14 @@ namespace ExaltAccountManager
     }
 
     [System.Serializable]
-    public class OptionsData
+    public sealed class OptionsData
     {
         public string exePath = string.Empty;
         public bool closeAfterConnection = false;
         public bool useDarkmode = false;
         public string serverToJoin = "Last";
+
+        public bool alwaysrefreshDataOnLogin = false;
 
         public bool searchRotmgUpdates = true;
         public bool searchUpdateNotification = true;
@@ -392,5 +394,24 @@ namespace ExaltAccountManager
         public bool deactivateKillswitch = true;
         
         public int snackbarPosition = 8;
+
+        public DiscordOptions discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
+        public AnalyticsOptions analyticsOptions = new AnalyticsOptions() { OptOut = false, Anonymization = false };
+    }
+
+    [System.Serializable]
+    public sealed class DiscordOptions
+    {
+        public bool ShowAccountNames { get; set; } = true;
+        public bool ShowMenus { get; set; } = true;
+
+        public bool ShowState { get; set; } = true;
+    }
+
+    [System.Serializable]
+    public sealed class AnalyticsOptions
+    {
+        public bool OptOut { get; set; } = false;
+        public bool Anonymization { get; set; } = false;
     }
 }

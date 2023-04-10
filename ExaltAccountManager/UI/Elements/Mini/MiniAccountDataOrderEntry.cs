@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements.Mini
 {
-    public partial class MiniAccountDataOrderEntry : UserControl
+    public sealed partial class MiniAccountDataOrderEntry : UserControl
     {
         public string EntryName { get; internal set; } = string.Empty;
         public string ValueExample { get; internal set; } = string.Empty;

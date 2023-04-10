@@ -1,12 +1,7 @@
 ﻿using Bunifu.UI.WinForms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EAM_PingChecker
@@ -179,11 +174,11 @@ namespace EAM_PingChecker
         {
             if (frm.SavePingSaveFile())
             {
-                snackbar.Show(frm, "Configuration saved successfully.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 1500, "X" ,BunifuSnackbar.Positions.BottomRight);
+                snackbar.Show(frm, "Configuration saved successfully.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 1500, null ,BunifuSnackbar.Positions.BottomRight);
             }
             else
             {
-                snackbar.Show(frm, "Failed to save configuration.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000, "X", BunifuSnackbar.Positions.BottomRight);
+                snackbar.Show(frm, "Failed to save configuration.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000, null, BunifuSnackbar.Positions.BottomRight);
             }
         }
 

@@ -6,17 +6,16 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UILogs : UserControl
+    public sealed partial class UILogs : UserControl
     {
-        FrmMain frm;
-        BindingList<LogData> logs = new BindingList<LogData>();
+        private FrmMain frm;
+        private BindingList<LogData> logs = new BindingList<LogData>();
 
-        bool isInit = true;
+        private bool isInit = true;
 
         public UILogs(FrmMain _frm)
         {
@@ -263,13 +262,13 @@ namespace ExaltAccountManager.UI
                                 });
 
                             using (var writer = new System.IO.StreamWriter(saveFileDialog.FileName))
-                            using (var csv = new CsvHelper.CsvWriter(writer, System.Globalization.CultureInfo.InvariantCulture))                            
-                                csv.WriteRecords(export);                            
+                            using (var csv = new CsvHelper.CsvWriter(writer, System.Globalization.CultureInfo.InvariantCulture))
+                                csv.WriteRecords(export);
 
                             frm.ShowSnackbar($"Export selected rows as .CSV.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000);
-
+                            
                             if (System.IO.File.Exists(saveFileDialog.FileName))                            
-                                System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + saveFileDialog.FileName + "\"");                            
+                                System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + saveFileDialog.FileName + "\"");
                             else
                                 System.Diagnostics.Process.Start(System.IO.Path.GetDirectoryName(saveFileDialog.FileName));
                         }
@@ -281,7 +280,7 @@ namespace ExaltAccountManager.UI
             }
             catch
             {
-                frm.ShowSnackbar($"Export to {dropExportMode.SelectedItem.ToString()} failed.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
+                frm.ShowSnackbar($"Export to {dropExportMode.SelectedItem} failed.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
                 pLoader.SendToBack();
                 pLoader.Visible = false;
             }

@@ -68,9 +68,14 @@
 </div>
 
 <br >
-Exalt Account Manager (EAM for short) is a bundle of powerfull tools to manager all your accounts for the game "Realm of the mad god" (ROTMG) exalt version.
-EAM's main purpose is to be an upgrade to the original game launcher by offering a pain free multi-account experience.
-You can find an overview of the most prominent features down below.
+
+Exalt Account Manager (EAM) is an efficient toolset designed to streamline multiple account management for the popular online game "Realm of the Mad God" (ROTMG). EAM enhances the original game launcher with a user-friendly interface and a wide array of features.
+
+Developed by a passionate ROTMG enthusiast, EAM offers a seamless multi-account experience, enabling quick Exalt launches, Auto Daily Login for chosen accounts, and secure account data storage using Windows Data Protection API. With EAM, you can import accounts from various formats, create login tokens, and leverage Captcha-solving support.
+
+EAM also includes quality-of-life improvements such as a GUI log, visual statistics, Vault Peek feature, and Ping Checker. Built-in Help and Troubleshooting ensure that support and resources are readily available. The developer, Maik8, is always ready to assist via Discord or email.
+
+As EAM continues to evolve, your feedback and suggestions are invaluable. Join the active community of ROTMG players and EAM users to shape the future of the project. Elevate your ROTMG gaming experience with the power and convenience of Exalt Account Manager today!
 <br >
 <br >
 
@@ -78,36 +83,41 @@ You can find an overview of the most prominent features down below.
 
 <br >
 
-## Features :sparkles:
-- Quickly open exalt with different accounts
-- Open multiple instances of Exalt at once with the click of a button
-- Windows Data Protection API encrypted save-file
-- Game Updater
-- Import accounts from a muledump formated-, .csv, .EAMexport or custom formated text file
-- Automaticly fetch the Account name if you leave the username-textfield blank while adding an account
-- Auto Daily Login for choosen accounts
-- Detect running Exalt instances and the logged in account
+## Features ✨
+- Quickly launch Exalt with different accounts
+- Open multiple instances of Exalt simultaneously with the click of a button
+- Securely store account data with Windows Data Protection API encrypted save-file
+- Rapid updater for both the game and EAM
+- Import accounts from a Muledump-formatted, .CSV, .EAMexport, or custom-formatted text file
+- Automatically fetch the Account name
+- Auto Daily Login for chosen accounts
+- Detect running Exalt instances for logged-in accounts
 - Create login-tokens at runtime
+- Captcha solving support
 - GUI-Log
 - Graphical statistics
 - Vault Peeker
 - Ping Checker
-- Help / Troubleshooting build-in
+- Built-in Help and Troubleshooting
 - Token-Viewer
 - ... 
 
-## How to get started :rocket:
+## How to get started 🚀
 
 1. Make sure you have .Net Framework 4.8 installed.
    
     You can get the installer directly from [Microsoft](https://support.microsoft.com/en-us/topic/microsoft-net-framework-4-8-offline-installer-for-windows-9d23f658-3b97-68ab-d013-aa3c3e7495e0).
-2. Download the latest release of EAM: [found here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
+2. Go the latest release of EAM: [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
 
-       You want to download the Exalt_Account_Manager_VX.Y.Z.zip file.
-3. Unzip the release to anywhere you seem fit.
-4. Start the ExaltAccountManager.exe in there.
+<br />
 
-## Screenshots :camera_flash:
+\# | Installer 🚀 | Zip file 📦️
+:-:|:--------:|:--------:
+3\. |  Download Exalt_Account_Manager_VX.Y.Z_Installer.msi | Download Exalt_Account_Manager_VX.Y.Z.zip
+4\. |  Run the installer and follow the instructions. | Unzip the release to anywhere you seem fit. 
+5\. |  You will find a shortcut on your desktop. | Start the ExaltAccountManager.exe in there.
+
+## Screenshots 📸
 
 Exalt Account Manager                                     | Statistics
 :--------------------------------------------------------:|:------------------------------------------------:
@@ -115,14 +125,14 @@ Exalt Account Manager                                     | Statistics
 Ping Checker                                              | Vault Peeker
 ![Ping checker](https://i.imgur.com/txUcbFT.gif)          | ![Vault Peeker](https://i.imgur.com/IfFbpMy.png)
 
-## You need support or have questions? :memo:
+## Need support or have questions? 📝
 Just join my discord server and leave me a message in the help-request / general channel and you will be surprised about the response times!
 
 Don't have discord? 
 
 Write me a email: mail@maik8.de
 
-## Missing a feature or found a bug? :bug:
+## Missing a feature or found a bug? 🐛
 Just open an issue here, write an email (mail@maik8.de) or join the discord.
 
 <a href="https://discord.gg/VNfxgPqbJ7">
@@ -132,7 +142,7 @@ Just open an issue here, write an email (mail@maik8.de) or join the discord.
   />
 </a>
 
-## Want to support this project? :chart_with_upwards_trend:
+## Want to support this project? 📈
 If you want to contribut to this project, please leave me a message in discord and I happily take some time to help you getting started.
 
 <b>Can't code but want to help anyways?</b>
@@ -142,7 +152,7 @@ Preview-testers and feedback is important aswell, if you have a minute to write 
 If you want, you can donate a buck or two, any money generated will be re-invested into this project.
 Last puchase: The awesome, custom made application-logo.
 
-<b>Any help is greatly appreciated</b>
+<b>Any help is greatly appreciated</b> 🍻
 
 <a href="https://ko-fi.com/maik8">
   <img
@@ -160,11 +170,11 @@ Last puchase: The awesome, custom made application-logo.
   />
 </a>
 
-## Credits :green_heart:
+## Credits 💚
 
 <b>Big</b> thanks to [Icons8](https://icons8.com/icons) for all the beautifull Icons / Images used in this project.
 
-And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the markdown files. 
+And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the commits & markdown files. 
 
 <a href="https://gitmoji.dev">
   <img

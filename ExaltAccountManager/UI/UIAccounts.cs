@@ -1,4 +1,6 @@
-﻿using MK_EAM_Lib;
+﻿using MK_EAM_Analytics;
+using MK_EAM_Captcha_Solver_UI_Lib;
+using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,21 +15,21 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIAccounts : UserControl
+    public sealed partial class UIAccounts : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
 
-        bool isInit = true;
+        private bool isInit = true;
 
-        ColorChanger colorChanger;
-        Elements.EleDeleteAccount eleDeleteAccount;
+        private ColorChanger colorChanger;
+        private Elements.EleDeleteAccount eleDeleteAccount;
 
-        Dictionary<MK_EAM_Lib.AccountInfo, DateTime> dicLockRenewInfoToTime = new Dictionary<MK_EAM_Lib.AccountInfo, DateTime>();
-        Dictionary<MK_EAM_Lib.AccountInfo, Process> dicAccountsToProcesses = new Dictionary<MK_EAM_Lib.AccountInfo, Process>();
-        Dictionary<Process, MK_EAM_Lib.AccountInfo> dicProcessesToAccounts = new Dictionary<Process, MK_EAM_Lib.AccountInfo>();
+        private Dictionary<MK_EAM_Lib.AccountInfo, DateTime> dicLockRenewInfoToTime = new Dictionary<MK_EAM_Lib.AccountInfo, DateTime>();
+        private Dictionary<MK_EAM_Lib.AccountInfo, Process> dicAccountsToProcesses = new Dictionary<MK_EAM_Lib.AccountInfo, Process>();
+        private Dictionary<Process, MK_EAM_Lib.AccountInfo> dicProcessesToAccounts = new Dictionary<Process, MK_EAM_Lib.AccountInfo>();
         public List<string> activeVaultPeekerAccounts { get; internal set; } = new List<string>();
 
-        BindingSource bindingSource = new BindingSource();
+        private BindingSource bindingSource = new BindingSource();
 
         public UIAccounts(FrmMain _frm)
         {
@@ -307,7 +309,6 @@ namespace ExaltAccountManager.UI
 
                 try
                 {
-                    //if (dicAccountsToProcesses.ContainsKey(frm.accounts[dataGridView.SelectedRows[0].Index]))
                     if (dicAccountsToProcesses.ContainsKey(GetAccountInfo(dataGridView.SelectedRows[0].Index)))
                     {
                         #region Running instance
@@ -315,20 +316,16 @@ namespace ExaltAccountManager.UI
                         try
                         {
                             timerLoadProcesses.Stop();
-                            //frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.StopExalt, $"Stopping exalt instance from: {frm.accounts[dataGridView.SelectedRows[0].Index].email}."));
                             frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.StopExalt, $"Stopping exalt instance from: {GetAccountInfo(dataGridView.SelectedRows[0].Index).email}."));
                             while (searchProcesses)
                                 Application.DoEvents();
 
-                            //dicAccountsToProcesses[frm.accounts[dataGridView.SelectedRows[0].Index]].Kill();
                             dicAccountsToProcesses[GetAccountInfo(dataGridView.SelectedRows[0].Index)].Kill();
 
                             timerLoadProcesses.Start();
                         }
                         catch
                         {
-                            //frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.EAMError, $"Failed to stopping exalt instance from: {frm.accounts[dataGridView.SelectedRows[0].Index].email}."));
-                            //frm.ShowSnackbar($"Failed to stopping exalt instance from: {frm.accounts[dataGridView.SelectedRows[0].Index].email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
                             frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.EAMError, $"Failed to stopping exalt instance from: {GetAccountInfo(dataGridView.SelectedRows[0].Index).email}."));
                             frm.ShowSnackbar($"Failed to stopping exalt instance from: {GetAccountInfo(dataGridView.SelectedRows[0].Index).email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
 
@@ -346,39 +343,36 @@ namespace ExaltAccountManager.UI
                         {
                             if (System.IO.File.Exists(frm.OptionsData.exePath))
                             {
-                                //MK_EAM_Lib.AccountInfo info = frm.accounts[dataGridView.SelectedRows[0].Index];
                                 MK_EAM_Lib.AccountInfo info = GetAccountInfo(dataGridView.SelectedRows[0].Index);
-
+                                DateTime cTime = new DateTime(2000, 1, 1);
                                 if (info.accessToken != null)
                                 {
-                                    DateTime cTime = new DateTime(2000, 1, 1);
                                     try
                                     {
                                         cTime = MK_EAM_Lib.AccessToken.UnixTimeStampToDateTime(Convert.ToDouble(info.accessToken.creationTime));
                                     }
                                     catch { cTime = new DateTime(2000, 1, 1); }
-
-                                    string hwid = frm.GetDeviceUniqueIdentifier();
-                                    if (cTime.Date < DateTime.Now.Date || info.accessToken.validUntil < DateTime.Now || string.IsNullOrEmpty(info.accessToken.clientToken) || !info.accessToken.clientToken.Equals(hwid))
-                                    {
-                                        info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, hwid, false, true, StartGameForAccountInvoker);
-                                    }
-                                    else
-                                    {
-                                        StartGameForAccount(info);
-                                    }
+                                }
+                                string hwid = frm.GetDeviceUniqueIdentifier();
+                                if (frm.OptionsData.alwaysrefreshDataOnLogin || info.accessToken == null || cTime.Date < DateTime.Now.Date || info.accessToken.validUntil < DateTime.Now.AddHours(1) || string.IsNullOrEmpty(info.accessToken.clientToken) || !info.accessToken.clientToken.Equals(hwid))
+                                {
+                                    info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, hwid, false, true, StartGameForAccountInvoker);
+                                }
+                                else
+                                {
+                                    StartGameForAccount(info);
                                 }
                             }
                             else
                             {
-                                frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.EAMError, $"Login attempt failed, the game.exe was not found."));
+                                frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.EAMError, $"Login attempt failed, the game.exe was not found.{Environment.NewLine}Path: {frm.OptionsData.exePath}"));
                                 frm.ShowSnackbar("Login attempt failed, the game.exe was not found.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000);
                                 frm.LogButtonBlink();
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.EAMError, $"Login attempt failed."));
+                            frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.EAMError, $"Login attempt failed.{Environment.NewLine}Error:{ex.Message}"));
                             frm.ShowSnackbar("Login attempt failed.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 3000);
                             frm.LogButtonBlink();
                         }
@@ -402,6 +396,15 @@ namespace ExaltAccountManager.UI
         {
             if (this.InvokeRequired)
                 return (bool)this.Invoke((Func<MK_EAM_Lib.AccountInfo, bool>)StartGameForAccount, _info);
+
+            if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
+            {
+                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), false, true, StartGameForAccountInvoker);
+            }
+
+            if (_info.requestState != MK_EAM_Lib.AccountInfo.RequestState.Success)
+                return false;
+
             try
             {
                 frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.Login, $"Start login into account: {_info.email}."));
@@ -431,13 +434,24 @@ namespace ExaltAccountManager.UI
                         p.EnableRaisingEvents = true;
                         p.Exited += ProcessExit;
 
-                        //if (dataGridView.SelectedRows.Count > 0 && frm.accounts[dataGridView.SelectedRows[0].Index] == _info)
                         if (dataGridView.SelectedRows.Count > 0 && GetAccountInfo(dataGridView.SelectedRows[0].Index) == _info)
                         {
                             btnPlay.Image = Properties.Resources.OutlinePause_36px;
                             lStartGame.Text = "Close the game";
                         }
                     }
+                }
+
+                if (frm.OptionsData.discordOptions.ShowState)
+                {
+                    string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
+                    DiscordHelper.SetState(state);
+                    DiscordHelper.ApplyPresence();
+                }
+
+                if (!frm.OptionsData.analyticsOptions.OptOut)
+                {
+                    AnalyticsClient.Instance?.AddLogin(frm.GetAnalyticsEmailHash(_info.Email), GetServerName(_info.serverName));
                 }
             }
             catch
@@ -542,29 +556,31 @@ namespace ExaltAccountManager.UI
             btnRenewToken.AnimationSpeed = 0;
             timerRenewChangeColor.Start();
             MK_EAM_Lib.AccountInfo info = GetAccountInfo(dataGridView.SelectedRows[0].Index);
-            //dicLockRenewInfoToTime.Add(frm.accounts[dataGridView.SelectedRows[0].Index], DateTime.Now.AddSeconds(60));
+
             dicLockRenewInfoToTime.Add(info, DateTime.Now.AddSeconds(60));
 
-            //frm.accounts[dataGridView.SelectedRows[0].Index].PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), false, true, RenewTokenFinished);
-            info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(info.Name), true, RenewTokenFinished);
+            info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(info.Name), true, RenewTokenFinished_Invoker);
 
             if (!timerReactivateRenewToken.Enabled)
                 timerReactivateRenewToken.Start();
-
-            //AddAccountToUI(frm.accounts[dataGridView.SelectedRows[0].Index]);            
         }
 
-        private void RenewTokenFinished(MK_EAM_Lib.AccountInfo _info) => RenewTokenFinished_Invoker(_info);
+        private void RenewTokenFinished_Invoker(MK_EAM_Lib.AccountInfo _info) => RenewTokenFinished(_info);
 
-        private bool RenewTokenFinished_Invoker(MK_EAM_Lib.AccountInfo _info)
+        private bool RenewTokenFinished(MK_EAM_Lib.AccountInfo _info)
         {
             if (this.InvokeRequired)
-                return (bool)this.Invoke((Func<MK_EAM_Lib.AccountInfo, bool>)RenewTokenFinished_Invoker, _info);
+                return (bool)this.Invoke((Func<MK_EAM_Lib.AccountInfo, bool>)RenewTokenFinished, _info);
+
+            if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
+            {
+                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(_info.Name), true, RenewTokenFinished_Invoker);
+            }
 
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Success)
-                frm.ShowSnackbar("Token renewal successfull.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 3000);
+                frm.ShowSnackbar("Data refreshed successfully.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 3000);
             else
-                frm.ShowSnackbar("Token renewal failed.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
+                frm.ShowSnackbar("Data refreshing failed.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
 
             frm.SaveAccounts();
             GetAccountInfo(dataGridView.SelectedRows[0].Index);
@@ -593,7 +609,7 @@ namespace ExaltAccountManager.UI
                 if (dicLockRenewInfoToTime[acc] < DateTime.Now)
                 {
                     dicLockRenewInfoToTime.Remove(acc);
-                    //if (frm.accounts[dataGridView.SelectedRows[0].Index].email.Equals(acc.email))
+
                     if (GetAccountInfo(dataGridView.SelectedRows[0].Index).email.Equals(acc.email))
                     {
                         btnRenewToken.BackColor = btnRenewToken.BackgroundColor = btnRenewToken.BorderColor = Color.FromArgb(156, 95, 244);
@@ -703,7 +719,6 @@ namespace ExaltAccountManager.UI
             if (isInit) return;
 
             if (dataGridView.SelectedRows.Count > 0)
-                //AddAccountToUI(frm.accounts[dataGridView.SelectedRows[0].Index]);
                 AddAccountToUI(GetAccountInfo(dataGridView.SelectedRows[0].Index));
             else
                 AddAccountToUI(new MK_EAM_Lib.AccountInfo());
@@ -729,7 +744,6 @@ namespace ExaltAccountManager.UI
         {
             try
             {
-                //dataGridView.Rows[index].Cells[0].Value = frm.accounts[index].Group;
                 dataGridView.Rows[index].Cells[0].Value = frm.accounts[frm.accounts.IndexOf(GetAccountInfo(index))].Group;
             }
             catch { }
@@ -806,8 +820,14 @@ namespace ExaltAccountManager.UI
         {
             if (dataGridView.SelectedRows.Count > 0)
             {
-                Clipboard.SetText(GetAccountInfo(dataGridView.SelectedRows[0].Index).name);
-                frm.ShowSnackbar("Accountname copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                string name = GetAccountInfo(dataGridView.SelectedRows[0].Index).name;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    Clipboard.SetText(name);
+                    frm.ShowSnackbar("Accountname copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                }
+                else
+                    frm.ShowSnackbar("No Accountname found.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
             }
             else
                 frm.ShowSnackbar("Please select an account first.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
@@ -817,8 +837,14 @@ namespace ExaltAccountManager.UI
         {
             if (dataGridView.SelectedRows.Count > 0)
             {
-                Clipboard.SetText(GetAccountInfo(dataGridView.SelectedRows[0].Index).email);
-                frm.ShowSnackbar("E-Mail copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                string email = GetAccountInfo(dataGridView.SelectedRows[0].Index).email;
+                if (!string.IsNullOrEmpty(email))
+                {
+                    Clipboard.SetText(email);
+                    frm.ShowSnackbar("E-Mail copied to clipboard.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
+                }
+                else
+                    frm.ShowSnackbar("No E-Mail found.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
             }
             else
                 frm.ShowSnackbar("Please select an account first.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information);
@@ -937,7 +963,6 @@ namespace ExaltAccountManager.UI
                                 process.EnableRaisingEvents = true;
                                 process.Exited += ProcessExit;
 
-                                //if (dataGridView.SelectedRows.Count > 0 && frm.accounts[dataGridView.SelectedRows[0].Index] == q)
                                 if (dataGridView.SelectedRows.Count > 0 && GetAccountInfo(dataGridView.SelectedRows[0].Index) == q)
                                 {
                                     btnPlay.Image = Properties.Resources.OutlinePause_36px;
@@ -996,6 +1021,30 @@ namespace ExaltAccountManager.UI
                 {
                     btnPlay.Image = Properties.Resources.OutlinePlay_36px;
                     lStartGame.Text = "Start game";
+                }
+
+                if (frm.OptionsData.discordOptions.ShowAccountNames)
+                {
+                    if (DiscordHelper.LastState.Contains(_info.Name))
+                    {
+                        if (dicProcessesToAccounts.Keys.Count > 1)
+                        {
+                            foreach (var item in dicProcessesToAccounts)
+                            {
+                                if (item.Value.Email != _info.Email)
+                                {
+                                    string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
+                                    DiscordHelper.SetState(state);
+                                    DiscordHelper.ApplyPresence();
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            DiscordHelper.UpdateMenu(null);
+                        }
+                    }
                 }
             }
             catch { }
@@ -1195,7 +1244,6 @@ namespace ExaltAccountManager.UI
                 rowIndexOfItemUnderMouseToDrop = -1;
 
                 dataGridView.MouseMove += dataGridView_MouseMove;
-                //dataGridView.MouseDown += dataGridView_MouseDown;
                 dataGridView.MouseUp += dataGridView_MouseUp;
                 dataGridView.CellMouseDown += dataGridView_CellMouseDown;
                 dataGridView.DoubleClick += dataGridView_DoubleClick;
@@ -1212,7 +1260,6 @@ namespace ExaltAccountManager.UI
                 dataGridView.MouseMove -= dataGridView_MouseMove;
                 dataGridView.MouseDown -= dataGridView_MouseDown;
                 dataGridView.MouseUp -= dataGridView_MouseUp;
-                //dataGridView.CellMouseDown -= dataGridView_CellMouseDown;
                 dataGridView.DoubleClick -= dataGridView_DoubleClick;
 
                 dataGridView.DragDrop -= dataGridView_DragDrop;

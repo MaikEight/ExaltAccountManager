@@ -29,41 +29,42 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutUI));
             this.lTool = new System.Windows.Forms.Label();
             this.bunifuShadowPanel4 = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.lCopyright = new System.Windows.Forms.Label();
-            this.pbCopyright = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.bunifuShadowPanel3 = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.linkWebsite = new System.Windows.Forms.LinkLabel();
-            this.pbWebsite = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.bunifuShadowPanel2 = new Bunifu.UI.WinForms.BunifuShadowPanel();
-            this.pbDeveloper = new System.Windows.Forms.PictureBox();
-            this.pbDev = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.bunifuShadowPanel1 = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.lVersion = new System.Windows.Forms.Label();
-            this.pbVersion = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.shadowLoading = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.lPingText = new System.Windows.Forms.Label();
-            this.pbProgram = new System.Windows.Forms.PictureBox();
             this.lServerName = new System.Windows.Forms.Label();
-            this.pbLogo = new System.Windows.Forms.PictureBox();
             this.timerReset = new System.Windows.Forms.Timer(this.components);
+            this.pbLogo = new System.Windows.Forms.PictureBox();
+            this.pbInfo = new System.Windows.Forms.PictureBox();
+            this.pbWebsite = new System.Windows.Forms.PictureBox();
+            this.pbDeveloper = new System.Windows.Forms.PictureBox();
+            this.pbDev = new System.Windows.Forms.PictureBox();
+            this.pbVersion = new System.Windows.Forms.PictureBox();
+            this.pbProgram = new System.Windows.Forms.PictureBox();
             this.bunifuShadowPanel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCopyright)).BeginInit();
             this.bunifuShadowPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbWebsite)).BeginInit();
             this.bunifuShadowPanel2.SuspendLayout();
+            this.bunifuShadowPanel1.SuspendLayout();
+            this.shadowLoading.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbWebsite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbDev)).BeginInit();
-            this.bunifuShadowPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbVersion)).BeginInit();
-            this.shadowLoading.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbProgram)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).BeginInit();
             this.SuspendLayout();
             // 
             // lTool
@@ -83,7 +84,7 @@
             this.bunifuShadowPanel4.BorderRadius = 9;
             this.bunifuShadowPanel4.BorderThickness = 1;
             this.bunifuShadowPanel4.Controls.Add(this.lCopyright);
-            this.bunifuShadowPanel4.Controls.Add(this.pbCopyright);
+            this.bunifuShadowPanel4.Controls.Add(this.pbInfo);
             this.bunifuShadowPanel4.Controls.Add(this.label5);
             this.bunifuShadowPanel4.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
             this.bunifuShadowPanel4.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
@@ -106,19 +107,9 @@
             this.lCopyright.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lCopyright.Location = new System.Drawing.Point(57, 37);
             this.lCopyright.Name = "lCopyright";
-            this.lCopyright.Size = new System.Drawing.Size(499, 84);
+            this.lCopyright.Size = new System.Drawing.Size(515, 84);
             this.lCopyright.TabIndex = 12;
-            this.lCopyright.Text = "This tool is owned and ©opyrighted\r\nby Maik \"Maik8\" Kühne\r\n\r\nPublishing this tool" +
-    " without explicit permissions is not tolerated";
-            // 
-            // pbCopyright
-            // 
-            this.pbCopyright.Image = global::EAM_Vault_Peeker.Properties.Resources.ic_copyright_black_36dp;
-            this.pbCopyright.Location = new System.Drawing.Point(13, 31);
-            this.pbCopyright.Name = "pbCopyright";
-            this.pbCopyright.Size = new System.Drawing.Size(36, 36);
-            this.pbCopyright.TabIndex = 11;
-            this.pbCopyright.TabStop = false;
+            this.lCopyright.Text = resources.GetString("lCopyright.Text");
             // 
             // label5
             // 
@@ -169,15 +160,6 @@
             this.linkWebsite.Text = "https://www.mpgh.net/forum/member.php?u=1465031";
             this.linkWebsite.VisitedLinkColor = System.Drawing.Color.Purple;
             // 
-            // pbWebsite
-            // 
-            this.pbWebsite.Image = global::EAM_Vault_Peeker.Properties.Resources.ic_public_black_36dp;
-            this.pbWebsite.Location = new System.Drawing.Point(13, 31);
-            this.pbWebsite.Name = "pbWebsite";
-            this.pbWebsite.Size = new System.Drawing.Size(36, 36);
-            this.pbWebsite.TabIndex = 11;
-            this.pbWebsite.TabStop = false;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -211,26 +193,6 @@
             this.bunifuShadowPanel2.Size = new System.Drawing.Size(365, 80);
             this.bunifuShadowPanel2.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.bunifuShadowPanel2.TabIndex = 19;
-            // 
-            // pbDeveloper
-            // 
-            this.pbDeveloper.Image = global::EAM_Vault_Peeker.Properties.Resources.Logo_NameOnly_2;
-            this.pbDeveloper.Location = new System.Drawing.Point(61, 31);
-            this.pbDeveloper.Name = "pbDeveloper";
-            this.pbDeveloper.Size = new System.Drawing.Size(138, 36);
-            this.pbDeveloper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbDeveloper.TabIndex = 12;
-            this.pbDeveloper.TabStop = false;
-            this.pbDeveloper.Click += new System.EventHandler(this.pbDeveloper_Click);
-            // 
-            // pbDev
-            // 
-            this.pbDev.Image = global::EAM_Vault_Peeker.Properties.Resources.ic_code_black_36dp;
-            this.pbDev.Location = new System.Drawing.Point(13, 31);
-            this.pbDev.Name = "pbDev";
-            this.pbDev.Size = new System.Drawing.Size(36, 36);
-            this.pbDev.TabIndex = 11;
-            this.pbDev.TabStop = false;
             // 
             // label4
             // 
@@ -276,15 +238,6 @@
             this.lVersion.TabIndex = 7;
             this.lVersion.Text = "Vault Peeker version {0}";
             // 
-            // pbVersion
-            // 
-            this.pbVersion.Image = global::EAM_Vault_Peeker.Properties.Resources.baseline_tag_black_36dp;
-            this.pbVersion.Location = new System.Drawing.Point(13, 31);
-            this.pbVersion.Name = "pbVersion";
-            this.pbVersion.Size = new System.Drawing.Size(36, 36);
-            this.pbVersion.TabIndex = 11;
-            this.pbVersion.TabStop = false;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -329,16 +282,6 @@
             this.lPingText.TabIndex = 7;
             this.lPingText.Text = "Exalt Account Manager Vault Peeker";
             // 
-            // pbProgram
-            // 
-            this.pbProgram.Image = global::EAM_Vault_Peeker.Properties.Resources.btn_icon_chest_2;
-            this.pbProgram.Location = new System.Drawing.Point(13, 31);
-            this.pbProgram.Name = "pbProgram";
-            this.pbProgram.Size = new System.Drawing.Size(36, 36);
-            this.pbProgram.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbProgram.TabIndex = 11;
-            this.pbProgram.TabStop = false;
-            // 
             // lServerName
             // 
             this.lServerName.AutoSize = true;
@@ -348,6 +291,11 @@
             this.lServerName.Size = new System.Drawing.Size(61, 13);
             this.lServerName.TabIndex = 6;
             this.lServerName.Text = "Information";
+            // 
+            // timerReset
+            // 
+            this.timerReset.Interval = 2500;
+            this.timerReset.Tick += new System.EventHandler(this.timerReset_Tick);
             // 
             // pbLogo
             // 
@@ -359,10 +307,62 @@
             this.pbLogo.TabIndex = 23;
             this.pbLogo.TabStop = false;
             // 
-            // timerReset
+            // pbInfo
             // 
-            this.timerReset.Interval = 2500;
-            this.timerReset.Tick += new System.EventHandler(this.timerReset_Tick);
+            this.pbInfo.Image = global::EAM_Vault_Peeker.Properties.Resources.ic_info_outline_black_36dp;
+            this.pbInfo.Location = new System.Drawing.Point(13, 31);
+            this.pbInfo.Name = "pbInfo";
+            this.pbInfo.Size = new System.Drawing.Size(36, 36);
+            this.pbInfo.TabIndex = 11;
+            this.pbInfo.TabStop = false;
+            // 
+            // pbWebsite
+            // 
+            this.pbWebsite.Image = global::EAM_Vault_Peeker.Properties.Resources.ic_public_black_36dp;
+            this.pbWebsite.Location = new System.Drawing.Point(13, 31);
+            this.pbWebsite.Name = "pbWebsite";
+            this.pbWebsite.Size = new System.Drawing.Size(36, 36);
+            this.pbWebsite.TabIndex = 11;
+            this.pbWebsite.TabStop = false;
+            // 
+            // pbDeveloper
+            // 
+            this.pbDeveloper.Image = global::EAM_Vault_Peeker.Properties.Resources.Logo_NameOnly_2;
+            this.pbDeveloper.Location = new System.Drawing.Point(61, 31);
+            this.pbDeveloper.Name = "pbDeveloper";
+            this.pbDeveloper.Size = new System.Drawing.Size(138, 36);
+            this.pbDeveloper.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbDeveloper.TabIndex = 12;
+            this.pbDeveloper.TabStop = false;
+            this.pbDeveloper.Click += new System.EventHandler(this.pbDeveloper_Click);
+            // 
+            // pbDev
+            // 
+            this.pbDev.Image = global::EAM_Vault_Peeker.Properties.Resources.ic_code_black_36dp;
+            this.pbDev.Location = new System.Drawing.Point(13, 31);
+            this.pbDev.Name = "pbDev";
+            this.pbDev.Size = new System.Drawing.Size(36, 36);
+            this.pbDev.TabIndex = 11;
+            this.pbDev.TabStop = false;
+            // 
+            // pbVersion
+            // 
+            this.pbVersion.Image = global::EAM_Vault_Peeker.Properties.Resources.baseline_tag_black_36dp;
+            this.pbVersion.Location = new System.Drawing.Point(13, 31);
+            this.pbVersion.Name = "pbVersion";
+            this.pbVersion.Size = new System.Drawing.Size(36, 36);
+            this.pbVersion.TabIndex = 11;
+            this.pbVersion.TabStop = false;
+            // 
+            // pbProgram
+            // 
+            this.pbProgram.Image = global::EAM_Vault_Peeker.Properties.Resources.btn_icon_chest_2;
+            this.pbProgram.Location = new System.Drawing.Point(13, 31);
+            this.pbProgram.Name = "pbProgram";
+            this.pbProgram.Size = new System.Drawing.Size(36, 36);
+            this.pbProgram.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbProgram.TabIndex = 11;
+            this.pbProgram.TabStop = false;
             // 
             // AboutUI
             // 
@@ -382,21 +382,21 @@
             this.Size = new System.Drawing.Size(808, 626);
             this.bunifuShadowPanel4.ResumeLayout(false);
             this.bunifuShadowPanel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCopyright)).EndInit();
             this.bunifuShadowPanel3.ResumeLayout(false);
             this.bunifuShadowPanel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbWebsite)).EndInit();
             this.bunifuShadowPanel2.ResumeLayout(false);
             this.bunifuShadowPanel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDev)).EndInit();
             this.bunifuShadowPanel1.ResumeLayout(false);
             this.bunifuShadowPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbVersion)).EndInit();
             this.shadowLoading.ResumeLayout(false);
             this.shadowLoading.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbProgram)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbInfo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbWebsite)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDev)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbVersion)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbProgram)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -407,7 +407,7 @@
         private System.Windows.Forms.Label lTool;
         private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel4;
         private System.Windows.Forms.Label lCopyright;
-        private System.Windows.Forms.PictureBox pbCopyright;
+        private System.Windows.Forms.PictureBox pbInfo;
         private System.Windows.Forms.Label label5;
         private Bunifu.UI.WinForms.BunifuShadowPanel bunifuShadowPanel3;
         private System.Windows.Forms.LinkLabel linkWebsite;

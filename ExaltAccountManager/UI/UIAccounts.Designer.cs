@@ -381,9 +381,9 @@
             this.lRenewToken.Font = new System.Drawing.Font("Segoe UI Black", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lRenewToken.Location = new System.Drawing.Point(56, 65);
             this.lRenewToken.Name = "lRenewToken";
-            this.lRenewToken.Size = new System.Drawing.Size(138, 25);
+            this.lRenewToken.Size = new System.Drawing.Size(131, 25);
             this.lRenewToken.TabIndex = 10;
-            this.lRenewToken.Text = "Renew Token";
+            this.lRenewToken.Text = "Refresh data";
             this.toolTip.SetToolTip(this.lRenewToken, "Renewal of the login-token as well as \r\nfetching all account and character data.\r" +
         "\n");
             this.toolTip.SetToolTipIcon(this.lRenewToken, global::ExaltAccountManager.Properties.Resources.baseline_autorenew_black_36dp);
@@ -803,6 +803,7 @@
             this.bunifuCards.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.bunifuCards.BorderRadius = 11;
             this.bunifuCards.BottomSahddow = true;
+            this.bunifuCards.BottomShadow = true;
             this.bunifuCards.color = System.Drawing.Color.FromArgb(((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.bunifuCards.Controls.Add(this.btnToggleToggle);
             this.bunifuCards.Controls.Add(this.pData);
@@ -810,10 +811,13 @@
             this.bunifuCards.Controls.Add(this.pCardsTop);
             this.bunifuCards.Controls.Add(this.label2);
             this.transition.SetDecoration(this.bunifuCards, Bunifu.UI.WinForms.BunifuTransition.DecorationType.None);
+            this.bunifuCards.IndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.bunifuCards.LeftSahddow = true;
+            this.bunifuCards.LeftShadow = true;
             this.bunifuCards.Location = new System.Drawing.Point(10, 10);
             this.bunifuCards.Name = "bunifuCards";
             this.bunifuCards.RightSahddow = true;
+            this.bunifuCards.RightShadow = true;
             this.bunifuCards.ShadowDepth = 20;
             this.bunifuCards.Size = new System.Drawing.Size(424, 530);
             this.bunifuCards.TabIndex = 10;

@@ -1,21 +1,17 @@
 ﻿using Microsoft.Win32.TaskScheduler;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleDailyLoginTaskInstaller : UserControl
+    public sealed partial class EleDailyLoginTaskInstaller : UserControl
     {
-        FrmMain frm;
-        bool isTaskInstalled = false;
+        private FrmMain frm;
+        private bool isTaskInstalled = false;
 
         private string taskName = "Exalt Account Manager Daily Login Task";
         private string taskDesc = "The EAM Daily Login Task runs the current Unity client in the background (silent) and loggs throught each account in the list, that is checked for the daily login.";
@@ -67,7 +63,6 @@ namespace ExaltAccountManager.UI.Elements
             pbTaskState.Image = isTaskInstalled ? (frm.UseDarkmode ? Properties.Resources.ok_white_36px : Properties.Resources.ok_36px) : (frm.UseDarkmode ? Properties.Resources.ic_do_not_disturb_white_36dp : Properties.Resources.ic_do_not_disturb_black_36dp);
         }
 
-
         #region Button Close
 
         private void pbClose_Click(object sender, EventArgs e) => frm.RemoveShadowForm();
@@ -88,7 +83,7 @@ namespace ExaltAccountManager.UI.Elements
 
         #endregion
 
-        bool isTaskUpdate = false;
+        private bool isTaskUpdate = false;
         private void btnEditTask_Click(object sender, EventArgs e)
         {
             try
@@ -138,11 +133,19 @@ namespace ExaltAccountManager.UI.Elements
 
                         DailyTrigger timeTrigger = null;
                         if (triggerSuccess)
-                        {
+                        {       
+                            DateTime startBoundary = new DateTime(
+                                DateTime.Now.AddDays(-2).Year,
+                                DateTime.Now.AddDays(-2).Month,
+                                DateTime.Now.AddDays(-2).Day,
+                                triggerHour,
+                                triggerMinute,
+                                10);
+
                             timeTrigger = new DailyTrigger(1)
                             {
                                 DaysInterval = 1,
-                                StartBoundary = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, DateTime.Now.AddDays(-1).AddDays(-1).Day, triggerHour, triggerMinute, 0),
+                                StartBoundary = startBoundary,
                                 Enabled = true
                             };
                             task.Triggers.Add(timeTrigger);

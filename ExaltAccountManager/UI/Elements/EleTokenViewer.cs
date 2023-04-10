@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleTokenViewer : UserControl
+    public sealed partial class EleTokenViewer : UserControl
     {
         public MK_EAM_Lib.AccountInfo AccountInfo 
         {
@@ -24,7 +18,7 @@ namespace ExaltAccountManager.UI.Elements
         }
         private MK_EAM_Lib.AccountInfo accountInfo;
 
-        FrmMain frm;
+        private FrmMain frm;
 
         public EleTokenViewer(FrmMain _frm)
         {

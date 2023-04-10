@@ -2,15 +2,11 @@
 using MK_EAM_Lib;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EAM_Tasktray_Tool
@@ -27,6 +23,8 @@ namespace EAM_Tasktray_Tool
         private bool taskFoundOnce = false;
         private bool UseDarkmode = false;
         private NotificationOptions notificationOptions;
+
+        private bool didShowFailedToFindData = false;
 
         public FrmTaskTrayTool()
         {
@@ -151,8 +149,11 @@ namespace EAM_Tasktray_Tool
                         progressbar.Visible = false;
                         lProgressBlock.Visible = true;
 
-                        if (notificationOptions.showNotificationOnError)
+                        if (!didShowFailedToFindData && notificationOptions.showNotificationOnError)
+                        {
+                            didShowFailedToFindData = true;
                             ShowNotification("Daily Logins failed to find data", "Failed to find data to display.", 0);
+                        }
                     }
                 }
                 else

@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using MK_EAM_Captcha_Solver_UI_Lib;
+using System;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIAddAccount : UserControl
+    public sealed partial class UIAddAccount : UserControl
     {
-        FrmMain frm;
-        ColorChanger colorChanger;
-        MK_EAM_Lib.AccountInfo info = new MK_EAM_Lib.AccountInfo() { Color = Color.Transparent };
+        private FrmMain frm;
+        private ColorChanger colorChanger;
+        private MK_EAM_Lib.AccountInfo info = new MK_EAM_Lib.AccountInfo() { Color = Color.Transparent };
 
         public UIAddAccount(FrmMain _frm)
         {
@@ -28,6 +25,7 @@ namespace ExaltAccountManager.UI
             colorChanger.BringToFront();
 
             frm.ThemeChanged += ApplyTheme;
+            this.Disposed += (s, e) => frm.ThemeChanged -= ApplyTheme;
             ApplyTheme(frm, null);
         }
 
@@ -71,7 +69,7 @@ namespace ExaltAccountManager.UI
             this.Invalidate();
         }
 
-        bool toggleResetTime = false;
+        private bool toggleResetTime = false;
         private void toggleCustomAccountname_CheckedChanged(object sender, EventArgs e)
         {
             if (!transition.IsCompleted && !toggleResetTime)
@@ -95,12 +93,15 @@ namespace ExaltAccountManager.UI
 
         private void btnAddAccount_Click(object sender, EventArgs e)
         {
-            if (!btnAddAccount.Enabled) return;
+            if (!btnAddAccount.Enabled) 
+                return;
+
             btnAddAccount.Enabled = false;
 
             if (toggleCustomAccountname.Checked)
                 info.name = tbCustomAccountname.Text;
-            info.email = tbEmail.Text.ToLower().Replace(" ", "");
+
+            info.email = tbEmail.Text.Replace(" ", "");
             info.password = tbPassword.Text;
 
             if (string.IsNullOrEmpty(info.email) || string.IsNullOrEmpty(info.password))
@@ -126,6 +127,11 @@ namespace ExaltAccountManager.UI
 
         private void RequestDone(MK_EAM_Lib.AccountInfo _info)
         {
+            if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
+            {
+                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), !toggleCustomAccountname.Checked, true, RequestDone);
+            }
+
             if (string.IsNullOrEmpty(_info.name) || _info.requestState != MK_EAM_Lib.AccountInfo.RequestState.Success)
             {
                 frm.ShowSnackbar("Email or password are not correct.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Warning, 5000);
@@ -134,7 +140,7 @@ namespace ExaltAccountManager.UI
             else if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Success)
             {
                 _info.Color = info.Color;
-                _info.performSave = toggleLogin.Checked;
+                _info.performSave = !toggleLogin.Checked;
 
                 frm.AddAccount(_info);
                 ResetUI();

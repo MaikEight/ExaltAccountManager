@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleHWID_Tool : UserControl
+    public sealed partial class EleHWID_Tool : UserControl
     {
         private FrmMain frm;
 
@@ -146,36 +146,28 @@ namespace ExaltAccountManager.UI.Elements
             {
                 case UIState.NotInstalled:
                     {
-                        if (frm.isMPGHVersion)
-                        {
-                            System.Diagnostics.Process.Start("https://www.mpgh.net/forum/forumdisplay.php?f=599");
-                            frm.ShowSnackbar("Download the tool from MPGH and unzip it into the EAM-Programmpath.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 15000);
-                        }
-                        else
-                        {
-                            uiState = UIState.Installing;
+                        uiState = UIState.Installing;
 
-                            if (!Directory.Exists(frm.getClientHWIDToolPath))
-                                Directory.CreateDirectory(frm.getClientHWIDToolPath);
+                        if (!Directory.Exists(frm.getClientHWIDToolPath))
+                            Directory.CreateDirectory(frm.getClientHWIDToolPath);
 
-                            using (System.Net.WebClient client = new System.Net.WebClient())
+                        using (System.Net.WebClient client = new System.Net.WebClient())
+                        {
+                            string filePath = Path.Combine(frm.getClientHWIDToolPath, "download.zip");
+
+                            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+                                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                            client.DownloadFile(hwidToolURL, filePath);
+                            if (File.Exists(filePath))
                             {
-                                string filePath = Path.Combine(frm.getClientHWIDToolPath, "download.zip");
-
-                                if (!Directory.Exists(Path.GetDirectoryName(filePath)))
-                                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-
-                                client.DownloadFile(hwidToolURL, filePath);
-                                if (File.Exists(filePath))
-                                {
-                                    System.IO.Compression.ZipFile.ExtractToDirectory(filePath, Application.StartupPath);
-                                    File.Delete(filePath);
-                                }
+                                System.IO.Compression.ZipFile.ExtractToDirectory(filePath, Application.StartupPath);
+                                File.Delete(filePath);
                             }
-
-                            isInstalled = CheckInstallation();
-                            uiState = isInstalled ? UIState.Installed : UIState.NotInstalled;
                         }
+
+                        isInstalled = CheckInstallation();
+                        uiState = isInstalled ? UIState.Installed : UIState.NotInstalled;
                     }
                     break;
                 case UIState.Installed:

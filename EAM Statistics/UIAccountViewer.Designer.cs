@@ -285,6 +285,7 @@ namespace EAM_Statistics
             // toggleBestClassByTotalFame
             // 
             this.toggleBestClassByTotalFame.Animation = 5;
+            this.toggleBestClassByTotalFame.AnimationSpeed = 5;
             this.toggleBestClassByTotalFame.BackColor = System.Drawing.Color.Transparent;
             this.toggleBestClassByTotalFame.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("toggleBestClassByTotalFame.BackgroundImage")));
             this.toggleBestClassByTotalFame.Checked = true;
@@ -470,6 +471,7 @@ namespace EAM_Statistics
             // toggleRadarCharsByTotalFame
             // 
             this.toggleRadarCharsByTotalFame.Animation = 5;
+            this.toggleRadarCharsByTotalFame.AnimationSpeed = 5;
             this.toggleRadarCharsByTotalFame.BackColor = System.Drawing.Color.Transparent;
             this.toggleRadarCharsByTotalFame.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("toggleRadarCharsByTotalFame.BackgroundImage")));
             this.toggleRadarCharsByTotalFame.Checked = true;

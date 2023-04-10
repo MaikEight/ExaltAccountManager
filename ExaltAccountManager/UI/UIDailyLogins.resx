@@ -237,21 +237,11 @@
         xKt/u/8gw/fKF/kXA6hNt7TP6At8FAB/tlCTwwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="btnRunTaskAll.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAALIAAAAfCAYAAABDCJdYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADpSURBVHhe7dw9CsIwGIfxd/FAzu7ewFXSCnqS3sETuIoK
-        goMIfky9iaTRG+gbccwF8ucp/FpCMj6ETq/lp7XXuLG0bmzogXqk9dzi9BfxwoZJsHjzjbPbAhXxZtM9
-        2HNmwdLGF6fCIaAGe3cxf+VrunQAqEVPyFBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBA
-        yJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJBAyJDQW2vDIVg8FjaBGuwai488wLDN87MKB4AK
-        xKt/u/8gw/fKF/kXA6hNt7TP6At8FAB/tlCTwwAAAABJRU5ErkJggg==
-</value>
-  </data>
   <data name="bunifuSeparator5.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAALIAAAADCAYAAAA3HFW4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAiSURBVEhLYxgFo2BYgAMHDvwfxaN4qGNoch4Fo2AoAwYG
-        AD41Qe3CfATiAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAALMAAAADCAYAAADY3j6GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAiSURBVEhLYxgFo2DYgAMHDvwfxaN4OGBokh4Fo2CoAwYG
+        AG14RSyYUVuXAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="btnTaskScheduler.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

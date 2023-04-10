@@ -3,12 +3,9 @@ using EAM_PingChecker.UI;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EAM_PingChecker
@@ -222,7 +219,7 @@ namespace EAM_PingChecker
 
             timerRefreshAll.Start();
 
-            snackbar.Show(frm, "Pinged all servers.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, "X", BunifuSnackbar.Positions.BottomRight);
+            snackbar.Show(frm, "Pinged all servers.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, null, BunifuSnackbar.Positions.BottomRight);
         }
 
         private void OrderPingUIs()
@@ -275,7 +272,7 @@ namespace EAM_PingChecker
             btnRefreshFav.Text = "On cooldown";
             timerRefreshFav.Start();
 
-            snackbar.Show(frm, "Pinged favorite servers.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, "X", BunifuSnackbar.Positions.BottomRight);
+            snackbar.Show(frm, "Pinged favorite servers.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Success, 5000, null, BunifuSnackbar.Positions.BottomRight);
         }
 
         public void ChangeFavoriteState(ServerPingUI ui)
@@ -365,7 +362,7 @@ namespace EAM_PingChecker
 
             FormsUtils.ResumeDrawing(this);
 
-            snackbar.Show(frm, "Serverdata has been updated", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 5000, "X", BunifuSnackbar.Positions.BottomRight);
+            snackbar.Show(frm, "Serverdata has been updated", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 5000, null, BunifuSnackbar.Positions.BottomRight);
         }
 
         private void timerRefreshFav_Tick(object sender, EventArgs e)
@@ -418,7 +415,7 @@ namespace EAM_PingChecker
             }
             else
             {
-                snackbar.Show(frm, "You need to select an account in the options for this feature to work.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Warning, 5000, "X", BunifuSnackbar.Positions.BottomRight);
+                snackbar.Show(frm, "You need to select an account in the options for this feature to work.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Warning, 5000, null, BunifuSnackbar.Positions.BottomRight);
             }
         }
     }

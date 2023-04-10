@@ -5,18 +5,78 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIChangelog : UserControl
+    public sealed partial class UIChangelog : UserControl
     {
         private FrmMain frm;
         private Elements.EleChangelog eleChangelog;
 
-        private BindingList<ChangelogEntry> changelogEntries = new BindingList<ChangelogEntry>()
+        private readonly BindingList<ChangelogEntry> changelogEntries = new BindingList<ChangelogEntry>()
         {
+            new ChangelogEntry()
+            {
+              ReleaseDate = new DateTime(2023, 04, 09),
+              Version = new Version(3, 1, 0),
+              Name = "Captcha Support, News, installer, bug fixes and much more",
+              Description = $"<b>CAPTCHA AID</b>{Environment.NewLine}{Environment.NewLine}" +
+                            $"- Added support for captcha solving.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;This is NO automation tool.{Environment.NewLine}" +
+                            $"ℹ️ The Captcha Aid tool is still in beta, please report feedback.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>INSTALLER</b>{Environment.NewLine}" +
+                            $"- Added a new simple installer for EAM.{Environment.NewLine}{Environment.NewLine}" + 
+                            $"<b>EAM UPDATER</b>{Environment.NewLine}" +
+                            $"- Added an updater to EAM, no manuall downloads needed anymore!{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>EAM NEWS</b>{Environment.NewLine}" +
+                            $"- Added a new system display custom news.{Environment.NewLine}" +
+                            $"- Added multiple components to display.{Environment.NewLine}"+ 
+                            $"- Added Polls to ask questions to you, the community.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}" +
+                            $"- Added Discord-RPC support.{Environment.NewLine}" +
+                            $"- Supports live-state tracking.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>DAILY LOGINS</b>{Environment.NewLine}" +
+                            $"- Changed the \"Run manually\" panel to use a toggle instead.{Environment.NewLine}" +
+                            $"- Fixed the Graph to actually work now... hopefully{Environment.NewLine}" +
+                            $"- Fixed the \"Last Run\" and \"Results\" panels to display information.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Thanks to <b>Ykao</b> for pointing me to this.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>OPTIONS</b>{Environment.NewLine}" +
+                            $"- Added a new toggle that allows to always refresh the data on login.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Big thanks to <b>Tadus</b> for reporting and testing.{Environment.NewLine}" +
+                            $"- Added new buttons to allow for changing notification and privacy settings.{Environment.NewLine}" +
+                            $"- Added an indicator for unsaved changes.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>SECURITY</b>{Environment.NewLine}" +
+                            $"- Finally got a code signing certificate to sign EAM-Files.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;This should remove the \"Windows SmartScreen\" (on most systems).{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>ANALYTICS</b>{Environment.NewLine}" +
+                            $"- Added anonym analytics for the EAM-usage.{Environment.NewLine}" +
+                            $"- Any data collected is anonym and does NOT contain login informations.{Environment.NewLine}" +
+                            $"- All collected data is sent encrypted (SSL) to the server.{Environment.NewLine}" +
+                            $"- All collected data is used for improving EAM and it's features.{Environment.NewLine}" +   
+                            $"- You can choose to send no clientId or opt-out in the options.{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>EAM MICROSERVICE</b>{Environment.NewLine}" +
+                            $"- Added an REST-API that is running on a VPS.{Environment.NewLine}" +
+                            $"ℹ️ The API is used to collect EAM-analytics data, provide notification messages,{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eam-update-checks, character-stats-updates (soon™),{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vault peeker-item-updates and more!{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>IMPORTER</b>{Environment.NewLine}" +
+                            $"- Added a brief Error-Message, if the import failed.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;This avoids the UI to become stuck at \"Importing, please wait...\".{Environment.NewLine}{Environment.NewLine}" +
+                            $"<b>BUG FIXES</b>{Environment.NewLine}" +
+                            $"- Fixed a critical bug during opening of the daily login menu on windows server.{Environment.NewLine}" +
+                            $"- Fixed the taskbar-icon not minimizing EAM-windows.{Environment.NewLine}" +
+                            $"- Fixed the button-sidebar not moving when the game-update button is added.{Environment.NewLine}" +
+                            $"- Fixed a bug of the Notification Center that spamed Windows-Notifications.{Environment.NewLine}" +
+                            $"- Fixed a crashing bug that occured when copying an empty accountname / email {Environment.NewLine}" +
+                            $"- Fixed a bug that mad the task installer not working properly.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Thanks to <b>arhippa</b> for reporting the issue.{Environment.NewLine}" +
+                            $"- Fixed a bug when importing .csv with missing headers.{Environment.NewLine}" +
+                            $"- Fixed a bug that made the \"Daily Autologin\"-Toggle being reversed.{Environment.NewLine}" +
+                            $"&nbsp;&nbsp;&nbsp;Thanks to <b>Ykao</b> for reporting the issue.{Environment.NewLine}" +
+                            $"- Removed the \"White line\" at the bottom of EAM during darkmode."
+            },
             new ChangelogEntry() {
                 ReleaseDate = new DateTime(2022, 02, 26),
-                Version = new Version(3, 0, 0),
+                Version = new Version(3, 0, 0),                       
                 Name = "Complete overhaul, Muledump Replica: Vault Peeker and more",
-                Description = $"<b>COMPLETE OVERHAUL</b>{Environment.NewLine}{Environment.NewLine}  " +
+                Description = $"<b>COMPLETE OVERHAUL</b>{Environment.NewLine}{Environment.NewLine}" +
                               $"- Completely changed the UI.{Environment.NewLine}" +
                               $"- Re-Wrote most of the Code.{Environment.NewLine}" +
                               $"- Improved Account-Handling.{Environment.NewLine}{Environment.NewLine}" +
@@ -274,7 +334,7 @@ namespace ExaltAccountManager.UI
         }
     }
 
-    public class ChangelogEntry
+    public sealed class ChangelogEntry
     {
         public Version Version { get; set; } = new Version();
         public string Name { get; set; } = string.Empty;

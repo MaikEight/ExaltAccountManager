@@ -38,15 +38,16 @@
             this.btnBack = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
             this.pDatagridview = new System.Windows.Forms.Panel();
             this.dataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Success = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Failed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.scrollbar = new Bunifu.UI.WinForms.BunifuVScrollBar();
             this.spacerQuestion = new Bunifu.UI.WinForms.BunifuSeparator();
             this.pbClose = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.lHint = new System.Windows.Forms.Label();
             this.lQuestion = new System.Windows.Forms.Label();
             this.bunifuElipse = new Bunifu.Framework.UI.BunifuElipse(this.components);
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Manuall = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Success = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Failed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.shadow.SuspendLayout();
             this.pDatagridview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -153,6 +154,7 @@
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Date,
+            this.Manuall,
             this.Success,
             this.Failed});
             this.dataGridView.CurrentTheme.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
@@ -208,24 +210,6 @@
             this.dataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.DarkViolet;
             this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
             this.dataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dataGridView_DataBindingComplete);
-            // 
-            // Date
-            // 
-            this.Date.HeaderText = "Date";
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            // 
-            // Success
-            // 
-            this.Success.HeaderText = "Success";
-            this.Success.Name = "Success";
-            this.Success.ReadOnly = true;
-            // 
-            // Failed
-            // 
-            this.Failed.HeaderText = "Failed";
-            this.Failed.Name = "Failed";
-            this.Failed.ReadOnly = true;
             // 
             // scrollbar
             // 
@@ -337,6 +321,30 @@
             this.bunifuElipse.ElipseRadius = 11;
             this.bunifuElipse.TargetControl = this.pDatagridview;
             // 
+            // Date
+            // 
+            this.Date.HeaderText = "Date";
+            this.Date.Name = "Date";
+            this.Date.ReadOnly = true;
+            // 
+            // Manuall
+            // 
+            this.Manuall.HeaderText = "Manuall";
+            this.Manuall.Name = "Manuall";
+            this.Manuall.ReadOnly = true;
+            // 
+            // Success
+            // 
+            this.Success.HeaderText = "Success";
+            this.Success.Name = "Success";
+            this.Success.ReadOnly = true;
+            // 
+            // Failed
+            // 
+            this.Failed.HeaderText = "Failed";
+            this.Failed.Name = "Failed";
+            this.Failed.ReadOnly = true;
+            // 
             // EleDailyLoginsResultsList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -367,9 +375,10 @@
         private Bunifu.UI.WinForms.BunifuDataGridView dataGridView;
         private Bunifu.UI.WinForms.BunifuVScrollBar scrollbar;
         private Bunifu.Framework.UI.BunifuElipse bunifuElipse;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuIconButton btnBack;
         private System.Windows.Forms.DataGridViewTextBoxColumn Date;
+        private System.Windows.Forms.DataGridViewImageColumn Manuall;
         private System.Windows.Forms.DataGridViewTextBoxColumn Success;
         private System.Windows.Forms.DataGridViewTextBoxColumn Failed;
-        private Bunifu.UI.WinForms.BunifuButton.BunifuIconButton btnBack;
     }
 }

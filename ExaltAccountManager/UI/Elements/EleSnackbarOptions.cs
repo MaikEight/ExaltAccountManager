@@ -5,9 +5,9 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleSnackbarOptions : UserControl
+    public sealed partial class EleSnackbarOptions : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
 
         public Bunifu.UI.WinForms.BunifuSnackbar.Positions SnackbarPosition 
         {

@@ -58,7 +58,6 @@ namespace EAM_PingChecker
             this.bunifuDragControlPbHeader = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.bunifuDragControlLEAMHead = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.bunifuDragControlLHeaderStatistics = new Bunifu.Framework.UI.BunifuDragControl(this.components);
-            this.bunifuElipseFrm = new Bunifu.Framework.UI.BunifuElipse(this.components);
             this.bunifuDragControlLTitle = new Bunifu.Framework.UI.BunifuDragControl(this.components);
             this.timerRefreshData = new System.Windows.Forms.Timer(this.components);
             this.pTop.SuspendLayout();
@@ -393,11 +392,6 @@ namespace EAM_PingChecker
             this.bunifuDragControlLHeaderStatistics.TargetControl = this.lHeaderStatistics;
             this.bunifuDragControlLHeaderStatistics.Vertical = true;
             // 
-            // bunifuElipseFrm
-            // 
-            this.bunifuElipseFrm.ElipseRadius = 5;
-            this.bunifuElipseFrm.TargetControl = this;
-            // 
             // bunifuDragControlLTitle
             // 
             this.bunifuDragControlLTitle.Fixed = true;
@@ -468,7 +462,6 @@ namespace EAM_PingChecker
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControlPbHeader;
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControlLEAMHead;
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControlLHeaderStatistics;
-        private Bunifu.Framework.UI.BunifuElipse bunifuElipseFrm;
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControlLTitle;
         private Bunifu.UI.WinForms.BunifuShadowPanel shadowLoading;
         private Bunifu.UI.WinForms.BunifuSeparator separator;

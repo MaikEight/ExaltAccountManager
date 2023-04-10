@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MK_EAM_Lib;
 using System.Diagnostics;
 
 namespace ExaltAccountManager
 {
-    public partial class AccountUI : UserControl
+    public sealed partial class AccountUI : UserControl
     {
-        FrmMainOLD frm;
+        private FrmMainOLD frm;
         public MK_EAM_Lib.AccountInfo accountInfo;
         public bool isSecond = false;
-        Process process = null;
+        private Process process = null;
         public bool isRunning = false;
         private bool isCreating = true;
         public AccountUI(FrmMainOLD _frm)

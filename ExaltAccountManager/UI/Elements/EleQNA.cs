@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleQNA : UserControl
+    public sealed partial class EleQNA : UserControl
     {
         public QNA QNA
         {
@@ -23,7 +17,7 @@ namespace ExaltAccountManager.UI.Elements
         }
         private QNA qna;
 
-        FrmMain frm;
+        private FrmMain frm;
 
         public EleQNA(FrmMain _frm)
         {

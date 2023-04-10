@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lCopyright.Text" xml:space="preserve">
+    <value>EAM Vault Peeker is deprecated and won't be worked on anymore.
+Instead a complete replacement is planed, which will increase 
+performance, design and overall usability.
+This will take a while to develop... please stay patient.</value>
+  </data>
   <metadata name="timerReset.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

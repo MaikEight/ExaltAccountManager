@@ -1,3 +1,0 @@
-- Introduced new client licensing for easier activation and validation process. 
-- Fixed an issue with the license popup being displayed even after activation occurs.
-- Bunifu Button will now retain highlight focus even when inactive whenever the property AllowToggling is set to true.

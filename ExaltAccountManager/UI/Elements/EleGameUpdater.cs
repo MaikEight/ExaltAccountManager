@@ -1,19 +1,13 @@
 ﻿using MK_EAM_Lib;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleGameUpdater : UserControl
+    public sealed partial class EleGameUpdater : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
         private GameUpdaterUIState UIState
         {
             get => uiStateValue;

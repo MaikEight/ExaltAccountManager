@@ -33,6 +33,7 @@
             Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.shadow = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.pbHeader = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.btnDone = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.btnCheckForUpdate = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.btnPerformUpdate = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
@@ -46,12 +47,11 @@
             this.spacerQuestion = new Bunifu.UI.WinForms.BunifuSeparator();
             this.pbClose = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.lHeadline = new System.Windows.Forms.Label();
-            this.pbHeader = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.shadow.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCheck)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
             this.SuspendLayout();
             // 
             // shadow
@@ -90,6 +90,22 @@
             this.shadow.Size = new System.Drawing.Size(353, 171);
             this.shadow.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.shadow.TabIndex = 17;
+            // 
+            // pbHeader
+            // 
+            this.pbHeader.AllowFocused = false;
+            this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.pbHeader.AutoSizeHeight = true;
+            this.pbHeader.BorderRadius = 12;
+            this.pbHeader.Image = global::ExaltAccountManager.Properties.Resources.baseline_autorenew_black_36dp;
+            this.pbHeader.IsCircle = true;
+            this.pbHeader.Location = new System.Drawing.Point(17, 13);
+            this.pbHeader.Name = "pbHeader";
+            this.pbHeader.Size = new System.Drawing.Size(24, 24);
+            this.pbHeader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbHeader.TabIndex = 33;
+            this.pbHeader.TabStop = false;
+            this.pbHeader.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
             // 
             // btnDone
             // 
@@ -538,22 +554,6 @@
             this.lHeadline.Text = "ROTMG Updater";
             this.lHeadline.UseMnemonic = false;
             // 
-            // pbHeader
-            // 
-            this.pbHeader.AllowFocused = false;
-            this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.pbHeader.AutoSizeHeight = true;
-            this.pbHeader.BorderRadius = 12;
-            this.pbHeader.Image = global::ExaltAccountManager.Properties.Resources.baseline_autorenew_black_36dp;
-            this.pbHeader.IsCircle = true;
-            this.pbHeader.Location = new System.Drawing.Point(17, 13);
-            this.pbHeader.Name = "pbHeader";
-            this.pbHeader.Size = new System.Drawing.Size(24, 24);
-            this.pbHeader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbHeader.TabIndex = 33;
-            this.pbHeader.TabStop = false;
-            this.pbHeader.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Circle;
-            // 
             // EleGameUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -567,10 +567,10 @@
             this.Load += new System.EventHandler(this.EleGameUpdater_Load);
             this.shadow.ResumeLayout(false);
             this.shadow.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCheck)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
             this.ResumeLayout(false);
 
         }

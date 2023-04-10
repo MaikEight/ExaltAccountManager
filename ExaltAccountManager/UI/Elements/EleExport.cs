@@ -1,25 +1,22 @@
 ﻿using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleExport : UserControl
+    public sealed partial class EleExport : UserControl
     {
-        FrmMain frm;
-        UIImportExport uiImportExport;
+        private FrmMain frm;
+        private UIImportExport uiImportExport;
 
-        EleCustomExport eleCustomExport;
+        private EleCustomExport eleCustomExport;
 
-        BindingSource bindingSource = new BindingSource();
+        private BindingSource bindingSource = new BindingSource();
 
         private string fileName = "Export";
 

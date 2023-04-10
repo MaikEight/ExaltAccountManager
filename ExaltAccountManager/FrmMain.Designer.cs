@@ -44,6 +44,7 @@
             this.btnOptions = new System.Windows.Forms.Button();
             this.btnModules = new System.Windows.Forms.Button();
             this.btnAddAccount = new System.Windows.Forms.Button();
+            this.btnNews = new System.Windows.Forms.Button();
             this.btnAccounts = new System.Windows.Forms.Button();
             this.btnGameUpdater = new System.Windows.Forms.Button();
             this.pSpacer = new System.Windows.Forms.Panel();
@@ -61,6 +62,7 @@
             this.timerLogBlink = new System.Windows.Forms.Timer(this.components);
             this.timerLoadUI = new System.Windows.Forms.Timer(this.components);
             this.toolTip = new Bunifu.UI.WinForms.BunifuToolTip(this.components);
+            this.timerDiscordUpdater = new System.Windows.Forms.Timer(this.components);
             this.pLeftSide.SuspendLayout();
             this.pSideButtons.SuspendLayout();
             this.pUpdate.SuspendLayout();
@@ -99,6 +101,7 @@
             this.pSideButtons.Controls.Add(this.btnOptions);
             this.pSideButtons.Controls.Add(this.btnModules);
             this.pSideButtons.Controls.Add(this.btnAddAccount);
+            this.pSideButtons.Controls.Add(this.btnNews);
             this.pSideButtons.Controls.Add(this.btnAccounts);
             this.pSideButtons.Controls.Add(this.btnGameUpdater);
             this.pSideButtons.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -138,7 +141,7 @@
             this.btnEAMUpdate.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnEAMUpdate.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnEAMUpdate.BackgroundImage")));
             this.btnEAMUpdate.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.btnEAMUpdate.ButtonText = "EAM Update available";
+            this.btnEAMUpdate.ButtonText = "Update EAM";
             this.btnEAMUpdate.ButtonTextMarginLeft = 0;
             this.btnEAMUpdate.ColorContrastOnClick = 45;
             this.btnEAMUpdate.ColorContrastOnHover = 45;
@@ -231,6 +234,7 @@
             this.toolTip.SetToolTip(this.pBottom, "");
             this.toolTip.SetToolTipIcon(this.pBottom, null);
             this.toolTip.SetToolTipTitle(this.pBottom, "");
+            this.pBottom.Paint += new System.Windows.Forms.PaintEventHandler(this.pBottom_Paint);
             // 
             // lVersion
             // 
@@ -245,6 +249,7 @@
             this.toolTip.SetToolTip(this.lVersion, "");
             this.toolTip.SetToolTipIcon(this.lVersion, null);
             this.toolTip.SetToolTipTitle(this.lVersion, "");
+            this.lVersion.Paint += new System.Windows.Forms.PaintEventHandler(this.lVersion_Paint);
             // 
             // pSideBar
             // 
@@ -268,7 +273,7 @@
             this.btnAbout.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAbout.Image = global::ExaltAccountManager.Properties.Resources.ic_info_outline_black_24dp2;
             this.btnAbout.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAbout.Location = new System.Drawing.Point(0, 280);
+            this.btnAbout.Location = new System.Drawing.Point(0, 320);
             this.btnAbout.Margin = new System.Windows.Forms.Padding(0);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -295,7 +300,7 @@
             this.btnLogs.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLogs.Image = global::ExaltAccountManager.Properties.Resources.activity_history_outline_24px;
             this.btnLogs.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLogs.Location = new System.Drawing.Point(0, 240);
+            this.btnLogs.Location = new System.Drawing.Point(0, 280);
             this.btnLogs.Margin = new System.Windows.Forms.Padding(0);
             this.btnLogs.Name = "btnLogs";
             this.btnLogs.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -322,7 +327,7 @@
             this.btnHelp.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHelp.Image = global::ExaltAccountManager.Properties.Resources.ic_help_outline_black_24dp;
             this.btnHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnHelp.Location = new System.Drawing.Point(0, 200);
+            this.btnHelp.Location = new System.Drawing.Point(0, 240);
             this.btnHelp.Margin = new System.Windows.Forms.Padding(0);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -349,7 +354,7 @@
             this.btnOptions.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOptions.Image = global::ExaltAccountManager.Properties.Resources.settings_outline_24px;
             this.btnOptions.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnOptions.Location = new System.Drawing.Point(0, 160);
+            this.btnOptions.Location = new System.Drawing.Point(0, 200);
             this.btnOptions.Margin = new System.Windows.Forms.Padding(0);
             this.btnOptions.Name = "btnOptions";
             this.btnOptions.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -363,6 +368,7 @@
             this.toolTip.SetToolTipTitle(this.btnOptions, "");
             this.btnOptions.UseVisualStyleBackColor = true;
             this.btnOptions.Click += new System.EventHandler(this.btnOptions_Click);
+            this.btnOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.btnOptions_Paint);
             this.btnOptions.MouseEnter += new System.EventHandler(this.btnOptions_MouseEnter);
             this.btnOptions.MouseLeave += new System.EventHandler(this.btnOptions_MouseLeave);
             // 
@@ -376,7 +382,7 @@
             this.btnModules.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnModules.Image = global::ExaltAccountManager.Properties.Resources.dashboard_layout_outline_24px;
             this.btnModules.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnModules.Location = new System.Drawing.Point(0, 120);
+            this.btnModules.Location = new System.Drawing.Point(0, 160);
             this.btnModules.Margin = new System.Windows.Forms.Padding(0);
             this.btnModules.Name = "btnModules";
             this.btnModules.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -403,7 +409,7 @@
             this.btnAddAccount.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddAccount.Image = global::ExaltAccountManager.Properties.Resources.add_user_outline_24px;
             this.btnAddAccount.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAddAccount.Location = new System.Drawing.Point(0, 80);
+            this.btnAddAccount.Location = new System.Drawing.Point(0, 120);
             this.btnAddAccount.Margin = new System.Windows.Forms.Padding(0);
             this.btnAddAccount.Name = "btnAddAccount";
             this.btnAddAccount.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
@@ -419,6 +425,34 @@
             this.btnAddAccount.Click += new System.EventHandler(this.btnAddAccount_Click);
             this.btnAddAccount.MouseEnter += new System.EventHandler(this.btnAddAccount_MouseEnter);
             this.btnAddAccount.MouseLeave += new System.EventHandler(this.btnAddAccount_MouseLeave);
+            // 
+            // btnNews
+            // 
+            this.btnNews.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnNews.FlatAppearance.BorderSize = 0;
+            this.btnNews.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnNews.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnNews.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNews.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNews.Image = global::ExaltAccountManager.Properties.Resources.news_outline_black_24px;
+            this.btnNews.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNews.Location = new System.Drawing.Point(0, 80);
+            this.btnNews.Margin = new System.Windows.Forms.Padding(0);
+            this.btnNews.Name = "btnNews";
+            this.btnNews.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.btnNews.Size = new System.Drawing.Size(175, 40);
+            this.btnNews.TabIndex = 27;
+            this.btnNews.Text = "   News";
+            this.btnNews.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNews.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.btnNews, "");
+            this.toolTip.SetToolTipIcon(this.btnNews, null);
+            this.toolTip.SetToolTipTitle(this.btnNews, "");
+            this.btnNews.UseVisualStyleBackColor = true;
+            this.btnNews.Click += new System.EventHandler(this.btnNews_Click);
+            this.btnNews.Paint += new System.Windows.Forms.PaintEventHandler(this.btnNews_Paint);
+            this.btnNews.MouseEnter += new System.EventHandler(this.btnNews_MouseEnter);
+            this.btnNews.MouseLeave += new System.EventHandler(this.btnNews_MouseLeave);
             // 
             // btnAccounts
             // 
@@ -566,7 +600,7 @@
             this.pbMinimize.Location = new System.Drawing.Point(630, 0);
             this.pbMinimize.Name = "pbMinimize";
             this.pbMinimize.Size = new System.Drawing.Size(24, 24);
-            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbMinimize.TabIndex = 8;
             this.pbMinimize.TabStop = false;
             this.toolTip.SetToolTip(this.pbMinimize, "");
@@ -700,6 +734,7 @@
             this.snackbar.MaximumSize = new System.Drawing.Size(0, 0);
             this.snackbar.MaximumViews = 7;
             this.snackbar.MessageRightMargin = 15;
+            this.snackbar.MessageTopMargin = 0;
             this.snackbar.MinimumSize = new System.Drawing.Size(0, 0);
             this.snackbar.ShowBorders = false;
             this.snackbar.ShowCloseIcon = false;
@@ -777,6 +812,11 @@
             this.toolTip.ToolTipPosition = new System.Drawing.Point(0, 0);
             this.toolTip.ToolTipTitle = null;
             // 
+            // timerDiscordUpdater
+            // 
+            this.timerDiscordUpdater.Interval = 5000;
+            this.timerDiscordUpdater.Tick += new System.EventHandler(this.timerDiscordUpdater_Tick);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -786,6 +826,7 @@
             this.Controls.Add(this.pContent);
             this.Controls.Add(this.pTop);
             this.Controls.Add(this.pLeftSide);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -794,9 +835,11 @@
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Exalt Account Manager";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.LocationChanged += new System.EventHandler(this.FrmMain_LocationChanged);
             this.SizeChanged += new System.EventHandler(this.FrmMain_SizeChanged);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrmMain_Paint);
             this.pLeftSide.ResumeLayout(false);
             this.pSideButtons.ResumeLayout(false);
             this.pUpdate.ResumeLayout(false);
@@ -845,5 +888,7 @@
         private System.Windows.Forms.Panel pBottom;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnEAMUpdate;
         private System.Windows.Forms.Panel pUpdate;
+        private System.Windows.Forms.Timer timerDiscordUpdater;
+        private System.Windows.Forms.Button btnNews;
     }
 }

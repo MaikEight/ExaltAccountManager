@@ -150,12 +150,34 @@
         +z3hAABo2bYXZNGY3QMnrOoAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="bunifuSeparator2.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="btnAnalytics.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABcAAABxCAYAAAA+hzjnAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABjSURBVGhD7cyhDcAwEMDA33+q3ywlgSaRCu+QkefF7p6b
-        /zNP5sk8mSfzZJ7Mk3kyT+bJPJkn82SezJN5Mk/myTyZJ/NknsyTeTJP5sk8mSfzZJ7Mk3kyT+bJPJkn
-        8/Q2n/kAnE5u3/L2p58AAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAR8AAAAfCAYAAADeIMn5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD6SURBVHhe7d0/SsRAGMbhr/FA1vbewFaSXdCT7B32BLai
+        gmAhgn+qvYlks95AJ9Zph7d5Bp6EYb76x6RKLWtTp/Ox5v1YxwNAP/P+uqbL//Bs63gx1PTRDl6be4CO
+        Wmfmz6G+r2qo+a5tXlaGAHp4bN6qPZbr0NoAQC8H8QESxAeIEB8gQnyACPEBIsQHiBAfIEJ8gAjxASLE
+        B4gQHyBCfIAI8QEixAeIEB8gQnyACPEBIsQHiBAfIEJ8gAjxASLEB4gQHyBCfICIQ23q+DTU9LxyCNDD
+        w1jTV4vPabP8O3llAKCD6b29d7Wsbf3cts3y+QXQ2+6mfs/+AMhqWETQE03oAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btnDiscord.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAR8AAAAfCAYAAADeIMn5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD6SURBVHhe7d0/SsRAGMbhr/FA1vbewFaSXdCT7B32BLai
+        gmAhgn+qvYlks95AJ9Zph7d5Bp6EYb76x6RKLWtTp/Ox5v1YxwNAP/P+uqbL//Bs63gx1PTRDl6be4CO
+        Wmfmz6G+r2qo+a5tXlaGAHp4bN6qPZbr0NoAQC8H8QESxAeIEB8gQnyACPEBIsQHiBAfIEJ8gAjxASLE
+        B4gQHyBCfIAI8QEixAeIEB8gQnyACPEBIsQHiBAfIEJ8gAjxASLEB4gQHyBCfICIQ23q+DTU9LxyCNDD
+        w1jTV4vPabP8O3llAKCD6b29d7Wsbf3cts3y+QXQ2+6mfs/+AMhqWETQE03oAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btnGameUpdaterAndNotificationSettings.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAR8AAAAfCAYAAADeIMn5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD6SURBVHhe7d0/SsRAGMbhr/FA1vbewFaSXdCT7B32BLai
+        gmAhgn+qvYlks95AJ9Zph7d5Bp6EYb76x6RKLWtTp/Ox5v1YxwNAP/P+uqbL//Bs63gx1PTRDl6be4CO
+        Wmfmz6G+r2qo+a5tXlaGAHp4bN6qPZbr0NoAQC8H8QESxAeIEB8gQnyACPEBIsQHiBAfIEJ8gAjxASLE
+        B4gQHyBCfIAI8QEixAeIEB8gQnyACPEBIsQHiBAfIEJ8gAjxASLEB4gQHyBCfICIQ23q+DTU9LxyCNDD
+        w1jTV4vPabP8O3llAKCD6b29d7Wsbf3cts3y+QXQ2+6mfs/+AMhqWETQE03oAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="btnSnackbar.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

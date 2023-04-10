@@ -364,8 +364,8 @@
             this.btnContactMinimize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnContactMinimize.AnimationSpeed = 200;
             this.btnContactMinimize.BackColor = System.Drawing.Color.Transparent;
-            this.btnContactMinimize.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
-            this.btnContactMinimize.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
+            this.btnContactMinimize.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
+            this.btnContactMinimize.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
             this.btnContactMinimize.BorderRadius = 1;
             this.btnContactMinimize.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderStyles.Solid;
             this.btnContactMinimize.BorderThickness = 1;

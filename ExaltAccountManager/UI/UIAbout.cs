@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using ExaltAccountManager.UI.Elements;
+using MK_EAM_Analytics;
+using System;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI
 {
-    public partial class UIAbout : UserControl
+    public sealed partial class UIAbout : UserControl
     {
-        FrmMain frm;
+        private FrmMain frm;
+        private EleCredits eleCredits;
 
         public UIAbout(FrmMain _frm)
         {
@@ -58,7 +56,13 @@ namespace ExaltAccountManager.UI
         {
             pbDevIcon.Image = Properties.Resources.llama;
             frm.SwitchLlamaState(true);
+            DiscordHelper.SetLlamaState();
             timerLlama.Start();
+
+            if (!frm.OptionsData.analyticsOptions.OptOut)
+            {
+                AnalyticsClient.Instance?.UpdateLlamaFound();
+            }
         }
 
         private void pbLinkSourceCode_Click(object sender, EventArgs e) => linkSourceCode_LinkClicked(null, null);
@@ -123,6 +127,15 @@ namespace ExaltAccountManager.UI
         private void pbThanks_MouseLeave(object sender, EventArgs e)
         {
             pbThanks.Image = frm.UseDarkmode ? Properties.Resources.birthday_cake_1_white_36px : Properties.Resources.birthday_cake_1_36px;
+        }
+
+        private void btnShowCredits_Click(object sender, EventArgs e)
+        {
+            if (eleCredits == null)
+                eleCredits = new Elements.EleCredits(frm);
+
+            eleCredits.ResetScrollbar();
+            frm.ShowShadowForm(eleCredits);
         }
     }
 }
