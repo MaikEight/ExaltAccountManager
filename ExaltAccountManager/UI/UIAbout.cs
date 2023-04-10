@@ -1,4 +1,5 @@
-﻿using MK_EAM_Analytics;
+﻿using ExaltAccountManager.UI.Elements;
+using MK_EAM_Analytics;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace ExaltAccountManager.UI
     public sealed partial class UIAbout : UserControl
     {
         private FrmMain frm;
+        private EleCredits eleCredits;
 
         public UIAbout(FrmMain _frm)
         {
@@ -129,7 +131,11 @@ namespace ExaltAccountManager.UI
 
         private void btnShowCredits_Click(object sender, EventArgs e)
         {
-            frm.ShowShadowForm(new Elements.EleCredits(frm));
+            if (eleCredits == null)
+                eleCredits = new Elements.EleCredits(frm);
+
+            eleCredits.ResetScrollbar();
+            frm.ShowShadowForm(eleCredits);
         }
     }
 }

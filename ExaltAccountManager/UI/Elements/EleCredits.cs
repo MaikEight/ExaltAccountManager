@@ -41,6 +41,7 @@ namespace ExaltAccountManager.UI.Elements
             ApplyTheme(frm, null);
 
             scrollbar.Height = pMain.Height;
+            scrollbar.BindTo(pMain);
         }
 
         private void ApplyTheme(object sender, EventArgs e)
@@ -63,6 +64,12 @@ namespace ExaltAccountManager.UI.Elements
             scrollbar.BorderColor = frm.UseDarkmode ? second : Color.Silver;
             scrollbar.BackgroundColor = frm.UseDarkmode ? def : third;
             scrollbar.ThumbColor = frm.UseDarkmode ? third : Color.Gray;
+        }
+
+        public void ResetScrollbar()
+        {
+            scrollbar.Value = scrollbar.Minimum;
+            scrollbar.BindTo(pMain);
         }
 
         private void lDotNet_Click(object sender, EventArgs e)

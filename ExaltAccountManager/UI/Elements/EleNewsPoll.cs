@@ -52,6 +52,7 @@ namespace ExaltAccountManager.UI.Elements
 
         private void LoadUI()
         {
+
             int allVotes = pollUIData.PollData.Entries.Sum();
             revealed = pollUIData.PollData.OwnEntry >= 0;
 

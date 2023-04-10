@@ -271,6 +271,7 @@ namespace ExaltAccountManager
         public string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
         public string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
         public string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
+        public string privacyPolicyPath = Path.Combine(saveFilePath, "EAM_Privacy_Policy.txt");
         public string activeVaultPeekerAccountsPath = Path.Combine(saveFilePath, "EAM.ActiveVaultPeekerAccounts");
         public string getClientHWIDToolPath = Path.Combine(Application.StartupPath, "EAM_GetClientHWID");
         public string pingCheckerExePath = Path.Combine(Application.StartupPath, "EAM PingChecker.exe");
@@ -330,7 +331,7 @@ namespace ExaltAccountManager
             InitializeComponent();
 
             defaultMinimumsize = this.MinimumSize = new Size(this.MinimumSize.Width, 576);
-            lVersion.Text = $"EAM v{version}_R3 PREVIEW by Maik8";
+            lVersion.Text = $"EAM v{version} by Maik8";
 
             bool isNewInstall = false;
 
@@ -1725,6 +1726,69 @@ namespace ExaltAccountManager
 
             if (uiEAMNews == null)
                 uiEAMNews = new UIEAMNews(this) { Dock = DockStyle.Fill };
+
+            //Check if privacy policy exists & create if not
+            if (!File.Exists(privacyPolicyPath) || (DateTime.Now - File.GetLastWriteTime(privacyPolicyPath)) > TimeSpan.FromDays(3))
+            {
+                #region Privacy Policy
+
+                if (!cancellationTokenSource.IsCancellationRequested)
+                {
+                    cancellationTokenSource.Cancel();
+                }
+
+                cancellationTokenSource = new CancellationTokenSource();
+                cancellationTokenSource.CancelAfter(7500);
+
+                ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+                {
+                    CancellationToken token = (CancellationToken)obj;
+
+                    try
+                    {
+
+                        Task<MK_EAM_General_Services_Lib.General.Responses.GetFileResponse> task =
+                            GeneralServicesClient.Instance?.GetPrivacyPolicy();
+
+                        while (!task.IsCompleted)
+                        {
+                            if (token.IsCancellationRequested)
+                            {
+                                LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to request privacy policy."));                                
+
+                                return;
+                            }
+
+                            await Task.Delay(50, token);
+                        }
+                        MK_EAM_General_Services_Lib.General.Responses.GetFileResponse result = task.Result;
+
+                        if (result != null && result.data != null)
+                        {
+                            File.WriteAllBytes(privacyPolicyPath, result.data);
+                        }
+                        else
+                        {
+                            LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to request privacy policy."));
+                        }
+                    }
+                    catch 
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to request privacy policy."));
+                    }
+                }), cancellationTokenSource.Token);
+
+                #endregion
+            }
         }
 
         public void SaveNewsViewed()

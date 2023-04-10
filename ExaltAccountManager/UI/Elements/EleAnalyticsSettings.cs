@@ -16,7 +16,7 @@ namespace ExaltAccountManager.UI.Elements
     {
         private FrmMain frm;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private const string privacyPolicyFilename = "EAM_Privacy_Policy.txt";
+        
         public EleAnalyticsSettings(FrmMain _frm)
         {
             InitializeComponent();
@@ -311,7 +311,7 @@ namespace ExaltAccountManager.UI.Elements
                     Task<MK_EAM_General_Services_Lib.General.Responses.GetFileResponse> task =
                         GeneralServicesClient.Instance?.GetPrivacyPolicy();
 
-                    string path = Path.Combine(FrmMain.saveFilePath, privacyPolicyFilename);
+                    string path = frm.privacyPolicyPath;
 
                     while (!task.IsCompleted)
                     {

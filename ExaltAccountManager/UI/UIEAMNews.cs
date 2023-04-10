@@ -49,84 +49,7 @@ namespace ExaltAccountManager.UI
         }
 
         private void RenderNews(List<NewsData> data)
-        {
-
-            data.Add(
-                new NewsData()
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "The Exalt Account Manager news section is here 🎉",
-                    Date = DateTime.Now,
-                    Importance = 1,
-                    newsEntries = new List<NewsEntry>()
-                    {
-                        new NewsEntry()
-                        {
-                            NewsId = Guid.NewGuid(),
-                            OrderId = 1,
-                            TypeId = 1,
-                            UiData = new TextUIData()
-                            {
-                                Text  = "What are the news for?"
-                            }
-                        },
-                        new NewsEntry()
-                        {
-                            NewsId = Guid.NewGuid(),
-                            OrderId = 0,
-                            TypeId = 100,
-                            UiData = new ImageUIData()
-                            {
-                                ImageUrl = "https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/ExaltAccountManager/Resources/1.png",
-                                PictureBoxSizeMode = 4,
-                                MaxSize = new Size(0, 200),
-                                MinSize = new Size(1, 1)
-                            }
-                        },
-                        new NewsEntry()
-                        {
-                            NewsId = Guid.NewGuid(),
-                            OrderId = 2,
-                            TypeId = 0,
-                            UiData = new TextUIData()
-                            {
-                                Text  = "Finally the news section is getting into shape and it even got polls!\nThis feature allows for better and simpler collection of user-feedback aswell as broadcasting messages or news with every EAM-User."
-                            }
-                        },
-                        new NewsEntry()
-                        {
-                            NewsId = Guid.NewGuid(),
-                            OrderId = 3,
-                            TypeId = 200,
-                            UiData = new PollUIData()
-                            {
-                                Headline = "What do you think about the new polls?",
-                                EntrieImageUrls = new string[]
-                                {
-                                    null, null, null
-                                },
-                                EntrieTexts = new string[]
-                                {
-                                    "Awesome addition",
-                                    "Nice to have",
-                                    "Mehh",
-                                    "Unnecessary",
-                                },
-                                PollData = new PollData()
-                                {
-                                    StartDate = DateTime.Now.AddDays(-1),
-                                    EndDate = DateTime.Now.AddDays(3),
-                                    Entries = new int[] { 5, 2, 1, 0 },
-                                    EntriesAmount = 4,
-                                    Name = "Test",
-                                    OwnEntry = -1,
-                                    PollId = Guid.NewGuid()
-                                }
-                            }
-                        },
-                    }
-                });
-
+        {       
             int maxBottom = 0;
             int index = 0;
 
@@ -171,12 +94,6 @@ namespace ExaltAccountManager.UI
             };
             pNews.Controls.Add(pSpacer);
             pNews.Controls.SetChildIndex(pSpacer, index);
-
-            //foreach (Control c in pNews.Controls)
-            //{
-            //    maxBottom = Math.Max(maxBottom, c.Bottom);
-            //}
-            //pNews.Height = maxBottom;
 
             pNews.ResumeLayout();
             FormsUtils.ResumeDrawing(pNews);
