@@ -22,11 +22,6 @@
     src="https://img.shields.io/github/languages/top/MaikEight/ExaltAccountManager?label=C%23"
     alt="Top language" />
 </a>
-<a href="https://github.com/MaikEight/ExaltAccountManager" style="display: inline">
-  <img
-    src="https://img.shields.io/tokei/lines/github/MaikEight/ExaltAccountManager?color=1A8ACA&label=Total%20lines"
-    alt="Lines of code" />
-</a>
 <a href="https://github.com/MaikEight" style="display: inline">
   <img
     src="https://img.shields.io/maintenance/yes/2023?label=Maintained"
