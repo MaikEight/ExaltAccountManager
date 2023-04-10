@@ -74,7 +74,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 <br >
 <br >
 
-![Exalt Account Manager](https://i.imgur.com/3qLhiLR.png)
+![Exalt Account Manager](https://i.imgur.com/MLVs0m9.png)
 
 <br >
 
@@ -116,7 +116,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 
 Exalt Account Manager                                     | Statistics
 :--------------------------------------------------------:|:------------------------------------------------:
-![Exalt Account Manager](https://i.imgur.com/3qLhiLR.png) | ![Statistics](https://i.imgur.com/ShvWVg9.png) 
+![Exalt Account Manager](https://i.imgur.com/MLVs0m9.png) | ![Statistics](https://i.imgur.com/ShvWVg9.png) 
 Ping Checker                                              | Vault Peeker
 ![Ping checker](https://i.imgur.com/txUcbFT.gif)          | ![Vault Peeker](https://i.imgur.com/IfFbpMy.png)
 
