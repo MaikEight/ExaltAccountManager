@@ -774,8 +774,8 @@
             // 
             // timerLoadUI
             // 
-            this.timerLoadUI.Interval = 250;
-            this.timerLoadUI.Tick += new System.EventHandler(this.timerLaodUI_Tick);
+            this.timerLoadUI.Interval = 350;
+            this.timerLoadUI.Tick += new System.EventHandler(this.timerLoadUI_Tick);
             // 
             // toolTip
             // 

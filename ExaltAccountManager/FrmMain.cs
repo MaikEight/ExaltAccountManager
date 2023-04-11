@@ -89,7 +89,7 @@ namespace ExaltAccountManager
         public NotificationOptions notOpt = new NotificationOptions();
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
-        public bool HasNewNews 
+        public bool HasNewNews
         {
             get => hasNewNews;
             set
@@ -426,7 +426,7 @@ namespace ExaltAccountManager
 
                 if (OptionsData.discordOptions == null)
                 {
-                    OptionsData.discordOptions = new DiscordOptions();
+                    OptionsData.discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
                 }
 
                 DiscordHelper.Initialize(OptionsData.discordOptions,
@@ -1675,7 +1675,7 @@ namespace ExaltAccountManager
             SaveOptions(OptionsData);
         }
 
-        private void timerLaodUI_Tick(object sender, EventArgs e)
+        private void timerLoadUI_Tick(object sender, EventArgs e)
         {
             timerLoadUI.Stop();
 
@@ -1716,9 +1716,6 @@ namespace ExaltAccountManager
                     GameUpdater.Instance.CheckForUpdate();
             }
 
-            timerLoadUI.Dispose();
-            lHeaderEAM.Focus();
-
             DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
             DiscordHelper.ApplyPresence();
 
@@ -1757,7 +1754,7 @@ namespace ExaltAccountManager
                                 LogEvent(new MK_EAM_Lib.LogData(
                                     "EAM",
                                     MK_EAM_Lib.LogEventType.APIError,
-                                    "Failed to request privacy policy."));                                
+                                    "Failed to request privacy policy."));
 
                                 return;
                             }
@@ -1778,7 +1775,7 @@ namespace ExaltAccountManager
                                     "Failed to request privacy policy."));
                         }
                     }
-                    catch 
+                    catch
                     {
                         LogEvent(new MK_EAM_Lib.LogData(
                                     "EAM",
@@ -1789,6 +1786,9 @@ namespace ExaltAccountManager
 
                 #endregion
             }
+
+            timerLoadUI.Dispose();
+            lHeaderEAM.Focus();
         }
 
         public void SaveNewsViewed()
@@ -1809,11 +1809,12 @@ namespace ExaltAccountManager
 
             btnGameUpdater.Visible = GameUpdater.Instance.UpdateRequired;
 
-            pSideBar.Top += btnGameUpdater.Height + 2;
-
             if (GameUpdater.Instance.UpdateRequired)
-                ShowSnackbar("Game-update available.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 12500);
+            {
+                pSideBar.Top += btnGameUpdater.Height + 2;
 
+                ShowSnackbar("Game-update available.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 12500);
+            }
             return false;
         }
 

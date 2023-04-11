@@ -180,7 +180,7 @@ namespace MK_EAM_Discord_Lib
 
         public static void ApplyPresence()
         {
-            if (!IsInitialized) throw new InvalidOperationException("Discord is not yet initialized!");
+            if (!IsInitialized) return;
 
             client.SetPresence(new RichPresence()
             {
@@ -204,7 +204,7 @@ namespace MK_EAM_Discord_Lib
 
         public static void AddButton(string label, string url)
         {
-            if (!IsInitialized) throw new InvalidOperationException("Discord is not yet initialized!");
+            if (!IsInitialized) return;
 
             Buttons.Add(new DiscordRPC.Button() { Label = label, Url = url });
             if (UpdateOnChange)
@@ -213,7 +213,7 @@ namespace MK_EAM_Discord_Lib
 
         public static void RemoveButton(string label)
         {
-            if (!IsInitialized) throw new InvalidOperationException("Discord is not yet initialized!");
+            if (!IsInitialized) return;
 
             Buttons.RemoveAll(x => x.Label == label);
             if (UpdateOnChange)

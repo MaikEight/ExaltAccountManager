@@ -33,10 +33,12 @@ namespace ExaltAccountManager
         private static Menu menu;
         public static string LastState { get; internal set; } = "Starting up...✨";
 
-        private static string imageKey { get => frm.UseDarkmode ? "eam_darkmode" : "eam_lightmode"; }
+        private static string imageKey { get => (frm != null && frm.UseDarkmode) ? "eam_darkmode" : "eam_lightmode"; }
 
         private static FrmMain frm;
         private static bool updateOnChange = true;
+
+        private static bool isInitialized = false;  
 
         public static void Initialize(DiscordOptions _discordOptions, FrmMain _frm, bool autoEvents = false, bool _updateOnChange = true)
         {
@@ -48,6 +50,7 @@ namespace ExaltAccountManager
             Discord.Initialize(APPLICATION_ID, autoEvents: autoEvents);
             Discord.UpdateOnChange = false;
             Discord.AddButton("Get Exalt Account Manager here", "https://github.com/MaikEight/ExaltAccountManager/releases/latest");
+            isInitialized = true;
 
             Discord.Timestamp = startupTime;
             Discord.UseTimestamp = true;
@@ -56,17 +59,23 @@ namespace ExaltAccountManager
             Discord.LargeImageKey = imageKey;
             Discord.LargeImageText = "Exalt Account Manager";
             Discord.UpdateOnChange = updateOnChange;
-            Discord.ApplyPresence();
+            Discord.ApplyPresence();            
         }
 
         private static void Frm_ThemeChanged(object sender, EventArgs e)
         {
+            if (!isInitialized)
+                return;
+
             Discord.LargeImageKey = imageKey;
             Discord.ApplyPresence();
         }
 
         public static void SetLlamaState()
         {
+            if (!isInitialized)
+                return;
+
             Discord.State = LastState = "Found the Llama! 🦙";
             Discord.ApplyPresence();
         }
@@ -80,6 +89,9 @@ namespace ExaltAccountManager
 
         public static void SetState(string state, bool ignoreModules = false)
         {
+            if (!isInitialized)
+                return;
+
             if (!ignoreModules && (statisticsOpen || pingCheckerOpen || vaultPeekerOpen))
             {
                 LastState = state;
@@ -93,6 +105,9 @@ namespace ExaltAccountManager
 
         public static void OpenedStatistics(bool setOpen = true)
         {
+            if (!isInitialized)
+                return;
+
             if (setOpen)
                 statisticsOpen = true;
 
@@ -109,6 +124,9 @@ namespace ExaltAccountManager
 
         public static void ClosedStatistics()
         {
+            if (!isInitialized)
+                return;
+
             statisticsOpen = false;
 
             if (discordOptions.ShowState)
@@ -140,6 +158,9 @@ namespace ExaltAccountManager
 
         public static void OpenedPingChecker(bool setOpen = true)
         {
+            if (!isInitialized)
+                return;
+
             if (setOpen)
                 pingCheckerOpen = true;
 
@@ -155,6 +176,9 @@ namespace ExaltAccountManager
 
         public static void ClosedPingChecker()
         {
+            if (!isInitialized)
+                return;
+
             pingCheckerOpen = false;
 
             if (discordOptions.ShowState)
@@ -186,6 +210,9 @@ namespace ExaltAccountManager
 
         public static void OpenedVaultPeeker(bool setOpen = true)
         {
+            if (!isInitialized)
+                return;
+
             if (setOpen)
                 vaultPeekerOpen = true;
 
@@ -202,6 +229,9 @@ namespace ExaltAccountManager
 
         public static void ClosedVaultPeeker()
         {
+            if (!isInitialized)
+                return;
+
             vaultPeekerOpen = false;
 
             if (discordOptions.ShowState)
@@ -285,6 +315,9 @@ namespace ExaltAccountManager
 
         public static void UpdateMenu(Menu? _menu)
         {
+            if (!isInitialized)
+                return;
+
             if (_menu != null)
             {
                 menu = (Menu)_menu;
