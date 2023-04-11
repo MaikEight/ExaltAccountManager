@@ -14,6 +14,16 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
+                ReleaseDate = new DateTime(2023, 04, 11),
+                Version = new Version(3, 1, 1),
+                Name = "HotFix",
+                Description = $"<b>BUG FIXES</b>{Environment.NewLine}" +
+                              $"- Fixed a critical bug that lead to EAM not starting if there is no options file present.{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;Thanks to <b>Rutsy</b> for reporting the issue.{Environment.NewLine}" +
+                              $"- Fixed the button-sidebar moving to the News section on startup."
+            },
+            new ChangelogEntry()
+            {
               ReleaseDate = new DateTime(2023, 04, 09),
               Version = new Version(3, 1, 0),
               Name = "Captcha Support, News, installer, bug fixes and much more",

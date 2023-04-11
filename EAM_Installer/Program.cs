@@ -10,9 +10,7 @@ namespace EAM_Installer
     {
         private const string productName = "Exalt Account Manager";
         private static string directoryPath = System.IO.Path.Combine("%ProgramFiles%", "Maik8", "ExaltAccountManager");
-        //C:\Users\Maik8\source\repos\ExaltAccountManager\_Releases\ExaltAccountManager_PRE_V3_1_0_R5
-        private const string eamFiles = "C:\\Users\\Maik8\\source\\repos\\ExaltAccountManager\\_Releases\\ExaltAccountManager_V3_1_0";
-        //private const string eamFiles = "..\\_Releases\\ExaltAccountManager_PRE_V3_1_0_R5";
+        private const string eamFiles = "C:\\Users\\Maik8\\source\\repos\\ExaltAccountManager\\_Releases\\ExaltAccountManager_V3_1_1";
 
         static void Main()
         {

@@ -6,7 +6,7 @@
 </auto-generated>
 -->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="e24ce796-65dd-43e9-9293-e929d39259ac" Name="Exalt Account Manager" Language="1033" Codepage="Windows-1252" Version="1.0.0.0" UpgradeCode="45414d20-0000-6279-0000-204d61696b38" Manufacturer="Maik8">
+  <Product Id="79636bb4-de7c-4b88-9daa-55a7498c1487" Name="Exalt Account Manager" Language="1033" Codepage="Windows-1252" Version="1.0.0.0" UpgradeCode="45414d20-0000-6279-0000-204d61696b38" Manufacturer="Maik8">
     <Package InstallerVersion="200" Compressed="yes" Platform="x64" SummaryCodepage="Windows-1252" Languages="1033" />
     <Media Id="1" Cabinet="Exalt20Account20Manager.cab" EmbedCab="yes" />
 
@@ -15,26 +15,26 @@
         <Directory Id="Maik8_" Name="Maik8">
           <Directory Id="INSTALLDIR" Name="ExaltAccountManager">
 
-            <Component Id="Component.EAM20PingChecker.exe_552686880" Guid="e24ce796-65dd-43e9-9293-e9294c10e8ca" Win64="yes">
-              <File Id="EAM20PingChecker.exe_552686880" Source="..\_Releases\ExaltAccountManager_V3_1_0\EAM PingChecker.exe" />
+            <Component Id="Component.EAM20PingChecker.exe_212211465" Guid="79636bb4-de7c-4b88-9daa-55a78b0992d1" Win64="yes">
+              <File Id="EAM20PingChecker.exe_212211465" Source="..\_Releases\ExaltAccountManager_V3_1_1\EAM PingChecker.exe" />
             </Component>
 
-            <Component Id="Component.EAM20Statistics.exe_1414446805" Guid="e24ce796-65dd-43e9-9293-e92908b67844" Win64="yes">
-              <File Id="EAM20Statistics.exe_1414446805" Source="..\_Releases\ExaltAccountManager_V3_1_0\EAM Statistics.exe" />
+            <Component Id="Component.EAM20Statistics.exe_2153319164" Guid="79636bb4-de7c-4b88-9daa-55a795207f38" Win64="yes">
+              <File Id="EAM20Statistics.exe_2153319164" Source="..\_Releases\ExaltAccountManager_V3_1_1\EAM Statistics.exe" />
             </Component>
 
-            <Component Id="Component.EAM20Vault20Peeker.exe_2901380570" Guid="e24ce796-65dd-43e9-9293-e929255fda1a" Win64="yes">
-              <File Id="EAM20Vault20Peeker.exe_2901380570" Source="..\_Releases\ExaltAccountManager_V3_1_0\EAM Vault Peeker.exe" />
+            <Component Id="Component.EAM20Vault20Peeker.exe_2893070099" Guid="79636bb4-de7c-4b88-9daa-55a7e784b621" Win64="yes">
+              <File Id="EAM20Vault20Peeker.exe_2893070099" Source="..\_Releases\ExaltAccountManager_V3_1_1\EAM Vault Peeker.exe" />
             </Component>
 
-            <Component Id="Component.EAM_Updater.exe_2891327518" Guid="e24ce796-65dd-43e9-9293-e929f7c50243" Win64="yes">
-              <File Id="EAM_Updater.exe_2891327518" Source="..\_Releases\ExaltAccountManager_V3_1_0\EAM_Updater.exe" />
+            <Component Id="Component.EAM_Updater.exe_3802658669" Guid="79636bb4-de7c-4b88-9daa-55a725342e9d" Win64="yes">
+              <File Id="EAM_Updater.exe_3802658669" Source="..\_Releases\ExaltAccountManager_V3_1_1\EAM_Updater.exe" />
             </Component>
 
-            <Component Id="Component.ExaltAccountManager.exe_3920842257" Guid="e24ce796-65dd-43e9-9293-e9299e3b63e7" Win64="yes">
-              <File Id="ExaltAccountManager.exe_3920842257" Source="..\_Releases\ExaltAccountManager_V3_1_0\ExaltAccountManager.exe">
-                <Shortcut Id="Shortcut.ExaltAccountManager.exe_3920842257.Exalt20Account20Manager_" WorkingDirectory="INSTALLDIR" Directory="DesktopFolder" Name="Exalt Account Manager.lnk" />
-                <Shortcut Id="Shortcut.ExaltAccountManager.exe_3920842257.Exalt20Account20Manager.1" WorkingDirectory="INSTALLDIR" Directory="ProgramMenuFolder" Name="Exalt Account Manager.lnk" />
+            <Component Id="Component.ExaltAccountManager.exe_641944423" Guid="79636bb4-de7c-4b88-9daa-55a7ae291a0e" Win64="yes">
+              <File Id="ExaltAccountManager.exe_641944423" Source="..\_Releases\ExaltAccountManager_V3_1_1\ExaltAccountManager.exe">
+                <Shortcut Id="Shortcut.ExaltAccountManager.exe_641944423.Exalt20Account20Manager_" WorkingDirectory="INSTALLDIR" Directory="DesktopFolder" Name="Exalt Account Manager.lnk" />
+                <Shortcut Id="Shortcut.ExaltAccountManager.exe_641944423.Exalt20Account20Manager.1" WorkingDirectory="INSTALLDIR" Directory="ProgramMenuFolder" Name="Exalt Account Manager.lnk" />
               </File>
 
               <RegistryKey Root="HKCU" Key="Software\WixSharp\Used">
@@ -42,106 +42,106 @@
               </RegistryKey>
             </Component>
 
-            <Component Id="Component.items.cfg_1793133497" Guid="e24ce796-65dd-43e9-9293-e929daca838b" Win64="yes">
-              <File Id="items.cfg_1793133497" Source="..\_Releases\ExaltAccountManager_V3_1_0\items.cfg" />
+            <Component Id="Component.items.cfg_1713613248" Guid="79636bb4-de7c-4b88-9daa-55a7aa22ff26" Win64="yes">
+              <File Id="items.cfg_1713613248" Source="..\_Releases\ExaltAccountManager_V3_1_1\items.cfg" />
             </Component>
 
-            <Component Id="Component.LICENSE_3785994059" Guid="e24ce796-65dd-43e9-9293-e929deb04072" Win64="yes">
-              <File Id="LICENSE_3785994059" Source="..\_Releases\ExaltAccountManager_V3_1_0\LICENSE" />
+            <Component Id="Component.LICENSE_2301755346" Guid="79636bb4-de7c-4b88-9daa-55a7aad842d4" Win64="yes">
+              <File Id="LICENSE_2301755346" Source="..\_Releases\ExaltAccountManager_V3_1_1\LICENSE" />
             </Component>
 
-            <Component Id="Component.MK_EAM_Updater_Lib.dll_467530995" Guid="e24ce796-65dd-43e9-9293-e929525fc2b7" Win64="yes">
-              <File Id="MK_EAM_Updater_Lib.dll_467530995" Source="..\_Releases\ExaltAccountManager_V3_1_0\MK_EAM_Updater_Lib.dll" />
+            <Component Id="Component.MK_EAM_Updater_Lib.dll_893352898" Guid="79636bb4-de7c-4b88-9daa-55a702639887" Win64="yes">
+              <File Id="MK_EAM_Updater_Lib.dll_893352898" Source="..\_Releases\ExaltAccountManager_V3_1_1\MK_EAM_Updater_Lib.dll" />
             </Component>
 
-            <Component Id="Component.renders.png_2330022197" Guid="e24ce796-65dd-43e9-9293-e9292dfde11b" Win64="yes">
-              <File Id="renders.png_2330022197" Source="..\_Releases\ExaltAccountManager_V3_1_0\renders.png" />
+            <Component Id="Component.renders.png_1135288596" Guid="79636bb4-de7c-4b88-9daa-55a7bbc96d95" Win64="yes">
+              <File Id="renders.png_1135288596" Source="..\_Releases\ExaltAccountManager_V3_1_1\renders.png" />
             </Component>
 
             <Directory Id="Credits" Name="Credits">
 
-              <Component Id="Component.Costura.License_2885389221" Guid="e24ce796-65dd-43e9-9293-e929d9d91165" Win64="yes">
-                <File Id="Costura.License_2885389221" Source="..\_Releases\ExaltAccountManager_V3_1_0\Credits\Costura.License" />
+              <Component Id="Component.Costura.License_4190641825" Guid="79636bb4-de7c-4b88-9daa-55a7976e82c0" Win64="yes">
+                <File Id="Costura.License_4190641825" Source="..\_Releases\ExaltAccountManager_V3_1_1\Credits\Costura.License" />
               </Component>
 
-              <Component Id="Component.CsvHelper.License_316264875" Guid="e24ce796-65dd-43e9-9293-e929ff5950df" Win64="yes">
-                <File Id="CsvHelper.License_316264875" Source="..\_Releases\ExaltAccountManager_V3_1_0\Credits\CsvHelper.License" />
+              <Component Id="Component.CsvHelper.License_1296649709" Guid="79636bb4-de7c-4b88-9daa-55a73d90cab3" Win64="yes">
+                <File Id="CsvHelper.License_1296649709" Source="..\_Releases\ExaltAccountManager_V3_1_1\Credits\CsvHelper.License" />
               </Component>
 
-              <Component Id="Component.discord2drpc2dcsharp.License_1565067493" Guid="e24ce796-65dd-43e9-9293-e929d5374da3" Win64="yes">
-                <File Id="discord2drpc2dcsharp.License_1565067493" Source="..\_Releases\ExaltAccountManager_V3_1_0\Credits\discord-rpc-csharp.License" />
+              <Component Id="Component.discord2drpc2dcsharp.License_3082877202" Guid="79636bb4-de7c-4b88-9daa-55a7a0b746ea" Win64="yes">
+                <File Id="discord2drpc2dcsharp.License_3082877202" Source="..\_Releases\ExaltAccountManager_V3_1_1\Credits\discord-rpc-csharp.License" />
               </Component>
 
-              <Component Id="Component.Fody.License_3455891354" Guid="e24ce796-65dd-43e9-9293-e9298552527e" Win64="yes">
-                <File Id="Fody.License_3455891354" Source="..\_Releases\ExaltAccountManager_V3_1_0\Credits\Fody.License" />
+              <Component Id="Component.Fody.License_3715240897" Guid="79636bb4-de7c-4b88-9daa-55a71f6d3a47" Win64="yes">
+                <File Id="Fody.License_3715240897" Source="..\_Releases\ExaltAccountManager_V3_1_1\Credits\Fody.License" />
               </Component>
 
-              <Component Id="Component.Newtonsoft.Json.License_2961040617" Guid="e24ce796-65dd-43e9-9293-e9299a9294bd" Win64="yes">
-                <File Id="Newtonsoft.Json.License_2961040617" Source="..\_Releases\ExaltAccountManager_V3_1_0\Credits\Newtonsoft.Json.License" />
+              <Component Id="Component.Newtonsoft.Json.License_254199709" Guid="79636bb4-de7c-4b88-9daa-55a76625b89e" Win64="yes">
+                <File Id="Newtonsoft.Json.License_254199709" Source="..\_Releases\ExaltAccountManager_V3_1_1\Credits\Newtonsoft.Json.License" />
               </Component>
 
-              <Component Id="Component.TaskScheduler.License_4033535866" Guid="e24ce796-65dd-43e9-9293-e9293d4f2a38" Win64="yes">
-                <File Id="TaskScheduler.License_4033535866" Source="..\_Releases\ExaltAccountManager_V3_1_0\Credits\TaskScheduler.License" />
+              <Component Id="Component.TaskScheduler.License_764999772" Guid="79636bb4-de7c-4b88-9daa-55a79721efab" Win64="yes">
+                <File Id="TaskScheduler.License_764999772" Source="..\_Releases\ExaltAccountManager_V3_1_1\Credits\TaskScheduler.License" />
               </Component>
 
-              <Component Id="Component.wixsharp.License_1180769841" Guid="e24ce796-65dd-43e9-9293-e9291478836c" Win64="yes">
-                <File Id="wixsharp.License_1180769841" Source="..\_Releases\ExaltAccountManager_V3_1_0\Credits\wixsharp.License" />
+              <Component Id="Component.wixsharp.License_3444905204" Guid="79636bb4-de7c-4b88-9daa-55a7317401fd" Win64="yes">
+                <File Id="wixsharp.License_3444905204" Source="..\_Releases\ExaltAccountManager_V3_1_1\Credits\wixsharp.License" />
               </Component>
 
             </Directory>
 
             <Directory Id="DailyService" Name="DailyService">
 
-              <Component Id="Component.EAM20Daily20Login20Service.exe_1515881018" Guid="e24ce796-65dd-43e9-9293-e929d3825906" Win64="yes">
-                <File Id="EAM20Daily20Login20Service.exe_1515881018" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\EAM Daily Login Service.exe" />
+              <Component Id="Component.EAM20Daily20Login20Service.exe_1677211851" Guid="79636bb4-de7c-4b88-9daa-55a7d0c421b8" Win64="yes">
+                <File Id="EAM20Daily20Login20Service.exe_1677211851" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\EAM Daily Login Service.exe" />
               </Component>
 
-              <Component Id="Component.ExaltAccountManager.exe_47781450" Guid="e24ce796-65dd-43e9-9293-e929906d8f76" Win64="yes">
-                <File Id="ExaltAccountManager.exe_47781450" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\ExaltAccountManager.exe" />
+              <Component Id="Component.ExaltAccountManager.exe_696312919" Guid="79636bb4-de7c-4b88-9daa-55a76a5b8221" Win64="yes">
+                <File Id="ExaltAccountManager.exe_696312919" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\ExaltAccountManager.exe" />
               </Component>
 
-              <Component Id="Component.Microsoft.Bcl.AsyncInterfaces.dll_3404769260" Guid="e24ce796-65dd-43e9-9293-e929f085b170" Win64="yes">
-                <File Id="Microsoft.Bcl.AsyncInterfaces.dll_3404769260" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\Microsoft.Bcl.AsyncInterfaces.dll" />
+              <Component Id="Component.Microsoft.Bcl.AsyncInterfaces.dll_3950628912" Guid="79636bb4-de7c-4b88-9daa-55a75cb8079b" Win64="yes">
+                <File Id="Microsoft.Bcl.AsyncInterfaces.dll_3950628912" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\Microsoft.Bcl.AsyncInterfaces.dll" />
               </Component>
 
-              <Component Id="Component.Microsoft.Bcl.HashCode.dll_746460795" Guid="e24ce796-65dd-43e9-9293-e929d98e6712" Win64="yes">
-                <File Id="Microsoft.Bcl.HashCode.dll_746460795" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\Microsoft.Bcl.HashCode.dll" />
+              <Component Id="Component.Microsoft.Bcl.HashCode.dll_1234266699" Guid="79636bb4-de7c-4b88-9daa-55a7d1e0bbb0" Win64="yes">
+                <File Id="Microsoft.Bcl.HashCode.dll_1234266699" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\Microsoft.Bcl.HashCode.dll" />
               </Component>
 
-              <Component Id="Component.MK_EAM_Lib.dll_1032671836" Guid="e24ce796-65dd-43e9-9293-e929d3da9956" Win64="yes">
-                <File Id="MK_EAM_Lib.dll_1032671836" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\MK_EAM_Lib.dll" />
+              <Component Id="Component.MK_EAM_Lib.dll_2388130695" Guid="79636bb4-de7c-4b88-9daa-55a7205428de" Win64="yes">
+                <File Id="MK_EAM_Lib.dll_2388130695" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\MK_EAM_Lib.dll" />
               </Component>
 
-              <Component Id="Component.Newtonsoft.Json.dll_320181928" Guid="e24ce796-65dd-43e9-9293-e929cadab5f8" Win64="yes">
-                <File Id="Newtonsoft.Json.dll_320181928" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\Newtonsoft.Json.dll" />
+              <Component Id="Component.Newtonsoft.Json.dll_2295377498" Guid="79636bb4-de7c-4b88-9daa-55a7fa18b463" Win64="yes">
+                <File Id="Newtonsoft.Json.dll_2295377498" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\Newtonsoft.Json.dll" />
               </Component>
 
-              <Component Id="Component.System.Buffers.dll_2012783537" Guid="e24ce796-65dd-43e9-9293-e9294eb16246" Win64="yes">
-                <File Id="System.Buffers.dll_2012783537" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\System.Buffers.dll" />
+              <Component Id="Component.System.Buffers.dll_2101239387" Guid="79636bb4-de7c-4b88-9daa-55a70850d37c" Win64="yes">
+                <File Id="System.Buffers.dll_2101239387" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\System.Buffers.dll" />
               </Component>
 
-              <Component Id="Component.System.Memory.dll_3503635523" Guid="e24ce796-65dd-43e9-9293-e92983b93456" Win64="yes">
-                <File Id="System.Memory.dll_3503635523" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\System.Memory.dll" />
+              <Component Id="Component.System.Memory.dll_243618008" Guid="79636bb4-de7c-4b88-9daa-55a750db24f7" Win64="yes">
+                <File Id="System.Memory.dll_243618008" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\System.Memory.dll" />
               </Component>
 
-              <Component Id="Component.System.Numerics.Vectors.dll_2391758154" Guid="e24ce796-65dd-43e9-9293-e9295193ac90" Win64="yes">
-                <File Id="System.Numerics.Vectors.dll_2391758154" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\System.Numerics.Vectors.dll" />
+              <Component Id="Component.System.Numerics.Vectors.dll_320273024" Guid="79636bb4-de7c-4b88-9daa-55a7003c468e" Win64="yes">
+                <File Id="System.Numerics.Vectors.dll_320273024" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\System.Numerics.Vectors.dll" />
               </Component>
 
-              <Component Id="Component.System.Runtime.CompilerServices.Unsafe.dll_1455242047" Guid="e24ce796-65dd-43e9-9293-e929fc8409a1" Win64="yes">
-                <File Id="System.Runtime.CompilerServices.Unsafe.dll_1455242047" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\System.Runtime.CompilerServices.Unsafe.dll" />
+              <Component Id="Component.System.Runtime.CompilerServices.Unsafe.dll_2810737919" Guid="79636bb4-de7c-4b88-9daa-55a79ec3c3de" Win64="yes">
+                <File Id="System.Runtime.CompilerServices.Unsafe.dll_2810737919" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\System.Runtime.CompilerServices.Unsafe.dll" />
               </Component>
 
-              <Component Id="Component.System.Threading.Tasks.Extensions.dll_2209605174" Guid="e24ce796-65dd-43e9-9293-e929cf8605d3" Win64="yes">
-                <File Id="System.Threading.Tasks.Extensions.dll_2209605174" Source="..\_Releases\ExaltAccountManager_V3_1_0\DailyService\System.Threading.Tasks.Extensions.dll" />
+              <Component Id="Component.System.Threading.Tasks.Extensions.dll_1139743321" Guid="79636bb4-de7c-4b88-9daa-55a714494fc0" Win64="yes">
+                <File Id="System.Threading.Tasks.Extensions.dll_1139743321" Source="..\_Releases\ExaltAccountManager_V3_1_1\DailyService\System.Threading.Tasks.Extensions.dll" />
               </Component>
 
             </Directory>
 
             <Directory Id="Notification_Center" Name="Notification_Center">
 
-              <Component Id="Component.EAM20Notification20Center.exe_272042813" Guid="e24ce796-65dd-43e9-9293-e929cfb032a8" Win64="yes">
-                <File Id="EAM20Notification20Center.exe_272042813" Source="..\_Releases\ExaltAccountManager_V3_1_0\Notification_Center\EAM Notification Center.exe" />
+              <Component Id="Component.EAM20Notification20Center.exe_305688146" Guid="79636bb4-de7c-4b88-9daa-55a7ba550bf3" Win64="yes">
+                <File Id="EAM20Notification20Center.exe_305688146" Source="..\_Releases\ExaltAccountManager_V3_1_1\Notification_Center\EAM Notification Center.exe" />
               </Component>
 
             </Directory>
@@ -151,7 +151,7 @@
 
       <Directory Id="DesktopFolder" Name="DesktopFolder">
 
-        <Component Id="Component.DesktopFolder.EmptyDirectory" Guid="e24ce796-65dd-43e9-9293-e92912acfab2" Win64="yes">
+        <Component Id="Component.DesktopFolder.EmptyDirectory" Guid="79636bb4-de7c-4b88-9daa-55a788a6b58d" Win64="yes">
           <CreateFolder />
 
           <RegistryKey Root="HKCU" Key="Software\WixSharp\Used">
@@ -163,7 +163,7 @@
 
       <Directory Id="ProgramMenuFolder" Name="ProgramMenuFolder">
 
-        <Component Id="Component.ProgramMenuFolder.EmptyDirectory" Guid="e24ce796-65dd-43e9-9293-e9292554dad1" Win64="yes">
+        <Component Id="Component.ProgramMenuFolder.EmptyDirectory" Guid="79636bb4-de7c-4b88-9daa-55a79b4e95ac" Win64="yes">
           <CreateFolder />
 
           <RegistryKey Root="HKCU" Key="Software\WixSharp\Used">
@@ -173,7 +173,7 @@
 
       </Directory>
 
-      <Component Id="TARGETDIR" Guid="e24ce796-65dd-43e9-9293-e9294662c91f" KeyPath="yes" Win64="yes">
+      <Component Id="TARGETDIR" Guid="79636bb4-de7c-4b88-9daa-55a7bc5c84fa" KeyPath="yes" Win64="yes">
         <CreateFolder />
         <RemoveFolder Id="TARGETDIR" On="uninstall" />
       </Component>
@@ -196,34 +196,34 @@
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
 
     <Feature Id="Complete" Title="Complete" Absent="allow" Level="1">
-      <ComponentRef Id="Component.EAM20PingChecker.exe_552686880" />
-      <ComponentRef Id="Component.EAM20Statistics.exe_1414446805" />
-      <ComponentRef Id="Component.EAM20Vault20Peeker.exe_2901380570" />
-      <ComponentRef Id="Component.EAM_Updater.exe_2891327518" />
-      <ComponentRef Id="Component.ExaltAccountManager.exe_3920842257" />
-      <ComponentRef Id="Component.items.cfg_1793133497" />
-      <ComponentRef Id="Component.LICENSE_3785994059" />
-      <ComponentRef Id="Component.MK_EAM_Updater_Lib.dll_467530995" />
-      <ComponentRef Id="Component.renders.png_2330022197" />
-      <ComponentRef Id="Component.Costura.License_2885389221" />
-      <ComponentRef Id="Component.CsvHelper.License_316264875" />
-      <ComponentRef Id="Component.discord2drpc2dcsharp.License_1565067493" />
-      <ComponentRef Id="Component.Fody.License_3455891354" />
-      <ComponentRef Id="Component.Newtonsoft.Json.License_2961040617" />
-      <ComponentRef Id="Component.TaskScheduler.License_4033535866" />
-      <ComponentRef Id="Component.wixsharp.License_1180769841" />
-      <ComponentRef Id="Component.EAM20Daily20Login20Service.exe_1515881018" />
-      <ComponentRef Id="Component.ExaltAccountManager.exe_47781450" />
-      <ComponentRef Id="Component.Microsoft.Bcl.AsyncInterfaces.dll_3404769260" />
-      <ComponentRef Id="Component.Microsoft.Bcl.HashCode.dll_746460795" />
-      <ComponentRef Id="Component.MK_EAM_Lib.dll_1032671836" />
-      <ComponentRef Id="Component.Newtonsoft.Json.dll_320181928" />
-      <ComponentRef Id="Component.System.Buffers.dll_2012783537" />
-      <ComponentRef Id="Component.System.Memory.dll_3503635523" />
-      <ComponentRef Id="Component.System.Numerics.Vectors.dll_2391758154" />
-      <ComponentRef Id="Component.System.Runtime.CompilerServices.Unsafe.dll_1455242047" />
-      <ComponentRef Id="Component.System.Threading.Tasks.Extensions.dll_2209605174" />
-      <ComponentRef Id="Component.EAM20Notification20Center.exe_272042813" />
+      <ComponentRef Id="Component.EAM20PingChecker.exe_212211465" />
+      <ComponentRef Id="Component.EAM20Statistics.exe_2153319164" />
+      <ComponentRef Id="Component.EAM20Vault20Peeker.exe_2893070099" />
+      <ComponentRef Id="Component.EAM_Updater.exe_3802658669" />
+      <ComponentRef Id="Component.ExaltAccountManager.exe_641944423" />
+      <ComponentRef Id="Component.items.cfg_1713613248" />
+      <ComponentRef Id="Component.LICENSE_2301755346" />
+      <ComponentRef Id="Component.MK_EAM_Updater_Lib.dll_893352898" />
+      <ComponentRef Id="Component.renders.png_1135288596" />
+      <ComponentRef Id="Component.Costura.License_4190641825" />
+      <ComponentRef Id="Component.CsvHelper.License_1296649709" />
+      <ComponentRef Id="Component.discord2drpc2dcsharp.License_3082877202" />
+      <ComponentRef Id="Component.Fody.License_3715240897" />
+      <ComponentRef Id="Component.Newtonsoft.Json.License_254199709" />
+      <ComponentRef Id="Component.TaskScheduler.License_764999772" />
+      <ComponentRef Id="Component.wixsharp.License_3444905204" />
+      <ComponentRef Id="Component.EAM20Daily20Login20Service.exe_1677211851" />
+      <ComponentRef Id="Component.ExaltAccountManager.exe_696312919" />
+      <ComponentRef Id="Component.Microsoft.Bcl.AsyncInterfaces.dll_3950628912" />
+      <ComponentRef Id="Component.Microsoft.Bcl.HashCode.dll_1234266699" />
+      <ComponentRef Id="Component.MK_EAM_Lib.dll_2388130695" />
+      <ComponentRef Id="Component.Newtonsoft.Json.dll_2295377498" />
+      <ComponentRef Id="Component.System.Buffers.dll_2101239387" />
+      <ComponentRef Id="Component.System.Memory.dll_243618008" />
+      <ComponentRef Id="Component.System.Numerics.Vectors.dll_320273024" />
+      <ComponentRef Id="Component.System.Runtime.CompilerServices.Unsafe.dll_2810737919" />
+      <ComponentRef Id="Component.System.Threading.Tasks.Extensions.dll_1139743321" />
+      <ComponentRef Id="Component.EAM20Notification20Center.exe_305688146" />
       <ComponentRef Id="Component.DesktopFolder.EmptyDirectory" />
       <ComponentRef Id="Component.ProgramMenuFolder.EmptyDirectory" />
       <ComponentRef Id="TARGETDIR" />

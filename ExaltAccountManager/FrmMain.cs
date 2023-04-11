@@ -24,7 +24,7 @@ namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 1, 0);
+        public readonly Version version = new Version(3, 1, 1);
         public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
         public event EventHandler ThemeChanged;
 
