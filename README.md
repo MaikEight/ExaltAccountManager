@@ -175,7 +175,7 @@ Last puchase: The awesome, custom made application-logo.
 </a>
 <a href="https://icons8.com">
   <img
-    src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/Icons/Images/Icons8_badge.svg"
+    src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/Icons/Images/Icons8_badge.svg"
     alt="Icons8"
   />
 </a>
