@@ -167,13 +167,21 @@ Last puchase: The awesome, custom made application-logo.
 
 ## Credits 💚
 
-<b>Big</b> thanks to [Icons8](https://icons8.com/icons) for all the beautiful Icons / Images used in this project.
-
-And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the commits & markdown files. 
-
 <a href="https://gitmoji.dev">
   <img
     src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat"
     alt="Gitmoji"
   />
 </a>
+<a href="https://icons8.com">
+  <img
+    src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/develop/Icons/Images/Icons8_badge.svg"
+    alt="Icons8"
+  />
+</a>
+
+<b>Big</b> thanks to [Icons8](https://icons8.com/icons) for all the beautiful Icons / Images used in this project.
+
+And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the commits & markdown files. 
+
+
