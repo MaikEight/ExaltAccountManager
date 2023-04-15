@@ -574,7 +574,13 @@ namespace ExaltAccountManager.UI
 
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
             {
-                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(_info.Name), true, RenewTokenFinished_Invoker);
+                bool result = CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(_info.Name), true, RenewTokenFinished_Invoker);
+
+                if (!result)
+                {
+                    frm.ShowSnackbar("Captcha failed, please try again.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
+                }
+                
                 return true;
             }
 
