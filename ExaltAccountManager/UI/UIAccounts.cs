@@ -575,6 +575,7 @@ namespace ExaltAccountManager.UI
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
             {
                 CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(_info.Name), true, RenewTokenFinished_Invoker);
+                return true;
             }
 
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Success)
