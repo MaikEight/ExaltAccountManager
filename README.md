@@ -121,7 +121,7 @@ Ping Checker                                              | Vault Peeker
 ![Ping checker](https://i.imgur.com/txUcbFT.gif)          | ![Vault Peeker](https://i.imgur.com/IfFbpMy.png)
 
 ## Need support or have questions? 📝
-Just join my discord server and leave me a message in the help-request / general channel and you will be surprised about the response times!
+Join my Discord server and leave a message in the help-request or general channel. I respond to inquiries promptly!
 
 Don't have discord? 
 
@@ -142,10 +142,14 @@ If you want to contribut to this project, please leave me a message in discord a
 
 <b>Can't code but want to help anyways?</b>
 
-Preview-testers and feedback is important aswell, if you have a minute to write me your thought about EAM and how it could be improved, please do.
+Version-Tests and feedback are important aswell, if you have a minute to write me your thought about EAM and how it could be improved, please do.
 
 If you want, you can donate a buck or two, any money generated will be re-invested into this project.
-Last puchase: The awesome, custom made application-logo.
+Puchases: 
+- The awesome, custom made application-logo.
+- The domain exalt-account-manager.eu.
+- A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
+- An Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
 
 <b>Any help is greatly appreciated</b> 🍻
 
