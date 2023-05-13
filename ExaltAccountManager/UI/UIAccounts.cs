@@ -422,8 +422,27 @@ namespace ExaltAccountManager.UI
 
                 SaveLoginStats(_info);
 
+                Task<bool> analyticsAddLogin = null;
+                if (!frm.OptionsData.analyticsOptions.OptOut)
+                {
+                    analyticsAddLogin = AnalyticsClient.Instance?.AddLogin(frm.GetAnalyticsEmailHash(_info.Email), GetServerName(_info.serverName));
+                }
+
                 if (frm.OptionsData.closeAfterConnection)
-                { Environment.Exit(0); }
+                { 
+                    //Hide the form during the closing process
+                    frm.WindowState = FormWindowState.Minimized;
+                    frm.ShowInTaskbar = false;
+
+                    try
+                    {
+                        if (analyticsAddLogin != null)
+                            analyticsAddLogin.Wait(5000);
+                    }
+                    catch { }
+                    
+                    Environment.Exit(0); 
+                }
                 else
                 {
                     if (!dicAccountsToProcesses.ContainsKey(_info))
@@ -447,12 +466,7 @@ namespace ExaltAccountManager.UI
                     string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
                     DiscordHelper.SetState(state);
                     DiscordHelper.ApplyPresence();
-                }
-
-                if (!frm.OptionsData.analyticsOptions.OptOut)
-                {
-                    AnalyticsClient.Instance?.AddLogin(frm.GetAnalyticsEmailHash(_info.Email), GetServerName(_info.serverName));
-                }
+                }                
             }
             catch
             {
