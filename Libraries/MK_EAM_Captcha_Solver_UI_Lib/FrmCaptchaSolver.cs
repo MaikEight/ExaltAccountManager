@@ -44,7 +44,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         public FrmCaptchaSolver(AccountInfo _accountInfo, bool useDarkmode = false)
         {
             InitializeComponent();
-
+            
             formDock.SubscribeControlsToDragEvents(new Control[] { pHeader, pbHeader, lEAMHead, lHeaderCaptchaAid, lBeta });            
 
             accountInfo = _accountInfo;
@@ -169,7 +169,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             }
 
             lTriesLeft.Text = $"Tries left\n{captchaRefresh.submitsLeft}";
-            pbCaptchaQuestion.LoadAsync(captchaRefresh.qimg);
+            pbCaptchaQuestion.LoadAsync(captchaRefresh.qimg);            
             pbCaptchaMain.LoadAsync(captchaRefresh.img);
 
             pContent.Visible = 

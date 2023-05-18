@@ -329,6 +329,6 @@ namespace MK_EAM_Analytics
             return false;
 
             #endregion
-        }
+        }        
     }
 }

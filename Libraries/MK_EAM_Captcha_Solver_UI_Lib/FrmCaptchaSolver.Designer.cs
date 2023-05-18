@@ -489,15 +489,16 @@
             // label2
             // 
             this.label2.AutoEllipsis = true;
-            this.label2.AutoSize = true;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(74, 3);
+            this.label2.Location = new System.Drawing.Point(0, 0);
             this.label2.Margin = new System.Windows.Forms.Padding(0);
             this.label2.MaximumSize = new System.Drawing.Size(290, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(142, 21);
+            this.label2.Size = new System.Drawing.Size(290, 29);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Find the following";
+            this.label2.Text = "Find the following in order";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.label2.UseMnemonic = false;
             // 
             // formDock
@@ -575,7 +576,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaMain)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaQuestion)).EndInit();
             this.pCaptchaText.ResumeLayout(false);
-            this.pCaptchaText.PerformLayout();
             this.ResumeLayout(false);
 
         }

@@ -19,6 +19,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MK_EAM_General_Services_Lib.General.Responses;
 
 namespace ExaltAccountManager
 {
@@ -100,6 +101,8 @@ namespace ExaltAccountManager
         }
         private bool hasNewNews = false;
         public DateTime LastNewsViewed { get; internal set; } = DateTime.MinValue;
+        public DiscordUser DiscordUser { get; internal set; } = null;
+
         private GameUpdater gameUpdater { get; set; }
 
         private UIAccounts uiAccounts;
@@ -429,6 +432,7 @@ namespace ExaltAccountManager
                     OptionsData.discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
                 }
 
+                DiscordHelper.OnDiscordConnectionChanged += DiscordHelper_OnDiscordConnectionChanged;
                 DiscordHelper.Initialize(OptionsData.discordOptions,
                                          this,
                                          autoEvents: false,
@@ -507,6 +511,84 @@ namespace ExaltAccountManager
                 EAMNotificationMessage.GetEAMNotificationMessage(version.ToString(), (EAMNotificationMessage msg) => NotificationMessageInvoker(msg));
 
             this.Show();
+        }
+
+        private void DiscordHelper_OnDiscordConnectionChanged(object sender, bool isConnected)
+        {
+            if (isConnected && DiscordUser == null)
+            {
+                //Request discord user
+                //If no user is found, ask if the user wants to create a connection
+                ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+                {
+                    CancellationToken token = (CancellationToken)obj;
+                    try
+                    {
+                        Task<DiscordUser> task = GeneralServicesClient.Instance?.GetDiscordUser(GetAPIClientIdHash(false));
+                        while (!task.IsCompleted)
+                        {
+                            if (token.IsCancellationRequested)
+                            {
+                                LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to fetch stored discord user data."));
+
+                                return;
+                            }
+
+                            await Task.Delay(50, token);
+                        }
+                        DiscordUser = task.Result;
+
+                        if (DiscordUser != null && DiscordUser.DiscordUserId.Equals("NotFound"))
+                        { //No discord user found
+                            DiscordUser = null;
+                            if (MessageBox.Show("No Discord user found for this EAM-Account." + Environment.NewLine +
+                                $"Would you like connect {DiscordHelper.GetUserName()} with your EAM-Account?" + Environment.NewLine +
+                                "This would allow the EAM-Discord-Bot to grant you roles based on certain achievements.",
+                                "No Discord user found",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification, false) == DialogResult.Yes)
+                            {
+                                ulong discordId = DiscordHelper.GetUserId();
+                                if (discordId == ulong.MaxValue)
+                                {
+                                    LogEvent(new MK_EAM_Lib.LogData(
+                                        "EAM",
+                                        MK_EAM_Lib.LogEventType.EAMError,
+                                        "Failed to set discord user id."));
+                                    return;
+                                }
+
+                                GeneralServicesClient.Instance?.PostDiscordUser(GetAPIClientIdHash(false), discordId.ToString());
+                                while (!task.IsCompleted)
+                                {
+                                    if (token.IsCancellationRequested)
+                                    {
+                                        LogEvent(new MK_EAM_Lib.LogData(
+                                            "EAM",
+                                            MK_EAM_Lib.LogEventType.APIError,
+                                            "Failed to fetch stored discord user data."));
+
+                                        return;
+                                    }
+
+                                    await Task.Delay(50, token);
+                                }
+                                DiscordUser = task.Result;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                                   "EAM",
+                                   MK_EAM_Lib.LogEventType.APIError,
+                                   "Failed to fetch stored discord user data." + Environment.NewLine + "Exception: " + ex.Message));
+                    }
+                }), cancellationTokenSource.Token);
+            }
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
@@ -1718,6 +1800,8 @@ namespace ExaltAccountManager
 
             DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
             DiscordHelper.ApplyPresence();
+
+            var usr = DiscordHelper.GetUser();
 
             timerDiscordUpdater.Start();
 

@@ -1,4 +1,5 @@
-﻿using MK_EAM_Discord_Lib;
+﻿using MK_EAM_Analytics.Data;
+using MK_EAM_Discord_Lib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,12 +41,29 @@ namespace ExaltAccountManager
 
         private static bool isInitialized = false;  
 
+        public static bool IsConnected 
+        {
+            get => isConnected; 
+            set
+            {
+                isConnected = value;
+
+                OnDiscordConnectionChanged?.Invoke(null, isConnected);
+            }
+        }
+        private static bool isConnected = false;
+
+        public static event EventHandler<bool> OnDiscordConnectionChanged;
+
         public static void Initialize(DiscordOptions _discordOptions, FrmMain _frm, bool autoEvents = false, bool _updateOnChange = true)
         {
             discordOptions = _discordOptions;
             frm = _frm;
             frm.ThemeChanged += Frm_ThemeChanged;
             updateOnChange = _updateOnChange;
+
+            Discord.OnConnected += (object sender, EventArgs e) => IsConnected = true;
+            Discord.OnDisconnected += (object sender, EventArgs e) => IsConnected = false;
 
             Discord.Initialize(APPLICATION_ID, autoEvents: autoEvents);
             Discord.UpdateOnChange = false;
@@ -59,7 +77,7 @@ namespace ExaltAccountManager
             Discord.LargeImageKey = imageKey;
             Discord.LargeImageText = "Exalt Account Manager";
             Discord.UpdateOnChange = updateOnChange;
-            Discord.ApplyPresence();            
+            Discord.ApplyPresence();
         }
 
         private static void Frm_ThemeChanged(object sender, EventArgs e)
@@ -70,6 +88,10 @@ namespace ExaltAccountManager
             Discord.LargeImageKey = imageKey;
             Discord.ApplyPresence();
         }
+
+        public static object GetUser() => Discord.GetDiscordUser();
+        public static ulong GetUserId() => Discord.GetDiscordUserId();
+        public static string GetUserName() => Discord.GetDiscordUserName();
 
         public static void SetLlamaState()
         {
