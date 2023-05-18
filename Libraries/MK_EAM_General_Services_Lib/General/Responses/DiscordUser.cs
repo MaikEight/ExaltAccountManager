@@ -5,7 +5,7 @@ namespace MK_EAM_General_Services_Lib.General.Responses
     [System.Serializable]
     public sealed class DiscordUser
     {
-        public Guid DiscordUserId { get; set; }
+        public string DiscordUserId { get; set; }
         public DateTime LastSeen { get; set; }
         public DateTime FirstSeen { get; set; }
         public int AmountOfAccounts { get; set; }
