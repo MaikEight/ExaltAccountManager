@@ -52,7 +52,7 @@
     src="https://img.shields.io/github/downloads/MaikEight/ExaltAccountManager/total?label=Downloads"
     alt="Downloads" />
 </a>
-<a href="https://discord.gg/VNfxgPqbJ7" style="display: inline">
+<a href="https://discord.exalt-account-manager.eu" style="display: inline">
   <img
     src="https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord"
     alt="Discord server" />
@@ -130,7 +130,7 @@ Write me a email: mail@maik8.de
 ## Missing a feature or found a bug? 🐛
 Just open an issue here, write an email (mail@maik8.de) or join the discord.
 
-<a href="https://discord.gg/VNfxgPqbJ7">
+<a href="https://discord.exalt-account-manager.eu">
   <img
     src="https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord"
     alt="Discord server"
@@ -145,7 +145,7 @@ If you want to contribut to this project, please leave me a message in discord a
 Version-Tests and feedback are important aswell, if you have a minute to write me your thought about EAM and how it could be improved, please do.
 
 If you want, you can donate a buck or two, any money generated will be re-invested into this project.
-Puchases: 
+Purchases: 
 - The awesome, custom made application-logo.
 - The domain exalt-account-manager.eu.
 - A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
