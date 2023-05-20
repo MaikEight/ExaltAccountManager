@@ -75,6 +75,7 @@
             this.btnShowCredits = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.label8 = new System.Windows.Forms.Label();
             this.bunifuSeparator6 = new Bunifu.UI.WinForms.BunifuSeparator();
+            this.timerLogoGif = new System.Windows.Forms.Timer(this.components);
             bunifuElipse = new Bunifu.Framework.UI.BunifuElipse(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pbDeveloper)).BeginInit();
             this.bunifuShadowPanel3.SuspendLayout();
@@ -850,6 +851,11 @@
             this.bunifuSeparator6.Size = new System.Drawing.Size(104, 10);
             this.bunifuSeparator6.TabIndex = 13;
             // 
+            // timerLogoGif
+            // 
+            this.timerLogoGif.Interval = 5750;
+            this.timerLogoGif.Tick += new System.EventHandler(this.timerLogoGif_Tick);
+            // 
             // UIAbout
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -940,5 +946,6 @@
         private System.Windows.Forms.Label label8;
         private Bunifu.UI.WinForms.BunifuSeparator bunifuSeparator6;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnShowCredits;
+        private System.Windows.Forms.Timer timerLogoGif;
     }
 }

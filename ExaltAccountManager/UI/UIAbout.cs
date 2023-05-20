@@ -12,6 +12,7 @@ namespace ExaltAccountManager.UI
         private FrmMain frm;
         private EleCredits eleCredits;
 
+        private const string eamLogoGifUrl = "v1/ExaltAccountManager/logo/gif";
         public UIAbout(FrmMain _frm)
         {
             InitializeComponent();
@@ -52,8 +53,13 @@ namespace ExaltAccountManager.UI
             pbThanks.Image = frm.UseDarkmode ? Properties.Resources.birthday_cake_1_white_36px : Properties.Resources.birthday_cake_1_36px;
         }
 
+        private bool isInProgress = false;
+
         private void pbDev_Click(object sender, EventArgs e)
         {
+            if(isInProgress) return;
+
+            isInProgress = true;
             pbDevIcon.Image = Properties.Resources.llama;
             frm.SwitchLlamaState(true);
             DiscordHelper.SetLlamaState();
@@ -70,7 +76,7 @@ namespace ExaltAccountManager.UI
         private void pbBMAC_Click(object sender, EventArgs e) => linkBuyMeACoffe_LinkClicked(null, null);
         private void linkBuyMeACoffe_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start("https://www.buymeacoffee.com/Maik8");
         private void pbDiscord_Click(object sender, EventArgs e) => linkDiscord_LinkClicked(null, null);
-        private void linkDiscord_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start("https://discord.gg/VNfxgPqbJ7");
+        private void linkDiscord_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start(FrmMain.DISCORD_INVITE_URL);
         private void pbEmail_Click(object sender, EventArgs e) => linkEmail_LinkClicked(null, null);
         private void linkEmail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => System.Diagnostics.Process.Start("mailto:mail@maik8.de");
         private void pbRealmeye_Click(object sender, EventArgs e) => System.Diagnostics.Process.Start("https://www.realmeye.com/forum/u/MaikEight");
@@ -92,7 +98,17 @@ namespace ExaltAccountManager.UI
         {
             timerLlama.Stop();
             pbDevIcon.Image = frm.UseDarkmode ? Properties.Resources.ic_code_white_36dp : Properties.Resources.ic_code_black_36dp;
+            frm.ShowEamLogoGif(eamLogoGifUrl, (object s, EventArgs args) => { 
+                timerLogoGif.Start();
+            });
+        }
+
+        private void timerLogoGif_Tick(object sender, EventArgs e)
+        {
+            timerLogoGif.Stop();
             frm.SwitchLlamaState(false);
+            frm.HideEamLogoGif();
+            isInProgress = false;
         }
 
         private void pbReddit_MouseEnter(object sender, EventArgs e)
@@ -136,6 +152,6 @@ namespace ExaltAccountManager.UI
 
             eleCredits.ResetScrollbar();
             frm.ShowShadowForm(eleCredits);
-        }
+        }        
     }
 }

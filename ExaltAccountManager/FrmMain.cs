@@ -20,13 +20,17 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using MK_EAM_General_Services_Lib.General.Responses;
+using System.Drawing.Text;
 
 namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 1, 1);
+        public readonly Version version = new Version(3, 2, 0);
         public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
+        public const string DISCORD_INVITE_URL = "https://discord.exalt-account-manager.eu";
+        public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
+
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
@@ -88,7 +92,7 @@ namespace ExaltAccountManager
         private OptionsData optionsDataValue = new OptionsData();
         private bool drawConfigChangesIcon = false;
         public NotificationOptions notOpt = new NotificationOptions();
-        public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
+
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
         public bool HasNewNews
         {
@@ -2010,6 +2014,47 @@ namespace ExaltAccountManager
         }
 
         public void SwitchLlamaState(bool showLlama) => pbHeader.Image = showLlama ? Properties.Resources.llama : Properties.Resources.ic_account_balance_wallet_white_48dp;
+
+        public void ShowEamLogoGif(string _url, Action<object, EventArgs> action)
+        {
+            string url = API_BASE_URL + _url;
+
+            PictureBox pbDev = new PictureBox()
+            {
+                BackColor = Color.Transparent,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Dock = DockStyle.Fill,
+                Visible = false,
+                Tag = "Dev"
+            };
+            pHeader.Controls.Add(pbDev);
+            pbDev.BringToFront();
+
+            pbDev.LoadAsync(url);
+            pbDev.LoadCompleted += Execute;
+
+            void Execute(object sender, EventArgs e)
+            {
+                pbDev.Visible = true;
+                action?.Invoke(this, EventArgs.Empty);
+                pbDev.LoadCompleted -= Execute;
+            }
+        }
+
+        public void HideEamLogoGif()
+        {
+            PictureBox pb = pHeader.Controls.OfType<PictureBox>()
+                                .Where(p => p.Tag.Equals("Dev"))
+                                .FirstOrDefault();
+            if (pb != null)
+            {
+                pb.Visible = false;
+                pHeader.Controls.Remove(pb);
+                pb.Image = null;
+                pb.Dispose();
+                pb = null;
+            }
+        }
 
         private void FrmMain_SizeChanged(object sender, EventArgs e)
         {
