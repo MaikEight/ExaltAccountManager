@@ -52,7 +52,7 @@ namespace ExaltAccountManager.UI.Elements
 
             AddAccountsToDatagrid();
 
-            tbPath.Text = System.IO.Path.Combine(Application.StartupPath, $"{fileName}.EAMexport");
+            tbPath.Text = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"{fileName}.EAMexport");
             dropExport.SelectedIndex = 0;
         }
 
