@@ -571,7 +571,7 @@ namespace ExaltAccountManager.UI
             timerRenewChangeColor.Start();
             MK_EAM_Lib.AccountInfo info = GetAccountInfo(dataGridView.SelectedRows[0].Index);
 
-            dicLockRenewInfoToTime.Add(info, DateTime.Now.AddSeconds(60));
+            dicLockRenewInfoToTime.Add(info, DateTime.Now.AddSeconds(15));
 
             info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(info.Name), true, RenewTokenFinished_Invoker);
 
