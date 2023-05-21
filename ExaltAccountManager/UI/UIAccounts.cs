@@ -1339,6 +1339,9 @@ namespace ExaltAccountManager.UI
             toggleAllowDragNDrop.Enabled = !useQuerry;
             if (useQuerry)
                 toggleAllowDragNDrop.Checked = false;
+
+            if (dataGridView.Rows.Count > 0)
+                dataGridView.Rows[0].Selected = true;
         }
 
         #endregion
