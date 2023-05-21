@@ -176,3 +176,9 @@ C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debu
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\Bunifu.UI.WinForms.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\Bunifu.UI.WinForms.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\Bunifu.Licensing.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Captcha_Solver_UI_Lib.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\RestSharp.dll
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Updater_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Captcha_Solver_UI_Lib.pdb
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\MK_EAM_Captcha_Solver_UI_Lib.dll.config
+C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Debug\RestSharp.xml
