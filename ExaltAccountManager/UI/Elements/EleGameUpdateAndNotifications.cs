@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleGameUpdateAndNotifications : UserControl
+    public sealed partial class EleGameUpdateAndNotifications : UserControl
     {
         private FrmMain frm;
 

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleEAMNewsView : UserControl
+    public sealed partial class EleEAMNewsView : UserControl
     {
         public NewsData NewsData { get; internal set; }
         private FrmMain frm;

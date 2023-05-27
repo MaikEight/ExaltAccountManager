@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleAnalyticsSettings : UserControl
+    public sealed partial class EleAnalyticsSettings : UserControl
     {
         private FrmMain frm;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();

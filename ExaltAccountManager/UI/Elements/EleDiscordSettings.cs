@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleDiscordSettings : UserControl
+    public sealed partial class EleDiscordSettings : UserControl
     {
         private FrmMain frm;
 
@@ -14,6 +14,8 @@ namespace ExaltAccountManager.UI.Elements
             InitializeComponent();
 
             frm = _frm;
+
+            toggleUseDiscord.Checked = !frm.OptionsData.discordOptions.OptOut;           
 
             toggleShowAccountNames.Checked = frm.OptionsData.discordOptions.ShowAccountNames;
             toggleShowMenus.Checked = frm.OptionsData.discordOptions.ShowMenus;
@@ -69,6 +71,7 @@ namespace ExaltAccountManager.UI.Elements
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            frm.OptionsData.discordOptions.OptOut = !toggleUseDiscord.Checked;
             frm.OptionsData.discordOptions.ShowAccountNames = toggleShowAccountNames.Checked;
             frm.OptionsData.discordOptions.ShowMenus = toggleShowMenus.Checked;
             frm.OptionsData.discordOptions.ShowState = toggleDiscord.Checked;
@@ -77,6 +80,11 @@ namespace ExaltAccountManager.UI.Elements
             frm.UpdateUIOptionsData();
 
             frm.RemoveShadowForm();
+        }
+
+        private void toggleUseDiscord_CheckedChanged(object sender, EventArgs e)
+        {
+            pCover.Visible = !toggleUseDiscord.Checked;
         }
     }
 }

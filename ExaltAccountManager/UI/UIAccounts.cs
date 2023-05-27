@@ -66,6 +66,11 @@ namespace ExaltAccountManager.UI
             timerLoadProcesses.Start();
         }
 
+        ~UIAccounts()
+        {
+            frm.ThemeChanged -= ApplyTheme;
+        }
+
         private void UIAccounts_Load(object sender, EventArgs e)
         {
             isInit = true;
