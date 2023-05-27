@@ -417,4 +417,19 @@ namespace ExaltAccountManager
             Llama,
         }
     }
+
+    [System.Serializable]
+    public sealed class DiscordPopupSettings
+    {
+        public DateTime LastQuestion { get; set; }
+        public DiscordpopupResult LastDiscordPopupResult { get; set; }
+
+        [System.Serializable]
+        public enum DiscordpopupResult
+        {
+            Yes = 0,
+            No = 1,
+            Never = 2
+        }
+    }
 }

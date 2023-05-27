@@ -46,6 +46,11 @@ namespace ExaltAccountManager
             frmHost.Show();
         }
 
+        public DialogResult ShowFormDialog(Form form)
+        {
+            return form.ShowDialog(this);
+        }
+
         public void RemoveControl()
         {
             frmHost.RemoveControl();

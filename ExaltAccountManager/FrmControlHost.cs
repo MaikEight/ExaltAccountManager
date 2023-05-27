@@ -60,6 +60,5 @@ namespace ExaltAccountManager
                 ctrToHost = null;
             }
         }
-
     }
 }

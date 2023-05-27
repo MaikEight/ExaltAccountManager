@@ -397,6 +397,12 @@
       <DependentUpon>AccountUI.cs</DependentUpon>
     </Compile>
     <Compile Include="DiscordHelper.cs" />
+    <Compile Include="FrmDiscordPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDiscordPopup.Designer.cs">
+      <DependentUpon>FrmDiscordPopup.cs</DependentUpon>
+    </Compile>
     <Compile Include="OLD\AccountUIHeader.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -819,6 +825,9 @@
     </Compile>
     <EmbeddedResource Include="AccountUI.resx">
       <DependentUpon>AccountUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmDiscordPopup.resx">
+      <DependentUpon>FrmDiscordPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OLD\AccountUIHeader.resx">
       <DependentUpon>AccountUIHeader.cs</DependentUpon>

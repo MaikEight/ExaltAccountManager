@@ -14,6 +14,26 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
+                ReleaseDate = new DateTime(2023, 05, 26),
+                Version = new Version(3, 2, 0),
+                Name = "Discord integration update, and bug fixes",
+                Description = $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}{Environment.NewLine}" +
+                              $"- Added an opt-out for the discord integration. <b>:(</b>{Environment.NewLine}" +
+                              $"- Added an option to link your discord user with your EAM-account.{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;This allows you to earn cool roles and bonuses on the EAM-Discord server.{Environment.NewLine}{Environment.NewLine}" +
+                              $"<b>MISCELLANEOUS</b>{Environment.NewLine}" +
+                              $"- Made the Captcha Aid more descriptive.{Environment.NewLine}" +
+                              $"- Made the Accounts list select the first in the list upon filtering by{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;accountname / email.{Environment.NewLine}" +
+                              $"- Reduced the time \"Refresh data\"-button is \"blocked\" after use.{Environment.NewLine}{Environment.NewLine}" +
+                              $"- The Llama did upgrade!" +
+                              $"<b>BUG FIXES</b>{Environment.NewLine}" +
+                              $"- Fixed the snackbar displaying and error after a successfull captcha.{Environment.NewLine}" +
+                              $"- Fixed the default export location to bot be inside the application folder, since this{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;leads to unauthorized exceptions on installed versions.{Environment.NewLine}{Environment.NewLine}"
+            },
+            new ChangelogEntry()
+            {
                 ReleaseDate = new DateTime(2023, 04, 11),
                 Version = new Version(3, 1, 1),
                 Name = "HotFix",

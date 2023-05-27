@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using MK_EAM_General_Services_Lib.General.Responses;
 using System.Drawing.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ExaltAccountManager
 {
@@ -263,28 +265,29 @@ namespace ExaltAccountManager
 
         #region Paths
 
-        public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
+        public static readonly string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
 
-        public string optionsPath = Path.Combine(saveFilePath, "EAM.options");
-        public string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
-        public string accountOrdersPath = Path.Combine(saveFilePath, "EAM.accountOrders");
-        public string dailyLoginsPath = Path.Combine(saveFilePath, "EAM.DailyLoginsV2");
-        public string notificationOptionsPath = Path.Combine(saveFilePath, "EAM.NotificationOptions");
-        public string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
-        public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
-        public string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
-        public string pathNews = Path.Combine(saveFilePath, "EAM.News");
-        public string lastUpdateCheckPath = Path.Combine(saveFilePath, "EAM.LastUpdateCheck");
-        public string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
-        public string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
-        public string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
-        public string privacyPolicyPath = Path.Combine(saveFilePath, "EAM_Privacy_Policy.txt");
-        public string activeVaultPeekerAccountsPath = Path.Combine(saveFilePath, "EAM.ActiveVaultPeekerAccounts");
-        public string getClientHWIDToolPath = Path.Combine(Application.StartupPath, "EAM_GetClientHWID");
-        public string pingCheckerExePath = Path.Combine(Application.StartupPath, "EAM PingChecker.exe");
-        public string statisticsExePath = Path.Combine(Application.StartupPath, "EAM Statistics.exe");
-        public string vaultPeekerExePath = Path.Combine(Application.StartupPath, "EAM Vault Peeker.exe");
-        public string dailyServiceExePath = Path.Combine(Application.StartupPath, "DailyService", "EAM Daily Login Service.exe");
+        public readonly string optionsPath = Path.Combine(saveFilePath, "EAM.options");
+        public readonly string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
+        public readonly string accountOrdersPath = Path.Combine(saveFilePath, "EAM.accountOrders");
+        public readonly string dailyLoginsPath = Path.Combine(saveFilePath, "EAM.DailyLoginsV2");
+        public readonly string notificationOptionsPath = Path.Combine(saveFilePath, "EAM.NotificationOptions");
+        public readonly string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
+        public readonly string accountStatsPath = Path.Combine(saveFilePath, "Stats");
+        public readonly string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
+        public readonly string pathNews = Path.Combine(saveFilePath, "EAM.News");
+        public readonly string pathDiscordPopups = Path.Combine(saveFilePath, "EAM.DiscordPopup");
+        public readonly string lastUpdateCheckPath = Path.Combine(saveFilePath, "EAM.LastUpdateCheck");
+        public readonly string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
+        public readonly string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
+        public readonly string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
+        public readonly string privacyPolicyPath = Path.Combine(saveFilePath, "EAM_Privacy_Policy.txt");
+        public readonly string activeVaultPeekerAccountsPath = Path.Combine(saveFilePath, "EAM.ActiveVaultPeekerAccounts");
+        public readonly string getClientHWIDToolPath = Path.Combine(Application.StartupPath, "EAM_GetClientHWID");
+        public readonly string pingCheckerExePath = Path.Combine(Application.StartupPath, "EAM PingChecker.exe");
+        public readonly string statisticsExePath = Path.Combine(Application.StartupPath, "EAM Statistics.exe");
+        public readonly string dailyServiceExePath = Path.Combine(Application.StartupPath, "DailyService", "EAM Daily Login Service.exe");
+        public readonly string vaultPeekerExePath = Path.Combine(Application.StartupPath, "EAM Vault Peeker.exe");
 
         #endregion
 
@@ -436,11 +439,14 @@ namespace ExaltAccountManager
                     OptionsData.discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
                 }
 
-                DiscordHelper.OnDiscordConnectionChanged += DiscordHelper_OnDiscordConnectionChanged;
-                DiscordHelper.Initialize(OptionsData.discordOptions,
-                                         this,
-                                         autoEvents: false,
-                                         _updateOnChange: false);
+                if (!OptionsData.discordOptions.OptOut)
+                {
+                    DiscordHelper.OnDiscordConnectionChanged += DiscordHelper_OnDiscordConnectionChanged;
+                    DiscordHelper.Initialize(OptionsData.discordOptions,
+                                             this,
+                                             autoEvents: false,
+                                             _updateOnChange: false);
+                }
 
                 #endregion
 
@@ -519,6 +525,25 @@ namespace ExaltAccountManager
 
         private void DiscordHelper_OnDiscordConnectionChanged(object sender, bool isConnected)
         {
+            if (File.Exists(pathDiscordPopups))
+            {
+                try
+                {
+                    DiscordPopupSettings settings = JsonConvert.DeserializeObject<DiscordPopupSettings>(File.ReadAllText(pathDiscordPopups));
+
+                    if (settings.LastDiscordPopupResult == DiscordPopupSettings.DiscordpopupResult.Never ||
+                        (DateTime.Now - settings.LastQuestion).TotalDays <= 7 ||
+                        settings.LastDiscordPopupResult == DiscordPopupSettings.DiscordpopupResult.Yes)
+                    {
+                        return;
+                    }
+                }
+                catch { }
+            }
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(10000);
+
             if (isConnected && DiscordUser == null)
             {
                 //Request discord user
@@ -545,43 +570,19 @@ namespace ExaltAccountManager
                         }
                         DiscordUser = task.Result;
 
+
                         if (DiscordUser != null && DiscordUser.DiscordUserId.Equals("NotFound"))
                         { //No discord user found
-                            DiscordUser = null;
-                            if (MessageBox.Show("No Discord user found for this EAM-Account." + Environment.NewLine +
-                                $"Would you like connect {DiscordHelper.GetUserName()} with your EAM-Account?" + Environment.NewLine +
-                                "This would allow the EAM-Discord-Bot to grant you roles based on certain achievements.",
-                                "No Discord user found",
-                                MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification, false) == DialogResult.Yes)
+
+                            DiscordUserConnectionInvoker(DiscordUser, token);                            
+                        }
+                        else if (DiscordUser != null)
+                        {
+                            File.WriteAllText(pathDiscordPopups, JsonConvert.SerializeObject(new DiscordPopupSettings()
                             {
-                                ulong discordId = DiscordHelper.GetUserId();
-                                if (discordId == ulong.MaxValue)
-                                {
-                                    LogEvent(new MK_EAM_Lib.LogData(
-                                        "EAM",
-                                        MK_EAM_Lib.LogEventType.EAMError,
-                                        "Failed to set discord user id."));
-                                    return;
-                                }
-
-                                GeneralServicesClient.Instance?.PostDiscordUser(GetAPIClientIdHash(false), discordId.ToString());
-                                while (!task.IsCompleted)
-                                {
-                                    if (token.IsCancellationRequested)
-                                    {
-                                        LogEvent(new MK_EAM_Lib.LogData(
-                                            "EAM",
-                                            MK_EAM_Lib.LogEventType.APIError,
-                                            "Failed to fetch stored discord user data."));
-
-                                        return;
-                                    }
-
-                                    await Task.Delay(50, token);
-                                }
-                                DiscordUser = task.Result;
-                            }
+                                LastQuestion = DateTime.Now,
+                                LastDiscordPopupResult = DiscordPopupSettings.DiscordpopupResult.Yes
+                            }));
                         }
                     }
                     catch (Exception ex)
@@ -594,6 +595,43 @@ namespace ExaltAccountManager
                 }), cancellationTokenSource.Token);
             }
         }
+
+        private void DiscordUserConnectionInvoker(DiscordUser dcUser, CancellationToken token) => DiscordUserConnection(dcUser, token);
+        private bool DiscordUserConnection(DiscordUser dcUser, CancellationToken token)
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<DiscordUser, CancellationToken, bool>)DiscordUserConnection, dcUser, token);
+
+            DiscordUser = null;
+            using (FrmDiscordPopup popup = new FrmDiscordPopup(this))
+            {
+                popup.Location = new Point(this.Location.X + (this.Width - popup.Width) / 2, this.Location.Y + (this.Height - popup.Height) / 2);
+                if (ShowShadowFormDialog(popup) == DialogResult.OK)
+                {
+                    FetchDiscordUser();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private async void FetchDiscordUser()
+        {
+            ulong discordId = DiscordHelper.GetUserId();
+            if (discordId == ulong.MaxValue)
+            {
+                LogEvent(new MK_EAM_Lib.LogData(
+                    "EAM",
+                    MK_EAM_Lib.LogEventType.EAMError,
+                    "Failed to set discord user id."));
+                return;
+            }
+
+            DiscordUser = await GeneralServicesClient.Instance?.PostDiscordUser(GetAPIClientIdHash(false), discordId.ToString());
+
+        }
+
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
@@ -1941,6 +1979,26 @@ namespace ExaltAccountManager
                 }
             }
             m_PreviousLocation = Location;
+        }
+
+        public DialogResult ShowShadowFormDialog(Form form)
+        {
+            if (frmShadowHost == null)
+            {
+                frmShadowHost = new FrmShadowHost(this);
+                frmShadowHost.Size = new Size(this.Size.Width - 1, this.Size.Height - 25);
+                frmShadowHost.Location = new Point(this.Left, this.Top + 24);
+                frmShadowHost.Owner = this;
+                frmShadowHost.TopLevel = true;
+            }
+            else
+                frmShadowHost.RemoveControl();
+
+            frmShadowHost.Show();
+            DialogResult result = frmShadowHost.ShowFormDialog(form);
+
+            RemoveShadowForm();
+            return result;
         }
 
         public void ShowShadowForm(Control ctr)

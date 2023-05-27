@@ -29,8 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EleDiscordSettings));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.shadow = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.toggleDiscord = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
             this.btnSave = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.pbClose = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.bunifuSeparator2 = new Bunifu.UI.WinForms.BunifuSeparator();
@@ -40,7 +41,9 @@
             this.label6 = new System.Windows.Forms.Label();
             this.lSearchForRotmgUpdates = new System.Windows.Forms.Label();
             this.toggleShowAccountNames = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
-            this.toggleDiscord = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
+            this.label1 = new System.Windows.Forms.Label();
+            this.toggleUseDiscord = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
+            this.pCover = new System.Windows.Forms.Panel();
             this.shadow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
             this.SuspendLayout();
@@ -51,6 +54,9 @@
             this.shadow.BorderColor = System.Drawing.Color.WhiteSmoke;
             this.shadow.BorderRadius = 9;
             this.shadow.BorderThickness = 1;
+            this.shadow.Controls.Add(this.pCover);
+            this.shadow.Controls.Add(this.label1);
+            this.shadow.Controls.Add(this.toggleUseDiscord);
             this.shadow.Controls.Add(this.toggleDiscord);
             this.shadow.Controls.Add(this.btnSave);
             this.shadow.Controls.Add(this.pbClose);
@@ -73,16 +79,32 @@
             this.shadow.ShadowDepth = 4;
             this.shadow.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.shadow.ShadowTopLeftVisible = false;
-            this.shadow.Size = new System.Drawing.Size(471, 223);
+            this.shadow.Size = new System.Drawing.Size(471, 273);
             this.shadow.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.shadow.TabIndex = 20;
+            // 
+            // toggleDiscord
+            // 
+            this.toggleDiscord.BackColor = System.Drawing.Color.Transparent;
+            this.toggleDiscord.Checked = false;
+            this.toggleDiscord.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
+            this.toggleDiscord.CheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleDiscord.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleDiscord.Location = new System.Drawing.Point(263, 136);
+            this.toggleDiscord.Name = "toggleDiscord";
+            this.toggleDiscord.OutlineThickness = 2;
+            this.toggleDiscord.Size = new System.Drawing.Size(44, 19);
+            this.toggleDiscord.TabIndex = 28;
+            this.toggleDiscord.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
+            this.toggleDiscord.UncheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleDiscord.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
             // 
             // btnSave
             // 
             this.btnSave.AllowAnimations = true;
             this.btnSave.AllowMouseEffects = true;
             this.btnSave.AllowToggling = false;
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.AnimationSpeed = 200;
             this.btnSave.AutoGenerateColors = false;
@@ -98,11 +120,11 @@
             this.btnSave.ColorContrastOnClick = 45;
             this.btnSave.ColorContrastOnHover = 45;
             this.btnSave.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.btnSave.CustomizableEdges = borderEdges1;
+            borderEdges3.BottomLeft = true;
+            borderEdges3.BottomRight = true;
+            borderEdges3.TopLeft = true;
+            borderEdges3.TopRight = true;
+            this.btnSave.CustomizableEdges = borderEdges3;
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnSave.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnSave.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -128,7 +150,7 @@
             this.btnSave.IdleIconLeftImage = global::ExaltAccountManager.Properties.Resources.save_Outline_36px;
             this.btnSave.IdleIconRightImage = null;
             this.btnSave.IndicateFocus = false;
-            this.btnSave.Location = new System.Drawing.Point(16, 176);
+            this.btnSave.Location = new System.Drawing.Point(16, 226);
             this.btnSave.Name = "btnSave";
             this.btnSave.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnSave.OnDisabledState.BorderRadius = 5;
@@ -200,7 +222,7 @@
             this.bunifuSeparator2.LineColor = System.Drawing.Color.Silver;
             this.bunifuSeparator2.LineStyle = Bunifu.UI.WinForms.BunifuSeparator.LineStyles.Solid;
             this.bunifuSeparator2.LineThickness = 1;
-            this.bunifuSeparator2.Location = new System.Drawing.Point(227, 53);
+            this.bunifuSeparator2.Location = new System.Drawing.Point(227, 103);
             this.bunifuSeparator2.Margin = new System.Windows.Forms.Padding(7);
             this.bunifuSeparator2.Name = "bunifuSeparator2";
             this.bunifuSeparator2.Orientation = Bunifu.UI.WinForms.BunifuSeparator.LineOrientation.Vertical;
@@ -211,7 +233,7 @@
             // 
             this.lGetMessagesAndWarnings.AutoSize = true;
             this.lGetMessagesAndWarnings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lGetMessagesAndWarnings.Location = new System.Drawing.Point(259, 58);
+            this.lGetMessagesAndWarnings.Location = new System.Drawing.Point(259, 108);
             this.lGetMessagesAndWarnings.Name = "lGetMessagesAndWarnings";
             this.lGetMessagesAndWarnings.Size = new System.Drawing.Size(87, 21);
             this.lGetMessagesAndWarnings.TabIndex = 19;
@@ -222,7 +244,7 @@
             // 
             this.lGetEAMUpdateNotifications.AutoSize = true;
             this.lGetEAMUpdateNotifications.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lGetEAMUpdateNotifications.Location = new System.Drawing.Point(12, 116);
+            this.lGetEAMUpdateNotifications.Location = new System.Drawing.Point(12, 166);
             this.lGetEAMUpdateNotifications.Name = "lGetEAMUpdateNotifications";
             this.lGetEAMUpdateNotifications.Size = new System.Drawing.Size(147, 21);
             this.lGetEAMUpdateNotifications.TabIndex = 17;
@@ -235,7 +257,7 @@
             this.toggleShowMenus.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
             this.toggleShowMenus.CheckedSwitchColor = System.Drawing.Color.White;
             this.toggleShowMenus.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
-            this.toggleShowMenus.Location = new System.Drawing.Point(16, 144);
+            this.toggleShowMenus.Location = new System.Drawing.Point(16, 194);
             this.toggleShowMenus.Name = "toggleShowMenus";
             this.toggleShowMenus.OutlineThickness = 2;
             this.toggleShowMenus.Size = new System.Drawing.Size(44, 19);
@@ -259,7 +281,7 @@
             // 
             this.lSearchForRotmgUpdates.AutoSize = true;
             this.lSearchForRotmgUpdates.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lSearchForRotmgUpdates.Location = new System.Drawing.Point(12, 58);
+            this.lSearchForRotmgUpdates.Location = new System.Drawing.Point(12, 108);
             this.lSearchForRotmgUpdates.Name = "lSearchForRotmgUpdates";
             this.lSearchForRotmgUpdates.Size = new System.Drawing.Size(162, 21);
             this.lSearchForRotmgUpdates.TabIndex = 12;
@@ -272,7 +294,7 @@
             this.toggleShowAccountNames.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
             this.toggleShowAccountNames.CheckedSwitchColor = System.Drawing.Color.White;
             this.toggleShowAccountNames.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
-            this.toggleShowAccountNames.Location = new System.Drawing.Point(16, 86);
+            this.toggleShowAccountNames.Location = new System.Drawing.Point(16, 136);
             this.toggleShowAccountNames.Name = "toggleShowAccountNames";
             this.toggleShowAccountNames.OutlineThickness = 2;
             this.toggleShowAccountNames.Size = new System.Drawing.Size(44, 19);
@@ -281,21 +303,40 @@
             this.toggleShowAccountNames.UncheckedSwitchColor = System.Drawing.Color.White;
             this.toggleShowAccountNames.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
             // 
-            // toggleDiscord
+            // label1
             // 
-            this.toggleDiscord.BackColor = System.Drawing.Color.Transparent;
-            this.toggleDiscord.Checked = false;
-            this.toggleDiscord.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
-            this.toggleDiscord.CheckedSwitchColor = System.Drawing.Color.White;
-            this.toggleDiscord.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
-            this.toggleDiscord.Location = new System.Drawing.Point(263, 86);
-            this.toggleDiscord.Name = "toggleDiscord";
-            this.toggleDiscord.OutlineThickness = 2;
-            this.toggleDiscord.Size = new System.Drawing.Size(44, 19);
-            this.toggleDiscord.TabIndex = 28;
-            this.toggleDiscord.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
-            this.toggleDiscord.UncheckedSwitchColor = System.Drawing.Color.White;
-            this.toggleDiscord.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(12, 46);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(171, 21);
+            this.label1.TabIndex = 30;
+            this.label1.Text = "Use discord integration";
+            // 
+            // toggleUseDiscord
+            // 
+            this.toggleUseDiscord.BackColor = System.Drawing.Color.Transparent;
+            this.toggleUseDiscord.Checked = true;
+            this.toggleUseDiscord.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
+            this.toggleUseDiscord.CheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleUseDiscord.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleUseDiscord.Location = new System.Drawing.Point(16, 74);
+            this.toggleUseDiscord.Name = "toggleUseDiscord";
+            this.toggleUseDiscord.OutlineThickness = 2;
+            this.toggleUseDiscord.Size = new System.Drawing.Size(44, 19);
+            this.toggleUseDiscord.TabIndex = 29;
+            this.toggleUseDiscord.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
+            this.toggleUseDiscord.UncheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleUseDiscord.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleUseDiscord.CheckedChanged += new System.EventHandler(this.toggleUseDiscord_CheckedChanged);
+            // 
+            // pCover
+            // 
+            this.pCover.Location = new System.Drawing.Point(17, 99);
+            this.pCover.Name = "pCover";
+            this.pCover.Size = new System.Drawing.Size(438, 117);
+            this.pCover.TabIndex = 31;
+            this.pCover.Visible = false;
             // 
             // EleDiscordSettings
             // 
@@ -305,9 +346,9 @@
             this.Controls.Add(this.shadow);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "EleDiscordSettings";
-            this.Size = new System.Drawing.Size(471, 223);
+            this.Size = new System.Drawing.Size(471, 273);
             this.shadow.ResumeLayout(false);
             this.shadow.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).EndInit();
@@ -328,5 +369,8 @@
         private System.Windows.Forms.Label lSearchForRotmgUpdates;
         private Bunifu.UI.WinForms.BunifuToggleSwitch2 toggleShowAccountNames;
         private Bunifu.UI.WinForms.BunifuToggleSwitch2 toggleDiscord;
+        private System.Windows.Forms.Label label1;
+        private Bunifu.UI.WinForms.BunifuToggleSwitch2 toggleUseDiscord;
+        private System.Windows.Forms.Panel pCover;
     }
 }
