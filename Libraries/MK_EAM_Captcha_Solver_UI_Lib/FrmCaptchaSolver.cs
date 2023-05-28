@@ -1,8 +1,13 @@
 ﻿using MK_EAM_Lib;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -38,14 +43,25 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         private PointF[] points = new PointF[3] { new PointF(), new PointF(), new PointF() };
         private int currentPoint = 0;
         private bool isLoading = false;
+        private Image imageOrg = null;
 
         private DateTime startTime = DateTime.Now;
+
+        private CaptchaUIConfiguration configuration = new CaptchaUIConfiguration();
+
+        #region Paths
+
+        public static readonly string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
+
+        public readonly string captchaSolverConfigurationPath = Path.Combine(saveFilePath, "EAM.CaptchaAidConf");
+
+        #endregion
 
         public FrmCaptchaSolver(AccountInfo _accountInfo, bool useDarkmode = false)
         {
             InitializeComponent();
-            
-            formDock.SubscribeControlsToDragEvents(new Control[] { pHeader, pbHeader, lEAMHead, lHeaderCaptchaAid, lBeta });            
+
+            formDock.SubscribeControlsToDragEvents(new Control[] { pHeader, pbHeader, lEAMHead, lHeaderCaptchaAid, lBeta });
 
             accountInfo = _accountInfo;
             UseDarkmode = useDarkmode;
@@ -68,6 +84,31 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
 
             ApplyTheme();
 
+            #region Read configuration
+
+            if (File.Exists(captchaSolverConfigurationPath))
+            {
+                try
+                {
+                    configuration = JsonConvert.DeserializeObject<CaptchaUIConfiguration>(File.ReadAllText(captchaSolverConfigurationPath));
+                }
+                catch
+                {
+                    configuration = new CaptchaUIConfiguration();
+                    try
+                    {
+                        File.WriteAllText(captchaSolverConfigurationPath, JsonConvert.SerializeObject(configuration));
+                    }
+                    catch { }
+                }
+            }
+
+            #endregion
+
+            ApplyConfigurationToUI();
+
+            pbCaptchaMain.LoadCompleted += PbCaptchaMain_LoadCompleted;
+
             RequestChallenge();
         }
 
@@ -84,6 +125,10 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
 
             pbClose.Image = UseDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;
             pbMinimize.Image = UseDarkmode ? Properties.Resources.baseline_minimize_white_24dp : Properties.Resources.baseline_minimize_black_24dp;
+
+            pbShowNumbers.Image = UseDarkmode ? Properties.Resources.numbered_list_white_24px : Properties.Resources.numbered_list_black_24px;
+            pbZoom.Image = UseDarkmode ? Properties.Resources.ic_search_white_24dp : Properties.Resources.search_black_black_24px;
+            pbGrayScale.Image = UseDarkmode ? Properties.Resources.grayscale_white_24px : Properties.Resources.grayscale_black_24px;
         }
 
         private void RequestChallenge()
@@ -169,10 +214,10 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             }
 
             lTriesLeft.Text = $"Tries left\n{captchaRefresh.submitsLeft}";
-            pbCaptchaQuestion.LoadAsync(captchaRefresh.qimg);            
+            pbCaptchaQuestion.LoadAsync(captchaRefresh.qimg);
             pbCaptchaMain.LoadAsync(captchaRefresh.img);
 
-            pContent.Visible = 
+            pContent.Visible =
             pActions.Visible = true;
             btnSubmit.Enabled = false;
 
@@ -308,7 +353,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                     null);
 
                     MessageBox.Show("An error occured while submitting the result. Please try again later.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    
+
                     this.Close();
                     return;
                 }
@@ -326,10 +371,10 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                 return (bool)this.Invoke((Func<bool, PointF[], bool>)SubmitUpdateUI, result, points);
 
             _ = MK_EAM_Analytics.AnalyticsClient.Instance?.AddCaptchaResult(
-                startTime, 
-                result ? MK_EAM_Analytics.Data.CaptchaResult.Success : MK_EAM_Analytics.Data.CaptchaResult.Failed, 
-                ImageToByteArray(pbCaptchaQuestion.Image), 
-                ImageToByteArray(pbCaptchaMain.Image), 
+                startTime,
+                result ? MK_EAM_Analytics.Data.CaptchaResult.Success : MK_EAM_Analytics.Data.CaptchaResult.Failed,
+                ImageToByteArray(pbCaptchaQuestion.Image),
+                ImageToByteArray(imageOrg),
                 points);
 
             if (result)
@@ -368,8 +413,8 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
 
             for (int i = 0; i < points.Length; i++)
             {
-                if (pointsSet[i])                
-                    rectangles.Add(new RectangleF(points[i].X - 4, points[i].Y - 4, 8, 8));                   
+                if (pointsSet[i])
+                    rectangles.Add(new RectangleF(points[i].X - 4, points[i].Y - 6, 12, 12));
             }
 
             using (Pen p = new Pen(pHeader.BackColor, 1f))
@@ -396,6 +441,27 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                 this.Close();
             }
         }
+        private void PbCaptchaMain_LoadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            imageOrg = pbCaptchaMain.Image;
+
+            if (configuration.UseGrayscale)
+            {
+                pbCaptchaMain.Image = GetGrayscaledImage((Bitmap)imageOrg);
+            }
+        }
+
+        private void ApplyConfigurationToUI()
+        {
+            if (configuration == null)
+            {
+                configuration = new CaptchaUIConfiguration();
+            }
+
+            pbShowNumbers_MouseLeave(this, EventArgs.Empty);
+            pbZoom_MouseLeave(this, EventArgs.Empty);
+            pbGrayScale_MouseLeave(this, EventArgs.Empty);
+        }
 
         private void FrmCaptchaSolver_Paint(object sender, PaintEventArgs e)
         {
@@ -417,6 +483,132 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         {
             ImageConverter converter = new ImageConverter();
             return (byte[])converter.ConvertTo(img, typeof(byte[]));
+        }
+
+        public Bitmap GetGrayscaledImage(Bitmap original)
+        {
+            if(original == null)
+                return null;
+
+            //create a blank bitmap the same size as original
+            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+
+            //get a graphics object from the new image
+            using (Graphics g = Graphics.FromImage(newBitmap))
+            {
+
+                //create the grayscale ColorMatrix
+                ColorMatrix colorMatrix = new ColorMatrix(
+                   new float[][]
+                   {
+                        new float[] {.3f, .3f, .3f, 0, 0},
+                        new float[] {.59f, .59f, .59f, 0, 0},
+                        new float[] {.11f, .11f, .11f, 0, 0},
+                        new float[] {0, 0, 0, 1, 0},
+                        new float[] {0, 0, 0, 0, 1}
+                   });
+
+                //create some image attributes
+                using (ImageAttributes attributes = new ImageAttributes())
+                {
+
+                    //set the color matrix attribute
+                    attributes.SetColorMatrix(colorMatrix);
+
+                    //draw the original image on the new image
+                    //using the grayscale color matrix
+                    g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+                                0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+                }
+            }
+            return newBitmap;
+        }
+
+        Color activated
+        {
+            get
+            {
+                return UseDarkmode ? Color.FromArgb(175, 98, 0, 238) : Color.FromArgb(150, 98, 0, 238);
+            }
+        }
+        Color activatedHover
+        {
+            get
+            {
+                return UseDarkmode ? Color.FromArgb(225, 98, 0, 238) : Color.FromArgb(175, 98, 0, 238);
+            }
+        }
+        Color hover
+        {
+            get
+            {
+                return UseDarkmode ? Color.FromArgb(125, 75, 75, 75) : Color.FromArgb(50, 50, 50, 50);
+            }
+        }
+
+        private void pbShowNumbers_Click(object sender, EventArgs e)
+        {
+            configuration.UseNumbered = !configuration.UseNumbered;
+            pbShowNumbers_MouseEnter(sender, e);
+
+            SaveConfiguration();
+        }
+
+        private void pbShowNumbers_MouseEnter(object sender, EventArgs e)
+        {
+            pbShowNumbers.BackColor = configuration.UseNumbered ? activatedHover : hover;
+        }
+
+        private void pbShowNumbers_MouseLeave(object sender, EventArgs e)
+        {
+            pbShowNumbers.BackColor = configuration.UseNumbered ? activated : pToolsContent.BackColor;
+        }
+
+        private void pbZoom_Click(object sender, EventArgs e)
+        {
+            configuration.UseZoom = !configuration.UseZoom;
+            pbZoom_MouseEnter(sender, e);
+
+            SaveConfiguration();
+        }
+
+        private void pbZoom_MouseEnter(object sender, EventArgs e)
+        {
+            pbZoom.BackColor = configuration.UseZoom ? activatedHover : hover;
+        }
+
+        private void pbZoom_MouseLeave(object sender, EventArgs e)
+        {
+            pbZoom.BackColor = configuration.UseZoom ? activated : pToolsContent.BackColor;
+        }
+
+        private void pbGrayScale_Click(object sender, EventArgs e)
+        {
+            configuration.UseGrayscale = !configuration.UseGrayscale;
+            pbGrayScale_MouseEnter(sender, e);
+
+            pbCaptchaMain.Image = configuration.UseGrayscale ? GetGrayscaledImage((Bitmap)imageOrg) : imageOrg;
+
+            SaveConfiguration();
+        }
+
+        private void pbGrayScale_MouseEnter(object sender, EventArgs e)
+        {
+            pbGrayScale.BackColor = configuration.UseGrayscale ? activatedHover : hover;
+        }
+
+        private void pbGrayScale_MouseLeave(object sender, EventArgs e)
+        {
+            pbGrayScale.BackColor = configuration.UseGrayscale ? activated : pToolsContent.BackColor;
+        }
+
+        private void SaveConfiguration()
+        {
+            try
+            {
+                File.WriteAllText(captchaSolverConfigurationPath, JsonConvert.SerializeObject(configuration));
+            }
+            catch { }
         }
     }
 }

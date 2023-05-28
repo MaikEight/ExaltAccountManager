@@ -320,6 +320,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CaptchaSolverUtils.cs" />
+    <Compile Include="CaptchaUIConfiguration.cs" />
     <Compile Include="ColorScheme.cs" />
     <Compile Include="FrmCaptchaSolver.cs">
       <SubType>Form</SubType>
@@ -388,6 +389,27 @@
       <Project>{63c8eba3-8dcd-46bd-98d0-58f3190c5b6f}</Project>
       <Name>MK_EAM_Lib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\search_black_black_24px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ic_search_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8_96px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\grayscale_black_24px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\grayscale_white_24px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\numbered_list_white_24px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\numbered_list_black_24px.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

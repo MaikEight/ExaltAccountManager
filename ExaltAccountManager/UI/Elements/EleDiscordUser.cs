@@ -22,7 +22,7 @@ namespace ExaltAccountManager.UI.Elements
             };
 
             ApplyTheme(frm, null);
-
+            
             LoadUI();
         }
 
