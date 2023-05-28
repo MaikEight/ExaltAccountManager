@@ -721,6 +721,12 @@
     <Compile Include="UI\Elements\EleNewsPoll.Designer.cs">
       <DependentUpon>EleNewsPoll.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Elements\EleDiscordUser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDiscordUser.Designer.cs">
+      <DependentUpon>EleDiscordUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Elements\EleQNA.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -996,6 +1002,9 @@
     <EmbeddedResource Include="UI\Elements\EleNewsPoll.resx">
       <DependentUpon>EleNewsPoll.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDiscordUser.resx">
+      <DependentUpon>EleDiscordUser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleQNA.resx">
       <DependentUpon>EleQNA.cs</DependentUpon>
     </EmbeddedResource>
@@ -1092,6 +1101,10 @@
     <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
     <Content Include="Logo.ico" />
+    <None Include="Resources\male_user_outline_white_24px.png" />
+    <None Include="Resources\male_user_white_24px.png" />
+    <None Include="Resources\male_user_outline_black_24px.png" />
+    <None Include="Resources\male_user_black_24px.png" />
     <None Include="Resources\privacy_policy_white_24px.png" />
     <None Include="Resources\privacy_policy_outline_white_24px.png" />
     <None Include="Resources\rotmg.png" />

@@ -57,8 +57,16 @@ namespace ExaltAccountManager
             {
                 this.Controls.Remove(ctrToHost);
                 ctrToHost.SizeChanged -= CtrToHost_SizeChanged;
+                if (ctrToHost is IDisposeOfControl doDipose && doDipose.DisposeOfControl)
+                    ctrToHost.Dispose();
+
                 ctrToHost = null;
             }
         }
+    }
+
+    public interface IDisposeOfControl
+    {
+        bool DisposeOfControl { get; }
     }
 }

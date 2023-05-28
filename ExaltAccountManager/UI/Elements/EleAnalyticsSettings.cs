@@ -116,6 +116,7 @@ namespace ExaltAccountManager.UI.Elements
 
                         await Task.Delay(50, token);
                     }
+
                     MK_EAM_Analytics.Response.Data.User result = task.Result;
                     if (result != null)
                     {

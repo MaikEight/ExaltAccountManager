@@ -107,7 +107,30 @@ namespace ExaltAccountManager
         }
         private bool hasNewNews = false;
         public DateTime LastNewsViewed { get; internal set; } = DateTime.MinValue;
-        public DiscordUser DiscordUser { get; internal set; } = null;
+        public DiscordUser DiscordUser 
+        {
+            get => discordUser; 
+            internal set
+            {
+                discordUser = value;
+
+                DiscordUserChanged();
+
+
+                bool DiscordUserChanged()
+                {
+                    if (this.InvokeRequired)
+                        return (bool)this.Invoke((Func<bool>)DiscordUserChanged);
+
+                    pbShowDiscordUser.Visible = discordUser != null;
+
+                    return false;
+                }
+            }
+        }
+        private DiscordUser discordUser = null;
+
+        private bool hasDiscordUserUiOpen = false;
 
         private GameUpdater gameUpdater { get; set; }
 
@@ -571,6 +594,7 @@ namespace ExaltAccountManager
                         }
                         DiscordUser = task.Result;
 
+
                         if (!hasDiscordUser && DiscordUser != null && DiscordUser.DiscordUserId.Equals("NotFound"))
                         { //No discord user found
 
@@ -767,11 +791,12 @@ namespace ExaltAccountManager
             Color font = ColorScheme.GetColorFont(useDarkmode);
 
             this.BackColor = pContent.BackColor = def;
-            pSideButtons.BackColor = pTop.BackColor = pbClose.BackColor = pbMinimize.BackColor = second;
+            pSideButtons.BackColor = pTop.BackColor = pbClose.BackColor = pbMinimize.BackColor = pbShowDiscordUser.BackColor = second;
             this.ForeColor = font;
 
             pbClose.Image = useDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;
             pbMinimize.Image = UseDarkmode ? Properties.Resources.baseline_minimize_white_24dp : Properties.Resources.baseline_minimize_black_24dp;
+            pbShowDiscordUser.Image = UseDarkmode ? Properties.Resources.male_user_outline_white_24px : Properties.Resources.male_user_outline_black_24px;
 
             if (gameUpdater != null && GameUpdater.Instance.UpdateRequired)
                 lVersion.ForeColor = UseDarkmode ? Color.Orange : Color.DarkOrange;
@@ -1508,6 +1533,34 @@ namespace ExaltAccountManager
 
         #endregion
 
+        #region Button Discord User
+
+        private void pbShowDiscordUser_Click(object sender, EventArgs e)
+        {
+            if (hasDiscordUserUiOpen)
+                return;
+
+            hasDiscordUserUiOpen = true;
+            ShowShadowForm(new EleDiscordUser(this));
+        }
+
+        private void pbShowDiscordUser_MouseDown(object sender, MouseEventArgs e) => pbShowDiscordUser.BackColor = UseDarkmode ? Color.FromArgb(200, 75, 75, 75) : Color.FromArgb(75, 50, 50, 50);
+        private void pbShowDiscordUser_MouseUp(object sender, MouseEventArgs e) => pbShowDiscordUser.BackColor = UseDarkmode ? Color.FromArgb(125, 75, 75, 75) : Color.FromArgb(50, 50, 50, 50);
+
+        private void pbShowDiscordUser_MouseEnter(object sender, EventArgs e)
+        {
+            pbShowDiscordUser.Image = UseDarkmode ? Properties.Resources.male_user_white_24px : Properties.Resources.male_user_black_24px;
+            pbShowDiscordUser.BackColor = UseDarkmode ? Color.FromArgb(125, 75, 75, 75) : Color.FromArgb(50, 50, 50, 50);
+        }
+
+        private void pbShowDiscordUser_MouseLeave(object sender, EventArgs e)
+        {
+            pbShowDiscordUser.Image = UseDarkmode ? Properties.Resources.male_user_outline_white_24px : Properties.Resources.male_user_outline_black_24px;
+            pbShowDiscordUser.BackColor = pTop.BackColor;
+        }
+
+        #endregion
+
         #region Menu Buttons
 
         private void btnAccounts_Click(object sender, EventArgs e)
@@ -2024,6 +2077,8 @@ namespace ExaltAccountManager
             if (uiState == UIState.Updater && GameUpdater.Instance.UpdateProgress > 0)
                 return;
 
+            hasDiscordUserUiOpen = false;
+
             if (frmShadowHost != null)
             {
                 frmShadowHost.RemoveControl();
@@ -2206,6 +2261,6 @@ namespace ExaltAccountManager
             {
                 e.Graphics.FillEllipse(pColor.Brush, 33f, 26f, 9f, 9f);
             }
-        }
+        }        
     }
 }
