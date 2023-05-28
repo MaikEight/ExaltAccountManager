@@ -827,6 +827,13 @@ namespace ExaltAccountManager.UI
         {
             if (isInit) return;
 
+            if (dataGridView.RowCount < scrollbar.Value)
+            {
+                dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
+                dataGridView.Update();
+                return;
+            }
+
             dataGridView.FirstDisplayedScrollingRowIndex = scrollbar.Value;
             dataGridView.Update();
         }

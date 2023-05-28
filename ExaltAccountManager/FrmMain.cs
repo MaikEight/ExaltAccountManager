@@ -107,15 +107,21 @@ namespace ExaltAccountManager
         }
         private bool hasNewNews = false;
         public DateTime LastNewsViewed { get; internal set; } = DateTime.MinValue;
-        public DiscordUser DiscordUser 
+        public DiscordUser DiscordUser
         {
-            get => discordUser; 
+            get => discordUser;
             internal set
             {
                 discordUser = value;
 
-                DiscordUserChanged();
-
+                if (OptionsData != null &&
+                    OptionsData.analyticsOptions != null &&
+                    !OptionsData.analyticsOptions.OptOut &&
+                    !OptionsData.analyticsOptions.Anonymization
+                    )
+                {
+                    DiscordUserChanged();
+                }
 
                 bool DiscordUserChanged()
                 {
@@ -598,7 +604,7 @@ namespace ExaltAccountManager
                         if (!hasDiscordUser && DiscordUser != null && DiscordUser.DiscordUserId.Equals("NotFound"))
                         { //No discord user found
 
-                            DiscordUserConnectionInvoker(DiscordUser, token);                            
+                            DiscordUserConnectionInvoker(DiscordUser, token);
                         }
                         else if (DiscordUser != null)
                         {
@@ -797,9 +803,6 @@ namespace ExaltAccountManager
             pbClose.Image = useDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;
             pbMinimize.Image = UseDarkmode ? Properties.Resources.baseline_minimize_white_24dp : Properties.Resources.baseline_minimize_black_24dp;
             pbShowDiscordUser.Image = UseDarkmode ? Properties.Resources.male_user_outline_white_24px : Properties.Resources.male_user_outline_black_24px;
-
-            if (gameUpdater != null && GameUpdater.Instance.UpdateRequired)
-                lVersion.ForeColor = UseDarkmode ? Color.Orange : Color.DarkOrange;
 
             #region Button Images
 
@@ -2261,6 +2264,6 @@ namespace ExaltAccountManager
             {
                 e.Graphics.FillEllipse(pColor.Brush, 33f, 26f, 9f, 9f);
             }
-        }        
+        }
     }
 }

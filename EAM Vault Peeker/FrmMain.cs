@@ -4,7 +4,6 @@ using MK_EAM_General_Services_Lib.General.Responses;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace EAM_Vault_Peeker
 {
     public partial class FrmMain : Form
     {
-        public Version version { get; } = new Version(1, 0, 10);
+        public Version version { get; } = new Version(1, 0, 11);
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
 
         public bool useDarkmode = true;
