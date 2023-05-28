@@ -36,8 +36,7 @@ namespace ExaltAccountManager.UI
             frm = _frm;
 
             frm.ThemeChanged += ApplyTheme;
-            this.Disposed += (object sender, EventArgs e) => frm.ThemeChanged -= ApplyTheme;
-            
+            this.Disposed += (object sender, EventArgs e) => frm.ThemeChanged -= ApplyTheme;            
 
             if (File.Exists(frm.dailyLoginsPath))
             {

@@ -525,6 +525,7 @@ namespace ExaltAccountManager
 
         private void DiscordHelper_OnDiscordConnectionChanged(object sender, bool isConnected)
         {
+            bool hasDiscordUser = false;
             if (File.Exists(pathDiscordPopups))
             {
                 try
@@ -535,7 +536,7 @@ namespace ExaltAccountManager
                         (DateTime.Now - settings.LastQuestion).TotalDays <= 7 ||
                         settings.LastDiscordPopupResult == DiscordPopupSettings.DiscordpopupResult.Yes)
                     {
-                        return;
+                        hasDiscordUser = true;
                     }
                 }
                 catch { }
@@ -570,8 +571,7 @@ namespace ExaltAccountManager
                         }
                         DiscordUser = task.Result;
 
-
-                        if (DiscordUser != null && DiscordUser.DiscordUserId.Equals("NotFound"))
+                        if (!hasDiscordUser && DiscordUser != null && DiscordUser.DiscordUserId.Equals("NotFound"))
                         { //No discord user found
 
                             DiscordUserConnectionInvoker(DiscordUser, token);                            
@@ -597,7 +597,7 @@ namespace ExaltAccountManager
         }
 
         private void DiscordUserConnectionInvoker(DiscordUser dcUser, CancellationToken token) => DiscordUserConnection(dcUser, token);
-        private bool DiscordUserConnection(DiscordUser dcUser, CancellationToken token)
+        public bool DiscordUserConnection(DiscordUser dcUser, CancellationToken token)
         {
             if (this.InvokeRequired)
                 return (bool)this.Invoke((Func<DiscordUser, CancellationToken, bool>)DiscordUserConnection, dcUser, token);
@@ -1995,6 +1995,7 @@ namespace ExaltAccountManager
                 frmShadowHost.RemoveControl();
 
             frmShadowHost.Show();
+
             DialogResult result = frmShadowHost.ShowFormDialog(form);
 
             RemoveShadowForm();

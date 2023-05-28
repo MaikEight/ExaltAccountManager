@@ -12,22 +12,6 @@ namespace ExaltAccountManager.UI
 
         public bool[] GameUpdateAndNotifications = { true, true, true, true };
 
-        //private bool HasChanges 
-        //{
-        //    get => hasChanges;
-        //    set
-        //    {
-        //        hasChanges = value;
-
-        //        if (frm != null)
-        //        {
-
-        //        }
-        //    }
-
-        //}
-        //private bool hasChanges = false;
-
         public UIOptions(FrmMain _frm)
         {
             InitializeComponent();
@@ -99,7 +83,7 @@ namespace ExaltAccountManager.UI
             {
                 if (dropServers.Items.Count == 0)
                     dropServers.Items.Add("Last server (Deca default)");
-                //if (frm.OptionsData.serverToJoin.Equals("Last"))
+
                 dropServers.SelectedIndex = 0;
 
             }
@@ -237,31 +221,31 @@ namespace ExaltAccountManager.UI
 
         private void btnSnackbar_Click(object sender, EventArgs e)
         {
-            lHeadline.Focus();
-
             Elements.EleSnackbarOptions eleSnackbarOptions = new Elements.EleSnackbarOptions(frm);
             frm.ShowShadowForm(eleSnackbarOptions);
+
+            lHeadline.Focus();
         }
 
         private void btnGameUpdaterAndNotificationSettings_Click(object sender, EventArgs e)
         {
-            lHeadline.Focus();
-
             frm.ShowShadowForm(new Elements.EleGameUpdateAndNotifications(frm));
+
+            lHeadline.Focus();
         }
 
         private void btnDiscord_Click(object sender, EventArgs e)
         {
-            lHeadline.Focus();
-
             frm.ShowShadowForm(new Elements.EleDiscordSettings(frm));
+
+            lHeadline.Focus();
         }
 
         private void btnAnalytics_Click(object sender, EventArgs e)
         {
-            lHeadline.Focus();
-
             frm.ShowShadowForm(new Elements.EleAnalyticsSettings(frm));
+
+            lHeadline.Focus();
         }
 
         private void dropServers_SelectedIndexChanged(object sender, EventArgs e)

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
@@ -8,6 +10,7 @@ namespace ExaltAccountManager.UI.Elements
     public sealed partial class EleDiscordSettings : UserControl
     {
         private FrmMain frm;
+        private CancellationTokenSource cancellationTokenSource;
 
         public EleDiscordSettings(FrmMain _frm)
         {
@@ -15,11 +18,28 @@ namespace ExaltAccountManager.UI.Elements
 
             frm = _frm;
 
-            toggleUseDiscord.Checked = !frm.OptionsData.discordOptions.OptOut;           
+            toggleUseDiscord.Checked = !frm.OptionsData.discordOptions.OptOut;
 
             toggleShowAccountNames.Checked = frm.OptionsData.discordOptions.ShowAccountNames;
             toggleShowMenus.Checked = frm.OptionsData.discordOptions.ShowMenus;
             toggleDiscord.Checked = frm.OptionsData.discordOptions.ShowState;
+
+            
+            if ((frm.DiscordUser == null || (frm.DiscordUser != null && frm.DiscordUser.DiscordUserId.Equals("NotFound")) && DiscordHelper.IsConnected))
+            {
+                btnConnectDiscord.Visible = true;
+
+                if (System.IO.File.Exists(frm.pathDiscordPopups))
+                {
+                    try
+                    {
+                        DiscordPopupSettings settings = JsonConvert.DeserializeObject<DiscordPopupSettings>(System.IO.File.ReadAllText(frm.pathDiscordPopups));
+
+                        btnConnectDiscord.Visible = settings.LastDiscordPopupResult != DiscordPopupSettings.DiscordpopupResult.Yes;
+                    }
+                    catch { } 
+                }
+            }
 
             ApplyTheme(this, EventArgs.Empty);
 
@@ -85,6 +105,14 @@ namespace ExaltAccountManager.UI.Elements
         private void toggleUseDiscord_CheckedChanged(object sender, EventArgs e)
         {
             pCover.Visible = !toggleUseDiscord.Checked;
+        }
+
+        private void btnConnectDiscord_Click(object sender, EventArgs e)
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(7500);
+
+            frm.DiscordUserConnection(null, cancellationTokenSource.Token);
         }
     }
 }

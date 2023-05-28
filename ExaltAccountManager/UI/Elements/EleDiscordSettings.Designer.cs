@@ -28,9 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EleDiscordSettings));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.shadow = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.pCover = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.toggleUseDiscord = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
             this.toggleDiscord = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
             this.btnSave = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.pbClose = new Bunifu.UI.WinForms.BunifuPictureBox();
@@ -41,9 +45,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.lSearchForRotmgUpdates = new System.Windows.Forms.Label();
             this.toggleShowAccountNames = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
-            this.label1 = new System.Windows.Forms.Label();
-            this.toggleUseDiscord = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
-            this.pCover = new System.Windows.Forms.Panel();
+            this.btnConnectDiscord = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.shadow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
             this.SuspendLayout();
@@ -54,6 +56,7 @@
             this.shadow.BorderColor = System.Drawing.Color.WhiteSmoke;
             this.shadow.BorderRadius = 9;
             this.shadow.BorderThickness = 1;
+            this.shadow.Controls.Add(this.btnConnectDiscord);
             this.shadow.Controls.Add(this.pCover);
             this.shadow.Controls.Add(this.label1);
             this.shadow.Controls.Add(this.toggleUseDiscord);
@@ -82,6 +85,41 @@
             this.shadow.Size = new System.Drawing.Size(471, 273);
             this.shadow.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.shadow.TabIndex = 20;
+            // 
+            // pCover
+            // 
+            this.pCover.Location = new System.Drawing.Point(17, 99);
+            this.pCover.Name = "pCover";
+            this.pCover.Size = new System.Drawing.Size(438, 117);
+            this.pCover.TabIndex = 31;
+            this.pCover.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(12, 46);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(171, 21);
+            this.label1.TabIndex = 30;
+            this.label1.Text = "Use discord integration";
+            // 
+            // toggleUseDiscord
+            // 
+            this.toggleUseDiscord.BackColor = System.Drawing.Color.Transparent;
+            this.toggleUseDiscord.Checked = true;
+            this.toggleUseDiscord.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
+            this.toggleUseDiscord.CheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleUseDiscord.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleUseDiscord.Location = new System.Drawing.Point(16, 74);
+            this.toggleUseDiscord.Name = "toggleUseDiscord";
+            this.toggleUseDiscord.OutlineThickness = 2;
+            this.toggleUseDiscord.Size = new System.Drawing.Size(44, 19);
+            this.toggleUseDiscord.TabIndex = 29;
+            this.toggleUseDiscord.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
+            this.toggleUseDiscord.UncheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleUseDiscord.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleUseDiscord.CheckedChanged += new System.EventHandler(this.toggleUseDiscord_CheckedChanged);
             // 
             // toggleDiscord
             // 
@@ -120,11 +158,11 @@
             this.btnSave.ColorContrastOnClick = 45;
             this.btnSave.ColorContrastOnHover = 45;
             this.btnSave.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges3.BottomLeft = true;
-            borderEdges3.BottomRight = true;
-            borderEdges3.TopLeft = true;
-            borderEdges3.TopRight = true;
-            this.btnSave.CustomizableEdges = borderEdges3;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.btnSave.CustomizableEdges = borderEdges2;
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnSave.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnSave.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -303,40 +341,100 @@
             this.toggleShowAccountNames.UncheckedSwitchColor = System.Drawing.Color.White;
             this.toggleShowAccountNames.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
             // 
-            // label1
+            // btnConnectDiscord
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 46);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(171, 21);
-            this.label1.TabIndex = 30;
-            this.label1.Text = "Use discord integration";
-            // 
-            // toggleUseDiscord
-            // 
-            this.toggleUseDiscord.BackColor = System.Drawing.Color.Transparent;
-            this.toggleUseDiscord.Checked = true;
-            this.toggleUseDiscord.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
-            this.toggleUseDiscord.CheckedSwitchColor = System.Drawing.Color.White;
-            this.toggleUseDiscord.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
-            this.toggleUseDiscord.Location = new System.Drawing.Point(16, 74);
-            this.toggleUseDiscord.Name = "toggleUseDiscord";
-            this.toggleUseDiscord.OutlineThickness = 2;
-            this.toggleUseDiscord.Size = new System.Drawing.Size(44, 19);
-            this.toggleUseDiscord.TabIndex = 29;
-            this.toggleUseDiscord.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
-            this.toggleUseDiscord.UncheckedSwitchColor = System.Drawing.Color.White;
-            this.toggleUseDiscord.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
-            this.toggleUseDiscord.CheckedChanged += new System.EventHandler(this.toggleUseDiscord_CheckedChanged);
-            // 
-            // pCover
-            // 
-            this.pCover.Location = new System.Drawing.Point(17, 99);
-            this.pCover.Name = "pCover";
-            this.pCover.Size = new System.Drawing.Size(438, 117);
-            this.pCover.TabIndex = 31;
-            this.pCover.Visible = false;
+            this.btnConnectDiscord.AllowAnimations = true;
+            this.btnConnectDiscord.AllowMouseEffects = true;
+            this.btnConnectDiscord.AllowToggling = false;
+            this.btnConnectDiscord.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnConnectDiscord.AnimationSpeed = 200;
+            this.btnConnectDiscord.AutoGenerateColors = false;
+            this.btnConnectDiscord.AutoRoundBorders = false;
+            this.btnConnectDiscord.AutoSizeLeftIcon = true;
+            this.btnConnectDiscord.AutoSizeRightIcon = true;
+            this.btnConnectDiscord.BackColor = System.Drawing.Color.Transparent;
+            this.btnConnectDiscord.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnConnectDiscord.BackgroundImage")));
+            this.btnConnectDiscord.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnConnectDiscord.ButtonText = "Connect discord with EAM";
+            this.btnConnectDiscord.ButtonTextMarginLeft = 0;
+            this.btnConnectDiscord.ColorContrastOnClick = 45;
+            this.btnConnectDiscord.ColorContrastOnHover = 45;
+            this.btnConnectDiscord.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.btnConnectDiscord.CustomizableEdges = borderEdges1;
+            this.btnConnectDiscord.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.btnConnectDiscord.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.btnConnectDiscord.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btnConnectDiscord.DisabledForecolor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.btnConnectDiscord.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Hover;
+            this.btnConnectDiscord.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConnectDiscord.ForeColor = System.Drawing.Color.White;
+            this.btnConnectDiscord.IconLeft = global::ExaltAccountManager.Properties.Resources.discord_new_outline_white_24px;
+            this.btnConnectDiscord.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnConnectDiscord.IconLeftCursor = System.Windows.Forms.Cursors.Default;
+            this.btnConnectDiscord.IconLeftPadding = new System.Windows.Forms.Padding(15, 3, 1, 3);
+            this.btnConnectDiscord.IconMarginLeft = 11;
+            this.btnConnectDiscord.IconPadding = 6;
+            this.btnConnectDiscord.IconRight = null;
+            this.btnConnectDiscord.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnConnectDiscord.IconRightCursor = System.Windows.Forms.Cursors.Default;
+            this.btnConnectDiscord.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
+            this.btnConnectDiscord.IconSize = 10;
+            this.btnConnectDiscord.IdleBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.IdleBorderRadius = 5;
+            this.btnConnectDiscord.IdleBorderThickness = 1;
+            this.btnConnectDiscord.IdleFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.IdleIconLeftImage = global::ExaltAccountManager.Properties.Resources.discord_new_outline_white_24px;
+            this.btnConnectDiscord.IdleIconRightImage = null;
+            this.btnConnectDiscord.IndicateFocus = false;
+            this.btnConnectDiscord.Location = new System.Drawing.Point(227, 62);
+            this.btnConnectDiscord.Name = "btnConnectDiscord";
+            this.btnConnectDiscord.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.btnConnectDiscord.OnDisabledState.BorderRadius = 5;
+            this.btnConnectDiscord.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnConnectDiscord.OnDisabledState.BorderThickness = 1;
+            this.btnConnectDiscord.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btnConnectDiscord.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.btnConnectDiscord.OnDisabledState.IconLeftImage = null;
+            this.btnConnectDiscord.OnDisabledState.IconRightImage = null;
+            this.btnConnectDiscord.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.onHoverState.BorderRadius = 5;
+            this.btnConnectDiscord.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnConnectDiscord.onHoverState.BorderThickness = 1;
+            this.btnConnectDiscord.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.onHoverState.ForeColor = System.Drawing.Color.White;
+            this.btnConnectDiscord.onHoverState.IconLeftImage = global::ExaltAccountManager.Properties.Resources.discord_new_white_24px;
+            this.btnConnectDiscord.onHoverState.IconRightImage = null;
+            this.btnConnectDiscord.OnIdleState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.OnIdleState.BorderRadius = 5;
+            this.btnConnectDiscord.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnConnectDiscord.OnIdleState.BorderThickness = 1;
+            this.btnConnectDiscord.OnIdleState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.OnIdleState.ForeColor = System.Drawing.Color.White;
+            this.btnConnectDiscord.OnIdleState.IconLeftImage = global::ExaltAccountManager.Properties.Resources.discord_new_outline_white_24px;
+            this.btnConnectDiscord.OnIdleState.IconRightImage = null;
+            this.btnConnectDiscord.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.OnPressedState.BorderRadius = 5;
+            this.btnConnectDiscord.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.btnConnectDiscord.OnPressedState.BorderThickness = 1;
+            this.btnConnectDiscord.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.btnConnectDiscord.OnPressedState.ForeColor = System.Drawing.Color.White;
+            this.btnConnectDiscord.OnPressedState.IconLeftImage = null;
+            this.btnConnectDiscord.OnPressedState.IconRightImage = null;
+            this.btnConnectDiscord.Size = new System.Drawing.Size(228, 31);
+            this.btnConnectDiscord.TabIndex = 32;
+            this.btnConnectDiscord.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnConnectDiscord.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            this.btnConnectDiscord.TextMarginLeft = 0;
+            this.btnConnectDiscord.TextPadding = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.btnConnectDiscord.UseDefaultRadiusAndThickness = true;
+            this.btnConnectDiscord.Visible = false;
+            this.btnConnectDiscord.Click += new System.EventHandler(this.btnConnectDiscord_Click);
             // 
             // EleDiscordSettings
             // 
@@ -372,5 +470,6 @@
         private System.Windows.Forms.Label label1;
         private Bunifu.UI.WinForms.BunifuToggleSwitch2 toggleUseDiscord;
         private System.Windows.Forms.Panel pCover;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuButton btnConnectDiscord;
     }
 }

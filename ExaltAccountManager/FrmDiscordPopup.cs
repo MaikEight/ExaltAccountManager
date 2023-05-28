@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MK_EAM_Analytics;
 using Newtonsoft.Json;
 
 namespace ExaltAccountManager
@@ -15,19 +14,16 @@ namespace ExaltAccountManager
             InitializeComponent();
             frm = _frm;
 
-            MK_EAM_Lib.FormsUtils.SuspendDrawing(this);
-
             lQuestion.Text = string.Format(lQuestion.Text, DiscordHelper.GetUserName());
 
             frm.ThemeChanged += ApplyTheme;
+            this.Disposed += (s, e) =>
+            {
+                frm.ThemeChanged -= ApplyTheme;
+            };
             ApplyTheme(this, EventArgs.Empty);
 
-            MK_EAM_Lib.FormsUtils.ResumeDrawing(this);
-        }
-
-        ~FrmDiscordPopup() 
-        {
-            frm.ThemeChanged -= ApplyTheme;
+            this.BringToFront();
         }
 
         private void ApplyTheme(object sender, EventArgs e)
