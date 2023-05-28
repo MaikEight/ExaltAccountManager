@@ -405,7 +405,6 @@ namespace EAM_Vault_Peeker
 
                     for (int i = 0; i < itemsString.Length; i++)
                     {
-                        Console.WriteLine(i);
                         items.Add(new Item(itemsString[i]));
                     }
                 } 
