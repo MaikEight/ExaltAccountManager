@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace MK_EAM_Lib
 {
@@ -34,22 +35,36 @@ namespace MK_EAM_Lib
                     id = Convert.ToInt32(ids);
 
                 name = sp[0].Substring(sp[0].IndexOf(": ") + 2, sp[0].Length - (sp[0].IndexOf(": ") + 2)).Replace("\"", "").Trim('\'');
+                if (sp.Length == 1)
+                    return;
                 slotType = int.Parse(sp[1].Trim(' '));
                 itemType = Item.GetItemType(slotType);
-                tier = int.Parse(sp[2].Trim(' '));
-                x = int.Parse(sp[3].Trim(' '));
-                y = int.Parse(sp[4].Trim(' '));
-                fameBonus = int.Parse(sp[5].Trim(' '));
-                feedPower = int.Parse(sp[6].Trim(' '));
-                bagType = int.Parse(sp[7].Trim(' '));
-                soulbound = bool.Parse(sp[8].Trim(' '));
-                utSt = int.Parse(sp[9].Trim(' '));
+                if (sp.Length == 2)
+                    return;
+                int.TryParse(sp[2].Trim(' '), out tier);
+                if (sp.Length == 3)
+                    return;
+                int.TryParse(sp[3].Trim(' '), out x);
+                if (sp.Length == 4)
+                    return;
+                int.TryParse(sp[4].Trim(' '), out y);
+                if (sp.Length == 5)
+                    return;
+                int.TryParse(sp[5].Trim(' '), out fameBonus);
+                if (sp.Length == 6)
+                    return;
+                int.TryParse(sp[6].Trim(' '), out feedPower);
+                if (sp.Length == 7)
+                    return;
+                int.TryParse(sp[7].Trim(' '), out bagType);
+                if (sp.Length == 8)
+                    return;
+                bool.TryParse(sp[8].Trim(' '), out soulbound);
+                if (sp.Length == 9)
+                    return;
+                int.TryParse(sp[9].Trim(' '), out utSt);
             }
-            catch (Exception ex)
-            {
-                string msg = ex.Message;
-
-            }
+            catch { }
         }
 
         public override string ToString()
