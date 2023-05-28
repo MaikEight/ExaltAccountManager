@@ -26,7 +26,11 @@ namespace ExaltAccountManager.UI.Elements
             toggleAnonymize.Checked = frm.OptionsData.analyticsOptions.Anonymization;
             toggleSendAnalytics.Checked = !frm.OptionsData.analyticsOptions.OptOut;
 
-            if (frm.OptionsData.analyticsOptions.OptOut || frm.OptionsData.analyticsOptions.Anonymization || AnalyticsClient.Instance == null || AnalyticsClient.Instance?.SessionId == Guid.Empty || AnalyticsClient.Instance?.SessionId == Guid.Parse("45414D20-0000-6279-0000-204D61696B38"))
+            if (frm.OptionsData.analyticsOptions.OptOut || 
+                frm.OptionsData.analyticsOptions.Anonymization || 
+                AnalyticsClient.Instance == null || 
+                AnalyticsClient.Instance?.SessionId == Guid.Empty || 
+                AnalyticsClient.Instance?.SessionId == Guid.Parse("45414D20-0000-6279-0000-204D61696B38"))
             {
                 btnRequestData.Enabled =
                 btnDelete.Enabled = false;
@@ -118,7 +122,7 @@ namespace ExaltAccountManager.UI.Elements
                         string json = JsonConvert.SerializeObject(result, Formatting.Indented);
                         try
                         {
-                            string path = System.IO.Path.Combine(Application.StartupPath, "AnalyticsUserData.txt");
+                            string path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "AnalyticsUserData.txt");
                             if (System.IO.File.Exists(path))
                                 System.IO.File.Delete(path);
                             System.IO.File.WriteAllText(path, json);
