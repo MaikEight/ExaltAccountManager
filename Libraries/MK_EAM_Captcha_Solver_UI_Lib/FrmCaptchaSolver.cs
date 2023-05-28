@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -49,6 +50,8 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
 
         private CaptchaUIConfiguration configuration = new CaptchaUIConfiguration();
 
+        private FrmZoom frmZoom = null;
+
         #region Paths
 
         public static readonly string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
@@ -83,6 +86,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             lMessage.Text = string.Format(lMessage.Text, string.IsNullOrEmpty(accountInfo.Name) ? accountInfo.Email : accountInfo.Name);
 
             ApplyTheme();
+            frmZoom = new FrmZoom();
 
             #region Read configuration
 
@@ -609,6 +613,54 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                 File.WriteAllText(captchaSolverConfigurationPath, JsonConvert.SerializeObject(configuration));
             }
             catch { }
+        }
+
+        int offset = 10;
+        int cutSize = 50;
+        Point p = new Point(0, 0);
+        private void pbCaptchaMain_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (pbCaptchaMain.Image == null || !configuration.UseZoom) return;
+
+            int halfCutSize = (int)(cutSize * 0.5f);
+
+            p.X = Math.Min(e.X <= halfCutSize ? 0 : e.X - halfCutSize, pbCaptchaMain.Width - cutSize);
+            p.Y = Math.Min(e.Y <= halfCutSize ? 0 : e.Y - halfCutSize, pbCaptchaMain.Height - cutSize);
+
+            float scale = (float)pbCaptchaMain.Image.Width / (float)pbCaptchaMain.Width;
+            float scaledCutSize = cutSize * scale;
+
+            Bitmap bmp = new Bitmap((int)scaledCutSize, (int)scaledCutSize);
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.DrawImage(pbCaptchaMain.Image,
+                    new RectangleF(0, 0, scaledCutSize, scaledCutSize),
+                    new RectangleF(p.X * scale, p.Y * scale, scaledCutSize, scaledCutSize),
+                    GraphicsUnit.Pixel);
+            }
+
+            if (configuration.UseZoom)
+            {
+                frmZoom.Image = bmp;
+                Point pbScreenLocation = pbCaptchaMain.PointToScreen(Point.Empty);
+                frmZoom.Location = new Point(
+                        pbScreenLocation.X + e.X + offset,
+                        pbScreenLocation.Y + e.Y + offset
+                    );
+            }
+        }
+
+        private void pbCaptchaMain_MouseEnter(object sender, EventArgs e)
+        {
+            if (configuration.UseZoom)
+                frmZoom?.Show(this);
+        }
+
+        private void pbCaptchaMain_MouseLeave(object sender, EventArgs e)
+        {
+            frmZoom?.Hide();
         }
     }
 }

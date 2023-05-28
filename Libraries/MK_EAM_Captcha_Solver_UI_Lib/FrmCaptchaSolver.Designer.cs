@@ -28,57 +28,57 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmCaptchaSolver));
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges27 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges28 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.pTopContent = new System.Windows.Forms.Panel();
             this.pTop = new System.Windows.Forms.Panel();
-            this.pbMinimize = new System.Windows.Forms.PictureBox();
-            this.pbClose = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pHeader = new System.Windows.Forms.Panel();
             this.lBeta = new System.Windows.Forms.Label();
             this.lHeaderCaptchaAid = new System.Windows.Forms.Label();
             this.lEAMHead = new System.Windows.Forms.Label();
-            this.pbHeader = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.pMessage = new System.Windows.Forms.Panel();
             this.lMessage = new System.Windows.Forms.Label();
             this.pContent = new System.Windows.Forms.Panel();
             this.pCaptcha = new System.Windows.Forms.Panel();
             this.pActions = new System.Windows.Forms.Panel();
             this.lTriesLeft = new System.Windows.Forms.Label();
-            this.btnReset = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
-            this.btnSubmit = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
-            this.pbCaptchaMain = new System.Windows.Forms.PictureBox();
-            this.pbCaptchaQuestion = new System.Windows.Forms.PictureBox();
             this.pCaptchaText = new System.Windows.Forms.Panel();
             this.lQuestion = new System.Windows.Forms.Label();
             this.pTools = new System.Windows.Forms.Panel();
             this.pToolsContent = new System.Windows.Forms.Panel();
+            this.pToolsTop = new System.Windows.Forms.Panel();
+            this.formDock = new Bunifu.UI.WinForms.BunifuFormDock();
+            this.btnReset = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.btnSubmit = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.pbCaptchaMain = new System.Windows.Forms.PictureBox();
+            this.pbCaptchaQuestion = new System.Windows.Forms.PictureBox();
             this.pbGrayScale = new System.Windows.Forms.PictureBox();
             this.pbZoom = new System.Windows.Forms.PictureBox();
             this.pbShowNumbers = new System.Windows.Forms.PictureBox();
-            this.pToolsTop = new System.Windows.Forms.Panel();
-            this.formDock = new Bunifu.UI.WinForms.BunifuFormDock();
+            this.pbMinimize = new System.Windows.Forms.PictureBox();
+            this.pbClose = new System.Windows.Forms.PictureBox();
+            this.pbHeader = new Bunifu.UI.WinForms.BunifuPictureBox();
             this.pTopContent.SuspendLayout();
             this.pTop.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
             this.panel3.SuspendLayout();
             this.pHeader.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
             this.pMessage.SuspendLayout();
             this.pContent.SuspendLayout();
             this.pCaptcha.SuspendLayout();
             this.pActions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaMain)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaQuestion)).BeginInit();
             this.pCaptchaText.SuspendLayout();
             this.pTools.SuspendLayout();
             this.pToolsContent.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaMain)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaQuestion)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbGrayScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbShowNumbers)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
             this.SuspendLayout();
             // 
             // pTopContent
@@ -101,37 +101,6 @@
             this.pTop.Name = "pTop";
             this.pTop.Size = new System.Drawing.Size(149, 24);
             this.pTop.TabIndex = 3;
-            // 
-            // pbMinimize
-            // 
-            this.pbMinimize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbMinimize.Image = ((System.Drawing.Image)(resources.GetObject("pbMinimize.Image")));
-            this.pbMinimize.Location = new System.Drawing.Point(101, 0);
-            this.pbMinimize.Name = "pbMinimize";
-            this.pbMinimize.Size = new System.Drawing.Size(24, 24);
-            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbMinimize.TabIndex = 10;
-            this.pbMinimize.TabStop = false;
-            this.pbMinimize.Click += new System.EventHandler(this.pbMinimize_Click);
-            this.pbMinimize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseDown);
-            this.pbMinimize.MouseEnter += new System.EventHandler(this.pbMinimize_MouseEnter);
-            this.pbMinimize.MouseLeave += new System.EventHandler(this.pbMinimize_MouseLeave);
-            this.pbMinimize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseUp);
-            // 
-            // pbClose
-            // 
-            this.pbClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbClose.Image = ((System.Drawing.Image)(resources.GetObject("pbClose.Image")));
-            this.pbClose.Location = new System.Drawing.Point(125, 0);
-            this.pbClose.Name = "pbClose";
-            this.pbClose.Size = new System.Drawing.Size(24, 24);
-            this.pbClose.TabIndex = 9;
-            this.pbClose.TabStop = false;
-            this.pbClose.Click += new System.EventHandler(this.pbClose_Click);
-            this.pbClose.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseDown);
-            this.pbClose.MouseEnter += new System.EventHandler(this.pbClose_MouseEnter);
-            this.pbClose.MouseLeave += new System.EventHandler(this.pbClose_MouseLeave);
-            this.pbClose.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseUp);
             // 
             // panel3
             // 
@@ -189,22 +158,6 @@
             this.lEAMHead.TabIndex = 2;
             this.lEAMHead.Text = "Exalt Account Manager";
             // 
-            // pbHeader
-            // 
-            this.pbHeader.AllowFocused = false;
-            this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pbHeader.AutoSizeHeight = true;
-            this.pbHeader.BorderRadius = 0;
-            this.pbHeader.Image = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.puzzle_white_48px1;
-            this.pbHeader.IsCircle = true;
-            this.pbHeader.Location = new System.Drawing.Point(6, 6);
-            this.pbHeader.Name = "pbHeader";
-            this.pbHeader.Size = new System.Drawing.Size(48, 48);
-            this.pbHeader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbHeader.TabIndex = 3;
-            this.pbHeader.TabStop = false;
-            this.pbHeader.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Square;
-            // 
             // pMessage
             // 
             this.pMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
@@ -225,7 +178,7 @@
             this.lMessage.Margin = new System.Windows.Forms.Padding(0);
             this.lMessage.MaximumSize = new System.Drawing.Size(314, 0);
             this.lMessage.Name = "lMessage";
-            this.lMessage.Size = new System.Drawing.Size(314, 63);
+            this.lMessage.Size = new System.Drawing.Size(314, 0);
             this.lMessage.TabIndex = 8;
             this.lMessage.Text = "You need to solve a captcha to log in or refresh the data of the account: \r\n{0}";
             this.lMessage.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -282,6 +235,99 @@
             this.lTriesLeft.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.lTriesLeft.UseMnemonic = false;
             // 
+            // pCaptchaText
+            // 
+            this.pCaptchaText.Controls.Add(this.lQuestion);
+            this.pCaptchaText.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pCaptchaText.Location = new System.Drawing.Point(0, 0);
+            this.pCaptchaText.Name = "pCaptchaText";
+            this.pCaptchaText.Size = new System.Drawing.Size(290, 29);
+            this.pCaptchaText.TabIndex = 2;
+            // 
+            // lQuestion
+            // 
+            this.lQuestion.AutoEllipsis = true;
+            this.lQuestion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lQuestion.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lQuestion.Location = new System.Drawing.Point(0, 0);
+            this.lQuestion.Margin = new System.Windows.Forms.Padding(0);
+            this.lQuestion.MaximumSize = new System.Drawing.Size(290, 0);
+            this.lQuestion.Name = "lQuestion";
+            this.lQuestion.Size = new System.Drawing.Size(290, 0);
+            this.lQuestion.TabIndex = 9;
+            this.lQuestion.Text = "Find the following in order";
+            this.lQuestion.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lQuestion.UseMnemonic = false;
+            // 
+            // pTools
+            // 
+            this.pTools.Controls.Add(this.pToolsContent);
+            this.pTools.Controls.Add(this.pToolsTop);
+            this.pTools.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pTools.Location = new System.Drawing.Point(290, 0);
+            this.pTools.Name = "pTools";
+            this.pTools.Size = new System.Drawing.Size(24, 422);
+            this.pTools.TabIndex = 4;
+            // 
+            // pToolsContent
+            // 
+            this.pToolsContent.Controls.Add(this.pbGrayScale);
+            this.pToolsContent.Controls.Add(this.pbZoom);
+            this.pToolsContent.Controls.Add(this.pbShowNumbers);
+            this.pToolsContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pToolsContent.Location = new System.Drawing.Point(0, 91);
+            this.pToolsContent.Name = "pToolsContent";
+            this.pToolsContent.Size = new System.Drawing.Size(24, 331);
+            this.pToolsContent.TabIndex = 1;
+            // 
+            // pToolsTop
+            // 
+            this.pToolsTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pToolsTop.Location = new System.Drawing.Point(0, 0);
+            this.pToolsTop.Name = "pToolsTop";
+            this.pToolsTop.Size = new System.Drawing.Size(24, 91);
+            this.pToolsTop.TabIndex = 0;
+            // 
+            // formDock
+            // 
+            this.formDock.AllowFormDragging = true;
+            this.formDock.AllowFormDropShadow = true;
+            this.formDock.AllowFormResizing = false;
+            this.formDock.AllowHidingBottomRegion = true;
+            this.formDock.AllowOpacityChangesWhileDragging = false;
+            this.formDock.BorderOptions.BottomBorder.BorderColor = System.Drawing.Color.Silver;
+            this.formDock.BorderOptions.BottomBorder.BorderThickness = 1;
+            this.formDock.BorderOptions.BottomBorder.ShowBorder = true;
+            this.formDock.BorderOptions.LeftBorder.BorderColor = System.Drawing.Color.Silver;
+            this.formDock.BorderOptions.LeftBorder.BorderThickness = 1;
+            this.formDock.BorderOptions.LeftBorder.ShowBorder = true;
+            this.formDock.BorderOptions.RightBorder.BorderColor = System.Drawing.Color.Silver;
+            this.formDock.BorderOptions.RightBorder.BorderThickness = 1;
+            this.formDock.BorderOptions.RightBorder.ShowBorder = true;
+            this.formDock.BorderOptions.TopBorder.BorderColor = System.Drawing.Color.Silver;
+            this.formDock.BorderOptions.TopBorder.BorderThickness = 1;
+            this.formDock.BorderOptions.TopBorder.ShowBorder = true;
+            this.formDock.ContainerControl = this;
+            this.formDock.DockingIndicatorsColor = System.Drawing.Color.FromArgb(((int)(((byte)(202)))), ((int)(((byte)(215)))), ((int)(((byte)(233)))));
+            this.formDock.DockingIndicatorsOpacity = 0.5D;
+            this.formDock.DockingOptions.DockAll = true;
+            this.formDock.DockingOptions.DockBottomLeft = true;
+            this.formDock.DockingOptions.DockBottomRight = true;
+            this.formDock.DockingOptions.DockFullScreen = true;
+            this.formDock.DockingOptions.DockLeft = true;
+            this.formDock.DockingOptions.DockRight = true;
+            this.formDock.DockingOptions.DockTopLeft = true;
+            this.formDock.DockingOptions.DockTopRight = true;
+            this.formDock.FormDraggingOpacity = 0.9D;
+            this.formDock.ParentForm = this;
+            this.formDock.ShowCursorChanges = true;
+            this.formDock.ShowDockingIndicators = false;
+            this.formDock.TitleBarOptions.AllowFormDragging = true;
+            this.formDock.TitleBarOptions.BunifuFormDock = this.formDock;
+            this.formDock.TitleBarOptions.DoubleClickToExpandWindow = false;
+            this.formDock.TitleBarOptions.TitleBarControl = this.pTop;
+            this.formDock.TitleBarOptions.UseBackColorOnDockingIndicators = false;
+            // 
             // btnReset
             // 
             this.btnReset.AllowAnimations = true;
@@ -301,11 +347,11 @@
             this.btnReset.ColorContrastOnClick = 45;
             this.btnReset.ColorContrastOnHover = 45;
             this.btnReset.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges27.BottomLeft = true;
-            borderEdges27.BottomRight = true;
-            borderEdges27.TopLeft = true;
-            borderEdges27.TopRight = true;
-            this.btnReset.CustomizableEdges = borderEdges27;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.btnReset.CustomizableEdges = borderEdges1;
             this.btnReset.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnReset.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnReset.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -393,11 +439,11 @@
             this.btnSubmit.ColorContrastOnClick = 45;
             this.btnSubmit.ColorContrastOnHover = 45;
             this.btnSubmit.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges28.BottomLeft = true;
-            borderEdges28.BottomRight = true;
-            borderEdges28.TopLeft = true;
-            borderEdges28.TopRight = true;
-            this.btnSubmit.CustomizableEdges = borderEdges28;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.btnSubmit.CustomizableEdges = borderEdges2;
             this.btnSubmit.DialogResult = System.Windows.Forms.DialogResult.None;
             this.btnSubmit.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.btnSubmit.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -478,6 +524,9 @@
             this.pbCaptchaMain.TabStop = false;
             this.pbCaptchaMain.Paint += new System.Windows.Forms.PaintEventHandler(this.pbCaptchaMain_Paint);
             this.pbCaptchaMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCaptchaMain_MouseDown);
+            this.pbCaptchaMain.MouseEnter += new System.EventHandler(this.pbCaptchaMain_MouseEnter);
+            this.pbCaptchaMain.MouseLeave += new System.EventHandler(this.pbCaptchaMain_MouseLeave);
+            this.pbCaptchaMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbCaptchaMain_MouseMove);
             // 
             // pbCaptchaQuestion
             // 
@@ -488,51 +537,6 @@
             this.pbCaptchaQuestion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbCaptchaQuestion.TabIndex = 0;
             this.pbCaptchaQuestion.TabStop = false;
-            // 
-            // pCaptchaText
-            // 
-            this.pCaptchaText.Controls.Add(this.lQuestion);
-            this.pCaptchaText.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pCaptchaText.Location = new System.Drawing.Point(0, 0);
-            this.pCaptchaText.Name = "pCaptchaText";
-            this.pCaptchaText.Size = new System.Drawing.Size(290, 29);
-            this.pCaptchaText.TabIndex = 2;
-            // 
-            // lQuestion
-            // 
-            this.lQuestion.AutoEllipsis = true;
-            this.lQuestion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lQuestion.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lQuestion.Location = new System.Drawing.Point(0, 0);
-            this.lQuestion.Margin = new System.Windows.Forms.Padding(0);
-            this.lQuestion.MaximumSize = new System.Drawing.Size(290, 0);
-            this.lQuestion.Name = "lQuestion";
-            this.lQuestion.Size = new System.Drawing.Size(290, 29);
-            this.lQuestion.TabIndex = 9;
-            this.lQuestion.Text = "Find the following in order";
-            this.lQuestion.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.lQuestion.UseMnemonic = false;
-            // 
-            // pTools
-            // 
-            this.pTools.Controls.Add(this.pToolsContent);
-            this.pTools.Controls.Add(this.pToolsTop);
-            this.pTools.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pTools.Location = new System.Drawing.Point(290, 0);
-            this.pTools.Name = "pTools";
-            this.pTools.Size = new System.Drawing.Size(24, 422);
-            this.pTools.TabIndex = 4;
-            // 
-            // pToolsContent
-            // 
-            this.pToolsContent.Controls.Add(this.pbGrayScale);
-            this.pToolsContent.Controls.Add(this.pbZoom);
-            this.pToolsContent.Controls.Add(this.pbShowNumbers);
-            this.pToolsContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pToolsContent.Location = new System.Drawing.Point(0, 91);
-            this.pToolsContent.Name = "pToolsContent";
-            this.pToolsContent.Size = new System.Drawing.Size(24, 331);
-            this.pToolsContent.TabIndex = 1;
             // 
             // pbGrayScale
             // 
@@ -576,53 +580,52 @@
             this.pbShowNumbers.MouseEnter += new System.EventHandler(this.pbShowNumbers_MouseEnter);
             this.pbShowNumbers.MouseLeave += new System.EventHandler(this.pbShowNumbers_MouseLeave);
             // 
-            // pToolsTop
+            // pbMinimize
             // 
-            this.pToolsTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pToolsTop.Location = new System.Drawing.Point(0, 0);
-            this.pToolsTop.Name = "pToolsTop";
-            this.pToolsTop.Size = new System.Drawing.Size(24, 91);
-            this.pToolsTop.TabIndex = 0;
+            this.pbMinimize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbMinimize.Image = ((System.Drawing.Image)(resources.GetObject("pbMinimize.Image")));
+            this.pbMinimize.Location = new System.Drawing.Point(101, 0);
+            this.pbMinimize.Name = "pbMinimize";
+            this.pbMinimize.Size = new System.Drawing.Size(24, 24);
+            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbMinimize.TabIndex = 10;
+            this.pbMinimize.TabStop = false;
+            this.pbMinimize.Click += new System.EventHandler(this.pbMinimize_Click);
+            this.pbMinimize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseDown);
+            this.pbMinimize.MouseEnter += new System.EventHandler(this.pbMinimize_MouseEnter);
+            this.pbMinimize.MouseLeave += new System.EventHandler(this.pbMinimize_MouseLeave);
+            this.pbMinimize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseUp);
             // 
-            // formDock
+            // pbClose
             // 
-            this.formDock.AllowFormDragging = true;
-            this.formDock.AllowFormDropShadow = true;
-            this.formDock.AllowFormResizing = false;
-            this.formDock.AllowHidingBottomRegion = true;
-            this.formDock.AllowOpacityChangesWhileDragging = false;
-            this.formDock.BorderOptions.BottomBorder.BorderColor = System.Drawing.Color.Silver;
-            this.formDock.BorderOptions.BottomBorder.BorderThickness = 1;
-            this.formDock.BorderOptions.BottomBorder.ShowBorder = true;
-            this.formDock.BorderOptions.LeftBorder.BorderColor = System.Drawing.Color.Silver;
-            this.formDock.BorderOptions.LeftBorder.BorderThickness = 1;
-            this.formDock.BorderOptions.LeftBorder.ShowBorder = true;
-            this.formDock.BorderOptions.RightBorder.BorderColor = System.Drawing.Color.Silver;
-            this.formDock.BorderOptions.RightBorder.BorderThickness = 1;
-            this.formDock.BorderOptions.RightBorder.ShowBorder = true;
-            this.formDock.BorderOptions.TopBorder.BorderColor = System.Drawing.Color.Silver;
-            this.formDock.BorderOptions.TopBorder.BorderThickness = 1;
-            this.formDock.BorderOptions.TopBorder.ShowBorder = true;
-            this.formDock.ContainerControl = this;
-            this.formDock.DockingIndicatorsColor = System.Drawing.Color.FromArgb(((int)(((byte)(202)))), ((int)(((byte)(215)))), ((int)(((byte)(233)))));
-            this.formDock.DockingIndicatorsOpacity = 0.5D;
-            this.formDock.DockingOptions.DockAll = true;
-            this.formDock.DockingOptions.DockBottomLeft = true;
-            this.formDock.DockingOptions.DockBottomRight = true;
-            this.formDock.DockingOptions.DockFullScreen = true;
-            this.formDock.DockingOptions.DockLeft = true;
-            this.formDock.DockingOptions.DockRight = true;
-            this.formDock.DockingOptions.DockTopLeft = true;
-            this.formDock.DockingOptions.DockTopRight = true;
-            this.formDock.FormDraggingOpacity = 0.9D;
-            this.formDock.ParentForm = this;
-            this.formDock.ShowCursorChanges = true;
-            this.formDock.ShowDockingIndicators = false;
-            this.formDock.TitleBarOptions.AllowFormDragging = true;
-            this.formDock.TitleBarOptions.BunifuFormDock = this.formDock;
-            this.formDock.TitleBarOptions.DoubleClickToExpandWindow = false;
-            this.formDock.TitleBarOptions.TitleBarControl = this.pTop;
-            this.formDock.TitleBarOptions.UseBackColorOnDockingIndicators = false;
+            this.pbClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbClose.Image = ((System.Drawing.Image)(resources.GetObject("pbClose.Image")));
+            this.pbClose.Location = new System.Drawing.Point(125, 0);
+            this.pbClose.Name = "pbClose";
+            this.pbClose.Size = new System.Drawing.Size(24, 24);
+            this.pbClose.TabIndex = 9;
+            this.pbClose.TabStop = false;
+            this.pbClose.Click += new System.EventHandler(this.pbClose_Click);
+            this.pbClose.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseDown);
+            this.pbClose.MouseEnter += new System.EventHandler(this.pbClose_MouseEnter);
+            this.pbClose.MouseLeave += new System.EventHandler(this.pbClose_MouseLeave);
+            this.pbClose.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseUp);
+            // 
+            // pbHeader
+            // 
+            this.pbHeader.AllowFocused = false;
+            this.pbHeader.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pbHeader.AutoSizeHeight = true;
+            this.pbHeader.BorderRadius = 0;
+            this.pbHeader.Image = global::MK_EAM_Captcha_Solver_UI_Lib.Properties.Resources.puzzle_white_48px1;
+            this.pbHeader.IsCircle = true;
+            this.pbHeader.Location = new System.Drawing.Point(6, 6);
+            this.pbHeader.Name = "pbHeader";
+            this.pbHeader.Size = new System.Drawing.Size(48, 48);
+            this.pbHeader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbHeader.TabIndex = 3;
+            this.pbHeader.TabStop = false;
+            this.pbHeader.Type = Bunifu.UI.WinForms.BunifuPictureBox.Types.Square;
             // 
             // FrmCaptchaSolver
             // 
@@ -639,30 +642,30 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmCaptchaSolver";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "FrmCaptchaSolver";
+            this.Text = "Captcha Aid";
             this.Activated += new System.EventHandler(this.FrmCaptchaSolver_Activated);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FrmCaptchaSolver_Paint);
             this.pTopContent.ResumeLayout(false);
             this.pTop.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbClose)).EndInit();
             this.panel3.ResumeLayout(false);
             this.pHeader.ResumeLayout(false);
             this.pHeader.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
             this.pMessage.ResumeLayout(false);
             this.pContent.ResumeLayout(false);
             this.pCaptcha.ResumeLayout(false);
             this.pActions.ResumeLayout(false);
             this.pActions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaMain)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaQuestion)).EndInit();
             this.pCaptchaText.ResumeLayout(false);
             this.pTools.ResumeLayout(false);
             this.pToolsContent.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaMain)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCaptchaQuestion)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbGrayScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbZoom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbShowNumbers)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbClose)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
             this.ResumeLayout(false);
 
         }
