@@ -63,6 +63,36 @@ namespace MK_EAM_Captcha_Solver_UI_Lib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _1_purple_24px {
+            get {
+                object obj = ResourceManager.GetObject("_1_purple_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _2_purple_24px {
+            get {
+                object obj = ResourceManager.GetObject("_2_purple_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _3_purple_24px {
+            get {
+                object obj = ResourceManager.GetObject("_3_purple_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap back_to_white_36px {
             get {
                 object obj = ResourceManager.GetObject("back_to_white_36px", resourceCulture);

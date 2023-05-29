@@ -420,6 +420,21 @@
   <ItemGroup>
     <None Include="Resources\numbered_list_black_24px.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1_purple_24px1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1_purple_24px11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1_purple_24px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2_purple_24px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3_purple_24px.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

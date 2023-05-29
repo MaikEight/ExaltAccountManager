@@ -406,6 +406,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             pbCaptchaMain.Invalidate();
         }
 
+        private int imageSize = 24 / 2;
         private void pbCaptchaMain_Paint(object sender, PaintEventArgs e)
         {
             if (!pointsSet.Contains(true))
@@ -413,6 +414,29 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
 
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
+
+            if (configuration.UseNumbered)
+            {
+                List<NumberImagePoint> list = new List<NumberImagePoint>();
+                for (int i = 0; i < points.Length; i++)
+                {
+                    if (pointsSet[i])
+                    {                    
+                        list.Add(new NumberImagePoint()
+                        {
+                            Point = new PointF(points[i].X - imageSize, points[i].Y - imageSize),
+                            Number = i + 1
+                        });
+                    }
+                }
+
+                foreach (NumberImagePoint nip in list)
+                {
+                    e.Graphics.DrawImage((Image)Properties.Resources.ResourceManager.GetObject($"_{nip.Number}_purple_24px"), nip.Point);
+                }
+
+                return;
+            }
             List<RectangleF> rectangles = new List<RectangleF>();
 
             for (int i = 0; i < points.Length; i++)
@@ -555,6 +579,8 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             configuration.UseNumbered = !configuration.UseNumbered;
             pbShowNumbers_MouseEnter(sender, e);
 
+            pbCaptchaMain.Invalidate();
+
             SaveConfiguration();
         }
 
@@ -661,6 +687,12 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         private void pbCaptchaMain_MouseLeave(object sender, EventArgs e)
         {
             frmZoom?.Hide();
+        }
+
+        public sealed class NumberImagePoint
+        {
+            public int Number { get; set; }
+            public PointF Point { get; set; }
         }
     }
 }
