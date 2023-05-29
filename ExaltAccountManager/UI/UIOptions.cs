@@ -34,6 +34,8 @@ namespace ExaltAccountManager.UI
 
         private void ApplyTheme(object sender, EventArgs e)
         {
+            #region ApplyTheme
+
             Color def = ColorScheme.GetColorDef(frm.UseDarkmode);
             Color second = ColorScheme.GetColorSecond(frm.UseDarkmode);
             Color third = ColorScheme.GetColorThird(frm.UseDarkmode);
@@ -67,6 +69,8 @@ namespace ExaltAccountManager.UI
             }
 
             MK_EAM_Lib.FormsUtils.ResumeDrawing(this);
+
+            #endregion
         }
 
         public void ApplyOptions()
