@@ -12,10 +12,12 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             set
             {
                 pbZoom.Image = value;
+                if (value == null) return;
+                scale = (float)pbZoom.Width / (float)value.Width ;
             }
         }
 
-        public Point AimLocation
+        public PointF AimLocation
         {
             set
             {
@@ -23,7 +25,8 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                 pbZoom.Refresh();
             }
         }
-        private Point aimLocation = new Point(50, 50);
+        private PointF aimLocation = new PointF(50, 50);
+        private float scale = 1f;
 
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn
@@ -40,9 +43,9 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
         {
             InitializeComponent();
             Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 11, 11));
-            AimLocation = new Point(
-                this.Width / 2,
-                this.Height / 2);
+            AimLocation = new PointF(
+                this.Width / 2f,
+                this.Height / 2f);
         }
 
         private void pbZoom_Paint(object sender, PaintEventArgs e)
@@ -51,13 +54,13 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
             {
                 e.Graphics.DrawLine(
                     p,
-                    new Point(0, aimLocation.Y),
-                    new Point(pbZoom.Width, aimLocation.Y)
+                    new PointF(0, aimLocation.Y * scale),
+                    new PointF(pbZoom.Width, aimLocation.Y * scale)
                 );
                 e.Graphics.DrawLine(
                     p,
-                    new Point(aimLocation.X, 0),
-                    new Point(aimLocation.X, pbZoom.Height)
+                    new PointF(aimLocation.X * scale, 0),
+                    new PointF(aimLocation.X * scale, pbZoom.Height)
                 );
             }
         }

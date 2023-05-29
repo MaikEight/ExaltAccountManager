@@ -401,6 +401,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                 return;
             pointsSet = new bool[3] { false, false, false };
             points = new PointF[3] { new PointF(), new PointF(), new PointF() };
+            currentPoint = 0;
             btnSubmit.Enabled = false;
 
             pbCaptchaMain.Invalidate();
@@ -421,7 +422,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                 for (int i = 0; i < points.Length; i++)
                 {
                     if (pointsSet[i])
-                    {                    
+                    {
                         list.Add(new NumberImagePoint()
                         {
                             Point = new PointF(points[i].X - imageSize, points[i].Y - imageSize),
@@ -515,7 +516,7 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
 
         public Bitmap GetGrayscaledImage(Bitmap original)
         {
-            if(original == null)
+            if (original == null)
                 return null;
 
             //create a blank bitmap the same size as original
@@ -667,9 +668,17 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                     GraphicsUnit.Pixel);
             }
 
+            PointF scaledMousePosition = new PointF(e.X * scale, e.Y * scale);
+            PointF scaledImageStartPoint = new PointF(p.X * scale, p.Y * scale);
+
+            PointF result = new PointF(
+                scaledMousePosition.X - scaledImageStartPoint.X,
+                scaledMousePosition.Y - scaledImageStartPoint.Y);
+
             if (configuration.UseZoom)
             {
                 frmZoom.Image = bmp;
+                frmZoom.AimLocation = result;
                 Point pbScreenLocation = pbCaptchaMain.PointToScreen(Point.Empty);
                 frmZoom.Location = new Point(
                         pbScreenLocation.X + e.X + offset,
