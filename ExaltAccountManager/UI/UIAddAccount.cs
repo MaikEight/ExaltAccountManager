@@ -129,7 +129,13 @@ namespace ExaltAccountManager.UI
         {
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
             {
-                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), !toggleCustomAccountname.Checked, true, RequestDone);
+                bool success = ShowCaptcha(_info);
+                if (!success)
+                {
+                    frm.ShowSnackbar("Captcha solving failed, please try again later.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Warning, 5000);
+                    ResetUI(false);
+                }
+                return;
             }
 
             if (string.IsNullOrEmpty(_info.name) || _info.requestState != MK_EAM_Lib.AccountInfo.RequestState.Success)
@@ -145,6 +151,14 @@ namespace ExaltAccountManager.UI
                 frm.AddAccount(_info);
                 ResetUI();
             }
+        }
+
+        private bool ShowCaptcha(MK_EAM_Lib.AccountInfo _info)
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<MK_EAM_Lib.AccountInfo, bool>)ShowCaptcha, _info);
+
+            return CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), !toggleCustomAccountname.Checked, true, RequestDone);
         }
 
         private bool ResetUI(bool success = true)

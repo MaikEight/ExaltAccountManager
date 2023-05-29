@@ -666,19 +666,18 @@ namespace MK_EAM_Captcha_Solver_UI_Lib
                     new RectangleF(0, 0, scaledCutSize, scaledCutSize),
                     new RectangleF(p.X * scale, p.Y * scale, scaledCutSize, scaledCutSize),
                     GraphicsUnit.Pixel);
-            }
-
-            PointF scaledMousePosition = new PointF(e.X * scale, e.Y * scale);
-            PointF scaledImageStartPoint = new PointF(p.X * scale, p.Y * scale);
-
-            PointF result = new PointF(
-                scaledMousePosition.X - scaledImageStartPoint.X,
-                scaledMousePosition.Y - scaledImageStartPoint.Y);
+            }            
 
             if (configuration.UseZoom)
             {
+                PointF scaledMousePosition = new PointF(e.X * scale, e.Y * scale);
+                PointF scaledImageStartPoint = new PointF(p.X * scale, p.Y * scale);
+
                 frmZoom.Image = bmp;
-                frmZoom.AimLocation = result;
+                frmZoom.AimLocation = new PointF(
+                    scaledMousePosition.X - scaledImageStartPoint.X,
+                    scaledMousePosition.Y - scaledImageStartPoint.Y);
+
                 Point pbScreenLocation = pbCaptchaMain.PointToScreen(Point.Empty);
                 frmZoom.Location = new Point(
                         pbScreenLocation.X + e.X + offset,

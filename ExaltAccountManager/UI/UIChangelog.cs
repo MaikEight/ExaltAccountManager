@@ -14,23 +14,32 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
-                ReleaseDate = new DateTime(2023, 05, 26),
+                ReleaseDate = new DateTime(2023, 05, 31),
                 Version = new Version(3, 2, 0),
-                Name = "Discord integration update, and bug fixes",
-                Description = $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}{Environment.NewLine}" +
+                Name = "Captcha Aid improvements, discord update and bug fixes",
+                Description = $"<b>CAPTCHA AID</b>{Environment.NewLine}{Environment.NewLine}" +
+                              $"- Made the Captcha Aid more descriptive.{Environment.NewLine}" +
+                              $"- Added a new numberd-list mode (new default).{Environment.NewLine}" +
+                              $"- Added a zoom mode.{Environment.NewLine}" +
+                              $"- Added a grayscaling mode.{Environment.NewLine}{Environment.NewLine}" +
+                              $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}" +
                               $"- Added an opt-out for the discord integration. <b>:(</b>{Environment.NewLine}" +
                               $"- Added an option to link your discord user with your EAM-account.{Environment.NewLine}" +
+                              $"- Added a new button to view your own EAM usage data.{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;This only shows up if you connected the discordUserId with EAM.{Environment.NewLine}" +
                               $"&nbsp;&nbsp;&nbsp;This allows you to earn cool roles and bonuses on the EAM-Discord server.{Environment.NewLine}{Environment.NewLine}" +
                               $"<b>MISCELLANEOUS</b>{Environment.NewLine}" +
-                              $"- Made the Captcha Aid more descriptive.{Environment.NewLine}" +
                               $"- Made the Accounts list select the first in the list upon filtering by{Environment.NewLine}" +
                               $"&nbsp;&nbsp;&nbsp;accountname / email.{Environment.NewLine}" +
-                              $"- Reduced the time \"Refresh data\"-button is \"blocked\" after use.{Environment.NewLine}{Environment.NewLine}" +
-                              $"- The Llama did upgrade!" +
+                              $"- Reduced the time \"Refresh data\"-button is \"blocked\" after use.{Environment.NewLine}" +
+                              $"- The Llama received an upgrade!{Environment.NewLine}" +
+                              $"- Updated dependencies{Environment.NewLine}{Environment.NewLine}" +
                               $"<b>BUG FIXES</b>{Environment.NewLine}" +
                               $"- Fixed the snackbar displaying and error after a successfull captcha.{Environment.NewLine}" +
+                              $"- Fixed a critical bug that caused crashing during scrolling  with about 13k+ accounts.{Environment.NewLine}" +
                               $"- Fixed the default export location to bot be inside the application folder, since this{Environment.NewLine}" +
-                              $"&nbsp;&nbsp;&nbsp;leads to unauthorized exceptions on installed versions.{Environment.NewLine}{Environment.NewLine}"
+                              $"&nbsp;&nbsp;&nbsp;leads to unauthorized exceptions on installed versions.{Environment.NewLine}" +
+                              $"- Fixed the same thing for renders.png and items.cfg of the Vault Peeker.{Environment.NewLine}{Environment.NewLine}"
             },
             new ChangelogEntry()
             {
