@@ -14,6 +14,39 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
+                ReleaseDate = new DateTime(2023, 06, 02),
+                Version = new Version(3, 2, 0),
+                Name = "Captcha Aid improvements, discord update and bug fixes",
+                Description = $"<b>CAPTCHA AID</b>{Environment.NewLine}{Environment.NewLine}" +
+                              $"- Made the Captcha Aid more descriptive.{Environment.NewLine}" +
+                              $"- Added a new numbered-list mode (new default).{Environment.NewLine}" +
+                              $"- Added a zoom mode.{Environment.NewLine}" +
+                              $"- Added a grayscaling mode.{Environment.NewLine}{Environment.NewLine}" +
+                              $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}" +
+                              $"- Added an opt-out for the Discord integration. <b>:(</b>{Environment.NewLine}" +
+                              $"- Added an option to link your Discord user with your EAM account..{Environment.NewLine}" +
+                              $"- Added a new button to view your own EAM usage data.{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;It only shows up if you connected the Discord User ID with EAM.{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;This allows you to earn cool roles and bonuses on the EAM-Discord server.{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;Coming soon™{Environment.NewLine}{Environment.NewLine}" +
+                              $"<b>MISCELLANEOUS</b>{Environment.NewLine}" +
+                              $"- Made the account list select the first entry in the list when filtering by{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;account name / email.{Environment.NewLine}" +
+                              $"- Reduced the time that the \"Refresh data\" button is \"blocked\" after use.{Environment.NewLine}" +
+                              $"- The Llama received an upgrade!{Environment.NewLine}" +
+                              $"- Updated dependencies{Environment.NewLine}{Environment.NewLine}" +
+                              $"<b>BUG FIXES</b>{Environment.NewLine}" +
+                              $"- Fixed the discord invite links.{Environment.NewLine}" +
+                              $"- Fixed the snackbar displaying an error after a successfull captcha.{Environment.NewLine}" +
+                              $"- Resolved an issue that occurred while attempting to add accounts that{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;were captcha-locked.{Environment.NewLine}" +
+                              $"- Fixed a critical bug that caused crashing during scrolling with about 13k+ accounts.{Environment.NewLine}" +
+                              $"- Fixed the default export location to be outside the application folder, as this can{Environment.NewLine}" +
+                              $"&nbsp;&nbsp;&nbsp;lead to unauthorized exceptions on installed versions.{Environment.NewLine}" +
+                              $"- Fixed the same issue for renders.png and items.cfg of the Vault Peeker.{Environment.NewLine}{Environment.NewLine}"
+            },
+            new ChangelogEntry()
+            {
                 ReleaseDate = new DateTime(2023, 04, 11),
                 Version = new Version(3, 1, 1),
                 Name = "HotFix",

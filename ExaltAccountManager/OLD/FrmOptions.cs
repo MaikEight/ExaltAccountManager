@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager
 {
-    public partial class FrmOptions : Form
+    public sealed partial class FrmOptions : Form
     {
         FrmMainOLD frm;
         Pen p = new Pen(Color.Black);
@@ -402,6 +402,7 @@ namespace ExaltAccountManager
     [System.Serializable]
     public sealed class DiscordOptions
     {
+        public bool OptOut { get; set; } = false;
         public bool ShowAccountNames { get; set; } = true;
         public bool ShowMenus { get; set; } = true;
 

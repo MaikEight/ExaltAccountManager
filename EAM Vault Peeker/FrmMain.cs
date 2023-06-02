@@ -4,14 +4,10 @@ using MK_EAM_General_Services_Lib.General.Responses;
 using MK_EAM_Lib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,7 +15,7 @@ namespace EAM_Vault_Peeker
 {
     public partial class FrmMain : Form
     {
-        public Version version { get; } = new Version(1, 0, 10);
+        public Version version { get; } = new Version(1, 0, 11);
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
 
         public bool useDarkmode = true;
@@ -42,14 +38,16 @@ namespace EAM_Vault_Peeker
         public List<StatsMain> statsList = new List<StatsMain>();
         public List<string> activeVaultPeekerAccounts = new List<string>();
 
+        private bool didCheckForUpdate = false;
+
         #region Path
 
         public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
 
-        private const string pathNEWRenders = @".\_NewRenders.png";
-        private const string pathRenders = @".\renders.png";
-        private const string pathItems = @".\items.cfg";
-        private const string pathNEWItems = @".\_NewItems.cfg";
+        private readonly string pathNEWRenders = Path.Combine(saveFilePath, "_NewRenders.png");
+        private readonly string pathRenders = Path.Combine(saveFilePath, "renders.png");
+        private readonly string pathItems = Path.Combine(saveFilePath, "items.cfg");
+        private readonly string pathNEWItems = Path.Combine(saveFilePath, "_NewItems.cfg");
         public string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
         public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
         public string activeVaultPeekerAccountsPath = Path.Combine(saveFilePath, "EAM.ActiveVaultPeekerAccounts");
@@ -297,10 +295,7 @@ namespace EAM_Vault_Peeker
                     catch { }
                 }
             }
-            catch
-            {
-
-            }
+            catch { }
 
             try
             {
@@ -317,6 +312,10 @@ namespace EAM_Vault_Peeker
 
         private void CheckForItemUpdate()
         {
+            if (didCheckForUpdate)
+                return;
+            didCheckForUpdate = true;
+
             try
             {
                 Task<MK_EAM_General_Services_Lib.General.Responses.GetVaultPeekerHashOfFilesResponse> result = GeneralServicesClient.Instance?.GetVaultPeekerHashOfFiles();
@@ -387,8 +386,9 @@ namespace EAM_Vault_Peeker
             }
         }
 
-        private void ReadItems()
+        private void ReadItems(bool isSecondRun = false)
         {
+            bool filesMissing = false;
             try
             {
                 if (File.Exists(pathNEWItems))
@@ -406,7 +406,8 @@ namespace EAM_Vault_Peeker
                     {
                         items.Add(new Item(itemsString[i]));
                     }
-                }
+                } 
+                else { filesMissing = true; }
 
                 if (File.Exists(pathNEWRenders))
                 {
@@ -419,8 +420,19 @@ namespace EAM_Vault_Peeker
                 {
                     renders = Bitmap.FromFile(pathRenders);
                 }
+                else { filesMissing = true; }
             }
-            catch { }
+            catch { filesMissing = true; }
+
+            if (!isSecondRun && filesMissing)
+            {
+                var t = Task.Run(() =>
+                {
+                    CheckForItemUpdate();
+                    ReadItems(true);
+                });
+                t.Wait();
+            }
         }
 
         private void FrmMain_Shown(object sender, EventArgs e)

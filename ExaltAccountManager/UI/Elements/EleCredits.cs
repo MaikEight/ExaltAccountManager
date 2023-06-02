@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace ExaltAccountManager.UI.Elements
 {
-    public partial class EleCredits : UserControl
+    public sealed partial class EleCredits : UserControl
     {
         private const string licenseDotNet = "https://dotnet.microsoft.com/en-us/platform/free";
         private const string licenseNewtonsoftJson = "Newtonsoft.Json.License";

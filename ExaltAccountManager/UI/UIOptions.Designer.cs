@@ -313,6 +313,7 @@
             this.tbPath.BorderColorIdle = System.Drawing.Color.Silver;
             this.tbPath.BorderRadius = 1;
             this.tbPath.BorderThickness = 2;
+            this.tbPath.CharacterCase = Bunifu.UI.WinForms.BunifuTextBox.CharacterCases.Normal;
             this.tbPath.CharacterCasing = System.Windows.Forms.CharacterCasing.Normal;
             this.tbPath.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.tbPath.DefaultFont = new System.Drawing.Font("Segoe UI", 9.25F);

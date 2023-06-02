@@ -61,7 +61,7 @@ namespace MK_EAM_General_Services_Lib
                 HttpResponseMessage responseMessage = await resp;
                 responseMessage.EnsureSuccessStatusCode();
                 if (responseMessage.StatusCode == HttpStatusCode.OK)
-                {                    
+                {
                     return JsonConvert.DeserializeObject<EAMReleaseInfoResponse>(await responseMessage.Content.ReadAsStringAsync());
                 }
             }
@@ -216,6 +216,67 @@ namespace MK_EAM_General_Services_Lib
                         return pnr.PollData;
                     }
                     return null;
+                }
+            }
+            catch { }
+
+            return null;
+
+            #endregion
+        }
+
+        public async Task<DiscordUser> GetDiscordUser(string clientIdHash)
+        {
+            #region GetDiscordUser            
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendGetRequest(BASE_URL + $"v1/Discord/user-by-clientIdHash?clientIdHash={clientIdHash}");
+
+                HttpResponseMessage responseMessage = await resp;
+
+                switch (responseMessage.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        return JsonConvert.DeserializeObject<DiscordUser>(await responseMessage.Content.ReadAsStringAsync());
+                    case HttpStatusCode.NotFound:
+                        return new DiscordUser()
+                        {
+                            DiscordUserId = "NotFound"
+                        };
+                    default: 
+                        return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return null;
+
+            #endregion
+        }
+
+        public async Task<DiscordUser> PostDiscordUser(string clientIdHash, string discordUserId)
+        {
+            #region PostPoll
+
+            MK_EAM_General_Services_Lib.General.Requests.SetDiscordUserIdRequest req = new General.Requests.SetDiscordUserIdRequest()
+            {
+                ClientIdHash = clientIdHash,
+                DiscordUserId = discordUserId
+            };
+
+            try
+            {
+                Task<HttpResponseMessage> resp = Utils.WebrequestUtils.SendPostRequest(BASE_URL + "v1/Discord/user", req);
+
+                HttpResponseMessage responseMessage = await resp;
+                responseMessage.EnsureSuccessStatusCode();
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<DiscordUser>(await responseMessage.Content.ReadAsStringAsync());
                 }
             }
             catch { }

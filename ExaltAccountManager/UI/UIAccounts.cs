@@ -66,6 +66,11 @@ namespace ExaltAccountManager.UI
             timerLoadProcesses.Start();
         }
 
+        ~UIAccounts()
+        {
+            frm.ThemeChanged -= ApplyTheme;
+        }
+
         private void UIAccounts_Load(object sender, EventArgs e)
         {
             isInit = true;
@@ -422,8 +427,27 @@ namespace ExaltAccountManager.UI
 
                 SaveLoginStats(_info);
 
+                Task<bool> analyticsAddLogin = null;
+                if (!frm.OptionsData.analyticsOptions.OptOut)
+                {
+                    analyticsAddLogin = AnalyticsClient.Instance?.AddLogin(frm.GetAnalyticsEmailHash(_info.Email), GetServerName(_info.serverName));
+                }
+
                 if (frm.OptionsData.closeAfterConnection)
-                { Environment.Exit(0); }
+                { 
+                    //Hide the form during the closing process
+                    frm.WindowState = FormWindowState.Minimized;
+                    frm.ShowInTaskbar = false;
+
+                    try
+                    {
+                        if (analyticsAddLogin != null)
+                            analyticsAddLogin.Wait(5000);
+                    }
+                    catch { }
+                    
+                    Environment.Exit(0); 
+                }
                 else
                 {
                     if (!dicAccountsToProcesses.ContainsKey(_info))
@@ -447,12 +471,7 @@ namespace ExaltAccountManager.UI
                     string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
                     DiscordHelper.SetState(state);
                     DiscordHelper.ApplyPresence();
-                }
-
-                if (!frm.OptionsData.analyticsOptions.OptOut)
-                {
-                    AnalyticsClient.Instance?.AddLogin(frm.GetAnalyticsEmailHash(_info.Email), GetServerName(_info.serverName));
-                }
+                }                
             }
             catch
             {
@@ -557,7 +576,7 @@ namespace ExaltAccountManager.UI
             timerRenewChangeColor.Start();
             MK_EAM_Lib.AccountInfo info = GetAccountInfo(dataGridView.SelectedRows[0].Index);
 
-            dicLockRenewInfoToTime.Add(info, DateTime.Now.AddSeconds(60));
+            dicLockRenewInfoToTime.Add(info, DateTime.Now.AddSeconds(15));
 
             info.PerformWebrequest(frm, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(info.Name), true, RenewTokenFinished_Invoker);
 
@@ -574,7 +593,14 @@ namespace ExaltAccountManager.UI
 
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Captcha)
             {
-                CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(_info.Name), true, RenewTokenFinished_Invoker);
+                bool result = CaptchaSolverUiUtils.Show(_info, frm, frm.UseDarkmode, frm.LogEvent, "EAM AccUI", frm.accountStatsPath, frm.itemsSaveFilePath, frm.GetDeviceUniqueIdentifier(), string.IsNullOrEmpty(_info.Name), true, RenewTokenFinished_Invoker);
+
+                if (!result)
+                {
+                    frm.ShowSnackbar("Captcha failed, please try again.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
+                }
+                
+                return true;
             }
 
             if (_info.requestState == MK_EAM_Lib.AccountInfo.RequestState.Success)
@@ -800,6 +826,13 @@ namespace ExaltAccountManager.UI
         private void scrollbar_Scroll(object sender, Bunifu.UI.WinForms.BunifuVScrollBar.ScrollEventArgs e)
         {
             if (isInit) return;
+
+            if (dataGridView.RowCount < scrollbar.Value)
+            {
+                dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
+                dataGridView.Update();
+                return;
+            }
 
             dataGridView.FirstDisplayedScrollingRowIndex = scrollbar.Value;
             dataGridView.Update();
@@ -1318,6 +1351,9 @@ namespace ExaltAccountManager.UI
             toggleAllowDragNDrop.Enabled = !useQuerry;
             if (useQuerry)
                 toggleAllowDragNDrop.Checked = false;
+
+            if (dataGridView.Rows.Count > 0)
+                dataGridView.Rows[0].Selected = true;
         }
 
         #endregion

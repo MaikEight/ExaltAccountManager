@@ -15,6 +15,8 @@
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,8 +31,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -397,6 +397,12 @@
       <DependentUpon>AccountUI.cs</DependentUpon>
     </Compile>
     <Compile Include="DiscordHelper.cs" />
+    <Compile Include="FrmDiscordPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDiscordPopup.Designer.cs">
+      <DependentUpon>FrmDiscordPopup.cs</DependentUpon>
+    </Compile>
     <Compile Include="OLD\AccountUIHeader.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -715,6 +721,12 @@
     <Compile Include="UI\Elements\EleNewsPoll.Designer.cs">
       <DependentUpon>EleNewsPoll.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Elements\EleDiscordUser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Elements\EleDiscordUser.Designer.cs">
+      <DependentUpon>EleDiscordUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Elements\EleQNA.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -819,6 +831,9 @@
     </Compile>
     <EmbeddedResource Include="AccountUI.resx">
       <DependentUpon>AccountUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmDiscordPopup.resx">
+      <DependentUpon>FrmDiscordPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OLD\AccountUIHeader.resx">
       <DependentUpon>AccountUIHeader.cs</DependentUpon>
@@ -987,6 +1002,9 @@
     <EmbeddedResource Include="UI\Elements\EleNewsPoll.resx">
       <DependentUpon>EleNewsPoll.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Elements\EleDiscordUser.resx">
+      <DependentUpon>EleDiscordUser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Elements\EleQNA.resx">
       <DependentUpon>EleQNA.cs</DependentUpon>
     </EmbeddedResource>
@@ -1083,6 +1101,10 @@
     <Content Include="account_balance_wallet-black-96dp.ico" />
     <Content Include="ic_account_balance_wallet_black_48dp.ico" />
     <Content Include="Logo.ico" />
+    <None Include="Resources\male_user_outline_white_24px.png" />
+    <None Include="Resources\male_user_white_24px.png" />
+    <None Include="Resources\male_user_outline_black_24px.png" />
+    <None Include="Resources\male_user_black_24px.png" />
     <None Include="Resources\privacy_policy_white_24px.png" />
     <None Include="Resources\privacy_policy_outline_white_24px.png" />
     <None Include="Resources\rotmg.png" />
@@ -1513,10 +1535,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
     <Error Condition="!Exists('..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.6.6.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.6.4\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.6.7.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.7.0\build\Fody.targets'))" />
   </Target>
   <Import Project="..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
-  <Import Project="..\packages\Fody.6.6.4\build\Fody.targets" Condition="Exists('..\packages\Fody.6.6.4\build\Fody.targets')" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Import Project="..\packages\Fody.6.7.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.7.0\build\Fody.targets')" />
 </Project>

@@ -19,13 +19,20 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MK_EAM_General_Services_Lib.General.Responses;
+using System.Drawing.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 1, 1);
+        public readonly Version version = new Version(3, 2, 0);
         public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
+        public const string DISCORD_INVITE_URL = "https://discord.exalt-account-manager.eu";
+        public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
+
         public event EventHandler ThemeChanged;
 
         private System.Timers.Timer saveAccountsTimer;
@@ -87,7 +94,7 @@ namespace ExaltAccountManager
         private OptionsData optionsDataValue = new OptionsData();
         private bool drawConfigChangesIcon = false;
         public NotificationOptions notOpt = new NotificationOptions();
-        public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
+
         private EAMNotificationMessageSaveFile notificationSaveFile = new EAMNotificationMessageSaveFile();
         public bool HasNewNews
         {
@@ -100,6 +107,37 @@ namespace ExaltAccountManager
         }
         private bool hasNewNews = false;
         public DateTime LastNewsViewed { get; internal set; } = DateTime.MinValue;
+        public DiscordUser DiscordUser
+        {
+            get => discordUser;
+            internal set
+            {
+                discordUser = value;
+
+                if (OptionsData != null &&
+                    OptionsData.analyticsOptions != null &&
+                    !OptionsData.analyticsOptions.OptOut &&
+                    !OptionsData.analyticsOptions.Anonymization
+                    )
+                {
+                    DiscordUserChanged();
+                }
+
+                bool DiscordUserChanged()
+                {
+                    if (this.InvokeRequired)
+                        return (bool)this.Invoke((Func<bool>)DiscordUserChanged);
+
+                    pbShowDiscordUser.Visible = discordUser != null;
+
+                    return false;
+                }
+            }
+        }
+        private DiscordUser discordUser = null;
+
+        private bool hasDiscordUserUiOpen = false;
+
         private GameUpdater gameUpdater { get; set; }
 
         private UIAccounts uiAccounts;
@@ -256,28 +294,29 @@ namespace ExaltAccountManager
 
         #region Paths
 
-        public static string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
+        public static readonly string saveFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ExaltAccountManager");
 
-        public string optionsPath = Path.Combine(saveFilePath, "EAM.options");
-        public string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
-        public string accountOrdersPath = Path.Combine(saveFilePath, "EAM.accountOrders");
-        public string dailyLoginsPath = Path.Combine(saveFilePath, "EAM.DailyLoginsV2");
-        public string notificationOptionsPath = Path.Combine(saveFilePath, "EAM.NotificationOptions");
-        public string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
-        public string accountStatsPath = Path.Combine(saveFilePath, "Stats");
-        public string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
-        public string pathNews = Path.Combine(saveFilePath, "EAM.News");
-        public string lastUpdateCheckPath = Path.Combine(saveFilePath, "EAM.LastUpdateCheck");
-        public string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
-        public string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
-        public string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
-        public string privacyPolicyPath = Path.Combine(saveFilePath, "EAM_Privacy_Policy.txt");
-        public string activeVaultPeekerAccountsPath = Path.Combine(saveFilePath, "EAM.ActiveVaultPeekerAccounts");
-        public string getClientHWIDToolPath = Path.Combine(Application.StartupPath, "EAM_GetClientHWID");
-        public string pingCheckerExePath = Path.Combine(Application.StartupPath, "EAM PingChecker.exe");
-        public string statisticsExePath = Path.Combine(Application.StartupPath, "EAM Statistics.exe");
-        public string vaultPeekerExePath = Path.Combine(Application.StartupPath, "EAM Vault Peeker.exe");
-        public string dailyServiceExePath = Path.Combine(Application.StartupPath, "DailyService", "EAM Daily Login Service.exe");
+        public readonly string optionsPath = Path.Combine(saveFilePath, "EAM.options");
+        public readonly string accountsPath = Path.Combine(saveFilePath, "EAM.accounts");
+        public readonly string accountOrdersPath = Path.Combine(saveFilePath, "EAM.accountOrders");
+        public readonly string dailyLoginsPath = Path.Combine(saveFilePath, "EAM.DailyLoginsV2");
+        public readonly string notificationOptionsPath = Path.Combine(saveFilePath, "EAM.NotificationOptions");
+        public readonly string serverCollectionPath = Path.Combine(saveFilePath, "EAM.ServerCollection");
+        public readonly string accountStatsPath = Path.Combine(saveFilePath, "Stats");
+        public readonly string pathLogs = Path.Combine(saveFilePath, "EAM.Logs");
+        public readonly string pathNews = Path.Combine(saveFilePath, "EAM.News");
+        public readonly string pathDiscordPopups = Path.Combine(saveFilePath, "EAM.DiscordPopup");
+        public readonly string lastUpdateCheckPath = Path.Combine(saveFilePath, "EAM.LastUpdateCheck");
+        public readonly string lastNotificationCheckPath = Path.Combine(saveFilePath, "EAM.LastNotificationCheck");
+        public readonly string forceHWIDFilePath = Path.Combine(saveFilePath, "EAM.HWID");
+        public readonly string itemsSaveFilePath = Path.Combine(saveFilePath, "EAM.ItemsSaveFile");
+        public readonly string privacyPolicyPath = Path.Combine(saveFilePath, "EAM_Privacy_Policy.txt");
+        public readonly string activeVaultPeekerAccountsPath = Path.Combine(saveFilePath, "EAM.ActiveVaultPeekerAccounts");
+        public readonly string getClientHWIDToolPath = Path.Combine(Application.StartupPath, "EAM_GetClientHWID");
+        public readonly string pingCheckerExePath = Path.Combine(Application.StartupPath, "EAM PingChecker.exe");
+        public readonly string statisticsExePath = Path.Combine(Application.StartupPath, "EAM Statistics.exe");
+        public readonly string dailyServiceExePath = Path.Combine(Application.StartupPath, "DailyService", "EAM Daily Login Service.exe");
+        public readonly string vaultPeekerExePath = Path.Combine(Application.StartupPath, "EAM Vault Peeker.exe");
 
         #endregion
 
@@ -429,10 +468,14 @@ namespace ExaltAccountManager
                     OptionsData.discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
                 }
 
-                DiscordHelper.Initialize(OptionsData.discordOptions,
-                                         this,
-                                         autoEvents: false,
-                                         _updateOnChange: false);
+                if (!OptionsData.discordOptions.OptOut)
+                {
+                    DiscordHelper.OnDiscordConnectionChanged += DiscordHelper_OnDiscordConnectionChanged;
+                    DiscordHelper.Initialize(OptionsData.discordOptions,
+                                             this,
+                                             autoEvents: false,
+                                             _updateOnChange: false);
+                }
 
                 #endregion
 
@@ -508,6 +551,117 @@ namespace ExaltAccountManager
 
             this.Show();
         }
+
+        private void DiscordHelper_OnDiscordConnectionChanged(object sender, bool isConnected)
+        {
+            bool hasDiscordUser = false;
+            if (File.Exists(pathDiscordPopups))
+            {
+                try
+                {
+                    DiscordPopupSettings settings = JsonConvert.DeserializeObject<DiscordPopupSettings>(File.ReadAllText(pathDiscordPopups));
+
+                    if (settings.LastDiscordPopupResult == DiscordPopupSettings.DiscordpopupResult.Never ||
+                        (DateTime.Now - settings.LastQuestion).TotalDays <= 7 ||
+                        settings.LastDiscordPopupResult == DiscordPopupSettings.DiscordpopupResult.Yes)
+                    {
+                        hasDiscordUser = true;
+                    }
+                }
+                catch { }
+            }
+
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(10000);
+
+            if (isConnected && DiscordUser == null)
+            {
+                //Request discord user
+                //If no user is found, ask if the user wants to create a connection
+                ThreadPool.QueueUserWorkItem(new WaitCallback(async (object obj) =>
+                {
+                    CancellationToken token = (CancellationToken)obj;
+                    try
+                    {
+                        Task<DiscordUser> task = GeneralServicesClient.Instance?.GetDiscordUser(GetAPIClientIdHash(false));
+                        while (!task.IsCompleted)
+                        {
+                            if (token.IsCancellationRequested)
+                            {
+                                LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.APIError,
+                                    "Failed to fetch stored discord user data."));
+
+                                return;
+                            }
+
+                            await Task.Delay(50, token);
+                        }
+                        DiscordUser = task.Result;
+
+
+                        if (!hasDiscordUser && DiscordUser != null && DiscordUser.DiscordUserId.Equals("NotFound"))
+                        { //No discord user found
+
+                            DiscordUserConnectionInvoker(DiscordUser, token);
+                        }
+                        else if (DiscordUser != null)
+                        {
+                            File.WriteAllText(pathDiscordPopups, JsonConvert.SerializeObject(new DiscordPopupSettings()
+                            {
+                                LastQuestion = DateTime.Now,
+                                LastDiscordPopupResult = DiscordPopupSettings.DiscordpopupResult.Yes
+                            }));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                                   "EAM",
+                                   MK_EAM_Lib.LogEventType.APIError,
+                                   "Failed to fetch stored discord user data." + Environment.NewLine + "Exception: " + ex.Message));
+                    }
+                }), cancellationTokenSource.Token);
+            }
+        }
+
+        private void DiscordUserConnectionInvoker(DiscordUser dcUser, CancellationToken token) => DiscordUserConnection(dcUser, token);
+        public bool DiscordUserConnection(DiscordUser dcUser, CancellationToken token)
+        {
+            if (this.InvokeRequired)
+                return (bool)this.Invoke((Func<DiscordUser, CancellationToken, bool>)DiscordUserConnection, dcUser, token);
+
+            DiscordUser = null;
+            using (FrmDiscordPopup popup = new FrmDiscordPopup(this))
+            {
+                popup.Location = new Point(this.Location.X + (this.Width - popup.Width) / 2, this.Location.Y + (this.Height - popup.Height) / 2);
+                if (ShowShadowFormDialog(popup) == DialogResult.OK)
+                {
+                    FetchDiscordUser();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private async void FetchDiscordUser()
+        {
+            ulong discordId = DiscordHelper.GetUserId();
+            if (discordId == ulong.MaxValue)
+            {
+                LogEvent(new MK_EAM_Lib.LogData(
+                    "EAM",
+                    MK_EAM_Lib.LogEventType.EAMError,
+                    "Failed to set discord user id."));
+                return;
+            }
+
+            DiscordUser = await GeneralServicesClient.Instance?.PostDiscordUser(GetAPIClientIdHash(false), discordId.ToString());
+
+        }
+
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
@@ -643,14 +797,12 @@ namespace ExaltAccountManager
             Color font = ColorScheme.GetColorFont(useDarkmode);
 
             this.BackColor = pContent.BackColor = def;
-            pSideButtons.BackColor = pTop.BackColor = pbClose.BackColor = pbMinimize.BackColor = second;
+            pSideButtons.BackColor = pTop.BackColor = pbClose.BackColor = pbMinimize.BackColor = pbShowDiscordUser.BackColor = second;
             this.ForeColor = font;
 
             pbClose.Image = useDarkmode ? Properties.Resources.ic_close_white_24dp : Properties.Resources.ic_close_black_24dp;
             pbMinimize.Image = UseDarkmode ? Properties.Resources.baseline_minimize_white_24dp : Properties.Resources.baseline_minimize_black_24dp;
-
-            if (gameUpdater != null && GameUpdater.Instance.UpdateRequired)
-                lVersion.ForeColor = UseDarkmode ? Color.Orange : Color.DarkOrange;
+            pbShowDiscordUser.Image = UseDarkmode ? Properties.Resources.male_user_outline_white_24px : Properties.Resources.male_user_outline_black_24px;
 
             #region Button Images
 
@@ -1384,6 +1536,34 @@ namespace ExaltAccountManager
 
         #endregion
 
+        #region Button Discord User
+
+        private void pbShowDiscordUser_Click(object sender, EventArgs e)
+        {
+            if (hasDiscordUserUiOpen)
+                return;
+
+            hasDiscordUserUiOpen = true;
+            ShowShadowForm(new EleDiscordUser(this));
+        }
+
+        private void pbShowDiscordUser_MouseDown(object sender, MouseEventArgs e) => pbShowDiscordUser.BackColor = UseDarkmode ? Color.FromArgb(200, 75, 75, 75) : Color.FromArgb(75, 50, 50, 50);
+        private void pbShowDiscordUser_MouseUp(object sender, MouseEventArgs e) => pbShowDiscordUser.BackColor = UseDarkmode ? Color.FromArgb(125, 75, 75, 75) : Color.FromArgb(50, 50, 50, 50);
+
+        private void pbShowDiscordUser_MouseEnter(object sender, EventArgs e)
+        {
+            pbShowDiscordUser.Image = UseDarkmode ? Properties.Resources.male_user_white_24px : Properties.Resources.male_user_black_24px;
+            pbShowDiscordUser.BackColor = UseDarkmode ? Color.FromArgb(125, 75, 75, 75) : Color.FromArgb(50, 50, 50, 50);
+        }
+
+        private void pbShowDiscordUser_MouseLeave(object sender, EventArgs e)
+        {
+            pbShowDiscordUser.Image = UseDarkmode ? Properties.Resources.male_user_outline_white_24px : Properties.Resources.male_user_outline_black_24px;
+            pbShowDiscordUser.BackColor = pTop.BackColor;
+        }
+
+        #endregion
+
         #region Menu Buttons
 
         private void btnAccounts_Click(object sender, EventArgs e)
@@ -1719,6 +1899,8 @@ namespace ExaltAccountManager
             DiscordHelper.UpdateMenu(DiscordHelper.Menu.Accounts);
             DiscordHelper.ApplyPresence();
 
+            var usr = DiscordHelper.GetUser();
+
             timerDiscordUpdater.Start();
 
             if (uiEAMNews == null)
@@ -1855,6 +2037,27 @@ namespace ExaltAccountManager
             m_PreviousLocation = Location;
         }
 
+        public DialogResult ShowShadowFormDialog(Form form)
+        {
+            if (frmShadowHost == null)
+            {
+                frmShadowHost = new FrmShadowHost(this);
+                frmShadowHost.Size = new Size(this.Size.Width - 1, this.Size.Height - 25);
+                frmShadowHost.Location = new Point(this.Left, this.Top + 24);
+                frmShadowHost.Owner = this;
+                frmShadowHost.TopLevel = true;
+            }
+            else
+                frmShadowHost.RemoveControl();
+
+            frmShadowHost.Show();
+
+            DialogResult result = frmShadowHost.ShowFormDialog(form);
+
+            RemoveShadowForm();
+            return result;
+        }
+
         public void ShowShadowForm(Control ctr)
         {
             if (frmShadowHost == null)
@@ -1876,6 +2079,8 @@ namespace ExaltAccountManager
         {
             if (uiState == UIState.Updater && GameUpdater.Instance.UpdateProgress > 0)
                 return;
+
+            hasDiscordUserUiOpen = false;
 
             if (frmShadowHost != null)
             {
@@ -1926,6 +2131,47 @@ namespace ExaltAccountManager
         }
 
         public void SwitchLlamaState(bool showLlama) => pbHeader.Image = showLlama ? Properties.Resources.llama : Properties.Resources.ic_account_balance_wallet_white_48dp;
+
+        public void ShowEamLogoGif(string _url, Action<object, EventArgs> action)
+        {
+            string url = API_BASE_URL + _url;
+
+            PictureBox pbDev = new PictureBox()
+            {
+                BackColor = Color.Transparent,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Dock = DockStyle.Fill,
+                Visible = false,
+                Tag = "Dev"
+            };
+            pHeader.Controls.Add(pbDev);
+            pbDev.BringToFront();
+
+            pbDev.LoadAsync(url);
+            pbDev.LoadCompleted += Execute;
+
+            void Execute(object sender, EventArgs e)
+            {
+                pbDev.Visible = true;
+                action?.Invoke(this, EventArgs.Empty);
+                pbDev.LoadCompleted -= Execute;
+            }
+        }
+
+        public void HideEamLogoGif()
+        {
+            PictureBox pb = pHeader.Controls.OfType<PictureBox>()
+                                .Where(p => p.Tag.Equals("Dev"))
+                                .FirstOrDefault();
+            if (pb != null)
+            {
+                pb.Visible = false;
+                pHeader.Controls.Remove(pb);
+                pb.Image = null;
+                pb.Dispose();
+                pb = null;
+            }
+        }
 
         private void FrmMain_SizeChanged(object sender, EventArgs e)
         {

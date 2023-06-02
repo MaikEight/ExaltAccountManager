@@ -118,6 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnConnectDiscord.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAOQAAAAfCAYAAAD3AmFXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADySURBVHhe7d09SsVAFIbh07gga3t3YCtJBF3J3cNdga2o
+        IFiI4E91dyJJdAc6EcvU8SuewJMwzLQvk+7U8gz1edzXvO9rOgBbm/fnNZ7+xnhR00lX42vbeGpugM21
+        9ua3rj7Oqqv5ui0eVw4B27lrnqu9lmtz7QCwrYMgIYcgIYggIYggIYggIYggIYggIYggIYggIYggIYgg
+        IYggIYggIYggIYggIYggIYggIYggIYggIYggIYggIYggIYggIYggIcihhpruuxofVjaB7dz2Nb4vg3aG
+        Za7AygFgM+NL++7+Bu58XbXF8usK/I/dZX0f/QCnJRX5xVr05AAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="btnSave.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAbcAAAAfCAYAAABkr4PcAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

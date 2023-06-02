@@ -52,7 +52,7 @@ namespace ExaltAccountManager.UI.Elements
 
             AddAccountsToDatagrid();
 
-            tbPath.Text = System.IO.Path.Combine(Application.StartupPath, $"{fileName}.EAMexport");
+            tbPath.Text = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"{fileName}.EAMexport");
             dropExport.SelectedIndex = 0;
         }
 
@@ -168,6 +168,13 @@ namespace ExaltAccountManager.UI.Elements
         private void scrollbar_Scroll(object sender, Bunifu.UI.WinForms.BunifuVScrollBar.ScrollEventArgs e)
         {
             if (isInit) return;
+
+            if (dataGridView.RowCount < scrollbar.Value)
+            {
+                dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
+                dataGridView.Update();
+                return;
+            }
 
             dataGridView.FirstDisplayedScrollingRowIndex = scrollbar.Value;
             dataGridView.Update();

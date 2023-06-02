@@ -132,6 +132,7 @@ namespace ExaltAccountManager.UI
 
                         await Task.Delay(50, token);
                     }
+
                     List<NewsData> result = task.Result;
                     if (result != null && result.Count > 0)
                     {

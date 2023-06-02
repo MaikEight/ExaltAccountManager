@@ -164,7 +164,14 @@ namespace MK_EAM_Discord_Lib
 
         #endregion
 
-        #endregion        
+        #endregion
+
+        #region Events
+
+        public static event EventHandler OnConnected;
+        public static event EventHandler OnDisconnected;
+
+        #endregion
 
         public static void Initialize(string applicationId, bool autoEvents = true)
         {
@@ -176,6 +183,9 @@ namespace MK_EAM_Discord_Lib
             timestamp = DateTime.Now;
             IsInitialized =
             UpdateOnChange = true;
+
+            client.OnConnectionEstablished += (sender, e) => OnConnected?.Invoke(sender, EventArgs.Empty);
+            client.OnConnectionFailed += (sender, e) => OnDisconnected?.Invoke(sender, EventArgs.Empty);
         }
 
         public static void ApplyPresence()
@@ -202,6 +212,30 @@ namespace MK_EAM_Discord_Lib
             client.Invoke();
         }
 
+        public static object GetDiscordUser()
+        {
+            if (!IsInitialized) 
+                return null;
+
+            return client.CurrentUser;
+        }
+
+        public static string GetDiscordUserName()
+        {
+            if (!IsInitialized)
+                return null;
+
+            return client.CurrentUser.Username + "#" + client.CurrentUser.Discriminator;
+        }
+        
+        public static ulong GetDiscordUserId()
+        {
+            if (!IsInitialized)
+                return ulong.MaxValue;
+
+            return client.CurrentUser.ID;
+        }
+
         public static void AddButton(string label, string url)
         {
             if (!IsInitialized) return;
@@ -225,6 +259,8 @@ namespace MK_EAM_Discord_Lib
             if (!IsInitialized) return;
 
             client.ClearPresence();
+            client.OnConnectionEstablished -= (sender, e) => OnConnected?.Invoke(sender, EventArgs.Empty);
+            client.OnConnectionFailed -= (sender, e) => OnDisconnected?.Invoke(sender, EventArgs.Empty);
             client.Dispose();
             IsInitialized = false;
         }

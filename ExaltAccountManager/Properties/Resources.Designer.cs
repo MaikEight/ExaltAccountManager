@@ -2573,6 +2573,46 @@ namespace ExaltAccountManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap male_user_black_24px {
+            get {
+                object obj = ResourceManager.GetObject("male_user_black_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap male_user_outline_black_24px {
+            get {
+                object obj = ResourceManager.GetObject("male_user_outline_black_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap male_user_outline_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("male_user_outline_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap male_user_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("male_user_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap new_copy_outline_white_24px {
             get {
                 object obj = ResourceManager.GetObject("new_copy_outline_white_24px", resourceCulture);

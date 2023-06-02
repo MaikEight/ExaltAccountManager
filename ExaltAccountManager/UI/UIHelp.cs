@@ -162,7 +162,7 @@ namespace ExaltAccountManager.UI
             pbMailMini.Image = frm.UseDarkmode ? Properties.Resources.ic_email_white_24dp : Properties.Resources.ic_email_black_24dp;
         }
 
-        private void pbDiscord_Click(object sender, EventArgs e) => System.Diagnostics.Process.Start("https://discord.gg/VNfxgPqbJ7");
+        private void pbDiscord_Click(object sender, EventArgs e) => System.Diagnostics.Process.Start(FrmMain.DISCORD_INVITE_URL);
 
         private void pbDiscord_MouseEnter(object sender, EventArgs e)
         {
