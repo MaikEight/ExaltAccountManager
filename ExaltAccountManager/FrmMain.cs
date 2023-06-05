@@ -20,15 +20,13 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using MK_EAM_General_Services_Lib.General.Responses;
-using System.Drawing.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 2, 0);
+        public readonly Version version = new Version(3, 2, 1);
         public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
         public const string DISCORD_INVITE_URL = "https://discord.exalt-account-manager.eu";
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
