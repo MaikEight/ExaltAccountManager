@@ -225,6 +225,11 @@ namespace MK_EAM_Discord_Lib
             if (!IsInitialized)
                 return null;
 
+            if (client.CurrentUser.Discriminator == 0)
+            {
+                return client.CurrentUser.Username;
+            }
+
             return client.CurrentUser.Username + "#" + client.CurrentUser.Discriminator;
         }
         
