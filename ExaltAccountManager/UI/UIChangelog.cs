@@ -14,6 +14,17 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
+                ReleaseDate = new DateTime(2023, 07, 19),
+                Version = new Version(3, 2, 1),
+                Name = "Bug fixes and improvements",
+                Description = $"<b>BUG FIXES</b>{Environment.NewLine}{Environment.NewLine}" +
+                              $"- Fixed the scaling issues{Environment.NewLine}" +
+                              $"- Fixed the top controls to the right side{Environment.NewLine}" +
+                              $"- Fixed the discord username for the new usernames without discriminator{Environment.NewLine}" +
+                              $"- Addded a check for the default game path, if the game.exe can't be found{Environment.NewLine}{Environment.NewLine}"
+            },
+            new ChangelogEntry()
+            {
                 ReleaseDate = new DateTime(2023, 06, 02),
                 Version = new Version(3, 2, 0),
                 Name = "Captcha Aid improvements, discord update and bug fixes",

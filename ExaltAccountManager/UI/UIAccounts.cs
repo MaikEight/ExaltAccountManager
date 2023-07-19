@@ -346,6 +346,17 @@ namespace ExaltAccountManager.UI
 
                         try
                         {
+                            // Check if the exe path is valid and try to set it to default if not
+                            if (!System.IO.File.Exists(frm.OptionsData.exePath))
+                            {
+                                string defaultPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe");
+                                if (System.IO.File.Exists(defaultPath))
+                                {
+                                    frm.OptionsData.exePath = defaultPath;
+                                    frm.SaveOptions(frm.OptionsData, false);
+                                }
+                            }
+
                             if (System.IO.File.Exists(frm.OptionsData.exePath))
                             {
                                 MK_EAM_Lib.AccountInfo info = GetAccountInfo(dataGridView.SelectedRows[0].Index);
@@ -434,7 +445,7 @@ namespace ExaltAccountManager.UI
                 }
 
                 if (frm.OptionsData.closeAfterConnection)
-                { 
+                {
                     //Hide the form during the closing process
                     frm.WindowState = FormWindowState.Minimized;
                     frm.ShowInTaskbar = false;
@@ -445,8 +456,8 @@ namespace ExaltAccountManager.UI
                             analyticsAddLogin.Wait(5000);
                     }
                     catch { }
-                    
-                    Environment.Exit(0); 
+
+                    Environment.Exit(0);
                 }
                 else
                 {
@@ -471,7 +482,7 @@ namespace ExaltAccountManager.UI
                     string state = frm.OptionsData.discordOptions.ShowAccountNames ? "Ingame as " + _info.name + " 🎮" : "Playing rotmg 🎮";
                     DiscordHelper.SetState(state);
                     DiscordHelper.ApplyPresence();
-                }                
+                }
             }
             catch
             {
@@ -599,7 +610,7 @@ namespace ExaltAccountManager.UI
                 {
                     frm.ShowSnackbar("Captcha failed, please try again.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Error, 5000);
                 }
-                
+
                 return true;
             }
 

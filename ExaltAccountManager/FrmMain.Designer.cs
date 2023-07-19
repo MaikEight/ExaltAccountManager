@@ -34,24 +34,9 @@
             this.pLeftSide = new System.Windows.Forms.Panel();
             this.pSideButtons = new System.Windows.Forms.Panel();
             this.pUpdate = new System.Windows.Forms.Panel();
+            this.btnEAMUpdate = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.pBottom = new System.Windows.Forms.Panel();
             this.lVersion = new System.Windows.Forms.Label();
-            this.pSpacer = new System.Windows.Forms.Panel();
-            this.pHeader = new System.Windows.Forms.Panel();
-            this.lHeaderEAM = new System.Windows.Forms.Label();
-            this.pTop = new System.Windows.Forms.Panel();
-            this.btnSwitchDesign = new System.Windows.Forms.Button();
-            this.lTitle = new System.Windows.Forms.Label();
-            this.pContent = new System.Windows.Forms.Panel();
-            this.bunifuForm = new Bunifu.UI.WinForms.BunifuFormDock();
-            this.snackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
-            this.timerLogBlink = new System.Windows.Forms.Timer(this.components);
-            this.timerLoadUI = new System.Windows.Forms.Timer(this.components);
-            this.toolTip = new Bunifu.UI.WinForms.BunifuToolTip(this.components);
-            this.timerDiscordUpdater = new System.Windows.Forms.Timer(this.components);
-            this.pbMinimize = new System.Windows.Forms.PictureBox();
-            this.pbClose = new System.Windows.Forms.PictureBox();
-            this.btnEAMUpdate = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.pSideBar = new System.Windows.Forms.PictureBox();
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnLogs = new System.Windows.Forms.Button();
@@ -62,19 +47,34 @@
             this.btnNews = new System.Windows.Forms.Button();
             this.btnAccounts = new System.Windows.Forms.Button();
             this.btnGameUpdater = new System.Windows.Forms.Button();
+            this.pSpacer = new System.Windows.Forms.Panel();
+            this.pHeader = new System.Windows.Forms.Panel();
             this.pbHeader = new System.Windows.Forms.PictureBox();
+            this.lHeaderEAM = new System.Windows.Forms.Label();
+            this.pTop = new System.Windows.Forms.Panel();
             this.pbShowDiscordUser = new System.Windows.Forms.PictureBox();
+            this.btnSwitchDesign = new System.Windows.Forms.Button();
+            this.pbMinimize = new System.Windows.Forms.PictureBox();
+            this.pbClose = new System.Windows.Forms.PictureBox();
+            this.lTitle = new System.Windows.Forms.Label();
+            this.pContent = new System.Windows.Forms.Panel();
+            this.bunifuForm = new Bunifu.UI.WinForms.BunifuFormDock();
+            this.snackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
+            this.timerLogBlink = new System.Windows.Forms.Timer(this.components);
+            this.timerLoadUI = new System.Windows.Forms.Timer(this.components);
+            this.toolTip = new Bunifu.UI.WinForms.BunifuToolTip(this.components);
+            this.timerDiscordUpdater = new System.Windows.Forms.Timer(this.components);
             this.pLeftSide.SuspendLayout();
             this.pSideButtons.SuspendLayout();
             this.pUpdate.SuspendLayout();
             this.pBottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).BeginInit();
             this.pHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
             this.pTop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbShowDiscordUser)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbShowDiscordUser)).BeginInit();
             this.SuspendLayout();
             // 
             // pLeftSide
@@ -128,327 +128,6 @@
             this.toolTip.SetToolTipIcon(this.pUpdate, null);
             this.toolTip.SetToolTipTitle(this.pUpdate, "");
             this.pUpdate.Visible = false;
-            // 
-            // pBottom
-            // 
-            this.pBottom.Controls.Add(this.lVersion);
-            this.pBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pBottom.Location = new System.Drawing.Point(0, 495);
-            this.pBottom.Name = "pBottom";
-            this.pBottom.Size = new System.Drawing.Size(175, 15);
-            this.pBottom.TabIndex = 9;
-            this.toolTip.SetToolTip(this.pBottom, "");
-            this.toolTip.SetToolTipIcon(this.pBottom, null);
-            this.toolTip.SetToolTipTitle(this.pBottom, "");
-            this.pBottom.Paint += new System.Windows.Forms.PaintEventHandler(this.pBottom_Paint);
-            // 
-            // lVersion
-            // 
-            this.lVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lVersion.AutoSize = true;
-            this.lVersion.Font = new System.Drawing.Font("Segoe UI Light", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lVersion.Location = new System.Drawing.Point(3, 2);
-            this.lVersion.Name = "lVersion";
-            this.lVersion.Size = new System.Drawing.Size(78, 13);
-            this.lVersion.TabIndex = 7;
-            this.lVersion.Text = "v3.0.0 by Maik8";
-            this.toolTip.SetToolTip(this.lVersion, "");
-            this.toolTip.SetToolTipIcon(this.lVersion, null);
-            this.toolTip.SetToolTipTitle(this.lVersion, "");
-            this.lVersion.Paint += new System.Windows.Forms.PaintEventHandler(this.lVersion_Paint);
-            // 
-            // pSpacer
-            // 
-            this.pSpacer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pSpacer.Location = new System.Drawing.Point(0, 64);
-            this.pSpacer.Name = "pSpacer";
-            this.pSpacer.Size = new System.Drawing.Size(175, 2);
-            this.pSpacer.TabIndex = 6;
-            this.toolTip.SetToolTip(this.pSpacer, "");
-            this.toolTip.SetToolTipIcon(this.pSpacer, null);
-            this.toolTip.SetToolTipTitle(this.pSpacer, "");
-            // 
-            // pHeader
-            // 
-            this.pHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
-            this.pHeader.Controls.Add(this.pbHeader);
-            this.pHeader.Controls.Add(this.lHeaderEAM);
-            this.pHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pHeader.Location = new System.Drawing.Point(0, 0);
-            this.pHeader.Name = "pHeader";
-            this.pHeader.Size = new System.Drawing.Size(175, 64);
-            this.pHeader.TabIndex = 5;
-            this.toolTip.SetToolTip(this.pHeader, "");
-            this.toolTip.SetToolTipIcon(this.pHeader, null);
-            this.toolTip.SetToolTipTitle(this.pHeader, "");
-            // 
-            // lHeaderEAM
-            // 
-            this.lHeaderEAM.Font = new System.Drawing.Font("Segoe UI Black", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lHeaderEAM.ForeColor = System.Drawing.Color.White;
-            this.lHeaderEAM.Location = new System.Drawing.Point(55, 2);
-            this.lHeaderEAM.Name = "lHeaderEAM";
-            this.lHeaderEAM.Size = new System.Drawing.Size(115, 60);
-            this.lHeaderEAM.TabIndex = 5;
-            this.lHeaderEAM.Text = "Exalt Account Manager";
-            this.lHeaderEAM.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.toolTip.SetToolTip(this.lHeaderEAM, "");
-            this.toolTip.SetToolTipIcon(this.lHeaderEAM, null);
-            this.toolTip.SetToolTipTitle(this.lHeaderEAM, "");
-            // 
-            // pTop
-            // 
-            this.pTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.pTop.Controls.Add(this.pbShowDiscordUser);
-            this.pTop.Controls.Add(this.btnSwitchDesign);
-            this.pTop.Controls.Add(this.pbMinimize);
-            this.pTop.Controls.Add(this.pbClose);
-            this.pTop.Controls.Add(this.lTitle);
-            this.pTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pTop.Location = new System.Drawing.Point(175, 0);
-            this.pTop.Name = "pTop";
-            this.pTop.Size = new System.Drawing.Size(678, 24);
-            this.pTop.TabIndex = 3;
-            this.toolTip.SetToolTip(this.pTop, "");
-            this.toolTip.SetToolTipIcon(this.pTop, null);
-            this.toolTip.SetToolTipTitle(this.pTop, "");
-            // 
-            // btnSwitchDesign
-            // 
-            this.btnSwitchDesign.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSwitchDesign.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSwitchDesign.Location = new System.Drawing.Point(526, -2);
-            this.btnSwitchDesign.Name = "btnSwitchDesign";
-            this.btnSwitchDesign.Size = new System.Drawing.Size(103, 28);
-            this.btnSwitchDesign.TabIndex = 9;
-            this.btnSwitchDesign.Text = "Switch Theme";
-            this.toolTip.SetToolTip(this.btnSwitchDesign, "");
-            this.toolTip.SetToolTipIcon(this.btnSwitchDesign, null);
-            this.toolTip.SetToolTipTitle(this.btnSwitchDesign, "");
-            this.btnSwitchDesign.UseVisualStyleBackColor = true;
-            this.btnSwitchDesign.Click += new System.EventHandler(this.btnSwitchDesign_Click);
-            // 
-            // lTitle
-            // 
-            this.lTitle.AutoSize = true;
-            this.lTitle.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lTitle.Location = new System.Drawing.Point(6, 3);
-            this.lTitle.Name = "lTitle";
-            this.lTitle.Size = new System.Drawing.Size(78, 21);
-            this.lTitle.TabIndex = 6;
-            this.lTitle.Text = "Accounts";
-            this.toolTip.SetToolTip(this.lTitle, "");
-            this.toolTip.SetToolTipIcon(this.lTitle, null);
-            this.toolTip.SetToolTipTitle(this.lTitle, "");
-            this.lTitle.UseMnemonic = false;
-            // 
-            // pContent
-            // 
-            this.pContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pContent.Location = new System.Drawing.Point(175, 24);
-            this.pContent.Name = "pContent";
-            this.pContent.Size = new System.Drawing.Size(677, 551);
-            this.pContent.TabIndex = 4;
-            this.toolTip.SetToolTip(this.pContent, "");
-            this.toolTip.SetToolTipIcon(this.pContent, null);
-            this.toolTip.SetToolTipTitle(this.pContent, "");
-            // 
-            // bunifuForm
-            // 
-            this.bunifuForm.AllowFormDragging = true;
-            this.bunifuForm.AllowFormDropShadow = true;
-            this.bunifuForm.AllowFormResizing = true;
-            this.bunifuForm.AllowHidingBottomRegion = true;
-            this.bunifuForm.AllowOpacityChangesWhileDragging = false;
-            this.bunifuForm.BorderOptions.BottomBorder.BorderColor = System.Drawing.Color.Silver;
-            this.bunifuForm.BorderOptions.BottomBorder.BorderThickness = 1;
-            this.bunifuForm.BorderOptions.BottomBorder.ShowBorder = true;
-            this.bunifuForm.BorderOptions.LeftBorder.BorderColor = System.Drawing.Color.Silver;
-            this.bunifuForm.BorderOptions.LeftBorder.BorderThickness = 1;
-            this.bunifuForm.BorderOptions.LeftBorder.ShowBorder = true;
-            this.bunifuForm.BorderOptions.RightBorder.BorderColor = System.Drawing.Color.Silver;
-            this.bunifuForm.BorderOptions.RightBorder.BorderThickness = 1;
-            this.bunifuForm.BorderOptions.RightBorder.ShowBorder = true;
-            this.bunifuForm.BorderOptions.TopBorder.BorderColor = System.Drawing.Color.Silver;
-            this.bunifuForm.BorderOptions.TopBorder.BorderThickness = 1;
-            this.bunifuForm.BorderOptions.TopBorder.ShowBorder = true;
-            this.bunifuForm.ContainerControl = this;
-            this.bunifuForm.DockingIndicatorsColor = System.Drawing.Color.FromArgb(((int)(((byte)(202)))), ((int)(((byte)(215)))), ((int)(((byte)(233)))));
-            this.bunifuForm.DockingIndicatorsOpacity = 0.5D;
-            this.bunifuForm.DockingOptions.DockAll = true;
-            this.bunifuForm.DockingOptions.DockBottomLeft = true;
-            this.bunifuForm.DockingOptions.DockBottomRight = true;
-            this.bunifuForm.DockingOptions.DockFullScreen = true;
-            this.bunifuForm.DockingOptions.DockLeft = true;
-            this.bunifuForm.DockingOptions.DockRight = true;
-            this.bunifuForm.DockingOptions.DockTopLeft = true;
-            this.bunifuForm.DockingOptions.DockTopRight = true;
-            this.bunifuForm.FormDraggingOpacity = 0.9D;
-            this.bunifuForm.ParentForm = this;
-            this.bunifuForm.ShowCursorChanges = true;
-            this.bunifuForm.ShowDockingIndicators = true;
-            this.bunifuForm.TitleBarOptions.AllowFormDragging = true;
-            this.bunifuForm.TitleBarOptions.BunifuFormDock = this.bunifuForm;
-            this.bunifuForm.TitleBarOptions.DoubleClickToExpandWindow = true;
-            this.bunifuForm.TitleBarOptions.TitleBarControl = this.pTop;
-            this.bunifuForm.TitleBarOptions.UseBackColorOnDockingIndicators = false;
-            // 
-            // snackbar
-            // 
-            this.snackbar.AllowDragging = false;
-            this.snackbar.AllowMultipleViews = true;
-            this.snackbar.ClickToClose = true;
-            this.snackbar.DoubleClickToClose = true;
-            this.snackbar.DurationAfterIdle = 3000;
-            this.snackbar.ErrorOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.ErrorOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.ErrorOptions.ActionBorderRadius = 1;
-            this.snackbar.ErrorOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.snackbar.ErrorOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.snackbar.ErrorOptions.BackColor = System.Drawing.Color.White;
-            this.snackbar.ErrorOptions.BorderColor = System.Drawing.Color.White;
-            this.snackbar.ErrorOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(204)))), ((int)(((byte)(199)))));
-            this.snackbar.ErrorOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.snackbar.ErrorOptions.ForeColor = System.Drawing.Color.Black;
-            this.snackbar.ErrorOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon")));
-            this.snackbar.ErrorOptions.IconLeftMargin = 12;
-            this.snackbar.FadeCloseIcon = false;
-            this.snackbar.Host = Bunifu.UI.WinForms.BunifuSnackbar.Hosts.FormOwner;
-            this.snackbar.InformationOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.InformationOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.InformationOptions.ActionBorderRadius = 1;
-            this.snackbar.InformationOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.snackbar.InformationOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.snackbar.InformationOptions.BackColor = System.Drawing.Color.White;
-            this.snackbar.InformationOptions.BorderColor = System.Drawing.Color.White;
-            this.snackbar.InformationOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(145)))), ((int)(((byte)(213)))), ((int)(((byte)(255)))));
-            this.snackbar.InformationOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.snackbar.InformationOptions.ForeColor = System.Drawing.Color.Black;
-            this.snackbar.InformationOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon1")));
-            this.snackbar.InformationOptions.IconLeftMargin = 12;
-            this.snackbar.Margin = 10;
-            this.snackbar.MaximumSize = new System.Drawing.Size(0, 0);
-            this.snackbar.MaximumViews = 7;
-            this.snackbar.MessageRightMargin = 15;
-            this.snackbar.MessageTopMargin = 0;
-            this.snackbar.MinimumSize = new System.Drawing.Size(0, 0);
-            this.snackbar.ShowBorders = false;
-            this.snackbar.ShowCloseIcon = false;
-            this.snackbar.ShowIcon = true;
-            this.snackbar.ShowShadows = true;
-            this.snackbar.SuccessOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.SuccessOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.SuccessOptions.ActionBorderRadius = 1;
-            this.snackbar.SuccessOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.snackbar.SuccessOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.snackbar.SuccessOptions.BackColor = System.Drawing.Color.White;
-            this.snackbar.SuccessOptions.BorderColor = System.Drawing.Color.White;
-            this.snackbar.SuccessOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(255)))), ((int)(((byte)(237)))));
-            this.snackbar.SuccessOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.snackbar.SuccessOptions.ForeColor = System.Drawing.Color.Black;
-            this.snackbar.SuccessOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon2")));
-            this.snackbar.SuccessOptions.IconLeftMargin = 12;
-            this.snackbar.ViewsMargin = 7;
-            this.snackbar.WarningOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.WarningOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.snackbar.WarningOptions.ActionBorderRadius = 1;
-            this.snackbar.WarningOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.snackbar.WarningOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.snackbar.WarningOptions.BackColor = System.Drawing.Color.White;
-            this.snackbar.WarningOptions.BorderColor = System.Drawing.Color.White;
-            this.snackbar.WarningOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(229)))), ((int)(((byte)(143)))));
-            this.snackbar.WarningOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.snackbar.WarningOptions.ForeColor = System.Drawing.Color.Black;
-            this.snackbar.WarningOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon3")));
-            this.snackbar.WarningOptions.IconLeftMargin = 12;
-            this.snackbar.ZoomCloseIcon = true;
-            // 
-            // timerLogBlink
-            // 
-            this.timerLogBlink.Interval = 500;
-            this.timerLogBlink.Tick += new System.EventHandler(this.timerLogBlink_Tick);
-            // 
-            // timerLoadUI
-            // 
-            this.timerLoadUI.Interval = 350;
-            this.timerLoadUI.Tick += new System.EventHandler(this.timerLoadUI_Tick);
-            // 
-            // toolTip
-            // 
-            this.toolTip.Active = true;
-            this.toolTip.AlignTextWithTitle = true;
-            this.toolTip.AllowAutoClose = false;
-            this.toolTip.AllowFading = true;
-            this.toolTip.AutoCloseDuration = 5000;
-            this.toolTip.BackColor = System.Drawing.SystemColors.Control;
-            this.toolTip.BorderColor = System.Drawing.Color.Gainsboro;
-            this.toolTip.ClickToShowDisplayControl = false;
-            this.toolTip.ConvertNewlinesToBreakTags = true;
-            this.toolTip.DisplayControl = null;
-            this.toolTip.EntryAnimationSpeed = 350;
-            this.toolTip.ExitAnimationSpeed = 200;
-            this.toolTip.GenerateAutoCloseDuration = false;
-            this.toolTip.IconMargin = 6;
-            this.toolTip.InitialDelay = 0;
-            this.toolTip.Name = "toolTip";
-            this.toolTip.Opacity = 1D;
-            this.toolTip.OverrideToolTipTitles = false;
-            this.toolTip.Padding = new System.Windows.Forms.Padding(10);
-            this.toolTip.ReshowDelay = 100;
-            this.toolTip.ShowAlways = true;
-            this.toolTip.ShowBorders = false;
-            this.toolTip.ShowIcons = true;
-            this.toolTip.ShowShadows = true;
-            this.toolTip.Tag = null;
-            this.toolTip.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolTip.TextForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.toolTip.TextMargin = 2;
-            this.toolTip.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.toolTip.TitleForeColor = System.Drawing.Color.Black;
-            this.toolTip.ToolTipPosition = new System.Drawing.Point(0, 0);
-            this.toolTip.ToolTipTitle = null;
-            // 
-            // timerDiscordUpdater
-            // 
-            this.timerDiscordUpdater.Interval = 5000;
-            this.timerDiscordUpdater.Tick += new System.EventHandler(this.timerDiscordUpdater_Tick);
-            // 
-            // pbMinimize
-            // 
-            this.pbMinimize.Image = global::ExaltAccountManager.Properties.Resources.baseline_minimize_black_24dp;
-            this.pbMinimize.Location = new System.Drawing.Point(630, 0);
-            this.pbMinimize.Name = "pbMinimize";
-            this.pbMinimize.Size = new System.Drawing.Size(24, 24);
-            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbMinimize.TabIndex = 8;
-            this.pbMinimize.TabStop = false;
-            this.toolTip.SetToolTip(this.pbMinimize, "");
-            this.toolTip.SetToolTipIcon(this.pbMinimize, null);
-            this.toolTip.SetToolTipTitle(this.pbMinimize, "");
-            this.pbMinimize.Click += new System.EventHandler(this.pbMinimize_Click);
-            this.pbMinimize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseDown);
-            this.pbMinimize.MouseEnter += new System.EventHandler(this.pbMinimize_MouseEnter);
-            this.pbMinimize.MouseLeave += new System.EventHandler(this.pbMinimize_MouseLeave);
-            this.pbMinimize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseUp);
-            // 
-            // pbClose
-            // 
-            this.pbClose.Image = global::ExaltAccountManager.Properties.Resources.ic_close_black_24dp;
-            this.pbClose.Location = new System.Drawing.Point(654, 0);
-            this.pbClose.Name = "pbClose";
-            this.pbClose.Size = new System.Drawing.Size(24, 24);
-            this.pbClose.TabIndex = 7;
-            this.pbClose.TabStop = false;
-            this.toolTip.SetToolTip(this.pbClose, "");
-            this.toolTip.SetToolTipIcon(this.pbClose, null);
-            this.toolTip.SetToolTipTitle(this.pbClose, "");
-            this.pbClose.Click += new System.EventHandler(this.pbClose_Click);
-            this.pbClose.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseDown);
-            this.pbClose.MouseEnter += new System.EventHandler(this.pbClose_MouseEnter);
-            this.pbClose.MouseLeave += new System.EventHandler(this.pbClose_MouseLeave);
-            this.pbClose.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseUp);
             // 
             // btnEAMUpdate
             // 
@@ -545,6 +224,34 @@
             this.toolTip.SetToolTipTitle(this.btnEAMUpdate, "");
             this.btnEAMUpdate.UseDefaultRadiusAndThickness = true;
             this.btnEAMUpdate.Click += new System.EventHandler(this.btnEAMUpdate_Click);
+            // 
+            // pBottom
+            // 
+            this.pBottom.Controls.Add(this.lVersion);
+            this.pBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pBottom.Location = new System.Drawing.Point(0, 495);
+            this.pBottom.Name = "pBottom";
+            this.pBottom.Size = new System.Drawing.Size(175, 15);
+            this.pBottom.TabIndex = 9;
+            this.toolTip.SetToolTip(this.pBottom, "");
+            this.toolTip.SetToolTipIcon(this.pBottom, null);
+            this.toolTip.SetToolTipTitle(this.pBottom, "");
+            this.pBottom.Paint += new System.Windows.Forms.PaintEventHandler(this.pBottom_Paint);
+            // 
+            // lVersion
+            // 
+            this.lVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lVersion.AutoSize = true;
+            this.lVersion.Font = new System.Drawing.Font("Segoe UI Light", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lVersion.Location = new System.Drawing.Point(3, 2);
+            this.lVersion.Name = "lVersion";
+            this.lVersion.Size = new System.Drawing.Size(78, 13);
+            this.lVersion.TabIndex = 7;
+            this.lVersion.Text = "v3.0.0 by Maik8";
+            this.toolTip.SetToolTip(this.lVersion, "");
+            this.toolTip.SetToolTipIcon(this.lVersion, null);
+            this.toolTip.SetToolTipTitle(this.lVersion, "");
+            this.lVersion.Paint += new System.Windows.Forms.PaintEventHandler(this.lVersion_Paint);
             // 
             // pSideBar
             // 
@@ -804,6 +511,31 @@
             this.btnGameUpdater.MouseEnter += new System.EventHandler(this.btnGameUpdater_MouseEnter);
             this.btnGameUpdater.MouseLeave += new System.EventHandler(this.btnGameUpdater_MouseLeave);
             // 
+            // pSpacer
+            // 
+            this.pSpacer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pSpacer.Location = new System.Drawing.Point(0, 64);
+            this.pSpacer.Name = "pSpacer";
+            this.pSpacer.Size = new System.Drawing.Size(175, 2);
+            this.pSpacer.TabIndex = 6;
+            this.toolTip.SetToolTip(this.pSpacer, "");
+            this.toolTip.SetToolTipIcon(this.pSpacer, null);
+            this.toolTip.SetToolTipTitle(this.pSpacer, "");
+            // 
+            // pHeader
+            // 
+            this.pHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
+            this.pHeader.Controls.Add(this.pbHeader);
+            this.pHeader.Controls.Add(this.lHeaderEAM);
+            this.pHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pHeader.Location = new System.Drawing.Point(0, 0);
+            this.pHeader.Name = "pHeader";
+            this.pHeader.Size = new System.Drawing.Size(175, 64);
+            this.pHeader.TabIndex = 5;
+            this.toolTip.SetToolTip(this.pHeader, "");
+            this.toolTip.SetToolTipIcon(this.pHeader, null);
+            this.toolTip.SetToolTipTitle(this.pHeader, "");
+            // 
             // pbHeader
             // 
             this.pbHeader.Image = global::ExaltAccountManager.Properties.Resources.logo;
@@ -817,8 +549,40 @@
             this.toolTip.SetToolTipIcon(this.pbHeader, null);
             this.toolTip.SetToolTipTitle(this.pbHeader, "");
             // 
+            // lHeaderEAM
+            // 
+            this.lHeaderEAM.Font = new System.Drawing.Font("Segoe UI Black", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lHeaderEAM.ForeColor = System.Drawing.Color.White;
+            this.lHeaderEAM.Location = new System.Drawing.Point(55, 2);
+            this.lHeaderEAM.Name = "lHeaderEAM";
+            this.lHeaderEAM.Size = new System.Drawing.Size(115, 60);
+            this.lHeaderEAM.TabIndex = 5;
+            this.lHeaderEAM.Text = "Exalt Account Manager";
+            this.lHeaderEAM.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip.SetToolTip(this.lHeaderEAM, "");
+            this.toolTip.SetToolTipIcon(this.lHeaderEAM, null);
+            this.toolTip.SetToolTipTitle(this.lHeaderEAM, "");
+            // 
+            // pTop
+            // 
+            this.pTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.pTop.Controls.Add(this.pbShowDiscordUser);
+            this.pTop.Controls.Add(this.btnSwitchDesign);
+            this.pTop.Controls.Add(this.pbMinimize);
+            this.pTop.Controls.Add(this.pbClose);
+            this.pTop.Controls.Add(this.lTitle);
+            this.pTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pTop.Location = new System.Drawing.Point(175, 0);
+            this.pTop.Name = "pTop";
+            this.pTop.Size = new System.Drawing.Size(678, 24);
+            this.pTop.TabIndex = 3;
+            this.toolTip.SetToolTip(this.pTop, "");
+            this.toolTip.SetToolTipIcon(this.pTop, null);
+            this.toolTip.SetToolTipTitle(this.pTop, "");
+            // 
             // pbShowDiscordUser
             // 
+            this.pbShowDiscordUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pbShowDiscordUser.Image = global::ExaltAccountManager.Properties.Resources.male_user_outline_black_24px;
             this.pbShowDiscordUser.Location = new System.Drawing.Point(497, 0);
             this.pbShowDiscordUser.Name = "pbShowDiscordUser";
@@ -835,6 +599,246 @@
             this.pbShowDiscordUser.MouseEnter += new System.EventHandler(this.pbShowDiscordUser_MouseEnter);
             this.pbShowDiscordUser.MouseLeave += new System.EventHandler(this.pbShowDiscordUser_MouseLeave);
             this.pbShowDiscordUser.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbShowDiscordUser_MouseUp);
+            // 
+            // btnSwitchDesign
+            // 
+            this.btnSwitchDesign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSwitchDesign.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSwitchDesign.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnSwitchDesign.Location = new System.Drawing.Point(526, -2);
+            this.btnSwitchDesign.Name = "btnSwitchDesign";
+            this.btnSwitchDesign.Size = new System.Drawing.Size(103, 28);
+            this.btnSwitchDesign.TabIndex = 9;
+            this.btnSwitchDesign.Text = "Switch Theme";
+            this.toolTip.SetToolTip(this.btnSwitchDesign, "");
+            this.toolTip.SetToolTipIcon(this.btnSwitchDesign, null);
+            this.toolTip.SetToolTipTitle(this.btnSwitchDesign, "");
+            this.btnSwitchDesign.UseVisualStyleBackColor = true;
+            this.btnSwitchDesign.Click += new System.EventHandler(this.btnSwitchDesign_Click);
+            // 
+            // pbMinimize
+            // 
+            this.pbMinimize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbMinimize.Image = global::ExaltAccountManager.Properties.Resources.baseline_minimize_black_24dp;
+            this.pbMinimize.Location = new System.Drawing.Point(630, 0);
+            this.pbMinimize.Name = "pbMinimize";
+            this.pbMinimize.Size = new System.Drawing.Size(24, 24);
+            this.pbMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbMinimize.TabIndex = 8;
+            this.pbMinimize.TabStop = false;
+            this.toolTip.SetToolTip(this.pbMinimize, "");
+            this.toolTip.SetToolTipIcon(this.pbMinimize, null);
+            this.toolTip.SetToolTipTitle(this.pbMinimize, "");
+            this.pbMinimize.Click += new System.EventHandler(this.pbMinimize_Click);
+            this.pbMinimize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseDown);
+            this.pbMinimize.MouseEnter += new System.EventHandler(this.pbMinimize_MouseEnter);
+            this.pbMinimize.MouseLeave += new System.EventHandler(this.pbMinimize_MouseLeave);
+            this.pbMinimize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbMinimize_MouseUp);
+            // 
+            // pbClose
+            // 
+            this.pbClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbClose.Image = global::ExaltAccountManager.Properties.Resources.ic_close_black_24dp;
+            this.pbClose.Location = new System.Drawing.Point(654, 0);
+            this.pbClose.Name = "pbClose";
+            this.pbClose.Size = new System.Drawing.Size(24, 24);
+            this.pbClose.TabIndex = 7;
+            this.pbClose.TabStop = false;
+            this.toolTip.SetToolTip(this.pbClose, "");
+            this.toolTip.SetToolTipIcon(this.pbClose, null);
+            this.toolTip.SetToolTipTitle(this.pbClose, "");
+            this.pbClose.Click += new System.EventHandler(this.pbClose_Click);
+            this.pbClose.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseDown);
+            this.pbClose.MouseEnter += new System.EventHandler(this.pbClose_MouseEnter);
+            this.pbClose.MouseLeave += new System.EventHandler(this.pbClose_MouseLeave);
+            this.pbClose.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbClose_MouseUp);
+            // 
+            // lTitle
+            // 
+            this.lTitle.AutoSize = true;
+            this.lTitle.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lTitle.Location = new System.Drawing.Point(6, 3);
+            this.lTitle.Name = "lTitle";
+            this.lTitle.Size = new System.Drawing.Size(78, 21);
+            this.lTitle.TabIndex = 6;
+            this.lTitle.Text = "Accounts";
+            this.toolTip.SetToolTip(this.lTitle, "");
+            this.toolTip.SetToolTipIcon(this.lTitle, null);
+            this.toolTip.SetToolTipTitle(this.lTitle, "");
+            this.lTitle.UseMnemonic = false;
+            // 
+            // pContent
+            // 
+            this.pContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pContent.Location = new System.Drawing.Point(175, 24);
+            this.pContent.Name = "pContent";
+            this.pContent.Size = new System.Drawing.Size(677, 551);
+            this.pContent.TabIndex = 4;
+            this.toolTip.SetToolTip(this.pContent, "");
+            this.toolTip.SetToolTipIcon(this.pContent, null);
+            this.toolTip.SetToolTipTitle(this.pContent, "");
+            // 
+            // bunifuForm
+            // 
+            this.bunifuForm.AllowFormDragging = true;
+            this.bunifuForm.AllowFormDropShadow = true;
+            this.bunifuForm.AllowFormResizing = true;
+            this.bunifuForm.AllowHidingBottomRegion = true;
+            this.bunifuForm.AllowOpacityChangesWhileDragging = false;
+            this.bunifuForm.BorderOptions.BottomBorder.BorderColor = System.Drawing.Color.Silver;
+            this.bunifuForm.BorderOptions.BottomBorder.BorderThickness = 1;
+            this.bunifuForm.BorderOptions.BottomBorder.ShowBorder = true;
+            this.bunifuForm.BorderOptions.LeftBorder.BorderColor = System.Drawing.Color.Silver;
+            this.bunifuForm.BorderOptions.LeftBorder.BorderThickness = 1;
+            this.bunifuForm.BorderOptions.LeftBorder.ShowBorder = true;
+            this.bunifuForm.BorderOptions.RightBorder.BorderColor = System.Drawing.Color.Silver;
+            this.bunifuForm.BorderOptions.RightBorder.BorderThickness = 1;
+            this.bunifuForm.BorderOptions.RightBorder.ShowBorder = true;
+            this.bunifuForm.BorderOptions.TopBorder.BorderColor = System.Drawing.Color.Silver;
+            this.bunifuForm.BorderOptions.TopBorder.BorderThickness = 1;
+            this.bunifuForm.BorderOptions.TopBorder.ShowBorder = true;
+            this.bunifuForm.ContainerControl = this;
+            this.bunifuForm.DockingIndicatorsColor = System.Drawing.Color.FromArgb(((int)(((byte)(202)))), ((int)(((byte)(215)))), ((int)(((byte)(233)))));
+            this.bunifuForm.DockingIndicatorsOpacity = 0.5D;
+            this.bunifuForm.DockingOptions.DockAll = true;
+            this.bunifuForm.DockingOptions.DockBottomLeft = true;
+            this.bunifuForm.DockingOptions.DockBottomRight = true;
+            this.bunifuForm.DockingOptions.DockFullScreen = true;
+            this.bunifuForm.DockingOptions.DockLeft = true;
+            this.bunifuForm.DockingOptions.DockRight = true;
+            this.bunifuForm.DockingOptions.DockTopLeft = true;
+            this.bunifuForm.DockingOptions.DockTopRight = true;
+            this.bunifuForm.FormDraggingOpacity = 0.9D;
+            this.bunifuForm.ParentForm = this;
+            this.bunifuForm.ShowCursorChanges = true;
+            this.bunifuForm.ShowDockingIndicators = true;
+            this.bunifuForm.TitleBarOptions.AllowFormDragging = true;
+            this.bunifuForm.TitleBarOptions.BunifuFormDock = this.bunifuForm;
+            this.bunifuForm.TitleBarOptions.DoubleClickToExpandWindow = true;
+            this.bunifuForm.TitleBarOptions.TitleBarControl = this.pTop;
+            this.bunifuForm.TitleBarOptions.UseBackColorOnDockingIndicators = false;
+            // 
+            // snackbar
+            // 
+            this.snackbar.AllowDragging = false;
+            this.snackbar.AllowMultipleViews = true;
+            this.snackbar.ClickToClose = true;
+            this.snackbar.DoubleClickToClose = true;
+            this.snackbar.DurationAfterIdle = 3000;
+            this.snackbar.ErrorOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.ErrorOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.ErrorOptions.ActionBorderRadius = 1;
+            this.snackbar.ErrorOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.snackbar.ErrorOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.snackbar.ErrorOptions.BackColor = System.Drawing.Color.White;
+            this.snackbar.ErrorOptions.BorderColor = System.Drawing.Color.White;
+            this.snackbar.ErrorOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(204)))), ((int)(((byte)(199)))));
+            this.snackbar.ErrorOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.snackbar.ErrorOptions.ForeColor = System.Drawing.Color.Black;
+            this.snackbar.ErrorOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon")));
+            this.snackbar.ErrorOptions.IconLeftMargin = 12;
+            this.snackbar.FadeCloseIcon = false;
+            this.snackbar.Host = Bunifu.UI.WinForms.BunifuSnackbar.Hosts.FormOwner;
+            this.snackbar.InformationOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.InformationOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.InformationOptions.ActionBorderRadius = 1;
+            this.snackbar.InformationOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.snackbar.InformationOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.snackbar.InformationOptions.BackColor = System.Drawing.Color.White;
+            this.snackbar.InformationOptions.BorderColor = System.Drawing.Color.White;
+            this.snackbar.InformationOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(145)))), ((int)(((byte)(213)))), ((int)(((byte)(255)))));
+            this.snackbar.InformationOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.snackbar.InformationOptions.ForeColor = System.Drawing.Color.Black;
+            this.snackbar.InformationOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon1")));
+            this.snackbar.InformationOptions.IconLeftMargin = 12;
+            this.snackbar.Margin = 10;
+            this.snackbar.MaximumSize = new System.Drawing.Size(0, 0);
+            this.snackbar.MaximumViews = 7;
+            this.snackbar.MessageRightMargin = 15;
+            this.snackbar.MessageTopMargin = 0;
+            this.snackbar.MinimumSize = new System.Drawing.Size(0, 0);
+            this.snackbar.ShowBorders = false;
+            this.snackbar.ShowCloseIcon = false;
+            this.snackbar.ShowIcon = true;
+            this.snackbar.ShowShadows = true;
+            this.snackbar.SuccessOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.SuccessOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.SuccessOptions.ActionBorderRadius = 1;
+            this.snackbar.SuccessOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.snackbar.SuccessOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.snackbar.SuccessOptions.BackColor = System.Drawing.Color.White;
+            this.snackbar.SuccessOptions.BorderColor = System.Drawing.Color.White;
+            this.snackbar.SuccessOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(255)))), ((int)(((byte)(237)))));
+            this.snackbar.SuccessOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.snackbar.SuccessOptions.ForeColor = System.Drawing.Color.Black;
+            this.snackbar.SuccessOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon2")));
+            this.snackbar.SuccessOptions.IconLeftMargin = 12;
+            this.snackbar.ViewsMargin = 7;
+            this.snackbar.WarningOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.WarningOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.snackbar.WarningOptions.ActionBorderRadius = 1;
+            this.snackbar.WarningOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.snackbar.WarningOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.snackbar.WarningOptions.BackColor = System.Drawing.Color.White;
+            this.snackbar.WarningOptions.BorderColor = System.Drawing.Color.White;
+            this.snackbar.WarningOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(229)))), ((int)(((byte)(143)))));
+            this.snackbar.WarningOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.snackbar.WarningOptions.ForeColor = System.Drawing.Color.Black;
+            this.snackbar.WarningOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon3")));
+            this.snackbar.WarningOptions.IconLeftMargin = 12;
+            this.snackbar.ZoomCloseIcon = true;
+            // 
+            // timerLogBlink
+            // 
+            this.timerLogBlink.Interval = 500;
+            this.timerLogBlink.Tick += new System.EventHandler(this.timerLogBlink_Tick);
+            // 
+            // timerLoadUI
+            // 
+            this.timerLoadUI.Interval = 350;
+            this.timerLoadUI.Tick += new System.EventHandler(this.timerLoadUI_Tick);
+            // 
+            // toolTip
+            // 
+            this.toolTip.Active = true;
+            this.toolTip.AlignTextWithTitle = true;
+            this.toolTip.AllowAutoClose = false;
+            this.toolTip.AllowFading = true;
+            this.toolTip.AutoCloseDuration = 5000;
+            this.toolTip.BackColor = System.Drawing.SystemColors.Control;
+            this.toolTip.BorderColor = System.Drawing.Color.Gainsboro;
+            this.toolTip.ClickToShowDisplayControl = false;
+            this.toolTip.ConvertNewlinesToBreakTags = true;
+            this.toolTip.DisplayControl = null;
+            this.toolTip.EntryAnimationSpeed = 350;
+            this.toolTip.ExitAnimationSpeed = 200;
+            this.toolTip.GenerateAutoCloseDuration = false;
+            this.toolTip.IconMargin = 6;
+            this.toolTip.InitialDelay = 0;
+            this.toolTip.Name = "toolTip";
+            this.toolTip.Opacity = 1D;
+            this.toolTip.OverrideToolTipTitles = false;
+            this.toolTip.Padding = new System.Windows.Forms.Padding(10);
+            this.toolTip.ReshowDelay = 100;
+            this.toolTip.ShowAlways = true;
+            this.toolTip.ShowBorders = false;
+            this.toolTip.ShowIcons = true;
+            this.toolTip.ShowShadows = true;
+            this.toolTip.Tag = null;
+            this.toolTip.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolTip.TextForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.toolTip.TextMargin = 2;
+            this.toolTip.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.toolTip.TitleForeColor = System.Drawing.Color.Black;
+            this.toolTip.ToolTipPosition = new System.Drawing.Point(0, 0);
+            this.toolTip.ToolTipTitle = null;
+            // 
+            // timerDiscordUpdater
+            // 
+            this.timerDiscordUpdater.Interval = 5000;
+            this.timerDiscordUpdater.Tick += new System.EventHandler(this.timerDiscordUpdater_Tick);
             // 
             // FrmMain
             // 
@@ -864,14 +868,14 @@
             this.pUpdate.ResumeLayout(false);
             this.pBottom.ResumeLayout(false);
             this.pBottom.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).EndInit();
             this.pHeader.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
             this.pTop.ResumeLayout(false);
             this.pTop.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbShowDiscordUser)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbMinimize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbClose)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pSideBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbHeader)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbShowDiscordUser)).EndInit();
             this.ResumeLayout(false);
 
         }
