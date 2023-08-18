@@ -792,3 +792,5 @@ FodyWeavers.xsd
 /.vs/EAM/DesignTimeBuild/.dtbcache.v2
 /EAM Daily Login Service/obj/Debug/EAM Daily Login Service.exe
 /EAM Daily Login Service/obj/Release/EAM Daily Login Service.exe
+/EAM Daily Login Service/obj/Debug/EAM Daily Login Service.pdb
+/EAM Daily Login Service/obj/Debug/EAM Daily Login Service.csproj.FileListAbsolute.txt
