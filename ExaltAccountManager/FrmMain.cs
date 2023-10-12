@@ -439,10 +439,32 @@ namespace ExaltAccountManager
                             {
                                 File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
                             }
-                            catch { }
+                            catch
+                            {
+                                LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.EAMError,
+                                    "Failed to save options."));
+                            }
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                            "EAM",
+                            MK_EAM_Lib.LogEventType.EAMError,
+                            "Failed to load options, using a temporary one."));
+                        LogButtonBlink();
+
+                        OptionsData = new OptionsData()
+                        {
+                            exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
+                            closeAfterConnection = false,
+                            snackbarPosition = 8,
+                            discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
+                            analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
+                        };
+                    }
                 }
                 else
                 {
@@ -458,7 +480,14 @@ namespace ExaltAccountManager
                         };
                         File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
                     }
-                    catch { }
+                    catch
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                            "EAM",
+                            MK_EAM_Lib.LogEventType.EAMError,
+                            "Failed to initialize options."));
+                        LogButtonBlink();
+                    }
                 }
 
                 if (OptionsData.discordOptions == null)
@@ -1276,7 +1305,6 @@ namespace ExaltAccountManager
 
         public void LogEvent(LogData data)
         {
-
             if (File.Exists(pathLogs))
             {
                 try

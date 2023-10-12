@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -17,6 +18,18 @@ namespace ExaltAccountManager.UI
             InitializeComponent();
             frm = _frm;
             frm.ThemeChanged += ApplyTheme;
+
+            if(frm.OptionsData == null)
+            {
+                frm.OptionsData = new OptionsData()
+                {
+                    exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
+                    closeAfterConnection = false,
+                    snackbarPosition = 8,
+                    discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
+                    analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
+                };
+            }
 
             btnSave.Anchor = lSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             
@@ -164,25 +177,36 @@ namespace ExaltAccountManager.UI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            frm.OptionsData = new OptionsData()
+            try
             {
-                exePath = tbPath.Text,
-                closeAfterConnection = toggleCloseEAMAftergameStart.Checked,
-                serverToJoin = dropServers.SelectedItem.ToString().StartsWith("Last") ? "Last" : dropServers.SelectedItem.ToString(),
+                frm.OptionsData = new OptionsData()
+                {
+                    exePath = tbPath.Text,
+                    closeAfterConnection = toggleCloseEAMAftergameStart.Checked,
+                    serverToJoin = dropServers.SelectedItem.ToString().StartsWith("Last") ? "Last" : dropServers.SelectedItem.ToString(),
 
-                alwaysrefreshDataOnLogin = toggleAlwaysRefreshDataOnLogin.Checked,
+                    alwaysrefreshDataOnLogin = toggleAlwaysRefreshDataOnLogin.Checked,
 
-                searchRotmgUpdates = GameUpdateAndNotifications[0],
-                searchUpdateNotification = GameUpdateAndNotifications[1],
-                searchWarnings = GameUpdateAndNotifications[2],
-                deactivateKillswitch = GameUpdateAndNotifications[3],
+                    searchRotmgUpdates = GameUpdateAndNotifications[0],
+                    searchUpdateNotification = GameUpdateAndNotifications[1],
+                    searchWarnings = GameUpdateAndNotifications[2],
+                    deactivateKillswitch = GameUpdateAndNotifications[3],
 
-                useDarkmode = frm.UseDarkmode
-            };
+                    useDarkmode = frm.UseDarkmode
+                };
 
-            frm.SaveOptions(frm.OptionsData, true);
-            btnSave.Visible = false;
-            frm.UpdateHasConfigChangesUI(false);
+                frm.SaveOptions(frm.OptionsData, true);
+                btnSave.Visible = false;
+                frm.UpdateHasConfigChangesUI(false);
+            }
+            catch (Exception ex)
+            {
+                frm.LogEvent(new MK_EAM_Lib.LogData(
+                            "EAM",
+                            MK_EAM_Lib.LogEventType.EAMError,
+                            $"Failed to save options:{Environment.NewLine}{ex.Message}"));
+            }
+            
         }
 
         private void btnSave_MouseEnter(object sender, EventArgs e)
