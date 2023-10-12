@@ -26,6 +26,7 @@ namespace ExaltAccountManager.UI
                     exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                     closeAfterConnection = false,
                     snackbarPosition = 8,
+                    showPlaySnackbar = true,
                     discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
                     analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                 };
@@ -113,6 +114,7 @@ namespace ExaltAccountManager.UI
                 frm.OptionsData.searchWarnings,
                 frm.OptionsData.deactivateKillswitch
             };
+            toggleShowOnLogin.Checked = frm.OptionsData.showPlaySnackbar;
 
             toggleUseDarkmode.Checked = frm.UseDarkmode;
             toggleAlwaysRefreshDataOnLogin.Checked = frm.OptionsData.alwaysrefreshDataOnLogin;
@@ -186,6 +188,7 @@ namespace ExaltAccountManager.UI
                     serverToJoin = dropServers.SelectedItem.ToString().StartsWith("Last") ? "Last" : dropServers.SelectedItem.ToString(),
 
                     alwaysrefreshDataOnLogin = toggleAlwaysRefreshDataOnLogin.Checked,
+                    showPlaySnackbar = toggleShowOnLogin.Checked,
 
                     searchRotmgUpdates = GameUpdateAndNotifications[0],
                     searchUpdateNotification = GameUpdateAndNotifications[1],
@@ -287,6 +290,11 @@ namespace ExaltAccountManager.UI
         }
 
         private void toggleAlwaysRefreshDataOnLogin_CheckedChanged(object sender, EventArgs e)
+        {
+            HasChanges();
+        }
+
+        private void toggleShowOnLogin_CheckedChanged(object sender, EventArgs e)
         {
             HasChanges();
         }

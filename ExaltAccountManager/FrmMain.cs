@@ -461,6 +461,7 @@ namespace ExaltAccountManager
                             exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                             closeAfterConnection = false,
                             snackbarPosition = 8,
+                            showPlaySnackbar = true,
                             discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
                             analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                         };
@@ -475,6 +476,7 @@ namespace ExaltAccountManager
                             exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                             closeAfterConnection = false,
                             snackbarPosition = 8,
+                            showPlaySnackbar = true,
                             discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
                             analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                         };
