@@ -461,7 +461,7 @@ namespace ExaltAccountManager
                             exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                             closeAfterConnection = false,
                             snackbarPosition = 8,
-                            showPlaySnackbar = true,
+                            hideSnackbarOnPlay = false,
                             discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
                             analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                         };
@@ -476,7 +476,7 @@ namespace ExaltAccountManager
                             exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                             closeAfterConnection = false,
                             snackbarPosition = 8,
-                            showPlaySnackbar = true,
+                            hideSnackbarOnPlay = false,
                             discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
                             analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                         };
@@ -2159,6 +2159,9 @@ namespace ExaltAccountManager
         }
 
         public void SwitchLlamaState(bool showLlama) => pbHeader.Image = showLlama ? Properties.Resources.llama : Properties.Resources.ic_account_balance_wallet_white_48dp;
+
+        public void HidePbShowDiscordUser() => pbShowDiscordUser.Visible = false;
+        public void ShowPbShowDiscordUser() => pbShowDiscordUser.Visible = discordUser != null;
 
         public void ShowEamLogoGif(string _url, Action<object, EventArgs> action)
         {
