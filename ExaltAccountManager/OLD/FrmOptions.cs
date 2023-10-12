@@ -394,7 +394,7 @@ namespace ExaltAccountManager
         public bool deactivateKillswitch = true;
         
         public int snackbarPosition = 8;
-        public bool showPlaySnackbar = true;
+        public bool hideSnackbarOnPlay = false;
 
         public DiscordOptions discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true };
         public AnalyticsOptions analyticsOptions = new AnalyticsOptions() { OptOut = false, Anonymization = false };

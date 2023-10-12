@@ -437,7 +437,7 @@ namespace ExaltAccountManager.UI
             {
                 frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.Login, $"Start login into account: {_info.email}."));
                 
-                if (frm.OptionsData.showPlaySnackbar)
+                if (!frm.OptionsData.hideSnackbarOnPlay)
                 {
                     frm.ShowSnackbar($"Start login into account: {_info.email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 3000);
                 }
