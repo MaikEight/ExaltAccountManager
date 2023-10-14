@@ -14,7 +14,7 @@ namespace ExaltAccountManager.UI
         {
             new ChangelogEntry()
             {
-                ReleaseDate = new DateTime(2023, 10, 12),
+                ReleaseDate = new DateTime(2023, 10, 14),
                 Version = new Version(3, 3, 0),
                 Name = "More Bug fixes and improvements",
                 Description = $"<b>OPTIONS</b>{Environment.NewLine}{Environment.NewLine}" +
@@ -22,8 +22,9 @@ namespace ExaltAccountManager.UI
                               $"&nbsp;&nbsp;&nbsp;This avoids the blinking in the taskbar.{Environment.NewLine}{Environment.NewLine}" +
                               $"<b>BUG FIXES</b>{Environment.NewLine}" +
                               $"- Fixed a crashing bug when the chartCanvas is null.{Environment.NewLine}" +
-                              $"- Fixed a crashing bug when sving the options.{Environment.NewLine}" +
-                              $"- Fixed a bug that disabled the updater-ui during updating the game.{Environment.NewLine}{Environment.NewLine}"
+                              $"- Fixed a crashing bug when saving the options.{Environment.NewLine}" +
+                              $"- Fixed a bug that disabled the UpdaterUI during the game update.{Environment.NewLine}{Environment.NewLine}" +
+                              $"- Thanks to <b>Ykao</b> for reporting bugs and requesting features!"
             },
             new ChangelogEntry()
             {
@@ -89,12 +90,12 @@ namespace ExaltAccountManager.UI
                             $"&nbsp;&nbsp;&nbsp;This is NO automation tool.{Environment.NewLine}" +
                             $"ℹ️ The Captcha Aid tool is still in beta, please report feedback.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>INSTALLER</b>{Environment.NewLine}" +
-                            $"- Added a new simple installer for EAM.{Environment.NewLine}{Environment.NewLine}" + 
+                            $"- Added a new simple installer for EAM.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>EAM UPDATER</b>{Environment.NewLine}" +
                             $"- Added an updater to EAM, no manuall downloads needed anymore!{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>EAM NEWS</b>{Environment.NewLine}" +
                             $"- Added a new system display custom news.{Environment.NewLine}" +
-                            $"- Added multiple components to display.{Environment.NewLine}"+ 
+                            $"- Added multiple components to display.{Environment.NewLine}"+
                             $"- Added Polls to ask questions to you, the community.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>DISCORD INTEGRATION</b>{Environment.NewLine}" +
                             $"- Added Discord-RPC support.{Environment.NewLine}" +
@@ -116,7 +117,7 @@ namespace ExaltAccountManager.UI
                             $"- Added anonym analytics for the EAM-usage.{Environment.NewLine}" +
                             $"- Any data collected is anonym and does NOT contain login informations.{Environment.NewLine}" +
                             $"- All collected data is sent encrypted (SSL) to the server.{Environment.NewLine}" +
-                            $"- All collected data is used for improving EAM and it's features.{Environment.NewLine}" +   
+                            $"- All collected data is used for improving EAM and it's features.{Environment.NewLine}" +
                             $"- You can choose to send no clientId or opt-out in the options.{Environment.NewLine}{Environment.NewLine}" +
                             $"<b>EAM MICROSERVICE</b>{Environment.NewLine}" +
                             $"- Added an REST-API that is running on a VPS.{Environment.NewLine}" +
@@ -141,7 +142,7 @@ namespace ExaltAccountManager.UI
             },
             new ChangelogEntry() {
                 ReleaseDate = new DateTime(2022, 02, 26),
-                Version = new Version(3, 0, 0),                       
+                Version = new Version(3, 0, 0),
                 Name = "Complete overhaul, Muledump Replica: Vault Peeker and more",
                 Description = $"<b>COMPLETE OVERHAUL</b>{Environment.NewLine}{Environment.NewLine}" +
                               $"- Completely changed the UI.{Environment.NewLine}" +
@@ -153,7 +154,7 @@ namespace ExaltAccountManager.UI
                               $"&nbsp;&nbsp;&nbsp;Vault Peeker is limited to 50 accounts.{Environment.NewLine}" +
                               $"- Improved performance a lot.{Environment.NewLine}{Environment.NewLine}" +
                               $"<b>MODULES</b>{Environment.NewLine}" +
-                              $"- Simple collection of all important tools.{Environment.NewLine}{Environment.NewLine}" +                              
+                              $"- Simple collection of all important tools.{Environment.NewLine}{Environment.NewLine}" +
                               $"<b>IMPORT & EXPORT</b>{Environment.NewLine}" +
                               $"- Added a custom Importer for text-based formats.{Environment.NewLine}" +
                               $"- Added a custom Exporter, to export your accounts as needed.{Environment.NewLine}" +
@@ -312,7 +313,7 @@ namespace ExaltAccountManager.UI
             dataGridView.Columns[0].SortMode = DataGridViewColumnSortMode.Automatic;
             dataGridView.MouseWheel += dataGridView_MouseWheel;
             eleChangelog = new Elements.EleChangelog(frm);
-            
+
 
             frm.ThemeChanged += ApplyTheme;
             ApplyTheme(frm, null);

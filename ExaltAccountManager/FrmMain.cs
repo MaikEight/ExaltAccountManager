@@ -26,7 +26,7 @@ namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 2, 1);
+        public readonly Version version = new Version(3, 3, 0);
         public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
         public const string DISCORD_INVITE_URL = "https://discord.exalt-account-manager.eu";
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
