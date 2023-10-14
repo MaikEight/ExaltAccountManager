@@ -137,6 +137,8 @@ namespace ExaltAccountManager.UI
             scrollbar.BackgroundColor = frm.UseDarkmode ? def : third;
             scrollbar.ThumbColor = frm.UseDarkmode ? third : Color.Gray;
 
+            #region DropDowns
+
             dropServers.BackgroundColor =
             dropOrder.BackgroundColor = def;
             dropServers.ForeColor =
@@ -152,6 +154,10 @@ namespace ExaltAccountManager.UI
             dropServers.Invalidate();
             dropOrder.Invalidate();
 
+            #endregion
+
+            #region DataGridView
+
             dataGridView.BackgroundColor = second;
             dataGridView.CurrentTheme.BackColor = frm.UseDarkmode ? Color.FromArgb(77, 10, 173) : Color.FromArgb(107, 40, 203);
             dataGridView.CurrentTheme.GridColor = dataGridView.GridColor = frm.UseDarkmode ? third : Color.WhiteSmoke;
@@ -162,6 +168,10 @@ namespace ExaltAccountManager.UI
             dataGridView.CurrentTheme.AlternatingRowsStyle.BackColor = frm.UseDarkmode ? Color.FromArgb(106, 45, 194) : Color.FromArgb(156, 95, 244);
 
             dataGridView.ApplyTheme(dataGridView.CurrentTheme);
+
+            #endregion
+
+            #region ToolTip
 
             toolTip.BackColor = def;
             toolTip.TitleForeColor = font;
@@ -180,6 +190,8 @@ namespace ExaltAccountManager.UI
             toolTip.SetToolTipIcon(dropServers, frm.UseDarkmode ? Properties.Resources.server_white_18px : Properties.Resources.server_18p);
             toolTip.SetToolTipIcon(toggleShowInVP, frm.UseDarkmode ? Properties.Resources.btn_icon_chest_1 : Properties.Resources.btn_icon_chest_2);
             toolTip.SetToolTipIcon(lShowInVP, frm.UseDarkmode ? Properties.Resources.btn_icon_chest_1 : Properties.Resources.btn_icon_chest_2);
+
+            #endregion
 
             FormsUtils.ResumeDrawing(this);
         }
@@ -424,7 +436,11 @@ namespace ExaltAccountManager.UI
             try
             {
                 frm.LogEvent(new LogData(-1, "EAM AccUI", LogEventType.Login, $"Start login into account: {_info.email}."));
-                frm.ShowSnackbar($"Start login into account: {_info.email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 3000);
+                
+                if (!frm.OptionsData.hideSnackbarOnPlay)
+                {
+                    frm.ShowSnackbar($"Start login into account: {_info.email}.", Bunifu.UI.WinForms.BunifuSnackbar.MessageTypes.Information, 3000);
+                }
 
                 string arguments = string.Format("\"data:{{platform:Deca,guid:{0},token:{1},tokenTimestamp:{2},tokenExpiration:{3},env:4,serverName:{4}}}\"",
                                    StringToBase64String(_info.email), StringToBase64String(_info.accessToken.token), StringToBase64String(_info.accessToken.creationTime), StringToBase64String(_info.accessToken.expirationTime), GetServerName(_info.serverName));

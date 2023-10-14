@@ -26,7 +26,7 @@ namespace ExaltAccountManager
 {
     public sealed partial class FrmMain : Form
     {
-        public readonly Version version = new Version(3, 2, 1);
+        public readonly Version version = new Version(3, 3, 0);
         public const string GITHUB_PROJECT_URL = "https://github.com/MaikEight/ExaltAccountManager";
         public const string DISCORD_INVITE_URL = "https://discord.exalt-account-manager.eu";
         public string API_BASE_URL { get; internal set; } = "https://api.exalt-account-manager.eu/";
@@ -439,10 +439,33 @@ namespace ExaltAccountManager
                             {
                                 File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
                             }
-                            catch { }
+                            catch
+                            {
+                                LogEvent(new MK_EAM_Lib.LogData(
+                                    "EAM",
+                                    MK_EAM_Lib.LogEventType.EAMError,
+                                    "Failed to save options."));
+                            }
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                            "EAM",
+                            MK_EAM_Lib.LogEventType.EAMError,
+                            "Failed to load options, using a temporary one."));
+                        LogButtonBlink();
+
+                        OptionsData = new OptionsData()
+                        {
+                            exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
+                            closeAfterConnection = false,
+                            snackbarPosition = 8,
+                            hideSnackbarOnPlay = false,
+                            discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
+                            analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
+                        };
+                    }
                 }
                 else
                 {
@@ -453,12 +476,20 @@ namespace ExaltAccountManager
                             exePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"RealmOfTheMadGod\Production\RotMG Exalt.exe"),
                             closeAfterConnection = false,
                             snackbarPosition = 8,
+                            hideSnackbarOnPlay = false,
                             discordOptions = new DiscordOptions() { ShowAccountNames = true, ShowMenus = true, ShowState = true },
                             analyticsOptions = new AnalyticsOptions() { Anonymization = false, OptOut = false },
                         };
                         File.WriteAllBytes(optionsPath, ObjectToByteArray(OptionsData));
                     }
-                    catch { }
+                    catch
+                    {
+                        LogEvent(new MK_EAM_Lib.LogData(
+                            "EAM",
+                            MK_EAM_Lib.LogEventType.EAMError,
+                            "Failed to initialize options."));
+                        LogButtonBlink();
+                    }
                 }
 
                 if (OptionsData.discordOptions == null)
@@ -1276,7 +1307,6 @@ namespace ExaltAccountManager
 
         public void LogEvent(LogData data)
         {
-
             if (File.Exists(pathLogs))
             {
                 try
@@ -2129,6 +2159,9 @@ namespace ExaltAccountManager
         }
 
         public void SwitchLlamaState(bool showLlama) => pbHeader.Image = showLlama ? Properties.Resources.llama : Properties.Resources.ic_account_balance_wallet_white_48dp;
+
+        public void HidePbShowDiscordUser() => pbShowDiscordUser.Visible = false;
+        public void ShowPbShowDiscordUser() => pbShowDiscordUser.Visible = discordUser != null;
 
         public void ShowEamLogoGif(string _url, Action<object, EventArgs> action)
         {

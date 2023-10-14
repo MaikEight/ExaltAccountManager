@@ -63,6 +63,7 @@ namespace ExaltAccountManager.UI.Elements
                         break;
                     case GameUpdaterUIState.UpdateInProgress:
                         {
+                            frm.HidePbShowDiscordUser();
                             this.Height = progressbar.Bottom + 17;
 
                             pbClose.Enabled =
@@ -82,6 +83,7 @@ namespace ExaltAccountManager.UI.Elements
                         break;
                     case GameUpdaterUIState.UpdateDone:
                         {
+                            frm.ShowPbShowDiscordUser();
                             this.Height = btnDone.Bottom + 17;
 
                             btnCheckForUpdate.Enabled =

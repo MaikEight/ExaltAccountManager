@@ -119,7 +119,6 @@ C:\Users\mkuehne\source\repos\ExaltAccountManager\EAM Daily Login Service\obj\Re
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\Newtonsoft.Json.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\Newtonsoft.Json.xml
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_Lib.dll.config
-C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\obj\Release\EAM Daily Login Service.csproj.SuggestedBindingRedirects.cache
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\Bunifu.UI.WinForms.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\Bunifu.UI.WinForms.1.5.3.dll
 C:\Users\Maik8\source\repos\ExaltAccountManager\EAM Daily Login Service\bin\Release\MK_EAM_General_Services_Lib.dll

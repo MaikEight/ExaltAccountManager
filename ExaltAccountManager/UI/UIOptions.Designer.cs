@@ -67,6 +67,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.toggleAlwaysRefreshDataOnLogin = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
             this.label3 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.toggleShowOnLogin = new Bunifu.UI.WinForms.BunifuToggleSwitch2();
             this.bunifuShadowPanel1.SuspendLayout();
             this.bunifuShadowPanel2.SuspendLayout();
             this.bunifuShadowPanel3.SuspendLayout();
@@ -853,13 +855,15 @@
             this.bunifuShadowPanel5.BorderColor = System.Drawing.Color.WhiteSmoke;
             this.bunifuShadowPanel5.BorderRadius = 9;
             this.bunifuShadowPanel5.BorderThickness = 1;
+            this.bunifuShadowPanel5.Controls.Add(this.toggleShowOnLogin);
+            this.bunifuShadowPanel5.Controls.Add(this.label8);
             this.bunifuShadowPanel5.Controls.Add(this.btnSnackbar);
             this.bunifuShadowPanel5.Controls.Add(this.label5);
             this.bunifuShadowPanel5.Controls.Add(this.toggleUseDarkmode);
             this.bunifuShadowPanel5.Controls.Add(this.label12);
             this.bunifuShadowPanel5.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
             this.bunifuShadowPanel5.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.bunifuShadowPanel5.Location = new System.Drawing.Point(293, 183);
+            this.bunifuShadowPanel5.Location = new System.Drawing.Point(466, 183);
             this.bunifuShadowPanel5.Name = "bunifuShadowPanel5";
             this.bunifuShadowPanel5.PanelColor = System.Drawing.Color.White;
             this.bunifuShadowPanel5.PanelColor2 = System.Drawing.Color.White;
@@ -868,7 +872,7 @@
             this.bunifuShadowPanel5.ShadowDepth = 4;
             this.bunifuShadowPanel5.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.bunifuShadowPanel5.ShadowTopLeftVisible = false;
-            this.bunifuShadowPanel5.Size = new System.Drawing.Size(201, 145);
+            this.bunifuShadowPanel5.Size = new System.Drawing.Size(201, 196);
             this.bunifuShadowPanel5.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.bunifuShadowPanel5.TabIndex = 20;
             // 
@@ -888,7 +892,7 @@
             this.btnSnackbar.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(175)))), ((int)(((byte)(98)))), ((int)(((byte)(0)))), ((int)(((byte)(238)))));
             this.btnSnackbar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnSnackbar.BackgroundImage")));
             this.btnSnackbar.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.btnSnackbar.ButtonText = "Snackbar options";
+            this.btnSnackbar.ButtonText = "Snackbar position";
             this.btnSnackbar.ButtonTextMarginLeft = 0;
             this.btnSnackbar.ColorContrastOnClick = 45;
             this.btnSnackbar.ColorContrastOnHover = 45;
@@ -1028,7 +1032,7 @@
             this.bunifuShadowPanel4.Controls.Add(this.label3);
             this.bunifuShadowPanel4.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
             this.bunifuShadowPanel4.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.bunifuShadowPanel4.Location = new System.Drawing.Point(495, 183);
+            this.bunifuShadowPanel4.Location = new System.Drawing.Point(293, 183);
             this.bunifuShadowPanel4.Name = "bunifuShadowPanel4";
             this.bunifuShadowPanel4.PanelColor = System.Drawing.Color.White;
             this.bunifuShadowPanel4.PanelColor2 = System.Drawing.Color.White;
@@ -1078,6 +1082,34 @@
             this.label3.Size = new System.Drawing.Size(51, 21);
             this.label3.TabIndex = 7;
             this.label3.Text = "Login";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(12, 132);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(176, 21);
+            this.label8.TabIndex = 27;
+            this.label8.Text = "Show snackbar on login";
+            this.label8.UseMnemonic = false;
+            // 
+            // toggleShowOnLogin
+            // 
+            this.toggleShowOnLogin.BackColor = System.Drawing.Color.Transparent;
+            this.toggleShowOnLogin.Checked = false;
+            this.toggleShowOnLogin.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(95)))), ((int)(((byte)(244)))));
+            this.toggleShowOnLogin.CheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleShowOnLogin.CheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleShowOnLogin.Location = new System.Drawing.Point(16, 160);
+            this.toggleShowOnLogin.Name = "toggleShowOnLogin";
+            this.toggleShowOnLogin.OutlineThickness = 2;
+            this.toggleShowOnLogin.Size = new System.Drawing.Size(44, 19);
+            this.toggleShowOnLogin.TabIndex = 28;
+            this.toggleShowOnLogin.UncheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(189)))), ((int)(((byte)(189)))));
+            this.toggleShowOnLogin.UncheckedSwitchColor = System.Drawing.Color.White;
+            this.toggleShowOnLogin.UncheckedSwitchStyle = Bunifu.UI.WinForms.BunifuToggleSwitch2.SwitchStyles.Outline;
+            this.toggleShowOnLogin.CheckedChanged += new System.EventHandler(this.toggleShowOnLogin_CheckedChanged);
             // 
             // UIOptions
             // 
@@ -1140,5 +1172,7 @@
         private System.Windows.Forms.Label label1;
         private Bunifu.UI.WinForms.BunifuToggleSwitch2 toggleAlwaysRefreshDataOnLogin;
         private System.Windows.Forms.Label label3;
+        private Bunifu.UI.WinForms.BunifuToggleSwitch2 toggleShowOnLogin;
+        private System.Windows.Forms.Label label8;
     }
 }

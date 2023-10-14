@@ -19,7 +19,7 @@ namespace ExaltAccountManager.UI
         private DailyLogins dailyLogins = new DailyLogins();
 
         private Bunifu.Charts.WinForms.BunifuChartCanvas chartCanvas = null;
-        
+
         public UIDailyLogins(FrmMain _frm)
         {
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace ExaltAccountManager.UI
             frm = _frm;
 
             frm.ThemeChanged += ApplyTheme;
-            this.Disposed += (object sender, EventArgs e) => frm.ThemeChanged -= ApplyTheme;            
+            this.Disposed += (object sender, EventArgs e) => frm.ThemeChanged -= ApplyTheme;
 
             if (File.Exists(frm.dailyLoginsPath))
             {
@@ -196,8 +196,10 @@ namespace ExaltAccountManager.UI
 
         private void LoadUI()
         {
-            chartCanvas.Labels = GetDaysLabels();
-
+            if (chartCanvas != null)
+            {
+                chartCanvas.Labels = GetDaysLabels();
+            }
             List<double> success = new List<double>() { 0, 0, 0, 0, 0, 0, 0 };
             List<double> failed = new List<double>() { 0, 0, 0, 0, 0, 0, 0 };
 
@@ -232,11 +234,12 @@ namespace ExaltAccountManager.UI
 
             success.Reverse();
             failed.Reverse();
-
-            barChartSuccess.Data = success;
-            barChartFailed.Data = failed;
-
-            timerAnimate.Start();
+            if (chartCanvas != null && barChartSuccess != null && barChartFailed != null)
+            {
+                barChartSuccess.Data = success;
+                barChartFailed.Data = failed;
+                timerAnimate.Start();
+            }
         }
 
         private void timerAnimate_Tick(object sender, EventArgs e)
