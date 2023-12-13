@@ -31,4 +31,8 @@ export const darkTheme = createTheme({
             paperLight: '#383452'
         },
     },
+    shadows: [
+        "none",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px"
+    ]
 });
