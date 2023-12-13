@@ -26,7 +26,8 @@
         "minimize": true,
         "unmaximize": true,
         "unminimize": true,
-        "startDragging": true
+        "startDragging": true,
+        "setMinSize": true
       },
       "fs": {
         "all": true,
@@ -39,7 +40,9 @@
         "removeFile": true,
         "renameFile": true,
         "exists": true,
-        "scope": ["**"]
+        "scope": [
+          "**"
+        ]
       }
     },
     "bundle": {
@@ -62,6 +65,7 @@
         "fullscreen": false,
         "resizable": true,
         "decorations": false,
+        "transparent": true,
         "title": "Exalt Account Manager",
         "width": 1200,
         "height": 800
