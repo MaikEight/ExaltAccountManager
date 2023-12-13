@@ -1,10 +1,9 @@
-import { CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import Sidebar from "./components/Sidebar";
 import ColorContext from "./contexts/ColorContext";
 import { useContext } from "react";
-import CustomToolbar from "./components/CustomToolbar";
-import SideBarLogo from "./components/SideBarLogo";
+import ComponentBox from "./components/ComponentBox";
 
 function MainRouter() {
     const colorContext = useContext(ColorContext);
@@ -16,7 +15,24 @@ function MainRouter() {
                 <CssBaseline enableColorScheme />
                 <>
                     <Sidebar >
-                        <p>Content</p>
+                    <ComponentBox>
+                            <Box sx={{
+                                
+                            }}>
+                                <p>Content</p>
+                                <p>Content</p>
+                                <p>Content</p>
+                            </Box>
+                        </ComponentBox>
+                        <ComponentBox>
+                            <Box sx={{
+                                
+                            }}>
+                                <p>Content</p>
+                                <p>Content</p>
+                                <p>Content</p>
+                            </Box>
+                        </ComponentBox>
                     </Sidebar>
                 </>
             </MuiThemeProvider>

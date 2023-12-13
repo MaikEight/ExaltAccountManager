@@ -89,7 +89,7 @@ function Sidebar({ children }) {
                     </List>
                 </Box>
                 {/* CONTENT */}
-                <Box sx={{ m: 2 }}>
+                <Box sx={{ m: 0.5 }}>
                     {children}
                 </Box>
             </Box>
