@@ -31,4 +31,8 @@ export const lightTheme = createTheme({
             paperLight: '#F7F7F8'
         },
     },
+    shadows: [
+        "none",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px"
+    ]
 });
