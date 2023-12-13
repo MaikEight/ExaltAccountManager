@@ -1,10 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
-import Sidebar from "./components/Sidebar";
 import { ColorContextProvider } from "./contexts/ColorContext";
 import UserSettingsContext from "./contexts/UserSettingsContext";
-import { ThemeProvider } from "styled-components";
-import { CssBaseline } from "@mui/material";
 import MainRouter from "./MainRouter";
 
 import { appWindow, PhysicalSize } from '@tauri-apps/api/window';

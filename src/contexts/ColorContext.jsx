@@ -11,8 +11,7 @@ function ColorContextProvider({ children }) {
 
     const theme = useMemo(
         () => {
-            const t = createTheme(userSettings.getByKeyAndSubKey("general", "theme") === "dark" ? darkTheme : lightTheme);
-            console.log("theme:", t);
+            const t = createTheme(userSettings.getByKeyAndSubKey("general", "theme") === "dark" ? darkTheme : lightTheme);            
             const body = document.body;
             body.classList.toggle('dark-theme', t.palette.mode === 'dark');
             return t;

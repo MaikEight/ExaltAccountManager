@@ -15,8 +15,6 @@ function CustomToolbar(props) {
                 justifyContent: "end",
                 alignItems: "center",
                 height: 30,
-                paddingLeft: 1,
-                gap: 2,
                 ...props.sx
             }}
         >
@@ -25,7 +23,8 @@ function CustomToolbar(props) {
                 variant="text"
                 size="small"
                 aria-label="Toolbar buttons"
-
+                sx={{
+                }}
             >
                 <Button
                     onClick={() => appWindow.minimize()}

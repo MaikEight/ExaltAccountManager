@@ -6,7 +6,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SidebarButton from "./SidebarButton";
 import { useContext, useState } from "react";
 import { useTheme } from '@mui/system';
-import ColorContext from './../contexts/ColorContext';
+import ColorContext from '../../contexts/ColorContext';
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 
@@ -62,7 +62,8 @@ function Sidebar({ children }) {
                         top: -22,
                         left: 0,
                         flexDirection: "column",
-                        height: "100%"
+                        height: "100%",
+                        width: 230,
                     }}
                 >
                     <SideBarLogo />
@@ -89,52 +90,11 @@ function Sidebar({ children }) {
                     </List>
                 </Box>
                 {/* CONTENT */}
-                <Box sx={{ m: 0.5 }}>
+                <Box sx={{ flex: 1 }}>
                     {children}
                 </Box>
             </Box>
-        </Box>
-
-        // <Box
-        //     sx={{
-        //         position: "absolute",
-        //         top: 35,
-        //         left: 0,
-        //         display: "flex",
-        //         width: "100%",
-        //         // height: "calc(100vh - 35px)",
-        //     }}
-        // >
-        //     <Box
-        //         sx={{
-        //             width: 200,
-        //             mt: 6,
-        //             height: "100vh",                    
-        //         }}
-        //     >
-        //         {/* Menu Items */}
-        //         <List
-        //             sx={{
-        //                 display: "flex",
-        //                 flexDirection: "column",
-        //                 gap: 1,
-        //             }}
-        //         >
-        //             {
-        //                 menuItems.map((menu, index) => (
-        //                     <SidebarButton
-        //                         key={index + menu.name}
-        //                         menu={menu}
-        //                         selected={selectedIndex === index}
-        //                     />
-        //                 ))
-        //             }
-        //         </List>
-        //     </Box>
-        //     <Box>
-        //         {/* {children} */}
-        //     </Box>
-        // </Box>
+        </Box>        
     );
 }
 

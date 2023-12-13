@@ -3,7 +3,7 @@ import { Box, Paper } from "@mui/material";
 
 function ComponentBox({children, sx}) {
     const theme = useTheme();
-    console.log(theme);
+    
     return (
         <Paper sx={{
             display: "flex",
