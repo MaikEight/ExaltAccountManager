@@ -7,7 +7,7 @@ import styled from "styled-components";
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-colHeader {
     background-color: '#ffffff';
-    color: '#ffffff'; 
+    color: '#ffffff';
   }
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
   &.MuiDataGrid-root .MuiDataGrid-cell:focus {
