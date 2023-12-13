@@ -11,8 +11,8 @@
   line-height: 24px;
   font-weight: 400;
 
-  color: var(--text);
-  background-color: var(--background);
+  /* color: var(--text); */
+  /* background-color: var(--background); */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -47,20 +47,20 @@
   top: 0;
   left: 0;
   height: 30px;
-  background-color: var(--background);
+  /* background-color: var(--background); */
 }
 
 .titlebar-text {
   font-size: 14px;
   line-height: 20px;
   font-weight: 600;
-  color: var(--paper);
+  /* color: var(--paper); */
   margin-left: 8px;
 }
 
 .titlebar {
   height: 30px;
-  background: var(--background);
+  /* background: var(--background); */
   user-select: none;
   display: flex;
   justify-content: flex-end;
@@ -69,6 +69,12 @@
   top: 0;
   left: 0;
   right: 0;
+}
+#app {
+  border-radius: 50px;
+  height: 100vh;
+  background-color: #f3f3f3;
+  border-radius: 5px;
 }
 
 .titlebar-button {
