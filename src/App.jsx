@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { ColorContextProvider } from "./contexts/ColorContext";
 import UserSettingsContext from "./contexts/UserSettingsContext";
 import MainRouter from "./MainRouter";

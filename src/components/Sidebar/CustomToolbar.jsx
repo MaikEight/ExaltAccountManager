@@ -13,7 +13,6 @@ function CustomToolbar(props) {
             sx={{
                 display: "flex",
                 justifyContent: "end",
-                alignItems: "center",
                 height: 30,
                 ...props.sx
             }}
@@ -24,12 +23,15 @@ function CustomToolbar(props) {
                 size="small"
                 aria-label="Toolbar buttons"
                 sx={{
+                    mt: 0.25,
+                    mr: 0.25,
+                    height: 25,
                 }}
             >
                 <Button
                     onClick={() => appWindow.minimize()}
                     sx={{
-                        color: theme.palette.text.primary
+                        color: theme.palette.text.primary,
                     }}
                 >
                     <MinimizeIcon />

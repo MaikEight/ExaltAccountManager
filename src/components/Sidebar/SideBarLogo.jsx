@@ -22,7 +22,7 @@ function SideBarLogo() {
             }}
         >
             <img
-                src='public\logo\logo_inner.png'
+                src='/logo/logo_inner.png'
                 alt="EAM-Logo"
                 style={{
                     width: 64,
