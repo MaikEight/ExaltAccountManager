@@ -5,6 +5,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import useStringToColor from "../hooks/useStringToColor";
 import StyledButton from "./StyledButton";
+import { CustomPagination } from "./GridComponents/CustomPagination";
+import ServerChip from "./GridComponents/ServerChip";
+import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-colHeader {
@@ -49,8 +52,34 @@ function AccountGrid() {
       serverName: 'EUSouthWest',
       lastRefresh: '12-12-2023 10:10',
     },
+    {
+      id: 4,
+      name: 'Jane Smith',
+      email: 'j.smith@email.de',
+      lastLogin: '12-12-2023 10:11',
+      performDailyLogin: false,
+      serverName: 'EUSouthWest3',
+      lastRefresh: '12-12-2023 10:10',
+    },
+    {
+      id: 5,
+      name: 'Lorem Ipsum et dolor',
+      email: 'asdasd@asda.et',
+      lastLogin: '12-12-2023 10:11',
+      performDailyLogin: false,
+      serverName: 'USEast',
+    },
+    {
+      id: 6,
+      name: 'Lorem Ipsum',
+      email: 'lorem@Ipsum.lt',
+      lastLogin: '12-12-2023 10:11',
+      performDailyLogin: false,
+      serverName: 'Asia',
+    }
   ]);
   const [selectedAccount, setSelectedAccount] = useState(null);
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
 
   const theme = useTheme();
 
@@ -58,9 +87,9 @@ function AccountGrid() {
     { field: 'name', headerName: 'Name', minWidth: 65, flex: 0.2 },
     { field: 'email', headerName: 'Email', minWidth: 65, flex: 0.3 },
     { field: 'lastLogin', headerName: 'Last Login', minWidth: 140, flex: 0.15 },
-    { field: 'serverName', headerName: 'Server', width: 120, renderCell: (params) => ServerChip(params) },
+    { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
     { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 140, flex: 0.15 },
-    { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => DailyLoginCheckbox(params) },
+    { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => { setAccounts((prev) => prev.map((account) => account.id === params.id ? { ...account, performDailyLogin: event.target.checked } : account));}} /> },
     { field: 'id', headerName: '', width: 95, renderCell: (params) => PlayButton(params) },
   ];
 
@@ -68,32 +97,12 @@ function AccountGrid() {
       <StyledButton
         sx={{ margin: 'auto' }}
         onClick={() => {
-          console.log("Play button clicked: ", params);
-          //setAccounts((prev) => prev.map((account) => account.id === params.id ? { ...account, performDailyLogin: event.target.checked } : account));
+          console.log("Play button clicked: ", params);          
         }}
       >
         Play
       </StyledButton>
   );
-
-  const ServerChip = (params) => (
-    <Chip
-      sx={{
-        margin: 'auto',
-        ...useStringToColor(params.value),
-      }}
-      label={params.value}
-      size="small"
-    />);
-
-  const DailyLoginCheckbox = (params) => (
-    <Checkbox
-      sx={{ margin: 'auto' }}
-      checked={params.value}
-      onChange={(event) => {
-        setAccounts((prev) => prev.map((account) => account.id === params.id ? { ...account, performDailyLogin: event.target.checked } : account));
-      }}
-    />);
 
   return (
     <Paper sx={{ height: 'calc(90vh - 70px)', width: '100%', borderRadius: 1.5, background: theme.palette.background.paper, }}>
@@ -101,9 +110,8 @@ function AccountGrid() {
         sx={{ border: 0, '&, [class^=MuiDataGrid]': { border: 'none' } }}
         rows={accounts}
         getRowId={(row) => row.id}
-        columns={columns}
-        pageSize={100}
-        rowsPerPageOptions={[100]}
+        columns={columns}        
+        pageSizeOptions={[1]}
         getRowHeight={() => "auto"}
         rowSelection
         getEstimatedRowHeight={() => 41}
@@ -118,8 +126,13 @@ function AccountGrid() {
           setSelectedAccount(null);
         }}
         rowSelectionModel={selectedAccount ? [selectedAccount.id] : []}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
         checkboxSelection={false}
         hideFooterSelectedRowCount
+        slots={{
+          pagination: CustomPagination,
+        }}
       />
     </Paper>
   );
