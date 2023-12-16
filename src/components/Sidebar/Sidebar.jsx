@@ -28,7 +28,7 @@ function Sidebar({ children }) {
             action: () => setSelectedIndex(1),
         },
         {
-            name: 'Options',
+            name: 'Settings',
             icon: <SettingsOutlinedIcon />,
             action: () => setSelectedIndex(2),
         },
