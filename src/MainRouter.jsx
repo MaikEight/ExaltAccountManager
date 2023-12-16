@@ -1,4 +1,5 @@
 import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material";
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import Sidebar from "./components/Sidebar/Sidebar";
 import ColorContext from "./contexts/ColorContext";
@@ -13,9 +14,14 @@ function MainRouter() {
         <StyledThemeProvider theme={theme}>
             <MuiThemeProvider theme={theme}>
                 <CssBaseline enableColorScheme />
-                <div id="router" style={{width: '100%'}}>
+                <div style={{ width: '100%' }}>
                     <Sidebar id="sidebar">
-                        <AccountsPage />
+                        <Router id="router">
+                            <Routes>
+                                <Route path='/' element={<AccountsPage />}></Route>
+                                <Route path='*' element={<AccountsPage />}></Route>
+                            </Routes>
+                        </Router>
                     </Sidebar>
                 </div>
             </MuiThemeProvider>
