@@ -7,7 +7,7 @@ const useColorList = () => {
     const colorList = useMemo(
         () => [
             { background: '#9155fd1f', color: theme.palette.primary.main },
-            { background: '#8a8d931f', color: '#8a8d931f' },
+            // { background: '#8a8d931f', color: '#8a8d931f' },
             { background: '#16b1ff1f', color: theme.palette.info.main },
             { background: '#56ca0021', color: theme.palette.success.main },
             { background: '#ff4c511f', color: theme.palette.error.main },
