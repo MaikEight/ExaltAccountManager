@@ -7,7 +7,7 @@ export const darkTheme = createTheme({
             main: '#9155FD;',
         },
         secondary: {
-            main: '#384392',
+            main: '#8a8d931f',
         },
         info: {
             main: '#16B1FF',
@@ -28,7 +28,7 @@ export const darkTheme = createTheme({
         background: {
             default: '#28243D',
             paper: '#312D4B',
-            paperLight: '#383452'
+            paperLight: '#3D3759'            
         },
     },
     shadows: [
