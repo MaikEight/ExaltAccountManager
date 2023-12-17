@@ -1,4 +1,5 @@
-import { Box, CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material";
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import Sidebar from "./components/Sidebar/Sidebar";
