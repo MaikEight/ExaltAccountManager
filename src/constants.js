@@ -1,6 +1,10 @@
-export const SAVE_FILE_PATH = 'C:\\Users\\Maik8\\Desktop\\ExaltAccountManager\\';
-export const SAVE_FILE_NAME = 'accounts.json';
+import { invoke } from '@tauri-apps/api';
 
+export const SAVE_FILE_PATH = async () => await invoke('get_save_file_path');
+
+export const ACCOUNTS_FILE_PATH = async () => await invoke('combine_paths', { path1: await invoke('get_save_file_path'), path2: SAVE_FILE_NAME });
+
+export const SAVE_FILE_NAME = 'accounts.json';
 
 //TEMPORARY
 export const SERVERS = [
