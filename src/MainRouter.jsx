@@ -15,14 +15,18 @@ function MainRouter() {
             <MuiThemeProvider theme={theme}>
                 <CssBaseline enableColorScheme />
                 <div style={{ width: '100%' }}>
-                    <Sidebar id="sidebar">
-                        <Router id="router">
+                    <Router id="router">
+                        <Sidebar id="sidebar">
                             <Routes>
                                 <Route path='/' element={<AccountsPage />}></Route>
+                                <Route path='/accounts' element={<AccountsPage />}></Route>
+                                <Route path='/news' element={<div />}></Route>
+                                <Route path='/settings' element={<div />}></Route>
+                                <Route path='/about' element={<div />}></Route>
                                 <Route path='*' element={<AccountsPage />}></Route>
                             </Routes>
-                        </Router>
-                    </Sidebar>
+                        </Sidebar>
+                    </Router>
                 </div>
             </MuiThemeProvider>
         </StyledThemeProvider>
