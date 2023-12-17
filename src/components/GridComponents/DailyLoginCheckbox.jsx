@@ -1,6 +1,6 @@
 import { Checkbox } from "@mui/material";
 
-function DailyLoginCheckbox({ params, onChange }) {
+function DailyLoginCheckbox({ params, onChange, sx }) {
     
   const handleCheckboxChange = (event) => {
     event.stopPropagation();
@@ -9,7 +9,7 @@ function DailyLoginCheckbox({ params, onChange }) {
 
   return (
     <Checkbox
-      sx={{ margin: 'auto' }}
+      sx={{ margin: 'auto', ...sx }}
       checked={params.value}
       onChange={handleCheckboxChange}
     />
