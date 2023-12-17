@@ -1,12 +1,13 @@
 import { useTheme } from "@emotion/react";
 import { Button } from "@mui/material";
 
-function StyledButton({ children, ...props }) {
+function StyledButton({ children, fullWidth, ...props }) {
     const theme = useTheme();
     return (
         <Button
             color="primary"
             variant="contained"
+            fullWidth={fullWidth}
             {...props}
             sx={{
                 ...props.sx,
