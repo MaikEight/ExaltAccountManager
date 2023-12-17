@@ -28,7 +28,7 @@ export const lightTheme = createTheme({
         background: {
             default: '#F4F5FA',
             paper: '#FFFFFF',
-            paperLight: '#F7F7F8'
+            paperLight: '#F9FAFC'
         },
     },
     shadows: [
