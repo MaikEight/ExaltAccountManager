@@ -17,6 +17,8 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.7",
     "@mui/x-data-grid": "^6.18.4",
     "@tauri-apps/api": "^1.5.1",
+    "axios": "^1.6.2",
+    "browserify": "^17.0.0",
     "date-fns": "^2.30.0",
     "fs.promises": "^0.1.2",
     "hash-string": "^1.0.0",
@@ -24,7 +26,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.6",
