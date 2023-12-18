@@ -18,7 +18,7 @@ const StyledDataGrid = styled(DataGrid)`
   }
 `;
 
-function AccountGrid({ acc, selected, setSelected }) {
+function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
 
   const [accounts, setAccounts] = useState(acc);
 
@@ -43,8 +43,13 @@ function AccountGrid({ acc, selected, setSelected }) {
     { field: 'lastLogin', headerName: 'Last Login', minWidth: 100, flex: 0.15, type: 'dateTime', valueFormatter: (params) => formatTime(params.value) },
     { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
     { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 140, flex: 0.15 },
-    { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => { setAccounts((prev) => prev.map((account) => account.id === params.id ? { ...account, performDailyLogin: event.target.checked } : account)); }} /> },
+    { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
   ];
+
+  const handleDailyLoginCheckboxChange = (event, params) => {
+    const updatedAccount = { ...accounts.find((account) => account.id === params.id), performDailyLogin: event.target.checked };
+    onAccountChanged(updatedAccount.email, updatedAccount);
+  };
 
   const handleCellClick = (params, event) => {
     if (typeof (event.target.type) !== 'undefined') {
