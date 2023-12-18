@@ -13,5 +13,12 @@ export default defineConfig(async () => ({
   server: {
     port: 1420,
     strictPort: true,
+    proxy: {
+      '/api': {
+        target: 'https://www.realmofthemadgod.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   }
 }));
