@@ -5,6 +5,7 @@ import { ACCOUNTS_FILE_PATH, SAVE_FILE_NAME, SAVE_FILE_PATH } from "../constants
 import { readFileUTF8 } from "../utils/readFileUtil";
 import AccountDetails from "../components/AccountDetails/AccountDetails";
 import { useSearchParams } from "react-router-dom";
+import { writeFileUTF8 } from "../utils/writeFileUtil";
 
 function AccountsPage() {
     const [accounts, setAccounts] = useState([]);
@@ -15,19 +16,19 @@ function AccountsPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-              const filePath = await ACCOUNTS_FILE_PATH();
-              const accounts = await readFileUTF8(filePath, true);
-      
-              if (accounts) {
-                setAccounts(accounts);
-                handleSelectedAccountParameter(accounts);
-              }
+                const filePath = await ACCOUNTS_FILE_PATH();
+                const accounts = await readFileUTF8(filePath, true);
+
+                if (accounts) {
+                    setAccounts(accounts);
+                    handleSelectedAccountParameter(accounts);
+                }
             } catch (error) {
-              console.error('Error fetching data:', error);
+                console.error('Error fetching data:', error);
             }
-          };
-      
-          fetchData();
+        };
+
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -62,6 +63,22 @@ function AccountsPage() {
         }
     }
 
+    const updateAccount = (email, updatedAccount) => {
+
+        const updatedAccounts = accounts.map((account) => {
+            if (account.email === email) {
+                return updatedAccount;
+            }
+            return account;
+        });
+
+        setAccounts(updatedAccounts);
+        ACCOUNTS_FILE_PATH()
+            .then((filePath) => {
+                writeFileUTF8(filePath, updatedAccounts, true);
+            });
+    };
+
     return (
         <Box id="accountspage"
             sx={{
@@ -69,8 +86,8 @@ function AccountsPage() {
                 p: 2,
             }}
         >
-            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} />
-            <AccountDetails acc={selectedAccount} onClose={() => setSelectedAccount(null)} />            
+            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(email, updatedAccount) => updateAccount(email, updatedAccount)} />
+            <AccountDetails acc={selectedAccount} onClose={() => setSelectedAccount(null)} />
         </Box>
     );
 }

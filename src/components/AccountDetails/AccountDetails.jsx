@@ -1,4 +1,4 @@
-import { Box, Drawer, IconButton, Paper, Slide, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, tableCellClasses } from "@mui/material";
+import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Unstable_Grid2 as Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
@@ -13,6 +13,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { postAccountVerify, postCharList } from "../../backend/decaApi";
 
 function AccountDetails({ acc, onClose }) {
     const [account, setAccount] = useState(null);
@@ -129,30 +130,42 @@ function AccountDetails({ acc, onClose }) {
                 {/* 3. */}
                 <Grid container spacing={2}>
                     <Grid xs={12}>
-                        <StyledButton fullWidth={true}  sx={{height: 55}}>
-                        <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{mr: 1}}/>start game
+                        <StyledButton
+                            fullWidth={true}
+                            sx={{ height: 55 }}
+                            onClick={() => {
+                                let account = {};
+                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e").then((res) => {
+                                    console.log("res", res);
+                                    postCharList(res.Account.AccessToken)
+                                        .then((charList) => {
+                                            console.log("charList", charList);
+                                        });
+                                })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    });
+                            }}
+                        >
+                            <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />start game
                         </StyledButton>
                     </Grid>
-                    <Grid xs={6}>
+                    <Grid xs={7}>
                         <StyledButton fullWidth={true} startIcon={<RefreshOutlinedIcon />} color="secondary">
                             refresh data
                         </StyledButton>
                     </Grid>
-                    <Grid xs={6}>
-                    <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="error">
-                        delete account
-                    </StyledButton>
+                    <Grid xs={5}>
+                        <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
+                            '&:hover': {
+                                backgroundColor: theme => theme.palette.error.main,
+                            },
+                        }}>
+                            delete account
+                        </StyledButton>
                     </Grid>
 
                 </Grid>
-                {/* <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', gap: 2 }}>
-
-
-                    
-                    {/* <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                    Buttons
-                </Typography>
-                </Box> */}
             </Box>
         </Drawer >
     );
