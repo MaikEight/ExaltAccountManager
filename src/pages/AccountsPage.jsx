@@ -77,6 +77,10 @@ function AccountsPage() {
             .then((filePath) => {
                 writeFileUTF8(filePath, updatedAccounts, true);
             });
+        
+        if (selectedAccount && selectedAccount.email === email) {
+            setSelectedAccount(updatedAccount);
+        }
     };
 
     return (
@@ -87,7 +91,7 @@ function AccountsPage() {
             }}
         >
             <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(email, updatedAccount) => updateAccount(email, updatedAccount)} />
-            <AccountDetails acc={selectedAccount} onClose={() => setSelectedAccount(null)} />
+            <AccountDetails acc={selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(email, updatedAccount) => updateAccount(email, updatedAccount)}/>
         </Box>
     );
 }
