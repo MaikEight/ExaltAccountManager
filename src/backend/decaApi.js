@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { xmlToJson } from '../utils/XmlUtils';
 
-// const BASE_URL = 'https://www.realmofthemadgod.com';
-
 async function postAccountVerify(account, clientId) {
     if (!account || !clientId) return null;
 
@@ -43,23 +41,6 @@ async function postAccountVerify(account, clientId) {
         });
 }
 
-/*
-    values = new Dictionary<string, string>
-                    {
-                        { "do_login", "false" },
-                        { "accessToken", accessToken.token },
-                        { "game_net", "Unity" },
-                        { "play_platform", "Unity" },
-                        { "game_net_user_id", "" },
-                        { "muleDump", "true" },
-                        { "__source", "jakcodex-v965" }
-                    };
-                    content = new FormUrlEncodedContent(values);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-
-                    response = SendPostRequest("https://www.realmofthemadgod.com/char/list", content, "form");
-*/
-
 async function postCharList(accessToken) {
     if (!accessToken) return null;
 
@@ -91,7 +72,6 @@ async function postCharList(accessToken) {
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(xml, "text/xml");
 
-            // Convert XML Document to JavaScript object
             const result = xmlToJson(xmlDoc);
             console.log(result);
             return result;
