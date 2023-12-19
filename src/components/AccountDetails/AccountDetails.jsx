@@ -14,11 +14,14 @@ import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFil
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { postAccountVerify, postCharList } from "../../backend/decaApi";
+import { tauri } from "@tauri-apps/api";
+import useUserSettings from "../../hooks/useUserSettings";
 
-function AccountDetails({ acc, onClose }) {
+function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
+    const settings = useUserSettings();
     const theme = useTheme();
 
     useEffect(() => {
@@ -134,16 +137,56 @@ function AccountDetails({ acc, onClose }) {
                             fullWidth={true}
                             sx={{ height: 55 }}
                             onClick={() => {
-                                let account = {};
-                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e").then((res) => {
-                                    console.log("res", res);
+                                // const arg = `data:{platform:Deca,guid:dW5kZWZpbmVk,token:dW5kZWZpbmVk,tokenTimestamp:dW5kZWZpbmVk,tokenExpiration:dW5kZWZpbmVk,env:4,serverName:Default}`;
+                                // const path = settings.getByKeyAndSubKey("game", "exePath");
+                                // console.log("path", path);
+                                // tauri.invoke(
+                                //     "start_application",
+                                //     { applicationPath: path, startParameters: arg }
+                                // );
+                                // return;
+                                let acc = { ...account };
+                                let hasChanged = false;
+                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e").then(async (res) => {
+                                    if (acc.data === undefined) acc.data = { account: null, charList: null };
+                                    acc.data.account = res.Account;
+                                    hasChanged = true;
                                     postCharList(res.Account.AccessToken)
                                         .then((charList) => {
                                             console.log("charList", charList);
+                                            acc.data.charList = charList.Chars;
+                                            onAccountChanged(acc.email, acc);
+                                        }).catch((err) => {
+                                            console.error("error", err);
+                                            if (hasChanged) {
+                                                onAccountChanged(acc.email, acc);
+                                            }
                                         });
+                                    
+                                    const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${acc.serverName}}`;
+                                    tauri.invoke(
+                                        "start_application",
+                                        { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
+                                    );
                                 })
-                                    .catch((err) => {
-                                        console.log(err);
+                                    .then(() => {
+                                        console.log("inside acc", acc);
+
+                                        if (hasChanged) {
+                                            onAccountChanged(acc.email, acc);
+                                        }
+                                        console.log(acc);
+                                        if (acc.data.account !== null && acc.data.account.AccessToken !== null) {
+                                            //Start Game
+                                            // const appPath = "C:\\Users\\Maik8\\source\\repos\\StartArgumentsTest\\bin\\Debug\\StartArgumentsTest.exe";
+
+                                            /*
+                                            C# equivalent:
+                                                 string arguments = string.Format("\"data:{{platform:Deca,guid:{0},token:{1},tokenTimestamp:{2},tokenExpiration:{3},env:4,serverName:{4}}}\"",
+                                               StringToBase64String(_info.email), StringToBase64String(_info.accessToken.token), StringToBase64String(_info.accessToken.creationTime), StringToBase64String(_info.accessToken.expirationTime), GetServerName(_info.serverName));
+                                            */
+
+                                        }
                                     });
                             }}
                         >
