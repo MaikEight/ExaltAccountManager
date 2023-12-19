@@ -31,12 +31,27 @@ function xmlToJson(xml) {
         }
     }
 
-    // If the object only contains a #text property, replace it with its value
     if (typeof obj === 'object' && Object.keys(obj).length === 1 && '#text' in obj) {
         obj = obj['#text'];
     }
 
-    return obj;
+    return cleanObject(obj);
 };
+
+function cleanObject(obj) {
+    let cleanObj = Array.isArray(obj) ? [] : {};
+
+    for (let key in obj) {
+        if (key !== '@attributes' && key !== '#text') {
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                cleanObj[key] = cleanObject(obj[key]);
+            } else {
+                cleanObj[key] = obj[key];
+            }
+        }
+    }
+
+    return cleanObj;
+}
 
 export { xmlToJson };
