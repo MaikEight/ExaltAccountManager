@@ -7,6 +7,9 @@ const defaultSettings = {
     general: {
         theme: "dark",
     },
+    game: {
+        exePath: "C:\\Users\\Maik8\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe",
+    }
 };
 
 function expandSettings(settings) {
