@@ -10,6 +10,7 @@ import ColorContext from '../../contexts/ColorContext';
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 import { useNavigate } from "react-router-dom";
+import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutlined';
 
 
 function Sidebar({ children }) {
@@ -25,11 +26,17 @@ function Sidebar({ children }) {
             action: () => setSelectedIndex(0),
             navigate: '/accounts'
         },
+        // {
+        //     name: 'News',
+        //     icon: <NewspaperOutlinedIcon />,
+        //     action: () => setSelectedIndex(1),
+        //     navigate: '/news'
+        // },
         {
-            name: 'News',
-            icon: <NewspaperOutlinedIcon />,
+            name: 'Realm Updater',
+            icon: <SystemUpdateAltOutlinedIcon />,
             action: () => setSelectedIndex(1),
-            navigate: '/news'
+            navigate: '/gameUpdater'
         },
         {
             name: 'Settings',
@@ -51,21 +58,27 @@ function Sidebar({ children }) {
     }, [selectedIndex]);
 
     return (
-        <Box sx={{ display: "flex", flexDirection: 'column' }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: 'column'
+            }}>
             <CustomToolbar
                 sx={{
                     width: "100%",
                     minHeight: 35,
                 }}
             />
-            <Box sx={{
-                display: "flex",
-                flexDirection: "row",
-                height: "calc(100vh - 35px)",
-                width: "100%",
-                gap: 0,
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    height: "calc(100vh - 35px)",
+                    width: "100%",
+                    gap: 0,
 
-            }}>
+                }}
+            >
                 {/* Sidebar */}
                 <Box
                     sx={{
@@ -101,11 +114,11 @@ function Sidebar({ children }) {
                     </List>
                 </Box>
                 {/* CONTENT */}
-                <Box sx={{ flex: 1 }}>
+                <Box id="content" sx={{ flex: 1, width: 'calc(100% - 230px)' }}>
                     {children}
                 </Box>
             </Box>
-        </Box>        
+        </Box>
     );
 }
 
