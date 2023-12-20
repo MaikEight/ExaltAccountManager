@@ -42,13 +42,13 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
     { field: 'email', headerName: 'Email', minWidth: 65, flex: 0.3 },
     { field: 'lastLogin', headerName: 'Last Login', minWidth: 100, flex: 0.15, type: 'dateTime', valueFormatter: (params) => formatTime(params.value) },
     { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
-    { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 140, flex: 0.15 },
+    { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 140, flex: 0.15, valueFormatter: (params) => formatTime(params.value) },
     { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
   ];
 
   const handleDailyLoginCheckboxChange = (event, params) => {
     const updatedAccount = { ...accounts.find((account) => account.id === params.id), performDailyLogin: event.target.checked };
-    onAccountChanged(updatedAccount.email, updatedAccount);
+    onAccountChanged(updatedAccount);
   };
 
   const handleCellClick = (params, event) => {
@@ -66,6 +66,7 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
       <Paper sx={{ height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1.5, background: theme.palette.background.paper, }}>
         <StyledDataGrid
           sx={{
+            width: '100%',
             border: 0,
             '&, [class^=MuiDataGrid]': { border: 'none' },
             '& .MuiDataGrid-columnHeaders': {
