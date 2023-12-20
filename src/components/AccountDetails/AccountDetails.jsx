@@ -137,55 +137,39 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                             fullWidth={true}
                             sx={{ height: 55 }}
                             onClick={() => {
-                                // const arg = `data:{platform:Deca,guid:dW5kZWZpbmVk,token:dW5kZWZpbmVk,tokenTimestamp:dW5kZWZpbmVk,tokenExpiration:dW5kZWZpbmVk,env:4,serverName:Default}`;
-                                // const path = settings.getByKeyAndSubKey("game", "exePath");
-                                // console.log("path", path);
-                                // tauri.invoke(
-                                //     "start_application",
-                                //     { applicationPath: path, startParameters: arg }
-                                // );
-                                // return;
                                 let acc = { ...account };
                                 let hasChanged = false;
-                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e").then(async (res) => {
-                                    if (acc.data === undefined) acc.data = { account: null, charList: null };
-                                    acc.data.account = res.Account;
-                                    hasChanged = true;
-                                    postCharList(res.Account.AccessToken)
-                                        .then((charList) => {
-                                            console.log("charList", charList);
-                                            acc.data.charList = charList.Chars;
-                                            onAccountChanged(acc.email, acc);
-                                        }).catch((err) => {
-                                            console.error("error", err);
-                                            if (hasChanged) {
-                                                onAccountChanged(acc.email, acc);
-                                            }
-                                        });
-                                    
-                                    const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${acc.serverName}}`;
-                                    tauri.invoke(
-                                        "start_application",
-                                        { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
-                                    );
-                                })
+                                //TODO: Fetch acctual client hwid
+                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e")
+                                    .then(async (res) => {
+                                        if (acc.data === undefined) acc.data = { account: null, charList: null };
+                                        acc.data.account = res.Account;
+                                        hasChanged = true;
+                                        postCharList(res.Account.AccessToken)
+                                            .then((charList) => {
+                                                console.log("charList", charList);
+                                                acc.data.charList = charList.Chars;
+                                                onAccountChanged(acc);
+                                                hasChanged = false;
+                                            }).catch((err) => {
+                                                console.error("error", err);
+                                                if (hasChanged) {
+                                                    onAccountChanged(acc);
+                                                    hasChanged = false;
+                                                }
+                                            });
+
+                                        const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${acc.serverName}}`;
+                                        tauri.invoke(
+                                            "start_application",
+                                            { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
+                                        );
+                                        acc.lastRefresh = acc.lastLogin = new Date().toISOString();
+                                    })
                                     .then(() => {
-                                        console.log("inside acc", acc);
-
                                         if (hasChanged) {
-                                            onAccountChanged(acc.email, acc);
-                                        }
-                                        console.log(acc);
-                                        if (acc.data.account !== null && acc.data.account.AccessToken !== null) {
-                                            //Start Game
-                                            // const appPath = "C:\\Users\\Maik8\\source\\repos\\StartArgumentsTest\\bin\\Debug\\StartArgumentsTest.exe";
-
-                                            /*
-                                            C# equivalent:
-                                                 string arguments = string.Format("\"data:{{platform:Deca,guid:{0},token:{1},tokenTimestamp:{2},tokenExpiration:{3},env:4,serverName:{4}}}\"",
-                                               StringToBase64String(_info.email), StringToBase64String(_info.accessToken.token), StringToBase64String(_info.accessToken.creationTime), StringToBase64String(_info.accessToken.expirationTime), GetServerName(_info.serverName));
-                                            */
-
+                                            acc.lastRefresh = new Date().toISOString();
+                                            onAccountChanged(acc);
                                         }
                                     });
                             }}
@@ -194,7 +178,40 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                         </StyledButton>
                     </Grid>
                     <Grid xs={7}>
-                        <StyledButton fullWidth={true} startIcon={<RefreshOutlinedIcon />} color="secondary">
+                        <StyledButton
+                            fullWidth={true}
+                            startIcon={<RefreshOutlinedIcon />}
+                            color="secondary"
+                            onClick={() => {
+                                //TODO: Fetch acctual client hwid
+                                let hasChanged = false;
+                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e")
+                                    .then(async (res) => {
+                                        if (acc && acc.data === undefined) acc.data = { account: null, charList: null };                                        
+                                        acc.data.account = res.Account;
+                                        hasChanged = true;
+                                        postCharList(res.Account.AccessToken)
+                                            .then((charList) => {
+                                                console.log("charList", charList);
+                                                acc.data.charList = charList.Chars;
+                                                onAccountChanged(acc);
+                                                hasChanged = false;
+                                            }).catch((err) => {
+                                                console.error("error", err);
+                                                if (hasChanged) {
+                                                    onAccountChanged(acc);
+                                                    hasChanged = false;
+                                                }
+                                            });
+                                    })
+                                    .then(() => {
+                                        if (hasChanged) {
+                                            acc.lastRefresh = new Date().toISOString();
+                                            onAccountChanged(acc);
+                                        }
+                                    });
+                            }}
+                        >
                             refresh data
                         </StyledButton>
                     </Grid>
