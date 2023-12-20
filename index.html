@@ -10,15 +10,20 @@
     html,
     body {
       background: transparent;
+      border-radius: 12px;
+      overflow: hidden;
     }
   </style>
 </head>
 
-<body>  
-  <div data-tauri-drag-region class="titlebar">
-    
+<body>
+  <div class="main">
+    <div data-tauri-drag-region class="titlebar">
+
+    </div>
+    <div id="root" class="main"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </div>
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
 </body>
+
 </html>
