@@ -6,6 +6,32 @@ export const ACCOUNTS_FILE_PATH = async () => await invoke('combine_paths', { pa
 
 export const SAVE_FILE_NAME = 'accounts.json';
 
+
+// ### GAME UPDATER ###
+
+const updateBaseUrls = [
+    "/rotmg/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv",
+    "/rotmg-build/build-release/{0}/rotmg-exalt-win-64/checksum.json", //TODO: add Mac and Linux support
+    "/rotmg-build/build-release/{0}/rotmg-exalt-win-64/{1}.gz" //TODO: add Mac and Linux support
+];
+
+export function UPDATE_URLS(index, values) {
+    switch (index) {
+        case 0:
+            return updateBaseUrls[index];
+        case 1:
+            if (!values) return updateBaseUrls[index];
+            const v = updateBaseUrls[index].replace("{0}", values);
+            console.log(v);            
+            return v;
+        case 2:
+            if (values.length < 2) return pdateBaseUrls[index];
+            return updateBaseUrls[index].replace("{0}", values[0]).replace("{1}", values[1]);
+        default:
+            return null;
+    }
+}
+
 //TEMPORARY
 export const SERVERS = [
     {
