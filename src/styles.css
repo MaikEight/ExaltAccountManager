@@ -1,10 +1,10 @@
 :root {
-  --text: #121212;
+  /* --text: #121212;
   --background: #ededed;
   --primary: #9155FD;
   --secondary: #6b76c7;
   --accent: #8f0030;
-  --close: #FF6969;
+  --close: #FF6969; */
 
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -19,18 +19,28 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  /* background-color: #00000000; */
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #ededed;
+    /* --text: #ededed;
     --background: #28243D;
     --primary: #9155FD;
     --secondary: #384392;
     --accent: #ff71a1;
     --close: #FF4C51;
-    --paper: #312D4B;
+    --paper: #312D4B; */    
   }
+}
+
+.main {
+  background-color: #00000000;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .titlebar-spacer {
@@ -64,12 +74,13 @@
   user-select: none;
   display: flex;
   justify-content: flex-end;
-  align-items: center; 
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
 }
+
 #app {
   border-radius: 50px;
   height: 100vh;
