@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { xmlToJson } from '../utils/XmlUtils';
+import { UPDATE_URLS } from '../constants';
 
 async function postAccountVerify(account, clientId) {
     if (!account || !clientId) return null;
@@ -20,21 +21,14 @@ async function postAccountVerify(account, clientId) {
 
     return await axios({
         method: 'post',
-        url: `/api/account/verify`,
+        url: `/rotmg/account/verify`,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: params.toString()
     })
         .then(function (response) {
-            const xml = response.data;
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xml, "text/xml");
-
-            // Convert XML Document to JavaScript object
-            const result = xmlToJson(xmlDoc);
-            console.log(result);
-            return result;
+            return xmlToJson(response.data);
         })
         .catch(function (error) {
             console.log(error);
@@ -61,24 +55,49 @@ async function postCharList(accessToken) {
 
     return await axios({
         method: 'post',
-        url: `/api/char/list`,
+        url: `/rotmg/char/list`,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: params.toString()
     })
         .then(function (response) {
-            const xml = response.data;
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xml, "text/xml");
-
-            const result = xmlToJson(xmlDoc);
-            console.log(result);
-            return result;
+            return xmlToJson(response.data);
         })
         .catch(function (error) {
             console.log(error);
         });
 }
 
-export { postAccountVerify, postCharList };
+async function getAppInit() {
+    return await axios({
+        method: 'get',
+        url: UPDATE_URLS(0),
+    })
+        .then(function (response) {
+            return xmlToJson(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+async function getGameFileList(buildHash) {
+    return await axios({
+        method: 'get',
+        url: UPDATE_URLS(1, buildHash),
+    })
+        .then(function (response) {
+            return response.data.files;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+export { 
+    postAccountVerify, 
+    postCharList, 
+    getAppInit,
+    getGameFileList 
+};
