@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import ColorContext from "./contexts/ColorContext";
 import { useContext } from "react";
 import AccountsPage from "./pages/AccountsPage";
+import GameUpdaterPage from "./pages/GameUpdaterPage";
 
 function MainRouter() {
     const colorContext = useContext(ColorContext);
@@ -21,7 +22,7 @@ function MainRouter() {
                             <Routes>
                                 <Route path='/' element={<AccountsPage />}></Route>
                                 <Route path='/accounts' element={<AccountsPage />}></Route>
-                                <Route path='/news' element={<div />}></Route>
+                                <Route path='/gameUpdater' element={<GameUpdaterPage />}></Route>
                                 <Route path='/settings' element={<div />}></Route>
                                 <Route path='/about' element={<div />}></Route>
                                 <Route path='*' element={<AccountsPage />}></Route>
