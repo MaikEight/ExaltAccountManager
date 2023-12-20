@@ -63,10 +63,10 @@ function AccountsPage() {
         }
     }
 
-    const updateAccount = (email, updatedAccount) => {
-
+    const updateAccount = (updatedAccount) => {
+        
         const updatedAccounts = accounts.map((account) => {
-            if (account.email === email) {
+            if (account.email === updatedAccount.email) {
                 return updatedAccount;
             }
             return account;
@@ -78,7 +78,7 @@ function AccountsPage() {
                 writeFileUTF8(filePath, updatedAccounts, true);
             });
         
-        if (selectedAccount && selectedAccount.email === email) {
+        if (selectedAccount && selectedAccount.email === updatedAccount.email) {
             setSelectedAccount(updatedAccount);
         }
     };
@@ -90,8 +90,8 @@ function AccountsPage() {
                 p: 2,
             }}
         >
-            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(email, updatedAccount) => updateAccount(email, updatedAccount)} />
-            <AccountDetails acc={selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(email, updatedAccount) => updateAccount(email, updatedAccount)}/>
+            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)} />
+            <AccountDetails acc={selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)}/>
         </Box>
     );
 }
