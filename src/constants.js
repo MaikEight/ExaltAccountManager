@@ -8,11 +8,15 @@ export const SAVE_FILE_NAME = 'accounts.json';
 
 
 // ### GAME UPDATER ###
-
-const updateBaseUrls = [
+const isDev = import.meta.env.DEV;
+const updateBaseUrls = isDev ?[
     "/rotmg/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv",
     "/rotmg-build/build-release/{0}/rotmg-exalt-win-64/checksum.json", //TODO: add Mac and Linux support
     "/rotmg-build/build-release/{0}/rotmg-exalt-win-64/{1}.gz" //TODO: add Mac and Linux support
+] : [
+    "https://www.realmofthemadgod.com/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv",
+    "https://rotmg-build.decagames.com/build-release/{0}/rotmg-exalt-win-64/checksum.json", //TODO: add Mac and Linux support
+    "https://rotmg-build.decagames.com/build-release/{0}/rotmg-exalt-win-64/{1}.gz" //TODO: add Mac and Linux support
 ];
 
 export function UPDATE_URLS(index, values) {
