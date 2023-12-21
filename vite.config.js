@@ -13,17 +13,17 @@ export default defineConfig(async () => ({
   server: {
     port: 1420,
     strictPort: true,
-    proxy: {      
+    proxy: {
+      '/rotmg': {
+        target: 'https://www.realmofthemadgod.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/rotmg/, ''),        
+      },
       '/rotmg-build': {
         target: 'https://rotmg-build.decagames.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/rotmg-build/, '')
-      },
-      '/rotmg': {
-        target: 'https://www.realmofthemadgod.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/rotmg/, '')
-      },
+      },      
     }
   }
 }));
