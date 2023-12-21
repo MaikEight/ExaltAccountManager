@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { xmlToJson } from '../utils/XmlUtils';
 import { UPDATE_URLS } from '../constants';
+import { fetch, ResponseType } from '@tauri-apps/api/http';
 
 async function postAccountVerify(account, clientId) {
     if (!account || !clientId) return null;
@@ -69,35 +70,58 @@ async function postCharList(accessToken) {
         });
 }
 
+// async function getAppInit() {    
+//     return await axios({
+//         method: 'get',
+//         url: UPDATE_URLS(0),
+//     })
+//         .then(function (response) {
+//             console.log('getAppInit:response', response);
+//             return xmlToJson(response.data);
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//         });
+// }
 async function getAppInit() {
-    return await axios({
-        method: 'get',
-        url: UPDATE_URLS(0),
-    })
-        .then(function (response) {
-            return xmlToJson(response.data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    try {
+        const response = await fetch(
+            UPDATE_URLS(0),
+            {
+                method: 'GET',
+                responseType: ResponseType.Text
+            });
+
+        if (!response.ok) {
+            console.log(`HTTP error! status: ${response.status}-${response}`);
+            return;
+        }
+
+        return xmlToJson(await response.data);
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
 }
 
 async function getGameFileList(buildHash) {
-    return await axios({
-        method: 'get',
-        url: UPDATE_URLS(1, buildHash),
-    })
-        .then(function (response) {
-            return response.data.files;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    try {
+        const response = await fetch(
+            UPDATE_URLS(1, buildHash),
+            {
+                method: 'GET',
+                responseType: ResponseType.JSON
+            });
+        return response.data.files;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
 }
 
-export { 
-    postAccountVerify, 
-    postCharList, 
+export {
+    postAccountVerify,
+    postCharList,
     getAppInit,
-    getGameFileList 
+    getGameFileList,
 };
