@@ -13,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = [ "macos-private-api", "window-set-min-size", "window-unminimize", "window-unmaximize", "window-start-dragging", "window-close", "window-minimize", "window-hide", "window-show", "window-maximize", "fs-all", "shell-open"] }
+tauri = { version = "1.5", features = [ "http-all", "devtools", "path-all", "macos-private-api", "window-set-min-size", "window-unminimize", "window-unmaximize", "window-start-dragging", "window-close", "window-minimize", "window-hide", "window-show", "window-maximize", "fs-all", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-std = "1.12"
@@ -22,6 +22,12 @@ dirs = "3.0.2"
 md5 = "0.7.0"
 tokio = "1.35.1"
 futures = "0.3.29"
+flate2 = "1.0.28"
+walkdir = "2.4.0"
+reqwest = { version = "0.11", features = ["blocking"] }
+zip = "0.6.6"
+mpsc = "0.2.3"
+
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
