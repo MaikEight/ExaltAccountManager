@@ -179,9 +179,7 @@ fn perform_game_update(args: PerformGameUpdateArgs) -> Result<(), String> {
         tx.send(result).unwrap();
     });
 
-    let result = rx.recv().unwrap();
-
-    match result {
+    match rx.recv().unwrap() {
         Ok(_) => Ok(()),
         Err(e) => Err(e),
     }
