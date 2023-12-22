@@ -5,12 +5,12 @@ function TextTableRow({ keyValue, value, innerSx, ...rest }) {
   return (
     <TableRow {...rest}>
       <PaddedTableCell sx={innerSx}>
-        <Typography variant="body2" fontWeight={100} component="span" sx={{}}>
+        <Typography variant="body2" fontWeight={300} component="span">
           {keyValue}
         </Typography>
       </PaddedTableCell>
       <PaddedTableCell sx={innerSx}>
-        <Typography variant="body2" fontWeight={100} component="span" sx={{ textAlign: 'center'}}>
+        <Typography variant="body2" fontWeight={300} component="span" sx={{ textAlign: 'center'}}>
           {value}
         </Typography>
       </PaddedTableCell>
