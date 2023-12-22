@@ -22,3 +22,7 @@ export function formatTime(time) {
 
   return formattedDateTime.replace(',', '');
 }
+
+export function getCurrentTime() {
+    return formatTime(new Date().toISOString());
+}
