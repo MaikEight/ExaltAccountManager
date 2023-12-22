@@ -1,8 +1,9 @@
-import axios from 'axios';
 import { xmlToJson } from '../utils/XmlUtils';
 import { UPDATE_URLS } from '../constants';
-import { fetch, ResponseType } from '@tauri-apps/api/http';
+import { fetch, ResponseType, Body } from '@tauri-apps/api/http';
+import { he } from 'date-fns/locale';
 
+const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 async function postAccountVerify(account, clientId) {
     if (!account || !clientId) return null;
 
@@ -20,20 +21,50 @@ async function postAccountVerify(account, clientId) {
         params.append(key, values[key]);
     }
 
-    return await axios({
-        method: 'post',
-        url: `/rotmg/account/verify`,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: params.toString()
-    })
-        .then(function (response) {
-            return xmlToJson(response.data);
-        })
-        .catch(function (error) {
-            console.log(error);
+    // try {
+    //     const response = await fetch(
+    //         `${ROTMG_BASE_URL}/rotmg/account/verify`,
+    //         {
+    //             method: 'POST',
+    //             body: params,
+    //             responseType: ResponseType.Text,
+    //             headers: {
+    //                 'Content-Type': 'application/x-www-form-urlencoded'
+    //             },
+    //         });
+
+    //     if (!response.ok) {
+    //         console.log(`HTTP error! status: ${response.status}-${response}`);
+    //         return null;
+    //     }
+
+    //     return xmlToJson(await response.data);
+    // } catch (error) {
+    //     console.log(error);
+    //     return null;
+    // }
+    const body = params.toString();
+    console.log('Fetching...')
+    const response = await fetch(
+        `${ROTMG_BASE_URL}/rotmg/account/verify`,
+        {
+            method: 'POST',
+            body: Body.text(body), 
+            responseType: ResponseType.Text,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': body.length.toString()
+            },
         });
+    console.log('Fetched!');
+    if (!response.ok) {
+        console.log(`HTTP error! status: ${response.status}-${response}`);
+        return null;
+    }
+
+    const data = xmlToJson(await response.data);
+    console.log(data);
+    return data;
 }
 
 async function postCharList(accessToken) {
@@ -54,42 +85,41 @@ async function postCharList(accessToken) {
         params.append(key, values[key]);
     }
 
-    return await axios({
-        method: 'post',
-        url: `/rotmg/char/list`,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: params.toString()
-    })
-        .then(function (response) {
-            return xmlToJson(response.data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    try {
+        const response = await fetch(
+            `${ROTMG_BASE_URL}/rotmg/char/list`,
+            {
+                method: 'POST',
+                body: params.toString(),
+                responseType: ResponseType.Text,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+            });
+
+        if (!response.ok) {
+            console.log(`HTTP error! status: ${response.status}-${response}`);
+            return;
+        }
+
+        return xmlToJson(await response.data);
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
 }
 
-// async function getAppInit() {    
-//     return await axios({
-//         method: 'get',
-//         url: UPDATE_URLS(0),
-//     })
-//         .then(function (response) {
-//             console.log('getAppInit:response', response);
-//             return xmlToJson(response.data);
-//         })
-//         .catch(function (error) {
-//             console.log(error);
-//         });
-// }
 async function getAppInit() {
     try {
         const response = await fetch(
             UPDATE_URLS(0),
             {
-                method: 'GET',
-                responseType: ResponseType.Text
+                method: 'POST',
+                responseType: ResponseType.Text,
+                headers: {                   
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Length': '0'
+                },
             });
 
         if (!response.ok) {
