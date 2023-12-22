@@ -1,4 +1,4 @@
-import { Box, List, Typography } from "@mui/material";
+import { Badge, Box, List, Typography } from "@mui/material";
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -15,9 +15,19 @@ import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutl
 
 function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
     const theme = useTheme();
     const colorContext = useContext(ColorContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const updateNeeded = localStorage.getItem("updateNeeded");
+
+        if (updateNeeded) {
+            setIsGameUpdateAvailable(true);
+            return;
+        } setIsGameUpdateAvailable(false);
+    }, [localStorage.getItem("updateNeeded")]);
 
     const menuItems = [
         {
@@ -34,7 +44,11 @@ function Sidebar({ children }) {
         // },
         {
             name: 'Realm Updater',
-            icon: <SystemUpdateAltOutlinedIcon />,
+            icon: ( 
+                <Badge badgeContent='' overlap="circular" color="error" variant="dot" invisible={!isGameUpdateAvailable}>
+                    <SystemUpdateAltOutlinedIcon />
+                </Badge>
+            ),
             action: () => setSelectedIndex(1),
             navigate: '/gameUpdater'
         },
@@ -114,7 +128,7 @@ function Sidebar({ children }) {
                     </List>
                 </Box>
                 {/* CONTENT */}
-                <Box id="content" sx={{ flex: 1, width: 'calc(100% - 230px)' }}>
+                <Box id="content" sx={{ display: 'flex', flex: '1 1 auto', maxWidth: 'calc(100% - 230px)' }}>
                     {children}
                 </Box>
             </Box>
