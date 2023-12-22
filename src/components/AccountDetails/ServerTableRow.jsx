@@ -9,7 +9,7 @@ function ServerTableRow({ keyValue, value, ...rest }) {
     return (
         <TableRow {...rest}>
             <PaddedTableCell>
-                <Typography variant="body2" fontWeight={100} component="span" sx={{}}>
+                <Typography variant="body2" fontWeight={300} component="span" sx={{}}>
                     {keyValue}
                 </Typography>
             </PaddedTableCell>
