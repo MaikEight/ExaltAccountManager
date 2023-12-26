@@ -6,6 +6,7 @@ export const ACCOUNTS_FILE_PATH = async () => await invoke('combine_paths', { pa
 
 export const SAVE_FILE_NAME = 'accounts.json';
 
+export const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 
 const updateBaseUrls = [
     "https://www.realmofthemadgod.com/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv",
