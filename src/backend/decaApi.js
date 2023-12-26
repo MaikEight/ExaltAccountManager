@@ -1,13 +1,13 @@
 import { xmlToJson } from '../utils/XmlUtils';
-import { UPDATE_URLS } from '../constants';
-import { fetch, ResponseType, Body } from '@tauri-apps/api/http';
-import { he } from 'date-fns/locale';
+import { ROTMG_BASE_URL, UPDATE_URLS } from '../constants';
+import { fetch, ResponseType } from '@tauri-apps/api/http';
+import { invoke } from '@tauri-apps/api/tauri';
 
-const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 async function postAccountVerify(account, clientId) {
     if (!account || !clientId) return null;
 
-    const values = {
+    const url = `${ROTMG_BASE_URL}/account/verify`;
+    const data = {
         guid: account.email,
         password: account.password,
         clientToken: clientId,
@@ -16,61 +16,20 @@ async function postAccountVerify(account, clientId) {
         game_net_user_id: ""
     };
 
-    const params = new URLSearchParams();
-    for (const key in values) {
-        params.append(key, values[key]);
-    }
-
-    // try {
-    //     const response = await fetch(
-    //         `${ROTMG_BASE_URL}/rotmg/account/verify`,
-    //         {
-    //             method: 'POST',
-    //             body: params,
-    //             responseType: ResponseType.Text,
-    //             headers: {
-    //                 'Content-Type': 'application/x-www-form-urlencoded'
-    //             },
-    //         });
-
-    //     if (!response.ok) {
-    //         console.log(`HTTP error! status: ${response.status}-${response}`);
-    //         return null;
-    //     }
-
-    //     return xmlToJson(await response.data);
-    // } catch (error) {
-    //     console.log(error);
-    //     return null;
-    // }
-    const body = params.toString();
-    console.log('Fetching...')
-    const response = await fetch(
-        `${ROTMG_BASE_URL}/rotmg/account/verify`,
-        {
-            method: 'POST',
-            body: Body.text(body), 
-            responseType: ResponseType.Text,
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': body.length.toString()
-            },
-        });
-    console.log('Fetched!');
-    if (!response.ok) {
-        console.log(`HTTP error! status: ${response.status}-${response}`);
+    try {
+        const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
+        return xmlToJson(response);
+    } catch (error) {
+        console.error(`Error: ${error}`);
         return null;
     }
-
-    const data = xmlToJson(await response.data);
-    console.log(data);
-    return data;
 }
 
 async function postCharList(accessToken) {
     if (!accessToken) return null;
 
-    const values = {
+    const url = `${ROTMG_BASE_URL}/char/list`;
+    const data = {
         do_login: "false",
         accessToken: accessToken,
         game_net: "Unity",
@@ -80,31 +39,11 @@ async function postCharList(accessToken) {
         __source: "jakcodex-v965"
     };
 
-    const params = new URLSearchParams();
-    for (const key in values) {
-        params.append(key, values[key]);
-    }
-
     try {
-        const response = await fetch(
-            `${ROTMG_BASE_URL}/rotmg/char/list`,
-            {
-                method: 'POST',
-                body: params.toString(),
-                responseType: ResponseType.Text,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-            });
-
-        if (!response.ok) {
-            console.log(`HTTP error! status: ${response.status}-${response}`);
-            return;
-        }
-
-        return xmlToJson(await response.data);
+        const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
+        return xmlToJson(response);
     } catch (error) {
-        console.log(error);
+        console.error(`Error: ${error}`);
         return null;
     }
 }
@@ -116,7 +55,7 @@ async function getAppInit() {
             {
                 method: 'POST',
                 responseType: ResponseType.Text,
-                headers: {                   
+                headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Content-Length': '0'
                 },
