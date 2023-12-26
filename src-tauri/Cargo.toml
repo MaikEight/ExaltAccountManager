@@ -27,7 +27,8 @@ walkdir = "2.4.0"
 reqwest = { version = "0.11", features = ["blocking"] }
 zip = "0.6.6"
 mpsc = "0.2.3"
-
+anyhow = "1.0"
+curl = "0.4"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
