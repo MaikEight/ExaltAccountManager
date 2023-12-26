@@ -1,26 +1,30 @@
 //Prevents additional console window on Windows in release, DO NOT REMOVE!!
-//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 // FOR WINDOWS WITH TRANSPARENCY / BLUR / ACRYLIC
-#![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
-)]
+// #![cfg_attr(
+//     all(not(debug_assertions), target_os = "windows"),
+//     windows_subsystem = "windows"
+// )]
+
+use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
+use reqwest::get;
+use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE};
+use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::error::Error as StdError;
+use std::fs::File;
+use std::io::{Read, Write};
 use std::path::Path;
 use std::path::PathBuf;
 use tauri::Error;
 use tauri::Manager;
 use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
-use window_vibrancy::apply_blur;
-use std::fs::File;
-use flate2::read::GzDecoder;
 use walkdir::WalkDir;
-use std::io::{Read, Write};
-use reqwest::get;
-use zip::read::ZipArchive;
+use window_vibrancy::apply_blur;
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 // #[tauri::command]
 // fn greet(name: &str) -> String {
@@ -188,36 +192,39 @@ fn perform_game_update(args: PerformGameUpdateArgs) -> Result<(), String> {
 fn perform_game_update_impl(args: PerformGameUpdateArgs) -> Result<(), String> {
     let (game_exe_path, game_files_data) = (args.game_exe_path, args.game_files_data);
     let game_root_path = get_game_root_path(game_exe_path);
-    let game_files_data: Vec<GameFileData> = serde_json::from_str(&game_files_data)
-        .map_err(|e| e.to_string())?;
+    let game_files_data: Vec<GameFileData> =
+        serde_json::from_str(&game_files_data).map_err(|e| e.to_string())?;
 
     for game_file_data in game_files_data {
         // 1.1. download file to ram
-        let file_data = download_file_to_ram(&game_file_data.url)
-            .map_err(|e| e.to_string())?;
+        let file_data = download_file_to_ram(&game_file_data.url).map_err(|e| e.to_string())?;
 
         // 1.2. unzip file
-        let unzipped_data = unzip_file(file_data)
-            .map_err(|e| e.to_string())?;
+        let unzipped_data = unzip_file(file_data).map_err(|e| e.to_string())?;
 
         // 1.3. save file to game root path + fileName (field: file)
         let file_path = Path::new(&game_root_path).join(&game_file_data.file);
-        save_file_to_disk(file_path, unzipped_data)
-            .map_err(|e| e.to_string())?;        
+        save_file_to_disk(file_path, unzipped_data).map_err(|e| e.to_string())?;
     }
 
     Ok(())
 }
 
-
 fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
-    let response = reqwest::blocking::get(url).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+    let response = reqwest::blocking::get(url)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
 
     if !response.status().is_success() {
-        return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to download file"));
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Failed to download file",
+        ));
     }
 
-    Ok(response.bytes().map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?.to_vec())
+    Ok(response
+        .bytes()
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?
+        .to_vec())
 }
 
 fn save_file_to_disk(path: PathBuf, data: Vec<u8>) -> std::io::Result<()> {
@@ -229,7 +236,8 @@ fn save_file_to_disk(path: PathBuf, data: Vec<u8>) -> std::io::Result<()> {
 fn unzip_file(data: Vec<u8>) -> Result<Vec<u8>, std::io::Error> {
     let mut gz = flate2::read::GzDecoder::new(&data[..]);
     let mut unzipped_data = Vec::new();
-    gz.read_to_end(&mut unzipped_data).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+    gz.read_to_end(&mut unzipped_data)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
     Ok(unzipped_data)
 }
 
@@ -248,17 +256,25 @@ fn create_folder(path: String) -> Result<(), Error> {
 }
 
 #[tauri::command]
-fn unpack_and_move_game_update_files(temp_folder: String, game_exe_path: String) -> Result<(), String> {
+fn unpack_and_move_game_update_files(
+    temp_folder: String,
+    game_exe_path: String,
+) -> Result<(), String> {
     /*
         1. get game root path
         2. unpack files to game path (including sub-folders), overwrite existing files
         3. delete temp folder
     */
     let game_root_path = get_game_root_path(game_exe_path);
-    for entry in WalkDir::new(temp_folder.clone()).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(temp_folder.clone())
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
         if entry.path().extension().unwrap_or_default() == "gz" {
             let temp_file_path = entry.path();
-            let game_file_path = Path::new(&game_root_path).join(temp_file_path.strip_prefix(&temp_folder).unwrap()).with_extension("");
+            let game_file_path = Path::new(&game_root_path)
+                .join(temp_file_path.strip_prefix(&temp_folder).unwrap())
+                .with_extension("");
             let temp_file = File::open(temp_file_path).map_err(|e| e.to_string())?;
             let mut gz = GzDecoder::new(temp_file);
             let mut game_file = File::create(game_file_path).map_err(|e| e.to_string())?;
@@ -275,33 +291,8 @@ fn get_temp_folder_path() -> String {
     path_buf.to_string_lossy().to_string()
 }
 
-// fn main() {
-//     tauri::Builder::default()
-//         .invoke_handler(tauri::generate_handler![
-//             get_save_file_path,
-//             combine_paths,
-//             start_application
-//         ])
-//         .run(tauri::generate_context!())
-//         .expect("error while running tauri application");
-// }
-
-// FOR WINDOWS WITH TRANSPARENCY / BLUR / ACRYLIC
 fn main() {
     tauri::Builder::default()
-        .setup(|app| {
-            let window = app.get_window("main").unwrap();
-
-            #[cfg(target_os = "macos")]
-            apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
-                .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
-
-            #[cfg(target_os = "windows")]
-            apply_blur(&window, Some((18, 18, 18, 125)))
-                .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
-
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             get_save_file_path,
             combine_paths,
@@ -311,11 +302,69 @@ fn main() {
             get_temp_folder_path_with_creation,
             create_folder,
             unpack_and_move_game_update_files,
-            perform_game_update
+            perform_game_update,
+            send_post_request_with_form_url_encoded_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+#[tauri::command]
+async fn send_post_request_with_form_url_encoded_data(
+    url: String,
+    data: HashMap<String, String>,
+) -> Result<String, String> {
+    let mut headers = HeaderMap::new();
+    headers.insert(ACCEPT, HeaderValue::from_static("deflate, gzip"));
+    headers.insert(
+        CONTENT_TYPE,
+        HeaderValue::from_static("application/x-www-form-urlencoded"),
+    );
+
+    let client = reqwest::Client::new();
+    let res = client
+        .post(&url)
+        .headers(headers)
+        .form(&data)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let body = res.text().await.map_err(|e| e.to_string())?;
+    Ok(body)
+}
+
+// FOR WINDOWS WITH TRANSPARENCY / BLUR / ACRYLIC
+// fn main() {
+//     tauri::Builder::default()
+//         .setup(|app| {
+//             let window = app.get_window("main").unwrap();
+
+//             #[cfg(target_os = "macos")]
+//             apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
+//                 .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
+
+//             #[cfg(target_os = "windows")]
+//             apply_blur(&window, Some((18, 18, 18, 125)))
+//                 .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
+
+//             Ok(())
+//         })
+//         .invoke_handler(tauri::generate_handler![
+//             get_save_file_path,
+//             combine_paths,
+//             start_application,
+//             get_game_files_to_update,
+//             get_temp_folder_path,
+//             get_temp_folder_path_with_creation,
+//             create_folder,
+//             unpack_and_move_game_update_files,
+//             perform_game_update,
+//             send_post_request_with_form_url_encoded_data
+//         ])
+//         .run(tauri::generate_context!())
+//         .expect("error while running tauri application");
+// }
 
 //Helper function to get the path to the application directory
 fn get_game_root_path(game_exe_path: String) -> String {
