@@ -17,6 +17,27 @@ function CustomToolbar(props) {
                 ...props.sx
             }}
         >
+                {/* WATERMARK */}
+            {/* <Box>
+                <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">
+                    <Typography
+                        sx={{
+                            position: "absolute",
+                            top: 2,
+                            left: 242,
+                            color: theme.palette.text.primary,
+                            fontSize: 12,
+                            fontWeight: 500,
+                            letterSpacing: 0.5,
+                            ml: 0.5,
+                            mt: 0.25,
+                        }}
+                    >
+                        EAM DEVELOPMENT BUILD v4.0.0.4 by Maik8
+                    </Typography>
+                </a>
+            </Box> */}
+
             <ButtonGroup
                 disableElevation
                 variant="text"
