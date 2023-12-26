@@ -1,12 +1,13 @@
 import { useTheme } from "@emotion/react";
-import { Paper } from "@mui/material";
-import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer } from '@mui/x-data-grid';
+import { LinearProgress, Paper } from "@mui/material";
+import { DataGrid, } from '@mui/x-data-grid';
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CustomPagination } from "./GridComponents/CustomPagination";
 import ServerChip from "./GridComponents/ServerChip";
 import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
 import { formatTime } from "../utils/timeUtils";
+import CustomToolbar from "./GridComponents/CustomToolbar";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -21,10 +22,18 @@ const StyledDataGrid = styled(DataGrid)`
 function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
 
   const [accounts, setAccounts] = useState(acc);
+  const [shownAccounts, setShownAccounts] = useState(acc);
+  const [search, setSearch] = useState('');
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
 
   useEffect(() => {
     setAccounts(acc);
   }, [acc]);
+
+  useEffect(() => {
+    setShownAccounts(getSearchedAccounts(search));
+  }, [accounts]);
 
   useEffect(() => {
     if (selected === selectedAccount) return;
@@ -32,8 +41,9 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
     setSelectedAccount(selected);
   }, [selected]);
 
-  const [selectedAccount, setSelectedAccount] = useState(null);
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
+  useEffect(() => {
+    setSelected(selectedAccount);
+  }, [selectedAccount]); 
 
   const theme = useTheme();
 
@@ -57,9 +67,15 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
     }
   };
 
-  useEffect(() => {
-    setSelected(selectedAccount);
-  }, [selectedAccount]);
+  const getSearchedAccounts = (search) => {    
+    if(search === '') return accounts;
+
+    const filteredAccounts = acc.filter((account) => {
+      const { name, email, serverName } = account;
+      return name.toLowerCase().includes(search.toLowerCase()) || email.toLowerCase().includes(search.toLowerCase()) || serverName.toLowerCase().includes(search.toLowerCase());
+    });
+    return filteredAccounts;
+  };
 
   return (
     <>
@@ -81,14 +97,14 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
               borderRadius: 1.5
             },
           }}
-          rows={accounts}
+          rows={shownAccounts}
           getRowId={(row) => row.id}
           columns={columns}
           pageSizeOptions={[10, 25, 50, 100]}
           getRowHeight={() => "auto"}
           rowSelection
           getEstimatedRowHeight={() => 41}
-          rowCount={accounts.length}
+          rowCount={shownAccounts.length}
           onCellClick={handleCellClick}
           onRowSelectionModelChange={(ids) => {
             const selectedId = ids[0];
@@ -106,6 +122,11 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
           hideFooterSelectedRowCount
           slots={{
             pagination: CustomPagination,
+            toolbar: CustomToolbar,
+            loadingOverlay: LinearProgress,
+          }}
+          slotProps={{
+            toolbar: { onSearchChanged: (search) => setShownAccounts(getSearchedAccounts(search)) },
           }}
         />
       </Paper>
