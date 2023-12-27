@@ -4,7 +4,10 @@ export const SAVE_FILE_PATH = async () => await invoke('get_save_file_path');
 
 export const ACCOUNTS_FILE_PATH = async () => await invoke('combine_paths', { path1: await invoke('get_save_file_path'), path2: SAVE_FILE_NAME });
 
+export const GROUPS_FILE_PATH = async () => await invoke('combine_paths', { path1: await invoke('get_save_file_path'), path2: GROUPS_FILE_NAME });
+
 export const SAVE_FILE_NAME = 'accounts.json';
+export const GROUPS_FILE_NAME = 'groups.json';
 
 export const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 
