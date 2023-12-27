@@ -16,6 +16,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { postAccountVerify, postCharList } from "../../backend/decaApi";
 import { tauri } from "@tauri-apps/api";
 import useUserSettings from "../../hooks/useUserSettings";
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 
 function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
@@ -102,7 +103,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                         width: '100%',
                     }}
                 >
-                    <ComponentBox headline="Details" sx={{ width: '100%' }}>
+                    <ComponentBox headline="Details" icon={<ArticleOutlinedIcon />} sx={{ width: '100%' }}>
                         <TableContainer component={Box} sx={{ borderRadius: 0 }}>
                             <Table
                                 sx={{
