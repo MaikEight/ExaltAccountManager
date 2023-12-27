@@ -8,6 +8,7 @@ import ServerChip from "./GridComponents/ServerChip";
 import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
 import { formatTime } from "../utils/timeUtils";
 import CustomToolbar from "./GridComponents/CustomToolbar";
+import { useGroups } from "../hooks/useGroups";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -46,8 +47,10 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
   }, [selectedAccount]); 
 
   const theme = useTheme();
-
+  const groups = useGroups();
+  
   const columns = [
+    { field: 'group', headerName: 'Group', width: 65, valueGetter: (params) => params.row.group?.name },
     { field: 'name', headerName: 'Accountname', minWidth: 65, flex: 0.2 },
     { field: 'email', headerName: 'Email', minWidth: 65, flex: 0.3 },
     { field: 'lastLogin', headerName: 'Last Login', minWidth: 100, flex: 0.15, type: 'dateTime', valueFormatter: (params) => formatTime(params.value) },
