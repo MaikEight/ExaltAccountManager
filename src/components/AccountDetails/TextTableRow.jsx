@@ -1,7 +1,7 @@
 import { TableRow, Typography } from "@mui/material";
 import PaddedTableCell from "./PaddedTableCell";
 
-function TextTableRow({ keyValue, value, innerSx, ...rest }) {
+function TextTableRow({ keyValue, value, innerSx, editMode, allowCopy, ...rest }) {
   return (
     <TableRow {...rest}>
       <PaddedTableCell sx={innerSx}>
@@ -9,7 +9,7 @@ function TextTableRow({ keyValue, value, innerSx, ...rest }) {
           {keyValue}
         </Typography>
       </PaddedTableCell>
-      <PaddedTableCell sx={innerSx}>
+      <PaddedTableCell sx={innerSx} isEditMode={editMode} allowCopy={allowCopy}>
         <Typography variant="body2" fontWeight={300} component="span" sx={{ textAlign: 'center'}}>
           {value}
         </Typography>
