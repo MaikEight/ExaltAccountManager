@@ -2,7 +2,7 @@ import { TableRow, Typography } from "@mui/material";
 import PaddedTableCell from "./PaddedTableCell";
 import DailyLoginCheckbox from "../GridComponents/DailyLoginCheckbox";
 
-function DailyLoginCheckBoxTableRow({ keyValue, value, ...rest }) {
+function DailyLoginCheckBoxTableRow({ keyValue, value, onChange, ...rest }) {
     const params = {
         value: value,
     };
@@ -14,7 +14,7 @@ function DailyLoginCheckBoxTableRow({ keyValue, value, ...rest }) {
                 </Typography>
             </PaddedTableCell>
             <PaddedTableCell>
-                <DailyLoginCheckbox params={params} sx={{
+                <DailyLoginCheckbox params={params} onChange={onChange} sx={{
                     ml: -1.5
                 }} />
             </PaddedTableCell>
