@@ -7,10 +7,6 @@ function useHWID() {
     const [hwid, setHwid] = useState(null);
 
     useEffect(() => {
-        console.log('hwid changed:', hwid);
-    }, [hwid]);
-
-    useEffect(() => {
         const readHwidFile = async () => {
             const path = await HWID_FILE_PATH();
             const hwid = await readFileUTF8(path, false);
