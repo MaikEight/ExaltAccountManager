@@ -20,7 +20,7 @@ function GameUpdaterPage() {
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [updateRequired, setUpdateRequired] = useState(false);
     const [filesToUpdate, setFilesToUpdate] = useState([]);
-    const [buildHash, setBuildHash] = useState('b745db7679b66d42c1caee6d33edaa9c');
+    const [buildHash, setBuildHash] = useState('');
     const [lastUpdateCheck, setLastUpdateCheck] = useState('never');
 
     useEffect(() => {
@@ -132,9 +132,7 @@ function GameUpdaterPage() {
                     >
                         <TableBody>
                             <TableRow>
-                                <TableCell component="th" scope="row"
-
-                                >
+                                <TableCell component="th" scope="row"   >
                                     <Box
                                         sx={{
                                             display: 'flex',
