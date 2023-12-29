@@ -1,6 +1,6 @@
-import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
 import { Unstable_Grid2 as Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import ComponentBox from "../ComponentBox";
 import PaddedTableCell from "./PaddedTableCell";
@@ -17,12 +17,20 @@ import { postAccountVerify, postCharList } from "../../backend/decaApi";
 import { tauri } from "@tauri-apps/api";
 import useUserSettings from "../../hooks/useUserSettings";
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import GroupRow from "./GroupRow";
+import { useGroupsByName } from "../../hooks/useGroups";
+import useHWID from "../../hooks/useHWID";
 
 function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
-
+    const [isEditMode, setIsEditMode] = useState(false);
+    const group = account?.group ? useGroupsByName(account?.group) : null;
+    
     const settings = useUserSettings();
+    const hwid = useHWID();    
     const theme = useTheme();
 
     useEffect(() => {
@@ -85,15 +93,16 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                 </Typography>
             </Box>
             {/* 2. */}
-            <Box sx={{
-                backgroundColor: theme.palette.background.default,
-                width: '100%',
-                height: '100%',
-                pr: 2,
-                pl: 2,
-                pb: 2,
-            }}>
-
+            <Box
+                sx={{
+                    backgroundColor: theme.palette.background.default,
+                    width: '100%',
+                    height: '100%',
+                    pr: 2,
+                    pl: 2,
+                    pb: 2,
+                }}
+            >
                 <Box
                     sx={{
                         display: 'flex',
@@ -103,7 +112,50 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                         width: '100%',
                     }}
                 >
-                    <ComponentBox headline="Details" icon={<ArticleOutlinedIcon />} sx={{ width: '100%' }}>
+                    <ComponentBox
+                        headline={!account.group ?
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+                                    Details
+                                </Typography>
+                                <Box sx={{ position: 'absolute', right: 0, marginRight: '12px' }} >
+                                    <Zoom direction="left" in={isEditMode} mountOnEnter unmountOnExit>
+                                        <Tooltip title="Save account">
+                                            <IconButton
+                                                sx={{ color: theme.palette.text.primary }}
+                                                size="small"
+                                                onClick={() => { setIsEditMode(!isEditMode); }}
+                                            >
+                                                <SaveOutlinedIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Zoom>
+                                    <Tooltip title={isEditMode ? "Cancel" : "Edit account"}>
+                                        <IconButton
+                                            sx={{ color: theme.palette.text.primary }}
+                                            size="small"
+                                            onClick={() => { setIsEditMode(!isEditMode); }}
+                                        >
+                                            {isEditMode ? <CloseIcon /> : <EditOutlinedIcon />}
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+
+                                {/* <GroupUI
+                                    group={{
+                                        name: 'EAM',
+                                        color: '0',
+                                        icon: 'AddCircleOutline',
+                                        padding: '0%',
+                                    }}
+                                    onClick={(group) => { console.log("clicked", group) }}
+                                /> */}
+                            </Box>
+                            : "Details"}
+                        icon={<ArticleOutlinedIcon />}
+                        sx={{ width: '100%' }}
+                    >
+
                         <TableContainer component={Box} sx={{ borderRadius: 0 }}>
                             <Table
                                 sx={{
@@ -119,11 +171,28 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TextTableRow key='name' keyValue={"Accountname"} value={account.name} />
-                                    <TextTableRow key='email' keyValue={"Email"} value={account.email} />
+                                    <GroupRow
+                                        key='group'
+                                        group={
+                                            //     {
+                                            //     name: 'EAM',
+                                            //     color: '0',
+                                            //     icon: 'AddCircleOutline',
+                                            //     padding: '0%',
+                                            // }
+                                            group
+                                        } />
+                                    <TextTableRow key='name' keyValue={"Accountname"} value={account.name} allowCopy={true} />
+                                    <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true}/>
                                     <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />
                                     <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
-                                    <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"} value={account.performDailyLogin} />
+                                    <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
+                                        value={account.performDailyLogin}
+                                        onChange={(event) => {
+                                            const acc = { ...account, performDailyLogin: event.target.checked };
+                                            onAccountChanged(acc);
+                                        }}
+                                    />
                                     <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />
                                 </TableBody>
                             </Table>
@@ -140,8 +209,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                             onClick={() => {
                                 let acc = { ...account };
                                 let hasChanged = false;
-                                //TODO: Fetch acctual client hwid
-                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e")
+                                postAccountVerify(account, hwid)
                                     .then(async (res) => {
                                         if (acc.data === undefined) acc.data = { account: null, charList: null };
                                         acc.data.account = res.Account;
@@ -184,11 +252,10 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                             startIcon={<RefreshOutlinedIcon />}
                             color="secondary"
                             onClick={() => {
-                                //TODO: Fetch acctual client hwid
                                 let hasChanged = false;
-                                postAccountVerify(account, "546d21e4a644715a33fb007a98371ada4295e29e")
+                                postAccountVerify(account, hwid)
                                     .then(async (res) => {
-                                        if (acc && acc.data === undefined) acc.data = { account: null, charList: null };                                        
+                                        if (acc && acc.data === undefined) acc.data = { account: null, charList: null };
                                         acc.data.account = res.Account;
                                         hasChanged = true;
                                         postCharList(res.Account.AccessToken)
@@ -221,7 +288,9 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                             '&:hover': {
                                 backgroundColor: theme => theme.palette.error.main,
                             },
-                        }}>
+                        }}
+                        onClick={() => {}}
+                        >
                             delete account
                         </StyledButton>
                     </Grid>
