@@ -303,7 +303,8 @@ fn main() {
             create_folder,
             unpack_and_move_game_update_files,
             perform_game_update,
-            send_post_request_with_form_url_encoded_data
+            send_post_request_with_form_url_encoded_data,
+            get_device_unique_identifier
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -332,6 +333,46 @@ async fn send_post_request_with_form_url_encoded_data(
 
     let body = res.text().await.map_err(|e| e.to_string())?;
     Ok(body)
+}
+
+#[tauri::command]
+async fn get_device_unique_identifier() -> Result<String, String> {
+    use wmi::{COMLibrary, WMIConnection, Variant};
+    use sha1::{Sha1, Digest};
+    use std::collections::HashMap;
+
+    let com_con = COMLibrary::new().map_err(|e| e.to_string())?;
+    let wmi_con = WMIConnection::new(com_con.into()).map_err(|e| e.to_string())?;
+
+    let mut concat_str = String::new();
+
+    let baseboard: Vec<HashMap<String, Variant>> = wmi_con.raw_query("SELECT * FROM Win32_BaseBoard").map_err(|e| e.to_string())?;
+    for obj in baseboard {
+        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
+            concat_str.push_str(&serial);
+        }
+    }
+
+    let bios: Vec<HashMap<String, Variant>> = wmi_con.raw_query("SELECT * FROM Win32_BIOS").map_err(|e| e.to_string())?;
+    for obj in bios {
+        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
+            concat_str.push_str(&serial);
+        }
+    }
+
+    let os: Vec<HashMap<String, Variant>> = wmi_con.raw_query("SELECT * FROM Win32_OperatingSystem").map_err(|e| e.to_string())?;
+    for obj in os {
+        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
+            concat_str.push_str(&serial);
+        }
+    }
+
+    let mut hasher = Sha1::new();
+    hasher.update(concat_str);
+    let result = hasher.finalize();
+    let hashed = format!("{:x}", result);
+
+    Ok(hashed)
 }
 
 // FOR WINDOWS WITH TRANSPARENCY / BLUR / ACRYLIC
