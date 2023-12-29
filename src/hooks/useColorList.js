@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTheme } from '@emotion/react';
 
-const useColorList = () => {
+const useColorList = (index) => {
     const theme = useTheme();
 
     const colorList = useMemo(
@@ -16,7 +16,7 @@ const useColorList = () => {
         [theme]
     );
 
-    return colorList;
+    return index ? colorList[index >= colorList.length ? index % colorList.length : index] : colorList;
 };
 
 export default useColorList;
