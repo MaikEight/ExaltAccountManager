@@ -34,6 +34,15 @@ export const lightTheme = createTheme({
     },
     shadows: [
         "none",
-        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px"
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
+        "rgba(58, 53, 65, 0.1) 0px 2px 10px 0px",
     ]
 });
