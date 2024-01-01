@@ -7,12 +7,12 @@ async function readFileUTF8(filePath, parseAsJSON = false) {
             return parseAsJSON ? JSON.parse(stringContent) : stringContent;
         }
         console.log("File does not exist:", filePath);
-        return null;
     } catch (error) {
         if(error.includes('os error 2')) return;
 
         console.error('Error reading file:',filePath, error);
     }
+    return null;
 };
 
 export { readFileUTF8 };
