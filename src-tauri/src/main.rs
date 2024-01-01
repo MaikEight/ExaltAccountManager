@@ -9,22 +9,18 @@
 
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
-use reqwest::get;
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE};
-use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::error::Error as StdError;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 use std::path::PathBuf;
 use tauri::Error;
-use tauri::Manager;
 use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
 use walkdir::WalkDir;
-use window_vibrancy::apply_blur;
+// use window_vibrancy::apply_blur;
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 // #[tauri::command]
 // fn greet(name: &str) -> String {
