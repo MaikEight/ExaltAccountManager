@@ -16,7 +16,7 @@ const useColorList = (index) => {
         [theme]
     );
 
-    return index ? colorList[index >= colorList.length ? index % colorList.length : index] : colorList;
+    return index !== undefined ? colorList[index >= colorList.length ? index % colorList.length : index] : colorList;
 };
 
 export default useColorList;
