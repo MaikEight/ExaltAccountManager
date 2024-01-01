@@ -13,7 +13,7 @@ function ServerTableRow({ keyValue, value, ...rest }) {
                     {keyValue}
                 </Typography>
             </PaddedTableCell>
-            <PaddedTableCell>
+            <PaddedTableCell align="left">
                 <ServerChip params={params} sx={{ ml: -0.15 }} />
             </PaddedTableCell>
         </TableRow>
