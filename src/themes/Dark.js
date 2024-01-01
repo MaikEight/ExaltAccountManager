@@ -33,6 +33,15 @@ export const darkTheme = createTheme({
     },
     shadows: [
         "none",
-        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px"
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
+        "rgba(19, 17, 32, 0.1) 0px 2px 10px 0px",
     ]
 });
