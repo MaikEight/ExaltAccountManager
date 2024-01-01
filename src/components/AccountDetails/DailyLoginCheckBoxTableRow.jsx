@@ -13,7 +13,7 @@ function DailyLoginCheckBoxTableRow({ keyValue, value, onChange, ...rest }) {
                     {keyValue}
                 </Typography>
             </PaddedTableCell>
-            <PaddedTableCell>
+            <PaddedTableCell align="left">
                 <DailyLoginCheckbox params={params} onChange={onChange} sx={{
                     ml: -1.5
                 }} />
