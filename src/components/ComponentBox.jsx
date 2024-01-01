@@ -21,7 +21,6 @@ function ComponentBox({ children, isLoading, headline, icon, sx, innerSx }) {
         >
             {
                 isLoading &&
-
                 <LinearProgress
                     sx={{
                         position: 'absolute',
