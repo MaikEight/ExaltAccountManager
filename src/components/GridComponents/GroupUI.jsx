@@ -2,13 +2,12 @@ import { Box, Tooltip } from "@mui/material";
 import * as Icons from "@mui/icons-material";
 import useColorList from "../../hooks/useColorList";
 
-function GroupUI({ group, onClick }) {
+function GroupUI({ group, onClick, innerSx }) {
     if (!group) return null;
 
-    console.log(group);
     const Icon = group.icon ? Icons[group.icon] : null;
     const color = useColorList(group.color);
-    const padding = group.padding || '15%';
+    const padding = group.padding || '10%';
 
     return (
         <Tooltip
@@ -37,6 +36,7 @@ function GroupUI({ group, onClick }) {
                     borderRadius: '50%',
                     backgroundColor: color.background,
                     cursor: onClick ? 'pointer' : 'default',
+                    ...innerSx
                 }}
                 onClick={onClick ? () => onClick(group) : null}
             >
