@@ -1,6 +1,6 @@
 import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
 import { Unstable_Grid2 as Grid } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import ComponentBox from "../ComponentBox";
 import PaddedTableCell from "./PaddedTableCell";
@@ -20,20 +20,26 @@ import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import GroupRow from "./GroupRow";
-import { useGroupsByName } from "../../hooks/useGroups";
 import useHWID from "../../hooks/useHWID";
+import GroupsContext from "../../contexts/GroupsContext";
 
 function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
+    const [accountOrg, setAccountOrg] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const group = account?.group ? useGroupsByName(account?.group) : null;
+    const groupsContext = useContext(GroupsContext);
+    const groups = groupsContext.groups;
+    const group = account?.group ? groups.find((g) => g.name === account.group) : null;
     
     const settings = useUserSettings();
-    const hwid = useHWID();    
+    const hwid = useHWID();
     const theme = useTheme();
 
     useEffect(() => {
+        setAccountOrg(acc);
+        setIsEditMode(false);
+        console.log("acc", acc );
         if (acc) {
             setAccount(acc);
             const timeoutId = setTimeout(() => {
@@ -50,6 +56,14 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
         return () => clearTimeout(timeoutId);
     }, [acc]);
 
+    useEffect(() => {
+        console.log("isEditMode", isEditMode);
+    }, [isEditMode]);
+
+    const handleAccountEdit = (acc) => {
+        setAccount(acc);
+    };
+
     if (!account) {
         return null;
     }
@@ -62,7 +76,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                 '& .MuiDrawer-paper': {
                     width: 500,
                     boxSizing: 'border-box',
-                    backgroundColor: theme.palette.background.paperLight,
+                    backgroundColor: theme.palette.background.default,
                     border: 'none',
                     borderRadius: '6px 0px 0px 6px',
                     boxShadow: ' 0px 0px 20px 10px rgba(0,0,0,0.2)',
@@ -80,7 +94,20 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                 */
             }
             {/* 1. */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center', height: 45, pt: 0.5 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    height: 45,
+                    pt: 0.5,
+                    backgroundColor: theme.palette.background.paperLight,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                }}
+            >
                 <IconButton
                     sx={{ position: 'absolute', left: 16, marginLeft: 0, marginRight: 2 }}
                     size="small"
@@ -92,210 +119,212 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                     Account details
                 </Typography>
             </Box>
-            {/* 2. */}
-            <Box
-                sx={{
-                    backgroundColor: theme.palette.background.default,
-                    width: '100%',
-                    height: '100%',
-                    pr: 2,
-                    pl: 2,
-                    pb: 2,
-                }}
-            >
+            <Box sx={{
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'auto',
+            }}>
+                {/* 2. */}
                 <Box
                     sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
                         width: '100%',
+                        height: '100%',
+                        pr: 2,
+                        pl: 2,
+                        pb: 2,
                     }}
                 >
-                    <ComponentBox
-                        headline={!account.group ?
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                                    Details
-                                </Typography>
-                                <Box sx={{ position: 'absolute', right: 0, marginRight: '12px' }} >
-                                    <Zoom direction="left" in={isEditMode} mountOnEnter unmountOnExit>
-                                        <Tooltip title="Save account">
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '100%',
+                        }}
+                    >
+                        <ComponentBox
+                            headline={
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+                                        Details
+                                    </Typography>
+                                    <Box sx={{ position: 'absolute', right: 0, marginRight: '12px' }} >
+                                        <Zoom direction="left" in={isEditMode} mountOnEnter unmountOnExit>
+                                            <Tooltip title="Save account">
+                                                <IconButton
+                                                    sx={{ color: theme.palette.text.primary }}
+                                                    size="small"
+                                                    onClick={() => {
+                                                        onAccountChanged(account);
+                                                        setIsEditMode(!isEditMode);
+                                                    }}
+                                                >
+                                                    <SaveOutlinedIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Zoom>
+                                        <Tooltip title={isEditMode ? "Cancel" : "Edit account"}>
                                             <IconButton
                                                 sx={{ color: theme.palette.text.primary }}
                                                 size="small"
-                                                onClick={() => { setIsEditMode(!isEditMode); }}
+                                                onClick={() => {
+                                                    if (isEditMode) {
+                                                        setAccount(accountOrg);
+                                                    }
+                                                    setIsEditMode(!isEditMode);
+                                                }}
                                             >
-                                                <SaveOutlinedIcon />
+                                                {isEditMode ? <CloseIcon /> : <EditOutlinedIcon />}
                                             </IconButton>
                                         </Tooltip>
-                                    </Zoom>
-                                    <Tooltip title={isEditMode ? "Cancel" : "Edit account"}>
-                                        <IconButton
-                                            sx={{ color: theme.palette.text.primary }}
-                                            size="small"
-                                            onClick={() => { setIsEditMode(!isEditMode); }}
-                                        >
-                                            {isEditMode ? <CloseIcon /> : <EditOutlinedIcon />}
-                                        </IconButton>
-                                    </Tooltip>
-                                </Box>
+                                    </Box>
+                                </Box>}
+                            icon={<ArticleOutlinedIcon />}
+                            sx={{
+                                width: '100%',
+                                transition: 'height 0.5s',
+                            }}
+                        >
 
-                                {/* <GroupUI
-                                    group={{
-                                        name: 'EAM',
-                                        color: '0',
-                                        icon: 'AddCircleOutline',
-                                        padding: '0%',
+                            <TableContainer component={Box} sx={{ borderRadius: 0 }}>
+                                <Table
+                                    sx={{
+                                        '& tbody tr:last-child td, & tbody tr:last-child th': {
+                                            borderBottom: 'none',
+                                        },
                                     }}
-                                    onClick={(group) => { console.log("clicked", group) }}
-                                /> */}
-                            </Box>
-                            : "Details"}
-                        icon={<ArticleOutlinedIcon />}
-                        sx={{ width: '100%' }}
-                    >
+                                >
+                                    <TableHead>
+                                        <TableRow>
+                                            <PaddedTableCell>Attribute</PaddedTableCell>
+                                            <PaddedTableCell>Value</PaddedTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <GroupRow
+                                            key='group'
+                                            editMode={isEditMode}
+                                            group={group}
+                                            onChange={(value) => handleAccountEdit({ ...account, group: value })}
+                                        />
+                                        <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={true} />
+                                        <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} />
+                                        {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={account.password} onChange={(value) => handleAccountEdit({ ...account, password: value })} />}
+                                        {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
+                                        <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
+                                        <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
+                                            value={account.performDailyLogin}
+                                            onChange={(event) => {
+                                                const acc = { ...account, performDailyLogin: event.target.checked };
+                                                onAccountChanged(acc);
+                                            }}
+                                        />
+                                        {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </ComponentBox>
+                    </Box>
 
-                        <TableContainer component={Box} sx={{ borderRadius: 0 }}>
-                            <Table
-                                sx={{
-                                    '& tbody tr:last-child td, & tbody tr:last-child th': {
-                                        borderBottom: 'none',
-                                    },
+                    {/* 3. */}
+                    <Grid container spacing={2}>
+                        <Grid xs={12}>
+                            <StyledButton
+                                fullWidth={true}
+                                sx={{ height: 55 }}
+                                onClick={() => {
+                                    let acc = { ...account };
+                                    let hasChanged = false;
+                                    postAccountVerify(account, hwid)
+                                        .then(async (res) => {
+                                            if (acc.data === undefined) acc.data = { account: null, charList: null };
+                                            acc.data.account = res.Account;
+                                            hasChanged = true;
+                                            postCharList(res.Account.AccessToken)
+                                                .then((charList) => {
+                                                    console.log("charList", charList);
+                                                    acc.data.charList = charList.Chars;
+                                                    onAccountChanged(acc);
+                                                    hasChanged = false;
+                                                }).catch((err) => {
+                                                    console.error("error", err);
+                                                    if (hasChanged) {
+                                                        onAccountChanged(acc);
+                                                        hasChanged = false;
+                                                    }
+                                                });
+
+                                            const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${acc.serverName}}`;
+                                            tauri.invoke(
+                                                "start_application",
+                                                { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
+                                            );
+                                            acc.lastRefresh = acc.lastLogin = new Date().toISOString();
+                                        })
+                                        .then(() => {
+                                            if (hasChanged) {
+                                                acc.lastRefresh = new Date().toISOString();
+                                                onAccountChanged(acc);
+                                            }
+                                        });
                                 }}
                             >
-                                <TableHead>
-                                    <TableRow>
-                                        <PaddedTableCell>Attribute</PaddedTableCell>
-                                        <PaddedTableCell>Value</PaddedTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <GroupRow
-                                        key='group'
-                                        group={
-                                            //     {
-                                            //     name: 'EAM',
-                                            //     color: '0',
-                                            //     icon: 'AddCircleOutline',
-                                            //     padding: '0%',
-                                            // }
-                                            group
-                                        } />
-                                    <TextTableRow key='name' keyValue={"Accountname"} value={account.name} allowCopy={true} />
-                                    <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true}/>
-                                    <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />
-                                    <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
-                                    <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
-                                        value={account.performDailyLogin}
-                                        onChange={(event) => {
-                                            const acc = { ...account, performDailyLogin: event.target.checked };
-                                            onAccountChanged(acc);
-                                        }}
-                                    />
-                                    <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </ComponentBox>
+                                <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />start game
+                            </StyledButton>
+                        </Grid>
+                        <Grid xs={7}>
+                            <StyledButton
+                                fullWidth={true}
+                                startIcon={<RefreshOutlinedIcon />}
+                                color="secondary"
+                                onClick={() => {
+                                    let hasChanged = false;
+                                    postAccountVerify(account, hwid)
+                                        .then(async (res) => {
+                                            if (acc && acc.data === undefined) acc.data = { account: null, charList: null };
+                                            acc.data.account = res.Account;
+                                            hasChanged = true;
+                                            postCharList(res.Account.AccessToken)
+                                                .then((charList) => {
+                                                    console.log("charList", charList);
+                                                    acc.data.charList = charList.Chars;
+                                                    onAccountChanged(acc);
+                                                    hasChanged = false;
+                                                }).catch((err) => {
+                                                    console.error("error", err);
+                                                    if (hasChanged) {
+                                                        onAccountChanged(acc);
+                                                        hasChanged = false;
+                                                    }
+                                                });
+                                        })
+                                        .then(() => {
+                                            if (hasChanged) {
+                                                acc.lastRefresh = new Date().toISOString();
+                                                onAccountChanged(acc);
+                                            }
+                                        });
+                                }}
+                            >
+                                refresh data
+                            </StyledButton>
+                        </Grid>
+                        <Grid xs={5}>
+                            <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
+                                '&:hover': {
+                                    backgroundColor: theme => theme.palette.error.main,
+                                },
+                            }}
+                                onClick={() => { }}
+                            >
+                                delete account
+                            </StyledButton>
+                        </Grid>
+
+                    </Grid>
                 </Box>
-
-                {/* 3. */}
-                <Grid container spacing={2}>
-                    <Grid xs={12}>
-                        <StyledButton
-                            fullWidth={true}
-                            sx={{ height: 55 }}
-                            onClick={() => {
-                                let acc = { ...account };
-                                let hasChanged = false;
-                                postAccountVerify(account, hwid)
-                                    .then(async (res) => {
-                                        if (acc.data === undefined) acc.data = { account: null, charList: null };
-                                        acc.data.account = res.Account;
-                                        hasChanged = true;
-                                        postCharList(res.Account.AccessToken)
-                                            .then((charList) => {
-                                                console.log("charList", charList);
-                                                acc.data.charList = charList.Chars;
-                                                onAccountChanged(acc);
-                                                hasChanged = false;
-                                            }).catch((err) => {
-                                                console.error("error", err);
-                                                if (hasChanged) {
-                                                    onAccountChanged(acc);
-                                                    hasChanged = false;
-                                                }
-                                            });
-
-                                        const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${acc.serverName}}`;
-                                        tauri.invoke(
-                                            "start_application",
-                                            { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
-                                        );
-                                        acc.lastRefresh = acc.lastLogin = new Date().toISOString();
-                                    })
-                                    .then(() => {
-                                        if (hasChanged) {
-                                            acc.lastRefresh = new Date().toISOString();
-                                            onAccountChanged(acc);
-                                        }
-                                    });
-                            }}
-                        >
-                            <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />start game
-                        </StyledButton>
-                    </Grid>
-                    <Grid xs={7}>
-                        <StyledButton
-                            fullWidth={true}
-                            startIcon={<RefreshOutlinedIcon />}
-                            color="secondary"
-                            onClick={() => {
-                                let hasChanged = false;
-                                postAccountVerify(account, hwid)
-                                    .then(async (res) => {
-                                        if (acc && acc.data === undefined) acc.data = { account: null, charList: null };
-                                        acc.data.account = res.Account;
-                                        hasChanged = true;
-                                        postCharList(res.Account.AccessToken)
-                                            .then((charList) => {
-                                                console.log("charList", charList);
-                                                acc.data.charList = charList.Chars;
-                                                onAccountChanged(acc);
-                                                hasChanged = false;
-                                            }).catch((err) => {
-                                                console.error("error", err);
-                                                if (hasChanged) {
-                                                    onAccountChanged(acc);
-                                                    hasChanged = false;
-                                                }
-                                            });
-                                    })
-                                    .then(() => {
-                                        if (hasChanged) {
-                                            acc.lastRefresh = new Date().toISOString();
-                                            onAccountChanged(acc);
-                                        }
-                                    });
-                            }}
-                        >
-                            refresh data
-                        </StyledButton>
-                    </Grid>
-                    <Grid xs={5}>
-                        <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
-                            '&:hover': {
-                                backgroundColor: theme => theme.palette.error.main,
-                            },
-                        }}
-                        onClick={() => {}}
-                        >
-                            delete account
-                        </StyledButton>
-                    </Grid>
-
-                </Grid>
             </Box>
         </Drawer >
     );
