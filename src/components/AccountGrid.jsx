@@ -85,8 +85,12 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
         if (search === '') return accounts;
 
         const filteredAccounts = acc.filter((account) => {
-            const { name, email, serverName } = account;
-            return name.toLowerCase().includes(search.toLowerCase()) || email.toLowerCase().includes(search.toLowerCase()) || serverName.toLowerCase().includes(search.toLowerCase());
+            const { name, email, serverName, group } = account;
+            
+            return name?.toLowerCase().includes(search.toLowerCase()) 
+                || email?.toLowerCase().includes(search.toLowerCase()) 
+                || serverName?.toLowerCase().includes(search.toLowerCase()) 
+                || group?.toLowerCase().includes(search.toLowerCase());
         });
         return filteredAccounts;
     };
