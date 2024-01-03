@@ -102,7 +102,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 1. Make sure you have .Net Framework 4.8 installed.
    
     You can get the installer directly from [Microsoft](https://support.microsoft.com/en-us/topic/microsoft-net-framework-4-8-offline-installer-for-windows-9d23f658-3b97-68ab-d013-aa3c3e7495e0).
-2. Go the latest release of EAM: [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
+2. Get the latest release of EAM: [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
 
 <br />
 
