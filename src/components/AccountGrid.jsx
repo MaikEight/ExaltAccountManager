@@ -21,7 +21,7 @@ const StyledDataGrid = styled(DataGrid)`
   }
 `;
 
-function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
+function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddNewAccount }) {
 
     const [accounts, setAccounts] = useState(acc);
     const [shownAccounts, setShownAccounts] = useState(acc);
@@ -144,7 +144,7 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged }) {
                         loadingOverlay: LinearProgress,
                     }}
                     slotProps={{
-                        toolbar: { onSearchChanged: (search) => setShownAccounts(getSearchedAccounts(search)) },
+                        toolbar: { onSearchChanged: (search) => setShownAccounts(getSearchedAccounts(search)), onAddNew: () => setShowAddNewAccount(true) },
                     }}
                 />
             </Paper>
