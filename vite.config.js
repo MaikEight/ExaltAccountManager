@@ -9,6 +9,9 @@ export default defineConfig(async () => ({
   //
   // 1. prevent vite from obscuring rust errors
   clearScreen: false,
+  optimizeDeps: {
+    include: ['@mui/material/Tooltip', '@emotion/styled', '@mui/material/Unstable_Grid2'],
+  },
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
