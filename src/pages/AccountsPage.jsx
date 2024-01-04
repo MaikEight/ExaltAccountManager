@@ -6,10 +6,12 @@ import { readFileUTF8 } from "../utils/readFileUtil";
 import AccountDetails from "../components/AccountDetails/AccountDetails";
 import { useSearchParams } from "react-router-dom";
 import { writeFileUTF8 } from "../utils/writeFileUtil";
+import AddNewAccount from "../components/AddNewAccount";
 
 function AccountsPage() {
     const [accounts, setAccounts] = useState([]);
     const [selectedAccount, setSelectedAccount] = useState(null);
+    const [showAddNewAccount, setShowAddNewAccount] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -90,8 +92,9 @@ function AccountsPage() {
                 p: 2,
             }}
         >
-            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)} />
-            <AccountDetails acc={selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)}/>
+            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)} setShowAddNewAccount={setShowAddNewAccount} />
+            <AccountDetails acc={showAddNewAccount ? null : selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)}/>
+            <AddNewAccount isOpen={showAddNewAccount} onClose={() => setShowAddNewAccount(false)} />
         </Box>
     );
 }
