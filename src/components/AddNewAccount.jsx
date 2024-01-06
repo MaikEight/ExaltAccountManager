@@ -10,6 +10,8 @@ import useColorList from "../hooks/useColorList";
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import ComponentBox from "./ComponentBox";
 import StyledButton from "./StyledButton";
+import useHWID from "../hooks/useHWID";
+import { postAccountVerify } from "../backend/decaApi";
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -29,6 +31,7 @@ function AddNewAccount({ isOpen, onClose }) {
     const [passwordEmailWrong, setPasswordEmailWrong] = useState(true);
 
     const theme = useTheme();
+    const hwid = useHWID();
     const color = useColorList(0);
 
     useEffect(() => {
@@ -60,6 +63,7 @@ function AddNewAccount({ isOpen, onClose }) {
                     <ComponentBox
                         headline="Login credentials"
                         isLoading={isLoading}
+                        icon={icons[0]}
                     >
                         <Typography variant="body2" sx={{ mb: 1 }}>
                             Enter the login credentials for the account you want to add.
@@ -98,12 +102,25 @@ function AddNewAccount({ isOpen, onClose }) {
                                         disabled={isLoginButtonDisabled()}
                                         onClick={() => {
                                             setIsLoading(true);
-                                            setTimeout(() => {
-                                                setIsLoading(false);
-                                                setActiveStep(1);
-                                                // setPasswordEmailWrong(true);
-                                                // setNewAccount({ ...newAccount, password: '' });
-                                            }, 1000);
+                                            postAccountVerify(newAccount, hwid)
+                                                .then((response) => {
+                                                    if (response.Error) {
+                                                        setPasswordEmailWrong(true);
+                                                        setNewAccount({ ...newAccount, password: '' });
+                                                        return;
+                                                    }
+                                                    if (newAccount.data === undefined) newAccount.data = { account: null, charList: null };
+                                                    newAccount.data.account = response.Account;
+                                                    setActiveStep(1);
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error);
+                                                    setPasswordEmailWrong(true);
+                                                    setNewAccount({ ...newAccount, password: '' });
+                                                })
+                                                .finally(() => {
+                                                    setIsLoading(false);
+                                                });
                                         }}
                                     >
                                         login
