@@ -8,6 +8,7 @@ import { useContext } from "react";
 import AccountsPage from "./pages/AccountsPage";
 import GameUpdaterPage from "./pages/GameUpdaterPage";
 import { GroupsContextProvider } from "./contexts/GroupsContext";
+import SettingsPage from "./pages/SettingsPage";
 
 function MainRouter() {
     const colorContext = useContext(ColorContext);
@@ -25,7 +26,7 @@ function MainRouter() {
                                     <Route path='/' element={<AccountsPage />}></Route>
                                     <Route path='/accounts' element={<AccountsPage />}></Route>
                                     <Route path='/gameUpdater' element={<GameUpdaterPage />}></Route>
-                                    <Route path='/settings' element={<div />}></Route>
+                                    <Route path='/settings' element={<SettingsPage />}></Route>
                                     <Route path='/about' element={<div />}></Route>
                                     <Route path='*' element={<AccountsPage />}></Route>
                                 </Routes>
