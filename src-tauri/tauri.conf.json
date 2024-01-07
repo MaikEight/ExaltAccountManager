@@ -15,7 +15,7 @@
       "all": false,
       "shell": {
         "all": false,
-        "open": true
+        "open": true        
       },
       "window": {
         "all": false,
@@ -53,6 +53,13 @@
         "scope": [
           "https://*"
         ]
+      },
+      "dialog": {
+        "all": true, 
+        "ask": true, 
+        "confirm": true, 
+        "message": true, 
+        "open": true
       }
     },
     "bundle": {
