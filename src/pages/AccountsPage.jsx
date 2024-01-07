@@ -65,24 +65,36 @@ function AccountsPage() {
         }
     }
 
-    const updateAccount = (updatedAccount) => {
-        
-        const updatedAccounts = accounts.map((account) => {
+    const getNextUniqueAccountId = () => {
+        let nextId = 1;
+        while (accounts.find((account) => account.id === nextId)) {
+            nextId++;
+        }
+        return nextId;
+    }
+
+    const updateAccount = (updatedAccount, isNewAccount) => {
+
+        const updatedAccounts = !isNewAccount ? accounts.map((account) => {
             if (account.email === updatedAccount.email) {
                 return updatedAccount;
             }
             return account;
-        });
+        }) : [...accounts, { ...updatedAccount, id: getNextUniqueAccountId() }];
 
-        setAccounts(updatedAccounts);
-        ACCOUNTS_FILE_PATH()
-            .then((filePath) => {
-                writeFileUTF8(filePath, updatedAccounts, true);
-            });
-        
+        saveAccounts(updatedAccounts);
+
         if (selectedAccount && selectedAccount.email === updatedAccount.email) {
             setSelectedAccount(updatedAccount);
         }
+    };
+
+    const saveAccounts = (accs) => {
+        setAccounts(accs);
+        ACCOUNTS_FILE_PATH()
+            .then((filePath) => {
+                writeFileUTF8(filePath, accs, true);
+            });
     };
 
     return (
@@ -92,9 +104,9 @@ function AccountsPage() {
                 p: 2,
             }}
         >
-            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)} setShowAddNewAccount={setShowAddNewAccount} />
-            <AccountDetails acc={showAddNewAccount ? null : selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount)}/>
-            <AddNewAccount isOpen={showAddNewAccount} onClose={() => setShowAddNewAccount(false)} />
+            <AccountGrid acc={accounts} selected={selectedAccount} setSelected={setSelectedAccount} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount, false)} setShowAddNewAccount={setShowAddNewAccount} />
+            <AccountDetails acc={showAddNewAccount ? null : selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount, false)} onAccountDeleted={(email) => saveAccounts(accounts.map((a) => a.email !== email ? a : null).filter((a) => a !== null)) } />
+            <AddNewAccount isOpen={showAddNewAccount} onClose={() => setShowAddNewAccount(false)} onSave={(newAccount) => updateAccount(newAccount, true)} />
         </Box>
     );
 }
