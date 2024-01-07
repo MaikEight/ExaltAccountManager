@@ -17,7 +17,7 @@ function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
     const theme = useTheme();
-    const colorContext = useContext(ColorContext);
+    
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,12 +36,6 @@ function Sidebar({ children }) {
             action: () => setSelectedIndex(0),
             navigate: '/accounts'
         },
-        // {
-        //     name: 'News',
-        //     icon: <NewspaperOutlinedIcon />,
-        //     action: () => setSelectedIndex(1),
-        //     navigate: '/news'
-        // },
         {
             name: 'Realm Updater',
             icon: ( 
@@ -61,7 +55,7 @@ function Sidebar({ children }) {
         {
             name: 'About',
             icon: <InfoOutlinedIcon />,
-            action: () => { setSelectedIndex(3); colorContext.toggleColorMode(); },
+            action: () => setSelectedIndex(3),
             navigate: '/about'
         },
     ];
