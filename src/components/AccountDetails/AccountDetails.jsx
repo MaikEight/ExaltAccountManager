@@ -1,6 +1,6 @@
 import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
 import { Unstable_Grid2 as Grid } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import ComponentBox from "../ComponentBox";
 import PaddedTableCell from "./PaddedTableCell";
@@ -23,7 +23,7 @@ import GroupRow from "./GroupRow";
 import useHWID from "../../hooks/useHWID";
 import GroupsContext from "../../contexts/GroupsContext";
 
-function AccountDetails({ acc, onClose, onAccountChanged }) {
+function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     const [account, setAccount] = useState(null);
     const [accountOrg, setAccountOrg] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -119,12 +119,14 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                     Account details
                 </Typography>
             </Box>
-            <Box sx={{
+            <Box 
+            sx={{
                 flexGrow: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'auto',
-            }}>
+            }}
+            >
                 {/* 2. */}
                 <Box
                     sx={{
@@ -198,7 +200,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                 >
                                     <TableHead>
                                         <TableRow>
-                                            <PaddedTableCell>Attribute</PaddedTableCell>
+                                            <PaddedTableCell sx={{ width: '125px' }}>Attribute</PaddedTableCell>
                                             <PaddedTableCell>Value</PaddedTableCell>
                                         </TableRow>
                                     </TableHead>
@@ -215,7 +217,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                         {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
                                         <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
                                         <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
-                                            value={account.performDailyLogin}
+                                            value={account.performDailyLogin ? account.performDailyLogin : false}
                                             onChange={(event) => {
                                                 const acc = { ...account, performDailyLogin: event.target.checked };
                                                 onAccountChanged(acc);
@@ -317,7 +319,10 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                     backgroundColor: theme => theme.palette.error.main,
                                 },
                             }}
-                                onClick={() => { }}
+                                onClick={() => {
+                                    onAccountDeleted(account.email);
+                                    onClose();
+                                 }}
                             >
                                 delete account
                             </StyledButton>
