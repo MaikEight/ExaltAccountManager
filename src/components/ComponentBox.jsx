@@ -1,6 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { Box, LinearProgress, Paper, Typography } from "@mui/material";
-function ComponentBox({ children, isLoading, headline, icon, sx, innerSx }) {
+
+function ComponentBox({ children, isLoading, headline, icon, fullwidth, sx, innerSx }) {
     const theme = useTheme();
 
     return (
@@ -16,6 +17,7 @@ function ComponentBox({ children, isLoading, headline, icon, sx, innerSx }) {
                 paddingBottom: 1.5,
                 m: 2,
                 background: theme.palette.background.paper,
+                ...(fullwidth && { width: '100%' }),
                 ...sx
             }}
         >
