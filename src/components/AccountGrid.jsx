@@ -10,6 +10,7 @@ import { formatTime } from "../utils/timeUtils";
 import CustomToolbar from "./GridComponents/CustomToolbar";
 import GroupUI from "./GridComponents/GroupUI";
 import GroupsContext from "../contexts/GroupsContext";
+import useUserSettings from "../hooks/useUserSettings";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -28,6 +29,8 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddN
     const [search, setSearch] = useState('');
     const [selectedAccount, setSelectedAccount] = useState(null);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
+
+    const settings = useUserSettings();
 
     useEffect(() => {
         setAccounts(acc);
@@ -58,7 +61,8 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddN
         if (!group) return null;
 
         return <GroupUI group={group} />;
-    };
+    };   
+    
 
     const columns = [
         { field: 'group', headerName: 'Group', width: 65, renderCell: (params) => getGroupUI(params) },
@@ -115,6 +119,11 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddN
                             borderRadius: 1.5
                         },
                     }}
+                    initialState={{
+                        columns: {
+                          columnVisibilityModel: settings.getByKeyAndSubKey('accounts', 'columnsHidden'),
+                        },
+                      }}
                     rows={shownAccounts}
                     getRowId={(row) => row.id}
                     columns={columns}
