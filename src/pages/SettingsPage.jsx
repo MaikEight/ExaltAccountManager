@@ -1,14 +1,18 @@
 
-import { Box, FormControlLabel, List, ListItem, Switch, TextField, Typography } from '@mui/material';
+import { Box, FormControlLabel, List, ListItem, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import StyledButton from './../components/StyledButton';
 import { dialog } from '@tauri-apps/api';
 import useUserSettings from '../hooks/useUserSettings';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 import ViewColumnOutlinedIcon from '@mui/icons-material/ViewColumnOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import ColorContext from '../contexts/ColorContext';
 
 function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
@@ -25,6 +29,7 @@ function SettingsPage() {
     ];
 
     const userSettings = useUserSettings();
+    const colorContext = useContext(ColorContext);
 
     useEffect(() => {
         setSettings(userSettings.get);
@@ -45,10 +50,16 @@ function SettingsPage() {
         userSettings.set(settings);
     }, [settings]);
 
+    const isDarkMode = () => {
+        if (settings.general === undefined || settings.general.theme === undefined)
+            return true;
 
+        return settings.general.theme === 'dark';
+    };
 
     return (
         <Box sx={{ width: '100%' }}>
+            {/* Game Path */}
             <ComponentBox
                 headline="Game Path"
                 icon={<FolderOutlinedIcon />}
@@ -102,17 +113,18 @@ function SettingsPage() {
                     </Box>
                 </Box>
             </ComponentBox>
+            {/* Accounts columns */}
             <ComponentBox
                 headline="Accounts columns"
                 icon={<ViewColumnOutlinedIcon />}
             >
-                <Typography variant="body2" sx={{ mb: 1 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Choose which columns should be shown in the accounts table by default.
                 </Typography>
-                <List>
+                <Box sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                     {
                         columns.map((column) =>
-                            <ListItem key={column.field}>
+                            <Box key={column.field} sx={{ flexBasis: '20%' }}>
                                 <ColumnSwitch
                                     label={column.headerName}
                                     checked={settings?.accounts?.columnsHidden[column.field] !== undefined ? settings.accounts.columnsHidden[column.field] : true}
@@ -123,9 +135,47 @@ function SettingsPage() {
                                         setSettings(newSettings);
                                     }}
                                 />
-                            </ListItem>)
+                            </Box>
+                        )
                     }
-                </List>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+                    <StyledButton
+                        color="secondary"
+                        startIcon={<VisibilityOffOutlinedIcon />}
+                        onClick={() => {
+                            let newSettings = settings;
+                            newSettings.accounts.columnsHidden = {};
+                            columns.forEach((column) => newSettings.accounts.columnsHidden[column.field] = false);
+                            setSettings(userSettings.addDefaults(newSettings));
+                        }}
+                    >
+                        hide all columns
+                    </StyledButton>
+                    <StyledButton
+                        color="secondary"
+                        startIcon={<VisibilityOutlinedIcon />}
+                        onClick={() => {
+                            let newSettings = settings;
+                            delete newSettings.accounts.columnsHidden;
+                            setSettings(userSettings.addDefaults(newSettings));
+                        }}
+                    >
+                        show all columns
+                    </StyledButton>
+                </Box>
+            </ComponentBox>
+            {/* Theme */}
+            <ComponentBox
+                headline="Theme"
+                icon={<DarkModeOutlinedIcon />}
+            >
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Choose which theme should be used... of course only dark mode is the correct choice.
+                </Typography>
+                <Tooltip title={isDarkMode() ? "Burn your eyes!" : "Come to the dark side, we have cookies!"}>
+                    <FormControlLabel sx={{ gap: 0.5 }} control={<Switch checked={isDarkMode()} onChange={() => colorContext.toggleColorMode()} />} label={'Darkmode'} />
+                </Tooltip>
             </ComponentBox>
         </Box>
     );
