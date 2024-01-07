@@ -12,6 +12,7 @@ const defaultSettings = {
     },
     game: {
         exePath: "C:\\Users\\Maik8\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe",
+        defaultServer: "Last server",
     }
 };
 
