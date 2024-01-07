@@ -51,7 +51,7 @@ function SettingsPage() {
     }, [settings]);
 
     const isDarkMode = () => {
-        if (settings.general === undefined || settings.general.theme === undefined)
+        if (settings === undefined || settings.general === undefined || settings.general.theme === undefined)
             return true;
 
         return settings.general.theme === 'dark';
