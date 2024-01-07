@@ -7,6 +7,9 @@ const defaultSettings = {
     general: {
         theme: "dark",
     },
+    accounts: {
+        columnsHidden: {},
+    },
     game: {
         exePath: "C:\\Users\\Maik8\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe",
     }
@@ -50,6 +53,7 @@ function UserSettingsProvider({ children }) {
     const userSettings = {
         get: userSettingsData,
         set: (newUserSettings) => setUserSettingsData({ ...userSettingsData, ...newUserSettings }),
+        addDefaults: newUserSettings => setUserSettingsData(expandSettings(newUserSettings)),
         getByKey: (key) => { return userSettingsData ? userSettingsData[key] : null; },
         setByKey: (key, value) => { setUserSettingsData({ ...userSettingsData, [key]: value }); },
         getByKeyAndSubKey: (key, subKey) => { return userSettingsData && userSettingsData[key] ? userSettingsData[key][subKey] : null; },
