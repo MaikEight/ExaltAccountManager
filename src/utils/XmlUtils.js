@@ -13,7 +13,13 @@ function cleanUp(convertedObject) {
     if (!convertedObject) return null;
 
     if (Array.isArray(convertedObject)) {
-        return convertedObject.map(item => item["_text"]);
+        return convertedObject.map(item => {
+            if (typeof item === 'object' && item !== null && "_text" in item) {
+                return item["_text"];
+            } else {
+                return cleanUp(item);
+            }
+        });
     }
 
     let cleanedObject = {};
@@ -21,10 +27,14 @@ function cleanUp(convertedObject) {
     for (let key in convertedObject) {
         if (convertedObject.hasOwnProperty(key)) {
             let value = convertedObject[key];
-            if (typeof value === 'object' && value !== null && "_text" in value) {
-                cleanedObject[key] = value["_text"];
+            if (typeof value === 'object' && value !== null) {
+                if ("_text" in value) {
+                    cleanedObject[key] = value["_text"];
+                } else if (Object.keys(value).length > 0) {
+                    cleanedObject[key] = cleanUp(value);
+                }
             } else {
-                cleanedObject[key] = cleanUp(value);
+                cleanedObject[key] = value;
             }
         }
     }
