@@ -6,6 +6,7 @@ function DailyLoginCheckBoxTableRow({ keyValue, value, onChange, ...rest }) {
     const params = {
         value: value,
     };
+    
     return (
         <TableRow {...rest}>
             <PaddedTableCell>

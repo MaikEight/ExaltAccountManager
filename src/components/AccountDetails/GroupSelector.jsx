@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import GroupUI from "../GridComponents/GroupUI";
 import GroupsContext from "../../contexts/GroupsContext";
 
-function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor }) {
+function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor, sx }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
     const { groups } = useContext(GroupsContext);
     const theme = useTheme();
@@ -21,7 +21,7 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'end' }}>
-            <FormControl variant="standard" sx={{ m: 1, minWidth: '175px'}}>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: '175px', ...sx}}>
                 <InputLabel id="group selector">Select a group</InputLabel>
                 <Select
                     labelId="select-a-group"
