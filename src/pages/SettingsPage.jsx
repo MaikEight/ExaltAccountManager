@@ -1,5 +1,5 @@
 
-import { Box, FormControlLabel, List, ListItem, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Chip, FormControl, FormControlLabel, InputLabel, List, ListItem, MenuItem, OutlinedInput, Select, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { useContext, useEffect, useState } from 'react';
@@ -13,6 +13,21 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import ColorContext from '../contexts/ColorContext';
+import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
+import ServerContext from '../contexts/ServerContext';
+import { useTheme } from '@emotion/react';
+import ServerChip from '../components/GridComponents/ServerChip';
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
 function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
@@ -27,9 +42,10 @@ function SettingsPage() {
         { field: 'lastRefresh', headerName: 'Last refresh' },
         { field: 'performDailyLogin', headerName: 'Daily Login' }
     ];
-
+    const theme = useTheme();
     const userSettings = useUserSettings();
     const colorContext = useContext(ColorContext);
+    const { serverList } = useContext(ServerContext);
 
     useEffect(() => {
         setSettings(userSettings.get);
@@ -58,7 +74,7 @@ function SettingsPage() {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', overflow: 'auto' }}>
             {/* Game Path */}
             <ComponentBox
                 headline="Game Path"
@@ -113,6 +129,7 @@ function SettingsPage() {
                     </Box>
                 </Box>
             </ComponentBox>
+
             {/* Accounts columns */}
             <ComponentBox
                 headline="Accounts columns"
@@ -164,7 +181,50 @@ function SettingsPage() {
                         show all columns
                     </StyledButton>
                 </Box>
+            </ComponentBox>            
+
+            {/* Default Server */}
+            <ComponentBox
+                headline="Default Server"
+                icon={<DnsOutlinedIcon />}
+            >
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Choose which server should be used by default.
+                </Typography>
+                <FormControl sx={{ m: 1, width: 175 }}>
+                    <InputLabel id="default-server-list-label">Default server</InputLabel>
+                    <Select
+                        labelId="default-server-list-label"
+                        id="default-server-list"
+                        value={settings?.game?.defaultServer ? settings.game.defaultServer : "default"}
+                        onChange={(event) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: event.target.value } }) }}
+                        input={<OutlinedInput id="select-default-server-list" label="Default server" />}
+                        renderValue={(selected) => (
+                            !console.log(selected) &&
+                                <ServerChip params={{value: selected}} />
+                        )}
+                        MenuProps={MenuProps}
+                    >
+                        {[{Name: 'Last server'}, ...serverList].map((server) => (
+                            <MenuItem
+                                key={server.DNS}
+                                value={server.Name}
+                                style={{
+                                    ...({
+                                        fontWeight:
+                                            settings?.game?.defaultServer === server.Name
+                                                ? theme.typography.fontWeightRegular
+                                                : theme.typography.fontWeightMedium,
+                                    }),
+                                }}
+                            >
+                                {server.Name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </ComponentBox>
+
             {/* Theme */}
             <ComponentBox
                 headline="Theme"
