@@ -22,15 +22,18 @@ import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import GroupRow from "./GroupRow";
 import useHWID from "../../hooks/useHWID";
 import GroupsContext from "../../contexts/GroupsContext";
+import ServerContext from "../../contexts/ServerContext";
 
 function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     const [account, setAccount] = useState(null);
     const [accountOrg, setAccountOrg] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
+    
+    const {serverList, saveServerList} = useContext(ServerContext);    
     const groupsContext = useContext(GroupsContext);
-    const groups = groupsContext.groups;
-    const group = account?.group ? groups.find((g) => g.name === account.group) : null;
+    const {groups} = groupsContext.groups;
+    const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
     
     const settings = useUserSettings();
     const hwid = useHWID();
@@ -62,6 +65,15 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
 
     const handleAccountEdit = (acc) => {
         setAccount(acc);
+    };
+
+    const getServerToJoin = () => {
+            if(acc?.serverName && acc.serverName !== "Default") {
+                return acc.serverName;
+            }
+
+            const serverToJoin = settings.getByKeyAndSubKey("game", "defaultServer");
+            return serverToJoin === "Last Server" ? "" : serverToJoin;
     };
 
     if (!account) {
@@ -246,8 +258,13 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                             hasChanged = true;
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
-                                                    console.log("charList", charList);
                                                     acc.data.charList = charList.Chars;
+
+                                                    const servers = charList.Chars.Servers.Server;
+                                                    if(servers && servers.length > 0) {
+                                                        saveServerList(servers);
+                                                    }
+
                                                     onAccountChanged(acc);
                                                     hasChanged = false;
                                                 }).catch((err) => {
@@ -258,7 +275,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                                     }
                                                 });
 
-                                            const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${acc.serverName}}`;
+                                            const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
                                             tauri.invoke(
                                                 "start_application",
                                                 { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
@@ -289,10 +306,15 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                             acc.data.account = res.Account;
                                             hasChanged = true;
                                             postCharList(res.Account.AccessToken)
-                                                .then((charList) => {
-                                                    console.log("charList", charList);
+                                                .then((charList) => {                                                    
                                                     acc.data.charList = charList.Chars;
                                                     onAccountChanged(acc);
+                                                    
+                                                    const servers = charList.Chars.Servers.Server;
+                                                    if(servers && servers.length > 0) {
+                                                        saveServerList(servers);
+                                                    }
+                                                    
                                                     hasChanged = false;
                                                 }).catch((err) => {
                                                     console.error("error", err);
