@@ -16,18 +16,23 @@ import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutl
 function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
-    const theme = useTheme();
     
     const navigate = useNavigate();
 
     useEffect(() => {
+        const intervallId = setInterval(() => {
         const updateNeeded = localStorage.getItem("updateNeeded");
 
         if (updateNeeded) {
             setIsGameUpdateAvailable(true);
             return;
         } setIsGameUpdateAvailable(false);
-    }, [localStorage.getItem("updateNeeded")]);
+        }, 1000);
+
+        return () => {
+            clearInterval(intervallId);
+        };
+    }, []);
 
     const menuItems = [
         {
