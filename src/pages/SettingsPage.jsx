@@ -181,7 +181,7 @@ function SettingsPage() {
                         show all columns
                     </StyledButton>
                 </Box>
-            </ComponentBox>            
+            </ComponentBox>
 
             {/* Default Server */}
             <ComponentBox
@@ -196,16 +196,15 @@ function SettingsPage() {
                     <Select
                         labelId="default-server-list-label"
                         id="default-server-list"
-                        value={settings?.game?.defaultServer ? settings.game.defaultServer : "default"}
+                        value={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
                         onChange={(event) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: event.target.value } }) }}
                         input={<OutlinedInput id="select-default-server-list" label="Default server" />}
                         renderValue={(selected) => (
-                            !console.log(selected) &&
-                                <ServerChip params={{value: selected}} />
+                            <ServerChip key={"key-" + selected} params={{ value: selected }} />
                         )}
                         MenuProps={MenuProps}
                     >
-                        {[{Name: 'Last server'}, ...serverList].map((server) => (
+                        {[{ Name: 'Last server', DNS: 'LAST' }, ...serverList].map((server) => (
                             <MenuItem
                                 key={server.DNS}
                                 value={server.Name}
