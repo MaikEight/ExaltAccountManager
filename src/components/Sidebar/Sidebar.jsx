@@ -74,7 +74,8 @@ function Sidebar({ children }) {
         <Box
             sx={{
                 display: "flex",
-                flexDirection: 'column'
+                flexDirection: 'column',
+                userSelect: "none"
             }}>
             <CustomToolbar
                 sx={{
