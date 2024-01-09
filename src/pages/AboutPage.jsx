@@ -1,15 +1,21 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import ComponentBox from './../components/ComponentBox';
 import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
+import { useTheme } from "@emotion/react";
+import GitHubStars from "../components/GitHubStars";
+import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
+import { useEffect } from "react";
+import StyledButton from "../components/StyledButton";
 
 function AboutPage() {
+    const theme = useTheme();
 
     return (
         <Box sx={{ width: '100%', overflow: 'auto' }}>
             <ComponentBox
                 headline="About Exalt Account Manager"
-                icon={<img src="/logo/logo_inner.png" alt="EAM Logo" width='30px' />}
+                icon={<img src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'} alt="EAM Logo" width='35px' />}
                 sx={{ userSelect: "none" }}
             >
                 <Typography >
@@ -21,11 +27,12 @@ function AboutPage() {
                 <ComponentBox
                     headline="Version"
                     icon={<NumbersOutlinedIcon />}
-                    sx={{ mr: 0, userSelect: "none" }}
+                    sx={{ mr: 0, userSelect: "none", flexGrow: 1 }}
                 >
                     <Typography>
-                        EAM V4.0.0
-                        <br />Released 20.01.2024
+                        Exalt Account Manager version 4.0.0 Beta
+                        <br />Released on 20.01.2024
+                        <br />This build is for testing purposes only.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
@@ -54,8 +61,40 @@ function AboutPage() {
                     <br />Feel free to contribute!
                 </Typography>
 
+                <GitHubStars style={{ position: 'absolute', top: '25%', right: 24 }} />
             </ComponentBox>
-
+            <ComponentBox
+                headline="Want to support this project?"
+                icon={<CelebrationOutlinedIcon />}
+                sx={{ userSelect: "none" }}
+            >
+                <Typography>
+                    If you like this project, consider supporting it by donating.
+                    <br />Every donation is greatly appreciated!
+                    <br />If you can't donate, consider starring the project on <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">GitHub</a> and leaving some feedback via {<a href="https://discord.exalt-account-manager.eu" target="_blank" rel="noopener noreferrer">Discord</a>}.
+                </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        justifyContent: 'space-evenly',
+                        alignItems: 'center',
+                        mt: 2,
+                    }}
+                >
+                    <a href="https://ko-fi.com/maik8" target="_blank" rel="noopener noreferrer">
+                        <StyledButton>
+                            <img src="/support/kofi.png" alt="Ko-fi Logo" height='30px' style={{ borderRadius: '6px' }} />Support me on Ko-fi
+                        </StyledButton>
+                    </a>
+                    <a href="https://www.buymeacoffee.com/maik8" target="_blank" rel="noopener noreferrer">
+                        <StyledButton>
+                            <img src="/support/bmc.svg" alt="Ko-fi Logo" height='30px' style={{ borderRadius: '6px' }} />Buy me a coffee
+                        </StyledButton>
+                    </a>
+                </Box>
+            </ComponentBox>
         </Box>
     );
 }
