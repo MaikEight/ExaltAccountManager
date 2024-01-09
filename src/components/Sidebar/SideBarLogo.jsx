@@ -22,13 +22,12 @@ function SideBarLogo() {
             }}
         >
             <img
-                src='/logo/logo_inner.png'
+                src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'}
                 alt="EAM-Logo"
                 style={{
                     width: 64,
                     height: 64,
                     userSelect: "none",
-                    ...(theme.palette.mode === 'light' ? { filter: "invert(70%)" } : {})
                 }}
                 draggable="false"
                 onContextMenu={handleContextMenu}
