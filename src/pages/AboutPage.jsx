@@ -71,7 +71,7 @@ function AboutPage() {
                 <Typography>
                     If you like this project, consider supporting it by donating.
                     <br />Every donation is greatly appreciated!
-                    <br />If you can't donate, consider starring the project on <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">GitHub</a> and leaving some feedback via {<a href="https://discord.exalt-account-manager.eu" target="_blank" rel="noopener noreferrer">Discord</a>}.
+                    <br />If you don't want to donate, consider starring the project on <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">GitHub</a> and leaving some feedback via {<a href="https://discord.exalt-account-manager.eu" target="_blank" rel="noopener noreferrer">Discord</a>}.
                 </Typography>
                 <Box
                     sx={{
@@ -80,7 +80,7 @@ function AboutPage() {
                         gap: 1,
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
-                        mt: 2,
+                        mt: 3,
                     }}
                 >
                     <a href="https://ko-fi.com/maik8" target="_blank" rel="noopener noreferrer">
