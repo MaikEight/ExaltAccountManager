@@ -204,22 +204,24 @@ function SettingsPage() {
                         )}
                         MenuProps={MenuProps}
                     >
-                        {[{ Name: 'Last server', DNS: 'LAST' }, ...serverList].map((server) => (
-                            <MenuItem
-                                key={server.DNS}
-                                value={server.Name}
-                                style={{
-                                    ...({
-                                        fontWeight:
-                                            settings?.game?.defaultServer === server.Name
-                                                ? theme.typography.fontWeightRegular
-                                                : theme.typography.fontWeightMedium,
-                                    }),
-                                }}
-                            >
-                                {server.Name}
-                            </MenuItem>
-                        ))}
+                        {(serverList && serverList.length > 0) ?
+                            [{ Name: 'Last server', DNS: 'LAST' }, ...serverList] :
+                            [{ Name: 'Last server', DNS: 'LAST' }].map((server) => (
+                                <MenuItem
+                                    key={server.DNS}
+                                    value={server.Name}
+                                    style={{
+                                        ...({
+                                            fontWeight:
+                                                settings?.game?.defaultServer === server.Name
+                                                    ? theme.typography.fontWeightRegular
+                                                    : theme.typography.fontWeightMedium,
+                                        }),
+                                    }}
+                                >
+                                    {server.Name}
+                                </MenuItem>
+                            ))}
                     </Select>
                 </FormControl>
             </ComponentBox>
