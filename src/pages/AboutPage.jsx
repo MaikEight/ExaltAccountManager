@@ -5,11 +5,22 @@ import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
 import { useTheme } from "@emotion/react";
 import GitHubStars from "../components/GitHubStars";
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import StyledButton from "../components/StyledButton";
 
 function AboutPage() {
+    const [showLlama, setShowLlama] = useState(false);
     const theme = useTheme();
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setShowLlama(false);
+        }, 5000);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [showLlama]);
 
     return (
         <Box sx={{ width: '100%', overflow: 'auto' }}>
@@ -44,9 +55,23 @@ function AboutPage() {
                         <Typography >
                             EAM is developed and maintained with passion by <a href="https://github.com/MaikEight" target="_blank" rel="noopener noreferrer">MaikEight</a>.
                         </Typography>
-                        <a href="https://github.com/MaikEight" target="_blank" rel="noopener noreferrer">
-                            <img src="/logo/Logo_NameOnly_2_Medium.jpg" alt="Github Logo" height='40px' style={{ borderRadius: '6px' }} />
-                        </a>
+                        <Box>
+                            {
+                                showLlama &&
+                                <img src="/logo/llama.gif" alt="Llama" height='40px' style={{ borderRadius: '6px' }} />
+                            }
+                            <img src="/logo/Logo_NameOnly_2_Medium.jpg"
+                                alt="MeikEight Logo"
+                                height='40px'
+                                style={{ borderRadius: '6px' }}
+                                onClick={() => { setShowLlama(true); }}
+                            />
+
+                            {
+                                showLlama &&
+                                <img src="/logo/llama.gif" alt="Llama" height='40px' style={{ borderRadius: '6px' }} />
+                            }
+                        </Box>
                     </Box>
 
                 </ComponentBox>
