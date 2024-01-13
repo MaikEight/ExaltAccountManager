@@ -42,7 +42,6 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     useEffect(() => {
         setAccountOrg(acc);
         setIsEditMode(false);
-        console.log("acc", acc );
         if (acc) {
             setAccount(acc);
             const timeoutId = setTimeout(() => {
@@ -58,10 +57,6 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
 
         return () => clearTimeout(timeoutId);
     }, [acc]);
-
-    useEffect(() => {
-        console.log("isEditMode", isEditMode);
-    }, [isEditMode]);
 
     const handleAccountEdit = (acc) => {
         setAccount(acc);
