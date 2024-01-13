@@ -14,7 +14,12 @@ function ServerContextProvider({ children }) {
                 readFileUTF8(path, true)
                     .then((data) => {
                         setServerList(data);
+                        return data;
                     });
+            })
+            .catch((err) => {
+                console.error(err);
+                setServerList([]);
             });
     };
 
