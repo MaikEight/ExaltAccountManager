@@ -191,6 +191,12 @@ function SettingsPage() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Choose which server should be used by default.
                 </Typography>
+                {
+                    (serverList && serverList.length > 0) ? null :
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                           To add servers to this list, please add an account and click on "Refresh data".
+                        </Typography>
+                }
                 <FormControl sx={{ m: 1, width: 175 }}>
                     <InputLabel id="default-server-list-label">Default server</InputLabel>
                     <Select
