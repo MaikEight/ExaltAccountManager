@@ -15,7 +15,7 @@ function AboutPage() {
         <Box sx={{ width: '100%', overflow: 'auto' }}>
             <ComponentBox
                 headline="About Exalt Account Manager"
-                icon={<img src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'} alt="EAM Logo" width='35px' />}
+                icon={<img src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'} alt="EAM Logo" height='35.18px' />}
                 sx={{ userSelect: "none" }}
             >
                 <Typography >
@@ -85,12 +85,12 @@ function AboutPage() {
                 >
                     <a href="https://ko-fi.com/maik8" target="_blank" rel="noopener noreferrer">
                         <StyledButton>
-                            <img src="/support/kofi.png" alt="Ko-fi Logo" height='30px' style={{ borderRadius: '6px' }} />Support me on Ko-fi
+                            <img src="/support/kofi.png" alt="Ko-fi Logo" height='30px' width='30px' style={{ borderRadius: '6px' }} />Support me on Ko-fi
                         </StyledButton>
                     </a>
                     <a href="https://www.buymeacoffee.com/maik8" target="_blank" rel="noopener noreferrer">
                         <StyledButton>
-                            <img src="/support/bmc.svg" alt="Ko-fi Logo" height='30px' style={{ borderRadius: '6px' }} />Buy me a coffee
+                            <img src="/support/bmc.svg" alt="buymeacoffee Logo" height='30px' width='20.73px' style={{ borderRadius: '6px' }} />Buy me a coffee
                         </StyledButton>
                     </a>
                 </Box>
