@@ -32,9 +32,10 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     
     const {serverList, saveServerList} = useContext(ServerContext);    
     const groupsContext = useContext(GroupsContext);
-    const {groups} = groupsContext.groups;
-    const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
+    const {groups} = groupsContext;
     
+    const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
+
     const settings = useUserSettings();
     const hwid = useHWID();
     const theme = useTheme();

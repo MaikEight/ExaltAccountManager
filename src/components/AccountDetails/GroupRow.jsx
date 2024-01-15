@@ -9,14 +9,14 @@ import GroupsContext from "../../contexts/GroupsContext";
 function GroupRow({ group, editMode, onChange, innerSx, ...rest }) {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState(null);
-    const {groups, saveGroups } = useContext(GroupsContext);
+    const { groups, saveGroups } = useContext(GroupsContext);
 
     useEffect(() => {
         setSelectedGroup(group);
     }, [group]);
 
     useEffect(() => {
-        if(!editMode) {
+        if (!editMode) {
             setShowGroupEditor(false);
         }
     }, [editMode]);
