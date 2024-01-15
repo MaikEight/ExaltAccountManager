@@ -1055,6 +1055,7 @@ dependencies = [
  "tauri-build",
  "tokio",
  "walkdir",
+ "winapi",
  "window-vibrancy",
  "wmi",
  "zip",

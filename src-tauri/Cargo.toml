@@ -31,6 +31,7 @@ anyhow = "1.0"
 curl = "0.4"
 wmi = "0.13.1"
 sha1 = "0.10.6"
+winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
