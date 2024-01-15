@@ -287,6 +287,90 @@ fn get_temp_folder_path() -> String {
     path_buf.to_string_lossy().to_string()
 }
 
+#[tauri::command]
+fn get_os_user_identity() -> String {    
+    // get_os_user_identity_impl()
+    get_os_user_identity_impl()
+}
+
+// #[cfg(target_family = "unix")]
+// fn get_os_user_identity_impl() -> String {
+//     use users::get_current_uid;
+//     get_current_uid().to_string()
+// }
+
+#[cfg(target_os = "windows")]
+extern crate winapi;
+#[cfg(target_os = "windows")]
+use std::os::raw::c_void;
+#[cfg(target_os = "windows")]
+use std::ptr::null_mut;
+#[cfg(target_os = "windows")]
+use winapi::um::processthreadsapi::OpenProcessToken;
+#[cfg(target_os = "windows")]
+use winapi::um::securitybaseapi::GetTokenInformation;
+#[cfg(target_os = "windows")]
+use winapi::shared::sddl::ConvertSidToStringSidA;
+#[cfg(target_os = "windows")]
+use winapi::um::winnt::{TokenUser, TOKEN_QUERY};
+#[cfg(target_os = "windows")]
+use winapi::um::handleapi::CloseHandle;
+
+#[cfg(target_os = "windows")]
+fn get_current_user_sid() -> Option<String> {
+    unsafe {
+        let mut token: winapi::um::winnt::HANDLE = null_mut();
+        if OpenProcessToken(winapi::um::processthreadsapi::GetCurrentProcess(), TOKEN_QUERY, &mut token) == 0 {
+            return None;
+        }
+
+        let mut return_length = 0;
+        GetTokenInformation(token, TokenUser, null_mut(), 0, &mut return_length);
+
+        let mut token_user = vec![0u8; return_length as usize];
+        if GetTokenInformation(token, TokenUser, token_user.as_mut_ptr() as *mut _, return_length, &mut return_length) == 0 {
+            CloseHandle(token);
+            return None;
+        }
+
+        CloseHandle(token);
+        let token_user = token_user.as_ptr() as *mut winapi::um::winnt::TOKEN_USER;
+        let sid = (*token_user).User.Sid;
+
+        let mut sid_str_ptr: *mut i8 = null_mut();
+        if ConvertSidToStringSidA(sid, &mut sid_str_ptr) == 0 {
+            return None;
+        }
+
+        let sid_str = std::ffi::CStr::from_ptr(sid_str_ptr).to_string_lossy().into_owned();
+        winapi::um::winbase::LocalFree(sid_str_ptr as *mut c_void);
+        Some(sid_str)
+    }
+}
+
+#[cfg(target_family = "windows")]
+fn get_os_user_identity_impl() -> String {
+    //C#: System.Security.Principal.WindowsIdentity.GetCurrent().User.Value
+    //PS: Get-WmiObject win32_useraccount -Filter "name = 'Maik8'" | Select-Object sid
+    let id = get_current_user_sid();
+    match id {
+        Some(id) => {
+            let id = id.to_string();
+            let id = format!("{}", id);
+            id
+        }
+        None => {
+            "error".to_string()
+        }
+    }
+}
+
+#[cfg(target_family = "unix")]
+fn get_os_user_identity_impl() -> String {
+    let uid = unsafe { libc::getuid() };
+    uid.to_string()
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -300,7 +384,8 @@ fn main() {
             unpack_and_move_game_update_files,
             perform_game_update,
             send_post_request_with_form_url_encoded_data,
-            get_device_unique_identifier
+            get_device_unique_identifier,
+            get_os_user_identity
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
