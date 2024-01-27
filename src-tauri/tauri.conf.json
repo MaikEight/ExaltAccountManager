@@ -51,7 +51,8 @@
         "all": true, 
         "request": true,
         "scope": [
-          "https://*"
+          "https://*",
+          "http://localhost*"
         ]
       },
       "dialog": {
