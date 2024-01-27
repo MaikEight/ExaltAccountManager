@@ -12,19 +12,6 @@ function GroupUI({ group, onClick, innerSx }) {
     return (
         <Tooltip
             title={group.name}
-            placement="bottom"
-            slotProps={{
-                popper: {
-                    modifiers: [
-                        {
-                            name: 'offset',
-                            options: {
-                                offset: [0, -10],
-                            },
-                        },
-                    ],
-                },
-            }}
         >
             <Box
                 sx={{
