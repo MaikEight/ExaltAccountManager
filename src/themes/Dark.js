@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import Zoom from '@mui/material/Zoom';
 
 export const darkTheme = createTheme({
     palette: {
@@ -8,6 +9,7 @@ export const darkTheme = createTheme({
         },
         secondary: {
             main: '#8a8d931f',
+            full: '#343148',
         },
         info: {
             main: '#16B1FF',
@@ -28,7 +30,27 @@ export const darkTheme = createTheme({
         background: {
             default: '#28243D',
             paper: '#312D4B',
-            paperLight: '#3D3759'            
+            paperLight: '#3D3759'
+        },
+    },
+    components: {
+        MuiTooltip: {
+            defaultProps: {
+                placement: "bottom",
+                TransitionComponent:Zoom,
+                slotProps: {
+                    popper: {
+                        modifiers: [
+                            {
+                                name: 'offset',
+                                options: {
+                                    offset: [0, -8],
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
         },
     },
     shadows: [
