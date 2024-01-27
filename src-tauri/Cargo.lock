@@ -1045,8 +1045,11 @@ dependencies = [
  "dirs",
  "flate2",
  "futures",
+ "hex",
  "md5",
  "mpsc",
+ "num-bigint",
+ "num-traits",
  "reqwest",
  "serde",
  "serde_json",
@@ -2332,6 +2335,17 @@ checksum = "77a8165726e8236064dbb45459242600304b42a5ea24ee2948e18e023bf7ba84"
 dependencies = [
  "overload",
  "winapi",
+]
+
+[[package]]
+name = "num-bigint"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "608e7659b5c3d7cba262d894801b9ec9d00de989e8a82bd4bef91d08da45cdc0"
+dependencies = [
+ "autocfg",
+ "num-integer",
+ "num-traits",
 ]
 
 [[package]]
