@@ -9,11 +9,19 @@ async function postAccountVerify(account, clientId) {
     const url = `${ROTMG_BASE_URL}/account/verify`;
     const data = {
         guid: account.email,
-        password: account.password,
+        ...(account.isSteam ? 
+            { 
+                steamid: account.steamId,
+                secret: account.password 
+            } : 
+            { 
+                password: account.password 
+            }
+        ),
         clientToken: clientId,
-        game_net: "Unity",
-        play_platform: "Unity",
-        game_net_user_id: ""
+        game_net: account.isSteam ? "Unity_steam" : "Unity",
+        play_platform: account.isSteam ? "Unity_steam" : "Unity",
+        game_net_user_id: account.isSteam ? account.steamId : "",
     };
 
     try {
