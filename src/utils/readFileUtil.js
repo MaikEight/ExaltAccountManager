@@ -6,7 +6,7 @@ async function readFileUTF8(filePath, parseAsJSON = false) {
             const stringContent = new TextDecoder().decode(bytes);
             return parseAsJSON ? JSON.parse(stringContent) : stringContent;
         }
-        console.log("File does not exist:", filePath);
+        console.warn("File does not exist:", filePath);
     } catch (error) {
         if(error.includes('os error 2')) return;
 
