@@ -9,7 +9,7 @@
 
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
-use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE};
+use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::File;
@@ -288,7 +288,7 @@ fn get_temp_folder_path() -> String {
 }
 
 #[tauri::command]
-fn get_os_user_identity() -> String {    
+fn get_os_user_identity() -> String {
     // get_os_user_identity_impl()
     get_os_user_identity_impl()
 }
@@ -306,21 +306,26 @@ use std::os::raw::c_void;
 #[cfg(target_os = "windows")]
 use std::ptr::null_mut;
 #[cfg(target_os = "windows")]
+use winapi::shared::sddl::ConvertSidToStringSidA;
+#[cfg(target_os = "windows")]
+use winapi::um::handleapi::CloseHandle;
+#[cfg(target_os = "windows")]
 use winapi::um::processthreadsapi::OpenProcessToken;
 #[cfg(target_os = "windows")]
 use winapi::um::securitybaseapi::GetTokenInformation;
 #[cfg(target_os = "windows")]
-use winapi::shared::sddl::ConvertSidToStringSidA;
-#[cfg(target_os = "windows")]
 use winapi::um::winnt::{TokenUser, TOKEN_QUERY};
-#[cfg(target_os = "windows")]
-use winapi::um::handleapi::CloseHandle;
 
 #[cfg(target_os = "windows")]
 fn get_current_user_sid() -> Option<String> {
     unsafe {
         let mut token: winapi::um::winnt::HANDLE = null_mut();
-        if OpenProcessToken(winapi::um::processthreadsapi::GetCurrentProcess(), TOKEN_QUERY, &mut token) == 0 {
+        if OpenProcessToken(
+            winapi::um::processthreadsapi::GetCurrentProcess(),
+            TOKEN_QUERY,
+            &mut token,
+        ) == 0
+        {
             return None;
         }
 
@@ -328,7 +333,14 @@ fn get_current_user_sid() -> Option<String> {
         GetTokenInformation(token, TokenUser, null_mut(), 0, &mut return_length);
 
         let mut token_user = vec![0u8; return_length as usize];
-        if GetTokenInformation(token, TokenUser, token_user.as_mut_ptr() as *mut _, return_length, &mut return_length) == 0 {
+        if GetTokenInformation(
+            token,
+            TokenUser,
+            token_user.as_mut_ptr() as *mut _,
+            return_length,
+            &mut return_length,
+        ) == 0
+        {
             CloseHandle(token);
             return None;
         }
@@ -342,7 +354,9 @@ fn get_current_user_sid() -> Option<String> {
             return None;
         }
 
-        let sid_str = std::ffi::CStr::from_ptr(sid_str_ptr).to_string_lossy().into_owned();
+        let sid_str = std::ffi::CStr::from_ptr(sid_str_ptr)
+            .to_string_lossy()
+            .into_owned();
         winapi::um::winbase::LocalFree(sid_str_ptr as *mut c_void);
         Some(sid_str)
     }
@@ -359,9 +373,7 @@ fn get_os_user_identity_impl() -> String {
             let id = format!("{}", id);
             id
         }
-        None => {
-            "error".to_string()
-        }
+        None => "error".to_string(),
     }
 }
 
@@ -369,6 +381,27 @@ fn get_os_user_identity_impl() -> String {
 fn get_os_user_identity_impl() -> String {
     let uid = unsafe { libc::getuid() };
     uid.to_string()
+}
+
+use md5;
+use num_bigint::{BigUint, ToBigInt};
+
+#[tauri::command]
+fn quick_hash(secret: &str) -> String {
+    let secret_bytes = secret.as_bytes();
+    let result = md5::compute(secret_bytes);
+    let secret_hash = result.0;
+    let reversed_hash: Vec<u8> = secret_hash.iter().rev().cloned().collect();
+    let big_int = BigUint::from_bytes_le(&reversed_hash);
+    let big_int = big_int.to_bigint().unwrap();
+    if big_int.sign() == num_bigint::Sign::Minus {
+        let two = BigUint::from(2u32);
+        let max_value = two.pow(128).to_bigint().unwrap();
+        let big_int = max_value + big_int;
+        format!("{:x}", big_int)
+    } else {
+        format!("{:x}", big_int)
+    }
 }
 
 fn main() {
@@ -384,8 +417,11 @@ fn main() {
             unpack_and_move_game_update_files,
             perform_game_update,
             send_post_request_with_form_url_encoded_data,
+            send_post_request_with_json_body,
+            send_patch_request_with_json_body,
             get_device_unique_identifier,
-            get_os_user_identity
+            get_os_user_identity,
+            quick_hash
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -417,31 +453,83 @@ async fn send_post_request_with_form_url_encoded_data(
 }
 
 #[tauri::command]
+async fn send_post_request_with_json_body(
+    url: String,
+    data: String,
+) -> Result<String, String> {
+    let mut headers = HeaderMap::new();
+    headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
+    headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
+    headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+
+    let client = reqwest::Client::new();
+    let res = client
+        .post(&url)
+        .headers(headers)
+        .body(data)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let body = res.text().await.map_err(|e| e.to_string())?;
+    Ok(body)
+}
+
+#[tauri::command]
+async fn send_patch_request_with_json_body(
+    url: String,
+    data: String,
+) -> Result<String, String> {
+    let mut headers = HeaderMap::new();
+    headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
+    headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
+    headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+
+    let client = reqwest::Client::new();
+    let res = client
+        .patch(&url)
+        .headers(headers)
+        .body(data)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let body = res.text().await.map_err(|e| e.to_string())?;
+    Ok(body)
+}
+
+#[tauri::command]
 async fn get_device_unique_identifier() -> Result<String, String> {
-    use wmi::{COMLibrary, WMIConnection, Variant};
-    use sha1::{Sha1, Digest};
+    use sha1::{Digest, Sha1};
     use std::collections::HashMap;
+    use wmi::{COMLibrary, Variant, WMIConnection};
 
     let com_con = COMLibrary::new().map_err(|e| e.to_string())?;
     let wmi_con = WMIConnection::new(com_con.into()).map_err(|e| e.to_string())?;
 
     let mut concat_str = String::new();
 
-    let baseboard: Vec<HashMap<String, Variant>> = wmi_con.raw_query("SELECT * FROM Win32_BaseBoard").map_err(|e| e.to_string())?;
+    let baseboard: Vec<HashMap<String, Variant>> = wmi_con
+        .raw_query("SELECT * FROM Win32_BaseBoard")
+        .map_err(|e| e.to_string())?;
     for obj in baseboard {
         if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
             concat_str.push_str(&serial);
         }
     }
 
-    let bios: Vec<HashMap<String, Variant>> = wmi_con.raw_query("SELECT * FROM Win32_BIOS").map_err(|e| e.to_string())?;
+    let bios: Vec<HashMap<String, Variant>> = wmi_con
+        .raw_query("SELECT * FROM Win32_BIOS")
+        .map_err(|e| e.to_string())?;
     for obj in bios {
         if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
             concat_str.push_str(&serial);
         }
     }
 
-    let os: Vec<HashMap<String, Variant>> = wmi_con.raw_query("SELECT * FROM Win32_OperatingSystem").map_err(|e| e.to_string())?;
+    let os: Vec<HashMap<String, Variant>> = wmi_con
+        .raw_query("SELECT * FROM Win32_OperatingSystem")
+        .map_err(|e| e.to_string())?;
     for obj in os {
         if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
             concat_str.push_str(&serial);
