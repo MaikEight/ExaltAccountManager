@@ -20,17 +20,16 @@
     "axios": "^1.6.2",
     "browserify": "^17.0.0",
     "date-fns": "^2.30.0",
-    "fs.promises": "^0.1.2",
     "hash-string": "^1.0.0",
     "lodash": "^4.17.21",
-    "pako": "^2.1.0",
+    "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0",
     "react-window": "^1.8.10",
+    "stream-browserify": "^3.0.0",
     "styled-components": "^6.1.1",
-    "xml-js": "^1.6.11",
-    "xml2js": "^0.6.2"
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.6",
