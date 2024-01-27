@@ -1,11 +1,13 @@
-import { IconButton, InputAdornment, TableCell, TextField } from "@mui/material";
+import { IconButton, TableCell, TextField, Tooltip } from "@mui/material";
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useEffect, useState } from "react";
+import useSnack from "../../hooks/useSnack";
 
-function PaddedTableCell({ children, sx, isEditMode, isPassword, onChange, allowCopy, ...props }) {
+function PaddedTableCell({ children, sx, isEditMode, isPassword, onChange, allowCopy, copyHint, ...props }) {
     const [showPassword, setShowPassword] = useState(false);
+    const { showSnackbar } = useSnack();
 
     useEffect(() => {
         setShowPassword(false);
@@ -49,19 +51,23 @@ function PaddedTableCell({ children, sx, isEditMode, isPassword, onChange, allow
             }
             {
                 allowCopy && !isEditMode ?
-                    <IconButton
-                        size="small"
-                        sx={{
-                            ml: 0.5
-                        }}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            console.log(children);
-                            navigator.clipboard.writeText(children.props.children);
-                        }}
+                    <Tooltip
+                        title="Copy to clipboard"
                     >
-                        <ContentCopyOutlinedIcon fontSize="small" />
-                    </IconButton>
+                        <IconButton
+                            size="small"
+                            sx={{
+                                ml: 0.5
+                            }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(children.props.children);
+                                showSnackbar(`Copied${copyHint ? ' ' + copyHint : ''} to clipboard`);
+                            }}
+                        >
+                            <ContentCopyOutlinedIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
                     : null
             }
         </TableCell>
