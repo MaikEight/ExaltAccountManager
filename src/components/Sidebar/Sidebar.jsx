@@ -1,39 +1,44 @@
-import { Badge, Box, IconButton, List, Tooltip, Typography } from "@mui/material";
+import { Badge, Box, IconButton, List, Tooltip } from "@mui/material";
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SidebarButton from "./SidebarButton";
-import { useContext, useEffect, useState } from "react";
-import { useTheme } from '@mui/system';
-import ColorContext from '../../contexts/ColorContext';
+import { useEffect, useState } from "react";
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 import { useNavigate } from "react-router-dom";
 import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutlined';
-import { APP_VERSION } from "../../constants";
+import useSnack from "../../hooks/useSnack";
 
 
 function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
 
+    const { showSnackbar } = useSnack();
     const navigate = useNavigate();
 
     useEffect(() => {
         const intervallId = setInterval(() => {
-            const updateNeeded = localStorage.getItem("updateNeeded");
+            const updateNeeded = localStorage.getItem("updateNeeded") === 'true';
 
-            if (updateNeeded) {
+            if (updateNeeded && !isGameUpdateAvailable) {
                 setIsGameUpdateAvailable(true);
                 return;
-            } setIsGameUpdateAvailable(false);
+            }
+            setIsGameUpdateAvailable(false);
         }, 1000);
 
         return () => {
             clearInterval(intervallId);
         };
     }, []);
+
+    useEffect(() => {
+        if (isGameUpdateAvailable)
+            showSnackbar('A new game update is available!');
+    }, [isGameUpdateAvailable]);
 
     const menuItems = [
         {
