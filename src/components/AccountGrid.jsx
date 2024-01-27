@@ -11,6 +11,7 @@ import CustomToolbar from "./GridComponents/CustomToolbar";
 import GroupUI from "./GridComponents/GroupUI";
 import GroupsContext from "../contexts/GroupsContext";
 import useUserSettings from "../hooks/useUserSettings";
+import useAccounts from "../hooks/useAccounts";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -22,33 +23,22 @@ const StyledDataGrid = styled(DataGrid)`
   }
 `;
 
-function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddNewAccount }) {
-
-    const [accounts, setAccounts] = useState(acc);
-    const [shownAccounts, setShownAccounts] = useState(acc);
-    const [search, setSearch] = useState('');
-    const [selectedAccount, setSelectedAccount] = useState(null);
+function AccountGrid({ setShowAddNewAccount }) {
+    const { accounts, selectedAccount, setSelectedAccount, updateAccount } = useAccounts();
+    
+    const [shownAccounts, setShownAccounts] = useState(accounts);
+    const [search, setSearch] = useState('');    
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
 
-    const settings = useUserSettings();
+    const settings = useUserSettings();    
 
     useEffect(() => {
-        setAccounts(acc);
-    }, [acc]);
-
-    useEffect(() => {
-        setShownAccounts(getSearchedAccounts(search));
+        setShownAccounts(getSearchedAccounts());
     }, [accounts]);
 
     useEffect(() => {
-        if (selected === selectedAccount) return;
-
-        setSelectedAccount(selected);
-    }, [selected]);
-
-    useEffect(() => {
-        setSelected(selectedAccount);
-    }, [selectedAccount]);
+        setShownAccounts(getSearchedAccounts());
+    }, [search]);
 
     const theme = useTheme();
     const { groups } = useContext(GroupsContext);
@@ -76,7 +66,7 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddN
 
     const handleDailyLoginCheckboxChange = (event, params) => {
         const updatedAccount = { ...accounts.find((account) => account.id === params.id), performDailyLogin: event.target.checked };
-        onAccountChanged(updatedAccount);
+        updateAccount(updatedAccount, false);
     };
 
     const handleCellClick = (params, event) => {
@@ -85,22 +75,21 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddN
         }
     };
 
-    const getSearchedAccounts = (search) => {
+    const getSearchedAccounts = () => {
         if (search === '') return accounts;
 
-        const filteredAccounts = acc.filter((account) => {
+        const filteredAccounts = accounts.filter((account) => {
             const { name, email, serverName, group } = account;
             
             return name?.toLowerCase().includes(search.toLowerCase()) 
                 || email?.toLowerCase().includes(search.toLowerCase()) 
                 || serverName?.toLowerCase().includes(search.toLowerCase()) 
                 || group?.toLowerCase().includes(search.toLowerCase());
-        });
+        }); 
         return filteredAccounts;
     };
 
     return (
-        <>
             <Paper sx={{ height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1.5, background: theme.palette.background.paper, }}>
                 <StyledDataGrid
                     sx={{
@@ -153,11 +142,10 @@ function AccountGrid({ acc, selected, setSelected, onAccountChanged, setShowAddN
                         loadingOverlay: LinearProgress,
                     }}
                     slotProps={{
-                        toolbar: { onSearchChanged: (search) => setShownAccounts(getSearchedAccounts(search)), onAddNew: () => setShowAddNewAccount(true) },
+                        toolbar: { onSearchChanged: (search) => setSearch(search), onAddNew: () => setShowAddNewAccount(true) },
                     }}
                 />
             </Paper>
-        </>
     );
 }
 
