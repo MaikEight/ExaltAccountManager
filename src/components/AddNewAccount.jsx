@@ -1,4 +1,4 @@
-import { Table, Box, Checkbox, Drawer, FormControlLabel, IconButton, Step, StepIcon, StepLabel, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Table, Box, Checkbox, Drawer, FormControlLabel, IconButton, Step, StepLabel, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 import Stepper from '@mui/material/Stepper';
 import { useContext, useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,6 +18,7 @@ import GroupRow from "./AccountDetails/GroupRow";
 import TextTableRow from "./AccountDetails/TextTableRow";
 import DailyLoginCheckBoxTableRow from "./AccountDetails/DailyLoginCheckBoxTableRow";
 import PaddedTableCell from "./AccountDetails/PaddedTableCell";
+import useAccounts from "../hooks/useAccounts";
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -26,7 +27,9 @@ const icons = [
     <HowToRegOutlinedIcon />,
 ];
 
-function AddNewAccount({ isOpen, onClose, onSave }) {
+function AddNewAccount({ isOpen, onClose }) {
+    const { accounts, updateAccount } = useAccounts();
+
     const [activeStep, setActiveStep] = useState(0);
     const [skipped, setSkipped] = useState(new Set([]));
     const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +65,10 @@ function AddNewAccount({ isOpen, onClose, onSave }) {
         return skipped.has(step);
     };
 
-    const isLoginButtonDisabled = () => newAccount.email.length < 3 || !newAccount.email.includes('@') || newAccount.password.length < 3 || isLoading;
+    const isLoginButtonDisabled = () => newAccount.email.length < 3 || !(newAccount.email.includes('@') || newAccount.email.includes('steamworks:')) || newAccount.password.length < 3 || accountAlreadyExists() || isLoading;
+
+    const accountAlreadyExists = () => accounts.find((account) => account.email === newAccount.email) !== undefined;
+
 
     const getFooterButtons = (backButtonText, nextButtontext, onClickBack, onClickNext,) => {
         return (<Box
@@ -107,45 +113,40 @@ function AddNewAccount({ isOpen, onClose, onSave }) {
                                 mb: 1.5,
                             }}
                         >
-                            <TextField id="email" label="E-Mail" variant="standard" error={passwordEmailWrong} value={newAccount.email} onChange={(event) => setNewAccount({ ...newAccount, email: event.target.value })} />
+                            <TextField id="email" label="E-Mail" variant="standard" error={passwordEmailWrong || accountAlreadyExists()} helperText={accountAlreadyExists() ? "Account is already in your list" : null} value={newAccount.email} onChange={(event) => setNewAccount({ ...newAccount, email: event.target.value })} />
                             <TextField id="password" label="Password" type="password" error={passwordEmailWrong} variant="standard" value={newAccount.password} onChange={(event) => setNewAccount({ ...newAccount, password: event.target.value })} />
                         </Box>
 
                         <Box sx={{ display: 'flex', justifyContent: 'end' }}>
                             <Tooltip
                                 title={isLoginButtonDisabled() ? 'Please enter a valid login credentials' : ''}
-                                placement="bottom"
-                                slotProps={{
-                                    popper: {
-                                        modifiers: [
-                                            {
-                                                name: 'offset',
-                                                options: {
-                                                    offset: [0, -10],
-                                                },
-                                            },
-                                        ],
-                                    },
-                                }}
                             >
                                 <span>
                                     <StyledButton
                                         disabled={isLoginButtonDisabled()}
                                         onClick={() => {
                                             setIsLoading(true);
-                                            postAccountVerify(newAccount, hwid)
+
+                                            let acc = { ...newAccount };
+                                            if(acc.email.includes('steamworks:')) {     
+                                                acc.isSteam = true;                                           
+                                                acc.steamId = acc.email.split(':')[1];
+                                                acc.data = { account: null, charList: null }
+                                            }
+
+                                            postAccountVerify(acc, hwid)
                                                 .then((response) => {
-                                                    if (response.Error) {
+                                                    if (!response || response.Error) {
                                                         setPasswordEmailWrong(true);
                                                         setNewAccount({ ...newAccount, password: '' });
                                                         return;
                                                     }
-                                                    if (newAccount.data === undefined) newAccount.data = { account: null, charList: null };
+                                                    
                                                     setNewAccount({
-                                                        ...newAccount,
-                                                        ...(response.Account ? { name: response.Account.Name } : {}),
+                                                        ...acc,
+                                                        ...(response.Account && response.Account.Name ? { name: response.Account.Name } : {}),
                                                         data: {
-                                                            ...newAccount.data,
+                                                            ...acc.data,
                                                             account: response.Account
                                                         }
                                                     });
@@ -153,7 +154,6 @@ function AddNewAccount({ isOpen, onClose, onSave }) {
                                                     setActiveStep(1);
                                                 })
                                                 .catch((error) => {
-                                                    console.log(error);
                                                     setPasswordEmailWrong(true);
                                                     setNewAccount({ ...newAccount, password: '' });
                                                 })
@@ -285,7 +285,7 @@ function AddNewAccount({ isOpen, onClose, onSave }) {
                                     setActiveStep(1)
                                 },
                                 () => {
-                                    onSave(newAccount);
+                                    updateAccount(newAccount, true);
                                     onClose();
                                 })
                         }
@@ -329,7 +329,7 @@ function AddNewAccount({ isOpen, onClose, onSave }) {
                 }}
             >
                 <IconButton
-                    sx={{ position: 'absolute', left: 16, marginLeft: 0, marginRight: 2 }}
+                    sx={{ position: 'absolute', left: 5, top: 5, marginLeft: 0, marginRight: 2 }}
                     size="small"
                     onClick={() => onClose()}
                 >
