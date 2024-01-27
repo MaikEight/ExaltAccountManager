@@ -12,6 +12,11 @@ export default defineConfig(async () => ({
   optimizeDeps: {
     include: ['@mui/material/Tooltip', '@emotion/styled', '@mui/material/Unstable_Grid2'],
   },
+  resolve: {
+    alias: {
+      'stream': 'stream-browserify',
+    }
+  },
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
