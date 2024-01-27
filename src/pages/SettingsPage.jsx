@@ -56,7 +56,6 @@ function SettingsPage() {
     }, [userSettings.get]);
 
     useEffect(() => {
-        console.log(settings);
         if (initialSettings) {
             setInitialSettings(false);
             return;
@@ -194,7 +193,7 @@ function SettingsPage() {
                 {
                     (serverList && serverList.length > 0) ? null :
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                           To add servers to this list, please add an account and click on "Refresh data".
+                            To add servers to this list, please add an account and click on "Refresh data".
                         </Typography>
                 }
                 <FormControl sx={{ m: 1, width: 175 }}>
@@ -210,19 +209,19 @@ function SettingsPage() {
                         )}
                         MenuProps={MenuProps}
                     >
-                        {(serverList && serverList.length > 0) ?
-                            [{ Name: 'Last server', DNS: 'LAST' }, ...serverList] :
-                            [{ Name: 'Last server', DNS: 'LAST' }].map((server) => (
+                        {
+                            [
+                                { Name: 'Last server', DNS: 'LAST' },
+                                ...(serverList && serverList.length > 0 ? serverList : [])
+                            ].map((server) => (
                                 <MenuItem
                                     key={server.DNS}
                                     value={server.Name}
                                     style={{
-                                        ...({
-                                            fontWeight:
-                                                settings?.game?.defaultServer === server.Name
-                                                    ? theme.typography.fontWeightRegular
-                                                    : theme.typography.fontWeightMedium,
-                                        }),
+                                        fontWeight:
+                                            settings?.game?.defaultServer === server.Name
+                                                ? theme.typography.fontWeightRegular
+                                                : theme.typography.fontWeightMedium,
                                     }}
                                 >
                                     {server.Name}
