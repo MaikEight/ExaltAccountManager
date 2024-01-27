@@ -4,8 +4,7 @@ import convert from 'xml-js';
 function xmlToJson(xml) {
     if (!xml) return null;
 
-    const convertedObject = convert.xml2js(xml, { compact: true, ignoreAttributes: true, ignoreDeclaration: true })
-    console.log('convertedObject', convertedObject);
+    const convertedObject = convert.xml2js(xml, { compact: true, ignoreAttributes: false, ignoreDeclaration: true })
     return cleanUp(convertedObject);
 };
 
@@ -14,10 +13,12 @@ function cleanUp(convertedObject) {
 
     if (Array.isArray(convertedObject)) {
         return convertedObject.map(item => {
-            if (typeof item === 'object' && item !== null && "_text" in item) {
-                return item["_text"];
-            } else {
-                return cleanUp(item);
+            if (typeof item === 'object' && item !== null) {
+                if ("_text" in item) {
+                    return item["_text"];
+                } else {
+                    return cleanUp(item);
+                }
             }
         });
     }
@@ -30,6 +31,8 @@ function cleanUp(convertedObject) {
             if (typeof value === 'object' && value !== null) {
                 if ("_text" in value) {
                     cleanedObject[key] = value["_text"];
+                } else if ("_attributes" in value) {
+                    cleanedObject[key] = { ...value["_attributes"], ...cleanUp(value) };
                 } else if (Object.keys(value).length > 0) {
                     cleanedObject[key] = cleanUp(value);
                 }
@@ -40,6 +43,6 @@ function cleanUp(convertedObject) {
     }
 
     return cleanedObject;
-}
+};
 
 export { xmlToJson };
