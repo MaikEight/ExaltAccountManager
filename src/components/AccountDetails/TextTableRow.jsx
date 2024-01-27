@@ -9,7 +9,7 @@ function TextTableRow({ keyValue, value, innerSx, editMode, isPassword, onChange
           {keyValue}
         </Typography>
       </PaddedTableCell>
-      <PaddedTableCell sx={innerSx} isEditMode={editMode} isPassword={isPassword} onChange={onChange} allowCopy={allowCopy} align="left">
+      <PaddedTableCell sx={innerSx} isEditMode={editMode} isPassword={isPassword} onChange={onChange} allowCopy={allowCopy} copyHint={keyValue} align="left">
         <Typography variant="body2" fontWeight={300} component="span" sx={{ textAlign: 'center'}}>
           {value}
         </Typography>
