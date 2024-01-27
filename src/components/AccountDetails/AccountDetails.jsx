@@ -23,6 +23,7 @@ import GroupRow from "./GroupRow";
 import useHWID from "../../hooks/useHWID";
 import GroupsContext from "../../contexts/GroupsContext";
 import ServerContext from "../../contexts/ServerContext";
+import useSnack from "../../hooks/useSnack";
 
 function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     const [account, setAccount] = useState(null);
@@ -34,6 +35,8 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     const groupsContext = useContext(GroupsContext);
     const {groups} = groupsContext;
     
+    const { showSnackbar } = useSnack();
+
     const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
 
     const settings = useUserSettings();
@@ -117,7 +120,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                 }}
             >
                 <IconButton
-                    sx={{ position: 'absolute', left: 16, marginLeft: 0, marginRight: 2 }}
+                    sx={{ position: 'absolute', left: 5, top: 5, marginLeft: 0, marginRight: 2 }}
                     size="small"
                     onClick={() => onClose()}
                 >
@@ -169,6 +172,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                                     onClick={() => {
                                                         onAccountChanged(account);
                                                         setIsEditMode(!isEditMode);
+                                                        showSnackbar("Account saved", 'success');
                                                     }}
                                                 >
                                                     <SaveOutlinedIcon />
@@ -300,10 +304,14 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                         .then(async (res) => {
                                             if (acc && acc.data === undefined) acc.data = { account: null, charList: null };
                                             acc.data.account = res.Account;
+                                            console.log("acc", res.Account);
+                                            console.log(JSON.stringify(res.Account));
                                             hasChanged = true;
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {                                                    
                                                     acc.data.charList = charList.Chars;
+                                                    console.log("charList", charList);
+                                                    console.log(JSON.stringify(charList));
                                                     onAccountChanged(acc);
                                                     
                                                     const servers = charList.Chars.Servers.Server;
@@ -324,6 +332,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                             if (hasChanged) {
                                                 acc.lastRefresh = new Date().toISOString();
                                                 onAccountChanged(acc);
+                                                showSnackbar("Refreshing finished");
                                             }
                                         });
                                 }}
