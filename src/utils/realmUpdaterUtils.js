@@ -28,12 +28,12 @@ async function checkForUpdates(gameExePath) {
 
 async function updateGame(gameExePath) {
     if (sessionStorage.getItem('updateCheckInProgress') === 'true' ||
-        sessionStorage.getItem('updateInProgress') === 'true') {
+    sessionStorage.getItem('updateInProgress') === 'true') {
         return
     };
-
+    
     sessionStorage.setItem('updateInProgress', 'true');
-
+    
     const buildHash = await getClientBuildHash();
     const fileList = await getFileList(buildHash, gameExePath);
 
@@ -43,7 +43,7 @@ async function updateGame(gameExePath) {
             url: UPDATE_URLS(2, [buildHash, file.file]),
         };
     });
-
+    
     tauri.invoke('perform_game_update', {
         args: {
             game_exe_path: gameExePath,

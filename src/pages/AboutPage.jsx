@@ -86,7 +86,7 @@ function AboutPage() {
                     EAM is open source and available on <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">GitHub</a>.
                     <br />Feel free to contribute!
                 </Typography>
-
+                
                 <GitHubStars style={{ position: 'absolute', top: '25%', right: 24 }} />
             </ComponentBox>
             <ComponentBox
