@@ -1,10 +1,11 @@
-import { getLatestEamVersion, startSession } from "../backend/eamApi";
+import { getLatestEamVersion } from "../backend/eamApi";
 import { isUpdateAvailable } from "../constants";
 import { appWindow, PhysicalSize } from '@tauri-apps/api/window';
 import { getAPIClientIdHash } from "./testUtils";
 import { invoke } from '@tauri-apps/api/tauri';
+import { checkForUpdates } from "./realmUpdaterUtils";
 
-async function onStartUp() {
+async function onStartUp(gameExePath) {
     appWindow.setMinSize(new PhysicalSize(850, 600));
 
     getLatestEamVersion()
@@ -16,6 +17,18 @@ async function onStartUp() {
                 localStorage.removeItem("EAMUpdateAvailable");
             }
         });
+
+    if (gameExePath !== null && gameExePath !== undefined) {
+        const lastUpdateCheck = localStorage.getItem("lastUpdateCheck"); //Format: 30.01.2024 01:39:47
+        const lastUpdateCheckDate = new Date(lastUpdateCheck);
+        const currentDate = new Date();
+        const diff = Math.abs(currentDate - lastUpdateCheckDate);
+        const daysSinceLastUpdateCheck = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        if (daysSinceLastUpdateCheck >= 1) {
+            console.log("Checking for updates on startup");
+            checkForUpdates(gameExePath);
+        }
+    }
 }
 
 function setApiHwidHash(hwid) {
