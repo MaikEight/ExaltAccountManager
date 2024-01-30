@@ -13,6 +13,7 @@ use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::File;
+use std::fs;
 use std::io::{Read, Write};
 use std::path::Path;
 use std::path::PathBuf;
@@ -200,6 +201,12 @@ fn perform_game_update_impl(args: PerformGameUpdateArgs) -> Result<(), String> {
 
         // 1.3. save file to game root path + fileName (field: file)
         let file_path = Path::new(&game_root_path).join(&game_file_data.file);
+        
+        // Create the directory if it does not exist
+        if let Some(parent_dir) = file_path.parent() {
+            fs::create_dir_all(parent_dir).map_err(|e| e.to_string())?;
+        }
+
         save_file_to_disk(file_path, unzipped_data).map_err(|e| e.to_string())?;
     }
 
