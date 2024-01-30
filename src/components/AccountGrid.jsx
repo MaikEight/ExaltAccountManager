@@ -12,6 +12,7 @@ import GroupUI from "./GridComponents/GroupUI";
 import GroupsContext from "../contexts/GroupsContext";
 import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";
+import SteamworksMailColumn from "./GridComponents/SteamworksMailColumn";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -57,7 +58,7 @@ function AccountGrid({ setShowAddNewAccount }) {
     const columns = [
         { field: 'group', headerName: 'Group', width: 65, renderCell: (params) => getGroupUI(params) },
         { field: 'name', headerName: 'Accountname', minWidth: 65, flex: 0.2 },
-        { field: 'email', headerName: 'Email', minWidth: 65, flex: 0.3 },
+        { field: 'email', headerName: 'Email', minWidth: 65, flex: 0.3, renderCell: (params) => { return (params.value && params.value.startsWith('steamworks:')) ? <SteamworksMailColumn params={params} /> : params.value} },
         { field: 'lastLogin', headerName: 'Last Login', minWidth: 100, flex: 0.15, type: 'dateTime', valueFormatter: (params) => formatTime(params.value) },
         { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
         { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 140, flex: 0.15, valueFormatter: (params) => formatTime(params.value) },
