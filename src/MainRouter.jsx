@@ -1,5 +1,5 @@
 import { CssBaseline } from "@mui/material";
-import { ThemeProvider as MuiThemeProvider, alpha, darken } from "@mui/material/styles";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import styled, { ThemeProvider as StyledThemeProvider } from "styled-components";
 import Sidebar from "./components/Sidebar/Sidebar";

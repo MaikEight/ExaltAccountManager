@@ -4,13 +4,16 @@ import MainRouter from "./MainRouter";
 import { onStartUp, setApiHwidHash } from "./utils/startUpUtils";
 import useHWID from "./hooks/useHWID";
 import { heartBeat } from "./backend/eamApi";
+import useUserSettings from "./hooks/useUserSettings";
 
 function App() {
   const [hasTriggeredStartup, setHasTriggeredStartup] = useState(false);
   const hwid = useHWID();
-  
+  const settings = useUserSettings();
+
   useEffect(() => {
-    onStartUp();
+    const gameExePath = settings.getByKeyAndSubKey("game", "exePath");
+    onStartUp(gameExePath);
 
     const heartBeatInterval = setInterval(async () => {      
       heartBeat();
