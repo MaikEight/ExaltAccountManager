@@ -1,45 +1,19 @@
 :root {
-  /* --text: #121212;
-  --background: #ededed;
-  --primary: #9155FD;
-  --secondary: #6b76c7;
-  --accent: #8f0030;
-  --close: #FF6969; */
-
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-
-  /* color: var(--text); */
-  /* background-color: var(--background); */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-
-  /* background-color: #00000000; */
-  border-radius: 12px;
   overflow: hidden;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* --text: #ededed;
-    --background: #28243D;
-    --primary: #9155FD;
-    --secondary: #384392;
-    --accent: #ff71a1;
-    --close: #FF4C51;
-    --paper: #312D4B; */    
-  }
 }
 
 .main {
   background-color: #00000000;
-  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -57,20 +31,17 @@
   top: 0;
   left: 0;
   height: 30px;
-  /* background-color: var(--background); */
 }
 
 .titlebar-text {
   font-size: 14px;
   line-height: 20px;
   font-weight: 600;
-  /* color: var(--paper); */
   margin-left: 8px;
 }
 
 .titlebar {
   height: 30px;
-  /* background: var(--background); */
   user-select: none;
   display: flex;
   justify-content: flex-end;
@@ -82,10 +53,8 @@
 }
 
 #app {
-  border-radius: 50px;
   height: 100vh;
   background-color: #f3f3f3;
-  border-radius: 5px;
 }
 
 .titlebar-button {

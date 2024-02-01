@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ColorContextProvider } from "./contexts/ColorContext";
-import MainRouter from "./MainRouter";
 import { onStartUp, setApiHwidHash } from "./utils/startUpUtils";
 import useHWID from "./hooks/useHWID";
 import { heartBeat } from "./backend/eamApi";
 import useUserSettings from "./hooks/useUserSettings";
+import MainProviders from "./MainProviders";
 
 function App() {
   const [hasTriggeredStartup, setHasTriggeredStartup] = useState(false);
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <ColorContextProvider>
-      <MainRouter />
+      <MainProviders />
     </ColorContextProvider>
   );
 }

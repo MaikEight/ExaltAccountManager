@@ -6,11 +6,14 @@ import { UserSettingsProvider } from "./contexts/UserSettingsContext";
 
 
 ReactDOM.createRoot(document.getElementById("root"))
-  .render(
-    <>      
-      <UserSettingsProvider>
-        <App />
-      </UserSettingsProvider>
-    </>
-  );
-
+.render(
+  <div
+    style={{
+      borderRadius: '10px',
+    }}
+  >
+    <UserSettingsProvider>
+      <App />
+    </UserSettingsProvider>
+  </div>
+);
