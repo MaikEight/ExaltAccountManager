@@ -4,14 +4,33 @@ import { appWindow, PhysicalSize } from '@tauri-apps/api/window';
 import { getAPIClientIdHash } from "./testUtils";
 import { invoke } from '@tauri-apps/api/tauri';
 import { checkForUpdates } from "./realmUpdaterUtils";
+import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
+
+async function performCheckForUpdates() {
+    console.log("Checking for EAM-Updates");
+
+    try {
+
+        const update = await checkUpdate();
+        if (update.shouldUpdate) {
+            console.log(`Installing update ${update.manifest?.version}, ${update.manifest?.date}, ${update.manifest.body}`);
+            await installUpdate();
+        }
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
 
 async function onStartUp(gameExePath) {
     appWindow.setMinSize(new PhysicalSize(850, 600));
 
+    performCheckForUpdates();
     getLatestEamVersion()
         .then((version) => {
             if (isUpdateAvailable(version)) {
                 localStorage.setItem("EAMUpdateAvailable", true);
+                performCheckForUpdates();
             }
             else if (localStorage.getItem("EAMUpdateAvailable")) {
                 localStorage.removeItem("EAMUpdateAvailable");
