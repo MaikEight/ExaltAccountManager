@@ -17,7 +17,7 @@ function CustomToolbar(props) {
                 ...props.sx
             }}
         >
-                {/* WATERMARK */}
+            {/* WATERMARK */}
             {/* <Box>
                 <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">
                     <Typography
@@ -33,7 +33,7 @@ function CustomToolbar(props) {
                             mt: 0.25,
                         }}
                     >
-                        EAM DEVELOPMENT BUILD v4.0.0.4 by Maik8
+                        EAM DEVELOPMENT BUILD v4.0.0 by Maik8
                     </Typography>
                 </a>
             </Box> */}
