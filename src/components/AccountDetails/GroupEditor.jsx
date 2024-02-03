@@ -114,7 +114,9 @@ function GroupEditor({ g, onSave, onCancel }) {
                         gap: 1,
                     }}
                 >
-
+                    <Typography variant="h6" fontWeight={300} component="span">
+                        Create new group
+                    </Typography>
                     <Typography variant="body2" fontWeight={300} component="span">
                         Select a color
                     </Typography>
