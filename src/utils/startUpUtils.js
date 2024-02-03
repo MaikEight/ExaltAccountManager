@@ -10,7 +10,6 @@ async function performCheckForUpdates() {
     console.log("Checking for EAM-Updates");
 
     try {
-
         const update = await checkUpdate();
         if (update.shouldUpdate) {
             console.log(`Installing update ${update.manifest?.version}, ${update.manifest?.date}, ${update.manifest.body}`);
@@ -38,12 +37,20 @@ async function onStartUp(gameExePath) {
         });
 
     if (gameExePath !== null && gameExePath !== undefined) {
-        const lastUpdateCheck = localStorage.getItem("lastUpdateCheck"); //Format: 30.01.2024 01:39:47
-        const lastUpdateCheckDate = new Date(lastUpdateCheck);
+        if(localStorage.getItem("lastUpdateCheck") === null) {
+            checkForUpdates(gameExePath);
+            return;
+        }
+
+        const lastUpdateCheck = localStorage.getItem("lastUpdateCheck");
+        const [day, month, yearTime] = lastUpdateCheck.split(".");
+        const [year, time] = yearTime.split(" ");
+        const lastUpdateCheckDate = new Date(`${month}.${day}.${year} ${time}`);
         const currentDate = new Date();
         const diff = Math.abs(currentDate - lastUpdateCheckDate);
         const daysSinceLastUpdateCheck = Math.ceil(diff / (1000 * 60 * 60 * 24));
-        if (daysSinceLastUpdateCheck >= 1) {
+
+        if (daysSinceLastUpdateCheck > 1) {
             console.log("Checking for updates on startup");
             checkForUpdates(gameExePath);
         }
