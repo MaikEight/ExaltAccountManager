@@ -21,6 +21,7 @@ use tauri::Error;
 use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
 use walkdir::WalkDir;
+use std::env;
 // use window_vibrancy::apply_blur;
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 // #[tauri::command]
@@ -428,7 +429,8 @@ fn main() {
             send_patch_request_with_json_body,
             get_device_unique_identifier,
             get_os_user_identity,
-            quick_hash
+            quick_hash,
+            get_default_game_path
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -549,6 +551,18 @@ async fn get_device_unique_identifier() -> Result<String, String> {
     let hashed = format!("{:x}", result);
 
     Ok(hashed)
+}
+
+#[tauri::command]
+fn get_default_game_path() -> String {
+    let home_dir = env::var("HOME").unwrap_or_else(|_| "".into());
+    let os = env::consts::OS;
+
+    match os {
+        "windows" => format!("{}\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe", home_dir),
+        "macos" => format!("{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app", home_dir),
+        _ => "".into(),
+    }
 }
 
 // FOR WINDOWS WITH TRANSPARENCY / BLUR / ACRYLIC
