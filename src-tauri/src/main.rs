@@ -171,7 +171,7 @@ use std::sync::mpsc::channel;
 use std::thread;
 
 #[tauri::command]
-fn perform_game_update(args: PerformGameUpdateArgs) -> Result<(), String> {
+async fn perform_game_update(args: PerformGameUpdateArgs) -> Result<(), String> {
     let (tx, rx) = channel();
 
     thread::spawn(move || {
