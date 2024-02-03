@@ -24,17 +24,20 @@ import useHWID from "../../hooks/useHWID";
 import GroupsContext from "../../contexts/GroupsContext";
 import ServerContext from "../../contexts/ServerContext";
 import useSnack from "../../hooks/useSnack";
+import SteamworksRow from "./SteamworksRow";
+import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 
 function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     const [account, setAccount] = useState(null);
     const [accountOrg, setAccountOrg] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    
-    const {serverList, saveServerList} = useContext(ServerContext);    
+    const [isDeleteMode, setIsDeleteMode] = useState(false);
+
+    const { serverList, saveServerList } = useContext(ServerContext);
     const groupsContext = useContext(GroupsContext);
-    const {groups} = groupsContext;
-    
+    const { groups } = groupsContext;
+
     const { showSnackbar } = useSnack();
 
     const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
@@ -46,6 +49,8 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     useEffect(() => {
         setAccountOrg(acc);
         setIsEditMode(false);
+        setIsDeleteMode(false);
+
         if (acc) {
             setAccount(acc);
             const timeoutId = setTimeout(() => {
@@ -67,12 +72,12 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     };
 
     const getServerToJoin = () => {
-            if(acc?.serverName && acc.serverName !== "Default") {
-                return acc.serverName;
-            }
+        if (acc?.serverName && acc.serverName !== "Default") {
+            return acc.serverName;
+        }
 
-            const serverToJoin = settings.getByKeyAndSubKey("game", "defaultServer");
-            return serverToJoin === "Last Server" ? "" : serverToJoin;
+        const serverToJoin = settings.getByKeyAndSubKey("game", "defaultServer");
+        return serverToJoin === "Last Server" ? "" : serverToJoin;
     };
 
     if (!account) {
@@ -130,13 +135,13 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                     Account details
                 </Typography>
             </Box>
-            <Box 
-            sx={{
-                flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'auto',
-            }}
+            <Box
+                sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'auto',
+                }}
             >
                 {/* 2. */}
                 <Box
@@ -224,7 +229,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                             onChange={(value) => handleAccountEdit({ ...account, group: value })}
                                         />
                                         <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={true} />
-                                        <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} />
+                                        {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
                                         {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={account.password} onChange={(value) => handleAccountEdit({ ...account, password: value })} />}
                                         {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
                                         <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
@@ -261,7 +266,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                                     acc.data.charList = charList.Chars;
 
                                                     const servers = charList.Chars.Servers.Server;
-                                                    if(servers && servers.length > 0) {
+                                                    if (servers && servers.length > 0) {
                                                         saveServerList(servers);
                                                     }
 
@@ -293,7 +298,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                 <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />start game
                             </StyledButton>
                         </Grid>
-                        <Grid xs={7}>
+                        <Grid xs={6}>
                             <StyledButton
                                 fullWidth={true}
                                 startIcon={<RefreshOutlinedIcon />}
@@ -308,17 +313,17 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                             console.log(JSON.stringify(res.Account));
                                             hasChanged = true;
                                             postCharList(res.Account.AccessToken)
-                                                .then((charList) => {                                                    
+                                                .then((charList) => {
                                                     acc.data.charList = charList.Chars;
                                                     console.log("charList", charList);
                                                     console.log(JSON.stringify(charList));
                                                     onAccountChanged(acc);
-                                                    
+
                                                     const servers = charList.Chars.Servers.Server;
-                                                    if(servers && servers.length > 0) {
+                                                    if (servers && servers.length > 0) {
                                                         saveServerList(servers);
                                                     }
-                                                    
+
                                                     hasChanged = false;
                                                 }).catch((err) => {
                                                     console.error("error", err);
@@ -340,19 +345,55 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                 refresh data
                             </StyledButton>
                         </Grid>
-                        <Grid xs={5}>
-                            <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
-                                '&:hover': {
-                                    backgroundColor: theme => theme.palette.error.main,
-                                },
-                            }}
-                                onClick={() => {
-                                    onAccountDeleted(account.email);
-                                    onClose();
-                                 }}
-                            >
-                                delete account
-                            </StyledButton>
+                        <Grid xs={6}>
+                            {!isDeleteMode ?
+                                <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
+                                    '&:hover': {
+                                        backgroundColor: theme => theme.palette.error.main,
+                                    },
+                                }}
+                                    onClick={() => {
+                                        // onAccountDeleted(account.email);
+                                        // onClose();
+                                        setIsDeleteMode(true);
+                                    }}
+                                >
+                                    delete account
+                                </StyledButton> :
+                                <ComponentBox
+                                    headline="Are you sure?"
+                                    icon={<WarningAmberRoundedIcon />}
+                                    sx={{
+                                        width: '100%',
+                                        height: '100%',
+                                        m: 0,
+                                        transition: 'height 0.5s',
+                                    }}
+                                >
+                                    <Typography variant="body2" component="div">
+                                        This action cannot be undone.
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', mt: 1 }}>
+                                        <IconButton
+                                            color='error'
+                                            size="small"
+                                            onClick={() => {
+                                                onAccountDeleted(account.email);
+                                                onClose();
+                                            }}
+                                        >
+                                            <DeleteOutlineOutlinedIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            sx={{ color: theme.palette.text.primary }}
+                                            size="small"
+                                            onClick={() => setIsDeleteMode(false)}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </Box>
+                                </ComponentBox>
+                            }
                         </Grid>
 
                     </Grid>
