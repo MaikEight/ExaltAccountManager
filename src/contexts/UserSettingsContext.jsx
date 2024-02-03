@@ -1,6 +1,6 @@
 import { useEffect, useState, createContext } from "react";
 import _ from "lodash";
-
+import { invoke } from '@tauri-apps/api/tauri';
 const UserSettingsContext = createContext();
 
 const defaultSettings = {
@@ -11,14 +11,20 @@ const defaultSettings = {
         columnsHidden: {},
     },
     game: {
-        exePath: "C:\\Users\\Maik8\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe",
         defaultServer: "Last server",
     }
 };
 
-function expandSettings(settings) {
-    if (!settings) return defaultSettings;
+function expandSettings(_settings) {
+    const settings = _settings ? _settings : defaultSettings;
     if (settings?.gatewayTable?.grouping === 'NONE') settings.gatewayTable.grouping = 'None';
+    if(!settings?.game.exePath) {
+        invoke('get_default_game_path')
+        .then((res) => {
+            settings.game.exePath = res;
+        });
+    }
+
     return _.defaultsDeep(settings, defaultSettings);
 };
 
@@ -28,9 +34,7 @@ function UserSettingsProvider({ children }) {
     useEffect(() => {
         if (!userSettingsData) return;
         localStorage.setItem("userSettings", JSON.stringify(userSettingsData));
-
-        //TODO: Save user settings
-    }, [userSettingsData]);   
+    }, [userSettingsData]);
 
     const initializeUserSettings = () => {
         if (userSettingsData) return;
@@ -64,8 +68,7 @@ function UserSettingsProvider({ children }) {
             setUserSettingsData(data);
         },
         reset: () => {
-            setUserSettingsData(defaultSettings);
-            //TODO: Save user settings
+            setUserSettingsData(expandSettings(defaultSettings));
             return true;
         }
     };
