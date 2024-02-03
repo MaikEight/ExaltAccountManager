@@ -1,9 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
 function SteamworksMailColumn(params) {
-    console.log(params);
     const id = params.params.value && params.params.value.startsWith('steamworks:') ? params.params.value.split(':')[1] : "-";
-    console.log('id', id);
 
     return (
         <Box
