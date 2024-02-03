@@ -52,6 +52,7 @@
         "request": true,
         "scope": [
           "https://*",
+          "https://api.exalt-account-manager.eu/*",
           "http://localhost*"
         ]
       },
@@ -66,7 +67,7 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://https://api.exalt-account-manager.eu/v2/ExaltAccountManager/release"
+        "https://api.exalt-account-manager.eu/v2/ExaltAccountManager/release"
       ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYwNzFDMEM1NzVFODhDQjIKUldTeWpPaDF4Y0J4OERhL1NsQ1FEVmRkcW9jcWpjUGl2TGQ2d3hlVWxaWjQ1V0sxTmlqOGhGbGIK",
       "dialog": false,
