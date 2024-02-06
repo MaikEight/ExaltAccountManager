@@ -36,8 +36,8 @@ export const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 
 const updateBaseUrls = [
     "https://www.realmofthemadgod.com/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv",
-    "https://rotmg-build.decagames.com/build-release/{0}/rotmg-exalt-win-64/checksum.json", //TODO: add Mac and Linux support
-    "https://rotmg-build.decagames.com/build-release/{0}/rotmg-exalt-win-64/{1}.gz" //TODO: add Mac and Linux support
+    "{0}/rotmg-exalt-win-64/checksum.json", //TODO: add Mac and Linux support
+    "build-release/{0}/rotmg-exalt-win-64/{1}.gz" //TODO: add Mac and Linux support
 ];
 
 export function UPDATE_URLS(index, values) {
