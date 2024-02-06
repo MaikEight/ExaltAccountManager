@@ -28,22 +28,29 @@ async function checkForUpdates(gameExePath) {
 
 async function updateGame(gameExePath) {
     if (sessionStorage.getItem('updateCheckInProgress') === 'true' ||
-    sessionStorage.getItem('updateInProgress') === 'true') {
+        sessionStorage.getItem('updateInProgress') === 'true') {
         return
     };
-    
+
     sessionStorage.setItem('updateInProgress', 'true');
-    
+
     const buildHash = await getClientBuildHash();
     const fileList = await getFileList(buildHash, gameExePath);
+
+    if(!sessionStorage.getItem('buildCDN')){
+        await getAppInit();
+    }
+    const buildCDN = sessionStorage.getItem('buildCDN');
+
+    if(!buildHash || !buildCDN) throw new Error('Build hash or CDN not found', buildHash, buildCDN);
 
     const updateFiles = fileList.map((file) => {
         return {
             ...file,
-            url: UPDATE_URLS(2, [buildHash, file.file]),
+            url: `${UPDATE_URLS(2, [buildHash, file.file])}`,
         };
     });
-    
+
     tauri.invoke('perform_game_update', {
         args: {
             game_exe_path: gameExePath,
@@ -66,16 +73,21 @@ async function getClientBuildHash() {
 
     return await getAppInit()
         .then(async (appInit) => {
+            console.log('appInit', appInit);
             const appSettings = appInit.AppSettings;
             sessionStorage.setItem('buildHash', appSettings.BuildHash);
+            sessionStorage.setItem('buildCDN', appSettings.BuildCDN ? appSettings.BuildCDN : 'https://rotmg-build.decagames.com/build-release/');
             return appSettings.BuildHash;
         });
 };
 
 async function getFileList(buildHash, gameExePath) {
-
     if (sessionStorage.getItem('fileList') !== null) {
         return JSON.parse(sessionStorage.getItem('fileList'));
+    }
+
+    if (!buildHash || buildHash === '' && sessionStorage.getItem('buildHash') !== null) {
+        buildHash = sessionStorage.getItem('buildHash');
     }
 
     return await getGameFileList(buildHash)
