@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { LinearProgress, Paper } from "@mui/material";
+import { LinearProgress, Paper, darken } from "@mui/material";
 import { DataGrid, } from '@mui/x-data-grid';
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -57,11 +57,11 @@ function AccountGrid({ setShowAddNewAccount }) {
 
     const columns = [
         { field: 'group', headerName: 'Group', width: 65, renderCell: (params) => getGroupUI(params) },
-        { field: 'name', headerName: 'Accountname', minWidth: 65, flex: 0.2 },
-        { field: 'email', headerName: 'Email', minWidth: 65, flex: 0.3, renderCell: (params) => { return (params.value && params.value.startsWith('steamworks:')) ? <SteamworksMailColumn params={params} /> : params.value} },
-        { field: 'lastLogin', headerName: 'Last Login', minWidth: 100, flex: 0.15, type: 'dateTime', valueFormatter: (params) => formatTime(params.value) },
+        { field: 'name', headerName: 'Accountname', minWidth: 150, width: 230, flex: 0.2 },
+        { field: 'email', headerName: 'Email', minWidth: 150, flex: 0.3, renderCell: (params) => { return (params.value && params.value.startsWith('steamworks:')) ? <SteamworksMailColumn params={params} /> : params.value} },
+        { field: 'lastLogin', headerName: 'Last Login', minWidth: 115, flex: 0.125, type: 'dateTime', valueFormatter: (params) => formatTime(params.value) },
         { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
-        { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 140, flex: 0.15, valueFormatter: (params) => formatTime(params.value) },
+        { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 115, flex: 0.125, valueFormatter: (params) => formatTime(params.value) },
         { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
     ];
 
@@ -104,8 +104,8 @@ function AccountGrid({ setShowAddNewAccount }) {
                             backgroundColor: theme.palette.background.paper,
                         },
                         '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                            backgroundColor: theme.palette.background.default,
-                            border: `4px solid ${theme.palette.background.paper}`,
+                            backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : darken(theme.palette.background.default, 0.15),
+                            border: `3px solid ${theme.palette.background.paper}`,
                             borderRadius: 1.5
                         },
                     }}
