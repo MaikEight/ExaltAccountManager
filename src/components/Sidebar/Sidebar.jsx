@@ -105,6 +105,7 @@ function Sidebar({ children }) {
             >
                 {/* Sidebar */}
                 <Box
+                    data-tauri-drag-region
                     id="sidebar"
                     sx={{
                         position: "relative",
@@ -128,7 +129,7 @@ function Sidebar({ children }) {
                                 display: "flex",
                                 width: 210,
                                 flexDirection: "column",
-                                gap: 1,
+                                gap: 0.5,
                             }}
                         >
                             {
