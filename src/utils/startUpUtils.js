@@ -1,7 +1,6 @@
 import { getLatestEamVersion } from "../backend/eamApi";
 import { isUpdateAvailable } from "../constants";
 import { appWindow, PhysicalSize } from '@tauri-apps/api/window';
-import { getAPIClientIdHash } from "./testUtils";
 import { invoke } from '@tauri-apps/api/tauri';
 import { checkForUpdates } from "./realmUpdaterUtils";
 import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
@@ -65,7 +64,7 @@ function setApiHwidHash(hwid) {
     }
 
     const calculcateApiHwidHash = async () => {
-        const hash = await getAPIClientIdHash();
+        const hash = await invoke('get_os_user_identity');
         while (hwid === null || hwid === undefined) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
