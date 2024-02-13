@@ -37,7 +37,7 @@ function AddNewAccount({ isOpen, onClose }) {
     const [newAccount, setNewAccount] = useState({ email: '', password: '' });
 
     //STEP 1
-    const [passwordEmailWrong, setPasswordEmailWrong] = useState(true);
+    const [passwordEmailWrong, setPasswordEmailWrong] = useState(false);
     //STEP 2
     const { groups } = useContext(GroupsContext);
 
@@ -68,7 +68,6 @@ function AddNewAccount({ isOpen, onClose }) {
     const isLoginButtonDisabled = () => newAccount.email.length < 3 || !(newAccount.email.includes('@') || newAccount.email.includes('steamworks:')) || newAccount.password.length < 3 || accountAlreadyExists() || isLoading;
 
     const accountAlreadyExists = () => accounts.find((account) => account.email === newAccount.email) !== undefined;
-
 
     const getFooterButtons = (backButtonText, nextButtontext, onClickBack, onClickNext,) => {
         return (<Box
