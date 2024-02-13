@@ -77,7 +77,7 @@ async function getAppInit() {
         const appSettings = xmlToJson(await response.data);
         
         sessionStorage.setItem('buildHash', appSettings.BuildHash);
-        sessionStorage.setItem('buildCDN', appSettings.BuildCDN ? appSettings.BuildCDN : 'https://rotmg-build.decagames.com/build-release/');
+        sessionStorage.setItem('buildCDN', appSettings.BuildCDN ? appSettings.BuildCDN.replace('build-release/', '') : 'https://rotmg-build.decagames.com/');
 
         return appSettings;
     } catch (error) {
@@ -97,14 +97,15 @@ async function getGameFileList(buildHash) {
     const buildCDN = sessionStorage.getItem('buildCDN');
 
     if (!buildHash || !buildCDN) throw new Error('Build hash or CDN not found');
-
+    
     try {
         const response = await fetch(
-            `${buildCDN}${UPDATE_URLS(1, buildHash)}`,
+            `${buildCDN}build-release/${UPDATE_URLS(1, buildHash)}`,
             {
                 method: 'GET',
                 responseType: ResponseType.JSON
             });
+            
         return response.data.files;
     } catch (error) {
         console.log(error);
