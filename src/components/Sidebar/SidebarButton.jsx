@@ -12,7 +12,7 @@ function SidebarButton({ menu, selected }) {
                 onClick={menu.action}
                 sx={{
                     borderRadius: "0 30px 30px 0",
-
+                    transition: theme.transitions.create(['color', 'background-color', 'background-image', 'box-shadow']),
                     ...(!selected ?
                         {
                             color: theme.palette.text.primary,
