@@ -47,10 +47,10 @@ async function updateGame(gameExePath) {
     const updateFiles = fileList.map((file) => {
         return {
             ...file,
-            url: `${UPDATE_URLS(2, [buildHash, file.file])}`,
+            url: `${buildCDN}${UPDATE_URLS(2, [buildHash, file.file])}`,
         };
     });
-
+    
     tauri.invoke('perform_game_update', {
         args: {
             game_exe_path: gameExePath,
@@ -76,7 +76,7 @@ async function getClientBuildHash() {
             console.log('appInit', appInit);
             const appSettings = appInit.AppSettings;
             sessionStorage.setItem('buildHash', appSettings.BuildHash);
-            sessionStorage.setItem('buildCDN', appSettings.BuildCDN ? appSettings.BuildCDN : 'https://rotmg-build.decagames.com/build-release/');
+            sessionStorage.setItem('buildCDN', appSettings.BuildCDN ? appSettings.BuildCDN.replace('build-release/', '') : 'https://rotmg-build.decagames.com/');
             return appSettings.BuildHash;
         });
 };
@@ -88,6 +88,10 @@ async function getFileList(buildHash, gameExePath) {
 
     if (!buildHash || buildHash === '' && sessionStorage.getItem('buildHash') !== null) {
         buildHash = sessionStorage.getItem('buildHash');
+    }
+
+    if(!buildHash || buildHash === '') {
+        buildHash = await getClientBuildHash();
     }
 
     return await getGameFileList(buildHash)
