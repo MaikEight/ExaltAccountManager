@@ -1,12 +1,6 @@
 //Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-// FOR WINDOWS WITH TRANSPARENCY / BLUR / ACRYLIC
-// #![cfg_attr(
-//     all(not(debug_assertions), target_os = "windows"),
-//     windows_subsystem = "windows"
-// )]
-
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
@@ -22,13 +16,6 @@ use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
 use walkdir::WalkDir;
 use std::env;
-// use window_vibrancy::apply_blur;
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-// #[tauri::command]
-// fn greet(name: &str) -> String {
-//     format!("Hello, {}! You've been greeted from Rust!", name)
-// }
-
 extern crate dirs;
 
 #[tauri::command]
@@ -564,38 +551,6 @@ fn get_default_game_path() -> String {
         _ => "".into(),
     }
 }
-
-// FOR WINDOWS WITH TRANSPARENCY / BLUR / ACRYLIC
-// fn main() {
-//     tauri::Builder::default()
-//         .setup(|app| {
-//             let window = app.get_window("main").unwrap();
-
-//             #[cfg(target_os = "macos")]
-//             apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
-//                 .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
-
-//             #[cfg(target_os = "windows")]
-//             apply_blur(&window, Some((18, 18, 18, 125)))
-//                 .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
-
-//             Ok(())
-//         })
-//         .invoke_handler(tauri::generate_handler![
-//             get_save_file_path,
-//             combine_paths,
-//             start_application,
-//             get_game_files_to_update,
-//             get_temp_folder_path,
-//             get_temp_folder_path_with_creation,
-//             create_folder,
-//             unpack_and_move_game_update_files,
-//             perform_game_update,
-//             send_post_request_with_form_url_encoded_data
-//         ])
-//         .run(tauri::generate_context!())
-//         .expect("error while running tauri application");
-// }
 
 //Helper function to get the path to the application directory
 fn get_game_root_path(game_exe_path: String) -> String {
