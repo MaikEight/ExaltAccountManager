@@ -8,6 +8,7 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined';
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
 import { checkForUpdates, updateGame } from '../utils/realmUpdaterUtils';
+import useSnack from '../hooks/useSnack';
 
 function GameUpdaterPage() {
     const settings = useUserSettings();
@@ -15,18 +16,20 @@ function GameUpdaterPage() {
     const [updateRequired, setUpdateRequired] = useState(false);
     const [lastUpdateCheck, setLastUpdateCheck] = useState('never');
 
+    const { showSnackbar } = useSnack();
+
     useEffect(() => {
         const checkSessionStorage = () => {
             const updateCheckInProgress = sessionStorage.getItem('updateCheckInProgress');
             const updateInProgress = sessionStorage.getItem('updateInProgress');
 
             setIsLoading(updateCheckInProgress === 'true' || updateInProgress === 'true');
-            setUpdateRequired(localStorage.getItem('updateNeeded') === 'true');            
+            setUpdateRequired(localStorage.getItem('updateNeeded') === 'true');
         };
         checkSessionStorage();
 
         const intervalId = setInterval(checkSessionStorage, 750);
-        return () => {clearInterval(intervalId);}
+        return () => { clearInterval(intervalId); }
     }, []);
 
     useEffect(() => {
@@ -125,7 +128,13 @@ function GameUpdaterPage() {
                         fullWidth
                         onClick={async () => {
                             setIsLoading(true);
-                            await updateGame(settings.getByKeyAndSubKey('game', 'exePath'));                            
+                            try {
+                                const _ = await updateGame(settings.getByKeyAndSubKey('game', 'exePath'));
+                            } catch (error) {
+                                console.error('Failed to update the game', error);
+                                setIsLoading(false);
+                                showSnackbar('Failed to update the game', 'error');
+                            }
                         }}
                     >
                         update game
@@ -137,7 +146,13 @@ function GameUpdaterPage() {
                     color={updateRequired ? 'secondary' : 'primary'}
                     onClick={async () => {
                         setIsLoading(true);
-                        await checkForUpdates(settings.getByKeyAndSubKey('game', 'exePath'));
+                        try {
+                            const _ = await checkForUpdates(settings.getByKeyAndSubKey('game', 'exePath'));
+                        } catch (error) {
+                            console.error('Failed to check for updates', error);
+                            setIsLoading(false);
+                            showSnackbar('Failed to check for game updates', 'error');
+                        }
                     }}
                 >
                     search for updates
