@@ -10,6 +10,7 @@ function SideBarLogo() {
 
     return (
         <Box
+            data-tauri-drag-region
             sx={{
                 display: "flex",
                 justifyContent: "start",
@@ -22,6 +23,7 @@ function SideBarLogo() {
             }}
         >
             <img
+                data-tauri-drag-region
                 src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'}
                 alt="EAM-Logo"
                 style={{
@@ -33,6 +35,7 @@ function SideBarLogo() {
                 onContextMenu={handleContextMenu}
             />
             <Typography
+                data-tauri-drag-region
                 variant="p"
                 fontWeight={'bold'}
                 component="span"
