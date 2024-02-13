@@ -41,7 +41,7 @@ const CloseAction = (key) => {
 function MainProviders() {
     const colorContext = useContext(ColorContext);
     const theme = colorContext.theme;
-
+        
     return (
         <StyledThemeProvider theme={theme}>
             <MuiThemeProvider theme={theme}>

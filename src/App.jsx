@@ -15,7 +15,7 @@ function App() {
     const gameExePath = settings.getByKeyAndSubKey("game", "exePath");
     onStartUp(gameExePath);
 
-    const heartBeatInterval = setInterval(async () => {      
+    const heartBeatInterval = setInterval(async () => {
       heartBeat();
     }, 59_000);
 
@@ -31,10 +31,10 @@ function App() {
     setHasTriggeredStartup(true);
   }, [hwid]);
 
-  return (
-    <ColorContextProvider>
-      <MainProviders />
-    </ColorContextProvider>
+  return (    
+      <ColorContextProvider>
+        <MainProviders />
+      </ColorContextProvider>
   );
 }
 

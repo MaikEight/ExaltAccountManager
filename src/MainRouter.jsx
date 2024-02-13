@@ -8,12 +8,18 @@ import { ServerContextProvider } from "./contexts/ServerContext";
 import AboutPage from "./pages/AboutPage";
 import { AccountsContextProvider } from "./contexts/AccountsContext";
 import { useTheme } from '@emotion/react';
+import { Box } from '@mui/material';
 
 function MainRouter() {
     const theme = useTheme();
 
     return (
-        <div style={{ width: '100%', backgroundColor: theme.palette.background.default }}>
+        <Box
+            sx={{
+                width: '100%',
+                backgroundColor: theme.palette.background.default,
+            }}
+        >
             <Router id="router">
                 <Sidebar id="sidebar">
                     <AccountsContextProvider>
@@ -32,7 +38,7 @@ function MainRouter() {
                     </AccountsContextProvider>
                 </Sidebar>
             </Router>
-        </div>
+        </Box>
     );
 }
 
