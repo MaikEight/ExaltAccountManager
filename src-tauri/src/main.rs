@@ -1,6 +1,9 @@
 //Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+extern crate dirs;
+mod diesel_definition;
+
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
@@ -16,7 +19,8 @@ use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
 use walkdir::WalkDir;
 use std::env;
-extern crate dirs;
+
+use crate::diesel_definition::setup_database;
 
 #[tauri::command]
 fn get_save_file_path() -> String {
@@ -27,6 +31,12 @@ fn get_save_file_path() -> String {
     path.push("ExaltAccountManager");
     path.push("v4");
     path.to_str().unwrap().to_string()
+}
+
+pub fn get_database_path() -> PathBuf {
+    let mut path = PathBuf::from(get_save_file_path());
+    path.push("exalt_account_manager.db");
+    path
 }
 
 #[tauri::command]
@@ -400,6 +410,9 @@ fn quick_hash(secret: &str) -> String {
 }
 
 fn main() {
+    let databe_url = get_database_path().to_str().unwrap().to_string();
+    let _pool = setup_database(&databe_url);
+    
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_save_file_path,
