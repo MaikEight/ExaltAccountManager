@@ -1,7 +1,7 @@
 CREATE TABLE EamAccount (
-    id INTEGER PRIMARY KEY,
+    id INTEGER UNIQUE,
     name TEXT,
-    email TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE PRIMARY KEY,
     password TEXT NOT NULL,
     serverName TEXT,
     performDailyLogin BOOLEAN NOT NULL,
