@@ -2,7 +2,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 extern crate dirs;
-mod diesel_definition;
+mod diesel_setup;
+mod diesel_functions;
+mod schema;
+mod models;
 
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
@@ -11,7 +14,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::File;
 use std::fs;
-use std::io::{Read, Write};
+use std::io::{Read, Write, ErrorKind};
 use std::path::Path;
 use std::path::PathBuf;
 use tauri::Error;
@@ -19,8 +22,15 @@ use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
 use walkdir::WalkDir;
 use std::env;
+use std::sync::{Arc, Mutex};
+use lazy_static::lazy_static;
 
-use crate::diesel_definition::setup_database;
+use crate::diesel_setup::setup_database;
+use crate::diesel_setup::DbPool;
+
+lazy_static! {
+    static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
+}
 
 #[tauri::command]
 fn get_save_file_path() -> String {
@@ -410,9 +420,10 @@ fn quick_hash(secret: &str) -> String {
 }
 
 fn main() {
-    let databe_url = get_database_path().to_str().unwrap().to_string();
-    let _pool = setup_database(&databe_url);
-    
+    let database_url = get_database_path().to_str().unwrap().to_string();
+    let pool = setup_database(&database_url);
+    *POOL.lock().unwrap() = Some(pool);
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_save_file_path,
@@ -430,7 +441,10 @@ fn main() {
             get_device_unique_identifier,
             get_os_user_identity,
             quick_hash,
-            get_default_game_path
+            get_default_game_path,
+            get_all_eam_accounts,
+            insert_or_update_eam_account,
+            delete_eam_account,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -562,6 +576,39 @@ fn get_default_game_path() -> String {
         "windows" => format!("{}\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe", home_dir),
         "macos" => format!("{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app", home_dir),
         _ => "".into(),
+    }
+}
+
+#[tauri::command]
+async fn get_all_eam_accounts() -> Result<Vec<models::EamAccount>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_all_eam_accounts(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+    }
+}
+
+#[tauri::command]
+async fn insert_or_update_eam_account(eam_account: models::EamAccount) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_or_update_eam_account(pool, eam_account)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+    }
+}
+
+#[tauri::command]
+async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::delete_eam_account(pool, account_email)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
     }
 }
 
