@@ -19,13 +19,9 @@ export function isUpdateAvailable(latestVersion) {
 
 export const SAVE_FILE_PATH = async () => await invoke('get_save_file_path');
 
-export const ACCOUNTS_FILE_PATH = async () => await invoke('combine_paths', { path1: await SAVE_FILE_PATH(), path2: SAVE_FILE_NAME });
-export const GROUPS_FILE_PATH = async () => await invoke('combine_paths', { path1: await SAVE_FILE_PATH(), path2: GROUPS_FILE_NAME });
 export const HWID_FILE_PATH = async () => await invoke('combine_paths', { path1: await SAVE_FILE_PATH(), path2: HWID_FILE_NAME });
 export const SERVER_LIST_FILE_PATH = async () => await invoke('combine_paths', { path1: await SAVE_FILE_PATH(), path2: SERVER_LIST_FILE_NAME });
 
-export const SAVE_FILE_NAME = 'accounts.json';
-export const GROUPS_FILE_NAME = 'groups.json';
 export const HWID_FILE_NAME = 'EAM.HWID';
 export const SERVER_LIST_FILE_NAME = 'serverList.json';
 
