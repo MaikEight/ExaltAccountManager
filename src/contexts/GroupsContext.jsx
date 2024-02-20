@@ -1,7 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { GROUPS_FILE_PATH } from "../constants";
-import { readFileUTF8 } from "../utils/readFileUtil";
-import { writeFileUTF8 } from "../utils/writeFileUtil";
+import { invoke } from "@tauri-apps/api";
 
 const GroupsContext = createContext();
 
@@ -32,29 +30,34 @@ const DEFAULT_GROUPS = [
 function GroupsContextProvider({ children }) {
     const [groups, setGroups] = useState([]);
 
-    useEffect(() => {
-        const loadGroups = async () => {
-            const p = await GROUPS_FILE_PATH();
-            const g = await readFileUTF8(p, true);
-            if (g) {
-                setGroups(g);
-            } else {
-                setGroups(DEFAULT_GROUPS);
+    const loadGroups = async () => {
+        const g = await invoke('get_all_eam_groups');
+        
+        if (!!g && g.length > 0) {
+            setGroups(g);
+        } else {
+            setGroups(DEFAULT_GROUPS);
+
+            for (let i = 0; i < DEFAULT_GROUPS.length; i++) {
+                await saveGroup(DEFAULT_GROUPS[i]);
             }
         }
+    };
 
+    useEffect(() => {
         loadGroups();
     }, []);
 
-    const saveGroups = async (newGroups) => {
-        const p = await GROUPS_FILE_PATH();
-        await writeFileUTF8(p, newGroups, true);
-        setGroups(newGroups);
+    const saveGroup = async (group) => {
+        if (!group.id)
+            group.id = -1;
+        await invoke('insert_or_update_eam_group', { eamGroup: group });
+        loadGroups();
     };
 
     const value = {
         groups: groups,
-        saveGroups: saveGroups
+        saveGroup: saveGroup
     }
 
     return (
