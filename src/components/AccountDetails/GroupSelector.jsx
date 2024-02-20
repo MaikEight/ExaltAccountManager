@@ -1,13 +1,13 @@
 import { Box, FormControl, IconButton, InputLabel, MenuItem, Select, Tooltip } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useTheme } from "@emotion/react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GroupUI from "../GridComponents/GroupUI";
-import GroupsContext from "../../contexts/GroupsContext";
+import useGroups from "../../hooks/useGroups";
 
 function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor, sx }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
-    const { groups } = useContext(GroupsContext);
+    const { groups } = useGroups();
     const theme = useTheme();
 
     useEffect(() => {
