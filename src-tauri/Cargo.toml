@@ -35,7 +35,7 @@ winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securit
 num-bigint = "0.4.2"
 num-traits = "0.2.14"
 hex = "0.4.3"
-diesel = { version = "2.1.4", features = ["sqlite", "r2d2"] }
+diesel = { version = "2.1.4", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.1.0"
 diesel_derives = "2.1.2"
 libsqlite3-sys = { version = "*", features = ["bundled"] }
