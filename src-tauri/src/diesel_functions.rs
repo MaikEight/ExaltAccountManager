@@ -1,20 +1,30 @@
 use crate::schema::EamAccount::dsl::*;
 use crate::schema::EamAccount as eam_accounts;
-use crate::models::EamAccount;
-use crate::models::NewEamAccount;
-use crate::models::UpdateEamAccount;
+use crate::schema::EamGroup::dsl::*;
+use crate::schema::EamGroup as eam_groups;
+use crate::models::{NewEamAccount, UpdateEamAccount, EamAccount};
+use crate::models::{NewEamGroup, UpdateEamGroup, EamGroup};
 use diesel::prelude::*;
 use diesel::insert_into;
 use crate::diesel_setup::DbPool;
+
+
+//########################
+//#      EamAccount      #
+//########################
 
 pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     EamAccount.load::<EamAccount>(&mut conn)
 }
 
-pub fn insert_or_update_eam_account(pool: &DbPool, mut eam_account: EamAccount) -> Result<usize, diesel::result::Error> {
+pub fn get_eam_account_by_email(pool: &DbPool, account_email: String) -> Result<EamAccount, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
+    eam_accounts::table.find(account_email).first(&mut conn)
+}
 
+pub fn insert_or_update_eam_account(pool: &DbPool, eam_account: EamAccount) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
     
     // Get the max id and increment it by 1
     let max_id: Option<Option<i32>> = eam_accounts::table
@@ -40,4 +50,32 @@ pub fn insert_or_update_eam_account(pool: &DbPool, mut eam_account: EamAccount) 
 pub fn delete_eam_account(pool: &DbPool, account_email: String) -> Result<usize, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     diesel::delete(eam_accounts::table.find(account_email)).execute(&mut conn)
+}
+
+//########################
+//#       EamGroup       #
+//########################
+
+pub fn get_all_eam_groups(pool: &DbPool) -> Result<Vec<EamGroup>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    EamGroup.load::<EamGroup>(&mut conn)
+}
+
+pub fn insert_or_update_eam_group(pool: &DbPool, eam_group: EamGroup) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let insertable: NewEamGroup = NewEamGroup::from(eam_group.clone());
+    let updatable: UpdateEamGroup = UpdateEamGroup::from(eam_group.clone());
+
+    diesel::insert_into(eam_groups::table)
+        .values(&insertable)
+        .on_conflict(eam_groups::id)
+        .do_update()
+        .set(&updatable)
+        .execute(&mut conn)
+}
+
+pub fn delete_eam_group(pool: &DbPool, group_id: i32) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    diesel::delete(eam_groups::table.find(group_id)).execute(&mut conn)
 }
