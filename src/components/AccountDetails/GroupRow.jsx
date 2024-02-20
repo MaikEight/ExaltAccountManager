@@ -1,15 +1,15 @@
-import { Box, IconButton, TableCell, TableRow, Typography } from "@mui/material"
+import { TableCell, TableRow, Typography } from "@mui/material"
 import PaddedTableCell from "./PaddedTableCell"
 import GroupUI from "../GridComponents/GroupUI"
 import GroupSelector from "./GroupSelector";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GroupEditor from "./GroupEditor";
-import GroupsContext from "../../contexts/GroupsContext";
+import useGroups from "../../hooks/useGroups";
 
 function GroupRow({ group, editMode, onChange, innerSx, ...rest }) {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState(null);
-    const { groups, saveGroups } = useContext(GroupsContext);
+    const { saveGroup } = useGroups();
 
     useEffect(() => {
         setSelectedGroup(group);
@@ -27,7 +27,7 @@ function GroupRow({ group, editMode, onChange, innerSx, ...rest }) {
                 <TableCell colSpan={2} sx={innerSx}>
                     <GroupEditor
                         onSave={(g) => {
-                            saveGroups([...groups, g]);
+                            saveGroup(g);
                             setShowGroupEditor(false);
                             setSelectedGroup(g);
                             onChange(g);
