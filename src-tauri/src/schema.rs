@@ -84,15 +84,30 @@ diesel::table! {
         id -> Nullable<Integer>,
         name -> Nullable<Text>,
         email -> Text,
+        isSteam -> Bool,
+        steamId -> Nullable<Text>,
         password -> Text,
         serverName -> Nullable<Text>,
         performDailyLogin -> Bool,
         state -> Nullable<Text>,
         lastLogin -> Nullable<Text>,
         group -> Nullable<Text>,
+        token -> Nullable<Text>,
         extra -> Nullable<Text>,
     }
 }
+
+diesel::table! {
+    EamGroup (id) {
+        id -> Integer,
+        name -> Nullable<Text>,
+        color -> Nullable<Integer>,
+        iconType -> Nullable<Text>,
+        icon -> Nullable<Text>,
+        padding -> Nullable<Text>,
+    }
+}
+
 
 diesel::table! {
     Equipment (id) {
