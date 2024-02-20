@@ -1,6 +1,6 @@
 import { Table, Box, Checkbox, Drawer, FormControlLabel, IconButton, Step, StepLabel, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 import Stepper from '@mui/material/Stepper';
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from "@emotion/react";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -13,12 +13,12 @@ import StyledButton from "./StyledButton";
 import useHWID from "../hooks/useHWID";
 import { postAccountVerify } from "../backend/decaApi";
 import GroupSelector from "./AccountDetails/GroupSelector";
-import GroupsContext from "../contexts/GroupsContext";
 import GroupRow from "./AccountDetails/GroupRow";
 import TextTableRow from "./AccountDetails/TextTableRow";
 import DailyLoginCheckBoxTableRow from "./AccountDetails/DailyLoginCheckBoxTableRow";
 import PaddedTableCell from "./AccountDetails/PaddedTableCell";
 import useAccounts from "../hooks/useAccounts";
+import useGroups from "../hooks/useGroups";
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -39,7 +39,7 @@ function AddNewAccount({ isOpen, onClose }) {
     //STEP 1
     const [passwordEmailWrong, setPasswordEmailWrong] = useState(false);
     //STEP 2
-    const { groups } = useContext(GroupsContext);
+    const { groups } = useGroups();
 
     const theme = useTheme();
     const hwid = useHWID();
@@ -127,10 +127,12 @@ function AddNewAccount({ isOpen, onClose }) {
                                             setIsLoading(true);
 
                                             let acc = { ...newAccount };
-                                            if(acc.email.includes('steamworks:')) {     
-                                                acc.isSteam = true;                                           
+                                            if (acc.email.includes('steamworks:')) {
+                                                acc.isSteam = true;
                                                 acc.steamId = acc.email.split(':')[1];
-                                                acc.data = { account: null, charList: null }
+                                            } else {
+                                                acc.isSteam = false;
+                                                acc.steamId = null;
                                             }
 
                                             postAccountVerify(acc, hwid)
@@ -140,14 +142,11 @@ function AddNewAccount({ isOpen, onClose }) {
                                                         setNewAccount({ ...newAccount, password: '' });
                                                         return;
                                                     }
-                                                    
+
                                                     setNewAccount({
                                                         ...acc,
+                                                        performDailyLogin: false,
                                                         ...(response.Account && response.Account.Name ? { name: response.Account.Name } : {}),
-                                                        data: {
-                                                            ...acc.data,
-                                                            account: response.Account
-                                                        }
                                                     });
 
                                                     setActiveStep(1);
@@ -284,7 +283,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                     setActiveStep(1)
                                 },
                                 () => {
-                                    updateAccount(newAccount, true);
+                                    updateAccount(newAccount);
                                     onClose();
                                 })
                         }
