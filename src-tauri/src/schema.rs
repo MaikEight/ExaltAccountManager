@@ -1,84 +1,6 @@
 #![allow(non_snake_case)]
 // @generated automatically by Diesel CLI.
 
-
-diesel::table! {
-    Account (dataset_id) {
-        dataset_id -> Nullable<Text>,
-        Credits -> Nullable<Integer>,
-        FortuneToken -> Nullable<Text>,
-        UnityCampaignPoints -> Nullable<Text>,
-        EarlyGameEventTracker -> Nullable<Text>,
-        AccountId -> Nullable<Text>,
-        CreationTimestamp -> Nullable<Text>,
-        EnchanterSupportDust -> Nullable<Text>,
-        MaxNumChars -> Nullable<Integer>,
-        LastServer -> Nullable<Text>,
-        Originating -> Nullable<Text>,
-        PetYardType -> Nullable<Integer>,
-        ForgeFireEnergy -> Nullable<Integer>,
-        Name -> Nullable<Text>,
-        Guild -> Nullable<Text>,
-        Guildrank -> Nullable<Integer>,
-        AccessTokenTimestamp -> Nullable<Text>,
-        AccessTokenExpiration -> Nullable<Text>,
-        OwnedSkins -> Nullable<Text>,
-        stats_id -> Nullable<Integer>,
-    }
-}
-
-diesel::table! {
-    Account_Storage (id) {
-        id -> Nullable<Integer>,
-        dataset_id -> Nullable<Text>,
-        item_id -> Nullable<Integer>,
-        storage_type -> Nullable<Text>,
-    }
-}
-
-diesel::table! {
-    Character (id) {
-        id -> Nullable<Integer>,
-        objectType -> Nullable<Integer>,
-        seasonal -> Nullable<Integer>,
-        level -> Nullable<Integer>,
-        exp -> Nullable<Integer>,
-        currentFame -> Nullable<Integer>,
-        equipQS -> Nullable<Text>,
-        maxHitPoints -> Nullable<Integer>,
-        hitPoints -> Nullable<Integer>,
-        maxMagicPoints -> Nullable<Integer>,
-        magicPoints -> Nullable<Integer>,
-        attack -> Nullable<Integer>,
-        defense -> Nullable<Integer>,
-        speed -> Nullable<Integer>,
-        dexterity -> Nullable<Integer>,
-        hpRegen -> Nullable<Integer>,
-        mpRegen -> Nullable<Integer>,
-        pcStats -> Nullable<Text>,
-        healthStackCount -> Nullable<Integer>,
-        magicStackCount -> Nullable<Integer>,
-        dead -> Nullable<Integer>,
-        pet_id -> Nullable<Integer>,
-        accountName -> Nullable<Text>,
-        texture -> Nullable<Integer>,
-        backpackSlots -> Nullable<Integer>,
-        has3Quickslots -> Nullable<Integer>,
-        creationDate -> Nullable<Text>,
-        dataset_id -> Nullable<Text>,
-    }
-}
-
-diesel::table! {
-    ClassStats (id) {
-        id -> Nullable<Integer>,
-        objectType -> Nullable<Integer>,
-        BestLevel -> Nullable<Integer>,
-        BestBaseFame -> Nullable<Integer>,
-        BestTotalFame -> Nullable<Integer>,
-    }
-}
-
 diesel::table! {
     EamAccount (email) {
         id -> Nullable<Integer>,
@@ -108,67 +30,117 @@ diesel::table! {
     }
 }
 
-
 diesel::table! {
-    Equipment (id) {
-        id -> Nullable<Integer>,
-        character_id -> Nullable<Integer>,
-        dataset_id -> Nullable<Text>,
-        item_type -> Nullable<Integer>,
-        slot -> Nullable<Integer>,
-    }
-}
-
-diesel::table! {
-    ItemData (id) {
-        id -> Nullable<Integer>,
-        #[sql_name = "type"]
-        type_ -> Nullable<Integer>,
-    }
-}
-
-diesel::table! {
-    Pet (id) {
-        id -> Nullable<Integer>,
+    account (entry_id) {
+        entry_id -> Nullable<Integer>,
+        account_id -> Nullable<Text>,
+        credits -> Nullable<Integer>,
+        fortune_token -> Nullable<Integer>,
+        unity_campaign_points -> Nullable<Integer>,
+        early_game_event_tracker -> Nullable<Integer>,
+        creation_timestamp -> Nullable<Text>,
+        enchanter_support_dust -> Nullable<Integer>,
+        vault -> Nullable<Text>,
+        material_storage -> Nullable<Text>,
+        gifts -> Nullable<Text>,
+        temporary_gifts -> Nullable<Text>,
+        potions -> Nullable<Text>,
+        max_num_chars -> Nullable<Integer>,
+        last_server -> Nullable<Text>,
+        originating -> Nullable<Text>,
+        pet_yard_type -> Nullable<Integer>,
+        forge_fire_energy -> Nullable<Integer>,
+        regular_forge_fire_blueprints -> Nullable<Text>,
         name -> Nullable<Text>,
-        #[sql_name = "type"]
-        type_ -> Nullable<Integer>,
-        instanceId -> Nullable<Integer>,
-        rarity -> Nullable<Integer>,
-        maxAbilityPower -> Nullable<Integer>,
-        skin -> Nullable<Integer>,
-        shader -> Nullable<Integer>,
-        createdOn -> Nullable<Text>,
-        incInv -> Nullable<Integer>,
-        inv -> Nullable<Text>,
-        ability1 -> Nullable<Text>,
-        ability2 -> Nullable<Text>,
-        ability3 -> Nullable<Text>,
+        best_char_fame -> Nullable<Integer>,
+        total_fame -> Nullable<Integer>,
+        fame -> Nullable<Integer>,
+        guild_name -> Nullable<Text>,
+        guild_rank -> Nullable<Integer>,
+        access_token_timestamp -> Nullable<Text>,
+        access_token_expiration -> Nullable<Text>,
+        owned_skins -> Nullable<Text>,
     }
 }
 
 diesel::table! {
-    Stats (id) {
+    char_list_entries (id) {
         id -> Nullable<Integer>,
-        BestCharFame -> Nullable<Integer>,
-        TotalFame -> Nullable<Integer>,
-        Fame -> Nullable<Integer>,
+        email -> Nullable<Text>,
+        timestamp -> Nullable<Timestamp>,
     }
 }
 
-diesel::joinable!(Account -> Stats (stats_id));
-diesel::joinable!(Account_Storage -> Account (dataset_id));
-diesel::joinable!(Account_Storage -> ItemData (item_id));
-diesel::joinable!(Character -> Pet (pet_id));
+diesel::table! {
+    character (id) {
+        id -> Nullable<Integer>,
+        char_id -> Nullable<Integer>,
+        char_class -> Nullable<Integer>,
+        seasonal -> Nullable<Bool>,
+        level -> Nullable<Integer>,
+        exp -> Nullable<Integer>,
+        current_fame -> Nullable<Integer>,
+        equipment -> Nullable<Text>,
+        equip_qs -> Nullable<Text>,
+        max_hit_points -> Nullable<Integer>,
+        hit_points -> Nullable<Integer>,
+        max_magic_points -> Nullable<Integer>,
+        magic_points -> Nullable<Integer>,
+        attack -> Nullable<Integer>,
+        defense -> Nullable<Integer>,
+        speed -> Nullable<Integer>,
+        dexterity -> Nullable<Integer>,
+        hp_regen -> Nullable<Integer>,
+        mp_regen -> Nullable<Integer>,
+        health_stack_count -> Nullable<Integer>,
+        magic_stack_count -> Nullable<Integer>,
+        dead -> Nullable<Bool>,
+        pet_name -> Nullable<Text>,
+        pet_type -> Nullable<Integer>,
+        pet_instance_id -> Nullable<Integer>,
+        pet_rarity -> Nullable<Integer>,
+        pet_max_ability_power -> Nullable<Integer>,
+        pet_skin -> Nullable<Integer>,
+        pet_shader -> Nullable<Integer>,
+        pet_created_on -> Nullable<Text>,
+        pet_inc_inv -> Nullable<Integer>,
+        pet_inv -> Nullable<Text>,
+        pet_ability1_type -> Nullable<Integer>,
+        pet_ability1_power -> Nullable<Integer>,
+        pet_ability1_points -> Nullable<Integer>,
+        pet_ability2_type -> Nullable<Integer>,
+        pet_ability2_power -> Nullable<Integer>,
+        pet_ability2_points -> Nullable<Integer>,
+        pet_ability3_type -> Nullable<Integer>,
+        pet_ability3_power -> Nullable<Integer>,
+        pet_ability3_points -> Nullable<Integer>,
+        account_name -> Nullable<Text>,
+        backpack_slots -> Nullable<Integer>,
+        has3_quickslots -> Nullable<Integer>,
+        creation_date -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    class_stats (id) {
+        id -> Nullable<Integer>,
+        entry_id -> Nullable<Integer>,
+        account_id -> Nullable<Text>,
+        class_type -> Nullable<Text>,
+        best_level -> Nullable<Integer>,
+        best_base_fame -> Nullable<Integer>,
+        best_total_fame -> Nullable<Integer>,
+    }
+}
+
+diesel::joinable!(account -> char_list_entries (entry_id));
+diesel::joinable!(class_stats -> account (entry_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
-    Account,
-    Account_Storage,
-    Character,
-    ClassStats,
     EamAccount,
-    Equipment,
-    ItemData,
-    Pet,
-    Stats,
+    EamGroup,
+    account,
+    char_list_entries,
+    character,
+    class_stats,
 );
