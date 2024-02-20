@@ -21,13 +21,14 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import GroupRow from "./GroupRow";
 import useHWID from "../../hooks/useHWID";
-import GroupsContext from "../../contexts/GroupsContext";
 import ServerContext from "../../contexts/ServerContext";
 import useSnack from "../../hooks/useSnack";
 import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import useAccounts from "../../hooks/useAccounts";
+import useGroups from "../../hooks/useGroups";
 
-function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
+function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
     const [accountOrg, setAccountOrg] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -35,9 +36,10 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     const [isDeleteMode, setIsDeleteMode] = useState(false);
 
     const { serverList, saveServerList } = useContext(ServerContext);
-    const groupsContext = useContext(GroupsContext);
+    const groupsContext = useGroups();
     const { groups } = groupsContext;
 
+    const { updateAccount, deleteAccount } = useAccounts();
     const { showSnackbar } = useSnack();
 
     const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
@@ -47,6 +49,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
     const theme = useTheme();
 
     useEffect(() => {
+        console.log("acc", acc);
         setAccountOrg(acc);
         setIsEditMode(false);
         setIsDeleteMode(false);
@@ -254,17 +257,25 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                 fullWidth={true}
                                 sx={{ height: 55 }}
                                 onClick={() => {
-                                    let acc = { ...account };
                                     let hasChanged = false;
                                     postAccountVerify(account, hwid)
                                         .then(async (res) => {
-                                            if (acc.data === undefined) acc.data = { account: null, charList: null };
-                                            acc.data.account = res.Account;
-                                            hasChanged = true;
+                                            //TODO: Store data in database
+                                            // acc.data.account = res.Account;
+                                            hasChanged = true;                                            
+                                            const token = {
+                                                AccessToken: res.Account.AccessToken,
+                                                AccessTokenTimestamp: res.Account.AccessTokenTimestamp,
+                                                AccessTokenExpiration: res.Account.AccessTokenExpiration,
+                                            };
+                                            acc.token = token;
+                                            acc.lastRefresh = acc.lastLogin = new Date().toISOString();
+                                            updateAccount(acc);
+
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
-                                                    acc.data.charList = charList.Chars;
-
+                                                    //TODO: Store data in database
+                                                    // acc.data.charList = charList.Chars;                                                    
                                                     const servers = charList.Chars.Servers.Server;
                                                     if (servers && servers.length > 0) {
                                                         saveServerList(servers);
@@ -280,12 +291,13 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                                     }
                                                 });
 
-                                            const args = `data:{platform:Deca,guid:${btoa(acc.data.account.email)},token:${btoa(acc.data.account.AccessToken)},tokenTimestamp:${btoa(acc.data.account.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.data.account.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
+                                            const args = `data:{platform:Deca,guid:${btoa(acc.email)},token:${btoa(acc.token.AccessToken)},tokenTimestamp:${btoa(acc.token.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
                                             tauri.invoke(
                                                 "start_application",
                                                 { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
-                                            );
-                                            acc.lastRefresh = acc.lastLogin = new Date().toISOString();
+                                            ); 
+                                            acc.lastLogin = new Date().toISOString();
+                                            updateAccount(acc);                                                                                       
                                         })
                                         .then(() => {
                                             if (hasChanged) {
@@ -295,7 +307,8 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                         });
                                 }}
                             >
-                                <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />start game
+                                <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
+                                start game
                             </StyledButton>
                         </Grid>
                         <Grid xs={6}>
@@ -353,8 +366,6 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                     },
                                 }}
                                     onClick={() => {
-                                        // onAccountDeleted(account.email);
-                                        // onClose();
                                         setIsDeleteMode(true);
                                     }}
                                 >
@@ -378,7 +389,7 @@ function AccountDetails({ acc, onClose, onAccountChanged, onAccountDeleted }) {
                                             color='error'
                                             size="small"
                                             onClick={() => {
-                                                onAccountDeleted(account.email);
+                                                deleteAccount(account.email);
                                                 onClose();
                                             }}
                                         >
