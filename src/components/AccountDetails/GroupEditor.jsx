@@ -1,13 +1,13 @@
 import { Box, Chip, Slider, TextField, Typography } from "@mui/material";
 import useColorList from "../../hooks/useColorList";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Icons from '@mui/icons-material';
 import { useTheme } from "@emotion/react";
 import GroupUI from "../GridComponents/GroupUI";
 import { FixedSizeGrid as FixedGrid } from 'react-window';
 import StyledButton from "../StyledButton";
 import Grid from '@mui/material/Unstable_Grid2';
-import GroupsContext from "../../contexts/GroupsContext";
+import useGroups from "../../hooks/useGroups";
 
 const allIcons = Object.keys(Icons).map((key) => key.includes('Outlined') ? key : null).filter((key) => key !== null);
 const MAX_ICON_PADDING = 30;
@@ -24,7 +24,7 @@ function GroupEditor({ g, onSave, onCancel }) {
     
     const theme = useTheme();
     const colors = useColorList();
-    const { groups } = useContext(GroupsContext);
+    const { groups } = useGroups();
 
     useEffect(() => {
         if (g) {
