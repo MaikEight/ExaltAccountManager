@@ -1,110 +1,96 @@
-CREATE TABLE Pet (
+CREATE TABLE char_list_entries (
     id INTEGER PRIMARY KEY,
+    email TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE account (
+    entry_id INTEGER PRIMARY KEY,
+    account_id TEXT,
+    credits INTEGER,
+    fortune_token INTEGER,
+    unity_campaign_points INTEGER,
+    early_game_event_tracker INTEGER,
+    creation_timestamp TEXT,
+    enchanter_support_dust INTEGER,
+    vault TEXT,
+    material_storage TEXT,
+    gifts TEXT,
+    temporary_gifts TEXT,
+    potions TEXT,
+    max_num_chars INTEGER,
+    last_server TEXT,
+    originating TEXT,
+    pet_yard_type INTEGER,
+    forge_fire_energy INTEGER,
+    regular_forge_fire_blueprints TEXT,
     name TEXT,
-    type INTEGER,
-    instanceId INTEGER,
-    rarity INTEGER,
-    maxAbilityPower INTEGER,
-    skin INTEGER,
-    shader INTEGER,
-    createdOn TEXT,
-    incInv INTEGER,
-    inv TEXT,
-    ability1 TEXT,
-    ability2 TEXT,
-    ability3 TEXT
+    best_char_fame INTEGER,
+    total_fame INTEGER,
+    fame INTEGER,
+    guild_name TEXT,
+    guild_rank INTEGER,
+    access_token_timestamp TEXT,
+    access_token_expiration TEXT,
+    owned_skins TEXT,
+    FOREIGN KEY(entry_id) REFERENCES char_list_entries(id)
 );
 
-CREATE TABLE ItemData (
-    id INTEGER PRIMARY KEY,
-    type INTEGER
+CREATE TABLE class_stats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    entry_id INTEGER,
+    account_id TEXT,
+    class_type TEXT,
+    best_level INTEGER,
+    best_base_fame INTEGER,
+    best_total_fame INTEGER,
+    FOREIGN KEY(entry_id) REFERENCES account(entry_id)
 );
 
-CREATE TABLE Character (
-    id INTEGER PRIMARY KEY,
-    objectType INTEGER,
-    seasonal INTEGER,
+CREATE TABLE character (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    char_id INTEGER,
+    char_class INTEGER,
+    seasonal BOOLEAN,
     level INTEGER,
     exp INTEGER,
-    currentFame INTEGER,
-    equipQS TEXT,
-    maxHitPoints INTEGER,
-    hitPoints INTEGER,
-    maxMagicPoints INTEGER,
-    magicPoints INTEGER,
+    current_fame INTEGER,
+    equipment TEXT,
+    equip_qs TEXT,
+    max_hit_points INTEGER,
+    hit_points INTEGER,
+    max_magic_points INTEGER,
+    magic_points INTEGER,
     attack INTEGER,
     defense INTEGER,
     speed INTEGER,
     dexterity INTEGER,
-    hpRegen INTEGER,
-    mpRegen INTEGER,
-    pcStats TEXT,
-    healthStackCount INTEGER,
-    magicStackCount INTEGER,
-    dead INTEGER,
-    pet_id INTEGER,
-    accountName TEXT,
-    texture INTEGER,
-    backpackSlots INTEGER,
-    has3Quickslots INTEGER,
-    creationDate TEXT,
-    dataset_id TEXT,
-    FOREIGN KEY(pet_id) REFERENCES Pet(id)
-);
-
-CREATE TABLE ClassStats (
-    id INTEGER PRIMARY KEY,
-    objectType INTEGER,
-    BestLevel INTEGER,
-    BestBaseFame INTEGER,
-    BestTotalFame INTEGER
-);
-
-CREATE TABLE Stats (
-    id INTEGER PRIMARY KEY,
-    BestCharFame INTEGER,
-    TotalFame INTEGER,
-    Fame INTEGER
-);
-
-CREATE TABLE Account (
-    dataset_id TEXT PRIMARY KEY,
-    Credits INTEGER,
-    FortuneToken TEXT,
-    UnityCampaignPoints TEXT,
-    EarlyGameEventTracker TEXT,
-    AccountId TEXT,
-    CreationTimestamp TEXT,
-    EnchanterSupportDust TEXT,
-    MaxNumChars INTEGER,
-    LastServer TEXT,
-    Originating TEXT,
-    PetYardType INTEGER,
-    ForgeFireEnergy INTEGER,
-    Name TEXT,
-    Guild TEXT,
-    Guildrank INTEGER,
-    AccessTokenTimestamp TEXT,
-    AccessTokenExpiration TEXT,
-    OwnedSkins TEXT,
-    stats_id INTEGER,
-    FOREIGN KEY(stats_id) REFERENCES Stats(id)
-);
-
-CREATE TABLE Equipment (
-    id INTEGER PRIMARY KEY,
-    character_id INTEGER,
-    dataset_id TEXT,
-    item_type INTEGER,
-    slot INTEGER,
-    FOREIGN KEY(character_id, dataset_id) REFERENCES Character(id, dataset_id)
-);
-
-CREATE TABLE Account_Storage (
-    id INTEGER PRIMARY KEY,
-    dataset_id TEXT,
-    item_id INTEGER,
-    storage_type TEXT,
-    FOREIGN KEY(dataset_id) REFERENCES Account(dataset_id),
-    FOREIGN KEY(item_id) REFERENCES ItemData(id)
+    hp_regen INTEGER,
+    mp_regen INTEGER,
+    health_stack_count INTEGER,
+    magic_stack_count INTEGER,
+    dead BOOLEAN,
+    pet_name TEXT,
+    pet_type INTEGER,
+    pet_instance_id INTEGER,
+    pet_rarity INTEGER,
+    pet_max_ability_power INTEGER,
+    pet_skin INTEGER,
+    pet_shader INTEGER,
+    pet_created_on TEXT,
+    pet_inc_inv INTEGER,
+    pet_inv TEXT,
+    pet_ability1_type INTEGER,
+    pet_ability1_power INTEGER,
+    pet_ability1_points INTEGER,
+    pet_ability2_type INTEGER,
+    pet_ability2_power INTEGER,
+    pet_ability2_points INTEGER,
+    pet_ability3_type INTEGER,
+    pet_ability3_power INTEGER,
+    pet_ability3_points INTEGER,
+    account_name TEXT,
+    backpack_slots INTEGER,
+    has3_quickslots INTEGER,
+    creation_date TEXT
 );
