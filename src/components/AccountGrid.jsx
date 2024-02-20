@@ -1,7 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { LinearProgress, Paper, darken } from "@mui/material";
 import { DataGrid, } from '@mui/x-data-grid';
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CustomPagination } from "./GridComponents/CustomPagination";
 import ServerChip from "./GridComponents/ServerChip";
@@ -9,10 +9,10 @@ import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
 import { formatTime } from "../utils/timeUtils";
 import CustomToolbar from "./GridComponents/CustomToolbar";
 import GroupUI from "./GridComponents/GroupUI";
-import GroupsContext from "../contexts/GroupsContext";
 import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";
 import SteamworksMailColumn from "./GridComponents/SteamworksMailColumn";
+import useGroups from "../hooks/useGroups";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -42,7 +42,7 @@ function AccountGrid({ setShowAddNewAccount }) {
     }, [search]);
 
     const theme = useTheme();
-    const { groups } = useContext(GroupsContext);
+    const { groups } = useGroups();
 
     const getGroupUI = (params) => {
         if (!params.value) return null;
