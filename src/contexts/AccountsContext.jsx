@@ -1,9 +1,8 @@
 import { createContext, useEffect, useState } from "react";
-import { ACCOUNTS_FILE_PATH, APP_VERSION } from "../constants";
-import { readFileUTF8 } from "../utils/readFileUtil";
+import { APP_VERSION } from "../constants";
 import { startSession } from "../backend/eamApi";
 import { useSearchParams } from "react-router-dom";
-import { writeFileUTF8 } from "../utils/writeFileUtil";
+import { invoke } from "@tauri-apps/api";
 
 const AccountsContext = createContext();
 
@@ -22,8 +21,14 @@ function AccountsContextProvider({ children }) {
 
     const loadAccounts = async () => {
         try {
-            const filePath = await ACCOUNTS_FILE_PATH();
-            const accounts = await readFileUTF8(filePath, true);
+            const response = await invoke('get_all_eam_accounts');
+            const accounts = response.map((acc) => {
+                if (!!acc.token) {
+                    const token = JSON.parse(acc.token);
+                    acc.token = token;
+                }
+                return acc;
+            });
 
             if (accounts) {
                 setAccounts(accounts);
@@ -36,28 +41,31 @@ function AccountsContextProvider({ children }) {
         }
     }
 
-    const saveAccounts = (accs) => {
-        setAccounts(accs);
-        ACCOUNTS_FILE_PATH()
-            .then((filePath) => {
-                writeFileUTF8(filePath, accs, true);
+    const saveAccount = async (acc) => {
+        await invoke('insert_or_update_eam_account', { eamAccount: acc });
+        return await invoke('get_eam_account_by_email', { accountEmail: acc.email });
+    }
+
+    const updateAccount = (updatedAccount) => {
+        console.log('updateAccount:', updatedAccount);
+        const acc = {...updatedAccount, token: JSON.stringify(updatedAccount.token)};
+        saveAccount(acc)
+            .then((updAccount) => {
+                const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
+
+                const updatedAccounts = accounts.map((account) => {
+                    if (account.email === updatedAccount.email) {
+                        return updatedAccountToUse;
+                    }
+                    return account;
+                });
+
+                setAccounts(updatedAccounts);
+
+                if (selectedAccount && selectedAccount.email === updatedAccount.email) {
+                    setSelectedAccount(updatedAccountToUse);
+                }
             });
-    };
-
-    const updateAccount = (updatedAccount, isNewAccount) => {
-
-        const updatedAccounts = !isNewAccount ? accounts.map((account) => {
-            if (account.email === updatedAccount.email) {
-                return updatedAccount;
-            }
-            return account;
-        }) : [...accounts, { ...updatedAccount, id: getNextUniqueAccountId() }];
-
-        saveAccounts(updatedAccounts);
-
-        if (selectedAccount && selectedAccount.email === updatedAccount.email) {
-            setSelectedAccount(updatedAccount);
-        }
     };
 
     const handleSelectedAccountParameter = (accs) => {
@@ -67,6 +75,15 @@ function AccountsContextProvider({ children }) {
             if (selAccount) {
                 setSelectedAccount(selAccount);
             }
+        }
+    }
+
+    const deleteAccount = async (email) => {
+        await invoke('delete_eam_account', { accountEmail: email });
+        const updatedAccounts = accounts.filter((account) => account.email !== email);
+        setAccounts(updatedAccounts);
+        if (selectedAccount && selectedAccount.email === email) {
+            setSelectedAccount(null);
         }
     }
 
@@ -121,7 +138,7 @@ function AccountsContextProvider({ children }) {
 
         updateAccount,
         reloadAccounts: loadAccounts,
-        saveAccounts
+        deleteAccount,
     };
 
     return (
