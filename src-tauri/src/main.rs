@@ -443,8 +443,12 @@ fn main() {
             quick_hash,
             get_default_game_path,
             get_all_eam_accounts,
+            get_eam_account_by_email,
             insert_or_update_eam_account,
             delete_eam_account,
+            get_all_eam_groups, 
+            insert_or_update_eam_group, 
+            delete_eam_group,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -579,11 +583,26 @@ fn get_default_game_path() -> String {
     }
 }
 
+//########################
+//#      EamAccount      #
+//########################
+
 #[tauri::command]
 async fn get_all_eam_accounts() -> Result<Vec<models::EamAccount>, tauri::Error> {
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::get_all_eam_accounts(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+    }
+}
+
+#[tauri::command]
+async fn get_eam_account_by_email(account_email: String) -> Result<models::EamAccount, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_eam_account_by_email(pool, account_email)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
         Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
@@ -606,6 +625,43 @@ async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::delete_eam_account(pool, account_email)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+    }
+}
+
+//########################
+//#       EamGroup       #
+//######################## 
+
+#[tauri::command]
+async fn get_all_eam_groups() -> Result<Vec<models::EamGroup>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_all_eam_groups(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+    }
+}
+
+#[tauri::command]
+async fn insert_or_update_eam_group(eam_group: models::EamGroup) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_or_update_eam_group(pool, eam_group)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+    }
+}
+
+#[tauri::command]
+async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::delete_eam_group(pool, group_id)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
         Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
