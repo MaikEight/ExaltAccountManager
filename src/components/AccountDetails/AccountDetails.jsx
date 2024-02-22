@@ -27,6 +27,7 @@ import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import useAccounts from "../../hooks/useAccounts";
 import useGroups from "../../hooks/useGroups";
+import { storeCharList } from "../../utils/charListUtil";
 
 function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
@@ -274,8 +275,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
 
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
-                                                    //TODO: Store data in database
-                                                    // acc.data.charList = charList.Chars;                                                    
+                                                    storeCharList(charList, acc.email);
                                                     const servers = charList.Chars.Servers.Server;
                                                     if (servers && servers.length > 0) {
                                                         saveServerList(servers);
@@ -328,8 +328,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
                                                     acc.data.charList = charList.Chars;
-                                                    console.log("charList", charList);
-                                                    console.log(JSON.stringify(charList));
+                                                    storeCharList(charList, acc.email);
                                                     onAccountChanged(acc);
 
                                                     const servers = charList.Chars.Servers.Server;
