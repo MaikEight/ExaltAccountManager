@@ -7,31 +7,43 @@ use diesel_derives::AsChangeset;
 use serde::Serialize;
 use serde::Deserialize;
 
+
+// ############################
+// #    char_list_dataset     #
+// ############################
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct CharListDataset {
+    pub email : String,
+    pub account : Account,
+    pub class_stats : Vec<ClassStats>,
+    pub character : Vec<Character>,
+}
+
 // ############################
 // #    char_list_entries     #
 // ############################
 
 #[derive(Queryable, Serialize, Deserialize, Clone)]
 pub struct CharListEntries {
-    pub id: Option<i32>,
+    pub id: Option<String>,
     pub email: Option<String>,
-    pub timestamp: Option<String>,
 }
 
 #[derive(Insertable, Serialize)]
 #[diesel(table_name = schema::char_list_entries)]
 pub struct NewCharListEntries {
-    pub id: Option<i32>,
+    pub id: Option<String>,
     pub email: Option<String>,
     pub timestamp: Option<String>,
 }
 
-#[derive(AsChangeset, Serialize)]
-#[diesel(table_name = schema::char_list_entries)]
-pub struct UpdateCharListEntries {
-    pub id: Option<i32>,
-    pub email: Option<String>,
-    pub timestamp: Option<String>,
+impl From<CharListDataset> for CharListEntries {
+    fn from(char_list_dataset: CharListDataset) -> Self {
+        CharListEntries {
+            id: None,
+            email: Some(char_list_dataset.email.clone()),
+        }
+    }
 }
 
 impl From<CharListEntries> for NewCharListEntries {
@@ -39,17 +51,7 @@ impl From<CharListEntries> for NewCharListEntries {
         NewCharListEntries {
             id: char_list_entries.id,
             email: char_list_entries.email,
-            timestamp: char_list_entries.timestamp,
-        }
-    }
-}
-
-impl From<CharListEntries> for UpdateCharListEntries {
-    fn from(char_list_entries: CharListEntries) -> Self {
-        UpdateCharListEntries {
-            id: char_list_entries.id,
-            email: char_list_entries.email,
-            timestamp: char_list_entries.timestamp,
+            timestamp: None,
         }
     }
 }
@@ -60,7 +62,7 @@ impl From<CharListEntries> for UpdateCharListEntries {
 
 #[derive(Queryable, Serialize, Deserialize, Clone)]
 pub struct Account {
-    pub entry_id: Option<i32>,
+    pub entry_id: Option<String>,
     pub account_id: Option<String>,
     pub credits: Option<i32>,
     pub fortune_token: Option<i32>,
@@ -93,7 +95,7 @@ pub struct Account {
 #[derive(Insertable, Serialize)]
 #[diesel(table_name = schema::account)]
 pub struct NewAccount {
-    pub entry_id: Option<i32>,
+    pub entry_id: Option<String>,
     pub account_id: Option<String>,
     pub credits: Option<i32>,
     pub fortune_token: Option<i32>,
@@ -126,7 +128,7 @@ pub struct NewAccount {
 #[derive(AsChangeset, Serialize)]
 #[diesel(table_name = schema::account)]
 pub struct UpdateAccount {
-    pub entry_id: Option<i32>,
+    pub entry_id: Option<String>,
     pub account_id: Option<String>,
     pub credits: Option<i32>,
     pub fortune_token: Option<i32>,
@@ -233,9 +235,9 @@ impl From<Account> for UpdateAccount {
 #[derive(Queryable, Serialize, Deserialize, Clone)]
 pub struct ClassStats {
     pub id: Option<i32>,
-    pub entry_id: Option<i32>,
+    pub entry_id: Option<String>,
     pub account_id: Option<String>,
-    pub class_type: Option<String>,    
+    pub class_type: Option<i32>,    
     pub best_level: Option<i32>,
     pub best_base_fame: Option<i32>,
     pub best_total_fame: Option<i32>,
@@ -245,9 +247,9 @@ pub struct ClassStats {
 #[diesel(table_name = schema::class_stats)]
 pub struct NewClassStats {
     pub id: Option<i32>,
-    pub entry_id: Option<i32>,
+    pub entry_id: Option<String>,
     pub account_id: Option<String>,
-    pub class_type: Option<String>,    
+    pub class_type: Option<i32>,    
     pub best_level: Option<i32>,
     pub best_base_fame: Option<i32>,
     pub best_total_fame: Option<i32>,
@@ -257,9 +259,9 @@ pub struct NewClassStats {
 #[diesel(table_name = schema::class_stats)]
 pub struct UpdateClassStats {
     pub id: Option<i32>,
-    pub entry_id: Option<i32>,
+    pub entry_id: Option<String>,
     pub account_id: Option<String>,
-    pub class_type: Option<String>,    
+    pub class_type: Option<i32>,    
     pub best_level: Option<i32>,
     pub best_base_fame: Option<i32>,
     pub best_total_fame: Option<i32>,
@@ -293,13 +295,27 @@ impl From<ClassStats> for UpdateClassStats {
     }
 }
 
+impl NewClassStats {
+    pub fn from_class_stats(class_stats: &ClassStats, entry_id: Option<String>) -> Self {
+        NewClassStats {
+            id: class_stats.id,
+            entry_id: entry_id,
+            account_id: class_stats.account_id.clone(), 
+            class_type: class_stats.class_type.clone(),
+            best_level: class_stats.best_level,
+            best_base_fame: class_stats.best_base_fame,
+            best_total_fame: class_stats.best_total_fame,
+        }
+    }
+}
+
 // ############################
 // #         character        #
 // ############################
 
 #[derive(Queryable, Serialize, Deserialize, Clone)]
 pub struct Character {
-    pub id: Option<i32>,
+    pub entry_id: Option<String>,
     pub char_id: Option<i32>,
     pub char_class: Option<i32>,
     pub seasonal: Option<bool>,
@@ -349,7 +365,7 @@ pub struct Character {
 #[derive(Insertable, Serialize)]
 #[diesel(table_name = schema::character)]
 pub struct NewCharacter {
-    pub id: Option<i32>,
+    pub entry_id: Option<String>,
     pub char_id: Option<i32>,
     pub char_class: Option<i32>,
     pub seasonal: Option<bool>,
@@ -399,7 +415,7 @@ pub struct NewCharacter {
 #[derive(AsChangeset, Serialize)]
 #[diesel(table_name = schema::character)]
 pub struct UpdateCharacter {
-    pub id: Option<i32>,
+    pub entry_id: Option<String>,
     pub char_id: Option<i32>,
     pub char_class: Option<i32>,
     pub seasonal: Option<bool>,
@@ -449,7 +465,59 @@ pub struct UpdateCharacter {
 impl From<Character> for NewCharacter {
     fn from(character: Character) -> Self {
         NewCharacter {
-            id: character.id,
+            entry_id: character.entry_id,
+            char_id: character.char_id,
+            char_class: character.char_class,
+            seasonal: character.seasonal,
+            level: character.level,
+            exp: character.exp,
+            current_fame: character.current_fame,
+            equipment: character.equipment,
+            equip_qs: character.equip_qs,
+            max_hit_points: character.max_hit_points,
+            hit_points: character.hit_points,
+            max_magic_points: character.max_magic_points,
+            magic_points: character.magic_points,
+            attack: character.attack,
+            defense: character.defense,
+            speed: character.speed,
+            dexterity: character.dexterity,
+            hp_regen: character.hp_regen,
+            mp_regen: character.mp_regen,
+            health_stack_count: character.health_stack_count,
+            magic_stack_count: character.magic_stack_count,
+            dead: character.dead,
+            pet_name: character.pet_name,
+            pet_type: character.pet_type,
+            pet_instance_id: character.pet_instance_id,
+            pet_rarity: character.pet_rarity,
+            pet_max_ability_power: character.pet_max_ability_power,
+            pet_skin: character.pet_skin,
+            pet_shader: character.pet_shader,
+            pet_created_on: character.pet_created_on,
+            pet_inc_inv: character.pet_inc_inv,
+            pet_inv: character.pet_inv,
+            pet_ability1_type: character.pet_ability1_type,
+            pet_ability1_power: character.pet_ability1_power,
+            pet_ability1_points: character.pet_ability1_points,
+            pet_ability2_type: character.pet_ability2_type,
+            pet_ability2_power: character.pet_ability2_power,
+            pet_ability2_points: character.pet_ability2_points,
+            pet_ability3_type: character.pet_ability3_type,
+            pet_ability3_power: character.pet_ability3_power,
+            pet_ability3_points: character.pet_ability3_points,
+            account_name: character.account_name,
+            backpack_slots: character.backpack_slots,
+            has3_quickslots: character.has3_quickslots,
+            creation_date: character.creation_date,
+        }
+    }    
+}
+
+impl From<Character> for UpdateCharacter {
+    fn from(character: Character) -> Self {
+        UpdateCharacter {
+            entry_id: character.entry_id,
             char_id: character.char_id,
             char_class: character.char_class,
             seasonal: character.seasonal,
@@ -498,18 +566,18 @@ impl From<Character> for NewCharacter {
     }
 }
 
-impl From<Character> for UpdateCharacter {
-    fn from(character: Character) -> Self {
-        UpdateCharacter {
-            id: character.id,
+impl NewCharacter {
+    pub fn from_character(character: &Character, entry_id: Option<String>) -> Self {
+        NewCharacter {
+            entry_id: entry_id,
             char_id: character.char_id,
             char_class: character.char_class,
             seasonal: character.seasonal,
             level: character.level,
             exp: character.exp,
             current_fame: character.current_fame,
-            equipment: character.equipment,
-            equip_qs: character.equip_qs,
+            equipment: character.equipment.clone(),
+            equip_qs: character.equip_qs.clone(),
             max_hit_points: character.max_hit_points,
             hit_points: character.hit_points,
             max_magic_points: character.max_magic_points,
@@ -523,16 +591,16 @@ impl From<Character> for UpdateCharacter {
             health_stack_count: character.health_stack_count,
             magic_stack_count: character.magic_stack_count,
             dead: character.dead,
-            pet_name: character.pet_name,
+            pet_name: character.pet_name.clone(),
             pet_type: character.pet_type,
             pet_instance_id: character.pet_instance_id,
             pet_rarity: character.pet_rarity,
             pet_max_ability_power: character.pet_max_ability_power,
             pet_skin: character.pet_skin,
             pet_shader: character.pet_shader,
-            pet_created_on: character.pet_created_on,
+            pet_created_on: character.pet_created_on.clone(),
             pet_inc_inv: character.pet_inc_inv,
-            pet_inv: character.pet_inv,
+            pet_inv: character.pet_inv.clone(),
             pet_ability1_type: character.pet_ability1_type,
             pet_ability1_power: character.pet_ability1_power,
             pet_ability1_points: character.pet_ability1_points,
@@ -542,12 +610,12 @@ impl From<Character> for UpdateCharacter {
             pet_ability3_type: character.pet_ability3_type,
             pet_ability3_power: character.pet_ability3_power,
             pet_ability3_points: character.pet_ability3_points,
-            account_name: character.account_name,
+            account_name: character.account_name.clone(),
             backpack_slots: character.backpack_slots,
             has3_quickslots: character.has3_quickslots,
-            creation_date: character.creation_date,
+            creation_date: character.creation_date.clone(),
         }
-    }
+    }    
 }
 
 // ############################
