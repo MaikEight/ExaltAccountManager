@@ -449,6 +449,7 @@ fn main() {
             get_all_eam_groups, 
             insert_or_update_eam_group, 
             delete_eam_group,
+            insert_char_list_dataset,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -662,6 +663,20 @@ async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::delete_eam_group(pool, group_id)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+    }
+}
+
+//#########################
+//#   char_list_dataset   #
+//#########################
+#[tauri::command]
+async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_char_list_dataset(pool, dataset)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
         Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
