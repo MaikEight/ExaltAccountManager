@@ -2,17 +2,18 @@ import { invoke } from "@tauri-apps/api";
 
 async function storeCharList(charList, email) {
     //format the charList to a model::dataset
-    console.log('storeCharList', charList, email);
-    console.time('storeCharList');
+
     const accountId = charList?.Chars?.Account?.AccountId;
     const dataset = {
         email: email,
         account: charToAccountModel(charList?.Chars?.Account),
         class_stats: charList?.Chars?.Account?.Stats?.ClassStats?.map(stats => charToClassStatsModel(stats, accountId)),
-        character: charList?.Chars?.Char?.map(c => charToCharModel(c))
+        character: charList?.Chars?.Char
+            ? Array.isArray(charList.Chars.Char)
+                ? charList.Chars.Char.map(c => charToCharModel(c))
+                : [charToCharModel(charList.Chars.Char)]
+            : [],
     };
-    console.timeEnd('storeCharList');
-    console.log('dataset', dataset);
 
     //store the dataset in the sqlite db
     return await invoke('insert_char_list_dataset', { dataset: dataset });
@@ -28,8 +29,8 @@ function charToAccountModel(account) {
         //chest = ["9053#4835986114186395,19260","6135,6135,7738,7731,7731,7731"]
         //return "9053#4835986114186395,19260,6135,6135,7738,7731,7731,7731"
         try {
-            if(chest === undefined || chest === null) return "";
-            if(typeof chest === "string") return chest;            
+            if (chest === undefined || chest === null) return "";
+            if (typeof chest === "string") return chest;
 
             return chest.reduce((acc, curr) => {
                 return acc + (acc === "" ? "" : ",") + curr;
@@ -79,7 +80,7 @@ function charToClassStatsModel(stats, accountId) {
         id: null,
         entry_id: null,
         account_id: accountId,
-        class_type: stats._attributes?.objectType? parseInt(stats._attributes.objectType, 16) : -1,
+        class_type: stats._attributes?.objectType ? parseInt(stats._attributes.objectType, 16) : -1,
         best_level: stats.BestLevel ? parseInt(stats.BestLevel, 10) : 0,
         best_base_fame: stats.BestFame ? parseInt(stats.BestFame, 10) : 0,
         best_total_fame: stats.BestTotalFame ? parseInt(stats.BestTotalFame, 10) : 0,
@@ -88,6 +89,7 @@ function charToClassStatsModel(stats, accountId) {
 
 function charToCharModel(char) {
     if (!char) return null;
+
     return {
         entry_id: null,
         char_id: char._attributes?.id ? parseInt(char._attributes.id, 10) : -1,
@@ -130,7 +132,7 @@ function charToCharModel(char) {
         pet_ability3_type: char.Pet?.Abilities?.Ability[2]?._attributes?.type ? parseInt(char.Pet?.Abilities?.Ability[2]?._attributes?.type, 10) : -1,
         pet_ability3_points: char.Pet?.Abilities?.Ability[2]?._attributes?.power ? parseInt(char.Pet?.Abilities?.Ability[2]?._attributes?.power, 10) : 0,
         petAbility3Points: char.Pet?.Abilities?.Ability[2]?._attributes?.points ? parseInt(char.Pet?.Abilities?.Ability[2]?._attributes?.points, 10) : 0,
-        account_name: char.Account.Name,
+        account_name: char.Account?.Name,
         backpack_slots: char.BackpackSlots ? parseInt(char.BackpackSlots, 10) : 0,
         has3_quickslots: char.Has3Quickslots ? parseInt(char.Has3Quickslots, 10) : 0,
         creation_date: char.CreationDate,
