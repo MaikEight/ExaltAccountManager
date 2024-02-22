@@ -1,11 +1,11 @@
 CREATE TABLE char_list_entries (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     email TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE account (
-    entry_id INTEGER PRIMARY KEY,
+    entry_id TEXT PRIMARY KEY,
     account_id TEXT,
     credits INTEGER,
     fortune_token INTEGER,
@@ -38,9 +38,9 @@ CREATE TABLE account (
 
 CREATE TABLE class_stats (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    entry_id INTEGER,
+    entry_id TEXT,
     account_id TEXT,
-    class_type TEXT,
+    class_type INTEGER,
     best_level INTEGER,
     best_base_fame INTEGER,
     best_total_fame INTEGER,
@@ -49,6 +49,7 @@ CREATE TABLE class_stats (
 
 CREATE TABLE character (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    entry_id INTEGER,
     char_id INTEGER,
     char_class INTEGER,
     seasonal BOOLEAN,
