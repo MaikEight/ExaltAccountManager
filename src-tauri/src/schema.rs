@@ -32,7 +32,7 @@ diesel::table! {
 
 diesel::table! {
     account (entry_id) {
-        entry_id -> Nullable<Integer>,
+        entry_id -> Nullable<Text>,
         account_id -> Nullable<Text>,
         credits -> Nullable<Integer>,
         fortune_token -> Nullable<Integer>,
@@ -65,7 +65,7 @@ diesel::table! {
 
 diesel::table! {
     char_list_entries (id) {
-        id -> Nullable<Integer>,
+        id -> Nullable<Text>,
         email -> Nullable<Text>,
         timestamp -> Nullable<Timestamp>,
     }
@@ -74,6 +74,7 @@ diesel::table! {
 diesel::table! {
     character (id) {
         id -> Nullable<Integer>,
+        entry_id -> Nullable<Text>,
         char_id -> Nullable<Integer>,
         char_class -> Nullable<Integer>,
         seasonal -> Nullable<Bool>,
@@ -124,9 +125,9 @@ diesel::table! {
 diesel::table! {
     class_stats (id) {
         id -> Nullable<Integer>,
-        entry_id -> Nullable<Integer>,
+        entry_id -> Nullable<Text>,
         account_id -> Nullable<Text>,
-        class_type -> Nullable<Text>,
+        class_type -> Nullable<Integer>,
         best_level -> Nullable<Integer>,
         best_base_fame -> Nullable<Integer>,
         best_total_fame -> Nullable<Integer>,
