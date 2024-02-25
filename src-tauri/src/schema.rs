@@ -13,6 +13,7 @@ diesel::table! {
         performDailyLogin -> Bool,
         state -> Nullable<Text>,
         lastLogin -> Nullable<Text>,
+        lastRefresh -> Nullable<Text>,
         group -> Nullable<Text>,
         token -> Nullable<Text>,
         extra -> Nullable<Text>,

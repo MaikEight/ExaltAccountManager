@@ -9,6 +9,7 @@ CREATE TABLE EamAccount (
     performDailyLogin BOOLEAN NOT NULL,
     state TEXT,
     lastLogin TEXT,
+    lastRefresh TEXT,
     "group" TEXT,
     token TEXT,
     extra TEXT
