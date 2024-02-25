@@ -17,6 +17,7 @@ use std::fs;
 use std::io::{Read, Write, ErrorKind};
 use std::path::Path;
 use std::path::PathBuf;
+use std::error::Error as StdError;
 use tauri::Error;
 use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
@@ -24,12 +25,58 @@ use walkdir::WalkDir;
 use std::env;
 use std::sync::{Arc, Mutex};
 use lazy_static::lazy_static;
+use zip::read::ZipArchive;
 
 use crate::diesel_setup::setup_database;
 use crate::diesel_setup::DbPool;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
+}
+
+fn main() {
+    //Create the save file directory if it does not exist
+    let save_file_path = get_save_file_path();
+    if !Path::new(&save_file_path).exists() {
+        fs::create_dir_all(&save_file_path).unwrap();
+    }
+
+    //Initialize the database pool
+    let database_url = get_database_path().to_str().unwrap().to_string();
+    let pool = setup_database(&database_url);
+    *POOL.lock().unwrap() = Some(pool);
+
+    //Run the tauri application
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![
+            get_save_file_path,
+            combine_paths,
+            start_application,
+            get_game_files_to_update,
+            get_temp_folder_path,
+            get_temp_folder_path_with_creation,
+            create_folder,
+            unpack_and_move_game_update_files,
+            perform_game_update,
+            send_post_request_with_form_url_encoded_data,
+            send_post_request_with_json_body,
+            send_patch_request_with_json_body,
+            get_device_unique_identifier,
+            get_os_user_identity,
+            quick_hash,
+            get_default_game_path,
+            get_all_eam_accounts,
+            get_eam_account_by_email,
+            insert_or_update_eam_account,
+            delete_eam_account,
+            get_all_eam_groups, 
+            insert_or_update_eam_group, 
+            delete_eam_group,
+            insert_char_list_dataset,
+            download_and_run_hwid_tool,
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
 
 #[tauri::command]
@@ -205,7 +252,7 @@ fn perform_game_update_impl(args: PerformGameUpdateArgs) -> Result<(), String> {
         let file_data = download_file_to_ram(&game_file_data.url).map_err(|e| e.to_string())?;
 
         // 1.2. unzip file
-        let unzipped_data = unzip_file(file_data).map_err(|e| e.to_string())?;
+        let unzipped_data = unzip_gzip_file(file_data).map_err(|e| e.to_string())?;
 
         // 1.3. save file to game root path + fileName (field: file)
         let file_path = Path::new(&game_root_path).join(&game_file_data.file);
@@ -244,7 +291,8 @@ fn save_file_to_disk(path: PathBuf, data: Vec<u8>) -> std::io::Result<()> {
     Ok(())
 }
 
-fn unzip_file(data: Vec<u8>) -> Result<Vec<u8>, std::io::Error> {
+//Only for gz files
+fn unzip_gzip_file(data: Vec<u8>) -> Result<Vec<u8>, std::io::Error> {
     let mut gz = flate2::read::GzDecoder::new(&data[..]);
     let mut unzipped_data = Vec::new();
     gz.read_to_end(&mut unzipped_data)
@@ -419,42 +467,6 @@ fn quick_hash(secret: &str) -> String {
     }
 }
 
-fn main() {
-    let database_url = get_database_path().to_str().unwrap().to_string();
-    let pool = setup_database(&database_url);
-    *POOL.lock().unwrap() = Some(pool);
-
-    tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
-            get_save_file_path,
-            combine_paths,
-            start_application,
-            get_game_files_to_update,
-            get_temp_folder_path,
-            get_temp_folder_path_with_creation,
-            create_folder,
-            unpack_and_move_game_update_files,
-            perform_game_update,
-            send_post_request_with_form_url_encoded_data,
-            send_post_request_with_json_body,
-            send_patch_request_with_json_body,
-            get_device_unique_identifier,
-            get_os_user_identity,
-            quick_hash,
-            get_default_game_path,
-            get_all_eam_accounts,
-            get_eam_account_by_email,
-            insert_or_update_eam_account,
-            delete_eam_account,
-            get_all_eam_groups, 
-            insert_or_update_eam_group, 
-            delete_eam_group,
-            insert_char_list_dataset,
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-}
-
 #[tauri::command]
 async fn send_post_request_with_form_url_encoded_data(
     url: String,
@@ -582,6 +594,63 @@ fn get_default_game_path() -> String {
         "macos" => format!("{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app", home_dir),
         _ => "".into(),
     }
+}
+
+#[tauri::command]
+fn download_and_run_hwid_tool() -> Result<(), String> {
+    let hwid_tool_url_windows = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-windows.zip";
+    let hwid_tool_url_mac = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-mac.zip";
+    let hwid_tool_path = get_temp_folder_path_with_creation("HwidTool".to_string());
+
+    let hwid_tool_url = match std::env::consts::OS {
+        "windows" => hwid_tool_url_windows,
+        "macos" => hwid_tool_url_mac,
+        _ => return Err("Unsupported OS".to_string()),
+    };
+
+    let hwid_tool_data = download_file_to_ram(hwid_tool_url).map_err(|e| e.to_string())?;
+    unzip_data_to_path(hwid_tool_data, Path::new(&hwid_tool_path)).map_err(|e| e.to_string())?;
+    let save_file_path = get_save_file_path();
+
+    let hwid_tool_executable = match std::env::consts::OS {
+        "windows" => "EAM-GetClientHWID\\EAM-GetClientHWID.exe",
+        "macos" => "EAM-GetClientHWID-mac", //TODO: Correct file name once known
+        _ => return Err("Unsupported OS".to_string()),
+    };
+    
+    let mut hwid_tool_path = PathBuf::from(&hwid_tool_path);
+    hwid_tool_path.push(hwid_tool_executable);
+    print!("hwid_tool_path: {}", hwid_tool_path.to_str().unwrap().to_string());
+
+    let hwid_tool_path_str = hwid_tool_path.to_str().ok_or("Failed to convert path to string".to_string())?.to_string();
+    print!("hwid_tool_path_str: {}", hwid_tool_path_str);
+    start_application(hwid_tool_path_str, format!("{{{}}}", save_file_path)).map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+fn unzip_data_to_path(data: Vec<u8>, output_path: &Path) -> Result<(), Box<dyn StdError>> {
+    let reader = std::io::Cursor::new(data);
+    let mut archive = ZipArchive::new(reader)?;
+
+    for i in 0..archive.len() {
+        let mut file = archive.by_index(i)?;
+        let outpath = output_path.join(file.mangled_name());
+
+        if (&*file.name()).ends_with('/') {
+            std::fs::create_dir_all(&outpath)?;
+        } else {
+            if let Some(p) = outpath.parent() {
+                if !p.exists() {
+                    std::fs::create_dir_all(&p)?;
+                }
+            }
+            let mut outfile = File::create(&outpath)?;
+            std::io::copy(&mut file, &mut outfile)?;
+        }
+    }
+
+    Ok(())
 }
 
 //########################
