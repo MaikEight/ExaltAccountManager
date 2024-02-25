@@ -637,6 +637,8 @@ pub struct EamAccount {
     pub state: Option<String>,
     #[serde(rename = "lastLogin")]
     pub last_login: Option<String>,
+    #[serde(rename = "lastRefresh")]
+    pub last_refresh: Option<String>,
     pub group: Option<String>,
     pub token: Option<String>,
     pub extra: Option<String>,
@@ -658,6 +660,7 @@ pub struct NewEamAccount {
     pub state: Option<String>,
     #[diesel(column_name = "lastLogin")]
     pub last_login: Option<String>,
+    pub lastRefresh: Option<String>,
     pub group: Option<String>,
     pub token: Option<String>,
     pub extra: Option<String>,
@@ -679,6 +682,8 @@ pub struct UpdateEamAccount {
     pub state: Option<String>,
     #[diesel(column_name = "lastLogin")]
     pub last_login: Option<String>,
+    #[serde(rename = "lastRefresh")]
+    pub lastRefresh: Option<String>,
     pub group: Option<String>,
     pub token: Option<String>,
     pub extra: Option<String>,
@@ -697,6 +702,7 @@ impl From<EamAccount> for NewEamAccount {
             perform_daily_login: account.perform_daily_login,
             state: account.state,
             last_login: account.last_login,
+            lastRefresh: account.last_refresh,
             group: account.group,
             token: account.token,
             extra: account.extra,
@@ -717,6 +723,7 @@ impl From<EamAccount> for UpdateEamAccount {
             perform_daily_login: account.perform_daily_login,
             state: account.state,
             last_login: account.last_login,
+            lastRefresh: account.last_refresh,
             group: account.group,
             token: account.token,
             extra: account.extra,
