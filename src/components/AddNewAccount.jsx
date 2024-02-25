@@ -11,7 +11,7 @@ import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import ComponentBox from "./ComponentBox";
 import StyledButton from "./StyledButton";
 import useHWID from "../hooks/useHWID";
-import { postAccountVerify } from "../backend/decaApi";
+import { postAccountVerify, postCharList } from "../backend/decaApi";
 import GroupSelector from "./AccountDetails/GroupSelector";
 import GroupRow from "./AccountDetails/GroupRow";
 import TextTableRow from "./AccountDetails/TextTableRow";
@@ -19,6 +19,7 @@ import DailyLoginCheckBoxTableRow from "./AccountDetails/DailyLoginCheckBoxTable
 import PaddedTableCell from "./AccountDetails/PaddedTableCell";
 import useAccounts from "../hooks/useAccounts";
 import useGroups from "../hooks/useGroups";
+import useServerList from './../hooks/useServerList';
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -35,6 +36,9 @@ function AddNewAccount({ isOpen, onClose }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [newAccount, setNewAccount] = useState({ email: '', password: '' });
+
+    const { storeCharList } = useAccounts();
+    const { saveServerList } = useServerList();
 
     //STEP 1
     const [passwordEmailWrong, setPasswordEmailWrong] = useState(false);
@@ -97,7 +101,7 @@ function AddNewAccount({ isOpen, onClose }) {
             case 0: //Login
                 return (
                     <ComponentBox
-                        headline={steps[0]}
+                        title={steps[0]}
                         isLoading={isLoading}
                         icon={icons[0]}
                     >
@@ -150,6 +154,19 @@ function AddNewAccount({ isOpen, onClose }) {
                                                     });
 
                                                     setActiveStep(1);
+
+                                                    if (response.Account && response.Account.Name) {
+                                                        postCharList(response.Account.AccessToken)
+                                                            .then((charList) => {
+                                                                storeCharList(charList, acc.email);
+                                                                const servers = charList.Chars.Servers.Server;
+                                                                if (servers && servers.length > 0) {
+                                                                    saveServerList(servers);
+                                                                }
+                                                            }).catch((err) => {
+                                                                console.error("error", err);
+                                                            });
+                                                    }
                                                 })
                                                 .catch((error) => {
                                                     setPasswordEmailWrong(true);
@@ -169,7 +186,7 @@ function AddNewAccount({ isOpen, onClose }) {
             case 1:  //Add details
                 return (
                     <ComponentBox
-                        headline={steps[1]}
+                        title={steps[1]}
                         isLoading={isLoading}
                         icon={icons[1]}
                     >
@@ -228,7 +245,7 @@ function AddNewAccount({ isOpen, onClose }) {
             case 2: //Finishing
                 return (
                     <ComponentBox
-                        headline={steps[2]}
+                        title={steps[2]}
                         isLoading={isLoading}
                         icon={icons[2]}
                     >
