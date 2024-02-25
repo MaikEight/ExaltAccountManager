@@ -1,7 +1,10 @@
 import { useTheme } from "@emotion/react";
-import { Box, LinearProgress, Paper, Typography } from "@mui/material";
+import { Box, Collapse, IconButton, LinearProgress, Paper, Typography } from "@mui/material";
+import { useState } from "react";
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
-function ComponentBox({ children, isLoading, headline, icon, fullwidth, sx, innerSx }) {
+function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapseable, sx, innerSx }) {
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const theme = useTheme();
 
     return (
@@ -35,29 +38,55 @@ function ComponentBox({ children, isLoading, headline, icon, fullwidth, sx, inne
                 />
             }
             {
-                (icon || headline) &&
+                (icon || title) &&
                 <Box
                     sx={{
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "start",
-                        mb: 2,
+                        mb: (isCollapsed ? 0 : 2),
                         gap: 1,
+                        transition: 'margin-bottom 0.2s',
+                        cursor: isCollapseable ? 'pointer' : '',                        
                     }}
+                    onClick={isCollapseable ? () => setIsCollapsed(!isCollapsed) : null}
                 >
                     {icon && icon}
                     {
-                        headline &&
-                        <Typography variant="h6" sx={{ fontWeight: 600, textAlign: 'center' }}>
-                            {headline}
+                        title &&
+                        <Typography 
+                            variant="h6" 
+                            sx={{ 
+                                fontWeight: 600, 
+                                textAlign: 'center', 
+                            }}
+                            
+                        >
+                            {title}
                         </Typography>
+                    }
+                    {
+                        isCollapseable &&
+                        <IconButton
+                            sx={{ 
+                                marginLeft: 'auto', 
+                                transition: 'transform 0.2s',
+                                transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)',
+                            }}
+                            size="small"
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                        >
+                            <KeyboardArrowLeftIcon />
+                        </IconButton>
                     }
                 </Box>
             }
-            <Box sx={innerSx}>
-                {children}
-            </Box>
+            <Collapse in={!isCollapsed} sx={{ width: '100%' }}>
+                <Box sx={innerSx}>
+                    {children}
+                </Box>
+            </Collapse>
         </Paper>
     );
 }
