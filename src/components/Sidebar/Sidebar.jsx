@@ -116,7 +116,7 @@ function Sidebar({ children }) {
                         alignItems: "left",
                         justifyContent: "space-between",
                         height: "calc(100% + 22px)",
-                        width: 230,
+                        width: 210,
                     }}
                 >
                     <Box>
@@ -152,7 +152,7 @@ function Sidebar({ children }) {
                             flexDirection: "row",
                             alignItems: "start",
                             justifyContent: "start",
-                            width: 230,
+                            width: 210,
                             ml: 2,
                             mb: 2,
                         }}
@@ -177,7 +177,7 @@ function Sidebar({ children }) {
                     </Box>
                 </Box>
                 {/* CONTENT */}
-                <Box id="content" sx={{ display: 'flex', flex: '1 1 auto', maxWidth: 'calc(100% - 230px)' }}>
+                <Box id="content" sx={{ display: 'flex', flex: '1 1 auto', maxWidth: 'calc(100% - 210px)' }}>
                     {children}
                 </Box>
             </Box>
