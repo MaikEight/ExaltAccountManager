@@ -11,14 +11,6 @@ function AccountsContextProvider({ children }) {
     const [selectedAccount, setSelectedAccount] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const getNextUniqueAccountId = () => {
-        let nextId = 1;
-        while (accounts.find((account) => account.id === nextId)) {
-            nextId++;
-        }
-        return nextId;
-    }
-
     const loadAccounts = async () => {
         try {
             const response = await invoke('get_all_eam_accounts');
@@ -27,7 +19,7 @@ function AccountsContextProvider({ children }) {
                     const token = JSON.parse(acc.token);
                     acc.token = token;
                 }
-                return acc;
+                return enhanceAccountData(acc);
             });
 
             if (accounts) {
@@ -43,12 +35,23 @@ function AccountsContextProvider({ children }) {
 
     const saveAccount = async (acc) => {
         await invoke('insert_or_update_eam_account', { eamAccount: acc });
-        return await invoke('get_eam_account_by_email', { accountEmail: acc.email });
+        return enhanceAccountData(await invoke('get_eam_account_by_email', { accountEmail: acc.email }));
     }
 
     const updateAccount = (updatedAccount) => {
-        console.log('updateAccount:', updatedAccount);
-        const acc = {...updatedAccount, token: JSON.stringify(updatedAccount.token)};
+        if (!updatedAccount) return updatedAccount;
+
+        let token = null;
+        if (updatedAccount.token) {
+            try {
+                token = JSON.stringify(updatedAccount.token);
+            } catch (error) {
+                console.error('Error parsing token:', error);
+                token = null;
+            }
+        }
+        const acc = {...updatedAccount, token: token};
+        
         saveAccount(acc)
             .then((updAccount) => {
                 const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
@@ -65,7 +68,7 @@ function AccountsContextProvider({ children }) {
                 if (selectedAccount && selectedAccount.email === updatedAccount.email) {
                     setSelectedAccount(updatedAccountToUse);
                 }
-            });
+            });        
     };
 
     const handleSelectedAccountParameter = (accs) => {
@@ -146,6 +149,14 @@ function AccountsContextProvider({ children }) {
             {children}
         </AccountsContext.Provider>
     )
+}
+
+function enhanceAccountData(acc) {
+    if(!acc) return acc;
+
+    acc.lastLogin = acc.lastLogin ? new Date(acc.lastLogin) : null;
+    acc.lastRefresh = acc.lastRefresh ? new Date(acc.lastRefresh) : null;
+    return acc;
 }
 
 export default AccountsContext
