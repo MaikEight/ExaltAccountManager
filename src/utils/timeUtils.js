@@ -3,7 +3,7 @@ import { parseISO } from "date-fns";
 export function formatTime(time) {
     if(!time) return null;
   // Convert the string to a Date object
-  const date = parseISO(time);
+  const date = typeof time !== 'object' ? parseISO(time) : time;
 
   // Get the user's locale (you might get this information from user preferences)
   const userLocale = navigator.language || 'en-US';
@@ -16,7 +16,7 @@ export function formatTime(time) {
   }) + ', ' + date.toLocaleTimeString(userLocale, {
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit',
+    // second: '2-digit',
     hour12: false, // Ensure 24-hour format
   });
 
