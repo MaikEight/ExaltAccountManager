@@ -20,10 +20,9 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
                     pt: 0.5,
                     pb: 0.5,
                     pl: 1,
-                    pr: 1,
+                    pr: 1,                    
                 }}
             >
-
                 <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
                 {/* <GridToolbarDensitySelector /> */}
