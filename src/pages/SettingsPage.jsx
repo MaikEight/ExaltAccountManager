@@ -76,7 +76,7 @@ function SettingsPage() {
         <Box sx={{ width: '100%', overflow: 'auto' }}>
             {/* Game Path */}
             <ComponentBox
-                headline="Game Path"
+                title="Game Path"
                 icon={<FolderOutlinedIcon />}
             >
                 <Box
@@ -131,7 +131,7 @@ function SettingsPage() {
 
             {/* Accounts columns */}
             <ComponentBox
-                headline="Accounts columns"
+                title="Accounts columns"
                 icon={<ViewColumnOutlinedIcon />}
             >
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -184,7 +184,7 @@ function SettingsPage() {
 
             {/* Default Server */}
             <ComponentBox
-                headline="Default Server"
+                title="Default Server"
                 icon={<DnsOutlinedIcon />}
             >
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -233,7 +233,7 @@ function SettingsPage() {
 
             {/* Theme */}
             <ComponentBox
-                headline="Theme"
+                title="Theme"
                 icon={<DarkModeOutlinedIcon />}
             >
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
