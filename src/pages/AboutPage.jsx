@@ -25,7 +25,7 @@ function AboutPage() {
     return (
         <Box sx={{ width: '100%', overflow: 'auto' }}>
             <ComponentBox
-                headline="About Exalt Account Manager"
+                title="About Exalt Account Manager"
                 icon={<img src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'} alt="EAM Logo" height='35.18px' width='35.18px' />}
                 sx={{ userSelect: "none" }}
             >
@@ -36,7 +36,7 @@ function AboutPage() {
             </ComponentBox>
             <Box sx={{ display: 'flex', flexDirection: 'row', mt: -2, mb: -2 }}>
                 <ComponentBox
-                    headline="Version"
+                    title="Version"
                     icon={<NumbersOutlinedIcon />}
                     sx={{ mr: 0, userSelect: "none", flexGrow: 1 }}
                 >
@@ -47,7 +47,7 @@ function AboutPage() {
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
-                    headline="Developer"
+                    title="Developer"
                     icon={<CodeOutlinedIcon />}
                     sx={{ userSelect: "none" }}
                 >
@@ -78,7 +78,7 @@ function AboutPage() {
                 </ComponentBox>
             </Box>
             <ComponentBox
-                headline="Open Source"
+                title="Open Source"
                 icon={<CodeOutlinedIcon />}
                 sx={{ userSelect: "none" }}
             >
@@ -86,11 +86,11 @@ function AboutPage() {
                     EAM is open source and available on <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">GitHub</a>.
                     <br />Feel free to contribute!
                 </Typography>
-                
+
                 <GitHubStars style={{ position: 'absolute', top: '25%', right: 24 }} />
             </ComponentBox>
             <ComponentBox
-                headline="Want to support this project?"
+                title="Want to support this project?"
                 icon={<CelebrationOutlinedIcon />}
                 sx={{ userSelect: "none" }}
             >
