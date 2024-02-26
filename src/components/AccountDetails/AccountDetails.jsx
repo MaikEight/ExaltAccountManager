@@ -1,6 +1,6 @@
 import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
 import { Unstable_Grid2 as Grid } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import ComponentBox from "../ComponentBox";
 import PaddedTableCell from "./PaddedTableCell";
@@ -21,13 +21,15 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import GroupRow from "./GroupRow";
 import useHWID from "../../hooks/useHWID";
-import ServerContext from "../../contexts/ServerContext";
 import useSnack from "../../hooks/useSnack";
 import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import useAccounts from "../../hooks/useAccounts";
 import useGroups from "../../hooks/useGroups";
-import { storeCharList } from "../../utils/charListUtil";
+import { getRequestState, storeCharList } from "../../utils/charListUtil";
+import useServerList from './../../hooks/useServerList';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 
 function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
@@ -35,8 +37,9 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [isDeleteMode, setIsDeleteMode] = useState(false);
+    const [isHwidInfoShown, setIsHwidInfoShown] = useState(false);
 
-    const { serverList, saveServerList } = useContext(ServerContext);
+    const { serverList, saveServerList } = useServerList();
     const groupsContext = useGroups();
     const { groups } = groupsContext;
 
@@ -50,11 +53,10 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
     const theme = useTheme();
 
     useEffect(() => {
-        console.log("acc", acc);
         setAccountOrg(acc);
         setIsEditMode(false);
         setIsDeleteMode(false);
-
+        
         if (acc) {
             setAccount(acc);
             const timeoutId = setTimeout(() => {
@@ -68,7 +70,11 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
             setAccount(null);
         }, 500);
 
-        return () => clearTimeout(timeoutId);
+        const timeoutId2 = setTimeout(() => {
+            setIsHwidInfoShown(false);
+        }, 5000);
+
+        return () => {clearTimeout(timeoutId); clearTimeout(timeoutId2);};
     }, [acc]);
 
     const handleAccountEdit = (acc) => {
@@ -167,7 +173,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                         }}
                     >
                         <ComponentBox
-                            headline={
+                            title={
                                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                     <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
                                         Details
@@ -179,6 +185,9 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                                     sx={{ color: theme.palette.text.primary }}
                                                     size="small"
                                                     onClick={() => {
+                                                        console.log("save account", account);
+
+                                                        updateAccount(account);
                                                         onAccountChanged(account);
                                                         setIsEditMode(!isEditMode);
                                                         showSnackbar("Account saved", 'success');
@@ -240,8 +249,9 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                         <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
                                             value={account.performDailyLogin ? account.performDailyLogin : false}
                                             onChange={(event) => {
-                                                const acc = { ...account, performDailyLogin: event.target.checked };
-                                                onAccountChanged(acc);
+                                                const newAcc = ({ ...account, performDailyLogin: event.target.checked });
+                                                updateAccount(newAcc);
+                                                onAccountChanged(newAcc);
                                             }}
                                         />
                                         {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
@@ -261,17 +271,13 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                     let hasChanged = false;
                                     postAccountVerify(account, hwid)
                                         .then(async (res) => {
-                                            //TODO: Store data in database
-                                            // acc.data.account = res.Account;
-                                            hasChanged = true;                                            
+                                            hasChanged = true;
                                             const token = {
                                                 AccessToken: res.Account.AccessToken,
                                                 AccessTokenTimestamp: res.Account.AccessTokenTimestamp,
                                                 AccessTokenExpiration: res.Account.AccessTokenExpiration,
                                             };
                                             acc.token = token;
-                                            acc.lastRefresh = acc.lastLogin = new Date().toISOString();
-                                            updateAccount(acc);
 
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
@@ -281,12 +287,10 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                                         saveServerList(servers);
                                                     }
 
-                                                    onAccountChanged(acc);
                                                     hasChanged = false;
                                                 }).catch((err) => {
                                                     console.error("error", err);
                                                     if (hasChanged) {
-                                                        onAccountChanged(acc);
                                                         hasChanged = false;
                                                     }
                                                 });
@@ -295,14 +299,16 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                             tauri.invoke(
                                                 "start_application",
                                                 { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
-                                            ); 
-                                            acc.lastLogin = new Date().toISOString();
-                                            updateAccount(acc);                                                                                       
+                                            );
+                                            setIsHwidInfoShown(true);
                                         })
                                         .then(() => {
                                             if (hasChanged) {
-                                                acc.lastRefresh = new Date().toISOString();
-                                                onAccountChanged(acc);
+                                                const current = new Date().toISOString();
+                                                const newAcc = { ...acc, lastRefresh: current, lastLogin: current };
+
+                                                updateAccount(newAcc);
+                                                onAccountChanged(newAcc);
                                             }
                                         });
                                 }}
@@ -320,16 +326,22 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                     let hasChanged = false;
                                     postAccountVerify(account, hwid)
                                         .then(async (res) => {
-                                            if (acc && acc.data === undefined) acc.data = { account: null, charList: null };
-                                            acc.data.account = res.Account;
-                                            console.log("acc", res.Account);
-                                            console.log(JSON.stringify(res.Account));
                                             hasChanged = true;
+                                            console.log(res);
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
-                                                    acc.data.charList = charList.Chars;
+                                                    const state = getRequestState(charList);
+                                                    if (state !== "Success") {
+                                                        hasChanged = false;
+                                                        showSnackbar("Failed to refresh data: " + state, 'error');
+
+                                                        const newAcc = ({ ...acc, state: state });
+                                                        updateAccount(newAcc);
+                                                        onAccountChanged(newAcc);
+                                                        return;
+                                                    }
+
                                                     storeCharList(charList, acc.email);
-                                                    onAccountChanged(acc);
 
                                                     const servers = charList.Chars.Servers.Server;
                                                     if (servers && servers.length > 0) {
@@ -347,8 +359,9 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                         })
                                         .then(() => {
                                             if (hasChanged) {
-                                                acc.lastRefresh = new Date().toISOString();
-                                                onAccountChanged(acc);
+                                                const newAcc = ({ ...acc, lastRefresh: new Date().toISOString() });
+                                                updateAccount(newAcc);
+                                                onAccountChanged(newAcc);
                                                 showSnackbar("Refreshing finished");
                                             }
                                         });
@@ -371,7 +384,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                     delete account
                                 </StyledButton> :
                                 <ComponentBox
-                                    headline="Are you sure?"
+                                    title="Are you sure?"
                                     icon={<WarningAmberRoundedIcon />}
                                     sx={{
                                         width: '100%',
@@ -405,9 +418,35 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                 </ComponentBox>
                             }
                         </Grid>
-
                     </Grid>
                 </Box>
+
+                {   
+                    <ComponentBox
+                        title={
+                            <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+                                Error: Token for different machine
+                            </Typography>
+                        }
+                        icon={<InfoOutlinedIcon />}
+                        isCollapseable={true}
+                    >
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            If you get the error "Token for different machine" you can use the HWID Tool to read a more accurate HWID to use in EAM.
+                            <br />The HWID-Tool only needs to be run once.
+                        </Typography>
+                        <StyledButton
+                            fullWidth={true}
+                            startIcon={<DownloadingOutlinedIcon />}
+                            color="secondary"
+                            onClick={() => {
+                                tauri.invoke("download_and_run_hwid_tool");
+                            }}
+                        >
+                            Download & run HWID Tool
+                        </StyledButton>
+                    </ComponentBox>
+                }
             </Box>
         </Drawer >
     );
