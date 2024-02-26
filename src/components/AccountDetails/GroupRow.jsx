@@ -55,7 +55,7 @@ function GroupRow({ group, editMode, onChange, innerSx, ...rest }) {
                             selected={selectedGroup ? selectedGroup.name : ''}
                             onChange={(newValue) => {
                                 if (newValue === '') {
-                                    onChange(null);
+                                    onChange('');
                                 } else {
                                     // const newGroup = groups.find((g) => g.name === newValue);
                                     onChange(newValue);
