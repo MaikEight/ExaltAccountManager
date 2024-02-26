@@ -48,7 +48,7 @@ function GameUpdaterPage() {
     return (
         <Box>
             <ComponentBox
-                headline="Realm Updater"
+                title="Realm Updater"
                 icon={<SystemUpdateAltOutlinedIcon />}
                 sx={{
                     display: "flex",
