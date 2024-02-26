@@ -7,7 +7,11 @@ async function storeCharList(charList, email) {
     const dataset = {
         email: email,
         account: charToAccountModel(charList?.Chars?.Account),
-        class_stats: charList?.Chars?.Account?.Stats?.ClassStats?.map(stats => charToClassStatsModel(stats, accountId)),
+        class_stats: charList?.Chars?.Account?.Stats?.ClassStats
+            ? Array.isArray(charList.Chars.Char)
+                ? charList.Chars.Account.Stats.ClassStats.map(stats => charToClassStatsModel(stats, accountId))
+                : [charToClassStatsModel(charList.Chars.Account.Stats.ClassStats, accountId)]
+            : [],
         character: charList?.Chars?.Char
             ? Array.isArray(charList.Chars.Char)
                 ? charList.Chars.Char.map(c => charToCharModel(c))
@@ -17,6 +21,29 @@ async function storeCharList(charList, email) {
 
     //store the dataset in the sqlite db
     return await invoke('insert_char_list_dataset', { dataset: dataset });
+}
+
+function getRequestState(charList) {
+    const hasErrors = charList?.Error !== undefined;
+
+    if (hasErrors) {
+        console.info('charList has error', charList.Error);
+        const error = charList.Error.toLowerCase();
+
+        if (error.includes("passworderror")) {
+            return "WrongPassword";
+        } else if (error.includes("wait")) {
+            return "TooManyRequests";
+        } else if (error.includes("captchalock")) {
+            return "Captcha";
+        } else if (error.includes("has been suspended")) {
+            return "AccountSuspended";
+        } else {
+            return "Error";
+        }
+    }
+
+    return "Success";
 }
 
 function charToAccountModel(account) {
@@ -139,4 +166,4 @@ function charToCharModel(char) {
     };
 }
 
-export { storeCharList };
+export { storeCharList, getRequestState };
