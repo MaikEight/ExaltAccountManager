@@ -8,9 +8,8 @@ import { useEffect, useState } from "react";
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 import { useNavigate } from "react-router-dom";
-import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutlined';
 import useSnack from "../../hooks/useSnack";
-
+import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 
 function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -49,14 +48,14 @@ function Sidebar({ children }) {
             showInFooter: false
         },
         {
-            name: 'Realm Updater',
+            name: 'Utilities',
             icon: (
                 <Badge badgeContent='' overlap="circular" color="error" variant="dot" invisible={!isGameUpdateAvailable}>
-                    <SystemUpdateAltOutlinedIcon />
+                    <HandymanOutlinedIcon />
                 </Badge>
             ),
             action: () => setSelectedIndex(1),
-            navigate: '/gameUpdater',
+            navigate: '/utilities',
             showInFooter: false
         },
         {
