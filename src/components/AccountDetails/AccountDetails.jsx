@@ -28,8 +28,6 @@ import useAccounts from "../../hooks/useAccounts";
 import useGroups from "../../hooks/useGroups";
 import { getRequestState, storeCharList } from "../../utils/charListUtil";
 import useServerList from './../../hooks/useServerList';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 
 function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [account, setAccount] = useState(null);
@@ -126,7 +124,8 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignContent: 'center',
-                    height: 45,
+                    minHeight: 44,
+                    maxHeight: 44,
                     pt: 0.5,
                     backgroundColor: theme.palette.background.paperLight,
                     position: 'sticky',
@@ -139,7 +138,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                     size="small"
                     onClick={() => onClose()}
                 >
-                    <CloseIcon />
+                    <CloseIcon sx={{ fontSize: 21 }} />
                 </IconButton>
                 <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
                     Account details
@@ -420,33 +419,6 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                         </Grid>
                     </Grid>
                 </Box>
-
-                {   
-                    <ComponentBox
-                        title={
-                            <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                                Error: Token for different machine
-                            </Typography>
-                        }
-                        icon={<InfoOutlinedIcon />}
-                        isCollapseable={true}
-                    >
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            If you get the error "Token for different machine" you can use the HWID Tool to read a more accurate HWID to use in EAM.
-                            <br />The HWID-Tool only needs to be run once.
-                        </Typography>
-                        <StyledButton
-                            fullWidth={true}
-                            startIcon={<DownloadingOutlinedIcon />}
-                            color="secondary"
-                            onClick={() => {
-                                tauri.invoke("download_and_run_hwid_tool");
-                            }}
-                        >
-                            Download & run HWID Tool
-                        </StyledButton>
-                    </ComponentBox>
-                }
             </Box>
         </Drawer >
     );
