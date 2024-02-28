@@ -2,29 +2,31 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 extern crate dirs;
-mod diesel_setup;
 mod diesel_functions;
-mod schema;
+mod diesel_setup;
 mod models;
+mod schema;
 
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
+use lazy_static::lazy_static;
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fs::File;
+use std::env;
+use std::error::Error as StdError;
 use std::fs;
-use std::io::{Read, Write, ErrorKind};
+use std::fs::File;
+use std::io::{ErrorKind, Read, Write};
 use std::path::Path;
 use std::path::PathBuf;
-use std::error::Error as StdError;
+use std::sync::{Arc, Mutex};
+use std::thread::sleep;
+use std::time::{Duration, Instant};
 use tauri::Error;
 use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
 use walkdir::WalkDir;
-use std::env;
-use std::sync::{Arc, Mutex};
-use lazy_static::lazy_static;
 use zip::read::ZipArchive;
 
 use crate::diesel_setup::setup_database;
@@ -69,8 +71,8 @@ fn main() {
             get_eam_account_by_email,
             insert_or_update_eam_account,
             delete_eam_account,
-            get_all_eam_groups, 
-            insert_or_update_eam_group, 
+            get_all_eam_groups,
+            insert_or_update_eam_group,
             delete_eam_group,
             insert_char_list_dataset,
             download_and_run_hwid_tool,
@@ -256,7 +258,7 @@ fn perform_game_update_impl(args: PerformGameUpdateArgs) -> Result<(), String> {
 
         // 1.3. save file to game root path + fileName (field: file)
         let file_path = Path::new(&game_root_path).join(&game_file_data.file);
-        
+
         // Create the directory if it does not exist
         if let Some(parent_dir) = file_path.parent() {
             fs::create_dir_all(parent_dir).map_err(|e| e.to_string())?;
@@ -493,10 +495,7 @@ async fn send_post_request_with_form_url_encoded_data(
 }
 
 #[tauri::command]
-async fn send_post_request_with_json_body(
-    url: String,
-    data: String,
-) -> Result<String, String> {
+async fn send_post_request_with_json_body(url: String, data: String) -> Result<String, String> {
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
@@ -516,10 +515,7 @@ async fn send_post_request_with_json_body(
 }
 
 #[tauri::command]
-async fn send_patch_request_with_json_body(
-    url: String,
-    data: String,
-) -> Result<String, String> {
+async fn send_patch_request_with_json_body(url: String, data: String) -> Result<String, String> {
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
@@ -590,14 +586,35 @@ fn get_default_game_path() -> String {
     let os = env::consts::OS;
 
     match os {
-        "windows" => format!("{}\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe", home_dir),
-        "macos" => format!("{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app", home_dir),
+        "windows" => format!(
+            "{}\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe",
+            home_dir
+        ),
+        "macos" => format!(
+            "{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app",
+            home_dir
+        ),
         _ => "".into(),
     }
 }
 
 #[tauri::command]
-fn download_and_run_hwid_tool() -> Result<(), String> {
+async fn download_and_run_hwid_tool() -> Result<bool, String> {
+    let (tx, rx) = channel();
+
+    thread::spawn(move || {
+        let result = download_and_run_hwid_tool_impl();
+
+        tx.send(result).unwrap();
+    });
+
+    match rx.recv().unwrap() {
+        Ok(result) => Ok(result),
+        Err(e) => Err(e),
+    }
+}
+
+fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
     let hwid_tool_url_windows = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-windows.zip";
     let hwid_tool_url_mac = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-mac.zip";
     let hwid_tool_path = get_temp_folder_path_with_creation("HwidTool".to_string());
@@ -617,16 +634,42 @@ fn download_and_run_hwid_tool() -> Result<(), String> {
         "macos" => "EAM-GetClientHWID-mac", //TODO: Correct file name once known
         _ => return Err("Unsupported OS".to_string()),
     };
-    
+
     let mut hwid_tool_path = PathBuf::from(&hwid_tool_path);
     hwid_tool_path.push(hwid_tool_executable);
-    print!("hwid_tool_path: {}", hwid_tool_path.to_str().unwrap().to_string());
 
-    let hwid_tool_path_str = hwid_tool_path.to_str().ok_or("Failed to convert path to string".to_string())?.to_string();
-    print!("hwid_tool_path_str: {}", hwid_tool_path_str);
-    start_application(hwid_tool_path_str, format!("{{{}}}", save_file_path)).map_err(|e| e.to_string())?;
+    let mut file_path = PathBuf::from(&save_file_path);
+    file_path.push("EAM.HWID");
+    let file_path_str = file_path
+        .to_str()
+        .expect("Failed to convert path to string")
+        .to_owned();
 
-    Ok(())
+    let file_path_str_clone = file_path_str.clone();
+    //If the EAM.HWID file already exists, delete it
+    if fs::metadata(file_path_str.clone())
+        .map_err(|e| e.to_string())?
+        .is_file()
+    {
+        let result = tokio::runtime::Runtime::new()
+            .unwrap()
+            .block_on(async {
+                tokio::task::spawn_blocking(|| fs::remove_file(file_path_str)).await
+            })
+            .map_err(|e| e.to_string())?;
+        result.map_err(|e| e.to_string())?;
+    }
+
+    let hwid_tool_path_str = hwid_tool_path
+        .to_str()
+        .ok_or("Failed to convert path to string".to_string())?
+        .to_string();
+    start_application(hwid_tool_path_str, format!("{{{}}}", save_file_path))
+        .map_err(|e| e.to_string())?;
+
+    let file_created = wait_for_file_creation(&file_path_str_clone, 20);
+
+    Ok(file_created)
 }
 
 fn unzip_data_to_path(data: Vec<u8>, output_path: &Path) -> Result<(), Box<dyn StdError>> {
@@ -653,6 +696,17 @@ fn unzip_data_to_path(data: Vec<u8>, output_path: &Path) -> Result<(), Box<dyn S
     Ok(())
 }
 
+fn wait_for_file_creation(file_path: &str, timeout: u64) -> bool {
+    let start = Instant::now();
+    while start.elapsed().as_secs() < timeout {
+        if fs::metadata(file_path).is_ok() {
+            return true;
+        }
+        sleep(Duration::from_secs(1));
+    }
+    false
+}
+
 //########################
 //#      EamAccount      #
 //########################
@@ -664,29 +718,42 @@ async fn get_all_eam_accounts() -> Result<Vec<models::EamAccount>, tauri::Error>
         diesel_functions::get_all_eam_accounts(pool)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
 #[tauri::command]
-async fn get_eam_account_by_email(account_email: String) -> Result<models::EamAccount, tauri::Error> {
+async fn get_eam_account_by_email(
+    account_email: String,
+) -> Result<models::EamAccount, tauri::Error> {
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::get_eam_account_by_email(pool, account_email)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
 #[tauri::command]
-async fn insert_or_update_eam_account(eam_account: models::EamAccount) -> Result<usize, tauri::Error> {
+async fn insert_or_update_eam_account(
+    eam_account: models::EamAccount,
+) -> Result<usize, tauri::Error> {
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::insert_or_update_eam_account(pool, eam_account)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
@@ -697,13 +764,16 @@ async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error
         diesel_functions::delete_eam_account(pool, account_email)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
 //########################
 //#       EamGroup       #
-//######################## 
+//########################
 
 #[tauri::command]
 async fn get_all_eam_groups() -> Result<Vec<models::EamGroup>, tauri::Error> {
@@ -712,7 +782,10 @@ async fn get_all_eam_groups() -> Result<Vec<models::EamGroup>, tauri::Error> {
         diesel_functions::get_all_eam_groups(pool)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
@@ -723,7 +796,10 @@ async fn insert_or_update_eam_group(eam_group: models::EamGroup) -> Result<usize
         diesel_functions::insert_or_update_eam_group(pool, eam_group)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
@@ -734,7 +810,10 @@ async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
         diesel_functions::delete_eam_group(pool, group_id)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
@@ -748,7 +827,10 @@ async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<us
         diesel_functions::insert_char_list_dataset(pool, dataset)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
-        Err(tauri::Error::from(std::io::Error::new(ErrorKind::Other, "Pool is not initialized")))
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
