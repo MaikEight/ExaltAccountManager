@@ -8,8 +8,8 @@ export const lightTheme = createTheme({
             main: '#9155FD;',
         },
         secondary: {
-            main: '#888199',
-            full: '#888199',
+            main: '#6e6978',
+            full: '#6e6978',
         },
         info: {
             main: '#16B1FF',
