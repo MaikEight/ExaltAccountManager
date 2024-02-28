@@ -334,8 +334,9 @@ function AddNewAccount({ isOpen, onClose }) {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    alignContent: 'center',
-                    height: 45,
+                    alignContent: 'center',                    
+                    minHeight: 44,
+                    maxHeight: 44,
                     pt: 0.5,
                     backgroundColor: theme.palette.background.paperLight,
                     position: 'sticky',
@@ -348,7 +349,7 @@ function AddNewAccount({ isOpen, onClose }) {
                     size="small"
                     onClick={() => onClose()}
                 >
-                    <CloseIcon />
+                    <CloseIcon sx={{ fontSize: 21 }} />
                 </IconButton>
                 <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
                     Add new account
