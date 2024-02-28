@@ -3,8 +3,8 @@ import { Box, Collapse, IconButton, LinearProgress, Paper, Typography } from "@m
 import { useState } from "react";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
-function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapseable, sx, innerSx }) {
-    const [isCollapsed, setIsCollapsed] = useState(false);
+function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapseable, defaultCollapsed = false, sx, innerSx }) {
+    const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
     const theme = useTheme();
 
     return (
