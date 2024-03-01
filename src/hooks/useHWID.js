@@ -9,13 +9,13 @@ function useHWID() {
     useEffect(() => {
         const readHwidFile = async () => {
             const path = await HWID_FILE_PATH();
-            const hwid = await readFileUTF8(path, false);
-            if (hwid === null || hwid === undefined || hwid === '') {
+            const _hwid = await readFileUTF8(path, false);
+            if (_hwid === null || _hwid === undefined || _hwid === '') {
                 tauri.invoke('get_device_unique_identifier')
                     .then((id) => setHwid(id));
                 return;
             }
-            setHwid(hwid);
+            setHwid(_hwid);
         }
         readHwidFile().catch(error => console.error(error));
     }, []);
