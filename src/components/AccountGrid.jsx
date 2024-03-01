@@ -91,9 +91,10 @@ function AccountGrid({ setShowAddNewAccount }) {
     };
 
     return (
-            <Paper sx={{ height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1.5, background: theme.palette.background.paper, }}>
+            <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1.5, background: theme.palette.background.paper, }}>
                 <StyledDataGrid
                     sx={{
+                        minHeight: '200px',
                         width: '100%',
                         border: 0,
                         '&, [class^=MuiDataGrid]': { border: 'none' },
