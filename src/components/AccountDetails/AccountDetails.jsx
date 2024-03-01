@@ -35,9 +35,9 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [isDeleteMode, setIsDeleteMode] = useState(false);
-    const [isHwidInfoShown, setIsHwidInfoShown] = useState(false);
+    const [updateInProgress, setUpdateInProgress] = useState(false);
 
-    const { serverList, saveServerList } = useServerList();
+    const { saveServerList } = useServerList();
     const groupsContext = useGroups();
     const { groups } = groupsContext;
 
@@ -49,6 +49,17 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
     const settings = useUserSettings();
     const hwid = useHWID();
     const theme = useTheme();
+
+    useEffect(() => {
+        const checkSessionStorage = () => {
+            const updInProgress = sessionStorage.getItem('updateInProgress');
+            setUpdateInProgress(updInProgress === 'true');
+        };
+        checkSessionStorage();
+
+        const intervalId = setInterval(checkSessionStorage, 750);
+        return () => { clearInterval(intervalId); }
+    }, []);
 
     useEffect(() => {
         setAccountOrg(acc);
@@ -68,11 +79,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
             setAccount(null);
         }, 500);
 
-        const timeoutId2 = setTimeout(() => {
-            setIsHwidInfoShown(false);
-        }, 5000);
-
-        return () => {clearTimeout(timeoutId); clearTimeout(timeoutId2);};
+        return () => { clearTimeout(timeoutId); };
     }, [acc]);
 
     const handleAccountEdit = (acc) => {
@@ -264,6 +271,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                     <Grid container spacing={2}>
                         <Grid xs={12}>
                             <StyledButton
+                                disabled={updateInProgress}
                                 fullWidth={true}
                                 sx={{ height: 55 }}
                                 onClick={() => {
@@ -299,7 +307,6 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                                 "start_application",
                                                 { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
                                             );
-                                            setIsHwidInfoShown(true);
                                         })
                                         .then(() => {
                                             if (hasChanged) {
