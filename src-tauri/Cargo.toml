@@ -10,7 +10,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5", features = [] }
+tauri-build = { version = "1.5.1", features = [] }
 
 [dependencies]
 tauri = { version = "1.5", features = [ "updater", "dialog-all", "http-all", "devtools", "path-all", "macos-private-api", "window-set-min-size", "window-unminimize", "window-unmaximize", "window-start-dragging", "window-close", "window-minimize", "window-hide", "window-show", "window-maximize", "fs-all", "shell-open"] }
@@ -31,7 +31,7 @@ anyhow = "1.0"
 curl = "0.4"
 wmi = "0.13.1"
 sha1 = "0.10.6"
-winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl"] }
+winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
 num-bigint = "0.4.2"
 num-traits = "0.2.14"
 hex = "0.4.3"
@@ -41,6 +41,7 @@ diesel_derives = "2.1.2"
 libsqlite3-sys = { version = "*", features = ["bundled"] }
 lazy_static = "1.4.0"
 uuid = "1.7.0"
+base64 = "0.22.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

@@ -294,6 +294,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35636a1494ede3b646cc98f74f8e62c773a38a659ebc777a2cf26b9b74171df9"
 
 [[package]]
+name = "base64"
+version = "0.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9475866fec1451be56a3c2400fd081ff546538961565ccb5b7142cbd22bc7a51"
+
+[[package]]
 name = "base64ct"
 version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1085,6 +1091,7 @@ version = "4.0.0"
 dependencies = [
  "anyhow",
  "async-std",
+ "base64 0.22.0",
  "curl",
  "diesel",
  "diesel_derives",
@@ -3906,9 +3913,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-build"
-version = "1.5.0"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "defbfc551bd38ab997e5f8e458f87396d2559d05ce32095076ad6c30f7fc5f9c"
+checksum = "e9914a4715e0b75d9f387a285c7e26b5bbfeb1249ad9f842675a82481565c532"
 dependencies = [
  "anyhow",
  "cargo_toml",
@@ -4006,9 +4013,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-utils"
-version = "1.5.1"
+version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a52165bb340e6f6a75f1f5eeeab1bb49f861c12abe3a176067d53642b5454986"
+checksum = "75ad0bbb31fccd1f4c56275d0a5c3abdf1f59999f72cb4ef8b79b4ed42082a21"
 dependencies = [
  "brotli",
  "ctor",
