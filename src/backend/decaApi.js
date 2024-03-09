@@ -7,15 +7,16 @@ async function postAccountVerify(account, clientId) {
     if (!account || !clientId) return null;
 
     const url = `${ROTMG_BASE_URL}/account/verify`;
+    const pw = await invoke('decrypt_string', { data: account.password });
     const data = {
         guid: account.email,
         ...(account.isSteam ? 
             { 
                 steamid: account.steamId,
-                secret: account.password 
+                secret: pw 
             } : 
             { 
-                password: account.password 
+                password: pw 
             }
         ),
         clientToken: clientId,
