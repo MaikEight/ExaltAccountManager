@@ -36,6 +36,8 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
     const [isEditMode, setIsEditMode] = useState(false);
     const [isDeleteMode, setIsDeleteMode] = useState(false);
     const [updateInProgress, setUpdateInProgress] = useState(false);
+    const [decryptedPassword, setDecryptedPassword] = useState("");
+    const [newDecryptedPassword, setNewDecryptedPassword] = useState("");
 
     const { saveServerList } = useServerList();
     const groupsContext = useGroups();
@@ -65,15 +67,19 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
         setAccountOrg(acc);
         setIsEditMode(false);
         setIsDeleteMode(false);
-        
+
         if (acc) {
             setAccount(acc);
+            tauri.invoke("decrypt_string", { data: acc.password }).then((res) => {
+                setDecryptedPassword(res);
+            });
             const timeoutId = setTimeout(() => {
                 setIsOpen(true);
             }, 25);
             return () => clearTimeout(timeoutId);
         }
 
+        setDecryptedPassword("");
         setIsOpen(false);
         const timeoutId = setTimeout(() => {
             setAccount(null);
@@ -81,6 +87,10 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
 
         return () => { clearTimeout(timeoutId); };
     }, [acc]);
+
+    useEffect(() => {
+        setNewDecryptedPassword(decryptedPassword);
+    }, [decryptedPassword]);
 
     const handleAccountEdit = (acc) => {
         setAccount(acc);
@@ -192,9 +202,16 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                                     size="small"
                                                     onClick={() => {
                                                         console.log("save account", account);
-
-                                                        updateAccount(account);
-                                                        onAccountChanged(account);
+                                                        if (newDecryptedPassword !== decryptedPassword) {
+                                                            tauri.invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
+                                                                const newAcc = ({ ...account, password: res });
+                                                                updateAccount(newAcc);
+                                                                onAccountChanged(newAcc);
+                                                            });
+                                                        } else {
+                                                            updateAccount(account);
+                                                            onAccountChanged(account);
+                                                        }
                                                         setIsEditMode(!isEditMode);
                                                         showSnackbar("Account saved", 'success');
                                                     }}
@@ -249,7 +266,7 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                         />
                                         <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={true} />
                                         {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
-                                        {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={account.password} onChange={(value) => handleAccountEdit({ ...account, password: value })} />}
+                                        {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={newDecryptedPassword} onChange={(value) => setNewDecryptedPassword(value)} />}
                                         {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
                                         <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
                                         <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
@@ -332,6 +349,11 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                     let hasChanged = false;
                                     postAccountVerify(account, hwid)
                                         .then(async (res) => {
+                                            if(res === null) {
+                                                showSnackbar("Failed to refresh data", 'error');
+                                                return;
+                                            }
+
                                             hasChanged = true;
                                             console.log(res);
                                             postCharList(res.Account.AccessToken)
