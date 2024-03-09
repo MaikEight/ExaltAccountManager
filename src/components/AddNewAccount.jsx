@@ -20,6 +20,7 @@ import PaddedTableCell from "./AccountDetails/PaddedTableCell";
 import useAccounts from "../hooks/useAccounts";
 import useGroups from "../hooks/useGroups";
 import useServerList from './../hooks/useServerList';
+import { invoke } from '@tauri-apps/api/tauri';
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -300,8 +301,16 @@ function AddNewAccount({ isOpen, onClose }) {
                                     setActiveStep(1)
                                 },
                                 () => {
-                                    updateAccount(newAccount);
-                                    onClose();
+                                    invoke('encrypt_string', { data: newAccount.password })
+                                        .then((pw) => {
+                                            const newAcc = { ...newAccount, password: pw };
+                                            updateAccount(newAcc);
+                                            reloadAccounts();
+                                            onClose();
+                                        })
+                                        .catch((error) => {
+                                            console.error("Error: ", error);
+                                        });
                                 })
                         }
                     </ComponentBox>
@@ -334,7 +343,7 @@ function AddNewAccount({ isOpen, onClose }) {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    alignContent: 'center',                    
+                    alignContent: 'center',
                     minHeight: 44,
                     maxHeight: 44,
                     pt: 0.5,
