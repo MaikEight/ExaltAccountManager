@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 extern crate dirs;
+mod encryption_utils;
 mod diesel_functions;
 mod diesel_setup;
 mod models;
@@ -76,6 +77,8 @@ fn main() {
             delete_eam_group,
             insert_char_list_dataset,
             download_and_run_hwid_tool,
+            encrypt_string,
+            decrypt_string,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -769,6 +772,19 @@ async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error
             "Pool is not initialized",
         )))
     }
+}
+
+
+#[tauri::command]
+fn encrypt_string(data: String) -> Result<String, tauri::Error> {
+    let encrypted_data = encryption_utils::encrypt_data(&data).map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    Ok(encrypted_data)
+}
+
+#[tauri::command]
+fn decrypt_string(data: String) -> Result<String, tauri::Error> {
+    let decrypted_data = encryption_utils::decrypt_data(&data).map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    Ok(decrypted_data)
 }
 
 //########################
