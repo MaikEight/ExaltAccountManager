@@ -9,6 +9,7 @@ import AboutPage from "./pages/AboutPage";
 import { AccountsContextProvider } from "./contexts/AccountsContext";
 import { useTheme } from '@emotion/react';
 import { Box } from '@mui/material';
+import { PopupContextProvider } from './contexts/PopupContext';
 
 function MainRouter() {
     const theme = useTheme();
@@ -25,14 +26,16 @@ function MainRouter() {
                     <AccountsContextProvider>
                         <GroupsContextProvider>
                             <ServerContextProvider>
-                                <Routes>
-                                    <Route path='/' element={<AccountsPage />}></Route>
-                                    <Route path='/accounts' element={<AccountsPage />}></Route>
-                                    <Route path='/utilities' element={<UtilitiesPage />}></Route>
-                                    <Route path='/settings' element={<SettingsPage />}></Route>
-                                    <Route path='/about' element={<AboutPage />}></Route>
-                                    <Route path='*' element={<AccountsPage />}></Route>
-                                </Routes>
+                                <PopupContextProvider>
+                                    <Routes>
+                                        <Route path='/' element={<AccountsPage />}></Route>
+                                        <Route path='/accounts' element={<AccountsPage />}></Route>
+                                        <Route path='/utilities' element={<UtilitiesPage />}></Route>
+                                        <Route path='/settings' element={<SettingsPage />}></Route>
+                                        <Route path='/about' element={<AboutPage />}></Route>
+                                        <Route path='*' element={<AccountsPage />}></Route>
+                                    </Routes>
+                                </PopupContextProvider>
                             </ServerContextProvider>
                         </GroupsContextProvider>
                     </AccountsContextProvider>
