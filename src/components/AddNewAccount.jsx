@@ -97,6 +97,59 @@ function AddNewAccount({ isOpen, onClose }) {
         </Box>);
     };
 
+    const handleLoginButtonClick = () => {
+
+        console.log("login", newAccount);
+        setIsLoading(true);
+
+        let acc = { ...newAccount };
+        if (acc.email.includes('steamworks:')) {
+            acc.isSteam = true;
+            acc.steamId = acc.email.split(':')[1];
+        } else {
+            acc.isSteam = false;
+            acc.steamId = null;
+        }
+        console.log("Post", acc, hwid);
+        postAccountVerify(acc, hwid, false)
+            .then((response) => {
+                if (!response || response.Error) {
+                    setPasswordEmailWrong(true);
+                    setNewAccount({ ...newAccount, password: '' });
+                    return;
+                }
+
+                setNewAccount({
+                    ...acc,
+                    performDailyLogin: false,
+                    ...(response.Account && response.Account.Name ? { name: response.Account.Name } : {}),
+                });
+
+                setActiveStep(1);
+
+                if (response.Account && response.Account.Name) {
+                    postCharList(response.Account.AccessToken)
+                        .then((charList) => {
+                            storeCharList(charList, acc.email);
+                            const servers = charList.Chars.Servers.Server;
+                            if (servers && servers.length > 0) {
+                                saveServerList(servers);
+                            }
+                        }).catch((err) => {
+                            console.error("error", err);
+                        });
+                }
+            })
+            .catch((error) => {
+                console.error("Error: ", error);
+                setPasswordEmailWrong(true);
+                setNewAccount({ ...newAccount, password: '' });
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+
     const getStepContent = () => {
         switch (activeStep) {
             case 0: //Login
@@ -117,8 +170,36 @@ function AddNewAccount({ isOpen, onClose }) {
                                 mb: 1.5,
                             }}
                         >
-                            <TextField id="email" label="E-Mail" variant="standard" error={passwordEmailWrong || accountAlreadyExists()} helperText={accountAlreadyExists() ? "Account is already in your list" : null} value={newAccount.email} onChange={(event) => setNewAccount({ ...newAccount, email: event.target.value })} />
-                            <TextField id="password" label="Password" type="password" error={passwordEmailWrong} variant="standard" value={newAccount.password} onChange={(event) => setNewAccount({ ...newAccount, password: event.target.value })} />
+                            <TextField
+                                id="email"
+                                label="E-Mail"
+                                variant="standard"
+                                error={passwordEmailWrong || accountAlreadyExists()}
+                                helperText={accountAlreadyExists() ? "Account is already in your list" : null}
+                                value={newAccount.email}
+                                onChange={(event) => setNewAccount({ ...newAccount, email: event.target.value })}
+                                onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                        event.preventDefault();
+                                        document.getElementById('password').focus();
+                                    }
+                                }}
+                            />
+                            <TextField
+                                id="password"
+                                label="Password"
+                                type="password"
+                                error={passwordEmailWrong}
+                                variant="standard"
+                                value={newAccount.password}
+                                onChange={(event) => setNewAccount({ ...newAccount, password: event.target.value })}
+                                onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                        event.preventDefault();
+                                        handleLoginButtonClick();
+                                    }
+                                }}
+                            />
                         </Box>
 
                         <Box sx={{ display: 'flex', justifyContent: 'end' }}>
@@ -128,55 +209,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                 <span>
                                     <StyledButton
                                         disabled={isLoginButtonDisabled()}
-                                        onClick={() => {
-                                            setIsLoading(true);
-
-                                            let acc = { ...newAccount };
-                                            if (acc.email.includes('steamworks:')) {
-                                                acc.isSteam = true;
-                                                acc.steamId = acc.email.split(':')[1];
-                                            } else {
-                                                acc.isSteam = false;
-                                                acc.steamId = null;
-                                            }
-
-                                            postAccountVerify(acc, hwid)
-                                                .then((response) => {
-                                                    if (!response || response.Error) {
-                                                        setPasswordEmailWrong(true);
-                                                        setNewAccount({ ...newAccount, password: '' });
-                                                        return;
-                                                    }
-
-                                                    setNewAccount({
-                                                        ...acc,
-                                                        performDailyLogin: false,
-                                                        ...(response.Account && response.Account.Name ? { name: response.Account.Name } : {}),
-                                                    });
-
-                                                    setActiveStep(1);
-
-                                                    if (response.Account && response.Account.Name) {
-                                                        postCharList(response.Account.AccessToken)
-                                                            .then((charList) => {
-                                                                storeCharList(charList, acc.email);
-                                                                const servers = charList.Chars.Servers.Server;
-                                                                if (servers && servers.length > 0) {
-                                                                    saveServerList(servers);
-                                                                }
-                                                            }).catch((err) => {
-                                                                console.error("error", err);
-                                                            });
-                                                    }
-                                                })
-                                                .catch((error) => {
-                                                    setPasswordEmailWrong(true);
-                                                    setNewAccount({ ...newAccount, password: '' });
-                                                })
-                                                .finally(() => {
-                                                    setIsLoading(false);
-                                                });
-                                        }}
+                                        onClick={handleLoginButtonClick}
                                     >
                                         login
                                     </StyledButton>
