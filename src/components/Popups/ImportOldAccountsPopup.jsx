@@ -12,29 +12,28 @@ function ImportOldAccountsPopup() {
     const { updateAccount } = useAccounts();
 
     return (
-        <PopupBase 
+        <PopupBase
             title="Welcome to the all new Exalt Account Manager!"
         >
             <Typography
                 variant="body1"
                 component="div"
             >
-                This is a new version of the EAM application.
-                It has been rewritten from scratch to improve performance, security and (soon™) to add new and exciting features.
+                This new version of EAM has been completely rewritten from scratch to enhance performance, bolster security, and soon™ to introduce exciting new features.
             </Typography>
             <Typography
                 variant="body1"
                 component="div"
             >
-                Sadly it is not compatible with the older versions, so you need to import your accounts to use them here.
-                If you want to do that, you can use the button below to do that automatically.<br />
-                Older versions of the EAM will still work and you can use it to access your accounts.
+                Unfortunately, it's not backward compatible with older versions. You'll need to migrate your accounts to use them in this version.
+                If you wish to proceed, you can conveniently do so by using the button below for automated migration.<br />
+                Rest assured, older versions of EAM will continue to function, allowing you to access your accounts there as well.
             </Typography>
             <Typography
                 variant="body1"
                 component="div"
             >
-                If you don't want to import your old accounts, you can just close this popup and start using the application as if it was a new installation.
+                If you prefer not to migrate your accounts, you can simply start fresh.
             </Typography>
             <StyledButton
                 disabled={isLoading}
@@ -43,15 +42,15 @@ function ImportOldAccountsPopup() {
 
                     const oldAccountsString = await invoke('format_eam_v3_save_file_to_readable_json');
                     const oldAccounts = JSON.parse(oldAccountsString);
-                    
+
                     oldAccounts.forEach((oldAccount) => {
                         const acc = {
                             ...oldAccount,
                             isSteam: false,
                         }
-                        updateAccount(acc);
+                        updateAccount(acc, true);
                     });
-                                     
+
                     localStorage.setItem('firstEamStart', 'false');
 
                     setIsLoading(false);
