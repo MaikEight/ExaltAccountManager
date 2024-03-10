@@ -21,6 +21,7 @@ import useAccounts from "../hooks/useAccounts";
 import useGroups from "../hooks/useGroups";
 import useServerList from './../hooks/useServerList';
 import { invoke } from '@tauri-apps/api/tauri';
+import { getRequestState, storeCharList } from "../utils/charListUtil";
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -38,7 +39,6 @@ function AddNewAccount({ isOpen, onClose }) {
 
     const [newAccount, setNewAccount] = useState({ email: '', password: '' });
 
-    const { storeCharList } = useAccounts();
     const { saveServerList } = useServerList();
 
     //STEP 1
@@ -98,8 +98,6 @@ function AddNewAccount({ isOpen, onClose }) {
     };
 
     const handleLoginButtonClick = () => {
-
-        console.log("login", newAccount);
         setIsLoading(true);
 
         let acc = { ...newAccount };
@@ -110,7 +108,7 @@ function AddNewAccount({ isOpen, onClose }) {
             acc.isSteam = false;
             acc.steamId = null;
         }
-        console.log("Post", acc, hwid);
+        
         postAccountVerify(acc, hwid, false)
             .then((response) => {
                 if (!response || response.Error) {
@@ -130,6 +128,7 @@ function AddNewAccount({ isOpen, onClose }) {
                 if (response.Account && response.Account.Name) {
                     postCharList(response.Account.AccessToken)
                         .then((charList) => {
+                            setNewAccount({ ...newAccount, state: getRequestState(charList) });
                             storeCharList(charList, acc.email);
                             const servers = charList.Chars.Servers.Server;
                             if (servers && servers.length > 0) {
@@ -334,16 +333,8 @@ function AddNewAccount({ isOpen, onClose }) {
                                     setActiveStep(1)
                                 },
                                 () => {
-                                    invoke('encrypt_string', { data: newAccount.password })
-                                        .then((pw) => {
-                                            const newAcc = { ...newAccount, password: pw };
-                                            updateAccount(newAcc);
-                                            reloadAccounts();
-                                            onClose();
-                                        })
-                                        .catch((error) => {
-                                            console.error("Error: ", error);
-                                        });
+                                    updateAccount(newAccount, true);
+                                    onClose();                                
                                 })
                         }
                     </ComponentBox>
