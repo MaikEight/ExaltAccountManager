@@ -843,6 +843,10 @@ async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
 
 #[tauri::command]
 async fn has_old_eam_save_file() -> Result<bool, tauri::Error> {
+    if std::env::consts::OS != "windows" {
+        return Ok(false);
+    }
+
     let save_file_path = get_save_file_path();
     //remove the last folder from the save file path (cd ..)
     let old_save_file_path = Path::new(&save_file_path)
@@ -868,7 +872,6 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
     file.write_all(EAM_SAVE_FILE_CONVERTER)
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     drop(file);
-    println!("Embedded file path: {:?}", embedded_file_path);
 
     let process = std::process::Command::new(embedded_file_path.clone())
         .current_dir(save_file_path.clone())
@@ -876,9 +879,7 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
 
     if process.status.success() {
-        println!("Process success");
         let output_file_path = Path::new(&save_file_path).join("accountsV3.json");
-        println!("Output file path: {:?}", output_file_path);
         let mut file = File::open(output_file_path.clone()).map_err(|e| {
             tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
         })?;
@@ -886,7 +887,6 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
         file.read_to_string(&mut content).map_err(|e| {
             tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
         })?;
-        println!("Content: {}", content);
         fs::remove_file(embedded_file_path).map_err(|e| {
             tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
         })?;
@@ -895,7 +895,6 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
         })?;
         Ok(content)
     } else {
-        println!("Process failed");
         let error_message = format!(
             "EAM_Save_File_Converter.exe failed with exit code: {}",
             process.status.code().unwrap_or(100)
