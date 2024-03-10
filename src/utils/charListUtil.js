@@ -28,7 +28,7 @@ function getRequestState(charList) {
 
     if (hasErrors) {
         console.info('charList has error', charList.Error);
-        const error = charList.Error.toLowerCase();
+        const error = charList.Error?.toLowerCase();
 
         if (error.includes("passworderror")) {
             return "WrongPassword";
