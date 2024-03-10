@@ -3,11 +3,12 @@ import { ROTMG_BASE_URL, UPDATE_URLS } from '../constants';
 import { fetch, ResponseType } from '@tauri-apps/api/http';
 import { invoke } from '@tauri-apps/api/tauri';
 
-async function postAccountVerify(account, clientId) {
+async function postAccountVerify(account, clientId, decryptNeeded = true) {
+    console.log("postAccountVerify: ", account, clientId);
     if (!account || !clientId) return null;
 
-    const url = `${ROTMG_BASE_URL}/account/verify`;
-    const pw = await invoke('decrypt_string', { data: account.password });
+    const url = `${ROTMG_BASE_URL}/account/verify`;    
+    const pw = decryptNeeded ? await invoke('decrypt_string', { data: account.password }) : account.password;
     const data = {
         guid: account.email,
         ...(account.isSteam ? 
@@ -26,7 +27,10 @@ async function postAccountVerify(account, clientId) {
     };
 
     try {
+        console.log("post data: ", data);
+
         const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
+        console.log("post Response: ", response);
         return xmlToJson(response);
     } catch (error) {
         console.error(`Error: ${error}`);
