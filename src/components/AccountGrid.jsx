@@ -63,6 +63,7 @@ function AccountGrid({ setShowAddNewAccount }) {
         { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
         { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 115, flex: 0.125, renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div>},
         { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
+        { field: 'state', headerName: 'Last State', width: 110 },
     ];
 
     const handleDailyLoginCheckboxChange = (event, params) => {
