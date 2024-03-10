@@ -85,7 +85,12 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "windows": {
+        "certificateThumbprint": "b082652dc70f2ab8338976148c895d3d77db928e",
+        "digestAlgorithm": "sha256",
+        "timestampUrl": "http://time.certum.pl"
+      }
     },
     "security": {
       "csp": null
