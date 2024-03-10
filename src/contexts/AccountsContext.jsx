@@ -63,11 +63,11 @@ function AccountsContextProvider({ children }) {
                     return account;
                 });
 
-                setAccounts(updatedAccounts);
-
                 if (selectedAccount && selectedAccount.email === updatedAccount.email) {
                     setSelectedAccount(updatedAccountToUse);
                 }
+
+                loadAccounts();
             });        
     };
 
