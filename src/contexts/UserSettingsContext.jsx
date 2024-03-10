@@ -8,7 +8,9 @@ const defaultSettings = {
         theme: "dark",
     },
     accounts: {
-        columnsHidden: {},
+        columnsHidden: {
+            state: false,
+        },
     },
     game: {
         defaultServer: "Last server",
