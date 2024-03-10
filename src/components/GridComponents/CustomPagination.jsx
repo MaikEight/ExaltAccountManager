@@ -29,6 +29,7 @@ function CustomPagination({ rowsPerPageOptions }) {
             onPageChange={handleChangePage}
             rowsPerPageOptions={rowsPerPageOptions}
             labelDisplayedRows={() => { return ''; }}
+            labelRowsPerPage="Accounts per page:"
             ActionsComponent={() => (
                 <Pagination className="pagination-pages"
                     style={{ flex: '1 0 auto', paddingLeft: '1rem' }}
@@ -36,7 +37,7 @@ function CustomPagination({ rowsPerPageOptions }) {
                     shape="rounded"
                     page={page + 1}
                     count={pageCount}
-                    onChange={(event, page) => handleChangePage(event, page - 1)}
+                    onChange={(event, page) => handleChangePage(event, page - 1)}                    
                 />
             )}
         />
