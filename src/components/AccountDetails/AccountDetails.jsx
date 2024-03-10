@@ -305,6 +305,10 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
 
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
+                                                    const newAcc = ({ ...acc, state: state });
+                                                    updateAccount(newAcc);
+                                                    onAccountChanged(newAcc);
+                                                    
                                                     storeCharList(charList, acc.email);
                                                     const servers = charList.Chars.Servers.Server;
                                                     if (servers && servers.length > 0) {
@@ -349,23 +353,36 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                     let hasChanged = false;
                                     postAccountVerify(account, hwid)
                                         .then(async (res) => {
-                                            if(res === null) {
+                                            if (res === null) {
                                                 showSnackbar("Failed to refresh data", 'error');
                                                 return;
                                             }
 
+                                            if (res.Error) {
+                                                const requestState = getRequestState(res);
+                                                if (!!res) {
+                                                    showSnackbar("Failed to refresh data: " + requestState, 'error');
+
+                                                    const newAcc = ({ ...acc, state: requestState });
+                                                    updateAccount(newAcc);
+                                                    return;
+                                                }
+
+                                                showSnackbar("Failed to refresh data: " + res.Error, 'error');
+                                                return;
+                                            }
+
                                             hasChanged = true;
-                                            console.log(res);
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
                                                     const state = getRequestState(charList);
+                                                    const newAcc = ({ ...acc, state: state });
+                                                    updateAccount(newAcc);
+                                                    onAccountChanged(newAcc);
+
                                                     if (state !== "Success") {
                                                         hasChanged = false;
                                                         showSnackbar("Failed to refresh data: " + state, 'error');
-
-                                                        const newAcc = ({ ...acc, state: state });
-                                                        updateAccount(newAcc);
-                                                        onAccountChanged(newAcc);
                                                         return;
                                                     }
 
