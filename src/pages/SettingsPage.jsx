@@ -40,7 +40,8 @@ function SettingsPage() {
         { field: 'lastLogin', headerName: 'Last Login' },
         { field: 'serverName', headerName: 'Server' },
         { field: 'lastRefresh', headerName: 'Last refresh' },
-        { field: 'performDailyLogin', headerName: 'Daily Login' }
+        { field: 'performDailyLogin', headerName: 'Daily Login' },
+        { field: 'state', headerName: 'Last State' }
     ];
     const theme = useTheme();
     const userSettings = useUserSettings();
