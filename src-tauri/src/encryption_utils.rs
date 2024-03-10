@@ -11,8 +11,6 @@ use winapi::um::dpapi::CryptProtectData;
 use winapi::um::dpapi::CryptUnprotectData;
 use winapi::um::wincrypt::DATA_BLOB;
 use std::ptr::null_mut;
-use std::os::windows::ffi::OsStrExt;
-use std::ffi::OsStr;
 use std::slice;
 use std::str;
 use base64::Engine;
