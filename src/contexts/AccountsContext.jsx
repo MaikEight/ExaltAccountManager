@@ -38,7 +38,7 @@ function AccountsContextProvider({ children }) {
         return enhanceAccountData(await invoke('get_eam_account_by_email', { accountEmail: acc.email }));
     }
 
-    const updateAccount = (updatedAccount) => {
+    const updateAccount = (updatedAccount, encryptPassword = false) => {
         if (!updatedAccount) return updatedAccount;
 
         let token = null;
@@ -50,25 +50,29 @@ function AccountsContextProvider({ children }) {
                 token = null;
             }
         }
-        const acc = {...updatedAccount, token: token};
-        
-        saveAccount(acc)
-            .then((updAccount) => {
-                const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
 
-                const updatedAccounts = accounts.map((account) => {
-                    if (account.email === updatedAccount.email) {
-                        return updatedAccountToUse;
-                    }
-                    return account;
-                });
+        const getPassword = async () => {
+            if (encryptPassword) {
+                return await invoke('encrypt_string', { data: updatedAccount.password }).then((res) => res);
+            }
 
-                if (selectedAccount && selectedAccount.email === updatedAccount.email) {
-                    setSelectedAccount(updatedAccountToUse);
-                }
+            return updatedAccount.password;
+        };
 
-                loadAccounts();
-            });        
+        getPassword()
+            .then((pw) => {
+                const acc = { ...updatedAccount, token: token, password: pw };
+                saveAccount(acc)
+                    .then((updAccount) => {
+                        const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
+
+                        if (selectedAccount && selectedAccount.email === updatedAccount.email) {
+                            setSelectedAccount(updatedAccountToUse);
+                        }
+
+                        loadAccounts();
+                    });
+            });
     };
 
     const handleSelectedAccountParameter = (accs) => {
@@ -152,7 +156,7 @@ function AccountsContextProvider({ children }) {
 }
 
 function enhanceAccountData(acc) {
-    if(!acc) return acc;
+    if (!acc) return acc;
 
     acc.lastLogin = acc.lastLogin ? new Date(acc.lastLogin) : null;
     acc.lastRefresh = acc.lastRefresh ? new Date(acc.lastRefresh) : null;
