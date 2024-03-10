@@ -3,9 +3,13 @@ import StyledButton from "../StyledButton";
 import PopupBase from "./PopupBase";
 import { invoke } from "@tauri-apps/api";
 import { useState } from "react";
+import usePopups from "../../hooks/usePopups";
+import useAccounts from "../../hooks/useAccounts";
 
 function ImportOldAccountsPopup() {
     const [isLoading, setIsLoading] = useState(false);
+    const { closePopup } = usePopups();
+    const { updateAccount } = useAccounts();
 
     return (
         <PopupBase 
@@ -36,9 +40,22 @@ function ImportOldAccountsPopup() {
                 disabled={isLoading}
                 onClick={async () => {
                     setIsLoading(true);
-                    const oldAccounts = await invoke('format_eam_v3_save_file_to_readable_json');
-                    console.log(oldAccounts);
+
+                    const oldAccountsString = await invoke('format_eam_v3_save_file_to_readable_json');
+                    const oldAccounts = JSON.parse(oldAccountsString);
+                    
+                    oldAccounts.forEach((oldAccount) => {
+                        const acc = {
+                            ...oldAccount,
+                            isSteam: false,
+                        }
+                        updateAccount(acc);
+                    });
+                                     
+                    localStorage.setItem('firstEamStart', 'false');
+
                     setIsLoading(false);
+                    closePopup();
                 }}
             >
                 Import accounts
@@ -47,6 +64,10 @@ function ImportOldAccountsPopup() {
             <StyledButton
                 disabled={isLoading}
                 color='secondary'
+                onClick={() => {
+                    localStorage.setItem('firstEamStart', 'false');
+                    closePopup();
+                }}
             >
                 start fresh
             </StyledButton>
