@@ -17,7 +17,7 @@ function SideBarLogo() {
                 alignItems: "center",
                 height: 64,
                 width: 200,
-                paddingLeft: 1,
+                paddingLeft: 1.5,
                 gap: 0.5,
                 zIndex: 999999,
             }}
@@ -44,7 +44,8 @@ function SideBarLogo() {
                     userSelect: "none",
                 }}
             >
-                Exalt Account
+                Exalt 
+                Account
                 Manager
             </Typography>
         </Box>
