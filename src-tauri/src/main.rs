@@ -2,9 +2,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 extern crate dirs;
-mod encryption_utils;
 mod diesel_functions;
 mod diesel_setup;
+mod encryption_utils;
 mod models;
 mod schema;
 
@@ -36,6 +36,11 @@ use crate::diesel_setup::DbPool;
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
 }
+
+//IMPORTANT: The file is not checked in to the repository
+#[cfg(target_os = "windows")]
+const EAM_SAVE_FILE_CONVERTER: &'static [u8] =
+    include_bytes!("../IncludedBinaries/EAM_Save_File_Converter.exe");
 
 fn main() {
     //Create the save file directory if it does not exist
@@ -79,6 +84,8 @@ fn main() {
             download_and_run_hwid_tool,
             encrypt_string,
             decrypt_string,
+            has_old_eam_save_file,
+            format_eam_v3_save_file_to_readable_json
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -774,16 +781,17 @@ async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error
     }
 }
 
-
 #[tauri::command]
 fn encrypt_string(data: String) -> Result<String, tauri::Error> {
-    let encrypted_data = encryption_utils::encrypt_data(&data).map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    let encrypted_data = encryption_utils::encrypt_data(&data)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     Ok(encrypted_data)
 }
 
 #[tauri::command]
 fn decrypt_string(data: String) -> Result<String, tauri::Error> {
-    let decrypted_data = encryption_utils::decrypt_data(&data).map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    let decrypted_data = encryption_utils::decrypt_data(&data)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     Ok(decrypted_data)
 }
 
@@ -829,6 +837,75 @@ async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
         Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
             "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn has_old_eam_save_file() -> Result<bool, tauri::Error> {
+    let save_file_path = get_save_file_path();
+    //remove the last folder from the save file path (cd ..)
+    let old_save_file_path = Path::new(&save_file_path)
+        .parent()
+        .unwrap()
+        .join("EAM.accounts");
+    Ok(old_save_file_path.exists())
+}
+
+#[tauri::command]
+async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Error> {
+    if std::env::consts::OS != "windows" {
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "This function is only available on Windows",
+        )));
+    }
+
+    let save_file_path = get_save_file_path();
+    let embedded_file_path = Path::new(&save_file_path).join("EAM_Save_File_Converter.exe");
+    let mut file = File::create(embedded_file_path.clone())
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    file.write_all(EAM_SAVE_FILE_CONVERTER)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    drop(file);
+    println!("Embedded file path: {:?}", embedded_file_path);
+
+    let process = std::process::Command::new(embedded_file_path.clone())
+        .current_dir(save_file_path.clone())
+        .output()
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+
+    if process.status.success() {
+        println!("Process success");
+        let output_file_path = Path::new(&save_file_path).join("accountsV3.json");
+        println!("Output file path: {:?}", output_file_path);
+        let mut file = File::open(output_file_path.clone()).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        })?;
+        let mut content = String::new();
+        file.read_to_string(&mut content).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        })?;
+        println!("Content: {}", content);
+        fs::remove_file(embedded_file_path).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        })?;
+        fs::remove_file(output_file_path).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        })?;
+        Ok(content)
+    } else {
+        println!("Process failed");
+        let error_message = format!(
+            "EAM_Save_File_Converter.exe failed with exit code: {}",
+            process.status.code().unwrap_or(100)
+        );
+        fs::remove_file(embedded_file_path).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        })?;
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            error_message,
         )))
     }
 }
