@@ -3,8 +3,7 @@ import { ROTMG_BASE_URL, UPDATE_URLS } from '../constants';
 import { fetch, ResponseType } from '@tauri-apps/api/http';
 import { invoke } from '@tauri-apps/api/tauri';
 
-async function postAccountVerify(account, clientId, decryptNeeded = true) {
-    console.log("postAccountVerify: ", account, clientId);
+async function postAccountVerify(account, clientId, decryptNeeded = true) {    
     if (!account || !clientId) return null;
 
     const url = `${ROTMG_BASE_URL}/account/verify`;    
@@ -27,10 +26,7 @@ async function postAccountVerify(account, clientId, decryptNeeded = true) {
     };
 
     try {
-        console.log("post data: ", data);
-
         const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
-        console.log("post Response: ", response);
         return xmlToJson(response);
     } catch (error) {
         console.error(`Error: ${error}`);
