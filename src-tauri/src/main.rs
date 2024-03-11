@@ -592,21 +592,30 @@ async fn get_device_unique_identifier() -> Result<String, String> {
 
 #[tauri::command]
 fn get_default_game_path() -> String {
-    let home_dir = env::var("HOME").unwrap_or_else(|_| "".into());
     let os = env::consts::OS;
-
+    
     match os {
-        "windows" => format!(
-            "{}\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe",
-            home_dir
-        ),
-        "macos" => format!(
-            "{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app",
-            home_dir
-        ),
+        "windows" => {
+            let mut path = dirs::document_dir().unwrap();
+            path.push("RealmOfTheMadGod");
+            path.push("Production");
+            
+            format!(
+                "{}\\RotMG Exalt.exe",
+                path.to_str().unwrap()
+            )
+        },
+        "macos" => {
+            let home_dir = env::var("HOME").unwrap_or_else(|_| "".into());
+            format!(
+                "{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app",
+                home_dir
+            )
+        },
         _ => "".into(),
     }
 }
+
 
 #[tauri::command]
 async fn download_and_run_hwid_tool() -> Result<bool, String> {
