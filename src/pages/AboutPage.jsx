@@ -42,7 +42,7 @@ function AboutPage() {
                 >
                     <Typography>
                         Exalt Account Manager version 4.0.0
-                        <br />Released on 12.03.2024
+                        <br />Released on 12.03.2024.
                         <br />This build is for testing purposes only.
                     </Typography>
                 </ComponentBox>
