@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "exalt-account-manager",
+    "productName": "Exalt Account Manager",
     "version": "4.0.0"
   },
   "tauri": {
