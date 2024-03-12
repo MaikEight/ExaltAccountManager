@@ -86,6 +86,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 - Rapid updater for both the game and EAM
 - Automatically fetch the Account name
 - Create login-tokens at runtime
+- Steam account support
 
 ## How to get started 🚀
 
