@@ -10,6 +10,7 @@ import { AccountsContextProvider } from "./contexts/AccountsContext";
 import { useTheme } from '@emotion/react';
 import { Box } from '@mui/material';
 import { PopupContextProvider } from './contexts/PopupContext';
+import FeedbackPage from './pages/FeedbackPage';
 
 function MainRouter() {
     const theme = useTheme();
@@ -33,6 +34,7 @@ function MainRouter() {
                                         <Route path='/utilities' element={<UtilitiesPage />}></Route>
                                         <Route path='/settings' element={<SettingsPage />}></Route>
                                         <Route path='/about' element={<AboutPage />}></Route>
+                                        <Route path='/feedback' element={<FeedbackPage />}></Route>
                                         <Route path='*' element={<AccountsPage />}></Route>
                                     </Routes>
                                 </PopupContextProvider>
