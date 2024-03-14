@@ -41,8 +41,8 @@ function AboutPage() {
                     sx={{ mr: 0, userSelect: "none", flexGrow: 1 }}
                 >
                     <Typography>
-                        Exalt Account Manager version 4.0.0
-                        <br />Released on 12.03.2024.
+                        Exalt Account Manager version 4.0.2
+                        <br />Released on 14.03.2024.
                         <br />This build is for testing purposes only.
                     </Typography>
                 </ComponentBox>
@@ -120,7 +120,7 @@ function AboutPage() {
                         </StyledButton>
                     </a>
                 </Box>
-            </ComponentBox>            
+            </ComponentBox>
         </Box>
     );
 }
