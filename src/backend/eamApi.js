@@ -1,6 +1,7 @@
 import { fetch } from "@tauri-apps/api/http";
 import { EAM_BASE_URL } from "../constants";
 import { invoke } from "@tauri-apps/api/tauri";
+import { Body } from "@tauri-apps/api/http"
 
 async function getLatestEamVersion() {
     return await fetch(`${EAM_BASE_URL}v1/ExaltAccountManager/version`,
@@ -73,9 +74,29 @@ async function endSession(sessionId) {
         .then(response => response.data);
 }
 
+async function sendFeedback(feedback) {
+    if (feedback === null || feedback === undefined) {
+        console.log("Feedback is null or undefined, not sending feedback");
+        return;
+    }
+
+    return await fetch(`${EAM_BASE_URL}v1/ExaltAccountManager/Feedback`,
+        {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'ExaltAccountManager',
+                'Content-Type': 'application/json'
+            },
+            body: Body.json(feedback)
+        })
+        .then(response => response.data);
+}
+
 export {
     getLatestEamVersion,
     startSession,
     heartBeat,
-    endSession
+    endSession,
+    sendFeedback
 };
