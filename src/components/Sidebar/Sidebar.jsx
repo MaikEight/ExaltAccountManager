@@ -10,6 +10,7 @@ import SideBarLogo from "./SideBarLogo";
 import { useNavigate } from "react-router-dom";
 import useSnack from "../../hooks/useSnack";
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
+import FeedbackButton from "./FeedbackButton";
 
 function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -75,7 +76,11 @@ function Sidebar({ children }) {
     ];
 
     useEffect(() => {
-        console.log(menuItems[selectedIndex].navigate);
+        if(selectedIndex === -1){
+            return;
+        }
+        
+        console.log(menuItems[selectedIndex].navigate);                
         navigate(menuItems[selectedIndex].navigate);
     }, [selectedIndex]);
 
@@ -156,6 +161,11 @@ function Sidebar({ children }) {
                             mb: 2,
                         }}
                     >
+                        <FeedbackButton
+                            action={() => {
+                                setSelectedIndex(-1);
+                            }}
+                        />
                         {
                             menuItems.map((menu, index) => (
                                 !menu.showInFooter ? null :
