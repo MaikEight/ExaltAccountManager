@@ -16,6 +16,10 @@ import useGroups from "../hooks/useGroups";
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
+  &.MuiDataGrid-root .MuiDataGrid-cell {
+    outline: none;
+    height: 42px;
+  },
   &.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
     outline: none;
   },
