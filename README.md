@@ -12,7 +12,12 @@
    src="https://img.shields.io/badge/Project-Exalt%20Account%20Manager-violet.svg?style=flat&color=6200EE"
     alt="Exalt Account Manager" />
 </a>
-<a href="https://github.com/MaikEight/ExaltAccountManager/blob/master/LICENSE" style="display: inline">
+<a href="https://app.codacy.com/gh/MaikEight/ExaltAccountManager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" style="display: inline">
+  <img
+   src="https://app.codacy.com/project/badge/Grade/0ef544da9dd44beeac1d3e69f7312d94"
+    alt="Exalt Account Manager" />
+</a>
+<a href="https://github.com/MaikEight/ExaltAccountManager/blob/main/LICENSE" style="display: inline">
   <img
     src="https://img.shields.io/github/license/MaikEight/ExaltAccountManager?label=License"
     alt="License GPL-3.0" />
@@ -27,12 +32,12 @@
     src="https://img.shields.io/maintenance/yes/2024?label=Maintained"
     alt="Maintained" />
 </a>
-<a href="https://github.com/MaikEight/ExaltAccountManager/commits/master" style="display: inline">
+<a href="https://github.com/MaikEight/ExaltAccountManager/commits/main" style="display: inline">
   <img
     src="https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit"
     alt="Last commit" />
 </a>
-<a href="https://support.microsoft.com/en-us/topic/microsoft-net-framework-4-8-offline-installer-for-windows-9d23f658-3b97-68ab-d013-aa3c3e7495e0" style="display: inline">
+<a href="https://tauri.app" style="display: inline">
   <img
     src="https://img.shields.io/badge/Tauri-1.5.1-violet.svg?style=flat&logo=Tauri&color=512BD4"
     alt="Tauri version 1.5.1" />
@@ -57,6 +62,7 @@
     src="https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord"
     alt="Discord server" />
 </a>
+
 
 <br >
 
