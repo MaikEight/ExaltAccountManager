@@ -1,14 +1,12 @@
-mod diesel_functions;
-mod diesel_setup;
-mod encryption_utils;
-mod models;
-mod schema;
-
-use crate::diesel_setup::setup_database;
-use crate::diesel_setup::DbPool;
-use crate::diesel_functions::get_eam_account_by_email;
 extern crate chrono;
 extern crate dirs;
+
+use eam_commons::encryption_utils;
+use eam_commons::setup_database;
+use eam_commons::DbPool;
+
+use eam_commons::get_all_eam_accounts_for_daily_login;
+use eam_commons::get_eam_account_by_email;
 
 use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
@@ -67,7 +65,7 @@ async fn main() {
     *POOL.lock().unwrap() = Some(pool);
 
     let accounts_to_perform_daily_login_with =
-        diesel_functions::get_all_eam_accounts_for_daily_login(
+        get_all_eam_accounts_for_daily_login(
             &POOL.lock().unwrap().as_ref().unwrap(),
         )
         .unwrap();
