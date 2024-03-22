@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS char_list_entries;
+DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS class_stats;
+DROP TABLE IF EXISTS character;
