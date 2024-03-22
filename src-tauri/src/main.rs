@@ -2,11 +2,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 extern crate dirs;
-mod diesel_functions;
-mod diesel_setup;
-mod encryption_utils;
-mod models;
-mod schema;
+
+use eam_commons::encryption_utils;
+use eam_commons::setup_database;
+use eam_commons::DbPool;
+use eam_commons::diesel_functions;
+use eam_commons::models;
 
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
@@ -29,9 +30,6 @@ use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
 use walkdir::WalkDir;
 use zip::read::ZipArchive;
-
-use crate::diesel_setup::setup_database;
-use crate::diesel_setup::DbPool;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
