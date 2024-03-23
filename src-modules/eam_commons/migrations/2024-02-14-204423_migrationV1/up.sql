@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 CREATE TABLE char_list_entries (
     id TEXT PRIMARY KEY,
     email TEXT,
@@ -95,3 +97,5 @@ CREATE TABLE character (
     has3_quickslots INTEGER,
     creation_date TEXT
 );
+
+COMMIT;
