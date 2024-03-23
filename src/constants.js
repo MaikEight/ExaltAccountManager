@@ -10,8 +10,8 @@ export function isUpdateAvailable(latestVersion) {
     const latest = latestVersion.split('.');
     
     for (let i = 0; i < current.length; i++) {
-        if (parseInt(current[i]) < parseInt(latest[i])) return true;
-        if (parseInt(current[i]) > parseInt(latest[i])) return false;
+        if (parseInt(current[i], 10) < parseInt(latest[i], 10)) return true;
+        if (parseInt(current[i], 10) > parseInt(latest[i], 10)) return false;
     }
 
     return false;
