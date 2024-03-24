@@ -1,4 +1,5 @@
 import { fetch } from "@tauri-apps/api/http";
+import { logToErrorLog } from "../utils/loggingUtils";
 
 async function getGitHubStars() {
     if (sessionStorage.getItem('githubStars')) {
@@ -19,7 +20,7 @@ async function getGitHubStars() {
                 return response.data.stargazers_count
             }
         })
-        .catch(error => console.error(error));
+        .catch(error => logToErrorLog('getGitHubStars', error));
 }
 
 export { getGitHubStars };
