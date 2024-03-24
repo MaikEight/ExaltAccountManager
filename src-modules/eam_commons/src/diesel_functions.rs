@@ -134,7 +134,7 @@ pub fn insert_or_update_eam_account(
         Ok(_) => {
             new_row_inserted = true;
         }
-        Err(DatabaseError(_UniqueViolation, _)) => {
+        Err(DatabaseError(_unique_violation, _)) => {
             diesel::update(eam_accounts::table)
                 .filter(eam_accounts::email.eq(&insertable.email))
                 .set(&updatable)
