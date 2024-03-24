@@ -4,10 +4,11 @@ import { appWindow, PhysicalSize } from '@tauri-apps/api/window';
 import { invoke } from '@tauri-apps/api/tauri';
 import { checkForUpdates } from "./realmUpdaterUtils";
 import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
+import { logToErrorLog } from "./loggingUtils";
 
 async function performCheckForUpdates() {
+    
     console.log("Checking for EAM-Updates");
-
     try {
         const update = await checkUpdate();
         if (update.shouldUpdate) {
@@ -17,6 +18,7 @@ async function performCheckForUpdates() {
     }
     catch (e) {
         console.error(e);
+        logToErrorLog("performCheckForUpdates", e);
     }
 }
 
