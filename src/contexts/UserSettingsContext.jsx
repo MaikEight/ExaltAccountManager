@@ -1,6 +1,7 @@
 import { useEffect, useState, createContext } from "react";
 import _ from "lodash";
 import { invoke } from '@tauri-apps/api/tauri';
+import { logToAuditLog } from "../utils/loggingUtils";
 const UserSettingsContext = createContext();
 
 const defaultSettings = {
@@ -32,10 +33,18 @@ function expandSettings(_settings) {
 
 function UserSettingsProvider({ children }) {
     const [userSettingsData, setUserSettingsData] = useState(null);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     useEffect(() => {
         if (!userSettingsData) return;
+
+        if (isFirstLoad) {
+            setIsFirstLoad(false);
+            return;
+        }
+
         localStorage.setItem("userSettings", JSON.stringify(userSettingsData));
+        logToAuditLog('UserSettingsProvider', 'User settings updated');
     }, [userSettingsData]);
 
     const initializeUserSettings = () => {
