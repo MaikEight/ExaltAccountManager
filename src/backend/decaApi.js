@@ -2,6 +2,7 @@ import { xmlToJson } from '../utils/XmlUtils';
 import { ROTMG_BASE_URL, UPDATE_URLS } from '../constants';
 import { fetch, ResponseType } from '@tauri-apps/api/http';
 import { invoke } from '@tauri-apps/api/tauri';
+import { logToErrorLog } from '../utils/loggingUtils';
 
 async function postAccountVerify(account, clientId, decryptNeeded = true) {    
     if (!account || !clientId) return null;
@@ -30,6 +31,7 @@ async function postAccountVerify(account, clientId, decryptNeeded = true) {
         return xmlToJson(response);
     } catch (error) {
         console.error(`Error: ${error}`);
+        logToErrorLog('postAccountVerify', error);
         return null;
     }
 }
@@ -53,6 +55,7 @@ async function postCharList(accessToken) {
         return xmlToJson(response);
     } catch (error) {
         console.error(`Error: ${error}`);
+        logToErrorLog('postCharList', error);
         return null;
     }
 }
@@ -83,6 +86,7 @@ async function getAppInit() {
         return appSettings;
     } catch (error) {
         console.log(error);
+        logToErrorLog('getAppInit', error);
         return null;
     }
 }
@@ -110,6 +114,7 @@ async function getGameFileList(buildHash) {
         return response.data.files;
     } catch (error) {
         console.log(error);
+        logToErrorLog('getGameFileList', error);
         return null;
     }
 }
