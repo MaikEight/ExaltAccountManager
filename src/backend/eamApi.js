@@ -43,7 +43,7 @@ async function startSession(amountOfAccounts, clientIdHash, clientVersion) {
 async function heartBeat() {
     const sessionId = sessionStorage.getItem('sessionId');
     if (sessionId === null || sessionId === undefined) {
-        return;
+        return null;
     }
 
     const url = `${EAM_BASE_URL}v1/Analytics/heartbeat`;
