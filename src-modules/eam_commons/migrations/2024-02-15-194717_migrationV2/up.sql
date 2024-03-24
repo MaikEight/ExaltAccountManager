@@ -1,5 +1,3 @@
-BEGIN TRANSACTION;
-
 CREATE TABLE EamAccount (
     id INTEGER UNIQUE,
     name TEXT,
@@ -25,5 +23,3 @@ CREATE TABLE EamGroup (
     icon TEXT NOT NULL,
     padding TEXT NOT NULL
 );
-
-COMMIT;
