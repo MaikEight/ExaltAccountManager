@@ -135,8 +135,28 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    AuditLog (id) {
+        id -> Nullable<Integer>,
+        time -> Timestamp,
+        sender -> Text,
+        message -> Text,
+        accountEmail -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    ErrorLog (id) {
+        id -> Nullable<Integer>,
+        time -> Timestamp,
+        sender -> Text,
+        message -> Text,
+    }
+}
+
 diesel::joinable!(account -> char_list_entries (entry_id));
 diesel::joinable!(class_stats -> account (entry_id));
+diesel::joinable!(AuditLog -> EamAccount (accountEmail));
 
 diesel::allow_tables_to_appear_in_same_query!(
     EamAccount,
@@ -145,4 +165,6 @@ diesel::allow_tables_to_appear_in_same_query!(
     char_list_entries,
     character,
     class_stats,
+    AuditLog,
+    ErrorLog,
 );
