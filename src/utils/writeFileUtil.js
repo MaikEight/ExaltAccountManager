@@ -1,3 +1,4 @@
+import { logToErrorLog } from "./loggingUtils";
 
 export async function writeFileUTF8(filePath, content, stringifyAsJSON = false) {
     try {
@@ -10,6 +11,7 @@ export async function writeFileUTF8(filePath, content, stringifyAsJSON = false) 
         });
     } catch (error) {
         console.error('Error writing file (UTF8):', error);
+        logToErrorLog('writeFileUTF8', `Error writing file (UTF8): ${error}`);
     }
 }
 
@@ -23,5 +25,6 @@ export async function writeFile(filePath, content) {
         });
     } catch (error) {
         console.error('Error writing file:', error);
+        logToErrorLog('writeFile', `Error writing file: ${error}`);
     }
 }
