@@ -29,7 +29,7 @@ function AboutPage() {
                 icon={<img src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'} alt="EAM Logo" height='35.18px' width='35.18px' />}
                 sx={{ userSelect: "none" }}
             >
-                <Typography >
+                <Typography>
                     Exalt Account Manager was first released in mid 2020 as a simple tool to manage multiple accounts for the game Realm of the Mad God Exalt.
                     Since then it has grown to a fully fledged software with many features and an active user base.
                 </Typography>
