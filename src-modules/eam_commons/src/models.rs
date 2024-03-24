@@ -793,3 +793,70 @@ impl From<EamGroup> for UpdateEamGroup {
         }
     }
 }
+
+// ############################
+// #         AuditLog         #
+// ############################
+
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct AuditLog {
+    pub id: Option<i32>,
+    pub time: String,
+    pub sender: String,
+    pub message: String,
+    pub accountEmail: Option<String>,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::AuditLog)]
+pub struct NewAuditLog {
+    pub id: Option<i32>,
+    pub time: String,
+    pub sender: String,
+    pub message: String,
+    pub accountEmail: Option<String>,
+}
+
+impl From<AuditLog> for NewAuditLog {
+    fn from(audit_log: AuditLog) -> Self {
+        NewAuditLog {
+            id: audit_log.id,
+            time: audit_log.time,
+            sender: audit_log.sender,
+            message: audit_log.message,
+            accountEmail: audit_log.accountEmail,
+        }
+    }
+}
+
+// ############################
+// #         ErrorLog         #
+// ############################
+
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct ErrorLog {
+    pub id: Option<i32>,
+    pub time: String,
+    pub sender: String,
+    pub message: String,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::ErrorLog)]
+pub struct NewErrorLog {
+    pub id: Option<i32>,
+    pub time: String,
+    pub sender: String,
+    pub message: String,
+}
+
+impl From<ErrorLog> for NewErrorLog {
+    fn from(error_log: ErrorLog) -> Self {
+        NewErrorLog {
+            id: error_log.id,
+            time: error_log.time,
+            sender: error_log.sender,
+            message: error_log.message,
+        }
+    }
+}
