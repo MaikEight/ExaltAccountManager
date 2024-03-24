@@ -59,7 +59,7 @@
 </a>
 
 <br >
-  <img  width="250" height="250" src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/ExaltAccountManager/Resources/1.png" alt="EAM logo" title="EAM logo">  
+  <img  width="250" height="250" src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/EAM-v3.3.0/ExaltAccountManager/Resources/logo.png" alt="EAM logo" title="EAM logo">  
 </div>
 
 <br >
