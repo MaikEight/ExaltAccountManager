@@ -2,6 +2,7 @@ import { fetch } from "@tauri-apps/api/http";
 import { EAM_BASE_URL } from "../constants";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Body } from "@tauri-apps/api/http"
+import { logToErrorLog } from "../utils/loggingUtils";
 
 async function getLatestEamVersion() {
     return await fetch(`${EAM_BASE_URL}v1/ExaltAccountManager/version`,
@@ -11,6 +12,11 @@ async function getLatestEamVersion() {
                 'Accept': 'application/json',
                 'User-Agent': 'ExaltAccountManager'
             }
+        })
+        .catch(error => {
+            console.error(`Error: ${error}`);
+            logToErrorLog('getLatestEamVersion', error);
+            return null;
         })
         .then(response => response.data);
 }
@@ -29,7 +35,8 @@ async function startSession(amountOfAccounts, clientIdHash, clientVersion) {
         AmountOfAccounts: amountOfAccounts,
     });
 
-    const response = await invoke('send_post_request_with_json_body', { url, data });
+    const response = await invoke('send_post_request_with_json_body', { url, data })
+        .catch(error => { logToErrorLog('startSession', error); });
     return response ? JSON.parse(response) : "";
 }
 
@@ -47,6 +54,7 @@ async function heartBeat() {
         return response ? JSON.parse(response) : "";
     } catch (error) {
         console.error(`Error: ${error}`);
+        logToErrorLog('heartBeat', error);
         return null;
     }
 }
@@ -71,6 +79,7 @@ async function endSession(sessionId) {
             },
             body: JSON.stringify(data)
         })
+        .catch(error => { logToErrorLog('endSession', error); })
         .then(response => response.data);
 }
 
@@ -90,6 +99,7 @@ async function sendFeedback(feedback) {
             },
             body: Body.json(feedback)
         })
+        .catch(error => { logToErrorLog('sendFeedback', error); })
         .then(response => response.data);
 }
 
