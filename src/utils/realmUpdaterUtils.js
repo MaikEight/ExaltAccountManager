@@ -2,6 +2,7 @@ import { tauri } from '@tauri-apps/api';
 import { getAppInit, getGameFileList } from '../backend/decaApi';
 import { getCurrentTime } from './timeUtils';
 import { UPDATE_URLS } from '../constants';
+import { logToErrorLog } from './loggingUtils';
 
 async function checkForUpdates(gameExePath) {
     if (sessionStorage.getItem('updateCheckInProgress') === 'true' ||
@@ -60,6 +61,8 @@ async function updateGame(gameExePath) {
         sessionStorage.removeItem('buildHash');
         sessionStorage.removeItem('fileList');
         localStorage.removeItem('updateNeeded');
+    }).catch((error) => {
+        logToErrorLog('updateGame', error);
     }).finally(() => {
         sessionStorage.setItem('updateInProgress', 'false');
     });
