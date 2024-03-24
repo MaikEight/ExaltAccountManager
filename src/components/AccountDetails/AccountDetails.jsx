@@ -28,8 +28,9 @@ import useAccounts from "../../hooks/useAccounts";
 import useGroups from "../../hooks/useGroups";
 import { getRequestState, storeCharList } from "../../utils/charListUtil";
 import useServerList from './../../hooks/useServerList';
+import { logToErrorLog } from "../../utils/loggingUtils";
 
-function AccountDetails({ acc, onClose, onAccountChanged }) {
+function AccountDetails({ acc, onClose }) {
     const [account, setAccount] = useState(null);
     const [accountOrg, setAccountOrg] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -206,11 +207,9 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                                             tauri.invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
                                                                 const newAcc = ({ ...account, password: res });
                                                                 updateAccount(newAcc);
-                                                                onAccountChanged(newAcc);
                                                             });
                                                         } else {
                                                             updateAccount(account);
-                                                            onAccountChanged(account);
                                                         }
                                                         setIsEditMode(!isEditMode);
                                                         showSnackbar("Account saved", 'success');
@@ -274,7 +273,6 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                             onChange={(event) => {
                                                 const newAcc = ({ ...account, performDailyLogin: event.target.checked });
                                                 updateAccount(newAcc);
-                                                onAccountChanged(newAcc);
                                             }}
                                         />
                                         {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
@@ -292,52 +290,71 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                 fullWidth={true}
                                 sx={{ height: 55 }}
                                 onClick={() => {
-                                    let hasChanged = false;
                                     postAccountVerify(account, hwid)
                                         .then(async (res) => {
-                                            hasChanged = true;
+                                            if (res === null) {
+                                                logToErrorLog("Start Game", "Failed to start the game for " + account.email + ", got null response");
+                                                showSnackbar("Failed to start the game", 'error');
+                                                return;
+                                            }
+
+                                            if (res.Error) {
+                                                const requestState = getRequestState(res);
+                                                logToErrorLog("Start Game", "Failed to start the game for " + account.email + ", got state: " + requestState);
+                                                if (!!res) {
+                                                    showSnackbar("Failed to start the game: " + requestState, 'error');
+
+                                                    const newAcc = ({ ...acc, state: requestState });
+                                                    updateAccount(newAcc);
+                                                    return;
+                                                }
+
+                                                showSnackbar("Failed to start the game: " + res.Error, 'error');
+                                                return;
+                                            }
+
                                             const token = {
                                                 AccessToken: res.Account.AccessToken,
                                                 AccessTokenTimestamp: res.Account.AccessTokenTimestamp,
                                                 AccessTokenExpiration: res.Account.AccessTokenExpiration,
                                             };
-                                            acc.token = token;
-
-                                            postCharList(res.Account.AccessToken)
-                                                .then((charList) => {
-                                                    const newAcc = ({ ...acc, state: state });
-                                                    updateAccount(newAcc);
-                                                    onAccountChanged(newAcc);
-                                                    
-                                                    storeCharList(charList, acc.email);
-                                                    const servers = charList.Chars.Servers.Server;
-                                                    if (servers && servers.length > 0) {
-                                                        saveServerList(servers);
-                                                    }
-
-                                                    hasChanged = false;
-                                                }).catch((err) => {
-                                                    console.error("error", err);
-                                                    if (hasChanged) {
-                                                        hasChanged = false;
-                                                    }
-                                                });
-
+                                            
+                                            showSnackbar("Starting the game...");
                                             const args = `data:{platform:Deca,guid:${btoa(acc.email)},token:${btoa(acc.token.AccessToken)},tokenTimestamp:${btoa(acc.token.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
                                             tauri.invoke(
                                                 "start_application",
                                                 { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
-                                            );
-                                        })
-                                        .then(() => {
-                                            if (hasChanged) {
-                                                const current = new Date().toISOString();
-                                                const newAcc = { ...acc, lastRefresh: current, lastLogin: current };
+                                            );                                            
 
-                                                updateAccount(newAcc);
-                                                onAccountChanged(newAcc);
-                                            }
-                                        });
+                                            postCharList(res.Account.AccessToken)
+                                                .then((charList) => {
+                                                    const state = getRequestState(charList);
+                                                    const newAcc = ({ ...acc, state: state, lastRefresh: new Date().toISOString(), token: token});
+                                                    updateAccount(newAcc);
+
+                                                    if (state !== "Success") {
+                                                        logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + state);
+                                                        showSnackbar("Failed to refresh data: " + state, 'error');
+                                                        return;
+                                                    }
+
+                                                    storeCharList(charList, acc.email);
+                                                    showSnackbar("Refreshing finished");
+
+                                                    const servers = charList.Chars.Servers.Server;
+                                                    if (servers && servers.length > 0) {
+                                                        saveServerList(servers);
+                                                    }
+                                                }).catch((err) => {
+                                                    console.error("error", err);
+
+                                                    const newAcc = ({ ...acc, token: token});
+                                                    updateAccount(newAcc);
+
+                                                    logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got error: " + err);
+                                                    showSnackbar("Failed to refresh data " + res.Error, 'error');
+                                                });
+                                        })                                   
                                 }}
                             >
                                 <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
@@ -350,16 +367,17 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                 startIcon={<RefreshOutlinedIcon />}
                                 color="secondary"
                                 onClick={() => {
-                                    let hasChanged = false;
                                     postAccountVerify(account, hwid)
                                         .then(async (res) => {
                                             if (res === null) {
+                                                logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got null response");
                                                 showSnackbar("Failed to refresh data", 'error');
                                                 return;
                                             }
 
                                             if (res.Error) {
                                                 const requestState = getRequestState(res);
+                                                logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + requestState);
                                                 if (!!res) {
                                                     showSnackbar("Failed to refresh data: " + requestState, 'error');
 
@@ -372,44 +390,31 @@ function AccountDetails({ acc, onClose, onAccountChanged }) {
                                                 return;
                                             }
 
-                                            hasChanged = true;
                                             postCharList(res.Account.AccessToken)
                                                 .then((charList) => {
                                                     const state = getRequestState(charList);
-                                                    const newAcc = ({ ...acc, state: state });
+                                                    const newAcc = ({ ...acc, state: state, lastRefresh: new Date().toISOString() });
                                                     updateAccount(newAcc);
-                                                    onAccountChanged(newAcc);
 
                                                     if (state !== "Success") {
-                                                        hasChanged = false;
+                                                        logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + state);
                                                         showSnackbar("Failed to refresh data: " + state, 'error');
                                                         return;
                                                     }
 
                                                     storeCharList(charList, acc.email);
+                                                    showSnackbar("Refreshing finished");
 
                                                     const servers = charList.Chars.Servers.Server;
                                                     if (servers && servers.length > 0) {
                                                         saveServerList(servers);
                                                     }
-
-                                                    hasChanged = false;
                                                 }).catch((err) => {
                                                     console.error("error", err);
-                                                    if (hasChanged) {
-                                                        onAccountChanged(acc);
-                                                        hasChanged = false;
-                                                    }
+                                                    logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got error: " + err);
+                                                    showSnackbar("Failed to refresh data " + res.Error, 'error');
                                                 });
                                         })
-                                        .then(() => {
-                                            if (hasChanged) {
-                                                const newAcc = ({ ...acc, lastRefresh: new Date().toISOString() });
-                                                updateAccount(newAcc);
-                                                onAccountChanged(newAcc);
-                                                showSnackbar("Refreshing finished");
-                                            }
-                                        });
                                 }}
                             >
                                 refresh data
