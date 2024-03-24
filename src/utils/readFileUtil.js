@@ -1,3 +1,4 @@
+import { logToErrorLog } from "./loggingUtils";
 
 async function readFileUTF8(filePath, parseAsJSON = false) {
     try {        
@@ -7,10 +8,12 @@ async function readFileUTF8(filePath, parseAsJSON = false) {
             return parseAsJSON ? JSON.parse(stringContent) : stringContent;
         }
         console.warn("File does not exist:", filePath);
+        logToErrorLog('readFileUTF8', `File does not exist: ${filePath}`);
     } catch (error) {
         if(error.includes('os error 2')) return;
 
         console.error('Error reading file:',filePath, error);
+        logToErrorLog('readFileUTF8', `Error reading file: ${filePath} - ${error}`);
     }
     return null;
 };
