@@ -1,32 +1,41 @@
 use crate::diesel_setup::DbPool;
-use diesel::RunQueryDsl;
+use crate::models::{AuditLog, NewAuditLog};
 use crate::models::{CharListDataset, CharListEntries, NewCharListEntries};
 use crate::models::{EamAccount, NewEamAccount, UpdateEamAccount};
 use crate::models::{EamGroup, NewEamGroup, UpdateEamGroup};
-use crate::models::{NewAccount, NewClassStats, NewCharacter};
-use crate::schema::char_list_entries::dsl::*;
+use crate::models::{ErrorLog, NewErrorLog};
+use crate::models::{NewAccount, NewCharacter, NewClassStats};
 use crate::schema::account::dsl::*;
-use crate::schema::class_stats::dsl::*;
+use crate::schema::char_list_entries::dsl::*;
 use crate::schema::character::dsl::*;
+use crate::schema::class_stats::dsl::*;
+use crate::schema::AuditLog as audit_logs;
+use crate::schema::AuditLog::dsl::*;
 use crate::schema::EamAccount as eam_accounts;
 use crate::schema::EamAccount::dsl::*;
 use crate::schema::EamGroup as eam_groups;
 use crate::schema::EamGroup::dsl::*;
+use crate::schema::ErrorLog as error_logs;
 use diesel::insert_into;
 use diesel::prelude::*;
+use diesel::RunQueryDsl;
+use diesel::result::Error::DatabaseError;
 use uuid::Uuid;
 
 //########################
 //#    CharListDataset   #
 //########################
-pub fn insert_char_list_dataset( pool: &DbPool, dataset: CharListDataset ) -> Result<usize, diesel::result::Error> {
+pub fn insert_char_list_dataset(
+    pool: &DbPool,
+    dataset: CharListDataset,
+) -> Result<usize, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     let mut entry = CharListEntries::from(dataset.clone());
     let entry_uuid = Uuid::new_v4().to_string();
     let entry_uuid_opt = Some(entry_uuid.clone());
     entry.id = Some(entry_uuid.clone());
-    let new_entry = NewCharListEntries::from(entry);    
-    
+    let new_entry = NewCharListEntries::from(entry);
+
     //char_list_entries
     let result = insert_into(char_list_entries)
         .values(&new_entry)
@@ -38,9 +47,7 @@ pub fn insert_char_list_dataset( pool: &DbPool, dataset: CharListDataset ) -> Re
     //account
     let mut acc = NewAccount::from(dataset.account);
     acc.entry_id = Some(entry_uuid.clone());
-    let result = insert_into(account)
-        .values(acc)
-        .execute(&mut conn);
+    let result = insert_into(account).values(acc).execute(&mut conn);
     if result.is_err() {
         return Err(result.unwrap_err());
     }
@@ -49,7 +56,10 @@ pub fn insert_char_list_dataset( pool: &DbPool, dataset: CharListDataset ) -> Re
     dataset.class_stats.iter().for_each(|class_stat| {
         let entry_uuid_opt_clone = entry_uuid_opt.as_ref().map(|s| s.clone());
         insert_into(class_stats)
-            .values(NewClassStats::from_class_stats(class_stat, entry_uuid_opt_clone))
+            .values(NewClassStats::from_class_stats(
+                class_stat,
+                entry_uuid_opt_clone,
+            ))
             .execute(&mut conn)
             .expect("Failed to insert class_stats");
     });
@@ -58,7 +68,10 @@ pub fn insert_char_list_dataset( pool: &DbPool, dataset: CharListDataset ) -> Re
     dataset.character.iter().for_each(|chara| {
         let entry_uuid_opt_clone = entry_uuid_opt.clone();
         insert_into(character)
-            .values(NewCharacter::from_character(chara, Some(entry_uuid_opt_clone.expect("Panick: entry_uuid_opt_clone is none"))))
+            .values(NewCharacter::from_character(
+                chara,
+                Some(entry_uuid_opt_clone.expect("Panick: entry_uuid_opt_clone is none")),
+            ))
             .execute(&mut conn)
             .expect("Failed to insert character");
     });
@@ -112,12 +125,52 @@ pub fn insert_or_update_eam_account(
     let insertable = NewEamAccount::from(clone_acc.clone());
     let updatable = UpdateEamAccount::from(eam_account);
 
-    insert_into(eam_accounts::table)
+    let new_row_inserted;
+
+    match insert_into(eam_accounts::table)
         .values(&insertable)
-        .on_conflict(eam_accounts::email)
-        .do_update()
-        .set(&updatable)
         .execute(&mut conn)
+    {
+        Ok(_) => {
+            new_row_inserted = true;
+        }
+        Err(DatabaseError(_UniqueViolation, _)) => {
+            diesel::update(eam_accounts::table)
+                .filter(eam_accounts::email.eq(&insertable.email))
+                .set(&updatable)
+                .execute(&mut conn)?;
+            new_row_inserted = false;
+        }
+        Err(_) => {
+            return Err(diesel::result::Error::RollbackTransaction);
+        }
+    } 
+
+    if new_row_inserted {
+        insert_audit_log(
+            pool,
+            AuditLog {
+                id: None,  
+                sender: "insert_or_update_eam_account".to_string(),              
+                accountEmail: Some(clone_acc.email.clone()),
+                message: ("Added a new account: ".to_owned() + &clone_acc.email).to_string(),
+                time: "".to_string(),
+            },
+        )?;
+    } else {
+        insert_audit_log(
+            pool,
+            AuditLog {
+                id: None,
+                sender: "insert_or_update_eam_account".to_string(),  
+                accountEmail: Some(clone_acc.email.clone()),
+                message: ("Updated account: ".to_owned() + &clone_acc.email).to_string(),
+                time: "".to_string(),
+            },
+        )?;
+    }
+
+    Ok(new_row_inserted as usize)
 }
 
 pub fn delete_eam_account(
@@ -157,4 +210,54 @@ pub fn insert_or_update_eam_group(
 pub fn delete_eam_group(pool: &DbPool, group_id: i32) -> Result<usize, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     diesel::delete(eam_groups::table.find(group_id)).execute(&mut conn)
+}
+
+// ############################
+// #         AuditLog         #
+// ############################
+
+pub fn get_all_audit_logs(pool: &DbPool) -> Result<Vec<AuditLog>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    audit_logs::table.load::<AuditLog>(&mut conn)
+}
+
+pub fn get_audit_log_for_account(
+    pool: &DbPool,
+    account_email: String,
+) -> Result<Vec<AuditLog>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    audit_logs::table
+        .filter(accountEmail.eq(account_email))
+        .load::<AuditLog>(&mut conn)
+}
+
+pub fn insert_audit_log(pool: &DbPool, log: AuditLog) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let mut insertable: NewAuditLog = NewAuditLog::from(log);
+    insertable.time = chrono::Utc::now().naive_utc().to_string();
+
+    insert_into(audit_logs::table)
+        .values(&insertable)
+        .execute(&mut conn)
+}
+
+// ############################
+// #         ErrorLog         #
+// ############################
+
+pub fn get_all_error_logs(pool: &DbPool) -> Result<Vec<ErrorLog>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    error_logs::table.load::<ErrorLog>(&mut conn)
+}
+
+pub fn insert_error_log(pool: &DbPool, log: ErrorLog) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let mut insertable: NewErrorLog = NewErrorLog::from(log);
+    insertable.time = chrono::Utc::now().naive_utc().to_string();
+
+    insert_into(error_logs::table)
+        .values(&insertable)
+        .execute(&mut conn)
 }
