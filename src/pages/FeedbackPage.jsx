@@ -8,11 +8,11 @@ import styled from "styled-components";
 import InsertCommentOutlinedIcon from '@mui/icons-material/InsertCommentOutlined';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
-import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
 import StyledButton from "../components/StyledButton";
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import { sendFeedback } from "../backend/eamApi";
 import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
+import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 
 const StyledRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
@@ -210,7 +210,7 @@ function FeedbackPage() {
             </ComponentBox>
             <ComponentBox
                 title="What feature would you like to see next / be improved upon?"
-                icon={<ConstructionOutlinedIcon />}
+                icon={<HandymanOutlinedIcon />}
                 sx={{ userSelect: "none" }}
             >
                 <Box
