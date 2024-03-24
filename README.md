@@ -66,7 +66,7 @@
 
 <br >
 
-<img  width="250" height="250" src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/master/ExaltAccountManager/Resources/1.png" alt="EAM logo" title="EAM logo">  
+<img  width="250" height="250" src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/main/src-tauri/icons/logo.png" alt="EAM logo" title="EAM logo">  
 </div>
 
 
