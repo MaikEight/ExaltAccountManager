@@ -36,7 +36,7 @@ function getRequestState(charList) {
             return "TooManyRequests";
         } else if (error.includes("captchalock")) {
             return "Captcha";
-        } else if (error.includes("has been suspended")) {
+        } else if (error.includes("suspended")) {
             return "AccountSuspended";
         } else {
             return "Error";
