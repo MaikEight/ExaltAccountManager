@@ -13,26 +13,24 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
                 sx={{
                     display: "flex",
                     justifyContent: "start",
-                    height: 49,
+                    minHeight: 49,
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: '6px 6px 0 0',
-                    //  mb: 1,
                     pt: 0.5,
                     pb: 0.5,
                     pl: 1,
-                    pr: 1,                    
+                    pr: 1,
                 }}
             >
                 <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
-                {/* <GridToolbarDensitySelector /> */}
-                {/* <GridToolbarExport /> */}
-
             </GridToolbarContainer>
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'row',
+                    justifyContent: 'end',
+                    alignItems: 'center',
                 }}
             >
                 <Button
@@ -52,7 +50,8 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
                     sx={{
                         mr: 0.5,
                         display: 'flex',
-                        flexDirection: 'row',
+                        flexDirection: 'row',      
+                        maxHeight: 49,
                     }}
                 >
                     <Searchbar onSearchChanged={onSearchChanged} />
