@@ -3,6 +3,7 @@ import { APP_VERSION } from "../constants";
 import { startSession } from "../backend/eamApi";
 import { useSearchParams } from "react-router-dom";
 import { invoke } from "@tauri-apps/api";
+import { logToAuditLog } from "../utils/loggingUtils";
 
 const AccountsContext = createContext();
 
@@ -85,7 +86,9 @@ function AccountsContextProvider({ children }) {
         }
     }
 
-    const deleteAccount = async (email) => {
+    const deleteAccount = async (email) => {        
+        logToAuditLog('deleteAccount', `Deleting account ${email}`, email);
+        
         await invoke('delete_eam_account', { accountEmail: email });
         const updatedAccounts = accounts.filter((account) => account.email !== email);
         setAccounts(updatedAccounts);
