@@ -3,11 +3,12 @@
 
 extern crate dirs;
 
+use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
+use eam_commons::models;
+use eam_commons::models::{AuditLog, ErrorLog};
 use eam_commons::setup_database;
 use eam_commons::DbPool;
-use eam_commons::diesel_functions;
-use eam_commons::models;
 
 use flate2::read::GzDecoder;
 use futures::stream::{self, StreamExt};
@@ -83,7 +84,12 @@ fn main() {
             encrypt_string,
             decrypt_string,
             has_old_eam_save_file,
-            format_eam_v3_save_file_to_readable_json
+            format_eam_v3_save_file_to_readable_json,
+            get_all_audit_logs,
+            get_audit_log_for_account,
+            log_to_audit_log,
+            get_all_error_logs,
+            log_to_error_log
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -591,29 +597,25 @@ async fn get_device_unique_identifier() -> Result<String, String> {
 #[tauri::command]
 fn get_default_game_path() -> String {
     let os = env::consts::OS;
-    
+
     match os {
         "windows" => {
             let mut path = dirs::document_dir().unwrap();
             path.push("RealmOfTheMadGod");
             path.push("Production");
-            
-            format!(
-                "{}\\RotMG Exalt.exe",
-                path.to_str().unwrap()
-            )
-        },
+
+            format!("{}\\RotMG Exalt.exe", path.to_str().unwrap())
+        }
         "macos" => {
             let home_dir = env::var("HOME").unwrap_or_else(|_| "".into());
             format!(
                 "{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app",
                 home_dir
             )
-        },
+        }
         _ => "".into(),
     }
 }
-
 
 #[tauri::command]
 async fn download_and_run_hwid_tool() -> Result<bool, String> {
@@ -776,8 +778,18 @@ async fn insert_or_update_eam_account(
 
 #[tauri::command]
 async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
+    let pool = POOL.lock().unwrap();    
+
     if let Some(ref pool) = *pool {
+        let audit_log_entry = AuditLog {
+            id: None,
+            time: "".to_string(),
+            accountEmail: Some(account_email.clone()),
+            message: ("Deleting account from database: ".to_owned() + &account_email).to_string(),
+            sender: "tauri".to_string(),
+        };
+        let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
+
         diesel_functions::delete_eam_account(pool, account_email)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
@@ -909,6 +921,15 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
         fs::remove_file(embedded_file_path).map_err(|e| {
             tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
         })?;
+
+        let log = ErrorLog {
+            id: None,
+            time: "".to_string(),
+            sender: "Tauri".to_string(),
+            message: error_message.clone(),
+        };
+        let _ = log_to_error_log(log);
+
         Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
             error_message,
@@ -924,6 +945,80 @@ async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<us
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::insert_char_list_dataset(pool, dataset)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+//#########################
+//#         Logs          #
+//#########################
+
+#[tauri::command]
+fn get_all_audit_logs() -> Result<Vec<AuditLog>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_all_audit_logs(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+fn get_audit_log_for_account(account_email: String) -> Result<Vec<AuditLog>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_audit_log_for_account(pool, account_email)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+fn log_to_audit_log(log: AuditLog) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_audit_log(pool, log)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+fn get_all_error_logs() -> Result<Vec<ErrorLog>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_all_error_logs(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+fn log_to_error_log(log: ErrorLog) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_error_log(pool, log)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
         Err(tauri::Error::from(std::io::Error::new(
