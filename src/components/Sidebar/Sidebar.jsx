@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import useSnack from "../../hooks/useSnack";
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import FeedbackButton from "./FeedbackButton";
+import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
 
 function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -67,9 +68,16 @@ function Sidebar({ children }) {
             showInFooter: false
         },
         {
+            name: 'Logs',
+            icon: <HistoryEduOutlinedIcon />,
+            action: () => setSelectedIndex(3),
+            navigate: '/logs',
+            showInFooter: false
+        },
+        {
             name: 'About',
             icon: <InfoOutlinedIcon />,
-            action: () => setSelectedIndex(3),
+            action: () => setSelectedIndex(4),
             navigate: '/about',
             showInFooter: false
         },
