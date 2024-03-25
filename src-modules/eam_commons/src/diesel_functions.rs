@@ -18,8 +18,8 @@ use crate::schema::EamGroup::dsl::*;
 use crate::schema::ErrorLog as error_logs;
 use diesel::insert_into;
 use diesel::prelude::*;
-use diesel::RunQueryDsl;
 use diesel::result::Error::DatabaseError;
+use diesel::RunQueryDsl;
 use uuid::Uuid;
 
 //########################
@@ -144,14 +144,14 @@ pub fn insert_or_update_eam_account(
         Err(_) => {
             return Err(diesel::result::Error::RollbackTransaction);
         }
-    } 
+    }
 
     if new_row_inserted {
         insert_audit_log(
             pool,
             AuditLog {
-                id: None,  
-                sender: "insert_or_update_eam_account".to_string(),              
+                id: None,
+                sender: "insert_or_update_eam_account".to_string(),
                 accountEmail: Some(clone_acc.email.clone()),
                 message: ("Added a new account: ".to_owned() + &clone_acc.email).to_string(),
                 time: "".to_string(),
@@ -162,7 +162,7 @@ pub fn insert_or_update_eam_account(
             pool,
             AuditLog {
                 id: None,
-                sender: "insert_or_update_eam_account".to_string(),  
+                sender: "insert_or_update_eam_account".to_string(),
                 accountEmail: Some(clone_acc.email.clone()),
                 message: ("Updated account: ".to_owned() + &clone_acc.email).to_string(),
                 time: "".to_string(),
