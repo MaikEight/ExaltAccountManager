@@ -11,6 +11,7 @@ import { useTheme } from '@emotion/react';
 import { Box } from '@mui/material';
 import { PopupContextProvider } from './contexts/PopupContext';
 import FeedbackPage from './pages/FeedbackPage';
+import LogsPage from './pages/LogsPage';
 
 function MainRouter() {
     const theme = useTheme();
@@ -33,6 +34,7 @@ function MainRouter() {
                                         <Route path='/accounts' element={<AccountsPage />}></Route>
                                         <Route path='/utilities' element={<UtilitiesPage />}></Route>
                                         <Route path='/settings' element={<SettingsPage />}></Route>
+                                        <Route path='/logs' element={<LogsPage />}></Route>
                                         <Route path='/about' element={<AboutPage />}></Route>
                                         <Route path='/feedback' element={<FeedbackPage />}></Route>
                                         <Route path='*' element={<AccountsPage />}></Route>
