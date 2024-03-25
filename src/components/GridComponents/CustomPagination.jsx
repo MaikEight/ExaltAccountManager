@@ -1,7 +1,7 @@
 import { Pagination, TablePagination } from "@mui/material";
 import { gridPageCountSelector, gridPageSelector, gridPageSizeSelector, gridRowCountSelector, useGridApiContext, useGridSelector } from "@mui/x-data-grid";
 
-function CustomPagination({ rowsPerPageOptions }) {
+function CustomPagination({ rowsPerPageOptions, labelRowsPerPage}) {
     const gridApiContext = useGridApiContext();
 
     const page = useGridSelector(gridApiContext, gridPageSelector);
@@ -29,7 +29,7 @@ function CustomPagination({ rowsPerPageOptions }) {
             onPageChange={handleChangePage}
             rowsPerPageOptions={rowsPerPageOptions}
             labelDisplayedRows={() => { return ''; }}
-            labelRowsPerPage="Accounts per page:"
+            labelRowsPerPage={labelRowsPerPage}
             ActionsComponent={() => (
                 <Pagination className="pagination-pages"
                     style={{ flex: '1 0 auto', paddingLeft: '1rem' }}

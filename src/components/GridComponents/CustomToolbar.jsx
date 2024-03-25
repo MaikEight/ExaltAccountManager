@@ -59,7 +59,6 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
             </Box>
         </Box>
     );
-
 }
 
 export default CustomToolbar;
