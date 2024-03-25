@@ -4,9 +4,11 @@ extern crate dirs;
 use eam_commons::encryption_utils;
 use eam_commons::setup_database;
 use eam_commons::DbPool;
+use eam_commons::models::AuditLog;
 
 use eam_commons::get_all_eam_accounts_for_daily_login;
 use eam_commons::get_eam_account_by_email;
+use eam_commons::diesel_functions;
 
 use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
@@ -58,11 +60,13 @@ const GAME_START_TIMEOUT: u64 = 90;
 #[tokio::main]
 async fn main() {
     println!("Starting daily_auto_login...");
-
+    
     //Initialize the database pool
     let database_url = get_database_path().to_str().unwrap().to_string();
     let pool = setup_database(&database_url);
     *POOL.lock().unwrap() = Some(pool);
+
+    log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Starting daily_auto_login.".to_string(), None);
 
     let accounts_to_perform_daily_login_with =
         get_all_eam_accounts_for_daily_login(
@@ -72,6 +76,7 @@ async fn main() {
 
     if accounts_to_perform_daily_login_with.len() == 0 {
         println!("No accounts to perform daily login with.");
+        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "No accounts to perform daily login with, exiting.".to_string(), None);
         return;
     }
 
@@ -88,6 +93,7 @@ async fn main() {
         settings = read_daily_auto_login_settings(&daily_auto_login_settings_path);
     } else {
         println!("No settings file found, exiting.");
+        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "No settings file found, exiting.".to_string(), None);
         return;
     }
 
@@ -102,6 +108,7 @@ async fn main() {
         //State file found, checking if the last daily login was today
         if state.time_started.date_naive() == Utc::now().date_naive() && state.last_save.date_naive() == Utc::now().date_naive() {
             println!("Last daily login was today.");
+            log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Last daily login was today.".to_string(), None);
             if account_emails.len() == 0 {
                 println!("No accounts to perform daily login in state found, deleting state.");
                 delete_file(&daily_auto_login_state_path);
@@ -110,6 +117,7 @@ async fn main() {
 
             //Perform the daily login with the accounts in the state
             println!("Resuming: Performing daily login with accounts in state.");
+            log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Resuming: Performing daily login with accounts in state.".to_string(), None);
             for account_email in state.clone().account_emails {
                 account_emails.push(account_email);
             }
@@ -118,6 +126,7 @@ async fn main() {
         }
     } else {
         println!("No state file found, creating new state.");
+        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "No state file found, creating new state.".to_string(), None);
         for account in accounts_to_perform_daily_login_with {
             account_emails.push(account.email.clone());
         }
@@ -162,10 +171,14 @@ async fn main() {
 
     for account_email in account_emails {
         println!("Performing daily login with account: {}", account_email);
+        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), ("Performing daily login with account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
         
         let access_token_opt: Option<GameAccessToken> = send_account_verify_request(account_email.clone(), hwid.clone()).await;     
 
         if access_token_opt.is_none() {
+            println!("Failed to get access token for account: {}", account_email);
+            log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), ("Failed to get access token for account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
+            state.failed_accounts.push(account_email.clone());
             continue;
         }
         let access_token = access_token_opt.unwrap();
@@ -199,6 +212,9 @@ async fn main() {
         //Save the state
         state = save_daily_auto_login_state(&daily_auto_login_state_path, state);
     }
+
+    println!("Finished daily login.");
+    log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Finished daily login. ".to_owned() + state.failed_accounts.len().to_string().as_str() + " accounts failed.", None);
 }
 
 pub fn get_database_path() -> PathBuf {
@@ -214,7 +230,7 @@ async fn send_account_verify_request(account_email: String, hwid: String) -> Opt
     let url = "https://www.realmofthemadgod.com/account/verify".to_string();
     let mut data = HashMap::new();
 
-    data.insert("guid".to_string(), account_email);    
+    data.insert("guid".to_string(), account_email.clone());    
     if acc.isSteam {
         data.insert("steamid".to_string(), acc.steamId.clone()?.to_string());
         data.insert("secret".to_string(), pw);
@@ -226,7 +242,9 @@ async fn send_account_verify_request(account_email: String, hwid: String) -> Opt
     data.insert("game_net".to_string(), if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string());
     data.insert("play_platform".to_string(), if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string());
     data.insert("game_net_user_id".to_string(), if acc.isSteam { acc.steamId? } else { "".to_string() });    
-
+    
+    let _ = log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Sending account verify request.".to_string(), Some(account_email.clone()));
+    
     let response = send_post_request_with_form_url_encoded_data(url, data).await.unwrap();    
     let token = get_access_token(&response);    
 
@@ -358,6 +376,17 @@ async fn get_device_unique_identifier() -> Result<String, String> {
     let hashed = format!("{:x}", result);
 
     Ok(hashed)
+}
+
+fn log_to_audit_log(pool: &DbPool, message: String, account_email: Option<String>) {
+    let log = AuditLog {
+        id: None,
+        sender: "daily_auto_login".to_string(),
+        message: message,
+        accountEmail: account_email,
+        time: "".to_string(),
+    };
+    let _ = diesel_functions::insert_audit_log(pool, log).unwrap();
 }
 
 fn get_save_file_path() -> String {
