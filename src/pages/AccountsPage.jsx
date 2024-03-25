@@ -17,7 +17,7 @@ function AccountsPage() {
             }}
         >
             <AccountGrid setShowAddNewAccount={setShowAddNewAccount} />
-            <AccountDetails acc={showAddNewAccount ? null : selectedAccount} onClose={() => setSelectedAccount(null)} onAccountChanged={(updatedAccount) => updateAccount(updatedAccount, false)} />
+            <AccountDetails acc={showAddNewAccount ? null : selectedAccount} onClose={() => setSelectedAccount(null)} />
             <AddNewAccount isOpen={showAddNewAccount} onClose={() => setShowAddNewAccount(false)} />
         </Box>
     );
