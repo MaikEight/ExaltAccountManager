@@ -150,6 +150,7 @@ function AccountGrid({ setShowAddNewAccount }) {
                     }}
                     slotProps={{
                         toolbar: { onSearchChanged: (search) => setSearch(search), onAddNew: () => setShowAddNewAccount(true) },
+                        pagination: { labelRowsPerPage: "Accounts per page:"}
                     }}
                 />
             </Paper>
