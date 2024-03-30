@@ -7,7 +7,7 @@ import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
 import { logToErrorLog } from "./loggingUtils";
 
 async function performCheckForUpdates() {
-    
+
     console.log("Checking for EAM-Updates");
     try {
         const update = await checkUpdate();
@@ -24,6 +24,7 @@ async function performCheckForUpdates() {
 
 async function onStartUp(gameExePath) {
     appWindow.setMinSize(new PhysicalSize(850, 600));
+    addConsoleLogListener();
 
     performCheckForUpdates();
     getLatestEamVersion()
@@ -38,7 +39,7 @@ async function onStartUp(gameExePath) {
         });
 
     if (gameExePath !== null && gameExePath !== undefined) {
-        if(localStorage.getItem("lastUpdateCheck") === null) {
+        if (localStorage.getItem("lastUpdateCheck") === null) {
             checkForUpdates(gameExePath);
             return;
         }
@@ -56,6 +57,31 @@ async function onStartUp(gameExePath) {
             checkForUpdates(gameExePath);
         }
     }
+}
+
+function addConsoleLogListener() {
+    // Override console methods to log to error log
+    ['warn', 'error'].forEach((methodName) => {
+        const oldMethod = console[methodName];
+        console[methodName] = (...args) => {     
+            let logSource = "";
+            try {
+                const originalCallStack = new Error().stack.split('\n');            
+                const originalCallSource = originalCallStack[2]; 
+                const fileNameAndLine = originalCallSource.split('/').pop().split(':');             
+                fileNameAndLine[2] = fileNameAndLine[2].substring(0, fileNameAndLine[2].length - 1);           
+                fileNameAndLine[0] = (fileNameAndLine[0].substring(0, fileNameAndLine[0].lastIndexOf('?')));
+                logSource = `${fileNameAndLine[0]},${fileNameAndLine[1]}:${fileNameAndLine[2]}`;
+                oldMethod.call(originalCallSource, ...args);
+            } catch (e) { 
+                oldMethod.call(console, ...args);
+                console.log(e); 
+            }
+            
+
+            logToErrorLog(logSource, args );
+        };
+    });
 }
 
 function setApiHwidHash(hwid) {
