@@ -26,6 +26,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use tauri::api::path;
 use tauri::Error;
 use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
@@ -40,6 +41,9 @@ lazy_static! {
 #[cfg(target_os = "windows")]
 const EAM_SAVE_FILE_CONVERTER: &'static [u8] =
     include_bytes!("../IncludedBinaries/EAM_Save_File_Converter.exe");
+
+const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
+    include_bytes!("../IncludedBinaries/EAM_Daily_Auto_Login.exe");
 
 fn main() {
     //Create the save file directory if it does not exist
@@ -89,7 +93,10 @@ fn main() {
             get_audit_log_for_account,
             log_to_audit_log,
             get_all_error_logs,
-            log_to_error_log
+            log_to_error_log,
+            check_for_installed_eam_daily_login_task,
+            install_eam_daily_login_task,
+            uninstall_eam_daily_login_task
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -619,33 +626,45 @@ fn get_default_game_path() -> String {
 
 #[tauri::command]
 async fn download_and_run_hwid_tool() -> Result<bool, String> {
-    let (tx, rx) = channel();
+    // let (tx, rx) = channel();
 
-    thread::spawn(move || {
-        let result = download_and_run_hwid_tool_impl();
+    // thread::spawn(move || {
+    //     let result = download_and_run_hwid_tool_impl();
 
-        tx.send(result).unwrap();
-    });
+    //     tx.send(result).unwrap();
+    // });
+    let result = download_and_run_hwid_tool_impl().await;
 
-    match rx.recv().unwrap() {
+    match result {
         Ok(result) => Ok(result),
         Err(e) => Err(e),
     }
 }
 
-fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
+async fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
     let hwid_tool_url_windows = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-windows.zip";
     let hwid_tool_url_mac = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-mac.zip";
-    let hwid_tool_path = get_temp_folder_path_with_creation("HwidTool".to_string());
+    let hwid_tool_path = get_save_file_path();
 
     let hwid_tool_url = match std::env::consts::OS {
         "windows" => hwid_tool_url_windows,
         "macos" => hwid_tool_url_mac,
         _ => return Err("Unsupported OS".to_string()),
     };
+    println!("Downloading HWID tool from: {}", hwid_tool_url);
 
-    let hwid_tool_data = download_file_to_ram(hwid_tool_url).map_err(|e| e.to_string())?;
-    unzip_data_to_path(hwid_tool_data, Path::new(&hwid_tool_path)).map_err(|e| e.to_string())?;
+    let (tx, rx) = channel();
+
+    thread::spawn(move || {
+        let hwid_tool_data = download_file_to_ram(hwid_tool_url).map_err(|e| e.to_string());
+        tx.send(hwid_tool_data).unwrap();
+    });
+
+    let hwid_tool_data = rx.recv().unwrap();
+
+    println!("Downloaded HWID tool");
+    unzip_data_to_path(hwid_tool_data?, Path::new(&hwid_tool_path)).map_err(|e| e.to_string())?;
+    println!("Unzipped HWID tool");
     let save_file_path = get_save_file_path();
 
     let hwid_tool_executable = match std::env::consts::OS {
@@ -666,27 +685,29 @@ fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
 
     let file_path_str_clone = file_path_str.clone();
     //If the EAM.HWID file already exists, delete it
-    if fs::metadata(file_path_str.clone())
-        .map_err(|e| e.to_string())?
-        .is_file()
-    {
-        let result = tokio::runtime::Runtime::new()
-            .unwrap()
-            .block_on(async {
-                tokio::task::spawn_blocking(|| fs::remove_file(file_path_str)).await
-            })
-            .map_err(|e| e.to_string())?;
-        result.map_err(|e| e.to_string())?;
+    let path = PathBuf::from(&file_path);
+    println!("Deleting old EAM.HWID file if it exists: {}", &file_path.clone().to_str().unwrap());
+
+    if path.exists() {
+        println!("Old EAM.HWID file exists, deleting it");
+        fs::remove_file(file_path_str.clone()).map_err(|e| e.to_string())?;
     }
 
+    println!("Starting HWID tool");
     let hwid_tool_path_str = hwid_tool_path
         .to_str()
         .ok_or("Failed to convert path to string".to_string())?
         .to_string();
-    start_application(hwid_tool_path_str, format!("{{{}}}", save_file_path))
+    start_application(hwid_tool_path_str, format!("-batchmode {{{}}}", save_file_path))
         .map_err(|e| e.to_string())?;
 
-    let file_created = wait_for_file_creation(&file_path_str_clone, 20);
+    println!("Waiting for EAM.HWID file to be created");
+    let file_created = wait_for_file_creation(&file_path_str_clone, 60);
+    
+    //Delete the hwid-tool
+    hwid_tool_path.pop(); //Remove the executable name
+    println!("Deleting HWID tool: {}", &hwid_tool_path.clone().to_str().unwrap());
+    let _ = fs::remove_dir_all(&hwid_tool_path);
 
     Ok(file_created)
 }
@@ -724,6 +745,65 @@ fn wait_for_file_creation(file_path: &str, timeout: u64) -> bool {
         sleep(Duration::from_secs(1));
     }
     false
+}
+
+#[tauri::command]
+fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
+    if std::env::consts::OS != "windows" {
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "This function is only available on Windows",
+        )));
+    }
+
+    let save_file_path = get_save_file_path();
+
+    let embedded_file_path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
+    let mut file = File::create(embedded_file_path.clone())
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    file.write_all(EAM_SAVE_FILE_CONVERTER)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+    drop(file);
+
+    let result = eam_commons::windows_specifics::install_eam_daily_login_task(
+        &embedded_file_path.to_str().unwrap().to_string(),
+    );
+
+    match result {
+        Ok(_) => Ok(true),
+        Err(e) => Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            e.to_string(),
+        ))),
+    }
+}
+
+#[tauri::command]
+fn uninstall_eam_daily_login_task() -> Result<bool, String> {
+    if std::env::consts::OS != "windows" {
+        return Err("This function is only available on Windows".to_string());
+    }
+
+    let result = eam_commons::windows_specifics::uninstall_eam_daily_login_task();
+
+    match result {
+        Ok(_) => Ok(true),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[tauri::command]
+fn check_for_installed_eam_daily_login_task() -> Result<bool, String> {
+    if std::env::consts::OS != "windows" {
+        return Ok(false);
+    }
+
+    let result = eam_commons::windows_specifics::check_for_installed_eam_daily_login_task();
+
+    match result {
+        Ok(result) => Ok(result),
+        Err(e) => Err(e.to_string()),
+    }
 }
 
 //########################
@@ -778,7 +858,7 @@ async fn insert_or_update_eam_account(
 
 #[tauri::command]
 async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();    
+    let pool = POOL.lock().unwrap();
 
     if let Some(ref pool) = *pool {
         let audit_log_entry = AuditLog {
