@@ -60,10 +60,6 @@ function LogsPage() {
     };
 
     useEffect(() => {
-        console.log("search", search);
-    }, [search]);
-
-    useEffect(() => {
         setCurrentShownLog(getSearchedLogs());
     }, [currentLog, search]);
 
@@ -83,7 +79,6 @@ function LogsPage() {
                                 time: new Date(log.time),
                             }
                         }).sort((a, b) => b.id - a.id);
-                        console.log('auditlog', auditLog);
 
                         setCurrentLog(auditLog);
                     });
@@ -147,17 +142,6 @@ function LogsPage() {
                     rowSelection                    
                     getEstimatedRowHeight={() => 41}
                     rowCount={currentShownLog.length}
-                    // onCellClick={handleCellClick}
-                    // onRowSelectionModelChange={(ids) => {
-                    //     const selectedId = ids[0];
-                    //     const selected = accounts.find((account) => account.id === selectedId);
-                    //     if (selected && selected !== selectedAccount) {
-                    //         setSelectedAccount(selected);
-                    //         return;
-                    //     }
-                    //     setSelectedAccount(null);
-                    // }}
-                    // rowSelectionModel={selectedAccount ? [selectedAccount.id] : []}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
                     checkboxSelection={false}
