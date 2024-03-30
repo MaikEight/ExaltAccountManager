@@ -373,7 +373,7 @@ function AddNewAccount({ isOpen, onClose }) {
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, borderRadius: '6px 10px 10px 6px', overflow: 'hidden'}}
+                PaperProps={{ elevation: 0, square: false, sx: {borderRadius: '6px 10px 10px 6px', overflow: 'hidden'}}}
                 SlideProps={{ container: containerRef.current }}
                 variant="persistent"
                 anchor="right"
