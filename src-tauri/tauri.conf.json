@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "Exalt Account Manager",
-    "version": "4.0.2"
+    "version": "4.0.3"
   },
   "tauri": {
     "allowlist": {
