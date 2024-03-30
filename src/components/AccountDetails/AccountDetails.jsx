@@ -1,6 +1,6 @@
 import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
 import { Unstable_Grid2 as Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import ComponentBox from "../ComponentBox";
 import PaddedTableCell from "./PaddedTableCell";
@@ -52,6 +52,7 @@ function AccountDetails({ acc, onClose }) {
     const settings = useUserSettings();
     const hwid = useHWID();
     const theme = useTheme();
+    const containerRef = useRef(null);
 
     useEffect(() => {
         const checkSessionStorage = () => {
@@ -109,369 +110,370 @@ function AccountDetails({ acc, onClose }) {
     if (!account) {
         return null;
     }
-
+    
     return (
-        <Drawer
-            sx={{
-                width: 500,
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
+        <Box ref={containerRef} style={{ overflow: 'hidden', borderRadius: '10px', boxShadow: '0px 0px 20px 10px rgba(0,0,0,0.2)' }}>
+            <Drawer
+                sx={{
                     width: 500,
-                    boxSizing: 'border-box',
-                    backgroundColor: theme.palette.background.default,
-                    border: 'none',
-                    borderRadius: '6px 0px 0px 6px',
-                    boxShadow: ' 0px 0px 20px 10px rgba(0,0,0,0.2)',
-                },
-            }}
-            variant="persistent"
-            anchor="right"
-            open={isOpen}
-        >
-            {
-                /* 
-                    1. close button - Account details
-                    2. table with account details
-                    3. buttons: play, edit, delete          
-                */
-            }
-            {/* 1. */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignContent: 'center',
-                    minHeight: 44,
-                    maxHeight: 44,
-                    pt: 0.5,
-                    backgroundColor: theme.palette.background.paperLight,
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1,
+                    '& .MuiDrawer-paper': {
+                        width: 500,
+                        backgroundColor: theme.palette.background.default,
+                        border: 'none',
+                        borderRadius: '6px 10px 10px 6px',
+                        overflow: 'hidden',
+                    },
                 }}
+                PaperProps={{ elevation: 0, square: false, borderRadius: '6px 10px 10px 6px', overflow: 'hidden'}}
+                SlideProps={{ container: containerRef.current }}
+                variant="persistent"
+                anchor="right"
+                open={isOpen}
             >
-                <IconButton
-                    sx={{ position: 'absolute', left: 5, top: 5, marginLeft: 0, marginRight: 2 }}
-                    size="small"
-                    onClick={() => onClose()}
-                >
-                    <CloseIcon sx={{ fontSize: 21 }} />
-                </IconButton>
-                <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                    Account details
-                </Typography>
-            </Box>
-            <Box
-                sx={{
-                    flexGrow: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'auto',
-                }}
-            >
-                {/* 2. */}
+                {
+                    /* 
+                        1. close button - Account details
+                        2. table with account details
+                        3. buttons: play, edit, delete          
+                    */
+                }
+                {/* 1. */}
                 <Box
                     sx={{
-                        width: '100%',
-                        height: '100%',
-                        pr: 2,
-                        pl: 2,
-                        pb: 2,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignContent: 'center',
+                        minHeight: 44,
+                        maxHeight: 44,
+                        pt: 0.5,
+                        backgroundColor: theme.palette.background.paperLight,
+                        position: 'sticky',
+                        top: 0,
                     }}
                 >
+                    <IconButton
+                        sx={{ position: 'absolute', left: 5, top: 5, marginLeft: 0, marginRight: 2 }}
+                        size="small"
+                        onClick={() => onClose()}
+                    >
+                        <CloseIcon sx={{ fontSize: 21 }} />
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+                        Account details
+                    </Typography>
+                </Box>
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflow: 'auto',
+                    }}
+                >
+                    {/* 2. */}
                     <Box
                         sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
                             width: '100%',
+                            height: '100%',
+                            pr: 2,
+                            pl: 2,
+                            pb: 2,
                         }}
                     >
-                        <ComponentBox
-                            title={
-                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                    <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                                        Details
-                                    </Typography>
-                                    <Box sx={{ position: 'absolute', right: 0, marginRight: '12px' }} >
-                                        <Zoom direction="left" in={isEditMode} mountOnEnter unmountOnExit>
-                                            <Tooltip title="Save account">
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                            }}
+                        >
+                            <ComponentBox
+                                title={
+                                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                        <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+                                            Details
+                                        </Typography>
+                                        <Box sx={{ position: 'absolute', right: 0, marginRight: '12px' }} >
+                                            <Zoom direction="left" in={isEditMode} mountOnEnter unmountOnExit>
+                                                <Tooltip title="Save account">
+                                                    <IconButton
+                                                        sx={{ color: theme.palette.text.primary }}
+                                                        size="small"
+                                                        onClick={() => {
+                                                            console.log("save account", account);
+                                                            if (newDecryptedPassword !== decryptedPassword) {
+                                                                tauri.invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
+                                                                    const newAcc = ({ ...account, password: res });
+                                                                    updateAccount(newAcc);
+                                                                });
+                                                            } else {
+                                                                updateAccount(account);
+                                                            }
+                                                            setIsEditMode(!isEditMode);
+                                                            showSnackbar("Account saved", 'success');
+                                                        }}
+                                                    >
+                                                        <SaveOutlinedIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Zoom>
+                                            <Tooltip title={isEditMode ? "Cancel" : "Edit account"}>
                                                 <IconButton
                                                     sx={{ color: theme.palette.text.primary }}
                                                     size="small"
                                                     onClick={() => {
-                                                        console.log("save account", account);
-                                                        if (newDecryptedPassword !== decryptedPassword) {
-                                                            tauri.invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
-                                                                const newAcc = ({ ...account, password: res });
-                                                                updateAccount(newAcc);
-                                                            });
-                                                        } else {
-                                                            updateAccount(account);
+                                                        if (isEditMode) {
+                                                            setAccount(accountOrg);
                                                         }
                                                         setIsEditMode(!isEditMode);
-                                                        showSnackbar("Account saved", 'success');
                                                     }}
                                                 >
-                                                    <SaveOutlinedIcon />
+                                                    {isEditMode ? <CloseIcon /> : <EditOutlinedIcon />}
                                                 </IconButton>
                                             </Tooltip>
-                                        </Zoom>
-                                        <Tooltip title={isEditMode ? "Cancel" : "Edit account"}>
+                                        </Box>
+                                    </Box>}
+                                icon={<ArticleOutlinedIcon />}
+                                sx={{
+                                    width: '100%',
+                                    transition: 'height 0.5s',
+                                }}
+                            >
+
+                                <TableContainer component={Box} sx={{ borderRadius: 0 }}>
+                                    <Table
+                                        sx={{
+                                            '& tbody tr:last-child td, & tbody tr:last-child th': {
+                                                borderBottom: 'none',
+                                            },
+                                        }}
+                                    >
+                                        <TableHead>
+                                            <TableRow>
+                                                <PaddedTableCell sx={{ width: '125px' }}>Attribute</PaddedTableCell>
+                                                <PaddedTableCell>Value</PaddedTableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <GroupRow
+                                                key='group'
+                                                editMode={isEditMode}
+                                                group={group}
+                                                onChange={(value) => handleAccountEdit({ ...account, group: value })}
+                                            />
+                                            <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={true} />
+                                            {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
+                                            {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={newDecryptedPassword} onChange={(value) => setNewDecryptedPassword(value)} />}
+                                            {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
+                                            <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
+                                            <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
+                                                value={account.performDailyLogin ? account.performDailyLogin : false}
+                                                onChange={(event) => {
+                                                    const newAcc = ({ ...account, performDailyLogin: event.target.checked });
+                                                    updateAccount(newAcc);
+                                                }}
+                                            />
+                                            {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </ComponentBox>
+                        </Box>
+
+                        {/* 3. */}
+                        <Grid container spacing={2}>
+                            <Grid xs={12}>
+                                <StyledButton
+                                    disabled={updateInProgress}
+                                    fullWidth={true}
+                                    sx={{ height: 55 }}
+                                    onClick={() => {
+                                        postAccountVerify(account, hwid)
+                                            .then(async (res) => {
+                                                if (res === null) {
+                                                    logToErrorLog("Start Game", "Failed to start the game for " + account.email + ", got null response");
+                                                    showSnackbar("Failed to start the game", 'error');
+                                                    return;
+                                                }
+
+                                                if (res.Error) {
+                                                    const requestState = getRequestState(res);
+                                                    logToErrorLog("Start Game", "Failed to start the game for " + account.email + ", got state: " + requestState);
+                                                    if (!!res) {
+                                                        showSnackbar("Failed to start the game: " + requestState, 'error');
+
+                                                        const newAcc = ({ ...acc, state: requestState });
+                                                        updateAccount(newAcc);
+                                                        return;
+                                                    }
+
+                                                    showSnackbar("Failed to start the game: " + res.Error, 'error');
+                                                    return;
+                                                }
+
+                                                const token = {
+                                                    AccessToken: res.Account.AccessToken,
+                                                    AccessTokenTimestamp: res.Account.AccessTokenTimestamp,
+                                                    AccessTokenExpiration: res.Account.AccessTokenExpiration,
+                                                };
+
+                                                showSnackbar("Starting the game...");
+                                                const args = `data:{platform:Deca,guid:${btoa(acc.email)},token:${btoa(acc.token.AccessToken)},tokenTimestamp:${btoa(acc.token.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
+                                                tauri.invoke(
+                                                    "start_application",
+                                                    { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
+                                                );
+
+                                                postCharList(res.Account.AccessToken)
+                                                    .then((charList) => {
+                                                        const state = getRequestState(charList);
+                                                        const newAcc = ({ ...acc, state: state, lastRefresh: new Date().toISOString(), token: token });
+                                                        updateAccount(newAcc);
+
+                                                        if (state !== "Success") {
+                                                            logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + state);
+                                                            showSnackbar("Failed to refresh data: " + state, 'error');
+                                                            return;
+                                                        }
+
+                                                        storeCharList(charList, acc.email);
+                                                        showSnackbar("Refreshing finished");
+
+                                                        const servers = charList.Chars.Servers.Server;
+                                                        if (servers && servers.length > 0) {
+                                                            saveServerList(servers);
+                                                        }
+                                                    }).catch((err) => {
+                                                        console.error("error", err);
+
+                                                        const newAcc = ({ ...acc, token: token });
+                                                        updateAccount(newAcc);
+
+                                                        logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got error: " + err);
+                                                        showSnackbar("Failed to refresh data " + res.Error, 'error');
+                                                    });
+                                            })
+                                    }}
+                                >
+                                    <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
+                                    start game
+                                </StyledButton>
+                            </Grid>
+                            <Grid xs={6}>
+                                <StyledButton
+                                    fullWidth={true}
+                                    startIcon={<RefreshOutlinedIcon />}
+                                    color="secondary"
+                                    onClick={() => {
+                                        postAccountVerify(account, hwid)
+                                            .then(async (res) => {
+                                                if (res === null) {
+                                                    logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got null response");
+                                                    showSnackbar("Failed to refresh data", 'error');
+                                                    return;
+                                                }
+
+                                                if (res.Error) {
+                                                    const requestState = getRequestState(res);
+                                                    logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + requestState);
+                                                    if (!!res) {
+                                                        showSnackbar("Failed to refresh data: " + requestState, 'error');
+
+                                                        const newAcc = ({ ...acc, state: requestState });
+                                                        updateAccount(newAcc);
+                                                        return;
+                                                    }
+
+                                                    showSnackbar("Failed to refresh data: " + res.Error, 'error');
+                                                    return;
+                                                }
+
+                                                postCharList(res.Account.AccessToken)
+                                                    .then((charList) => {
+                                                        const state = getRequestState(charList);
+                                                        const newAcc = ({ ...acc, state: state, lastRefresh: new Date().toISOString() });
+                                                        updateAccount(newAcc);
+
+                                                        if (state !== "Success") {
+                                                            logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + state);
+                                                            showSnackbar("Failed to refresh data: " + state, 'error');
+                                                            return;
+                                                        }
+
+                                                        storeCharList(charList, acc.email);
+                                                        showSnackbar("Refreshing finished");
+
+                                                        const servers = charList.Chars.Servers.Server;
+                                                        if (servers && servers.length > 0) {
+                                                            saveServerList(servers);
+                                                        }
+                                                    }).catch((err) => {
+                                                        console.error("error", err);
+                                                        logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got error: " + err);
+                                                        showSnackbar("Failed to refresh data " + res.Error, 'error');
+                                                    });
+                                            })
+                                    }}
+                                >
+                                    refresh data
+                                </StyledButton>
+                            </Grid>
+                            <Grid xs={6}>
+                                {!isDeleteMode ?
+                                    <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
+                                        '&:hover': {
+                                            backgroundColor: theme => theme.palette.error.main,
+                                        },
+                                    }}
+                                        onClick={() => {
+                                            setIsDeleteMode(true);
+                                        }}
+                                    >
+                                        delete account
+                                    </StyledButton> :
+                                    <ComponentBox
+                                        title="Are you sure?"
+                                        icon={<WarningAmberRoundedIcon />}
+                                        sx={{
+                                            width: '100%',
+                                            height: '100%',
+                                            m: 0,
+                                            transition: 'height 0.5s',
+                                        }}
+                                    >
+                                        <Typography variant="body2" component="div">
+                                            This action cannot be undone.
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', mt: 1 }}>
+                                            <IconButton
+                                                color='error'
+                                                size="small"
+                                                onClick={() => {
+                                                    deleteAccount(account.email);
+                                                    onClose();
+                                                }}
+                                            >
+                                                <DeleteOutlineOutlinedIcon />
+                                            </IconButton>
                                             <IconButton
                                                 sx={{ color: theme.palette.text.primary }}
                                                 size="small"
-                                                onClick={() => {
-                                                    if (isEditMode) {
-                                                        setAccount(accountOrg);
-                                                    }
-                                                    setIsEditMode(!isEditMode);
-                                                }}
+                                                onClick={() => setIsDeleteMode(false)}
                                             >
-                                                {isEditMode ? <CloseIcon /> : <EditOutlinedIcon />}
+                                                <CloseIcon />
                                             </IconButton>
-                                        </Tooltip>
-                                    </Box>
-                                </Box>}
-                            icon={<ArticleOutlinedIcon />}
-                            sx={{
-                                width: '100%',
-                                transition: 'height 0.5s',
-                            }}
-                        >
-
-                            <TableContainer component={Box} sx={{ borderRadius: 0 }}>
-                                <Table
-                                    sx={{
-                                        '& tbody tr:last-child td, & tbody tr:last-child th': {
-                                            borderBottom: 'none',
-                                        },
-                                    }}
-                                >
-                                    <TableHead>
-                                        <TableRow>
-                                            <PaddedTableCell sx={{ width: '125px' }}>Attribute</PaddedTableCell>
-                                            <PaddedTableCell>Value</PaddedTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <GroupRow
-                                            key='group'
-                                            editMode={isEditMode}
-                                            group={group}
-                                            onChange={(value) => handleAccountEdit({ ...account, group: value })}
-                                        />
-                                        <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={true} />
-                                        {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
-                                        {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={newDecryptedPassword} onChange={(value) => setNewDecryptedPassword(value)} />}
-                                        {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
-                                        <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
-                                        <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
-                                            value={account.performDailyLogin ? account.performDailyLogin : false}
-                                            onChange={(event) => {
-                                                const newAcc = ({ ...account, performDailyLogin: event.target.checked });
-                                                updateAccount(newAcc);
-                                            }}
-                                        />
-                                        {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </ComponentBox>
+                                        </Box>
+                                    </ComponentBox>
+                                }
+                            </Grid>
+                        </Grid>
                     </Box>
-
-                    {/* 3. */}
-                    <Grid container spacing={2}>
-                        <Grid xs={12}>
-                            <StyledButton
-                                disabled={updateInProgress}
-                                fullWidth={true}
-                                sx={{ height: 55 }}
-                                onClick={() => {
-                                    postAccountVerify(account, hwid)
-                                        .then(async (res) => {
-                                            if (res === null) {
-                                                logToErrorLog("Start Game", "Failed to start the game for " + account.email + ", got null response");
-                                                showSnackbar("Failed to start the game", 'error');
-                                                return;
-                                            }
-
-                                            if (res.Error) {
-                                                const requestState = getRequestState(res);
-                                                logToErrorLog("Start Game", "Failed to start the game for " + account.email + ", got state: " + requestState);
-                                                if (!!res) {
-                                                    showSnackbar("Failed to start the game: " + requestState, 'error');
-
-                                                    const newAcc = ({ ...acc, state: requestState });
-                                                    updateAccount(newAcc);
-                                                    return;
-                                                }
-
-                                                showSnackbar("Failed to start the game: " + res.Error, 'error');
-                                                return;
-                                            }
-
-                                            const token = {
-                                                AccessToken: res.Account.AccessToken,
-                                                AccessTokenTimestamp: res.Account.AccessTokenTimestamp,
-                                                AccessTokenExpiration: res.Account.AccessTokenExpiration,
-                                            };
-                                            
-                                            showSnackbar("Starting the game...");
-                                            const args = `data:{platform:Deca,guid:${btoa(acc.email)},token:${btoa(acc.token.AccessToken)},tokenTimestamp:${btoa(acc.token.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
-                                            tauri.invoke(
-                                                "start_application",
-                                                { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
-                                            );                                            
-
-                                            postCharList(res.Account.AccessToken)
-                                                .then((charList) => {
-                                                    const state = getRequestState(charList);
-                                                    const newAcc = ({ ...acc, state: state, lastRefresh: new Date().toISOString(), token: token});
-                                                    updateAccount(newAcc);
-
-                                                    if (state !== "Success") {
-                                                        logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + state);
-                                                        showSnackbar("Failed to refresh data: " + state, 'error');
-                                                        return;
-                                                    }
-
-                                                    storeCharList(charList, acc.email);
-                                                    showSnackbar("Refreshing finished");
-
-                                                    const servers = charList.Chars.Servers.Server;
-                                                    if (servers && servers.length > 0) {
-                                                        saveServerList(servers);
-                                                    }
-                                                }).catch((err) => {
-                                                    console.error("error", err);
-
-                                                    const newAcc = ({ ...acc, token: token});
-                                                    updateAccount(newAcc);
-
-                                                    logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got error: " + err);
-                                                    showSnackbar("Failed to refresh data " + res.Error, 'error');
-                                                });
-                                        })                                   
-                                }}
-                            >
-                                <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
-                                start game
-                            </StyledButton>
-                        </Grid>
-                        <Grid xs={6}>
-                            <StyledButton
-                                fullWidth={true}
-                                startIcon={<RefreshOutlinedIcon />}
-                                color="secondary"
-                                onClick={() => {
-                                    postAccountVerify(account, hwid)
-                                        .then(async (res) => {
-                                            if (res === null) {
-                                                logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got null response");
-                                                showSnackbar("Failed to refresh data", 'error');
-                                                return;
-                                            }
-
-                                            if (res.Error) {
-                                                const requestState = getRequestState(res);
-                                                logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + requestState);
-                                                if (!!res) {
-                                                    showSnackbar("Failed to refresh data: " + requestState, 'error');
-
-                                                    const newAcc = ({ ...acc, state: requestState });
-                                                    updateAccount(newAcc);
-                                                    return;
-                                                }
-
-                                                showSnackbar("Failed to refresh data: " + res.Error, 'error');
-                                                return;
-                                            }
-
-                                            postCharList(res.Account.AccessToken)
-                                                .then((charList) => {
-                                                    const state = getRequestState(charList);
-                                                    const newAcc = ({ ...acc, state: state, lastRefresh: new Date().toISOString() });
-                                                    updateAccount(newAcc);
-
-                                                    if (state !== "Success") {
-                                                        logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + state);
-                                                        showSnackbar("Failed to refresh data: " + state, 'error');
-                                                        return;
-                                                    }
-
-                                                    storeCharList(charList, acc.email);
-                                                    showSnackbar("Refreshing finished");
-
-                                                    const servers = charList.Chars.Servers.Server;
-                                                    if (servers && servers.length > 0) {
-                                                        saveServerList(servers);
-                                                    }
-                                                }).catch((err) => {
-                                                    console.error("error", err);
-                                                    logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got error: " + err);
-                                                    showSnackbar("Failed to refresh data " + res.Error, 'error');
-                                                });
-                                        })
-                                }}
-                            >
-                                refresh data
-                            </StyledButton>
-                        </Grid>
-                        <Grid xs={6}>
-                            {!isDeleteMode ?
-                                <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
-                                    '&:hover': {
-                                        backgroundColor: theme => theme.palette.error.main,
-                                    },
-                                }}
-                                    onClick={() => {
-                                        setIsDeleteMode(true);
-                                    }}
-                                >
-                                    delete account
-                                </StyledButton> :
-                                <ComponentBox
-                                    title="Are you sure?"
-                                    icon={<WarningAmberRoundedIcon />}
-                                    sx={{
-                                        width: '100%',
-                                        height: '100%',
-                                        m: 0,
-                                        transition: 'height 0.5s',
-                                    }}
-                                >
-                                    <Typography variant="body2" component="div">
-                                        This action cannot be undone.
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', mt: 1 }}>
-                                        <IconButton
-                                            color='error'
-                                            size="small"
-                                            onClick={() => {
-                                                deleteAccount(account.email);
-                                                onClose();
-                                            }}
-                                        >
-                                            <DeleteOutlineOutlinedIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            sx={{ color: theme.palette.text.primary }}
-                                            size="small"
-                                            onClick={() => setIsDeleteMode(false)}
-                                        >
-                                            <CloseIcon />
-                                        </IconButton>
-                                    </Box>
-                                </ComponentBox>
-                            }
-                        </Grid>
-                    </Grid>
                 </Box>
-            </Box>
-        </Drawer >
+            </Drawer >
+        </Box>
     );
 }
 
