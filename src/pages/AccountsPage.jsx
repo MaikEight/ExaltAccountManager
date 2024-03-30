@@ -12,7 +12,9 @@ function AccountsPage() {
     return (
         <Box id="accountspage"
             sx={{
-                width: '100%',
+                width: '100%', 
+                minWidth: '100px',
+                overflow: 'hidden',                
                 p: 2,
             }}
         >
