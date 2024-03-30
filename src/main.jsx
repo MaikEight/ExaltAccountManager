@@ -10,6 +10,7 @@ ReactDOM.createRoot(document.getElementById("root"))
   <div
     style={{
       borderRadius: '10px',
+      overflow: 'hidden',
     }}
   >
     <UserSettingsProvider>
