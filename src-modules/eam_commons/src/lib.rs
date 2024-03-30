@@ -10,3 +10,5 @@ pub use diesel_setup::{DbPool, setup_database};
 
 pub mod diesel_functions;
 pub use diesel_functions::*;
+
+pub mod windows_specifics;
