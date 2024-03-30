@@ -198,8 +198,7 @@ namespace EAM_Task_Tools
                     {
                         try
                         {
-                            Console.WriteLine("Uninstalling task...");
-                            Microsoft.Win32.TaskScheduler.Task s = service.RootFolder.AllTasks.Where(t => t.Name == taskName).First();
+                            Console.WriteLine("Uninstalling task...");                    
                             service.RootFolder.DeleteTask(taskName, false);
 
                             Console.WriteLine("Task uninstalled successfully.");
