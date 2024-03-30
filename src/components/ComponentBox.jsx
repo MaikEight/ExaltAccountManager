@@ -48,29 +48,33 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                         mb: (isCollapsed ? 0 : 2),
                         gap: 1,
                         transition: 'margin-bottom 0.2s',
-                        cursor: isCollapseable ? 'pointer' : '',                        
+                        cursor: isCollapseable ? 'pointer' : '',
                     }}
                     onClick={isCollapseable ? () => setIsCollapsed(!isCollapsed) : null}
                 >
                     {icon && icon}
                     {
                         title &&
-                        <Typography 
-                            variant="h6" 
-                            sx={{ 
-                                fontWeight: 600, 
-                                textAlign: 'center', 
-                            }}
-                            
-                        >
-                            {title}
-                        </Typography>
+                        (typeof title === 'string' ?
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: 600,
+                                    textAlign: 'center',
+                                }}
+
+                            >
+                                {title}
+                            </Typography>
+                            :
+                            title
+                        )
                     }
                     {
                         isCollapseable &&
                         <IconButton
-                            sx={{ 
-                                marginLeft: 'auto', 
+                            sx={{
+                                marginLeft: 'auto',
                                 transition: 'transform 0.2s',
                                 transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)',
                             }}
