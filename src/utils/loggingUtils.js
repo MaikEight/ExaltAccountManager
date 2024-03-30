@@ -6,9 +6,9 @@ async function logToAuditLog(sender, message, accountEmail = null) {
     const logData = {
         id: null,
         time: "",
-        sender: sender,
-        message: message,
-        accountEmail: accountEmail
+        sender: "" + sender,
+        message: "" + message,
+        accountEmail: accountEmail ? "" + accountEmail : null
     }
 
     console.info(`Logging to audit log: ${JSON.stringify(logData)}`);
@@ -24,16 +24,15 @@ async function getAuditLogForAccount(accountEmail) {
 }
 
 async function logToErrorLog(sender, message) {
-    if(!sender || !message) return;
+        if(!sender || !message) return;
 
     const logData = {
         id: null,
         time: "",
-        sender: sender,
-        message: message
+        sender: "" + sender,
+        message: "" + message
     }
 
-    console.info(`Logging to error log: ${JSON.stringify(logData)}`);
     await invoke('log_to_error_log', { log: logData });
 }
 
