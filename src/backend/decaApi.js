@@ -7,7 +7,7 @@ import { logToErrorLog } from '../utils/loggingUtils';
 async function postAccountVerify(account, clientId, decryptNeeded = true) {    
     if (!account || !clientId) return null;
 
-    const url = `${ROTMG_BASE_URL}/account/verify`;    
+    const url = `${ROTMG_BASE_URL}/account/verify?__source=ExaltAccountManager`;    
     const pw = decryptNeeded ? await invoke('decrypt_string', { data: account.password }) : account.password;
     const data = {
         guid: account.email,
@@ -47,7 +47,7 @@ async function postCharList(accessToken) {
         play_platform: "Unity",
         game_net_user_id: "",
         muleDump: "true",
-        __source: "jakcodex-v965"
+        __source: "ExaltAccountManager"
     };
 
     try {
