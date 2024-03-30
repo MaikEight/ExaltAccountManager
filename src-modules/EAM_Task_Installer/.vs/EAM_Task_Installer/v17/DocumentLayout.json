@@ -1,19 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Maik8\\source\\repos\\EAM_Task_Installer\\",
+  "WorkspaceRootPath": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|EAM_Task_Tools||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Tools.csproj|c:\\users\\maik8\\documents\\react\\exalt-account-manager\\src-modules\\eam_task_installer\\eam_task_installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Tools.csproj|solutionrelative:eam_task_installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Installer.csproj|c:\\users\\maik8\\source\\repos\\eam_task_installer\\eam_task_installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Installer.csproj|C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\eam_task_installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Installer.csproj|solutionrelative:eam_task_installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Maik8\\source\\repos\\ExaltAccountManager\\ExaltAccountManager\\UI\\Elements\\EleDailyLoginTaskInstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Tools.csproj|c:\\users\\maik8\\source\\repos\\eam_task_installer\\eam_task_installer\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|1e78f8db-6c07-4d61-a18f-7514010abd56"
     }
   ],
   "DocumentGroupContainers": [
@@ -44,37 +42,37 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "EAM_Task_Tools",
-              "DocumentMoniker": "C:\\Users\\Maik8\\source\\repos\\EAM_Task_Installer\\EAM_Task_Installer\\EAM_Task_Tools.csproj",
-              "RelativeDocumentMoniker": "EAM_Task_Installer\\EAM_Task_Tools.csproj",
-              "ToolTip": "C:\\Users\\Maik8\\source\\repos\\EAM_Task_Installer\\EAM_Task_Installer\\EAM_Task_Tools.csproj",
-              "RelativeToolTip": "EAM_Task_Installer\\EAM_Task_Tools.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-03-29T02:56:11.529Z",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
+              "RelativeDocumentMoniker": "EAM_Task_Installer\\Program.cs",
+              "ToolTip": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
+              "RelativeToolTip": "EAM_Task_Installer\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-30T02:40:03.111Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Maik8\\source\\repos\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
               "RelativeDocumentMoniker": "EAM_Task_Installer\\Program.cs",
-              "ToolTip": "C:\\Users\\Maik8\\source\\repos\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
+              "ToolTip": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
               "RelativeToolTip": "EAM_Task_Installer\\Program.cs",
               "ViewState": "AQIAAFAAAAAAAAAAAAAwwHEAAABJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-29T01:20:19.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-29T01:20:19.563Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "EleDailyLoginTaskInstaller.cs",
               "DocumentMoniker": "C:\\Users\\Maik8\\source\\repos\\ExaltAccountManager\\ExaltAccountManager\\UI\\Elements\\EleDailyLoginTaskInstaller.cs",
-              "RelativeDocumentMoniker": "..\\ExaltAccountManager\\ExaltAccountManager\\UI\\Elements\\EleDailyLoginTaskInstaller.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\source\\repos\\ExaltAccountManager\\ExaltAccountManager\\UI\\Elements\\EleDailyLoginTaskInstaller.cs",
               "ToolTip": "C:\\Users\\Maik8\\source\\repos\\ExaltAccountManager\\ExaltAccountManager\\UI\\Elements\\EleDailyLoginTaskInstaller.cs",
-              "RelativeToolTip": "..\\ExaltAccountManager\\ExaltAccountManager\\UI\\Elements\\EleDailyLoginTaskInstaller.cs",
-              "ViewState": "AQIAAMYAAAAAAAAAAAAAAMwAAAAgAAAA",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\source\\repos\\ExaltAccountManager\\ExaltAccountManager\\UI\\Elements\\EleDailyLoginTaskInstaller.cs",
+              "ViewState": "AQIAAMMAAAAAAAAAAIBJwMwAAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-29T01:21:59.769Z",
               "EditorCaption": ""
