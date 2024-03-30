@@ -112,6 +112,7 @@ function LogsPage() {
         <Box id="logspage"
             sx={{
                 width: '100%',
+                minWidth: '100px',
                 p: 2,
             }}
         >
@@ -143,8 +144,7 @@ function LogsPage() {
                     getRowId={(row) => row.id}
                     columns={currentColumns}
                     pageSizeOptions={[10, 25, 50, 100]}
-                    getRowHeight={() => "auto"}
-                    rowSelection
+                    rowSelection                    
                     getEstimatedRowHeight={() => 41}
                     rowCount={currentShownLog.length}
                     // onCellClick={handleCellClick}
