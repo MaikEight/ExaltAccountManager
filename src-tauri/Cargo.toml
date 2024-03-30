@@ -17,14 +17,14 @@ tauri = { version = "1.5", features = [ "updater", "dialog-all", "http-all", "de
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-std = "1.12"
-window-vibrancy = "0.4.3"
-dirs = "3.0.2"
+window-vibrancy = "0.5.0"
+dirs = "5.0.1"
 md5 = "0.7.0"
 tokio = "1.35.1"
 futures = "0.3.29"
 flate2 = "1.0.28"
 walkdir = "2.4.0"
-reqwest = { version = "0.11", features = ["blocking"] }
+reqwest = { version = "0.12.2", features = ["blocking"] }
 zip = "0.6.6"
 mpsc = "0.2.3"
 anyhow = "1.0"
