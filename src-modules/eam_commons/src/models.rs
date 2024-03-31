@@ -860,3 +860,189 @@ impl From<ErrorLog> for NewErrorLog {
         }
     }
 }
+
+// ############################
+// #         UserData         #
+// ############################
+
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct UserData {
+    pub dataKey: String,
+    pub dataValue: String,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::UserData)]
+pub struct NewUserData {
+    pub dataKey: String,
+    pub dataValue: String,
+}
+
+#[derive(AsChangeset, Serialize)]
+#[diesel(table_name = schema::UserData)]
+pub struct UpdateUserData {
+    pub dataKey: String,
+    pub dataValue: String,
+}
+
+impl From<UserData> for NewUserData {
+    fn from(user_data: UserData) -> Self {
+        NewUserData {
+            dataKey: user_data.dataKey,
+            dataValue: user_data.dataValue,
+        }
+    }
+}
+
+impl From<UserData> for UpdateUserData {
+    fn from(user_data: UserData) -> Self {
+        UpdateUserData {
+            dataKey: user_data.dataKey,
+            dataValue: user_data.dataValue,
+        }
+    }
+}
+
+// ############################
+// #     DailyLoginReports    #
+// ############################
+
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct DailyLoginReports {
+    pub id: String,
+    pub startTime: Option<String>,
+    pub endTime: Option<String>,
+    pub hasFinished: bool,
+    pub emailsToProcess: Option<String>,
+    pub amountOfAccounts: i32,
+    pub amountOfAccountsProcessed: i32,
+    pub amountOfAccountsFailed: i32,
+    pub amountOfAccountsSucceeded: i32,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::DailyLoginReports)]
+pub struct NewDailyLoginReports {
+    pub id: String,
+    pub startTime: Option<String>,
+    pub endTime: Option<String>,
+    pub hasFinished: bool,
+    pub emailsToProcess: Option<String>,
+    pub amountOfAccounts: i32,
+    pub amountOfAccountsProcessed: i32,
+    pub amountOfAccountsFailed: i32,
+    pub amountOfAccountsSucceeded: i32,
+}
+
+#[derive(AsChangeset, Serialize)]
+#[diesel(table_name = schema::DailyLoginReports)]
+pub struct UpdateDailyLoginReports {
+    pub id: String,
+    pub startTime: Option<String>,
+    pub endTime: Option<String>,
+    pub hasFinished: bool,
+    pub emailsToProcess: Option<String>,
+    pub amountOfAccounts: i32,
+    pub amountOfAccountsProcessed: i32,
+    pub amountOfAccountsFailed: i32,
+    pub amountOfAccountsSucceeded: i32,
+}
+
+impl From<DailyLoginReports> for NewDailyLoginReports {
+    fn from(daily_login_reports: DailyLoginReports) -> Self {
+        NewDailyLoginReports {
+            id: daily_login_reports.id,
+            startTime: daily_login_reports.startTime,
+            endTime: daily_login_reports.endTime,
+            hasFinished: daily_login_reports.hasFinished,
+            emailsToProcess: daily_login_reports.emailsToProcess,
+            amountOfAccounts: daily_login_reports.amountOfAccounts,
+            amountOfAccountsProcessed: daily_login_reports.amountOfAccountsProcessed,
+            amountOfAccountsFailed: daily_login_reports.amountOfAccountsFailed,
+            amountOfAccountsSucceeded: daily_login_reports.amountOfAccountsSucceeded,
+        }
+    }
+}
+
+impl From<DailyLoginReports> for UpdateDailyLoginReports {
+    fn from(daily_login_reports: DailyLoginReports) -> Self {
+        UpdateDailyLoginReports {
+            id: daily_login_reports.id,
+            startTime: daily_login_reports.startTime,
+            endTime: daily_login_reports.endTime,
+            hasFinished: daily_login_reports.hasFinished,
+            emailsToProcess: daily_login_reports.emailsToProcess,
+            amountOfAccounts: daily_login_reports.amountOfAccounts,
+            amountOfAccountsProcessed: daily_login_reports.amountOfAccountsProcessed,
+            amountOfAccountsFailed: daily_login_reports.amountOfAccountsFailed,
+            amountOfAccountsSucceeded: daily_login_reports.amountOfAccountsSucceeded,
+        }
+    }
+}
+
+// #############################
+// #  DailyLoginReportEntries  #
+// #############################
+
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct DailyLoginReportEntries {
+    pub id: i32,
+    pub reportId: Option<String>,
+    pub startTime: Option<String>,
+    pub endTime: Option<String>,
+    pub accountEmail: Option<String>,
+    pub status: String,
+    pub errorMessage: Option<String>,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::DailyLoginReportEntries)]
+pub struct NewDailyLoginReportEntries {
+    pub id: i32,
+    pub reportId: Option<String>,
+    pub startTime: Option<String>,
+    pub endTime: Option<String>,
+    pub accountEmail: Option<String>,
+    pub status: String,
+    pub errorMessage: Option<String>,
+}
+
+#[derive(AsChangeset, Serialize)]
+#[diesel(table_name = schema::DailyLoginReportEntries)]
+pub struct UpdateDailyLoginReportEntries {
+    pub id: i32,
+    pub reportId: Option<String>,
+    pub startTime: Option<String>,
+    pub endTime: Option<String>,
+    pub accountEmail: Option<String>,
+    pub status: String,
+    pub errorMessage: Option<String>,
+}
+
+impl From<DailyLoginReportEntries> for NewDailyLoginReportEntries {
+    fn from(daily_login_report_entries: DailyLoginReportEntries) -> Self {
+        NewDailyLoginReportEntries {
+            id: daily_login_report_entries.id,
+            reportId: daily_login_report_entries.reportId,
+            startTime: daily_login_report_entries.startTime,
+            endTime: daily_login_report_entries.endTime,
+            accountEmail: daily_login_report_entries.accountEmail,
+            status: daily_login_report_entries.status,
+            errorMessage: daily_login_report_entries.errorMessage,
+        }
+    }
+}
+
+impl From<DailyLoginReportEntries> for UpdateDailyLoginReportEntries {
+    fn from(daily_login_report_entries: DailyLoginReportEntries) -> Self {
+        UpdateDailyLoginReportEntries {
+            id: daily_login_report_entries.id,
+            reportId: daily_login_report_entries.reportId,
+            startTime: daily_login_report_entries.startTime,
+            endTime: daily_login_report_entries.endTime,
+            accountEmail: daily_login_report_entries.accountEmail,
+            status: daily_login_report_entries.status,
+            errorMessage: daily_login_report_entries.errorMessage,
+        }
+    }
+}
