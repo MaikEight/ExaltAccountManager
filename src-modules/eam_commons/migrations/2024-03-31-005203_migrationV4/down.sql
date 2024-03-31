@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS DailyLoginReports;
+DROP TABLE IF EXISTS DailyLoginReportEntries;
+DROP TABLE IF EXISTS UserData;
