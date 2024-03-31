@@ -154,9 +154,44 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    UserData (dataKey) {
+        dataKey -> Text,
+        dataValue -> Text,
+    }
+}
+
+diesel::table! {
+    DailyLoginReportEntries (id) {
+        id -> Integer,
+        reportId -> Nullable<Text>,
+        startTime -> Nullable<Timestamp>,
+        endTime -> Nullable<Timestamp>,
+        accountEmail -> Nullable<Text>,
+        status -> Text,
+        errorMessage -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    DailyLoginReports (id) {
+        id -> Text,
+        startTime -> Nullable<Timestamp>,
+        endTime -> Nullable<Timestamp>,
+        hasFinished -> Bool,
+        emailsToProcess -> Nullable<Text>,
+        amountOfAccounts -> Integer,
+        amountOfAccountsProcessed -> Integer,
+        amountOfAccountsFailed -> Integer,
+        amountOfAccountsSucceeded -> Integer,
+    }
+}
+
 diesel::joinable!(account -> char_list_entries (entry_id));
 diesel::joinable!(class_stats -> account (entry_id));
 diesel::joinable!(AuditLog -> EamAccount (accountEmail));
+diesel::joinable!(DailyLoginReportEntries -> DailyLoginReports (reportId));
+diesel::joinable!(DailyLoginReportEntries -> EamAccount (accountEmail));
 
 diesel::allow_tables_to_appear_in_same_query!(
     EamAccount,
@@ -167,4 +202,6 @@ diesel::allow_tables_to_appear_in_same_query!(
     class_stats,
     AuditLog,
     ErrorLog,
+    DailyLoginReportEntries,
+    DailyLoginReports,
 );
