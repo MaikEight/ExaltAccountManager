@@ -5,6 +5,9 @@ use crate::models::{EamAccount, NewEamAccount, UpdateEamAccount};
 use crate::models::{EamGroup, NewEamGroup, UpdateEamGroup};
 use crate::models::{ErrorLog, NewErrorLog};
 use crate::models::{NewAccount, NewCharacter, NewClassStats};
+use crate::models::{UserData, NewUserData, UpdateUserData};
+use crate::models::{DailyLoginReports, NewDailyLoginReports, UpdateDailyLoginReports};
+use crate::models::{DailyLoginReportEntries, NewDailyLoginReportEntries, UpdateDailyLoginReportEntries};
 use crate::schema::account::dsl::*;
 use crate::schema::char_list_entries::dsl::*;
 use crate::schema::character::dsl::*;
@@ -16,11 +19,126 @@ use crate::schema::EamAccount::dsl::*;
 use crate::schema::EamGroup as eam_groups;
 use crate::schema::EamGroup::dsl::*;
 use crate::schema::ErrorLog as error_logs;
+use crate::schema::UserData as user_data;
+use crate::schema::DailyLoginReports as daily_login_reports;
+use crate::schema::DailyLoginReportEntries as daily_login_report_entries;
 use diesel::insert_into;
 use diesel::prelude::*;
 use diesel::result::Error::DatabaseError;
 use diesel::RunQueryDsl;
 use uuid::Uuid;
+
+//########################
+//#       UserData       #
+//########################
+pub fn insert_or_update_user_data(
+    pool: &DbPool,
+    data: UserData,
+) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let insertable = NewUserData::from(data.clone());
+
+    let updatable = UpdateUserData::from(data);
+
+    diesel::insert_into(user_data::table)
+        .values(&insertable)
+        .on_conflict(user_data::dataKey)
+        .do_update()
+        .set(&updatable)
+        .execute(&mut conn)
+}
+
+pub fn get_user_data_by_key(
+    pool: &DbPool,
+    data_key: String,
+) -> Result<UserData, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    user_data::table.find(data_key).first(&mut conn)
+}
+
+pub fn get_all_user_data(pool: &DbPool) -> Result<Vec<UserData>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    user_data::table.load::<UserData>(&mut conn)
+}
+
+pub fn delete_user_data_by_key(
+    pool: &DbPool,
+    data_key: String,
+) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    diesel::delete(user_data::table.find(data_key)).execute(&mut conn)
+}
+
+//#########################
+//#   DailyLoginReports   #
+//#########################
+
+pub fn get_all_daily_login_reports(pool: &DbPool) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    daily_login_reports::table.load::<DailyLoginReports>(&mut conn)
+}
+
+pub fn get_daily_login_report_by_id(
+    pool: &DbPool,
+    report_id: String,
+) -> Result<DailyLoginReports, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    daily_login_reports::table.find(report_id).first(&mut conn)
+}
+
+pub fn insert_or_update_daily_login_report(
+    pool: &DbPool,
+    report: DailyLoginReports,
+) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let insertable = NewDailyLoginReports::from(report.clone());
+    let updatable = UpdateDailyLoginReports::from(report);
+
+    diesel::insert_into(daily_login_reports::table)
+        .values(&insertable)
+        .on_conflict(daily_login_reports::id)
+        .do_update()
+        .set(&updatable)
+        .execute(&mut conn)
+}
+
+// #############################
+// #  DailyLoginReportEntries  #
+// #############################
+
+pub fn get_all_daily_login_report_entries(
+    pool: &DbPool,
+) -> Result<Vec<DailyLoginReportEntries>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    daily_login_report_entries::table.load::<DailyLoginReportEntries>(&mut conn)
+}
+
+pub fn get_daily_login_report_entry_by_id(
+    pool: &DbPool,
+    report_entry_id: i32,
+) -> Result<DailyLoginReportEntries, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    daily_login_report_entries::table.find(report_entry_id).first(&mut conn)
+}
+
+pub fn insert_or_update_daily_login_report_entry(
+    pool: &DbPool,
+    entry: DailyLoginReportEntries,
+) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let insertable = NewDailyLoginReportEntries::from(entry.clone());
+    let updatable = UpdateDailyLoginReportEntries::from(entry);
+
+    diesel::insert_into(daily_login_report_entries::table)
+        .values(&insertable)
+        .on_conflict(daily_login_report_entries::id)
+        .do_update()
+        .set(&updatable)
+        .execute(&mut conn)
+}
 
 //########################
 //#    CharListDataset   #
