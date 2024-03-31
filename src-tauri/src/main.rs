@@ -6,6 +6,8 @@ extern crate dirs;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
 use eam_commons::models;
+use eam_commons::models::DailyLoginReportEntries;
+use eam_commons::models::DailyLoginReports;
 use eam_commons::models::{AuditLog, ErrorLog};
 use eam_commons::setup_database;
 use eam_commons::DbPool;
@@ -76,25 +78,35 @@ fn main() {
             get_os_user_identity,
             quick_hash,
             get_default_game_path,
-            get_all_eam_accounts,
+            get_all_eam_accounts, //EAM ACCOUNTS
             get_eam_account_by_email,
             insert_or_update_eam_account,
             delete_eam_account,
-            get_all_eam_groups,
+            get_all_eam_groups, //EAM GROUPS
             insert_or_update_eam_group,
             delete_eam_group,
-            insert_char_list_dataset,
+            insert_char_list_dataset, //CHAR LIST ENTRIES
             download_and_run_hwid_tool,
             encrypt_string,
             decrypt_string,
             has_old_eam_save_file,
             format_eam_v3_save_file_to_readable_json,
-            get_all_audit_logs,
+            get_all_audit_logs, //LOGS
             get_audit_log_for_account,
             log_to_audit_log,
             get_all_error_logs,
             log_to_error_log,
-            check_for_installed_eam_daily_login_task,
+            get_all_user_data, //USER DATA
+            get_user_data_by_key,
+            insert_or_update_user_data,
+            delete_user_data_by_key,
+            get_all_daily_login_reports, //DAILY LOGIN REPORTS
+            get_daily_login_report_by_id,
+            insert_or_update_daily_login_report,
+            get_all_daily_login_report_entries, //DAILY LOGIN REPORT ENTRIES
+            get_daily_login_report_entry_by_id,
+            insert_or_update_daily_login_report_entry,
+            check_for_installed_eam_daily_login_task, //DAILY LOGIN TASK
             install_eam_daily_login_task,
             uninstall_eam_daily_login_task
         ])
@@ -686,7 +698,10 @@ async fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
     let file_path_str_clone = file_path_str.clone();
     //If the EAM.HWID file already exists, delete it
     let path = PathBuf::from(&file_path);
-    println!("Deleting old EAM.HWID file if it exists: {}", &file_path.clone().to_str().unwrap());
+    println!(
+        "Deleting old EAM.HWID file if it exists: {}",
+        &file_path.clone().to_str().unwrap()
+    );
 
     if path.exists() {
         println!("Old EAM.HWID file exists, deleting it");
@@ -698,15 +713,21 @@ async fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
         .to_str()
         .ok_or("Failed to convert path to string".to_string())?
         .to_string();
-    start_application(hwid_tool_path_str, format!("-batchmode {{{}}}", save_file_path))
-        .map_err(|e| e.to_string())?;
+    start_application(
+        hwid_tool_path_str,
+        format!("-batchmode {{{}}}", save_file_path),
+    )
+    .map_err(|e| e.to_string())?;
 
     println!("Waiting for EAM.HWID file to be created");
     let file_created = wait_for_file_creation(&file_path_str_clone, 60);
-    
+
     //Delete the hwid-tool
     hwid_tool_path.pop(); //Remove the executable name
-    println!("Deleting HWID tool: {}", &hwid_tool_path.clone().to_str().unwrap());
+    println!(
+        "Deleting HWID tool: {}",
+        &hwid_tool_path.clone().to_str().unwrap()
+    );
     let _ = fs::remove_dir_all(&hwid_tool_path);
 
     Ok(file_created)
@@ -803,6 +824,167 @@ fn check_for_installed_eam_daily_login_task() -> Result<bool, String> {
     match result {
         Ok(result) => Ok(result),
         Err(e) => Err(e.to_string()),
+    }
+}
+
+//########################
+//#       UserData       #
+//########################
+
+#[tauri::command]
+async fn get_all_user_data() -> Result<Vec<models::UserData>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_all_user_data(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn get_user_data_by_key(key: String) -> Result<models::UserData, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_user_data_by_key(pool, key)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn insert_or_update_user_data(user_data: models::UserData) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_or_update_user_data(pool, user_data)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn delete_user_data_by_key(key: String) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::delete_user_data_by_key(pool, key)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+//#########################
+//#   DailyLoginReports   #
+//#########################
+
+#[tauri::command]
+async fn get_all_daily_login_reports() -> Result<Vec<DailyLoginReports>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_all_daily_login_reports(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn get_daily_login_report_by_id(
+    report_id: String,
+) -> Result<DailyLoginReports, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_daily_login_report_by_id(pool, report_id)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn insert_or_update_daily_login_report(
+    daily_login_report: DailyLoginReports,
+) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_or_update_daily_login_report(pool, daily_login_report)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+// #############################
+// #  DailyLoginReportEntries  #
+// #############################
+
+#[tauri::command]
+async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntries>, tauri::Error>
+{
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_all_daily_login_report_entries(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn get_daily_login_report_entry_by_id(
+    report_id: i32,
+) -> Result<DailyLoginReportEntries, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_daily_login_report_entry_by_id(pool, report_id)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn insert_or_update_daily_login_report_entry(
+    daily_login_report_entry: DailyLoginReportEntries,
+) -> Result<usize, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::insert_or_update_daily_login_report_entry(pool, daily_login_report_entry)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
     }
 }
 
