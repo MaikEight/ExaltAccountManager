@@ -8,8 +8,8 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-dirs = "3.0.2"
-reqwest = { version = "0.11", features = ["blocking"] }
+dirs = "5.0.1"
+reqwest = { version = "0.12.2", features = ["blocking"] }
 lazy_static = "1.4.0"
 base64 = "0.22.0"
 chrono = { version = "0.4.35", features = ["serde"] }
@@ -17,4 +17,5 @@ roxmltree = "0.19.0"
 tokio = { version = "1", features = ["full"] }
 wmi = "0.13.1"
 sha1 = "0.10.6"
+uuid = "1.8.0" 
 eam_commons = { path = "../eam_commons" }
