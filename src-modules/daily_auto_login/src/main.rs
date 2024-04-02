@@ -9,6 +9,10 @@ use eam_commons::models::AuditLog;
 use eam_commons::get_all_eam_accounts_for_daily_login;
 use eam_commons::get_eam_account_by_email;
 use eam_commons::diesel_functions;
+use eam_commons::get_latest_daily_login;
+use eam_commons::insert_or_update_daily_login_report;
+use eam_commons::insert_or_update_daily_login_report_entry;
+use eam_commons::models::{DailyLoginReports, DailyLoginReportEntries};
 
 use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
@@ -30,6 +34,7 @@ use reqwest::header::HeaderValue;
 use reqwest::header::CONTENT_TYPE;
 use base64::prelude::*;
 use std::io::BufRead;
+use uuid::Uuid;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
@@ -37,16 +42,8 @@ lazy_static! {
 
 #[derive(Serialize, Deserialize, Clone)]
 struct DailyAutoLoginSettings {
-    last_daily_login_time: DateTime<Utc>,
+    daily_login_report_time: DateTime<Utc>,
     game_exe_path: String,    
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-struct DailyAutoLoginState {
-    account_emails: Vec<String>,
-    time_started: DateTime<Utc>,
-    last_save: DateTime<Utc>,
-    failed_accounts: Vec<String>,    
 }
 
 struct GameAccessToken {
@@ -65,22 +62,86 @@ async fn main() {
     let database_url = get_database_path().to_str().unwrap().to_string();
     let pool = setup_database(&database_url);
     *POOL.lock().unwrap() = Some(pool);
+    let pool = POOL.lock().unwrap().as_ref().unwrap();
+    log_to_audit_log(pool, "Starting daily_auto_login.".to_string(), None);
 
-    log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Starting daily_auto_login.".to_string(), None);
+    let daily_login_report = get_latest_daily_login(pool);
+    
+    let accounts_to_perform_daily_login_with = get_all_eam_accounts_for_daily_login(pool).unwrap();
 
-    let accounts_to_perform_daily_login_with =
-        get_all_eam_accounts_for_daily_login(
-            &POOL.lock().unwrap().as_ref().unwrap(),
-        )
-        .unwrap();
+    if daily_login_report.is_ok() {
+        let daily_login_report = daily_login_report.unwrap();
+        let daily_login_report_time = daily_login_report.startTime.unwrap();
+        let daily_login_report_time = DateTime::parse_from_rfc3339(&daily_login_report_time).unwrap();
+        let daily_login_report_time = daily_login_report_time.with_timezone(&Utc);
 
-    if accounts_to_perform_daily_login_with.len() == 0 {
-        println!("No accounts to perform daily login with.");
-        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "No accounts to perform daily login with, exiting.".to_string(), None);
-        return;
-    }
+        if daily_login_report_time.date_naive() == Utc::now().date_naive() {
+            if daily_login_report.hasFinished {
+                if daily_login_report.amountOfAccountsProcessed == daily_login_report.amountOfAccounts {                    
+                    println!("Todays daily login did already run successfully, exiting.");
+                    log_to_audit_log(pool, "Todays daily login did already run successfully, exiting.".to_string(), None);
+                    return;                    
+                } else if daily_login_report.emailsToProcess != None {
+                    println!("Last daily login did not finish processing all accounts, continuing...");
+                    log_to_audit_log(pool, "Last daily login did not finish processing all accounts, continuing...".to_string(), None);                    
+                } else {
+                    println!("Last daily login did finish, exiting.");
+                    log_to_audit_log(pool, "Last daily login did finish, exiting.".to_string(), None);
+                    return;
+                }
+            } else {
+                println!("Last daily login did not finish, continuing...");
+                log_to_audit_log(pool, "Last daily login did not finish, continuing...".to_string(), None);
+            }
 
-    let mut account_emails = Vec::new();    
+            let accounts_email_list = daily_login_report.emailsToProcess.unwrap();
+            let accounts_email_list = accounts_email_list.split(", ");
+            accounts_to_perform_daily_login_with = Vec::new();
+            for account_email in accounts_email_list {
+                let acc = get_eam_account_by_email(pool, account_email.to_string()).unwrap();
+                accounts_to_perform_daily_login_with.push(acc);
+            }
+        }
+
+        if accounts_to_perform_daily_login_with.len() == 0 {
+            println!("No accounts to perform daily login with.");
+            log_to_audit_log(pool, "No accounts to perform daily login with, exiting.".to_string(), None);
+
+            daily_login_report.hasFinished = true;
+            daily_login_report.endTime = Some(Utc::now().to_rfc3339());
+            daily_login_report.emailsToProcess = None;
+
+            insert_or_update_daily_login_report(pool, daily_login_report);
+
+            return;
+        }
+
+        daily_login_report.hasFinished = false;
+        daily_login_report.endTime = None;
+
+        insert_or_update_daily_login_report(pool, daily_login_report);
+    } else {
+
+        if accounts_to_perform_daily_login_with.len() == 0 {
+            println!("No accounts to perform daily login with.");
+            log_to_audit_log(pool, "No accounts to perform daily login with, exiting.".to_string(), None);
+            return;
+        }
+
+        let report_uuid = Uuid::new_v4().to_string();
+        daily_login_report = DailyLoginReports {
+            id: report_uuid,
+            startTime: Some(Utc::now().to_rfc3339()),
+            endTime: None,
+            hasFinished: false,
+            emailsToProcess: Some(accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>().join(", ")),
+            amountOfAccounts: accounts_to_perform_daily_login_with.len() as i32,
+            amountOfAccountsProcessed: 0,
+            amountOfAccountsFailed: 0,
+            amountOfAccountsSucceeded: 0,
+        };
+        insert_or_update_daily_login_report(pool, daily_login_report);
+    }    
 
     let mut path = PathBuf::from(get_save_file_path());
     path.push("dailyAutoLoginSettings.json");
@@ -93,51 +154,8 @@ async fn main() {
         settings = read_daily_auto_login_settings(&daily_auto_login_settings_path);
     } else {
         println!("No settings file found, exiting.");
-        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "No settings file found, exiting.".to_string(), None);
+        log_to_audit_log(pool, "No settings file found, exiting.".to_string(), None);
         return;
-    }
-
-    path = PathBuf::from(get_save_file_path());
-    path.push("dailyAutoLoginState.json");
-    let daily_auto_login_state_path = path.to_str().unwrap().to_string();  
-    
-    let mut state: DailyAutoLoginState;
-    if Path::new(&daily_auto_login_state_path).exists() {
-        //Read the state from the file, it is a json file of DailyAutoLoginState
-        state = read_daily_auto_login_state(&daily_auto_login_state_path);
-        //State file found, checking if the last daily login was today
-        if state.time_started.date_naive() == Utc::now().date_naive() && state.last_save.date_naive() == Utc::now().date_naive() {
-            println!("Last daily login was today.");
-            log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Last daily login was today.".to_string(), None);
-            if account_emails.len() == 0 {
-                println!("No accounts to perform daily login in state found, deleting state.");
-                delete_file(&daily_auto_login_state_path);
-                return;
-            }
-
-            //Perform the daily login with the accounts in the state
-            println!("Resuming: Performing daily login with accounts in state.");
-            log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Resuming: Performing daily login with accounts in state.".to_string(), None);
-            for account_email in state.clone().account_emails {
-                account_emails.push(account_email);
-            }
-
-            state = save_daily_auto_login_state(&daily_auto_login_state_path, state);
-        }
-    } else {
-        println!("No state file found, creating new state.");
-        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "No state file found, creating new state.".to_string(), None);
-        for account in accounts_to_perform_daily_login_with {
-            account_emails.push(account.email.clone());
-        }
-        state = DailyAutoLoginState {
-            account_emails: account_emails.clone(),
-            time_started: Utc::now(),
-            last_save: Utc::now(),
-            failed_accounts: Vec::new(),
-        };
-
-        state = save_daily_auto_login_state(&daily_auto_login_state_path, state);
     }
 
     //Perform the daily login with the accounts
@@ -148,7 +166,7 @@ async fn main() {
     //4. Wait for the game to automatically login
     //5. Close the game after 90 seconds
     //6. Remove the account from the list
-    //7. Save the state
+    //7. Save the daily_login_report
     //8. Repeat until all accounts have been logged in
 
     let game_exe_path = settings.game_exe_path;
@@ -169,18 +187,46 @@ async fn main() {
         hwid = lines.next().unwrap().unwrap();        
     }
 
-    for account_email in account_emails {
+    let emails_vec = accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>();
+
+    for account in accounts_to_perform_daily_login_with {
+        let startTime = Some(Utc::now().to_rfc3339());
+        let report_entry = DailyLoginReportEntries {
+            id: None,
+            reportId: Some(daily_login_report.id.clone()),
+            startTime: startTime.clone(),
+            endTime: None,
+            accountEmail: Some(account.email.clone()),
+            status: "Processing".to_string(),
+            errorMessage: None,
+        };
+        let entry_id = insert_or_update_daily_login_report_entry(pool, report_entry);
+
+        let account_email = account.email.clone();
         println!("Performing daily login with account: {}", account_email);
-        log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), ("Performing daily login with account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
+        log_to_audit_log(pool, ("Performing daily login with account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
         
-        let access_token_opt: Option<GameAccessToken> = send_account_verify_request(account_email.clone(), hwid.clone()).await;     
+        let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool, account_email.clone(), hwid.clone()).await;     
 
         if access_token_opt.is_none() {
             println!("Failed to get access token for account: {}", account_email);
-            log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), ("Failed to get access token for account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
-            state.failed_accounts.push(account_email.clone());
+            log_to_audit_log(pool, ("Failed to get access token for account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
+            daily_login_report.amountOfAccountsFailed += 1;
+            daily_login_report.amountOfAccountsProcessed += 1;
+
+            let report_entry = DailyLoginReportEntries {
+                id: entry_id,
+                reportId: Some(daily_login_report.id.clone()),
+                startTime: startTime.clone(),
+                endTime: Some(Utc::now().to_rfc3339()),
+                accountEmail: Some(account_email.clone()),
+                status: "Failed".to_string(),
+                errorMessage: Some("Failed to get access token.".to_string()),
+            };
+            insert_or_update_daily_login_report_entry(pool, report_entry);
             continue;
         }
+
         let access_token = access_token_opt.unwrap();
 
         let args = format!(
@@ -205,16 +251,34 @@ async fn main() {
         //Close the game
         child.kill().expect("Failed to close the game.");
 
-        //Remove the account from the list
-        let index = state.account_emails.iter().position(|x| *x == account_email).unwrap();
-        state.account_emails.remove(index);
+        //Save the daily_login_report
+        daily_login_report.amountOfAccountsProcessed += 1;
+        daily_login_report.amountOfAccountsSucceeded += 1;
 
-        //Save the state
-        state = save_daily_auto_login_state(&daily_auto_login_state_path, state);
+        let report_entry = DailyLoginReportEntries {
+            id: entry_id,
+            reportId: Some(daily_login_report.id.clone()),
+            startTime: startTime,
+            endTime: Some(Utc::now().to_rfc3339()),
+            accountEmail: Some(account_email.clone()),
+            status: "Succeeded".to_string(),
+            errorMessage: None,
+        };
+        insert_or_update_daily_login_report_entry(pool, report_entry);
+        
+        let index = emails_vec.iter().position(|x| *x == account_email).unwrap();
+        emails_vec.remove(index);
+        daily_login_report.emailsToProcess = Some(emails_vec.join(", "));
+        
+        insert_or_update_daily_login_report(pool, daily_login_report);
     }
 
     println!("Finished daily login.");
-    log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Finished daily login. ".to_owned() + state.failed_accounts.len().to_string().as_str() + " accounts failed.", None);
+    log_to_audit_log(pool, "Finished daily login. ".to_owned() + daily_login_report.amountOfAccountsFailed.to_string() + " accounts failed.", None);
+    daily_login_report.hasFinished = true;
+    daily_login_report.endTime = Some(Utc::now().to_rfc3339());
+    daily_login_report.emailsToProcess = None;
+    insert_or_update_daily_login_report(pool, daily_login_report);
 }
 
 pub fn get_database_path() -> PathBuf {
@@ -223,8 +287,8 @@ pub fn get_database_path() -> PathBuf {
     path
 }
 
-async fn send_account_verify_request(account_email: String, hwid: String) -> Option<GameAccessToken> {
-    let acc = get_eam_account_by_email(&POOL.lock().unwrap().as_ref().unwrap(), account_email.clone()).unwrap();
+async fn send_account_verify_request(pool: &DbPool, account_email: String, hwid: String) -> Option<GameAccessToken> {
+    let acc = get_eam_account_by_email(pool, account_email.clone()).unwrap();
     let pw = encryption_utils::decrypt_data(&acc.password).unwrap();
 
     let url = "https://www.realmofthemadgod.com/account/verify".to_string();
@@ -243,7 +307,7 @@ async fn send_account_verify_request(account_email: String, hwid: String) -> Opt
     data.insert("play_platform".to_string(), if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string());
     data.insert("game_net_user_id".to_string(), if acc.isSteam { acc.steamId? } else { "".to_string() });    
     
-    let _ = log_to_audit_log(&POOL.lock().unwrap().as_ref().unwrap(), "Sending account verify request.".to_string(), Some(account_email.clone()));
+    let _ = log_to_audit_log(pool, "Sending account verify request.".to_string(), Some(account_email.clone()));
     
     let response = send_post_request_with_form_url_encoded_data(url, data).await.unwrap();    
     let token = get_access_token(&response);    
@@ -301,26 +365,6 @@ async fn send_post_request_with_form_url_encoded_data(
 
     let body = res.text().await.map_err(|e| e.to_string())?;
     Ok(body)
-}
-
-fn read_daily_auto_login_state(path: &str) -> DailyAutoLoginState {
-    let file = File::open(path).unwrap();
-    let reader = BufReader::new(file);
-    let state = serde_json::from_reader(reader).unwrap();
-    
-    state
-}
-
-fn save_daily_auto_login_state(path: &str, mut state: DailyAutoLoginState) -> DailyAutoLoginState {
-    if Path::new(&path).exists() {
-        delete_file(&path);
-    }
-
-    state.last_save = Utc::now();
-
-    let file = File::create(path).unwrap();
-    serde_json::to_writer(file, &state).unwrap();
-    state
 }
 
 fn delete_file(path: &str) {
