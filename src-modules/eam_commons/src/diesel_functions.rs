@@ -87,6 +87,13 @@ pub fn get_daily_login_report_by_id(
     daily_login_reports::table.find(report_id).first(&mut conn)
 }
 
+pub fn get_latest_daily_login(pool: &DbPool) -> Result<DailyLoginReports, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    daily_login_reports::table
+        .order(daily_login_reports::startTime.desc())
+        .first(&mut conn)
+}
+
 pub fn insert_or_update_daily_login_report(
     pool: &DbPool,
     report: DailyLoginReports,
@@ -126,18 +133,25 @@ pub fn get_daily_login_report_entry_by_id(
 pub fn insert_or_update_daily_login_report_entry(
     pool: &DbPool,
     entry: DailyLoginReportEntries,
-) -> Result<usize, diesel::result::Error> {
+) -> Result<i32, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let insertable = NewDailyLoginReportEntries::from(entry.clone());
-    let updatable = UpdateDailyLoginReportEntries::from(entry);
+    let updatable = UpdateDailyLoginReportEntries::from(entry.clone());
 
-    diesel::insert_into(daily_login_report_entries::table)
+    let _ = diesel::insert_into(daily_login_report_entries::table)
         .values(&insertable)
         .on_conflict(daily_login_report_entries::id)
         .do_update()
         .set(&updatable)
-        .execute(&mut conn)
+        .execute(&mut conn);
+
+    //Grab & return the id of the report entry
+    daily_login_report_entries::table
+        .select(daily_login_report_entries::id)
+        .filter(daily_login_report_entries::reportId.eq(entry.reportId))
+        .filter(daily_login_report_entries::accountEmail.eq(entry.accountEmail))
+        .first::<i32>(&mut conn)
 }
 
 //########################
