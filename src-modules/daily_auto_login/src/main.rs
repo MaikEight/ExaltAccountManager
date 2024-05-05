@@ -40,12 +40,6 @@ lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-struct DailyAutoLoginSettings {
-    daily_login_report_time: DateTime<Utc>,
-    game_exe_path: String,    
-}
-
 struct GameAccessToken {
     access_token: String,
     access_token_timestamp: String,
@@ -141,20 +135,14 @@ async fn main() {
             amountOfAccountsSucceeded: 0,
         };
         insert_or_update_daily_login_report(pool, daily_login_report);
-    }    
+    }
 
-    let mut path = PathBuf::from(get_save_file_path());
-    path.push("dailyAutoLoginSettings.json");
-    let daily_auto_login_settings_path = path.to_str().unwrap().to_string();
+    //Get the game path from the database
+    let game_exe_path = get_user_data_by_key(pool, "game_exe_path".to_string()).unwrap();
 
-    let settings: DailyAutoLoginSettings;
-
-    if Path::new(&daily_auto_login_settings_path).exists() {
-        //Read the settings from the file, it is a json file of DailyAutoLoginSettings
-        settings = read_daily_auto_login_settings(&daily_auto_login_settings_path);
-    } else {
-        println!("No settings file found, exiting.");
-        log_to_audit_log(pool, "No settings file found, exiting.".to_string(), None);
+    if game_exe_path.is_none() {
+        println!("No game.exe path file found, exiting.");
+        log_to_audit_log(pool, "No game.exe file found, exiting.".to_string(), None);
         return;
     }
 
@@ -168,11 +156,6 @@ async fn main() {
     //6. Remove the account from the list
     //7. Save the daily_login_report
     //8. Repeat until all accounts have been logged in
-
-    let game_exe_path = settings.game_exe_path;
-    let game_exe_path = Path::new(&game_exe_path);
-    let game_exe_path = game_exe_path.to_str().unwrap();
-    let game_exe_path = game_exe_path.to_string();
 
     let mut hwid_file_path = PathBuf::from(get_save_file_path());
     hwid_file_path.push("EAM.HWID");
@@ -369,13 +352,6 @@ async fn send_post_request_with_form_url_encoded_data(
 
 fn delete_file(path: &str) {
     fs::remove_file(path).unwrap();
-}
-
-fn read_daily_auto_login_settings(path: &str) -> DailyAutoLoginSettings {
-    let file = File::open(path).unwrap();
-    let reader = BufReader::new(file);
-    let settings: DailyAutoLoginSettings = serde_json::from_reader(reader).unwrap();
-    settings
 }
 
 async fn get_device_unique_identifier() -> Result<String, String> {
