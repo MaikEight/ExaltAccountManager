@@ -360,7 +360,7 @@ function AddNewAccount({ isOpen, onClose }) {
     };
 
     return (
-        <Box ref={containerRef} sx={{ overflow: 'hidden', borderRadius: '10px', boxShadow: '0px 0px 20px 10px rgba(0,0,0,0.2)' }}>
+        <Box ref={containerRef} sx={{ overflow: 'hidden', borderRadius: '10px' }}>
             <Drawer
                 sx={{
                     width: 500,
