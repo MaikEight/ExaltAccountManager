@@ -163,7 +163,7 @@ diesel::table! {
 
 diesel::table! {
     DailyLoginReportEntries (id) {
-        id -> Integer,
+        id -> Nullable<Integer>,
         reportId -> Nullable<Text>,
         startTime -> Nullable<Timestamp>,
         endTime -> Nullable<Timestamp>,
