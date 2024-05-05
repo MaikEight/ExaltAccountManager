@@ -17,6 +17,7 @@ import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import ServerContext from '../contexts/ServerContext';
 import { useTheme } from '@emotion/react';
 import ServerChip from '../components/GridComponents/ServerChip';
+import { invoke } from 'lodash';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -32,6 +33,7 @@ const MenuProps = {
 function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
     const [settings, setSettings] = useState({});
+    const [gameExePath, setGameExePath] = useState("");
 
     const columns = [
         { field: 'group', headerName: 'Group' },
@@ -48,12 +50,19 @@ function SettingsPage() {
     const colorContext = useContext(ColorContext);
     const { serverList } = useContext(ServerContext);
 
+    const setTheSettings = async () => {
+        const s = userSettings.get;
+        const _gameExePath = await userSettings.getByKeyAndSubKey('game', 'exePath');        
+        setSettings(s);
+        setGameExePath(_gameExePath);
+    };
+
     useEffect(() => {
-        setSettings(userSettings.get);
+        setTheSettings();
     }, []);
 
     useEffect(() => {
-        setSettings(userSettings.get);
+        setTheSettings();
     }, [userSettings.get]);
 
     useEffect(() => {
@@ -65,6 +74,12 @@ function SettingsPage() {
 
         userSettings.set(settings);
     }, [settings]);
+
+    useEffect(() => {
+        if(gameExePath === undefined || gameExePath === "" || gameExePath === null) return;
+        
+        userSettings.setByKeyAndSubKey('game', 'exePath', gameExePath);
+    }, [gameExePath]);
 
     const isDarkMode = () => {
         if (settings === undefined || settings.general === undefined || settings.general.theme === undefined)
@@ -93,8 +108,8 @@ function SettingsPage() {
                         id="gameExePath"
                         label="Path to RotMG Exalt.exe"
                         variant="standard"
-                        value={settings?.game?.exePath ? settings.game.exePath : ""}
-                        onChange={(event) => setSettings({ ...settings, game: { ...settings.game, exePath: event.target.value } })}
+                        value={gameExePath}
+                        onChange={(event) =>setGameExePath(event.target.value)}
                     />
                     <Box
                         sx={{
@@ -109,7 +124,7 @@ function SettingsPage() {
                             onClick={async () => {
                                 const filePath = await dialog.open({ multiple: false });
                                 if (filePath) {
-                                    setSettings({ ...settings, game: { ...settings.game, exePath: filePath } })
+                                    setGameExePath(filePath);
                                 }
                             }}
                         >
@@ -118,10 +133,13 @@ function SettingsPage() {
                         <StyledButton
                             color="secondary"
                             startIcon={<RestartAltOutlinedIcon />}
-                            onClick={() => {
-                                let newSettings = settings;
-                                delete newSettings.game.exePath;
-                                setSettings(userSettings.addDefaults(newSettings));
+                            onClick={async () => {
+                                const defaultGamePath = invoke('get_default_game_path');
+                                if (defaultGamePath) {
+                                    setGameExePath(defaultGamePath);
+                                    return;
+                                } 
+                                setGameExePath("");
                             }}
                         >
                             Set to default
