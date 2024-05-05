@@ -144,33 +144,18 @@ fn start_application(
     application_path: String,
     start_parameters: String,
 ) -> Result<(), tauri::Error> {
-    let mut command = match std::env::consts::OS {
+    match std::env::consts::OS {
         "windows" => {
-            // Wrap the application path in quotes
-            let mut cmd = std::process::Command::new("powershell");
-            cmd.arg("-Command")
-                .arg("Start-Process")
-                .arg(format!("\"{}\"", &application_path))
-                .arg(format!("\"{}\"", start_parameters));
-            cmd
+            let mut cmd = std::process::Command::new(&application_path);
+            cmd.arg(start_parameters);
+            let _child = cmd.spawn().expect("Failed to start process");
         }
         _ => {
             let mut cmd = std::process::Command::new(&application_path);
             cmd.arg(&start_parameters);
-            cmd
+            let _child = cmd.spawn().expect("Failed to start process");
         }
     };
-
-    let output = command.output()?;
-    if !output.status.success() {
-        return Err(tauri::Error::from(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            format!(
-                "Error starting application: {}",
-                String::from_utf8_lossy(&output.stderr)
-            ),
-        )));
-    }
 
     Ok(())
 }
@@ -455,7 +440,7 @@ fn get_current_user_sid() -> Option<String> {
         let sid_str = std::ffi::CStr::from_ptr(sid_str_ptr)
             .to_string_lossy()
             .into_owned();
-        winapi::um::winbase::LocalFree(sid_str_ptr as *mut c_void);
+        winapi::um::winbase::LocalFree(sid_str_ptr as *mut winapi::ctypes::c_void);
         Some(sid_str)
     }
 }
@@ -979,6 +964,7 @@ async fn insert_or_update_daily_login_report_entry(
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::insert_or_update_daily_login_report_entry(pool, daily_login_report_entry)
+            .map(|i| i as usize)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
         Err(tauri::Error::from(std::io::Error::new(
