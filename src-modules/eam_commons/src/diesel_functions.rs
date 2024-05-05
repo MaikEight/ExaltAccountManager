@@ -1,27 +1,29 @@
 use crate::diesel_setup::DbPool;
 use crate::models::{AuditLog, NewAuditLog};
 use crate::models::{CharListDataset, CharListEntries, NewCharListEntries};
+use crate::models::{
+    DailyLoginReportEntries, NewDailyLoginReportEntries, UpdateDailyLoginReportEntries,
+};
+use crate::models::{DailyLoginReports, NewDailyLoginReports, UpdateDailyLoginReports};
 use crate::models::{EamAccount, NewEamAccount, UpdateEamAccount};
 use crate::models::{EamGroup, NewEamGroup, UpdateEamGroup};
 use crate::models::{ErrorLog, NewErrorLog};
 use crate::models::{NewAccount, NewCharacter, NewClassStats};
-use crate::models::{UserData, NewUserData, UpdateUserData};
-use crate::models::{DailyLoginReports, NewDailyLoginReports, UpdateDailyLoginReports};
-use crate::models::{DailyLoginReportEntries, NewDailyLoginReportEntries, UpdateDailyLoginReportEntries};
+use crate::models::{NewUserData, UpdateUserData, UserData};
 use crate::schema::account::dsl::*;
 use crate::schema::char_list_entries::dsl::*;
 use crate::schema::character::dsl::*;
 use crate::schema::class_stats::dsl::*;
 use crate::schema::AuditLog as audit_logs;
 use crate::schema::AuditLog::dsl::*;
+use crate::schema::DailyLoginReportEntries as daily_login_report_entries;
+use crate::schema::DailyLoginReports as daily_login_reports;
 use crate::schema::EamAccount as eam_accounts;
 use crate::schema::EamAccount::dsl::*;
 use crate::schema::EamGroup as eam_groups;
 use crate::schema::EamGroup::dsl::*;
 use crate::schema::ErrorLog as error_logs;
 use crate::schema::UserData as user_data;
-use crate::schema::DailyLoginReports as daily_login_reports;
-use crate::schema::DailyLoginReportEntries as daily_login_report_entries;
 use diesel::insert_into;
 use diesel::prelude::*;
 use diesel::result::Error::DatabaseError;
@@ -74,16 +76,25 @@ pub fn delete_user_data_by_key(
 //#   DailyLoginReports   #
 //#########################
 
-pub fn get_all_daily_login_reports(pool: &DbPool) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
+pub fn get_all_daily_login_reports(
+    pool: &DbPool,
+) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     daily_login_reports::table.load::<DailyLoginReports>(&mut conn)
 }
 
-pub fn get_daily_login_reports_of_last_days(pool: &DbPool, days: i64) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
+pub fn get_daily_login_reports_of_last_days(
+    pool: &DbPool,
+    days: i64,
+) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    let days_ago = chrono::Utc::now().naive_utc() - chrono::Duration::try_days(days).expect("Invalid number of days");
+    let days_ago = chrono::Utc::now().naive_utc()
+        - chrono::Duration::try_days(days).expect("Invalid number of days");
     daily_login_reports::table
-        .filter(daily_login_reports::startTime.ge(diesel::dsl::sql(&format!("'{}'", days_ago.format("%Y-%m-%d %H:%M:%S")))))
+        .filter(daily_login_reports::startTime.ge(diesel::dsl::sql(&format!(
+            "'{}'",
+            days_ago.format("%Y-%m-%d %H:%M:%S")
+        ))))
         .order(daily_login_reports::startTime.desc())
         .load::<DailyLoginReports>(&mut conn)
 }
@@ -133,10 +144,20 @@ pub fn get_all_daily_login_report_entries(
 
 pub fn get_daily_login_report_entry_by_id(
     pool: &DbPool,
-    report_entry_id: i32,
+    report_entry_id: Option<i32>,
 ) -> Result<DailyLoginReportEntries, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    daily_login_report_entries::table.find(report_entry_id).first(&mut conn)
+    report_entry_id
+        .map(|report_entry_id| {
+            daily_login_report_entries::table
+                .filter(
+                    daily_login_report_entries::id
+                        .is_not_null()
+                        .and(daily_login_report_entries::id.eq(report_entry_id)),
+                )
+                .first(&mut conn)
+        })
+        .unwrap_or(Err(diesel::result::Error::NotFound))
 }
 
 pub fn insert_or_update_daily_login_report_entry(
@@ -156,11 +177,17 @@ pub fn insert_or_update_daily_login_report_entry(
         .execute(&mut conn);
 
     //Grab & return the id of the report entry
-    daily_login_report_entries::table
+    let res = daily_login_report_entries::table
         .select(daily_login_report_entries::id)
         .filter(daily_login_report_entries::reportId.eq(entry.reportId))
         .filter(daily_login_report_entries::accountEmail.eq(entry.accountEmail))
-        .first::<i32>(&mut conn)
+        .first::<Option<i32>>(&mut conn);
+
+    match res {
+        Ok(Some(id_value)) => return Ok(id_value),
+        Ok(None) => return Err(diesel::result::Error::NotFound),
+        Err(e) => return Err(e),
+    }
 }
 
 //########################
