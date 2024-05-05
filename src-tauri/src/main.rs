@@ -100,6 +100,7 @@ fn main() {
             insert_or_update_user_data,
             delete_user_data_by_key,
             get_all_daily_login_reports, //DAILY LOGIN REPORTS
+            get_daily_login_reports_of_last_days,
             get_daily_login_report_by_id,
             insert_or_update_daily_login_report,
             get_all_daily_login_report_entries, //DAILY LOGIN REPORT ENTRIES
@@ -890,6 +891,20 @@ async fn get_all_daily_login_reports() -> Result<Vec<DailyLoginReports>, tauri::
 }
 
 #[tauri::command]
+async fn get_daily_login_reports_of_last_days(amount_of_days: i64) -> Result<Vec<DailyLoginReports>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_daily_login_reports_of_last_days(pool, amount_of_days)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
 async fn get_daily_login_report_by_id(
     report_id: String,
 ) -> Result<DailyLoginReports, tauri::Error> {
@@ -946,7 +961,7 @@ async fn get_daily_login_report_entry_by_id(
 ) -> Result<DailyLoginReportEntries, tauri::Error> {
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
-        diesel_functions::get_daily_login_report_entry_by_id(pool, report_id)
+        diesel_functions::get_daily_login_report_entry_by_id(pool, Some(report_id))
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
         Err(tauri::Error::from(std::io::Error::new(
