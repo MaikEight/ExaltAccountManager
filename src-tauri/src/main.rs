@@ -767,7 +767,7 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
     let embedded_file_path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
     let mut file = File::create(embedded_file_path.clone())
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
-    file.write_all(EAM_SAVE_FILE_CONVERTER)
+    file.write_all(EAM_DAILY_AUTO_LOGIN)
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     drop(file);
 
