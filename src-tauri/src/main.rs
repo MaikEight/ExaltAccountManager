@@ -28,7 +28,6 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::{Duration, Instant};
-use tauri::api::path;
 use tauri::Error;
 use tokio::fs as tokio_fs;
 use tokio::io::{AsyncReadExt, BufReader};
@@ -384,8 +383,8 @@ fn get_os_user_identity() -> String {
 
 #[cfg(target_os = "windows")]
 extern crate winapi;
-#[cfg(target_os = "windows")]
-use std::os::raw::c_void;
+// #[cfg(target_os = "windows")]
+// use std::os::raw::c_void;
 #[cfg(target_os = "windows")]
 use std::ptr::null_mut;
 #[cfg(target_os = "windows")]
