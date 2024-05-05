@@ -986,7 +986,7 @@ impl From<DailyLoginReports> for UpdateDailyLoginReports {
 
 #[derive(Queryable, Serialize, Deserialize, Clone)]
 pub struct DailyLoginReportEntries {
-    pub id: i32,
+    pub id: Option<i32>,
     pub reportId: Option<String>,
     pub startTime: Option<String>,
     pub endTime: Option<String>,
@@ -998,7 +998,7 @@ pub struct DailyLoginReportEntries {
 #[derive(Insertable, Serialize)]
 #[diesel(table_name = schema::DailyLoginReportEntries)]
 pub struct NewDailyLoginReportEntries {
-    pub id: i32,
+    pub id: Option<i32>,
     pub reportId: Option<String>,
     pub startTime: Option<String>,
     pub endTime: Option<String>,
@@ -1010,7 +1010,7 @@ pub struct NewDailyLoginReportEntries {
 #[derive(AsChangeset, Serialize)]
 #[diesel(table_name = schema::DailyLoginReportEntries)]
 pub struct UpdateDailyLoginReportEntries {
-    pub id: i32,
+    pub id: Option<i32>,
     pub reportId: Option<String>,
     pub startTime: Option<String>,
     pub endTime: Option<String>,
