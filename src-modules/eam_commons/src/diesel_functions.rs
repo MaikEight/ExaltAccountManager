@@ -79,6 +79,15 @@ pub fn get_all_daily_login_reports(pool: &DbPool) -> Result<Vec<DailyLoginReport
     daily_login_reports::table.load::<DailyLoginReports>(&mut conn)
 }
 
+pub fn get_daily_login_reports_of_last_days(pool: &DbPool, days: i64) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    let days_ago = chrono::Utc::now().naive_utc() - chrono::Duration::try_days(days).expect("Invalid number of days");
+    daily_login_reports::table
+        .filter(daily_login_reports::startTime.ge(diesel::dsl::sql(&format!("'{}'", days_ago.format("%Y-%m-%d %H:%M:%S")))))
+        .order(daily_login_reports::startTime.desc())
+        .load::<DailyLoginReports>(&mut conn)
+}
+
 pub fn get_daily_login_report_by_id(
     pool: &DbPool,
     report_id: String,
