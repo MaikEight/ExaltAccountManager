@@ -12,6 +12,7 @@ import { Box } from '@mui/material';
 import { PopupContextProvider } from './contexts/PopupContext';
 import FeedbackPage from './pages/FeedbackPage';
 import LogsPage from './pages/LogsPage';
+import DailyLoginsPage from './pages/DailyLoginsPage';
 
 function MainRouter() {
     const theme = useTheme();
@@ -32,6 +33,7 @@ function MainRouter() {
                                     <Routes>
                                         <Route path='/' element={<AccountsPage />}></Route>
                                         <Route path='/accounts' element={<AccountsPage />}></Route>
+                                        <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
                                         <Route path='/utilities' element={<UtilitiesPage />}></Route>
                                         <Route path='/settings' element={<SettingsPage />}></Route>
                                         <Route path='/logs' element={<LogsPage />}></Route>
