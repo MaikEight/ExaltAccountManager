@@ -39,6 +39,7 @@ function AccountDetails({ acc, onClose }) {
     const [updateInProgress, setUpdateInProgress] = useState(false);
     const [decryptedPassword, setDecryptedPassword] = useState("");
     const [newDecryptedPassword, setNewDecryptedPassword] = useState("");
+    const [gameExePath, setGameExePath] = useState("");
 
     const { saveServerList } = useServerList();
     const groupsContext = useGroups();
@@ -60,6 +61,12 @@ function AccountDetails({ acc, onClose }) {
             setUpdateInProgress(updInProgress === 'true');
         };
         checkSessionStorage();
+
+        const getGameExePathAsync = async () => {
+            const _gameExePath = await settings.getByKeyAndSubKey("game", "exePath");
+            setGameExePath(_gameExePath);
+        };
+        getGameExePathAsync();
 
         const intervalId = setInterval(checkSessionStorage, 750);
         return () => { clearInterval(intervalId); }
@@ -110,7 +117,7 @@ function AccountDetails({ acc, onClose }) {
     if (!account) {
         return null;
     }
-    
+
     return (
         <Box ref={containerRef} sx={{ overflow: 'hidden', borderRadius: '10px', boxShadow: '0px 0px 20px 10px rgba(0,0,0,0.2)' }}>
             <Drawer
@@ -124,7 +131,7 @@ function AccountDetails({ acc, onClose }) {
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: {borderRadius: '6px 10px 10px 6px', overflow: 'hidden'}}}
+                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: '6px 10px 10px 6px', overflow: 'hidden' } }}
                 SlideProps={{ container: containerRef.current }}
                 variant="persistent"
                 anchor="right"
@@ -321,13 +328,14 @@ function AccountDetails({ acc, onClose }) {
                                                 };
 
                                                 showSnackbar("Starting the game...");
-                                                const args = `data:{platform:Deca,guid:${btoa(acc.email)},token:${btoa(acc.token.AccessToken)},tokenTimestamp:${btoa(acc.token.AccessTokenTimestamp)},tokenExpiration:${btoa(acc.token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
+                                                const args = `data:{platform:Deca,guid:${btoa(acc.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
+                                                
                                                 tauri.invoke(
                                                     "start_application",
-                                                    { applicationPath: settings.getByKeyAndSubKey("game", "exePath"), startParameters: args }
+                                                    { applicationPath: gameExePath, startParameters: args }
                                                 );
 
-                                                postCharList(res.Account.AccessToken)
+                                                postCharList(token.AccessToken)
                                                     .then((charList) => {
                                                         const state = getRequestState(charList);
                                                         const newAcc = ({ ...acc, state: state, lastRefresh: new Date().toISOString(), token: token });
