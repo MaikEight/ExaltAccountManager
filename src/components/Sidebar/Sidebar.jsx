@@ -12,6 +12,7 @@ import useSnack from "../../hooks/useSnack";
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import FeedbackButton from "./FeedbackButton";
 import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 function Sidebar({ children }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -50,34 +51,41 @@ function Sidebar({ children }) {
             showInFooter: false
         },
         {
+            name: 'Daily Logins',
+            icon: <CalendarMonthOutlinedIcon />,
+            action: () => setSelectedIndex(1),
+            navigate: '/dailyLogins',
+            showInFooter: false
+        },
+        {
             name: 'Utilities',
             icon: (
                 <Badge badgeContent='' overlap="circular" color="error" variant="dot" invisible={!isGameUpdateAvailable}>
                     <HandymanOutlinedIcon />
                 </Badge>
             ),
-            action: () => setSelectedIndex(1),
+            action: () => setSelectedIndex(2),
             navigate: '/utilities',
             showInFooter: false
         },
         {
             name: 'Settings',
             icon: <SettingsOutlinedIcon />,
-            action: () => setSelectedIndex(2),
+            action: () => setSelectedIndex(3),
             navigate: '/settings',
             showInFooter: false
         },
         {
             name: 'Logs',
             icon: <HistoryEduOutlinedIcon />,
-            action: () => setSelectedIndex(3),
+            action: () => setSelectedIndex(4),
             navigate: '/logs',
             showInFooter: false
         },
         {
             name: 'About',
             icon: <InfoOutlinedIcon />,
-            action: () => setSelectedIndex(4),
+            action: () => setSelectedIndex(5),
             navigate: '/about',
             showInFooter: false
         },
