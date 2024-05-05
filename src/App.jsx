@@ -12,9 +12,12 @@ function App() {
   const settings = useUserSettings();
 
   useEffect(() => {
-    const gameExePath = settings.getByKeyAndSubKey("game", "exePath");
-    onStartUp(gameExePath);
+    const startupFunc = async () => {
+      const gameExePath = await settings.getByKeyAndSubKey("game", "exePath");
+      onStartUp(gameExePath);
+    };
 
+    startupFunc();
     const heartBeatInterval = setInterval(async () => {
       heartBeat();
     }, 59_000);
