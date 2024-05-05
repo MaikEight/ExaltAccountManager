@@ -10,6 +10,7 @@ use eam_commons::get_all_eam_accounts_for_daily_login;
 use eam_commons::get_eam_account_by_email;
 use eam_commons::diesel_functions;
 use eam_commons::get_latest_daily_login;
+use eam_commons::get_user_data_by_key;
 use eam_commons::insert_or_update_daily_login_report;
 use eam_commons::insert_or_update_daily_login_report_entry;
 use eam_commons::models::{DailyLoginReports, DailyLoginReportEntries};
@@ -22,10 +23,8 @@ use std::process::Command;
 use std::thread;
 use std::time::Duration;
 use std::collections::HashMap;
-use std::fs;
 use std::fs::File;
 use std::io::BufReader;
-use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 use roxmltree::Document;
 use reqwest::header::HeaderMap;
@@ -56,16 +55,17 @@ async fn main() {
     let database_url = get_database_path().to_str().unwrap().to_string();
     let pool = setup_database(&database_url);
     *POOL.lock().unwrap() = Some(pool);
-    let pool = POOL.lock().unwrap().as_ref().unwrap();
+    let binding = POOL.lock().unwrap();
+    let pool = binding.as_ref().unwrap();
     log_to_audit_log(pool, "Starting daily_auto_login.".to_string(), None);
 
-    let daily_login_report = get_latest_daily_login(pool);
-    
-    let accounts_to_perform_daily_login_with = get_all_eam_accounts_for_daily_login(pool).unwrap();
+    let daily_login_report_ret = get_latest_daily_login(pool);
+    let mut daily_login_report: DailyLoginReports;
+    let mut accounts_to_perform_daily_login_with = get_all_eam_accounts_for_daily_login(pool).unwrap();
 
-    if daily_login_report.is_ok() {
-        let daily_login_report = daily_login_report.unwrap();
-        let daily_login_report_time = daily_login_report.startTime.unwrap();
+    if daily_login_report_ret.is_ok() {
+        daily_login_report = daily_login_report_ret.unwrap();
+        let daily_login_report_time = daily_login_report.startTime.clone().unwrap();
         let daily_login_report_time = DateTime::parse_from_rfc3339(&daily_login_report_time).unwrap();
         let daily_login_report_time = daily_login_report_time.with_timezone(&Utc);
 
@@ -88,7 +88,7 @@ async fn main() {
                 log_to_audit_log(pool, "Last daily login did not finish, continuing...".to_string(), None);
             }
 
-            let accounts_email_list = daily_login_report.emailsToProcess.unwrap();
+            let accounts_email_list = daily_login_report.emailsToProcess.clone().unwrap();
             let accounts_email_list = accounts_email_list.split(", ");
             accounts_to_perform_daily_login_with = Vec::new();
             for account_email in accounts_email_list {
@@ -105,7 +105,7 @@ async fn main() {
             daily_login_report.endTime = Some(Utc::now().to_rfc3339());
             daily_login_report.emailsToProcess = None;
 
-            insert_or_update_daily_login_report(pool, daily_login_report);
+            let _ = insert_or_update_daily_login_report(pool, daily_login_report);
 
             return;
         }
@@ -113,7 +113,7 @@ async fn main() {
         daily_login_report.hasFinished = false;
         daily_login_report.endTime = None;
 
-        insert_or_update_daily_login_report(pool, daily_login_report);
+        let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
     } else {
 
         if accounts_to_perform_daily_login_with.len() == 0 {
@@ -134,13 +134,13 @@ async fn main() {
             amountOfAccountsFailed: 0,
             amountOfAccountsSucceeded: 0,
         };
-        insert_or_update_daily_login_report(pool, daily_login_report);
+        let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
     }
 
     //Get the game path from the database
-    let game_exe_path = get_user_data_by_key(pool, "game_exe_path".to_string()).unwrap();
+    let game_exe_path = get_user_data_by_key(pool, "game_exe_path".to_string()).unwrap().dataValue;
 
-    if game_exe_path.is_none() {
+    if game_exe_path.is_empty() {
         println!("No game.exe path file found, exiting.");
         log_to_audit_log(pool, "No game.exe file found, exiting.".to_string(), None);
         return;
@@ -170,20 +170,21 @@ async fn main() {
         hwid = lines.next().unwrap().unwrap();        
     }
 
-    let emails_vec = accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>();
+    let mut emails_vec = accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>();
 
     for account in accounts_to_perform_daily_login_with {
-        let startTime = Some(Utc::now().to_rfc3339());
+        let start_time = Some(Utc::now().to_rfc3339());
         let report_entry = DailyLoginReportEntries {
             id: None,
             reportId: Some(daily_login_report.id.clone()),
-            startTime: startTime.clone(),
+            startTime: start_time.clone(),
             endTime: None,
             accountEmail: Some(account.email.clone()),
             status: "Processing".to_string(),
             errorMessage: None,
         };
-        let entry_id = insert_or_update_daily_login_report_entry(pool, report_entry);
+        let entry_id_res = insert_or_update_daily_login_report_entry(pool, report_entry);
+        let entry_id = entry_id_res.unwrap();
 
         let account_email = account.email.clone();
         println!("Performing daily login with account: {}", account_email);
@@ -198,15 +199,15 @@ async fn main() {
             daily_login_report.amountOfAccountsProcessed += 1;
 
             let report_entry = DailyLoginReportEntries {
-                id: entry_id,
+                id: Some(entry_id),
                 reportId: Some(daily_login_report.id.clone()),
-                startTime: startTime.clone(),
+                startTime: start_time.clone(),
                 endTime: Some(Utc::now().to_rfc3339()),
                 accountEmail: Some(account_email.clone()),
                 status: "Failed".to_string(),
                 errorMessage: Some("Failed to get access token.".to_string()),
             };
-            insert_or_update_daily_login_report_entry(pool, report_entry);
+            let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
             continue;
         }
 
@@ -239,29 +240,29 @@ async fn main() {
         daily_login_report.amountOfAccountsSucceeded += 1;
 
         let report_entry = DailyLoginReportEntries {
-            id: entry_id,
+            id: Some(entry_id),
             reportId: Some(daily_login_report.id.clone()),
-            startTime: startTime,
+            startTime: start_time,
             endTime: Some(Utc::now().to_rfc3339()),
             accountEmail: Some(account_email.clone()),
             status: "Succeeded".to_string(),
             errorMessage: None,
         };
-        insert_or_update_daily_login_report_entry(pool, report_entry);
+        let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
         
         let index = emails_vec.iter().position(|x| *x == account_email).unwrap();
         emails_vec.remove(index);
         daily_login_report.emailsToProcess = Some(emails_vec.join(", "));
         
-        insert_or_update_daily_login_report(pool, daily_login_report);
+        let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
     }
 
     println!("Finished daily login.");
-    log_to_audit_log(pool, "Finished daily login. ".to_owned() + daily_login_report.amountOfAccountsFailed.to_string() + " accounts failed.", None);
+    log_to_audit_log(pool, "Finished daily login. ".to_owned() + &daily_login_report.amountOfAccountsFailed.to_string() + " accounts failed.", None);
     daily_login_report.hasFinished = true;
     daily_login_report.endTime = Some(Utc::now().to_rfc3339());
     daily_login_report.emailsToProcess = None;
-    insert_or_update_daily_login_report(pool, daily_login_report);
+    let _ = insert_or_update_daily_login_report(pool, daily_login_report);
 }
 
 pub fn get_database_path() -> PathBuf {
@@ -348,10 +349,6 @@ async fn send_post_request_with_form_url_encoded_data(
 
     let body = res.text().await.map_err(|e| e.to_string())?;
     Ok(body)
-}
-
-fn delete_file(path: &str) {
-    fs::remove_file(path).unwrap();
 }
 
 async fn get_device_unique_identifier() -> Result<String, String> {
