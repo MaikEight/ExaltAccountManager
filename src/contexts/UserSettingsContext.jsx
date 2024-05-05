@@ -2,7 +2,34 @@ import { useEffect, useState, createContext } from "react";
 import _ from "lodash";
 import { invoke } from '@tauri-apps/api/tauri';
 import { logToAuditLog } from "../utils/loggingUtils";
+
 const UserSettingsContext = createContext();
+
+const getGameExePath = async () => {
+    return invoke('get_user_data_by_key', { key: 'game_exe_path' })
+        .then((res) => {
+            if (res && res.dataValue) {
+                return res.dataValue;
+            }
+            return invoke('get_default_game_path')
+                .then((res) => {
+                    return res;
+                })
+                .catch((err) => {
+                    return null;
+                });
+        })
+        .catch((err) => {
+            return invoke('get_default_game_path')
+                .then((res) => {
+                    return res;
+                })
+                .catch((err) => {
+                    console.error('Failed to get game exe path', err);
+                    return null;
+                });
+        });
+};
 
 const defaultSettings = {
     general: {
@@ -21,11 +48,9 @@ const defaultSettings = {
 function expandSettings(_settings) {
     const settings = _settings ? _settings : defaultSettings;
     if (settings?.gatewayTable?.grouping === 'NONE') settings.gatewayTable.grouping = 'None';
-    if(!settings?.game.exePath) {
-        invoke('get_default_game_path')
-        .then((res) => {
-            settings.game.exePath = res;
-        });
+
+    if (settings?.game?.exePath) {
+        delete settings.game.exePath;
     }
 
     return _.defaultsDeep(settings, defaultSettings);
@@ -49,9 +74,9 @@ function UserSettingsProvider({ children }) {
 
     const initializeUserSettings = () => {
         if (userSettingsData) return;
-        
+
         const storedConfig = localStorage.getItem("userSettings");
-        
+
         let hasLocalConfig = false;
         if (storedConfig) {
             const data = expandSettings(JSON.parse(storedConfig));
@@ -72,8 +97,18 @@ function UserSettingsProvider({ children }) {
         addDefaults: newUserSettings => setUserSettingsData(expandSettings(newUserSettings)),
         getByKey: (key) => { return userSettingsData ? userSettingsData[key] : null; },
         setByKey: (key, value) => { setUserSettingsData({ ...userSettingsData, [key]: value }); },
-        getByKeyAndSubKey: (key, subKey) => { return userSettingsData && userSettingsData[key] ? userSettingsData[key][subKey] : null; },
+        getByKeyAndSubKey: (key, subKey) => {
+            if (key === 'game' && subKey === 'exePath') {
+                return getGameExePath();
+            }
+
+            return userSettingsData && userSettingsData[key] ? userSettingsData[key][subKey] : null;
+        },
         setByKeyAndSubKey: (key, subKey, value) => {
+            if (key === 'game' && subKey === 'exePath') { //C:\\Users\\Maik8\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe
+                invoke('insert_or_update_user_data', { userData: { dataKey: 'game_exe_path', dataValue: value } });
+                return;
+            }
             const data = { ...userSettingsData };
             data[key] ? data[key][subKey] = value : data[key] = { [subKey]: value };
             setUserSettingsData(data);
