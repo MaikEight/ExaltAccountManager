@@ -20,7 +20,6 @@ import PaddedTableCell from "./AccountDetails/PaddedTableCell";
 import useAccounts from "../hooks/useAccounts";
 import useGroups from "../hooks/useGroups";
 import useServerList from './../hooks/useServerList';
-import { invoke } from '@tauri-apps/api/tauri';
 import { getRequestState, storeCharList } from "../utils/charListUtil";
 
 const steps = ['Login', 'Add details', 'Finish'];
