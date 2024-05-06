@@ -26,7 +26,7 @@ function cleanUp(convertedObject) {
     let cleanedObject = {};
 
     for (let key in convertedObject) {
-        if (convertedObject.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(convertedObject, key)) {
             let value = convertedObject[key];
             if (typeof value === 'object' && value !== null) {
                 if ("_text" in value) {
