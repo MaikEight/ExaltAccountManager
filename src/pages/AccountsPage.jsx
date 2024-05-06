@@ -6,7 +6,7 @@ import AddNewAccount from "../components/AddNewAccount";
 import useAccounts from "../hooks/useAccounts";
 
 function AccountsPage() {
-    const { selectedAccount, setSelectedAccount, updateAccount } = useAccounts();
+    const { selectedAccount, setSelectedAccount } = useAccounts();
     const [showAddNewAccount, setShowAddNewAccount] = useState(false);
 
     return (
