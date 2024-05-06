@@ -63,29 +63,70 @@ async fn main() {
     let mut daily_login_report: DailyLoginReports;
     let mut accounts_to_perform_daily_login_with = get_all_eam_accounts_for_daily_login(pool).unwrap();
 
-    if daily_login_report_ret.is_ok() {
+    if daily_login_report_ret.is_ok() {        
         daily_login_report = daily_login_report_ret.unwrap();
         let daily_login_report_time = daily_login_report.startTime.clone().unwrap();
         let daily_login_report_time = DateTime::parse_from_rfc3339(&daily_login_report_time).unwrap();
         let daily_login_report_time = daily_login_report_time.with_timezone(&Utc);
 
         if daily_login_report_time.date_naive() == Utc::now().date_naive() {
-            if daily_login_report.hasFinished {
-                if daily_login_report.amountOfAccountsProcessed == daily_login_report.amountOfAccounts {                    
-                    println!("Todays daily login did already run successfully, exiting.");
-                    log_to_audit_log(pool, "Todays daily login did already run successfully, exiting.".to_string(), None);
-                    return;                    
+            let args: Vec<String> = std::env::args().collect();
+            let mut force_run = false;
+            let mut is_force_run = false;
+            match args.len() {
+                1 => {}
+                _ => {
+                    for arg in &args[1..] {
+                        if arg == "-force" {
+                            force_run = true;
+                        }
+                    }
+                }
+            }
+            if daily_login_report.hasFinished {                
+                if daily_login_report.amountOfAccountsProcessed == daily_login_report.amountOfAccounts {  
+                    if !force_run {
+                        println!("Todays daily login did already run successfully, exiting.");
+                        log_to_audit_log(pool, "Todays daily login did already run successfully, exiting.".to_string(), None);
+                        return;                        
+                    } 
+
+                    println!("Forcing daily login to run again.");
+                    log_to_audit_log(pool, "Forcing daily login to run again.".to_string(), None);
+                    is_force_run = true;
                 } else if daily_login_report.emailsToProcess != None {
                     println!("Last daily login did not finish processing all accounts, continuing...");
                     log_to_audit_log(pool, "Last daily login did not finish processing all accounts, continuing...".to_string(), None);                    
                 } else {
-                    println!("Last daily login did finish, exiting.");
-                    log_to_audit_log(pool, "Last daily login did finish, exiting.".to_string(), None);
-                    return;
+                    if !force_run {
+                        println!("Last daily login did finish, exiting.");
+                        log_to_audit_log(pool, "Last daily login did finish, exiting.".to_string(), None);
+                        return;
+                    } 
+                    
+                    println!("Forcing daily login to run again.");
+                    log_to_audit_log(pool, "Forcing daily login to run again.".to_string(), None);
+                    is_force_run = true;
                 }
             } else {
                 println!("Last daily login did not finish, continuing...");
                 log_to_audit_log(pool, "Last daily login did not finish, continuing...".to_string(), None);
+            }
+
+            if is_force_run {
+                let report_uuid = Uuid::new_v4().to_string();
+                daily_login_report = DailyLoginReports {
+                    id: report_uuid,
+                    startTime: Some(Utc::now().to_rfc3339()),
+                    endTime: None,
+                    hasFinished: false,
+                    emailsToProcess: Some(accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>().join(", ")),
+                    amountOfAccounts: accounts_to_perform_daily_login_with.len() as i32,
+                    amountOfAccountsProcessed: 0,
+                    amountOfAccountsFailed: 0,
+                    amountOfAccountsSucceeded: 0,
+                };
+                let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());                
             }
 
             let accounts_email_list = daily_login_report.emailsToProcess.clone().unwrap();
@@ -95,6 +136,20 @@ async fn main() {
                 let acc = get_eam_account_by_email(pool, account_email.to_string()).unwrap();
                 accounts_to_perform_daily_login_with.push(acc);
             }
+        } else {
+            let report_uuid = Uuid::new_v4().to_string();
+            daily_login_report = DailyLoginReports {
+                id: report_uuid,
+                startTime: Some(Utc::now().to_rfc3339()),
+                endTime: None,
+                hasFinished: false,
+                emailsToProcess: Some(accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>().join(", ")),
+                amountOfAccounts: accounts_to_perform_daily_login_with.len() as i32,
+                amountOfAccountsProcessed: 0,
+                amountOfAccountsFailed: 0,
+                amountOfAccountsSucceeded: 0,
+            };
+        let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
         }
 
         if accounts_to_perform_daily_login_with.len() == 0 {
@@ -224,10 +279,10 @@ async fn main() {
 
         //Start the game with the args
         let mut child = Command::new(game_exe_path.clone())
+            .arg("-batchmode")
             .arg(args)
             .spawn()
-            .expect("Failed to start the game.");
-        
+            .expect("Failed to start the game.");        
 
         //Wait for the game to automatically login
         thread::sleep(Duration::from_secs(GAME_START_TIMEOUT));
