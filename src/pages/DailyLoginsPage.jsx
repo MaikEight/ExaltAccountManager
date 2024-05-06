@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Collapse, Paper, Typography } from "@mui/material";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 import StyledButton from "../components/StyledButton";
@@ -31,7 +31,7 @@ function DailyLoginsPage() {
         });
     }, []);
 
-    useEffect(() => {        
+    useEffect(() => {
         let successfulLogins = [];
         let failedLogins = [];
 
@@ -54,7 +54,7 @@ function DailyLoginsPage() {
         }
         setDailyLoginReportsOfLastWeekDataSets({
             successfulLogins,
-            failedLogins        
+            failedLogins
         });
 
     }, [dailyLoginReportsOfLastWeek]);
@@ -140,7 +140,8 @@ function DailyLoginsPage() {
     const taskNotInstalledWarningBanner = (
         <Paper
             sx={{
-                width: 'calc(100% - 32px)',
+                // width: 'calc(100% - 32px)',
+                width: '100%',
                 borderRadius: '6px',
                 backgroundColor: theme => theme.palette.mode === 'dark' ? theme.palette.error.dark : theme.palette.error.main,
                 display: 'flex',
@@ -149,7 +150,6 @@ function DailyLoginsPage() {
                 flexDirection: 'column',
                 p: 0.5,
                 pb: 1,
-                m: 2,
             }}
         >
             <Typography variant="h6">
@@ -176,7 +176,11 @@ function DailyLoginsPage() {
 
     return (
         <Box sx={{ width: '100%', overflow: 'auto', position: 'relative' }}>
-            {!isTaskInstalled && taskNotInstalledWarningBanner}
+            <Collapse in={!isTaskInstalled} sx={{ m:2  }}>
+                {
+                    taskNotInstalledWarningBanner
+                }
+            </Collapse>
             <ComponentBox
                 title={'Daily Login Reports of the Last Week'}
                 icon={<BarChartOutlinedIcon />}
