@@ -17,6 +17,7 @@ function DailyLoginsPage() {
         successfulLogins: [],
         failedLogins: []
     });
+    const [dailyLoginReportsOfLastWeekDataSetsMax, setDailyLoginReportsOfLastWeekDataSetsMax] = useState(0);
     const theme = useTheme();
 
     useEffect(() => {
@@ -30,6 +31,14 @@ function DailyLoginsPage() {
             console.log('Daily login reports of last week:', res);
         });
     }, []);
+
+    const getMaxChatValue = (lastWeek) => {
+        const successfulLoginsMax = Math.max(...lastWeek.successfulLogins);
+        const failedLoginsMax = Math.max(...lastWeek.failedLogins);
+        const mv = Math.max(successfulLoginsMax, failedLoginsMax);
+        const val = mv + Math.ceil(mv * 0.1);
+        return val;
+    };
 
     useEffect(() => {
         let successfulLogins = [];
@@ -52,10 +61,12 @@ function DailyLoginsPage() {
                 failedLogins.push(lastReport.amountOfAccountsFailed);
             }
         }
-        setDailyLoginReportsOfLastWeekDataSets({
+        const lastWeek = {
             successfulLogins,
             failedLogins
-        });
+        };
+        setDailyLoginReportsOfLastWeekDataSetsMax(getMaxChatValue(lastWeek));
+        setDailyLoginReportsOfLastWeekDataSets(lastWeek);
 
     }, [dailyLoginReportsOfLastWeek]);
 
@@ -75,7 +86,7 @@ function DailyLoginsPage() {
                 borderRadius: 5,
             },
         ]
-    };
+    };    
 
     const options = {
         plugins: {
@@ -104,7 +115,7 @@ function DailyLoginsPage() {
             },
         },
         scales: {
-            y: {
+            y: {                
                 beginAtZero: true,
                 stacked: true,
                 ticks: {
@@ -176,7 +187,7 @@ function DailyLoginsPage() {
 
     return (
         <Box sx={{ width: '100%', overflow: 'auto', position: 'relative' }}>
-            <Collapse in={!isTaskInstalled} sx={{ m:2  }}>
+            <Collapse in={!isTaskInstalled} sx={{ m: 2 }}>
                 {
                     taskNotInstalledWarningBanner
                 }
@@ -185,7 +196,17 @@ function DailyLoginsPage() {
                 title={'Daily Login Reports of the Last Week'}
                 icon={<BarChartOutlinedIcon />}
             >
-                <Bar data={data} options={options} />
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '300px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Bar data={data} options={options} />
+                </Box>
             </ComponentBox>
         </Box>
     );
