@@ -17,6 +17,7 @@ const Search = styled('div')(({ theme }) => ({
             backgroundColor: alpha(theme.palette.text.primary, 0.05),
         },
     }),
+    transition: theme.transitions.create('background-color'),
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
