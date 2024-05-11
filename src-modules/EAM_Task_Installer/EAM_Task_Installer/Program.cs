@@ -7,6 +7,8 @@ namespace EAM_Task_Tools
 {
     internal class Program
     {
+        private static readonly Version version = new Version(1, 0, 0);
+        private const string taskNameV1 = "Exalt Account Manager Daily Login Task";
         private const string taskName = "Exalt Account Manager Daily Login Task V2";
         private const string taskDesc = "The EAM Daily Login Task runs the current Unity client in the background (silent) and loggs throught each account in the list, that is checked for the daily login. For more information about EAM visit https://github.com/MaikEight/ExaltAccountManager";
         private const string taskAuthor = "Maik8";
@@ -14,7 +16,7 @@ namespace EAM_Task_Tools
         /// <summary>
         /// Exit codes:
         /// 0 - Success
-        /// 1 - No installation mode or path to daily login application provided
+        /// 1 - No mode provided
         /// 2 - Invalid mode
         /// 3 - Error un-/installing task
         /// 4 - Invalid path to daily login application
@@ -26,21 +28,22 @@ namespace EAM_Task_Tools
         {
             if(args.Length == 0)
             {
-                Console.WriteLine("Please provide the installation mode and path to the daily login application as an argument.");
-                Environment.Exit(1);
-                return;
-            }
-
-            if (args[0] == "check")
-            {
-                bool isInstalled = IsEamTaskInstalled();
-                Console.WriteLine(isInstalled ? "Task is installed." : "Task is not installed.");
-                Environment.Exit(isInstalled ? 0 : 6);
+                args = new string[] { "help" };
             }
             
             string mode = args[0];
             switch (mode)
             {
+                case "check":
+                    bool isInstalled = IsEamTaskInstalled(taskName);
+                    Console.WriteLine(isInstalled ? "Task is installed." : "Task is not installed.");
+                    Environment.Exit(isInstalled ? 0 : 6);
+                    break;
+                case "checkV1":
+                    bool isInstalledV1 = IsEamTaskInstalled(taskNameV1);
+                    Console.WriteLine(isInstalledV1 ? "Task is installed." : "Task is not installed.");
+                    Environment.Exit(isInstalledV1 ? 0 : 6);
+                    break;
                 case "install":
                     if (args.Length < 2)
                     {
@@ -54,21 +57,36 @@ namespace EAM_Task_Tools
                 case "uninstall":
                     UninstallEamTask();
                     break;
+                case "uninstallV1":
+                    UninstallEamTask(taskNameV1);
+                    break;
+                case "manual":
+                    System.Diagnostics.Process.Start("taskschd.msc");
+                    Environment.Exit(0);
+                    break;
+                case "help":
+                    Console.WriteLine("EAM Task Tools v" + version.ToString() + " by Maik8");
+                    Console.WriteLine("Please provide the installation mode and path to the daily login application as an argument.");
+                    Console.WriteLine("Usage: EAM_Task_Tools.exe <mode> <args>");
+                    Console.WriteLine("Modes: help, check, checkV1, install, uninstall, uninstallV1, manual");
+                    Environment.Exit(1);
+                    break;
                 default:
-                    Console.WriteLine("Invalid mode. Please use 'install' or 'uninstall'.");
+                    Console.WriteLine("Invalid mode. Please provide a valid mode");
+                    Console.WriteLine("Modes: check, checkV1, install, uninstall, uninstallV1, manual");
                     Environment.Exit(2);
                     break;
             }
 
         }
 
-        private static bool IsEamTaskInstalled()
+        private static bool IsEamTaskInstalled(string _taskName = taskName)
         {
             try
             {
                 using (TaskService service = new TaskService())
                 {
-                    return service.RootFolder.AllTasks.Any(t => t.Name == taskName);
+                    return service.RootFolder.AllTasks.Any(t => t.Name == _taskName);
                 }
             }
             catch
@@ -114,17 +132,8 @@ namespace EAM_Task_Tools
                         TimeSpan utcOffset = now - now.ToUniversalTime();
 
                         int triggerHour = utcOffset.Hours > 0 ? utcOffset.Hours : 24 - utcOffset.Hours;
-                        int triggerMinute = 0;
-                        bool triggerSuccess = false;
-
-                        try
-                        {
-                            triggerSuccess = (triggerHour >= 0 && triggerMinute >= 0);
-                        }
-                        catch
-                        {
-                            triggerSuccess = false;
-                        }
+                        int triggerMinute = 1;
+                        bool triggerSuccess = triggerHour >= 0 && triggerMinute >= 0;             
 
                         DailyTrigger timeTrigger = null;
                         if (triggerSuccess)
@@ -181,9 +190,9 @@ namespace EAM_Task_Tools
             }
         }
 
-        private static void UninstallEamTask()
+        private static void UninstallEamTask(string _taskName = taskName)
         {
-            bool taskInstalled = IsEamTaskInstalled();
+            bool taskInstalled = IsEamTaskInstalled(_taskName);
             if (!taskInstalled)
             {
                 Console.WriteLine("Task not installed.");
@@ -194,12 +203,12 @@ namespace EAM_Task_Tools
             {
                 try
                 {
-                    if (service.RootFolder.AllTasks.Any(t => t.Name == taskName))
+                    if (service.RootFolder.AllTasks.Any(t => t.Name == _taskName))
                     {
                         try
                         {
                             Console.WriteLine("Uninstalling task...");                    
-                            service.RootFolder.DeleteTask(taskName, false);
+                            service.RootFolder.DeleteTask(_taskName, false);
 
                             Console.WriteLine("Task uninstalled successfully.");
                             Environment.Exit(0);
