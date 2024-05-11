@@ -785,12 +785,12 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
 }
 
 #[tauri::command]
-fn uninstall_eam_daily_login_task() -> Result<bool, String> {
+fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
         return Err("This function is only available on Windows".to_string());
     }
 
-    let result = eam_commons::windows_specifics::uninstall_eam_daily_login_task();
+    let result = eam_commons::windows_specifics::uninstall_eam_daily_login_task(uninstall_v1);
 
     match result {
         Ok(_) => Ok(true),
@@ -799,12 +799,12 @@ fn uninstall_eam_daily_login_task() -> Result<bool, String> {
 }
 
 #[tauri::command]
-fn check_for_installed_eam_daily_login_task() -> Result<bool, String> {
+fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
         return Ok(false);
     }
 
-    let result = eam_commons::windows_specifics::check_for_installed_eam_daily_login_task();
+    let result = eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(check_for_v1);
 
     match result {
         Ok(result) => Ok(result),
