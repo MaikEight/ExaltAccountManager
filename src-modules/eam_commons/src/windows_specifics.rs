@@ -22,21 +22,26 @@ const EAM_TASK_TOOLS: &'static [u8] =
     include_bytes!("../../EAM_Task_Installer/EAM_Task_Installer/bin/Release/EAM_Task_Tools.exe");
 
     #[cfg(target_os = "windows")]
-pub fn check_for_installed_eam_daily_login_task() -> Result<bool, Error> {    
-    let path = ensure_eam_task_tools()?;
-
-    let output = std::process::Command::new(path)
-        .arg("check")
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .creation_flags(CREATE_NO_WINDOW)
-        .output()?;
-
-    match output.status.success() {
-        true => Ok(true),
-        false => Ok(false),
+    pub fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, Error> {
+        let path = ensure_eam_task_tools()?;
+    
+        let check_arg = match check_for_v1 {
+            true => "checkV1",
+            false => "check",
+        };
+    
+        let output = std::process::Command::new(path)
+            .arg(check_arg)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .creation_flags(CREATE_NO_WINDOW)
+            .output()?;
+    
+        match output.status.success() {
+            true => Ok(true),
+            false => Ok(false),
+        }
     }
-}
 
 #[cfg(target_os = "windows")]
 pub fn install_eam_daily_login_task(exe_path: &str) -> Result<bool, Error> {
@@ -51,7 +56,7 @@ pub fn install_eam_daily_login_task(exe_path: &str) -> Result<bool, Error> {
         .output()?;
 
     if output.status.success() {
-        let res = check_for_installed_eam_daily_login_task();
+        let res = check_for_installed_eam_daily_login_task(false);
         if res.is_ok() && res.unwrap() {
             Ok(true)
         } else {
@@ -69,18 +74,23 @@ pub fn install_eam_daily_login_task(exe_path: &str) -> Result<bool, Error> {
 }
 
 #[cfg(target_os = "windows")]
-pub fn uninstall_eam_daily_login_task() -> Result<bool, Error> {
+pub fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, Error> {
     let path = ensure_eam_task_tools()?;
 
+    let uninstall_arg = match uninstall_v1 {
+        true => "uninstallV1",
+        false => "uninstall",
+    };
+
     let output = std::process::Command::new(path)
-        .arg("uninstall")
+        .arg(uninstall_arg)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .creation_flags(CREATE_NO_WINDOW)
         .output()?;
 
     if output.status.success() {
-        let res = check_for_installed_eam_daily_login_task();
+        let res = check_for_installed_eam_daily_login_task(uninstall_v1);
         if res.is_ok() && res.unwrap() {
             Err(Error::new(
                 std::io::ErrorKind::Other,
@@ -116,5 +126,5 @@ fn ensure_eam_task_tools() -> Result<String, Error> {
         drop(file);
     }
 
-    Ok(path.to_str().unwrap().to_string())    
+    Ok(path.to_str().unwrap().to_string())
 }
