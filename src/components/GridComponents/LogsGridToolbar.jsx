@@ -1,8 +1,7 @@
 import { useTheme } from "@emotion/react";
-import { Box, Button, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { Box, Chip, FormControl, Input, MenuItem, Select, alpha } from "@mui/material";
 import { GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
 import Searchbar from "./Searchbar";
-import AddIcon from '@mui/icons-material/Add';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -25,7 +24,7 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                 sx={{
                     display: "flex",
                     justifyContent: "start",
-                    minHeight: 52,
+                    minHeight: 49,
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: '6px 6px 0 0',
                     pt: 0.5,
@@ -52,35 +51,58 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                         display: 'flex',
                         flexDirection: 'row',
                         maxHeight: 49,
+                        overflow: 'hidden',
                     }}
                 >
                     <FormControl sx={{ width: 120 }}>
-                        <InputLabel id="logtype-label">Logtype</InputLabel>
+                        {/* <InputLabel id="logtype-label">Logtype</InputLabel> */}
                         <Select
                             sx={{
-                                height: 39
+                                height: 39,
+                                ...(theme.palette.mode === 'dark' ? {
+                                    backgroundColor: alpha(theme.palette.background.default, 0.5),
+                                    '&:hover': {
+                                        backgroundColor: alpha(theme.palette.common.white, 0.08),
+                                    },
+                                } : {
+                                    backgroundColor: alpha(theme.palette.background.default, 0.75),
+                                    '&:hover': {
+                                        backgroundColor: alpha(theme.palette.text.primary, 0.05),
+                                    },
+                                }),
+                                transition: theme.transitions.create('background-color'),
+                                borderRadius: '6px',
                             }}
-                            labelId="logtype-label"
                             id="select-logtype"
                             value={selectedLogtype}
                             onChange={(event) => setSelectedLogtype(event.target.value)}
                             input={
-                                <OutlinedInput
+                                <Input
                                     id="select-logtype"
-                                    label="Logtype"
+                                    disableUnderline
                                 />
                             }
                             renderValue={(selected) => (
-                                <Chip
-                                    size="small"
-                                    key={selected}
-                                    label={selected}
+                                <Box
                                     sx={{
-                                        p: 0.125,
-                                        pb: 0,
-                                        mt: 0.5
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        height: '100%',
                                     }}
-                                />
+                                >
+                                    <Chip
+                                        size="small"
+                                        key={selected}
+                                        label={selected}
+                                    // sx={{
+                                    //     p: 0.125,
+                                    //     pb: 0,
+                                    //     mt: 0.5
+                                    // }}
+                                    />
+                                </Box>
                             )}
                             MenuProps={MenuProps}
                         >
