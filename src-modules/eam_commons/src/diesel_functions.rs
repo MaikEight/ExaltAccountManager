@@ -160,6 +160,16 @@ pub fn get_daily_login_report_entry_by_id(
         .unwrap_or(Err(diesel::result::Error::NotFound))
 }
 
+pub fn get_daily_login_report_entries_by_report_id(
+    pool: &DbPool,
+    report_id: String,
+) -> Result<Vec<DailyLoginReportEntries>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    daily_login_report_entries::table
+        .filter(daily_login_report_entries::reportId.eq(report_id))
+        .load::<DailyLoginReportEntries>(&mut conn)
+}
+
 pub fn insert_or_update_daily_login_report_entry(
     pool: &DbPool,
     entry: DailyLoginReportEntries,
