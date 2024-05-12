@@ -80,7 +80,7 @@ pub fn get_all_daily_login_reports(
     pool: &DbPool,
 ) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    daily_login_reports::table.load::<DailyLoginReports>(&mut conn)
+    daily_login_reports::table.order(daily_login_reports::startTime.desc()).load::<DailyLoginReports>(&mut conn)
 }
 
 pub fn get_daily_login_reports_of_last_days(
