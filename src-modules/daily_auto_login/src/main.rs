@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 extern crate chrono;
 extern crate dirs;
@@ -27,6 +27,8 @@ use std::time::Duration;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
+use std::future::Future;
+use std::pin::Pin;
 use chrono::{DateTime, Utc};
 use roxmltree::Document;
 use reqwest::header::HeaderMap;
@@ -39,20 +41,38 @@ use uuid::Uuid;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
+    static ref DECA_API_TIMEOUT_UNTIL: Mutex<i64> = Mutex::new(Utc::now().timestamp_millis() - 1);
 }
 
-struct GameAccessToken {
+pub struct GameAccessToken {
     access_token: String,
     access_token_timestamp: String,
     access_token_expiration: String,
 }
-
+ 
 const GAME_START_TIMEOUT: u64 = 90;
 
 #[tokio::main]
 async fn main() {
     println!("Starting daily_auto_login...");
     
+    use sysinfo::System;
+
+    let mut system = System::new_all();
+    system.refresh_all();
+
+    let current_pid = std::process::id();
+
+    for (pid, process) in system.processes() {
+        if pid.as_u32() == current_pid {
+            continue;
+        }
+        if process.name() == "EAM_Daily_Auto_Login.exe" {
+            println!("EAM_Daily_Auto_Login.exe is already running with PID {}. Exiting...", pid);
+            std::process::exit(1);
+        }
+    }
+
     //Initialize the database pool
     let database_url = get_database_path().to_str().unwrap().to_string();
     let pool = setup_database(&database_url);
@@ -230,24 +250,25 @@ async fn main() {
     let mut emails_vec = accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>();
 
     for account in accounts_to_perform_daily_login_with {
-        let start_time = Some(Utc::now().to_rfc3339());
+        let start_time = Some(Utc::now().to_rfc3339());        
+        let account_email = account.email.clone();
         let report_entry = DailyLoginReportEntries {
             id: None,
             reportId: Some(daily_login_report.id.clone()),
             startTime: start_time.clone(),
             endTime: None,
-            accountEmail: Some(account.email.clone()),
+            accountEmail: Some(account_email.clone()),
             status: "Processing".to_string(),
             errorMessage: None,
         };
         let entry_id_res = insert_or_update_daily_login_report_entry(pool, report_entry);
         let entry_id = entry_id_res.unwrap();
 
-        let account_email = account.email.clone();
         println!("Performing daily login with account: {}", account_email);
         log_to_audit_log(pool, ("Performing daily login with account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
         
-        let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool, account_email.clone(), hwid.clone()).await;     
+        let pool_arc = Arc::new(pool.clone());
+        let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool_arc, account_email.clone(), hwid.clone()).await;     
 
         if access_token_opt.is_none() {
             println!("Failed to get access token for account: {}", account_email);
@@ -328,32 +349,60 @@ pub fn get_database_path() -> PathBuf {
     path
 }
 
-async fn send_account_verify_request(pool: &DbPool, account_email: String, hwid: String) -> Option<GameAccessToken> {
-    let acc = get_eam_account_by_email(pool, account_email.clone()).unwrap();
-    let pw = encryption_utils::decrypt_data(&acc.password).unwrap();
+pub fn send_account_verify_request(pool: Arc<DbPool>, account_email: String, hwid: String) -> Pin<Box<dyn Future<Output = Option<GameAccessToken>> + Send>> {
+    let pool = Arc::clone(&pool);
+    Box::pin(async move {
+        let acc = get_eam_account_by_email(&pool, account_email.clone()).unwrap();
+        let pw = encryption_utils::decrypt_data(&acc.password).unwrap();
 
-    let url = "https://www.realmofthemadgod.com/account/verify".to_string();
-    let mut data = HashMap::new();
+        let url = "https://www.realmofthemadgod.com/account/verify".to_string();
+        let mut data = HashMap::new();
 
-    data.insert("guid".to_string(), account_email.clone());    
-    if acc.isSteam {
-        data.insert("steamid".to_string(), acc.steamId.clone()?.to_string());
-        data.insert("secret".to_string(), pw);
-    } else {
-        data.insert("password".to_string(), pw);
-    }
+        data.insert("guid".to_string(), account_email.clone());    
+        if acc.isSteam {
+            data.insert("steamid".to_string(), acc.steamId.clone()?.to_string());
+            data.insert("secret".to_string(), pw);
+        } else {
+            data.insert("password".to_string(), pw);
+        }
 
-    data.insert("clientToken".to_string(), hwid);
-    data.insert("game_net".to_string(), if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string());
-    data.insert("play_platform".to_string(), if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string());
-    data.insert("game_net_user_id".to_string(), if acc.isSteam { acc.steamId? } else { "".to_string() });    
-    
-    let _ = log_to_audit_log(pool, "Sending account verify request.".to_string(), Some(account_email.clone()));
-    
-    let response = send_post_request_with_form_url_encoded_data(url, data).await.unwrap();    
-    let token = get_access_token(&response);    
+        data.insert("clientToken".to_string(), hwid.clone());
+        data.insert("game_net".to_string(), if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string());
+        data.insert("play_platform".to_string(), if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string());
+        data.insert("game_net_user_id".to_string(), if acc.isSteam { acc.steamId? } else { "".to_string() });
 
-    token
+        let deca_timeout_time = *DECA_API_TIMEOUT_UNTIL.lock().unwrap();
+        if deca_timeout_time > Utc::now().timestamp_millis() {
+            println!("API Limit reached, waiting 5 minutes.");
+            let _ = log_to_audit_log(&pool, "API Limit reached, waiting 5 minutes.".to_string(), Some(account_email.clone()));
+            thread::sleep(Duration::from_secs(315));
+        }
+
+        let _ = log_to_audit_log(&pool, "Sending account verify request.".to_string(), Some(account_email.clone()));
+
+        let response = send_post_request_with_form_url_encoded_data(url, data).await.unwrap();    
+        let token = get_access_token(&response);
+        if token.is_none() {
+            //Check if the API Limit has been reached
+            let doc = Document::parse(&response).unwrap();
+            for node in doc.descendants() {
+                if node.has_tag_name("Error") {
+                    let error_message = node.text().map(|s| s.to_string()).unwrap();
+                    if error_message == "Internal error, please wait 5 minutes to try again!" {
+                        let _ = log_to_audit_log(&pool, "API Limit reached, waiting 5 minutes.".to_string(), Some(account_email.clone()));
+                        println!("API Limit reached, retrying in 5 minutes...");
+                        {
+                            let mut deca_timeout_time = DECA_API_TIMEOUT_UNTIL.lock().unwrap();
+                            *deca_timeout_time = Utc::now().timestamp_millis() + 315000;
+                        }
+                        return send_account_verify_request(pool, account_email.clone(), hwid.clone()).await;
+                    }              
+                }
+            }
+        }
+
+        token
+    })
 }
 
 fn get_access_token(xml: &str) -> Option<GameAccessToken> {
