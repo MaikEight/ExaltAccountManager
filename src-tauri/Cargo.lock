@@ -1017,6 +1017,7 @@ dependencies = [
  "dirs",
  "lazy_static",
  "libsqlite3-sys",
+ "md5",
  "serde",
  "serde_json",
  "sha1",
@@ -1121,7 +1122,7 @@ dependencies = [
 
 [[package]]
 name = "exalt-account-manager"
-version = "4.0.0"
+version = "4.1.0"
 dependencies = [
  "anyhow",
  "async-std",

@@ -45,6 +45,7 @@ const EAM_SAVE_FILE_CONVERTER: &'static [u8] =
 
 const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
     include_bytes!("../IncludedBinaries/EAM_Daily_Auto_Login.exe");
+const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "c522960a822f9083ab48391ea4f01178";
 
 fn main() {
     //Create the save file directory if it does not exist
@@ -805,10 +806,42 @@ fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, 
         return Ok(false);
     }
 
-    let result = eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(check_for_v1);
+    let result =
+        eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(check_for_v1);
 
     match result {
-        Ok(result) => Ok(result),
+        Ok(result) => {
+            if check_for_v1 {
+                Ok(result)
+            } else {
+                //Check if the installed version is the same as the embedded version
+                let save_file_path = get_save_file_path();
+                let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
+                    
+                if !path.exists() {
+                    println!("EAM_Daily_Auto_Login.exe does not exist, creating it");
+                    fs::write(path.clone(), EAM_DAILY_AUTO_LOGIN).map_err(|e| e.to_string())?;
+                    return Ok(result);
+                }
+
+                let mut file = fs::File::open(path.clone()).map_err(|e| e.to_string())?;
+
+                let mut buffer = Vec::new();
+                file.read_to_end(&mut buffer).map_err(|e| e.to_string())?;
+                drop(file);
+                let hash = md5::compute(&buffer);
+                let hash_string = format!("{:x}", hash);
+
+                if hash_string != EAM_DAILY_AUTO_LOGIN_HASH {
+                    println!("Hashes do not match, updating the installed version");
+                    println!("Hash: {}", hash_string);
+                    println!("Expected Hash: {}", EAM_DAILY_AUTO_LOGIN_HASH);
+                    fs::write(path.clone(), EAM_DAILY_AUTO_LOGIN).map_err(|e| e.to_string())?;
+                }
+
+                Ok(result)
+            }
+        }
         Err(e) => Err(e.to_string()),
     }
 }
@@ -892,7 +925,9 @@ async fn get_all_daily_login_reports() -> Result<Vec<DailyLoginReports>, tauri::
 }
 
 #[tauri::command]
-async fn get_daily_login_reports_of_last_days(amount_of_days: i64) -> Result<Vec<DailyLoginReports>, tauri::Error> {
+async fn get_daily_login_reports_of_last_days(
+    amount_of_days: i64,
+) -> Result<Vec<DailyLoginReports>, tauri::Error> {
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::get_daily_login_reports_of_last_days(pool, amount_of_days)
