@@ -23,28 +23,7 @@ function DailyLoginsGridToolbar({ onSearchChanged }) {
             >
                 <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
-            </GridToolbarContainer>
-
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'end',
-                    alignItems: 'center',
-                }}
-            >
-                <Box
-                    sx={{
-                        mr: 0.5,
-                        display: 'flex',
-                        flexDirection: 'row',
-                        maxHeight: 49,
-                        overflow: 'hidden',
-                    }}
-                >
-                    <Searchbar onSearchChanged={onSearchChanged} />
-                </Box>
-            </Box>
+            </GridToolbarContainer>            
         </Box>
     );
 }
