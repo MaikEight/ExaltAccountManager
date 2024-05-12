@@ -1,10 +1,13 @@
 extern crate dirs;
 
+use std::fs;
 use std::fs::File;
 use std::io::Error;
 use std::io::Write;
+use std::io::Read;
 use std::os::windows::process::CommandExt;
 use std::process::Stdio;
+use md5;
 
 #[cfg(target_os = "windows")]
 const CREATE_NO_WINDOW: u32 = 0x08000000;
@@ -20,6 +23,7 @@ const CREATE_NO_WINDOW: u32 = 0x08000000;
 #[cfg(target_os = "windows")]
 const EAM_TASK_TOOLS: &'static [u8] =
     include_bytes!("../../EAM_Task_Installer/EAM_Task_Installer/bin/Release/EAM_Task_Tools.exe");
+const EAM_TASK_TOOLS_HASH: &'static str = "8d79a512dd49c0c7fce512f8f0cfe393";
 
     #[cfg(target_os = "windows")]
     pub fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, Error> {
@@ -124,6 +128,20 @@ fn ensure_eam_task_tools() -> Result<String, Error> {
         file.write_all(EAM_TASK_TOOLS)?;
         file.sync_all()?;
         drop(file);
+    } else {
+        //If hash is different, overwrite file
+        let mut file = fs::File::open(path.clone())?;
+
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer)?;
+        drop(file);
+        let hash = md5::compute(&buffer);
+        let hash_string = format!("{:x}", hash);
+
+        if hash_string != EAM_TASK_TOOLS_HASH {
+            println!("Hashes are different, overwriting EAM_Task_Tools.exe");
+            fs::write(path.clone(), EAM_TASK_TOOLS)?;
+        }
     }
 
     Ok(path.to_str().unwrap().to_string())
