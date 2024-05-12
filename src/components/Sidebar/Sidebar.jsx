@@ -7,7 +7,7 @@ import SidebarButton from "./SidebarButton";
 import { useEffect, useState } from "react";
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useSnack from "../../hooks/useSnack";
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import FeedbackButton from "./FeedbackButton";
@@ -20,6 +20,7 @@ function Sidebar({ children }) {
 
     const { showSnackbar } = useSnack();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const intervallId = setInterval(() => {
@@ -92,11 +93,22 @@ function Sidebar({ children }) {
     ];
 
     useEffect(() => {
+        const index = menuItems.findIndex((menu) => menu.navigate === location.pathname);
+        if(selectedIndex !== index) {
+            setSelectedIndex(index);
+        }
+    }, [location.pathname]);
+
+    useEffect(() => {
         if(selectedIndex === -1){
             return;
         }
+
+        if(menuItems[selectedIndex].navigate === location.pathname) {
+            return;
+        }
         
-        console.log(menuItems[selectedIndex].navigate);                
+        console.log(menuItems[selectedIndex].navigate);               
         navigate(menuItems[selectedIndex].navigate);
     }, [selectedIndex]);
 
