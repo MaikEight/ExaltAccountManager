@@ -19,4 +19,5 @@ wmi = "0.13.1"
 sha1 = "0.10.6"
 uuid = "1.8.0" 
 libsqlite3-sys = { version = "*", features = ["bundled"] }
+sysinfo = "0.30.12"
 eam_commons = { path = "../eam_commons" }
