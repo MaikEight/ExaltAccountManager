@@ -32,7 +32,7 @@ function getRequestState(charList) {
 
         if (error.includes("passworderror")) {
             return "WrongPassword";
-        } else if (error.includes("wait")) {
+        } else if (error.includes("wait") || error.includes("try again later")) {
             return "TooManyRequests";
         } else if (error.includes("captchalock")) {
             return "Captcha";
