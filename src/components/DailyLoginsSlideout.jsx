@@ -1,0 +1,255 @@
+
+import { useTheme } from "@emotion/react";
+import { Box, Drawer, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import CloseIcon from '@mui/icons-material/Close';
+import { invoke } from "@tauri-apps/api";
+import ComponentBox from "./ComponentBox";
+import PaddedTableCell from "./AccountDetails/PaddedTableCell";
+import TextTableRow from "./AccountDetails/TextTableRow";
+import { formatTime } from "../utils/timeUtils";
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import { useNavigate } from "react-router-dom";
+
+const entryStatus = [
+    "Succeeded",
+    "Processing",
+    "Failed"
+];
+
+function DailyLoginsSlideout({ isOpen, report, onClose }) {
+    const [reportData, setReportData] = useState({
+        succeeded: [],
+        failed: [],
+    });
+    const [reportDuration, setReportDuration] = useState('');
+    const containerRef = useRef(null);
+    const theme = useTheme();
+
+    useEffect(() => {
+        if (!report) {
+            setReportData({ succeeded: [], failed: [] });
+            return;
+        }
+
+        invoke('get_daily_login_report_entries_by_report_id', { reportId: report.id })
+            .then((data) => {
+                const entries = data.sort((a, b) => {
+                    return entryStatus.indexOf(a.status) - entryStatus.indexOf(b.status);
+                });
+
+                setReportData({
+                    succeeded: entries.filter((entry) => entry.status === 'Succeeded'),
+                    failed: entries.filter((entry) => entry.status === 'Failed'),
+                });
+            });
+
+        setReportDuration(getReportDuration());
+    }, [report]);
+
+    const getReportDuration = () => {
+        if (!report) return '';
+        if (!report.startTime || !report.endTime) return '';
+        if (report.endTime < report.startTime) return '';
+        if (report.endTime === report.startTime) return '0s';
+        if (report.hasFinished === false) return new Date(report.startTime).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0) ? 'still running' : '';
+
+        const duration = (report.endTime - report.startTime) / 1000;
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        const seconds = Math.floor(duration % 60);
+        return `${hours}h ${minutes}m ${seconds}s`;
+    };
+
+    return (
+        <Box ref={containerRef} sx={{ overflow: 'hidden', borderRadius: '10px' }}>
+            <Drawer
+                sx={{
+                    width: 500,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: 500,
+                        backgroundColor: theme.palette.background.default,
+                        border: 'none',
+                        borderRadius: '6px 10px 10px 6px',
+                        overflow: 'hidden',
+                    },
+                }}
+                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: '6px 10px 10px 6px', overflow: 'hidden' } }}
+                SlideProps={{ container: containerRef.current }}
+                variant="persistent"
+                anchor="right"
+                open={isOpen}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignContent: 'center',
+                        minHeight: 44,
+                        maxHeight: 44,
+                        pt: 0.5,
+                        backgroundColor: theme.palette.background.paperLight,
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 1,
+                    }}
+                >
+                    <IconButton
+                        sx={{ position: 'absolute', left: 5, top: 5, marginLeft: 0, marginRight: 2 }}
+                        size="small"
+                        onClick={() => onClose()}
+                    >
+                        <CloseIcon sx={{ fontSize: 21 }} />
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+                        Daily login report
+                    </Typography>
+                </Box>
+
+                <Box
+                    sx={{
+                        mt: 2,
+                        overflow: 'auto',
+                    }}
+                >
+                    {
+                        report &&
+                        <ComponentBox
+                            title='Report details'
+                            icon={<ArticleOutlinedIcon />}
+                            isCollapseable
+                        >
+                            <TableContainer component={Box} sx={{ borderRadius: 0 }}>
+                                <Table
+                                    sx={{
+                                        '& tbody tr:last-child td, & tbody tr:last-child th': {
+                                            borderBottom: 'none',
+                                        },
+                                    }}
+                                >
+                                    <TableHead>
+                                        <TableRow>
+                                            <PaddedTableCell sx={{ width: '200px' }}>Attribute</PaddedTableCell>
+                                            <PaddedTableCell>Value</PaddedTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TextTableRow key='startTime' keyValue={"Start Time"} value={formatTime(report.startTime)} />
+                                        <TextTableRow key='endTime' keyValue={"End Time"} value={formatTime(report.endTime)} />
+                                        {reportDuration && <TextTableRow key='duration' keyValue={"Run Duration"} value={reportDuration} />}
+                                        <TextTableRow key='amountOfAccounts' keyValue={"Amount of Accounts"} value={report.amountOfAccounts} />
+                                        <TextTableRow key='amountOfAccountsSucceeded' keyValue={"Logins Succeeded"} value={report.amountOfAccountsSucceeded} />
+                                        <TextTableRow key='amountOfAccountsFailed' keyValue={"Logins Failed"} value={report.amountOfAccountsFailed} />
+                                        <TextTableRow key='hasFinished' keyValue={"Has Finished"} value={report.hasFinished ? <CheckCircleOutlinedIcon /> : <CancelOutlinedIcon />} />
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </ComponentBox>
+                    }
+                    {
+                        reportData.failed.length > 0 &&
+                        <ComponentBox
+                            title='Failed logins'
+                            icon={<CancelOutlinedIcon />}
+                            isCollapseable
+                        >
+                            <DailyLoginsLoginData logins={reportData.failed} />
+                        </ComponentBox>
+                    }
+                    {
+                        reportData.succeeded.length > 0 &&
+                        <ComponentBox
+                            title='Successful logins'
+                            icon={<CheckCircleOutlinedIcon />}
+                            isCollapseable
+                        >
+                            <DailyLoginsLoginData logins={reportData.succeeded} />
+                        </ComponentBox>}
+                </Box>
+            </Drawer>
+        </Box>
+    );
+}
+
+export default DailyLoginsSlideout;
+
+function DailyLoginsLoginData({ logins }) {
+
+    const navigate = useNavigate();
+    return (
+        <Box
+            sx={{
+                width: '100%',
+                overflowX: 'hidden',
+            }}
+        >
+            <Typography variant="body2" sx={{ p: 1 }}>
+                Click on a row to view the account details
+            </Typography>
+            <TableContainer component={Box} sx={{ borderRadius: 0, maxWidth: '100%', overflow: 'hidden' }}>
+                <Table
+                    sx={{
+                        '& tbody tr:last-child td, & tbody tr:last-child th': {
+                            borderBottom: 'none',
+                        },
+                        '& tbody tr:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        },
+                        '& tbody tr': {
+                            cursor: 'pointer',
+                            borderRadius: '6px',
+                        },
+                    }}
+                >
+                    <TableHead>
+                        <TableRow >
+                            <TableCell
+                                sx={{
+                                    pl: 4,
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    maxWidth: '225px'
+                                }}
+                            >
+                                Email
+                            </TableCell>
+                            <TableCell sx={{ overflow: 'hidden', textAlign: 'center' }}>Start time</TableCell>
+                            <TableCell sx={{ overflow: 'hidden', textAlign: 'center' }}>End time</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            logins.map((login) => {
+                                return (
+                                    <TableRow
+                                        key={login.id}
+                                        onClick={() => navigate(`/accounts?selectedAccount=${encodeURIComponent(login.accountEmail)}`)}
+                                    >
+                                        <TableCell
+                                            sx={{
+                                                pl: 4,
+                                                textOverflow: 'ellipsis',
+                                                overflow: 'hidden',
+                                                whiteSpace: 'nowrap',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            {login.accountEmail}
+                                        </TableCell>
+                                        <TableCell sx={{ overflow: 'hidden', textAlign: 'center', maxWidth: '100px' }}>{formatTime(login.startTime)}</TableCell>
+                                        <TableCell sx={{ overflow: 'hidden', textAlign: 'center', maxWidth: '100px' }}>{formatTime(login.endTime)}</TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
+    );
+}
