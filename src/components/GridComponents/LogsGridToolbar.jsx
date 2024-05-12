@@ -96,11 +96,6 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                                         size="small"
                                         key={selected}
                                         label={selected}
-                                    // sx={{
-                                    //     p: 0.125,
-                                    //     pb: 0,
-                                    //     mt: 0.5
-                                    // }}
                                     />
                                 </Box>
                             )}
