@@ -105,6 +105,7 @@ fn main() {
             insert_or_update_daily_login_report,
             get_all_daily_login_report_entries, //DAILY LOGIN REPORT ENTRIES
             get_daily_login_report_entry_by_id,
+            get_daily_login_report_entries_by_report_id,
             insert_or_update_daily_login_report_entry,
             check_for_installed_eam_daily_login_task, //DAILY LOGIN TASK
             install_eam_daily_login_task,
@@ -962,6 +963,22 @@ async fn get_daily_login_report_entry_by_id(
     let pool = POOL.lock().unwrap();
     if let Some(ref pool) = *pool {
         diesel_functions::get_daily_login_report_entry_by_id(pool, Some(report_id))
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Pool is not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+async fn get_daily_login_report_entries_by_report_id(
+    report_id: String,
+) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
+    let pool = POOL.lock().unwrap();
+    if let Some(ref pool) = *pool {
+        diesel_functions::get_daily_login_report_entries_by_report_id(pool, report_id)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
     } else {
         Err(tauri::Error::from(std::io::Error::new(
