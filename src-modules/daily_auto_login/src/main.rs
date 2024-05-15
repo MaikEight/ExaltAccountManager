@@ -79,6 +79,29 @@ async fn main() {
     *POOL.lock().unwrap() = Some(pool);
     let binding = POOL.lock().unwrap();
     let pool = binding.as_ref().unwrap();
+
+    log_to_audit_log(pool, "Checking for game updates...".to_string(), None);
+    let update_required =  eam_commons::rotmg_updater::get_game_files_to_update(pool, true).unwrap().len() > 0;
+
+    if update_required {
+        log_to_audit_log(pool, "Game update required.".to_string(), None);
+        log_to_audit_log(pool, "Performing game update...".to_string(), None);
+        let update_result = eam_commons::rotmg_updater::perform_game_update(pool);
+        
+        match update_result {
+            Ok(_) => {
+                log_to_audit_log(pool, "Game update successful.".to_string(), None);
+            }
+            Err(e) => {
+                log_to_audit_log(pool, "Game update failed, exiting.".to_string(), None);
+                println!("Game update failed: {}", e);
+                return;
+            }
+        }
+    } else {
+        log_to_audit_log(pool, "No game update required.".to_string(), None);
+    }
+
     log_to_audit_log(pool, "Starting daily_auto_login.".to_string(), None);
 
     let daily_login_report_ret = get_latest_daily_login(pool);
@@ -275,7 +298,8 @@ async fn main() {
             log_to_audit_log(pool, ("Failed to get access token for account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
             daily_login_report.amountOfAccountsFailed += 1;
             daily_login_report.amountOfAccountsProcessed += 1;
-
+            let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
+            
             let report_entry = DailyLoginReportEntries {
                 id: Some(entry_id),
                 reportId: Some(daily_login_report.id.clone()),
