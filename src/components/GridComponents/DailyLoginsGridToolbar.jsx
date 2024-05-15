@@ -1,9 +1,9 @@
 import { useTheme } from "@emotion/react";
-import { Box, Chip, FormControl, Input, MenuItem, Select, alpha } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
-import Searchbar from "./Searchbar";
+import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 
-function DailyLoginsGridToolbar({ onSearchChanged }) {
+function DailyLoginsGridToolbar({ onRefresh }) {
     const theme = useTheme();
 
     return (
@@ -23,7 +23,24 @@ function DailyLoginsGridToolbar({ onSearchChanged }) {
             >
                 <GridToolbarColumnsButton />
                 <GridToolbarFilterButton />
-            </GridToolbarContainer>            
+            </GridToolbarContainer>
+            <Box
+                id="Test"
+                sx={{
+                    mr: 1.5,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    maxHeight: 49,
+                    overflow: 'hidden',
+                }}
+            >
+                <IconButton
+                    size="small"
+                    onClick={onRefresh}
+                >
+                    <RefreshOutlinedIcon />
+                </IconButton>
+            </Box>
         </Box>
     );
 }
