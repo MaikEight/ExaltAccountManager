@@ -1,51 +1,61 @@
 extern crate dirs;
 
+use md5;
 use std::fs;
 use std::fs::File;
 use std::io::Error;
-use std::io::Write;
 use std::io::Read;
+use std::io::Write;
 use std::os::windows::process::CommandExt;
 use std::process::Stdio;
-use md5;
 
 #[cfg(target_os = "windows")]
 const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 // Exit codes of EAM_Task_Tools:
 // 0 - Success
-// 1 - No installation mode or path to daily login application provided
+// 1 - No mode provided
 // 2 - Invalid mode
 // 3 - Error un-/installing task
 // 4 - Invalid path to daily login application
 // 5 - Task already installed
 // 6 - Task not installed
+// 7 - Permission denied
 #[cfg(target_os = "windows")]
 const EAM_TASK_TOOLS: &'static [u8] =
     include_bytes!("../../EAM_Task_Installer/EAM_Task_Installer/bin/Release/EAM_Task_Tools.exe");
 const EAM_TASK_TOOLS_HASH: &'static str = "8d79a512dd49c0c7fce512f8f0cfe393";
 
-    #[cfg(target_os = "windows")]
-    pub fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, Error> {
-        let path = ensure_eam_task_tools()?;
-    
-        let check_arg = match check_for_v1 {
-            true => "checkV1",
-            false => "check",
-        };
-    
-        let output = std::process::Command::new(path)
-            .arg(check_arg)
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .creation_flags(CREATE_NO_WINDOW)
-            .output()?;
-    
-        match output.status.success() {
-            true => Ok(true),
-            false => Ok(false),
+#[cfg(target_os = "windows")]
+pub fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, Error> {
+    let path = ensure_eam_task_tools()?;
+
+    let check_arg = match check_for_v1 {
+        true => "checkV1",
+        false => "check",
+    };
+
+    let output = std::process::Command::new(path)
+        .arg(check_arg)
+        .stderr(Stdio::null())
+        .creation_flags(CREATE_NO_WINDOW)
+        .output()?;
+
+    match output.status.code() {
+        Some(0) => Ok(true),
+        Some(6) => Ok(false),
+        _ => {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            Err(Error::new(
+                std::io::ErrorKind::Other,
+                format!(
+                    "Failed to check for installed task. Exit code: {}. Output: {}",
+                    output.status, stdout
+                ),
+            ))
         }
     }
+}
 
 #[cfg(target_os = "windows")]
 pub fn install_eam_daily_login_task(exe_path: &str) -> Result<bool, Error> {
@@ -54,25 +64,36 @@ pub fn install_eam_daily_login_task(exe_path: &str) -> Result<bool, Error> {
     let output = std::process::Command::new(path)
         .arg("install")
         .arg(exe_path)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
         .creation_flags(CREATE_NO_WINDOW)
         .output()?;
 
     if output.status.success() {
         let res = check_for_installed_eam_daily_login_task(false);
-        if res.is_ok() && res.unwrap() {
-            Ok(true)
-        } else {
-            Err(Error::new(
-                std::io::ErrorKind::Other,
-                "Failed to install task ".to_owned() + &output.status.to_string(),
-            ))
+
+        match res {
+            Ok(true) =>  Ok(true),            
+            Ok(false) => Ok(false),
+            _ => {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                Err(Error::new(
+                    std::io::ErrorKind::Other,
+                    format!(
+                        "Failed to install task. Exit code: {}. Output: {}. Result: {}",
+                        output.status,
+                        stdout,
+                        res.unwrap().to_string()
+                    ),
+                ))
+            }            
         }
     } else {
+        let stdout = String::from_utf8_lossy(&output.stdout);
         Err(Error::new(
             std::io::ErrorKind::Other,
-            "Failed to install task ".to_owned() + &output.status.to_string(),
+            format!(
+                "Failed to install task. Exit code: {}. Output: {}",
+                output.status, stdout
+            ),
         ))
     }
 }
@@ -88,25 +109,31 @@ pub fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, Error>
 
     let output = std::process::Command::new(path)
         .arg(uninstall_arg)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
         .creation_flags(CREATE_NO_WINDOW)
         .output()?;
 
     if output.status.success() {
         let res = check_for_installed_eam_daily_login_task(uninstall_v1);
         if res.is_ok() && res.unwrap() {
+            let stdout = String::from_utf8_lossy(&output.stdout);
             Err(Error::new(
                 std::io::ErrorKind::Other,
-                "Failed to uninstall task ".to_owned() + &output.status.to_string(),
+                format!(
+                    "Failed to uninstall task. Exit code: {}. Output: {}",
+                    output.status, stdout
+                ),
             ))
         } else {
             Ok(true)
         }
     } else {
+        let stdout = String::from_utf8_lossy(&output.stdout);
         Err(Error::new(
             std::io::ErrorKind::Other,
-            "Failed to uninstall task ".to_owned() + &output.status.to_string(),
+            format!(
+                "Failed to uninstall task. Exit code: {}. Output: {}",
+                output.status, stdout
+            ),
         ))
     }
 }
