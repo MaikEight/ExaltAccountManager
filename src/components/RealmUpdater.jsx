@@ -154,7 +154,9 @@ function RealmUpdater() {
                     onClick={async () => {
                         setIsLoading(true);
                         try {
-                            const _ = await checkForUpdates(await settings.getByKeyAndSubKey('game', 'exePath'));
+                            const updateNeeded = await checkForUpdates(true);
+                            setUpdateRequired(updateNeeded);
+                            setIsLoading(false);
                         } catch (error) {
                             console.error('Failed to check for updates', error);
                             setIsLoading(false);
