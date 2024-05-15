@@ -17,6 +17,7 @@ import { CustomPagination } from "../components/GridComponents/CustomPagination"
 import { formatTime } from "../utils/timeUtils";
 import DailyLoginsGridToolbar from "../components/GridComponents/DailyLoginsGridToolbar";
 import DailyLoginsSlideout from "../components/DailyLoginsSlideout";
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -45,6 +46,7 @@ function DailyLoginsPage() {
     const [dailyLoginReportsOfLastWeekDataSetsMax, setDailyLoginReportsOfLastWeekDataSetsMax] = useState(0);
     const [isInstallingTask, setIsInstallingTask] = useState(false);
     const [allDailyLoginReports, setAllDailyLoginReports] = useState([]);
+    const [isLoadingReports, setIsLoadingReports] = useState(false);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
     const [slideoutOpen, setSlideoutOpen] = useState(false);
 
@@ -62,6 +64,43 @@ function DailyLoginsPage() {
         { field: 'amountOfAccountsSucceeded', headerName: 'Successful', width: 150 }
     ];
 
+    const getAllReportData = async () => {   
+        setIsLoadingReports(true);
+        let tasksDone = [false, false]
+        invoke('get_daily_login_reports_of_last_days', { amountOfDays: 7 })
+            .then((res) => {
+                setDailyLoginReportsOfLastWeek(res);
+                tasksDone[0] = true;
+            })
+            .catch((err) => {
+                console.error(err);
+                tasksDone[0] = true;
+            });
+
+        invoke('get_all_daily_login_reports')
+            .then((res) => {
+                const reports = res.map((report, index) => {
+                    return {
+                        ...report,
+                        startTime: new Date(report.startTime),
+                        endTime: new Date(report.endTime),
+                    };
+                });
+                setAllDailyLoginReports(reports);
+                tasksDone[1] = true;
+            })
+            .catch((err) => {
+                console.error(err);
+                tasksDone[1] = true;
+            });
+
+        while (!tasksDone.every((task) => task)) {
+            await new Promise((resolve) => setTimeout(resolve, 25));
+        }
+
+        setIsLoadingReports(false);
+    };
+
     useEffect(() => {
         invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
             .then((res) => {
@@ -75,22 +114,7 @@ function DailyLoginsPage() {
                 localStorage.setItem('dailyLoginTaskV1Installed', res ? 'true' : 'false');
             });
 
-        invoke('get_daily_login_reports_of_last_days', { amountOfDays: 7 })
-            .then((res) => {
-                setDailyLoginReportsOfLastWeek(res);
-            });
-
-        invoke('get_all_daily_login_reports')
-            .then((res) => {
-                const reports = res.map((report, index) => {
-                    return {
-                        ...report,
-                        startTime: new Date(report.startTime),
-                        endTime: new Date(report.endTime),
-                    };
-                });
-                setAllDailyLoginReports(reports);
-            });
+        getAllReportData();
     }, []);
 
     const getMaxChatValue = (lastWeek) => {
@@ -368,7 +392,6 @@ function DailyLoginsPage() {
                     width: '100%',
                     pr: 2,
                     pl: 2,
-                    pb: 2,
                 }}
             >
                 <Paper
@@ -403,6 +426,7 @@ function DailyLoginsPage() {
 
                             },
                         }}
+                        loading={isLoadingReports}
                         rows={allDailyLoginReports}
                         getRowId={(row) => row.id}
                         columns={columns}
@@ -415,13 +439,13 @@ function DailyLoginsPage() {
                             const selectedId = ids[0];
                             const selected = allDailyLoginReports.find((report) => report.id === selectedId);
                             if (selected && selected !== selectedReport) {
-                                
+
                                 if (timeoutFunction) {
                                     console.log('clearing timeout');
                                     clearTimeout(timeoutFunction);
                                     setTimeoutFunction(null);
                                 }
-                                
+
                                 setSelectedReport(selected);
                                 return;
                             }
@@ -442,12 +466,76 @@ function DailyLoginsPage() {
                             loadingOverlay: LinearProgress,
                         }}
                         slotProps={{
-                            toolbar: { onSearchChanged: (search) => setSearch(search) },
+                            toolbar: { onRefresh: getAllReportData },
                             pagination: { labelRowsPerPage: "Runs per page:" }
                         }}
                     />
                 </Paper>
             </Box>
+            <ComponentBox
+                title={'Daily Login Task Settings'}
+                icon={<SettingsOutlinedIcon />}
+                isCollapseable
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 2,
+                    }}
+                >
+                    {
+                        !isTaskInstalled &&
+                        <StyledButton
+                            disabled={isInstallingTask || isTaskInstalled}
+                            color="primary"
+                            onClick={() => {
+                                installTask();
+                            }}
+                        >
+                            Install Task Now
+                        </StyledButton>
+                    }
+                    <StyledButton
+                        disabled={isInstallingTask || !isTaskInstalled}
+                        color="primary"
+                        onClick={() => {
+                            invoke('run_eam_daily_login_task_now')
+                                .then((res) => {
+                                    if (res) {
+                                        showSnackbar('Task started successfully', 'success');
+                                        return;
+                                    }
+                                    showSnackbar('Failed to start the task, please try again later.', 'error');
+                                })
+                                .catch((err) => {
+                                    console.error(err);
+                                    showSnackbar('Failed to start the task, please try again later.', 'error');
+                                });
+                        }}
+                    >
+                        Run Task now
+                    </StyledButton>
+                    <StyledButton
+                        disabled={isInstallingTask || !isTaskInstalled}
+                        color="error"
+                        onClick={() => {
+                            invoke('uninstall_eam_daily_login_task', { uninstallV1: false })
+                                .then(() => {
+                                    setIsTaskInstalled(false);
+                                    localStorage.removeItem('dailyLoginTaskInstalled');
+                                    showSnackbar('Task uninstalled successfully', 'success');
+                                })
+                                .catch((err) => {
+                                    console.error(err);
+                                    showSnackbar('Failed to uninstall the task, please try again later.', 'error');
+                                });
+                        }}
+                    >
+                        Uninstall Task
+                    </StyledButton>
+                </Box>
+            </ComponentBox>
             <DailyLoginsSlideout isOpen={slideoutOpen} report={selectedReport} onClose={() => {
                 setSlideoutOpen(false);
                 setTimeout(() => setSelectedReport(null), 300);
