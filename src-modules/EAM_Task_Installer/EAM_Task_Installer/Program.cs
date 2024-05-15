@@ -7,7 +7,7 @@ namespace EAM_Task_Tools
 {
     internal class Program
     {
-        private static readonly Version version = new Version(1, 0, 0);
+        private static readonly Version version = new Version(1, 0, 1);
         private const string taskNameV1 = "Exalt Account Manager Daily Login Task";
         private const string taskName = "Exalt Account Manager Daily Login Task V2";
         private const string taskDesc = "The EAM Daily Login Task runs the current Unity client in the background (silent) and loggs throught each account in the list, that is checked for the daily login. For more information about EAM visit https://github.com/MaikEight/ExaltAccountManager";
@@ -22,15 +22,16 @@ namespace EAM_Task_Tools
         /// 4 - Invalid path to daily login application
         /// 5 - Task already installed
         /// 6 - Task not installed
+        /// 7 - Permission denied
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            if(args.Length == 0)
+            if (args.Length == 0)
             {
                 args = new string[] { "help" };
             }
-            
+
             string mode = args[0];
             switch (mode)
             {
@@ -133,7 +134,7 @@ namespace EAM_Task_Tools
 
                         int triggerHour = utcOffset.Hours > 0 ? utcOffset.Hours : 24 - utcOffset.Hours;
                         int triggerMinute = 1;
-                        bool triggerSuccess = triggerHour >= 0 && triggerMinute >= 0;             
+                        bool triggerSuccess = triggerHour >= 0 && triggerMinute >= 0;
 
                         DailyTrigger timeTrigger = null;
                         if (triggerSuccess)
@@ -163,6 +164,11 @@ namespace EAM_Task_Tools
                                 Console.WriteLine("Task installed successfully.");
                                 Environment.Exit(0);
                             }
+                            catch (UnauthorizedAccessException ex)
+                            {
+                                Console.WriteLine("Error: Access denied. Please run the application as administrator: " + ex.Message);
+                                Environment.Exit(7);
+                            }
                             catch (Exception ex)
                             {
                                 Console.WriteLine("Error installing task: " + ex.Message);
@@ -183,7 +189,7 @@ namespace EAM_Task_Tools
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Console.WriteLine("Error installing task: " + ex.Message);
                 Environment.Exit(3);
@@ -207,20 +213,25 @@ namespace EAM_Task_Tools
                     {
                         try
                         {
-                            Console.WriteLine("Uninstalling task...");                    
+                            Console.WriteLine("Uninstalling task...");
                             service.RootFolder.DeleteTask(_taskName, false);
 
                             Console.WriteLine("Task uninstalled successfully.");
                             Environment.Exit(0);
                         }
-                        catch
+                        catch (UnauthorizedAccessException ex)
                         {
-                            Console.WriteLine("Error uninstalling task.");
+                            Console.WriteLine("Error: Access denied. Please run the application as administrator: " + ex.Message);
+                            Environment.Exit(7);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error uninstalling task: " + ex.Message);
                             Environment.Exit(3);
                         }
                     }
                 }
-                catch 
+                catch
                 {
                     Console.WriteLine("Error uninstalling task.");
                     Environment.Exit(3);
