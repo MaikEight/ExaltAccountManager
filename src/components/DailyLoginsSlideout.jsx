@@ -25,14 +25,20 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
         failed: [],
     });
     const [reportDuration, setReportDuration] = useState('');
+    const [isUtcZero, setIsUtcZero] = useState(false);
     const containerRef = useRef(null);
     const theme = useTheme();
 
     useEffect(() => {
         if (!report) {
             setReportData({ succeeded: [], failed: [] });
+            setReportDuration('');
+            setIsUtcZero(false);
             return;
         }
+        setIsUtcZero(new Date(report.endTime).getUTCHours() === 0 
+                        && new Date(report.endTime).getUTCMinutes() === 0 
+                        && new Date(report.endTime).getUTCSeconds() === 0);
 
         invoke('get_daily_login_report_entries_by_report_id', { reportId: report.id })
             .then((data) => {
@@ -47,7 +53,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
             });
 
         setReportDuration(getReportDuration());
-    }, [report]);
+    }, [report]);    
 
     const getReportDuration = () => {
         if (!report) return '';
@@ -139,7 +145,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                                     </TableHead>
                                     <TableBody>
                                         <TextTableRow key='startTime' keyValue={"Start Time"} value={formatTime(report.startTime)} />
-                                        <TextTableRow key='endTime' keyValue={"End Time"} value={formatTime(report.endTime)} />
+                                        <TextTableRow key='endTime' keyValue={"End Time"} value={isUtcZero ? '' : formatTime(report.endTime)} />
                                         {reportDuration && <TextTableRow key='duration' keyValue={"Run Duration"} value={reportDuration} />}
                                         <TextTableRow key='amountOfAccounts' keyValue={"Amount of Accounts"} value={report.amountOfAccounts} />
                                         <TextTableRow key='amountOfAccountsSucceeded' keyValue={"Logins Succeeded"} value={report.amountOfAccountsSucceeded} />
