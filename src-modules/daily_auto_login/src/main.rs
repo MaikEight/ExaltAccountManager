@@ -16,6 +16,8 @@ use eam_commons::get_user_data_by_key;
 use eam_commons::insert_or_update_daily_login_report;
 use eam_commons::insert_or_update_daily_login_report_entry;
 use eam_commons::models::{DailyLoginReports, DailyLoginReportEntries};
+use eam_commons::models::EamAccount;
+use eam_commons::rotmg_updater::UpdaterError;
 
 use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
@@ -29,6 +31,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::future::Future;
 use std::pin::Pin;
+use std::sync::mpsc::channel;
 use chrono::{DateTime, Utc};
 use roxmltree::Document;
 use reqwest::header::HeaderMap;
@@ -38,6 +41,7 @@ use reqwest::header::CONTENT_TYPE;
 use base64::prelude::*;
 use std::io::BufRead;
 use uuid::Uuid;
+use std::io::ErrorKind;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
@@ -75,33 +79,77 @@ async fn main() {
 
     //Initialize the database pool
     let database_url = get_database_path().to_str().unwrap().to_string();
-    let pool = setup_database(&database_url);
-    *POOL.lock().unwrap() = Some(pool);
-    let binding = POOL.lock().unwrap();
-    let pool = binding.as_ref().unwrap();
+    {
+        let _pool = setup_database(&database_url);
+        *POOL.lock().unwrap() = Some(_pool);
 
-    log_to_audit_log(pool, "Checking for game updates...".to_string(), None);
-    let update_required =  eam_commons::rotmg_updater::get_game_files_to_update(pool, true).unwrap().len() > 0;
+        let binding = POOL.lock().unwrap();
+        let _pool = &binding.as_ref().unwrap();
+        
+        log_to_audit_log(_pool, "Checking for game updates...".to_string(), None);
+        println!("Checking for game updates...");
+    }
+    let update_required_res = check_for_game_update(true).await;    
 
-    if update_required {
-        log_to_audit_log(pool, "Game update required.".to_string(), None);
-        log_to_audit_log(pool, "Performing game update...".to_string(), None);
-        let update_result = eam_commons::rotmg_updater::perform_game_update(pool);
+    let update_required = match update_required_res {
+        Ok(b) => b,
+        Err(e) => {
+            println!("Failed to check for game updates: {}", e);
+            let binding = POOL.lock().unwrap();
+            let _pool = &binding.as_ref().unwrap();
+            log_to_audit_log(_pool, ("Failed to check for game updates: ".to_owned() + &e.to_string()).to_string(), None);
+            return;
+        }
+    };
+    
+    if update_required {        
+        {
+            let binding = POOL.lock().unwrap();
+            let _pool = &binding.as_ref().unwrap();
+            
+            println!("Game update required.");
+            log_to_audit_log(_pool, "Game update required.".to_string(), None);
+            
+            println!("Performing game update...");
+            log_to_audit_log(_pool, "Performing game update...".to_string(), None);  
+        }
+        
+
+        let update_result_res = perform_game_update().await;
+
+        let binding = POOL.lock().unwrap();
+        let _pool = &binding.as_ref().unwrap();
+
+        let update_result = match update_result_res {
+            Ok(b) => b,
+            Err(e) => {
+                println!("Failed to perform game update: {}", e);                
+                log_to_audit_log(_pool, ("Failed to perform game update: ".to_owned() + &e.to_string()).to_string() + " exiting...", None);
+                println!("Exiting...");
+                return;
+            }
+        };
         
         match update_result {
-            Ok(_) => {
-                log_to_audit_log(pool, "Game update successful.".to_string(), None);
+            true => {
+                println!("Game update successful.");
+                log_to_audit_log(_pool, "Game update successful.".to_string(), None);
             }
-            Err(e) => {
-                log_to_audit_log(pool, "Game update failed, exiting.".to_string(), None);
-                println!("Game update failed: {}", e);
+            false => {
+                println!("Game update failed.");
+                log_to_audit_log(_pool, "Game update failed.".to_string(), None);
+                println!("Exiting...");
                 return;
             }
         }
     } else {
-        log_to_audit_log(pool, "No game update required.".to_string(), None);
+        println!("No game update required.");
     }
+    
+    let binding = POOL.lock().unwrap();
+    let pool = &binding.as_ref().unwrap();
 
+    println!("Starting daily_auto_login.");
     log_to_audit_log(pool, "Starting daily_auto_login.".to_string(), None);
 
     let daily_login_report_ret = get_latest_daily_login(pool);
@@ -272,7 +320,7 @@ async fn main() {
 
     let mut emails_vec = accounts_to_perform_daily_login_with.iter().map(|acc| acc.email.clone()).collect::<Vec<String>>();
 
-    for account in accounts_to_perform_daily_login_with {
+    for account in accounts_to_perform_daily_login_with {        
         let start_time = Some(Utc::now().to_rfc3339());        
         let account_email = account.email.clone();
         let report_entry = DailyLoginReportEntries {
@@ -287,76 +335,48 @@ async fn main() {
         let entry_id_res = insert_or_update_daily_login_report_entry(pool, report_entry);
         let entry_id = entry_id_res.unwrap();
 
-        println!("Performing daily login with account: {}", account_email);
-        log_to_audit_log(pool, ("Performing daily login with account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
-        
-        let pool_arc = Arc::new(pool.clone());
-        let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool_arc, account_email.clone(), hwid.clone()).await;     
-
-        if access_token_opt.is_none() {
-            println!("Failed to get access token for account: {}", account_email);
-            log_to_audit_log(pool, ("Failed to get access token for account: ".to_owned() + &account_email).to_string(), Some(account_email.clone()));
-            daily_login_report.amountOfAccountsFailed += 1;
-            daily_login_report.amountOfAccountsProcessed += 1;
-            let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
+        let login_result = perform_daily_login_for_account(
+            &pool,
+            account.clone(),
+            start_time.clone(),
+            entry_id.clone(),
+            daily_login_report.id.clone(),
+            hwid.clone(), 
+            game_exe_path.clone()).await;
             
-            let report_entry = DailyLoginReportEntries {
-                id: Some(entry_id),
-                reportId: Some(daily_login_report.id.clone()),
-                startTime: start_time.clone(),
-                endTime: Some(Utc::now().to_rfc3339()),
-                accountEmail: Some(account_email.clone()),
-                status: "Failed".to_string(),
-                errorMessage: Some("Failed to get access token.".to_string()),
-            };
-            let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
-            continue;
+        match login_result {
+            Ok(_) => {
+                println!("Successfully performed daily login with account: {}", account.email);
+                log_to_audit_log(pool, ("Successfully performed daily login with account: ".to_owned() + &account.email).to_string(), Some(account.email.clone()));
+
+                //Save the daily_login_report    
+                let index = emails_vec.iter().position(|x| *x == account.email).unwrap();
+                emails_vec.remove(index);
+                daily_login_report.emailsToProcess = Some(emails_vec.join(", "));
+                daily_login_report.amountOfAccountsProcessed += 1;
+                daily_login_report.amountOfAccountsSucceeded += 1;
+                let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
+            }
+            Err(e) => {
+                println!("Error while performing daily login: {}", e);
+                log_to_audit_log(pool, ("Error while performing daily login: ".to_owned() + &e.to_string()).to_string(), None);
+
+                daily_login_report.amountOfAccountsFailed += 1;
+                daily_login_report.amountOfAccountsProcessed += 1;
+                let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
+
+                let report_entry = DailyLoginReportEntries {
+                    id: Some(entry_id),
+                    reportId: Some(daily_login_report.id.clone()),
+                    startTime: start_time.clone(),
+                    endTime: Some(Utc::now().to_rfc3339()),
+                    accountEmail: Some(account.email.clone()),
+                    status: "Failed".to_string(),
+                    errorMessage: Some("Failed due to unkown reason.".to_string() + "Error thrown: " + &e.to_string()),
+                };
+                let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
+            }
         }
-
-        let access_token = access_token_opt.unwrap();
-
-        let args = format!(
-            "data:{{platform:Deca,guid:{},token:{},tokenTimestamp:{},tokenExpiration:{},env:4,serverName:{}}}",
-            BASE64_STANDARD.encode(&account_email.clone()),
-            BASE64_STANDARD.encode(access_token.access_token),
-            BASE64_STANDARD.encode(access_token.access_token_timestamp),
-            BASE64_STANDARD.encode(access_token.access_token_expiration),
-            "".to_string()
-        );
-
-        //Start the game with the args
-        let mut child = Command::new(game_exe_path.clone())
-            .arg("-batchmode")
-            .arg(args)
-            .spawn()
-            .expect("Failed to start the game.");        
-
-        //Wait for the game to automatically login
-        thread::sleep(Duration::from_secs(GAME_START_TIMEOUT));
-
-        //Close the game
-        child.kill().expect("Failed to close the game.");
-
-        //Save the daily_login_report
-        daily_login_report.amountOfAccountsProcessed += 1;
-        daily_login_report.amountOfAccountsSucceeded += 1;
-
-        let report_entry = DailyLoginReportEntries {
-            id: Some(entry_id),
-            reportId: Some(daily_login_report.id.clone()),
-            startTime: start_time,
-            endTime: Some(Utc::now().to_rfc3339()),
-            accountEmail: Some(account_email.clone()),
-            status: "Succeeded".to_string(),
-            errorMessage: None,
-        };
-        let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
-        
-        let index = emails_vec.iter().position(|x| *x == account_email).unwrap();
-        emails_vec.remove(index);
-        daily_login_report.emailsToProcess = Some(emails_vec.join(", "));
-        
-        let _ = insert_or_update_daily_login_report(pool, daily_login_report.clone());
     }
 
     println!("Finished daily login.");
@@ -365,6 +385,134 @@ async fn main() {
     daily_login_report.endTime = Some(Utc::now().to_rfc3339());
     daily_login_report.emailsToProcess = None;
     let _ = insert_or_update_daily_login_report(pool, daily_login_report);
+}
+
+async fn perform_daily_login_for_account(
+    pool: &DbPool, 
+    account: EamAccount, 
+    start_time: Option<String>,
+    entry_id: i32,
+    daily_login_report_id: String,
+    hwid: String, 
+    game_exe_path: String) -> Result<bool, Box<dyn std::error::Error>> {
+    
+    println!("Performing daily login with account: {}", account.email.clone());
+    log_to_audit_log(pool, ("Performing daily login with account: ".to_owned() + &account.email).to_string(), Some(account.email.clone()));
+
+    let pool_arc = Arc::new(pool.clone());
+    let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool_arc, account.email.clone(), hwid.clone()).await;     
+     if access_token_opt.is_none() {
+        println!("Failed to get access token for account: {}", account.email);
+        log_to_audit_log(pool, ("Failed to get access token for account: ".to_owned() + &account.email).to_string(), Some(account.email.clone()));
+        
+        let report_entry = DailyLoginReportEntries {
+            id: Some(entry_id),
+            reportId: Some(daily_login_report_id.clone()),
+            startTime: start_time.clone(),
+            endTime: Some(Utc::now().to_rfc3339()),
+            accountEmail: Some(account.email.clone()),
+            status: "Failed".to_string(),
+            errorMessage: Some("Failed to get access token.".to_string()),
+        };
+        let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
+
+        return Err(Box::new(std::io::Error::new(ErrorKind::Other, "Failed to get access token.")));
+    }
+    let access_token = access_token_opt.unwrap();
+    let args = format!(
+        "data:{{platform:Deca,guid:{},token:{},tokenTimestamp:{},tokenExpiration:{},env:4,serverName:{}}}",
+        BASE64_STANDARD.encode(&account.email.clone()),
+        BASE64_STANDARD.encode(access_token.access_token),
+        BASE64_STANDARD.encode(access_token.access_token_timestamp),
+        BASE64_STANDARD.encode(access_token.access_token_expiration),
+        "".to_string()
+    );
+
+    //Start the game with the args
+    let mut child = Command::new(game_exe_path.clone())
+        .arg("-batchmode")
+        .arg(args)
+        .spawn()
+        .expect("Failed to start the game.");   
+
+    //Wait for the game to automatically login
+    thread::sleep(Duration::from_secs(GAME_START_TIMEOUT));
+
+    //Close the game
+    child.kill().expect("Failed to close the game.");
+
+    let report_entry = DailyLoginReportEntries {
+        id: Some(entry_id),
+        reportId: Some(daily_login_report_id.clone()),
+        startTime: start_time,
+        endTime: Some(Utc::now().to_rfc3339()),
+        accountEmail: Some(account.email.clone()),
+        status: "Succeeded".to_string(),
+        errorMessage: None,
+    };
+    let _ = insert_or_update_daily_login_report_entry(pool, report_entry);    
+
+    Ok(true)
+}
+
+async fn check_for_game_update(force: bool) -> Result<bool, std::io::Error> {
+    let (tx, rx) = channel();
+
+    tokio::task::spawn_blocking(move || {
+        match POOL.try_lock() {
+            Ok(pool) => {
+                if let Some(ref pool) = *pool {            
+                    let files = eam_commons::rotmg_updater::get_game_files_to_update(pool, force);
+                    tx.send(files).unwrap();
+                }
+            },
+            Err(_) => {
+                println!("Failed to acquire lock on Database pool");
+                tx.send(Err(UpdaterError::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized".to_string(),
+                )))).unwrap();
+            }
+        }
+    }).await?;
+
+    match rx.recv().unwrap() {
+        Ok(files) => Ok(files.len() > 0),
+        Err(e) => Err(std::io::Error::new(
+            ErrorKind::Other,
+            e.to_string(),
+        )),
+    }
+}
+
+async fn perform_game_update() -> Result<bool, std::io::Error> {
+    let (tx, rx) = channel();
+
+    tokio::task::spawn_blocking(move || {
+        match POOL.try_lock() {
+            Ok(pool) => {
+                if let Some(ref pool) = *pool {            
+                    let result = eam_commons::rotmg_updater::perform_game_update(pool);
+                    tx.send(result).unwrap();
+                }
+            },
+            Err(_) => {
+                println!("Failed to acquire lock on Database pool");
+                tx.send(Err(UpdaterError::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized".to_string(),
+                )))).unwrap();
+            }
+        }
+    }).await?;
+
+    match rx.recv().unwrap() {
+        Ok(result) => Ok(result),
+        Err(e) => Err(std::io::Error::new(
+            ErrorKind::Other,
+            e.to_string(),
+        )),
+    }
 }
 
 pub fn get_database_path() -> PathBuf {
