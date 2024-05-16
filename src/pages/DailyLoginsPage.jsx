@@ -55,9 +55,17 @@ function DailyLoginsPage() {
     const { showSnackbar } = useSnack();
     const theme = useTheme();
 
+    const isUtcZero = (date) => {
+        if(!date) return false;
+        
+        return new Date(date).getUTCHours() === 0 
+                && new Date(date).getUTCMinutes() === 0 
+                && new Date(date).getUTCSeconds() === 0
+    }
+
     const columns = [
         { field: 'startTime', headerName: 'Start Time', width: 165, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
-        { field: 'endTime', headerName: 'End Time', width: 165, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
+        { field: 'endTime', headerName: 'End Time', width: 165, type: 'dateTime', renderCell: (params) => isUtcZero(params.value) ? null : <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div>},
         { field: 'hasFinished', headerName: 'Finished', width: 90, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
         { field: 'amountOfAccounts', headerName: 'Accounts', width: 120 },
         { field: 'amountOfAccountsFailed', headerName: 'Failed', width: 120 },
@@ -287,8 +295,7 @@ function DailyLoginsPage() {
         if (typeof (event.target.type) !== 'undefined') {
             event.stopPropagation();
         }
-    };
-
+    };    
 
     const taskNotInstalledWarningBanner = (
         <Paper
