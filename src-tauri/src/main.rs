@@ -9,14 +9,12 @@ use eam_commons::models;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::DailyLoginReports;
 use eam_commons::models::{AuditLog, ErrorLog};
+use eam_commons::rotmg_updater::UpdaterError;
 use eam_commons::setup_database;
 use eam_commons::DbPool;
 
-use flate2::read::GzDecoder;
-use futures::stream::{self, StreamExt};
 use lazy_static::lazy_static;
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
 use std::error::Error as StdError;
@@ -28,11 +26,11 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use std::sync::mpsc::channel;
+use std::thread;
 use tauri::Error;
-use tokio::fs as tokio_fs;
-use tokio::io::{AsyncReadExt, BufReader};
-use walkdir::WalkDir;
 use zip::read::ZipArchive;
+
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
@@ -45,7 +43,7 @@ const EAM_SAVE_FILE_CONVERTER: &'static [u8] =
 
 const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
     include_bytes!("../IncludedBinaries/EAM_Daily_Auto_Login.exe");
-const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "c522960a822f9083ab48391ea4f01178";
+const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "327a861e22182e93b8a6074e02118b2a";
 
 fn main() {
     //Create the save file directory if it does not exist
@@ -65,11 +63,10 @@ fn main() {
             get_save_file_path,
             combine_paths,
             start_application,
-            get_game_files_to_update,
             get_temp_folder_path,
             get_temp_folder_path_with_creation,
             create_folder,
-            unpack_and_move_game_update_files,
+            check_for_game_update,
             perform_game_update,
             send_post_request_with_form_url_encoded_data,
             send_post_request_with_json_body,
@@ -110,10 +107,63 @@ fn main() {
             insert_or_update_daily_login_report_entry,
             check_for_installed_eam_daily_login_task, //DAILY LOGIN TASK
             install_eam_daily_login_task,
-            uninstall_eam_daily_login_task
+            uninstall_eam_daily_login_task,
+            run_eam_daily_login_task_now
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+async fn check_for_game_update(force: bool) -> Result<bool, Error> {
+    let (tx, rx) = channel();
+
+    thread::spawn(move || {
+        let pool = POOL.lock().unwrap();
+        if let Some(ref pool) = *pool {
+            let files = eam_commons::rotmg_updater::get_game_files_to_update(pool, force);
+            tx.send(files).unwrap();
+        }
+
+        tx.send(Err(UpdaterError::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Database pool not initialized".to_string(),
+        )))).unwrap();
+    });
+
+    match rx.recv().unwrap() {
+        Ok(files) => Ok(files.len() > 0),
+        Err(e) => Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            e.to_string(),
+        ))),
+    }
+}
+
+#[tauri::command]
+async fn perform_game_update() -> Result<bool, Error> {
+    let (tx, rx) = channel();
+
+    thread::spawn(move || {
+        let pool = POOL.lock().unwrap();
+        if let Some(ref pool) = *pool {
+            let result = eam_commons::rotmg_updater::perform_game_update(pool);
+            tx.send(result).unwrap();
+        }
+
+        tx.send(Err(UpdaterError::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Database pool not initialized".to_string(),
+        )))).unwrap();
+    });
+
+    match rx.recv().unwrap() {
+        Ok(result) => Ok(result),
+        Err(e) => Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            e.to_string(),
+        ))),
+    }
 }
 
 #[tauri::command]
@@ -162,134 +212,6 @@ fn start_application(
     Ok(())
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct GameData {
-    file: String,
-    checksum: String,
-    permision: String,
-    size: usize,
-}
-
-#[derive(serde::Deserialize)]
-struct GetGameFilesToUpdateArgs {
-    game_exe_path: String,
-    game_files_data: String,
-}
-
-#[tauri::command]
-async fn get_game_files_to_update(args: GetGameFilesToUpdateArgs) -> tauri::Result<Vec<GameData>> {
-    let (game_exe_path, game_files_data) = (args.game_exe_path, args.game_files_data);
-
-    let result = get_game_files_to_update_impl(game_exe_path, game_files_data).await;
-
-    match result {
-        Ok(files_to_update) => Ok(files_to_update),
-        Err(e) => Err(Error::from(e)),
-    }
-}
-
-async fn get_game_files_to_update_impl(
-    game_exe_path: String,
-    game_files_data: String,
-) -> Result<Vec<GameData>, Error> {
-    let game_root_path = get_game_root_path(game_exe_path);
-    let game_files_data: Vec<GameData> = serde_json::from_str(&game_files_data)?;
-    let mut files_to_update = Vec::new();
-
-    let stream = stream::iter(game_files_data.into_iter().map(|game_data| {
-        let game_root_path = game_root_path.clone();
-        async move {
-            let file_path = Path::new(&game_root_path).join(&game_data.file);
-            if !file_path.exists() || game_data.checksum != get_md5_as_string(&file_path).await? {
-                Ok(Some(game_data))
-            } else {
-                Ok(None)
-            }
-        }
-    }));
-
-    let results: Vec<_> = stream.buffer_unordered(10).collect().await;
-
-    for result in results {
-        match result {
-            Ok(Some(game_data)) => files_to_update.push(game_data),
-            Ok(None) => {}
-            Err(e) => return Err(e),
-        }
-    }
-
-    Ok(files_to_update)
-}
-
-async fn get_md5_as_string(path: &Path) -> Result<String, Error> {
-    let mut file = BufReader::new(tokio_fs::File::open(path).await?);
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer).await?;
-    let digest = md5::compute(&buffer);
-    Ok(format!("{:x}", digest))
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct GameFileData {
-    file: String,
-    checksum: String,
-    permision: String,
-    size: usize,
-    url: String,
-}
-
-#[derive(serde::Deserialize)]
-struct PerformGameUpdateArgs {
-    game_exe_path: String,
-    game_files_data: String,
-}
-
-use std::sync::mpsc::channel;
-use std::thread;
-
-#[tauri::command]
-async fn perform_game_update(args: PerformGameUpdateArgs) -> Result<(), String> {
-    let (tx, rx) = channel();
-
-    thread::spawn(move || {
-        let result = perform_game_update_impl(args);
-
-        tx.send(result).unwrap();
-    });
-
-    match rx.recv().unwrap() {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e),
-    }
-}
-
-fn perform_game_update_impl(args: PerformGameUpdateArgs) -> Result<(), String> {
-    let (game_exe_path, game_files_data) = (args.game_exe_path, args.game_files_data);
-    let game_root_path = get_game_root_path(game_exe_path);
-    let game_files_data: Vec<GameFileData> =
-        serde_json::from_str(&game_files_data).map_err(|e| e.to_string())?;
-
-    for game_file_data in game_files_data {
-        // 1.1. download file to ram
-        let file_data = download_file_to_ram(&game_file_data.url).map_err(|e| e.to_string())?;
-
-        // 1.2. unzip file
-        let unzipped_data = unzip_gzip_file(file_data).map_err(|e| e.to_string())?;
-
-        // 1.3. save file to game root path + fileName (field: file)
-        let file_path = Path::new(&game_root_path).join(&game_file_data.file);
-
-        // Create the directory if it does not exist
-        if let Some(parent_dir) = file_path.parent() {
-            fs::create_dir_all(parent_dir).map_err(|e| e.to_string())?;
-        }
-
-        save_file_to_disk(file_path, unzipped_data).map_err(|e| e.to_string())?;
-    }
-
-    Ok(())
-}
-
 fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
     let response = reqwest::blocking::get(url)
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
@@ -307,21 +229,6 @@ fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
         .to_vec())
 }
 
-fn save_file_to_disk(path: PathBuf, data: Vec<u8>) -> std::io::Result<()> {
-    let mut file = File::create(path)?;
-    file.write_all(&data)?;
-    Ok(())
-}
-
-//Only for gz files
-fn unzip_gzip_file(data: Vec<u8>) -> Result<Vec<u8>, std::io::Error> {
-    let mut gz = flate2::read::GzDecoder::new(&data[..]);
-    let mut unzipped_data = Vec::new();
-    gz.read_to_end(&mut unzipped_data)
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
-    Ok(unzipped_data)
-}
-
 #[tauri::command]
 fn get_temp_folder_path_with_creation(sub_path: String) -> String {
     let mut path_buf = get_temp_folder_path();
@@ -333,35 +240,6 @@ fn get_temp_folder_path_with_creation(sub_path: String) -> String {
 #[tauri::command]
 fn create_folder(path: String) -> Result<(), Error> {
     std::fs::create_dir_all(path)?;
-    Ok(())
-}
-
-#[tauri::command]
-fn unpack_and_move_game_update_files(
-    temp_folder: String,
-    game_exe_path: String,
-) -> Result<(), String> {
-    /*
-        1. get game root path
-        2. unpack files to game path (including sub-folders), overwrite existing files
-        3. delete temp folder
-    */
-    let game_root_path = get_game_root_path(game_exe_path);
-    for entry in WalkDir::new(temp_folder.clone())
-        .into_iter()
-        .filter_map(|e| e.ok())
-    {
-        if entry.path().extension().unwrap_or_default() == "gz" {
-            let temp_file_path = entry.path();
-            let game_file_path = Path::new(&game_root_path)
-                .join(temp_file_path.strip_prefix(&temp_folder).unwrap())
-                .with_extension("");
-            let temp_file = File::open(temp_file_path).map_err(|e| e.to_string())?;
-            let mut gz = GzDecoder::new(temp_file);
-            let mut game_file = File::create(game_file_path).map_err(|e| e.to_string())?;
-            std::io::copy(&mut gz, &mut game_file).map_err(|e| e.to_string())?;
-        }
-    }
     Ok(())
 }
 
@@ -625,13 +503,6 @@ fn get_default_game_path() -> String {
 
 #[tauri::command]
 async fn download_and_run_hwid_tool() -> Result<bool, String> {
-    // let (tx, rx) = channel();
-
-    // thread::spawn(move || {
-    //     let result = download_and_run_hwid_tool_impl();
-
-    //     tx.send(result).unwrap();
-    // });
     let result = download_and_run_hwid_tool_impl().await;
 
     match result {
@@ -817,7 +688,7 @@ fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, 
                 //Check if the installed version is the same as the embedded version
                 let save_file_path = get_save_file_path();
                 let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
-                    
+
                 if !path.exists() {
                     println!("EAM_Daily_Auto_Login.exe does not exist, creating it");
                     fs::write(path.clone(), EAM_DAILY_AUTO_LOGIN).map_err(|e| e.to_string())?;
@@ -844,6 +715,26 @@ fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, 
         }
         Err(e) => Err(e.to_string()),
     }
+}
+
+#[tauri::command]
+fn run_eam_daily_login_task_now() -> Result<bool, String> {
+    if std::env::consts::OS != "windows" {
+        return Err("This function is only available on Windows".to_string());
+    }
+
+    let save_file_path = get_save_file_path();
+    let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
+
+    if !path.exists() {
+        return Err("EAM_Daily_Auto_Login.exe does not exist".to_string());
+    }
+
+    let mut cmd = std::process::Command::new(&path);
+    cmd.arg("-force");
+    let _child = cmd.spawn().expect("Failed to start process");
+
+    Ok(true)
 }
 
 //########################
