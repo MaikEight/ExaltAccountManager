@@ -278,7 +278,6 @@ async fn get_game_files_to_update_impl(
     game_exe_path: String,
     game_files_data: Vec<FileData>,
 ) -> Result<Vec<FileData>, UpdaterError> {
-    println!("get_game_files_to_update_impl");
     let game_root_path = get_game_root_path(game_exe_path);
     let mut files_to_update = Vec::new();
 
