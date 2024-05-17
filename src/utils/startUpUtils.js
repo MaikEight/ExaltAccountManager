@@ -22,7 +22,7 @@ async function performCheckForUpdates() {
     }
 }
 
-async function onStartUp(gameExePath) {
+async function onStartUp() {
     appWindow.setMinSize(new PhysicalSize(850, 600));
     addConsoleLogListener();
 
@@ -38,9 +38,8 @@ async function onStartUp(gameExePath) {
             }
         });
 
-    if (gameExePath !== null && gameExePath !== undefined) {
         if (localStorage.getItem("lastUpdateCheck") === null) {
-            checkForUpdates(gameExePath);
+            checkForUpdates(false);
             return;
         }
 
@@ -54,9 +53,9 @@ async function onStartUp(gameExePath) {
 
         if (daysSinceLastUpdateCheck > 1) {
             console.log("Checking for updates on startup");
-            checkForUpdates(gameExePath);
+            checkForUpdates(false);
         }
-    }
+    
 }
 
 function addConsoleLogListener() {
