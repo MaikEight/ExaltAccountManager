@@ -51,7 +51,7 @@ function AddNewAccount({ isOpen, onClose }) {
     const containerRef = useRef(null);
 
     useEffect(() => {
-        setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false });
+        setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false, isDeleted: false});
         setActiveStep(0);
     }, [isOpen]);
 
@@ -64,7 +64,7 @@ function AddNewAccount({ isOpen, onClose }) {
 
     useEffect(() => {
         if (!newAccount) {
-            setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false });
+            setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false, isDeleted: false });
             return;
         }
 
@@ -333,7 +333,6 @@ function AddNewAccount({ isOpen, onClose }) {
                                         <TextTableRow key='email' keyValue={"Email"} value={newAccount.email} allowCopy={true} />
                                         <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
                                             value={newAccount.performDailyLogin}
-                                            onChange={() => { }}
                                         />
                                     </TableBody>
                                 </Table>
@@ -347,7 +346,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                     setActiveStep(1)
                                 },
                                 () => {
-                                    updateAccount(newAccount, true);
+                                    updateAccount({...newAccount, isDeleted: false}, true);
                                     onClose();
                                 })
                         }
