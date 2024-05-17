@@ -12,7 +12,11 @@ async function checkForUpdates(force) {
 
     sessionStorage.setItem('updateCheckInProgress', 'true');
     console.log('Checking for updates...');
-    const updateNeeded = await invoke('check_for_game_update', { force: force });
+    const updateNeeded = await invoke('check_for_game_update', { force: !!force })
+        .catch((error) => {
+            logToErrorLog('checkForUpdates', error);            
+            return false;
+        });
     console.log('Update needed:', updateNeeded);
 
     localStorage.setItem('updateNeeded', updateNeeded ? 'true' : 'false');
