@@ -6,6 +6,7 @@ diesel::table! {
         id -> Nullable<Integer>,
         name -> Nullable<Text>,
         email -> Text,
+        isDeleted -> Bool,
         isSteam -> Bool,
         steamId -> Nullable<Text>,
         password -> Text,
