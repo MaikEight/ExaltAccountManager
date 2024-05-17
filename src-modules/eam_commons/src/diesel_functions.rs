@@ -19,15 +19,17 @@ use crate::schema::AuditLog::dsl::*;
 use crate::schema::DailyLoginReportEntries as daily_login_report_entries;
 use crate::schema::DailyLoginReports as daily_login_reports;
 use crate::schema::EamAccount as eam_accounts;
-use crate::schema::EamAccount::dsl::*;
 use crate::schema::EamGroup as eam_groups;
 use crate::schema::EamGroup::dsl::*;
 use crate::schema::ErrorLog as error_logs;
 use crate::schema::UserData as user_data;
 use diesel::insert_into;
 use diesel::prelude::*;
+use diesel::dsl::sql;
 use diesel::result::Error::DatabaseError;
+use diesel::sql_types::Text;
 use diesel::RunQueryDsl;
+use diesel::sql_types::Nullable;
 use uuid::Uuid;
 
 //########################
@@ -80,7 +82,9 @@ pub fn get_all_daily_login_reports(
     pool: &DbPool,
 ) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    daily_login_reports::table.order(daily_login_reports::startTime.desc()).load::<DailyLoginReports>(&mut conn)
+    daily_login_reports::table
+        .order(daily_login_reports::startTime.desc())
+        .load::<DailyLoginReports>(&mut conn)
 }
 
 pub fn get_daily_login_reports_of_last_days(
@@ -265,15 +269,18 @@ pub fn get_all_eam_accounts_for_daily_login(
     pool: &DbPool,
 ) -> Result<Vec<EamAccount>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-
+    
     eam_accounts::table
+        .filter(eam_accounts::isDeleted.eq(false))
         .filter(eam_accounts::performDailyLogin.eq(true))
         .load::<EamAccount>(&mut conn)
 }
 
 pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    EamAccount.load::<EamAccount>(&mut conn)
+    eam_accounts::table
+        .filter(eam_accounts::isDeleted.eq(false))
+        .load::<EamAccount>(&mut conn)
 }
 
 pub fn get_eam_account_by_email(
@@ -281,7 +288,7 @@ pub fn get_eam_account_by_email(
     account_email: String,
 ) -> Result<EamAccount, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    eam_accounts::table.find(account_email).first(&mut conn)
+    eam_accounts::table.find(account_email).filter(eam_accounts::isDeleted.eq(false)).first(&mut conn)
 }
 
 pub fn insert_or_update_eam_account(
@@ -356,7 +363,31 @@ pub fn delete_eam_account(
     account_email: String,
 ) -> Result<usize, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    diesel::delete(eam_accounts::table.find(account_email)).execute(&mut conn)
+
+    insert_audit_log(
+        pool,
+        AuditLog {
+            id: None,
+            sender: "delete_eam_account".to_string(),
+            accountEmail: Some(account_email.clone()),
+            message: ("Deleting account: ".to_owned() + &account_email).to_string(),
+            time: "".to_string(),
+        },
+    )?;
+
+    diesel::update(eam_accounts::table.filter(eam_accounts::email.eq(&account_email)))
+    .set((
+        eam_accounts::isDeleted.eq(true),
+        eam_accounts::performDailyLogin.eq(false),
+        eam_accounts::password.eq(""),
+        eam_accounts::group.eq(sql::<Nullable<Text>>("NULL")),
+        eam_accounts::extra.eq(sql::<Nullable<Text>>("NULL")),
+        eam_accounts::token.eq(sql::<Nullable<Text>>("NULL")),
+        eam_accounts::serverName.eq(sql::<Nullable<Text>>("NULL")),
+    ))
+    .execute(&mut conn)?;
+
+    Ok(0)
 }
 
 //########################
