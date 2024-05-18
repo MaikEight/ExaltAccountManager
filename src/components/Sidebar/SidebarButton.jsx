@@ -9,7 +9,7 @@ function SidebarButton({ menu, selected }) {
             disablePadding
         >
             <ListItemButton
-                onClick={menu.action}
+                onClick={() => menu.action?.(menu.navigate)}
                 sx={{
                     borderRadius: "0 30px 30px 0",
                     transition: theme.transitions.create(['color', 'background-color', 'background-image', 'box-shadow']),

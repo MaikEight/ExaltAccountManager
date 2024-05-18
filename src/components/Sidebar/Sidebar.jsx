@@ -15,7 +15,7 @@ import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 function Sidebar({ children }) {
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    // const [selectedIndex, setSelectedIndex] = useState(0);
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
 
     const { showSnackbar } = useSnack();
@@ -43,18 +43,23 @@ function Sidebar({ children }) {
             showSnackbar('A new game update is available!');
     }, [isGameUpdateAvailable]);
 
+    const handleNavigate = (nav) => {
+        console.log(nav);
+        navigate(nav);
+    };
+
     const menuItems = [
         {
             name: 'Accounts',
             icon: <GroupOutlinedIcon />,
-            action: () => setSelectedIndex(0),
+            action: handleNavigate,
             navigate: '/accounts',
             showInFooter: false
         },
         {
             name: 'Daily Logins',
             icon: <CalendarMonthOutlinedIcon />,
-            action: () => setSelectedIndex(1),
+            action: handleNavigate,
             navigate: '/dailyLogins',
             showInFooter: false
         },
@@ -65,52 +70,32 @@ function Sidebar({ children }) {
                     <HandymanOutlinedIcon />
                 </Badge>
             ),
-            action: () => setSelectedIndex(2),
+            action: handleNavigate,
             navigate: '/utilities',
             showInFooter: false
         },
         {
             name: 'Settings',
             icon: <SettingsOutlinedIcon />,
-            action: () => setSelectedIndex(3),
+            action: handleNavigate,
             navigate: '/settings',
             showInFooter: false
         },
         {
             name: 'Logs',
             icon: <HistoryEduOutlinedIcon />,
-            action: () => setSelectedIndex(4),
+            action: handleNavigate,
             navigate: '/logs',
             showInFooter: false
         },
         {
             name: 'About',
             icon: <InfoOutlinedIcon />,
-            action: () => setSelectedIndex(5),
+            action: handleNavigate,
             navigate: '/about',
             showInFooter: false
         },
     ];
-
-    useEffect(() => {
-        const index = menuItems.findIndex((menu) => menu.navigate === location.pathname);
-        if(selectedIndex !== index) {
-            setSelectedIndex(index);
-        }
-    }, [location.pathname]);
-
-    useEffect(() => {
-        if(selectedIndex === -1){
-            return;
-        }
-
-        if(menuItems[selectedIndex].navigate === location.pathname) {
-            return;
-        }
-        
-        console.log(menuItems[selectedIndex].navigate);               
-        navigate(menuItems[selectedIndex].navigate);
-    }, [selectedIndex]);
 
     return (
         <Box
@@ -170,7 +155,7 @@ function Sidebar({ children }) {
                                         <SidebarButton
                                             key={index + menu.name}
                                             menu={menu}
-                                            selected={selectedIndex === index}
+                                            selected={menu.navigate === location.pathname}
                                         />
                                 ))
                             }
@@ -191,7 +176,7 @@ function Sidebar({ children }) {
                     >
                         <FeedbackButton
                             action={() => {
-                                setSelectedIndex(-1);
+                                // setSelectedIndex(-1);
                             }}
                         />
                         {
@@ -202,7 +187,7 @@ function Sidebar({ children }) {
                                             key={index + menu.name}
                                             onClick={menu.action}
                                             sx={{
-                                                color: selectedIndex === index ? 'primary.main' : 'text.primary',
+                                                color: menu.navigate === location.pathname ? 'primary.main' : 'text.primary',
                                                 transition: 'color 0.2s ease-in-out',
                                             }}
                                         >
