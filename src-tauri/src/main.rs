@@ -43,7 +43,7 @@ const EAM_SAVE_FILE_CONVERTER: &'static [u8] =
 
 const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
     include_bytes!("../IncludedBinaries/EAM_Daily_Auto_Login.exe");
-const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "327a861e22182e93b8a6074e02118b2a";
+const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "8da7094f31996c0a1f08aee856039e16";
 
 fn main() {
     //Create the save file directory if it does not exist
