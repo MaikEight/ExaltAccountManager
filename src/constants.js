@@ -45,7 +45,7 @@ export function UPDATE_URLS(index, values) {
             const v = updateBaseUrls[index].replace("{0}", values);        
             return v;
         case 2:
-            if (values.length < 2) return pdateBaseUrls[index];
+            if (values.length < 2) return updateBaseUrls[index];
             return updateBaseUrls[index].replace("{0}", values[0]).replace("{1}", values[1]);
         default:
             return null;
