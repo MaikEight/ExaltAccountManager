@@ -1,5 +1,5 @@
 
-import { Box, Chip, FormControl, FormControlLabel, InputLabel, List, ListItem, MenuItem, OutlinedInput, Select, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Chip, FormControl, FormControlLabel, Input, InputLabel, List, ListItem, MenuItem, OutlinedInput, Select, Switch, TextField, Tooltip, Typography, alpha } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { useContext, useEffect, useState } from 'react';
@@ -52,7 +52,7 @@ function SettingsPage() {
 
     const setTheSettings = async () => {
         const s = userSettings.get;
-        const _gameExePath = await userSettings.getByKeyAndSubKey('game', 'exePath');        
+        const _gameExePath = await userSettings.getByKeyAndSubKey('game', 'exePath');
         setSettings(s);
         setGameExePath(_gameExePath);
     };
@@ -76,8 +76,8 @@ function SettingsPage() {
     }, [settings]);
 
     useEffect(() => {
-        if(gameExePath === undefined || gameExePath === "" || gameExePath === null) return;
-        
+        if (gameExePath === undefined || gameExePath === "" || gameExePath === null) return;
+
         userSettings.setByKeyAndSubKey('game', 'exePath', gameExePath);
     }, [gameExePath]);
 
@@ -109,7 +109,7 @@ function SettingsPage() {
                         label="Path to RotMG Exalt.exe"
                         variant="standard"
                         value={gameExePath}
-                        onChange={(event) =>setGameExePath(event.target.value)}
+                        onChange={(event) => setGameExePath(event.target.value)}
                     />
                     <Box
                         sx={{
@@ -138,7 +138,7 @@ function SettingsPage() {
                                 if (defaultGamePath) {
                                     setGameExePath(defaultGamePath);
                                     return;
-                                } 
+                                }
                                 setGameExePath("");
                             }}
                         >
@@ -177,27 +177,47 @@ function SettingsPage() {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
                     <StyledButton
                         color="secondary"
-                        startIcon={<VisibilityOffOutlinedIcon />}
-                        onClick={() => {
-                            let newSettings = settings;
-                            newSettings.accounts.columnsHidden = {};
-                            columns.forEach((column) => newSettings.accounts.columnsHidden[column.field] = false);
-                            setSettings(userSettings.addDefaults(newSettings));
-                        }}
-                    >
-                        hide all columns
-                    </StyledButton>
-                    <StyledButton
-                        color="secondary"
-                        startIcon={<VisibilityOutlinedIcon />}
+                        startIcon={<RestartAltOutlinedIcon />}
                         onClick={() => {
                             let newSettings = settings;
                             delete newSettings.accounts.columnsHidden;
                             setSettings(userSettings.addDefaults(newSettings));
                         }}
                     >
-                        show all columns
+                        set to default
                     </StyledButton>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1.5,
+                        }}
+                    >
+                        <StyledButton
+                            color="secondary"
+                            startIcon={<VisibilityOffOutlinedIcon />}
+                            onClick={() => {
+                                let newSettings = settings;
+                                newSettings.accounts.columnsHidden = {};
+                                columns.forEach((column) => newSettings.accounts.columnsHidden[column.field] = false);
+                                setSettings(userSettings.addDefaults(newSettings));
+                            }}
+                        >
+                            hide all columns
+                        </StyledButton>
+                        <StyledButton
+                            color="secondary"
+                            startIcon={<VisibilityOutlinedIcon />}
+                            onClick={() => {
+                                let newSettings = settings;
+                                newSettings.accounts.columnsHidden = {};
+                                columns.forEach((column) => newSettings.accounts.columnsHidden[column.field] = true);
+                                setSettings(userSettings.addDefaults(newSettings));
+                            }}
+                        >
+                            show all columns
+                        </StyledButton>
+                    </Box>
                 </Box>
             </ComponentBox>
 
@@ -207,7 +227,7 @@ function SettingsPage() {
                 icon={<DnsOutlinedIcon />}
             >
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Choose which server should be used by default.
+                    Choose which server should be used by default when starting the game.
                 </Typography>
                 {
                     (serverList && serverList.length > 0) ? null :
@@ -215,16 +235,51 @@ function SettingsPage() {
                             To add servers to this list, please add an account and click on "Refresh data".
                         </Typography>
                 }
-                <FormControl sx={{ m: 1, width: 175 }}>
-                    <InputLabel id="default-server-list-label">Default server</InputLabel>
+                <FormControl sx={{}}>
                     <Select
-                        labelId="default-server-list-label"
-                        id="default-server-list"
+                        sx={{
+                            height: 39,
+                            ...(theme.palette.mode === 'dark' ? {
+                                backgroundColor: alpha(theme.palette.background.default, 0.5),
+                                '&:hover': {
+                                    backgroundColor: alpha(theme.palette.common.white, 0.08),
+                                },
+                            } : {
+                                backgroundColor: alpha(theme.palette.background.default, 0.75),
+                                '&:hover': {
+                                    backgroundColor: alpha(theme.palette.text.primary, 0.05),
+                                },
+                            }),
+                            transition: theme.transitions.create('background-color'),
+                            borderRadius: '6px',
+                        }}
+                        id="default-server-list-label"
                         value={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
                         onChange={(event) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: event.target.value } }) }}
-                        input={<OutlinedInput id="select-default-server-list" label="Default server" />}
+                        input={
+                            <Input
+                                id="default-server-list-label"
+                                disableUnderline
+                            />
+                        }
                         renderValue={(selected) => (
-                            <ServerChip key={"key-" + selected} params={{ value: selected }} />
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    height: '100%',
+                                    ml: 0.5,
+                                    mr: 0.5
+                                }}
+                            >
+                                <Chip
+                                    size="small"
+                                    key={selected}
+                                    label={selected}
+                                />
+                            </Box>
                         )}
                         MenuProps={MenuProps}
                     >
@@ -245,7 +300,8 @@ function SettingsPage() {
                                 >
                                     {server.Name}
                                 </MenuItem>
-                            ))}
+                            ))
+                        }
                     </Select>
                 </FormControl>
             </ComponentBox>
