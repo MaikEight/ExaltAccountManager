@@ -1,6 +1,5 @@
 import { Badge, Box, IconButton, List, Tooltip } from "@mui/material";
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SidebarButton from "./SidebarButton";
@@ -15,7 +14,6 @@ import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 function Sidebar({ children }) {
-    // const [selectedIndex, setSelectedIndex] = useState(0);
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
 
     const { showSnackbar } = useSnack();
