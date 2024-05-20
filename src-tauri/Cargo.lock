@@ -1145,6 +1145,7 @@ dependencies = [
  "h2 0.4.4",
  "hex",
  "lazy_static",
+ "libsqlite3-sys",
  "md5",
  "mio",
  "mpsc",
