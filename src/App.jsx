@@ -3,13 +3,11 @@ import { ColorContextProvider } from "./contexts/ColorContext";
 import { onStartUp, setApiHwidHash } from "./utils/startUpUtils";
 import useHWID from "./hooks/useHWID";
 import { heartBeat } from "./backend/eamApi";
-import useUserSettings from "./hooks/useUserSettings";
 import MainProviders from "./MainProviders";
 
 function App() {
   const [hasTriggeredStartup, setHasTriggeredStartup] = useState(false);
   const hwid = useHWID();
-  const settings = useUserSettings();
 
   useEffect(() => {
     onStartUp();
