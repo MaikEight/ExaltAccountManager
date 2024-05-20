@@ -33,7 +33,6 @@ function AddNewAccount({ isOpen, onClose }) {
     const { accounts, updateAccount } = useAccounts();
 
     const [activeStep, setActiveStep] = useState(0);
-    const [skipped, setSkipped] = useState(new Set([]));
     const [isLoading, setIsLoading] = useState(false);
 
     const [newAccount, setNewAccount] = useState({ email: '', password: '', isSteam: false, steamId: null });
@@ -82,10 +81,6 @@ function AddNewAccount({ isOpen, onClose }) {
 
     const isStepOptional = (step) => {
         return step === -1;
-    };
-
-    const isStepSkipped = (step) => {
-        return skipped.has(step);
     };
 
     const isLoginButtonDisabled = () => newAccount.email.length < 3 || !(newAccount.email.includes('@') || newAccount.email.includes('steamworks:')) || newAccount.password.length < 3 || accountAlreadyExists() || isLoading;
@@ -414,11 +409,9 @@ function AddNewAccount({ isOpen, onClose }) {
                                     <Typography variant="caption">Optional</Typography>
                                 );
                             }
-                            if (isStepSkipped(index)) {
-                                stepProps.completed = false;
-                            } else {
-                                stepProps.completed = activeStep > index;
-                            }
+                            
+                            stepProps.completed = activeStep > index;
+                            
                             return (
                                 <Step key={label} {...stepProps}>
                                     <StepLabel icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]} {...labelProps} sx={{ ...(activeStep === index ? { color: color.color } : {}) }}>{label}</StepLabel>
