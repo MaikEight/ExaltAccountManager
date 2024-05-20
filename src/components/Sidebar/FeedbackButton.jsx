@@ -1,5 +1,4 @@
-import { useTheme } from "@emotion/react";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -34,7 +33,6 @@ const GradientBorderButtonInner = styled(Box)(({ theme, selected }) => ({
 function FeedbackButton({ action }) {
     const selected = window.location.pathname === '/feedback';
     const navigate = useNavigate();
-    const theme = useTheme();
 
     return (
         <GradientBorderButton
