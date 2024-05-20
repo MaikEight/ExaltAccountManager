@@ -136,7 +136,7 @@ function RealmUpdater() {
                         onClick={async () => {
                             setIsLoading(true);
                             try {
-                                const _ = await updateGame(await settings.getByKeyAndSubKey('game', 'exePath'));
+                                await updateGame(await settings.getByKeyAndSubKey('game', 'exePath'));
                             } catch (error) {
                                 console.error('Failed to update the game', error);
                                 setIsLoading(false);
