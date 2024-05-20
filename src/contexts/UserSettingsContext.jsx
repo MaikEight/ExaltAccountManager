@@ -69,6 +69,14 @@ function UserSettingsProvider({ children }) {
         }
 
         localStorage.setItem("userSettings", JSON.stringify(userSettingsData));
+        const lastUpdated = sessionStorage.getItem("lastUserSettingsUpdated");
+        if (lastUpdated && new Date().getTime() - new Date(lastUpdated).getTime() < 15000) {
+            //When the user settings where updated less than 15 seconds ago, don't log it to the audit log
+            //This is to prevent spamming the audit log with user settings updates
+            return;
+        }
+
+        sessionStorage.setItem("lastUserSettingsUpdated", new Date().toISOString());
         logToAuditLog('UserSettingsProvider', 'User settings updated');
     }, [userSettingsData]);
 
