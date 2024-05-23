@@ -1,6 +1,7 @@
 import ChangelogPopupBase from './ChangelogPopupBase';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import ChangelogEntry from './ChangelogEntry';
+import { Box, Typography } from '@mui/material';
 
 function ChangelogVersion4_1_0() {
     return (
@@ -14,9 +15,9 @@ function ChangelogVersion4_1_0() {
                 title={'Daily Auto Login'}
                 listOfChanges={[
                     "The daily auto login is back and working better than ever!",
-                    "Automatically set's the correct time of day for the daily login.",
+                    "Automatically sets the correct time of day for the daily login.",
                     "Better logs for the daily login.",
-                    "Fixed many bugs where the daily login would not work correctly.",                    
+                    "Fixed many bugs where the daily login would not work correctly.",
                 ]}
             />
             <ChangelogEntry
@@ -43,7 +44,52 @@ function ChangelogVersion4_1_0() {
                     "Improved the appearance of the Feedback-Button.",
                 ]}
             />
-        </ChangelogPopupBase>
+            <ChangelogEntry
+                title={'Bonus: Website'}
+                listOfChanges={[
+                    <Box>
+                        EAM now has a website! <a href="https://exaltaccountmanager.com" target="_blank" rel="noreferrer">ExaltAccountManager.com</a>
+                    </Box>,
+                ]}
+            />
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2
+                }}
+            >
+                <Box>
+                    <Typography variant="body1" color="textSecondary">
+                        Special thanks to all beta testers and everyone who provided feedback!
+                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'start',
+                            gap: 1,
+                            mt: -0.5
+                        }}
+                    >
+                        <Typography variant="body2" fontWeight={'bold'} color="textSecondary">
+                            <ul>
+                                <li>TheDangerScrew</li>
+                                <li>Pro90</li>
+                                <li>N1k-o</li>
+                            </ul>
+                        </Typography>
+                        <Typography variant="body2" fontWeight={'bold'} color="textSecondary">
+                            <ul>
+                                <li>Robin</li>
+                                <li>BlastaMan</li>
+                                <li>and many more...</li>
+                            </ul>
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
+        </ChangelogPopupBase >
     );
 }
 
