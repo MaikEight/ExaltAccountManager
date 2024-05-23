@@ -46,11 +46,11 @@ function AddNewAccount({ isOpen, onClose }) {
 
     const theme = useTheme();
     const hwid = useHWID();
-    const color = useColorList(0);    
+    const color = useColorList(0);
     const containerRef = useRef(null);
 
     useEffect(() => {
-        setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false, isDeleted: false});
+        setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false, isDeleted: false });
         setActiveStep(0);
     }, [isOpen]);
 
@@ -162,69 +162,98 @@ function AddNewAccount({ isOpen, onClose }) {
         switch (activeStep) {
             case 0: //Login
                 return (
-                    <ComponentBox
-                        title={steps[0]}
-                        isLoading={isLoading}
-                        icon={icons[0]}
-                    >
-                        <Typography variant="body2" sx={{ mb: 1 }}>
-                            Enter the login credentials for the account you want to add.
-                        </Typography>
-                        <Box
-                            sx={{
+                    <Box>
+                        <ComponentBox
+                            title={steps[0]}
+                            isLoading={isLoading}
+                            icon={icons[0]}
+                        >
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                Enter the login credentials for the account you want to add.
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 1,
+                                    mb: 1.5,
+                                }}
+                            >
+                                <TextField
+                                    id="email"
+                                    label="E-Mail"
+                                    variant="standard"
+                                    error={passwordEmailWrong || accountAlreadyExists()}
+                                    helperText={accountAlreadyExists() ? "Account is already in your list" : null}
+                                    value={newAccount.email}
+                                    onChange={(event) => setNewAccount({ ...newAccount, email: event.target.value })}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            event.preventDefault();
+                                            document.getElementById('password').focus();
+                                        }
+                                    }}
+                                />
+                                <TextField
+                                    id="password"
+                                    label="Password"
+                                    type="password"
+                                    error={passwordEmailWrong}
+                                    variant="standard"
+                                    value={newAccount.password}
+                                    onChange={(event) => setNewAccount({ ...newAccount, password: event.target.value })}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            event.preventDefault();
+                                            handleLoginButtonClick();
+                                        }
+                                    }}
+                                />
+                            </Box>
+
+                            <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                                <Tooltip
+                                    title={isLoginButtonDisabled() ? 'Please enter a valid login credentials' : ''}
+                                >
+                                    <span>
+                                        <StyledButton
+                                            disabled={isLoginButtonDisabled()}
+                                            onClick={handleLoginButtonClick}
+                                        >
+                                            login
+                                        </StyledButton>
+                                    </span>
+                                </Tooltip>
+                            </Box>
+                        </ComponentBox>
+
+                        {/* Info on how to add steam accounts */}
+                        <ComponentBox
+                            title="How to add Steam accounts"
+                            icon={<img src={theme.palette.mode === 'dark' ? "/steam.svg" : "/steam_light_mode.svg"} alt="Steam Logo" height='20px' width='20px' />}
+                            sx={{ mt: 2 }}
+                            innerSx={{
                                 display: 'flex',
                                 flexDirection: 'column',
                                 gap: 1,
-                                mb: 1.5,
                             }}
-                        >
-                            <TextField
-                                id="email"
-                                label="E-Mail"
-                                variant="standard"
-                                error={passwordEmailWrong || accountAlreadyExists()}
-                                helperText={accountAlreadyExists() ? "Account is already in your list" : null}
-                                value={newAccount.email}
-                                onChange={(event) => setNewAccount({ ...newAccount, email: event.target.value })}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                        event.preventDefault();
-                                        document.getElementById('password').focus();
-                                    }
-                                }}
-                            />
-                            <TextField
-                                id="password"
-                                label="Password"
-                                type="password"
-                                error={passwordEmailWrong}
-                                variant="standard"
-                                value={newAccount.password}
-                                onChange={(event) => setNewAccount({ ...newAccount, password: event.target.value })}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                        event.preventDefault();
-                                        handleLoginButtonClick();
-                                    }
-                                }}
-                            />
-                        </Box>
-
-                        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                            <Tooltip
-                                title={isLoginButtonDisabled() ? 'Please enter a valid login credentials' : ''}
-                            >
-                                <span>
-                                    <StyledButton
-                                        disabled={isLoginButtonDisabled()}
-                                        onClick={handleLoginButtonClick}
-                                    >
-                                        login
-                                    </StyledButton>
-                                </span>
-                            </Tooltip>
-                        </Box>
-                    </ComponentBox>);
+                            isCollapseable={true}
+                            defaultCollapsed={true}
+                        >                            
+                            <Typography variant="body2">
+                                To add a steam account, you need to first get the two required values: <b>Steamworks ID</b> and the <b>secret</b>.
+                            </Typography>
+                            <Typography variant="body2">
+                                How to get this information is well described in the <a href="https://github.com/jakcodex/muledump/wiki/Steam-Users-Setup-Guide" target="_blank" rel="noreferrer">Steam Users Setup Guide from muledump</a>.
+                            </Typography>
+                            <Typography variant="body2">
+                                After you have the required information, you can add the account by entering the <b>steamworks ID</b> in the email field and the <b>secret</b> in the password field.
+                            </Typography>
+                            <Typography variant="body2">
+                                <b>Big thanks</b> to <a href="https://github.com/jakcodex" target="_blank" rel="noreferrer">jakcodex</a> for creating the great muledump-wiki.
+                            </Typography>
+                        </ComponentBox>
+                    </Box>);
             case 1:  //Add details
                 return (
                     <ComponentBox
@@ -341,7 +370,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                     setActiveStep(1)
                                 },
                                 () => {
-                                    updateAccount({...newAccount, isDeleted: false}, true);
+                                    updateAccount({ ...newAccount, isDeleted: false }, true);
                                     onClose();
                                 })
                         }
@@ -366,7 +395,7 @@ function AddNewAccount({ isOpen, onClose }) {
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: {borderRadius: '6px 10px 10px 6px', overflow: 'hidden'}}}
+                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: '6px 10px 10px 6px', overflow: 'hidden' } }}
                 SlideProps={{ container: containerRef.current }}
                 variant="persistent"
                 anchor="right"
@@ -409,9 +438,9 @@ function AddNewAccount({ isOpen, onClose }) {
                                     <Typography variant="caption">Optional</Typography>
                                 );
                             }
-                            
+
                             stepProps.completed = activeStep > index;
-                            
+
                             return (
                                 <Step key={label} {...stepProps}>
                                     <StepLabel icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]} {...labelProps} sx={{ ...(activeStep === index ? { color: color.color } : {}) }}>{label}</StepLabel>
