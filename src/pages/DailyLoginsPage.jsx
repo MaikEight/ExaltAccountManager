@@ -110,6 +110,7 @@ function DailyLoginsPage() {
     };
 
     useEffect(() => {
+        const timeout = setTimeout(() => {
         invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
             .then((res) => {
                 setIsTaskInstalled(!!res);
@@ -123,6 +124,11 @@ function DailyLoginsPage() {
             });
 
         getAllReportData();
+        }, 10);
+
+        return () => {
+            clearTimeout(timeout);
+        };
     }, []);
 
     const getMaxChatValue = (lastWeek) => {
