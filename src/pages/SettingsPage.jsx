@@ -25,7 +25,7 @@ const MenuProps = {
     PaperProps: {
         style: {
             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
+            width: 150,
         },
     },
 };
@@ -274,11 +274,7 @@ function SettingsPage() {
                                     mr: 0.5
                                 }}
                             >
-                                <Chip
-                                    size="small"
-                                    key={selected}
-                                    label={selected}
-                                />
+                                <ServerChip key={"key-" + selected} params={{ value: selected }} />
                             </Box>
                         )}
                         MenuProps={MenuProps}
@@ -290,15 +286,20 @@ function SettingsPage() {
                             ].map((server) => (
                                 <MenuItem
                                     key={server.DNS}
-                                    value={server.Name}
-                                    style={{
-                                        fontWeight:
-                                            settings?.game?.defaultServer === server.Name
-                                                ? theme.typography.fontWeightRegular
-                                                : theme.typography.fontWeightMedium,
-                                    }}
+                                    value={server.Name}     
+                                    sx={{
+                                        '&.Mui-selected': {
+                                            backgroundColor: theme.palette.action.selected,
+                                        },
+                                        '&.Mui-selected:hover': {
+                                            backgroundColor: theme.palette.action.selected,
+                                        },
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}                               
                                 >
-                                    {server.Name}
+                                    <ServerChip params={{ value: server.Name }} />
                                 </MenuItem>
                             ))
                         }
