@@ -32,9 +32,9 @@ function ChangelogVersion4_1_0() {
             />
             <ChangelogEntry
                 title={'Changelog Popup'}
-                listOfChanges={[
-                    "This changelog popup has been added and will pop up on the first start of a new version.",
-                ]}
+                listOfChanges={
+                    "This changelog popup has been added and will pop up on the first start of a new version."
+                }
             />
             <ChangelogEntry
                 title={'Miscellaneous'}
@@ -46,11 +46,11 @@ function ChangelogVersion4_1_0() {
             />
             <ChangelogEntry
                 title={'Bonus: Website'}
-                listOfChanges={[
-                    <Box>
-                        EAM now has a website! <a href="https://exaltaccountmanager.com" target="_blank" rel="noreferrer">ExaltAccountManager.com</a>
-                    </Box>,
-                ]}
+                listOfChanges={
+                    <span>
+                        EAM now has a website: <a href="https://exaltaccountmanager.com" target="_blank" rel="noreferrer">ExaltAccountManager.com</a>
+                    </span>
+                }
             />
             <Box
                 sx={{
@@ -72,14 +72,14 @@ function ChangelogVersion4_1_0() {
                             mt: -0.5
                         }}
                     >
-                        <Typography variant="body2" fontWeight={'bold'} color="textSecondary">
+                        <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
                                 <li>TheDangerScrew</li>
                                 <li>Pro90</li>
                                 <li>N1k-o</li>
                             </ul>
                         </Typography>
-                        <Typography variant="body2" fontWeight={'bold'} color="textSecondary">
+                        <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
                                 <li>Robin</li>
                                 <li>BlastaMan</li>
