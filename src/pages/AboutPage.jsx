@@ -31,8 +31,19 @@ function AboutPage() {
             >
                 <Typography>
                     Exalt Account Manager was first released in mid 2020 as a simple tool to manage multiple accounts for the game Realm of the Mad God Exalt.
-                    Since then it has grown to a fully fledged software with many features and an active user base.
+                    Since then it has grown to a fully fledged software with many features and an active user base.<br />
                 </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: 1,
+                    }}
+                >
+                    <a href="https://exaltaccountmanager.com" target="_blank" rel="noreferrer">ExaltAccountManager.com</a>
+                </Box>
+
             </ComponentBox>
             <Box sx={{ display: 'flex', flexDirection: 'row', mt: -2, mb: -2 }}>
                 <ComponentBox
