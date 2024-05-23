@@ -24,28 +24,32 @@ function ChangelogEntry({ title, listOfChanges }) {
                 }}
             >
                 {
-                    listOfChanges && listOfChanges.length > 1 ?
-                        listOfChanges.map((change, index) => (
-                            <Typography key={index} variant="body2">
-                                • {change}
-                            </Typography>
-                        ))
-                        :
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: '0.25rem',
-                                alignItems: 'start'
-                            }}
-                        >
-                            <Typography variant="body1">
-                                •
-                            </Typography>
-                            <Typography variant="body1">
-                                {listOfChanges}
-                            </Typography>
-                        </Box>
+                    !listOfChanges ? null :
+                        listOfChanges.length > 1 && typeof listOfChanges !== 'string' ?
+                            listOfChanges.map((change, index) => (
+                                <Typography key={index} variant="body2">
+                                    • {change}
+                                </Typography>
+                            ))
+                            :
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    gap: '0.25rem',
+                                    alignItems: 'start'
+                                }}
+                            >
+                                {
+                                    typeof listOfChanges === 'string' &&
+                                    <Typography variant="body2">
+                                        •
+                                    </Typography>
+                                }
+                                <Typography variant="body2">
+                                    {listOfChanges}
+                                </Typography>
+                            </Box>
                 }
             </Box>
 
