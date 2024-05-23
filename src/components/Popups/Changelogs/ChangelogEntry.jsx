@@ -26,7 +26,7 @@ function ChangelogEntry({ title, listOfChanges }) {
                 {
                     listOfChanges && listOfChanges.length > 1 ?
                         listOfChanges.map((change, index) => (
-                            <Typography key={index} variant="body1">
+                            <Typography key={index} variant="body2">
                                 • {change}
                             </Typography>
                         ))
