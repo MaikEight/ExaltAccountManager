@@ -1,4 +1,3 @@
-import { Box, Typography } from '@mui/material';
 import ChangelogPopupBase from './ChangelogPopupBase';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import ChangelogEntry from './ChangelogEntry';
@@ -8,7 +7,7 @@ function ChangelogVersion4_1_0() {
         <ChangelogPopupBase
             version="4.1.0"
             title="Daily Login, Logs and more!"
-            releaseDate={"30.03.2024"}
+            releaseDate={"24.05.2024"}
             icon={<CalendarMonthOutlinedIcon />}
         >
             <ChangelogEntry
@@ -26,21 +25,22 @@ function ChangelogVersion4_1_0() {
                     "Added a new logs feature.",
                     "Logs can be found in the sidebar menu.",
                     "There are two types of logs: Audit logs and Error logs.",
-                    "Audit logs show all actions taken by the user, mostly regarding accounts.",
-                    "Error logs show most errors that occured in the application.",
+                    "Audit logs shows actions taken by the user, mostly regarding accounts.",
+                    "Error logs shows errors that occured in the application.",
                 ]}
             />
             <ChangelogEntry
                 title={'Changelog Popup'}
                 listOfChanges={[
-                    "This changelog popup has been added and will pop up on the first start of the new version.",
+                    "This changelog popup has been added and will pop up on the first start of a new version.",
                 ]}
             />
             <ChangelogEntry
                 title={'Miscellaneous'}
                 listOfChanges={[
                     "Fixed a bug that made the HWID-Tool not work correctly for some users.",
-                    "Improved the appearance of the Feedback-Button.",                    
+                    "Improved the appearance of the Settings-Page.",
+                    "Improved the appearance of the Feedback-Button.",
                 ]}
             />
         </ChangelogPopupBase>
