@@ -52,6 +52,7 @@ function Sidebar({ children }) {
             icon: <GroupOutlinedIcon />,
             action: handleNavigate,
             navigate: '/accounts',
+            additionalPaths: ['/'],
             showInFooter: false
         },
         {
@@ -153,7 +154,7 @@ function Sidebar({ children }) {
                                         <SidebarButton
                                             key={index + menu.name}
                                             menu={menu}
-                                            selected={menu.navigate === location.pathname}
+                                            selected={menu.navigate === location.pathname || menu.additionalPaths?.includes(location.pathname)}
                                         />
                                 ))
                             }
