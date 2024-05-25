@@ -743,57 +743,87 @@ fn run_eam_daily_login_task_now() -> Result<bool, String> {
 
 #[tauri::command]
 async fn get_all_user_data() -> Result<Vec<models::UserData>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_all_user_data(pool)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_all_user_data(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 async fn get_user_data_by_key(key: String) -> Result<models::UserData, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_user_data_by_key(pool, key)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_user_data_by_key(pool, key)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
-async fn insert_or_update_user_data(user_data: models::UserData) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_or_update_user_data(pool, user_data)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+async fn insert_or_update_user_data(
+    user_data: models::UserData,
+) -> Result<usize, tauri::Error> {
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_or_update_user_data(pool, user_data)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 async fn delete_user_data_by_key(key: String) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::delete_user_data_by_key(pool, key)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::delete_user_data_by_key(pool, key)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -803,15 +833,22 @@ async fn delete_user_data_by_key(key: String) -> Result<usize, tauri::Error> {
 
 #[tauri::command]
 async fn get_all_daily_login_reports() -> Result<Vec<DailyLoginReports>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_all_daily_login_reports(pool)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_all_daily_login_reports(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -819,15 +856,22 @@ async fn get_all_daily_login_reports() -> Result<Vec<DailyLoginReports>, tauri::
 async fn get_daily_login_reports_of_last_days(
     amount_of_days: i64,
 ) -> Result<Vec<DailyLoginReports>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_daily_login_reports_of_last_days(pool, amount_of_days)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_daily_login_reports_of_last_days(pool, amount_of_days)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -835,15 +879,22 @@ async fn get_daily_login_reports_of_last_days(
 async fn get_daily_login_report_by_id(
     report_id: String,
 ) -> Result<DailyLoginReports, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_daily_login_report_by_id(pool, report_id)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_daily_login_report_by_id(pool, report_id)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -851,15 +902,22 @@ async fn get_daily_login_report_by_id(
 async fn insert_or_update_daily_login_report(
     daily_login_report: DailyLoginReports,
 ) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_or_update_daily_login_report(pool, daily_login_report)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_or_update_daily_login_report(pool, daily_login_report)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -868,17 +926,23 @@ async fn insert_or_update_daily_login_report(
 // #############################
 
 #[tauri::command]
-async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntries>, tauri::Error>
-{
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_all_daily_login_report_entries(pool)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_all_daily_login_report_entries(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -886,15 +950,22 @@ async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntr
 async fn get_daily_login_report_entry_by_id(
     report_id: i32,
 ) -> Result<DailyLoginReportEntries, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_daily_login_report_entry_by_id(pool, Some(report_id))
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_daily_login_report_entry_by_id(pool, Some(report_id))
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -902,15 +973,22 @@ async fn get_daily_login_report_entry_by_id(
 async fn get_daily_login_report_entries_by_report_id(
     report_id: String,
 ) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_daily_login_report_entries_by_report_id(pool, report_id)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_daily_login_report_entries_by_report_id(pool, report_id)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -918,16 +996,23 @@ async fn get_daily_login_report_entries_by_report_id(
 async fn insert_or_update_daily_login_report_entry(
     daily_login_report_entry: DailyLoginReportEntries,
 ) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_or_update_daily_login_report_entry(pool, daily_login_report_entry)
-            .map(|i| i as usize)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_or_update_daily_login_report_entry(pool, daily_login_report_entry)
+                    .map(|i| i as usize)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -937,71 +1022,94 @@ async fn insert_or_update_daily_login_report_entry(
 
 #[tauri::command]
 async fn get_all_eam_accounts() -> Result<Vec<models::EamAccount>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_all_eam_accounts(pool)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_all_eam_accounts(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
-async fn get_eam_account_by_email(
-    account_email: String,
-) -> Result<models::EamAccount, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_eam_account_by_email(pool, account_email)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+async fn get_eam_account_by_email(account_email: String) -> Result<models::EamAccount, tauri::Error> {
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_eam_account_by_email(pool, account_email)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
-async fn insert_or_update_eam_account(
-    eam_account: models::EamAccount,
-) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_or_update_eam_account(pool, eam_account)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+async fn insert_or_update_eam_account(eam_account: models::EamAccount) -> Result<usize, tauri::Error> {
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_or_update_eam_account(pool, eam_account)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                let audit_log_entry = AuditLog {
+                    id: None,
+                    time: "".to_string(),
+                    accountEmail: Some(account_email.clone()),
+                    message: ("Deleting account from database: ".to_owned() + &account_email).to_string(),
+                    sender: "tauri".to_string(),
+                };
+                let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
 
-    if let Some(ref pool) = *pool {
-        let audit_log_entry = AuditLog {
-            id: None,
-            time: "".to_string(),
-            accountEmail: Some(account_email.clone()),
-            message: ("Deleting account from database: ".to_owned() + &account_email).to_string(),
-            sender: "tauri".to_string(),
-        };
-        let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
-
-        diesel_functions::delete_eam_account(pool, account_email)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+                diesel_functions::delete_eam_account(pool, account_email)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -1025,43 +1133,64 @@ fn decrypt_string(data: String) -> Result<String, tauri::Error> {
 
 #[tauri::command]
 async fn get_all_eam_groups() -> Result<Vec<models::EamGroup>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_all_eam_groups(pool)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_all_eam_groups(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 async fn insert_or_update_eam_group(eam_group: models::EamGroup) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_or_update_eam_group(pool, eam_group)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_or_update_eam_group(pool, eam_group)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::delete_eam_group(pool, group_id)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::delete_eam_group(pool, group_id)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -1147,15 +1276,22 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#########################
 #[tauri::command]
 async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_char_list_dataset(pool, dataset)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_char_list_dataset(pool, dataset)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
@@ -1165,71 +1301,106 @@ async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<us
 
 #[tauri::command]
 fn get_all_audit_logs() -> Result<Vec<AuditLog>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_all_audit_logs(pool)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_all_audit_logs(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 fn get_audit_log_for_account(account_email: String) -> Result<Vec<AuditLog>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_audit_log_for_account(pool, account_email)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_audit_log_for_account(pool, account_email)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 fn log_to_audit_log(log: AuditLog) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_audit_log(pool, log)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_audit_log(pool, log)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 fn get_all_error_logs() -> Result<Vec<ErrorLog>, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::get_all_error_logs(pool)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::get_all_error_logs(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
 #[tauri::command]
 fn log_to_error_log(log: ErrorLog) -> Result<usize, tauri::Error> {
-    let pool = POOL.lock().unwrap();
-    if let Some(ref pool) = *pool {
-        diesel_functions::insert_error_log(pool, log)
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-    } else {
-        Err(tauri::Error::from(std::io::Error::new(
+    match POOL.lock() {
+        Ok(pool) => {
+            if let Some(ref pool) = *pool {
+                diesel_functions::insert_error_log(pool, log)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Pool is not initialized",
+                )))
+            }
+        },
+        Err(_) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
-            "Pool is not initialized",
-        )))
+            "Mutex lock poisoned",
+        ))),
     }
 }
 
