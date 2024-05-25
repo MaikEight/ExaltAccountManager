@@ -24,7 +24,7 @@ const CREATE_NO_WINDOW: u32 = 0x08000000;
 #[cfg(target_os = "windows")]
 const EAM_TASK_TOOLS: &'static [u8] =
     include_bytes!("../../EAM_Task_Installer/EAM_Task_Installer/bin/Release/EAM_Task_Tools.exe");
-const EAM_TASK_TOOLS_HASH: &'static str = "8d79a512dd49c0c7fce512f8f0cfe393";
+const EAM_TASK_TOOLS_HASH: &'static str = "f837ed769e432f7f1d0f49bdf4d30f05";
 
 #[cfg(target_os = "windows")]
 pub fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, Error> {
