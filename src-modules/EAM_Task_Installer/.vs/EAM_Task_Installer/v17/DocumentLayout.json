@@ -1,12 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Tools.csproj|c:\\users\\maik8\\documents\\react\\exalt-account-manager\\src-modules\\eam_task_installer\\eam_task_installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A9C71B46-A323-4B3E-BB0E-7B34360E40D9}|EAM_Task_Installer\\EAM_Task_Tools.csproj|solutionrelative:eam_task_installer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -14,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -35,19 +30,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
-              "RelativeDocumentMoniker": "EAM_Task_Installer\\Program.cs",
-              "ToolTip": "C:\\Users\\Maik8\\Documents\\React\\exalt-account-manager\\src-modules\\EAM_Task_Installer\\EAM_Task_Installer\\Program.cs",
-              "RelativeToolTip": "EAM_Task_Installer\\Program.cs",
-              "ViewState": "AQIAAAsAAAAAAAAAAAAQwBsAAAAnAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-13T23:12:23.019Z",
-              "EditorCaption": ""
             }
           ]
         }

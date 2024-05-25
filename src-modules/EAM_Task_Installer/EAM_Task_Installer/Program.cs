@@ -132,7 +132,8 @@ namespace EAM_Task_Tools
                         DateTime now = DateTime.Now;
                         TimeSpan utcOffset = now - now.ToUniversalTime();
 
-                        int triggerHour = utcOffset.Hours > 0 ? utcOffset.Hours : 24 - utcOffset.Hours;
+                        // Adjust the trigger hour calculation
+                        int triggerHour = (24 + utcOffset.Hours) % 24;
                         int triggerMinute = 1;
                         bool triggerSuccess = triggerHour >= 0 && triggerMinute >= 0;
 
