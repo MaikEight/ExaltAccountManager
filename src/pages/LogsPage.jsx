@@ -1,10 +1,7 @@
 import { Box, LinearProgress, Paper, darken } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAuditLog, getErrorLog } from "../utils/loggingUtils";
-import ComponentBox from "../components/ComponentBox";
-import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
 import { DataGrid } from "@mui/x-data-grid";
-import CustomToolbar from "../components/GridComponents/CustomToolbar";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
 import styled, { useTheme } from "styled-components";
 import { formatTime } from "../utils/timeUtils";
@@ -81,6 +78,9 @@ function LogsPage() {
                         }).sort((a, b) => b.id - a.id);
 
                         setCurrentLog(auditLog);
+                    })
+                    .catch((err) => {
+                        console.error('getAuditLog', err);
                     });
                 break;
             case 'ErrorLog':
@@ -96,6 +96,9 @@ function LogsPage() {
                             }
                         }).sort((a, b) => b.id - a.id);
                         setCurrentLog(errorLog);
+                    })
+                    .catch((err) => {
+                        console.error('getErrorLog', err);
                     });
                 break;
             default:
@@ -139,7 +142,7 @@ function LogsPage() {
                     getRowId={(row) => row.id}
                     columns={currentColumns}
                     pageSizeOptions={[10, 25, 50, 100]}
-                    rowSelection                    
+                    rowSelection
                     getEstimatedRowHeight={() => 41}
                     rowCount={currentShownLog.length}
                     paginationModel={paginationModel}
