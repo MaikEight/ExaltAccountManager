@@ -44,7 +44,7 @@ async function logToErrorLog(sender, message) {
 
     await invoke('log_to_error_log', { log: logData })
         .catch((err) => {
-            console.error('logToErrorLog', err);
+            console.log('logToErrorLog', err);
         });
 }
 
