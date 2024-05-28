@@ -31,6 +31,7 @@ use diesel::sql_types::Text;
 use diesel::RunQueryDsl;
 use diesel::sql_types::Nullable;
 use uuid::Uuid;
+use log::{info, error};
 
 //########################
 //#       UserData       #
@@ -268,19 +269,42 @@ pub fn insert_char_list_dataset(
 pub fn get_all_eam_accounts_for_daily_login(
     pool: &DbPool,
 ) -> Result<Vec<EamAccount>, diesel::result::Error> {
+    info!("Getting all EAM accounts for daily login...");
+
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    
-    eam_accounts::table
+
+    info!("Got connection from pool. Loading accounts...");
+
+    let result = eam_accounts::table
         .filter(eam_accounts::isDeleted.eq(false))
         .filter(eam_accounts::performDailyLogin.eq(true))
-        .load::<EamAccount>(&mut conn)
+        .load::<EamAccount>(&mut conn);
+
+    match &result {
+        Ok(accounts) => info!("Loaded {} accounts.", accounts.len()),
+        Err(e) => error!("Failed to load accounts: {}", e),
+    }
+
+    result
 }
 
 pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::result::Error> {
+    info!("Getting all EAM accounts...");
+
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    eam_accounts::table
+
+    info!("Got connection from pool. Loading accounts...");
+
+    let result = eam_accounts::table
         .filter(eam_accounts::isDeleted.eq(false))
-        .load::<EamAccount>(&mut conn)
+        .load::<EamAccount>(&mut conn);
+
+    match &result {
+        Ok(accounts) => info!("Loaded {} accounts.", accounts.len()),
+        Err(e) => error!("Failed to load accounts: {}", e),
+    }
+
+    result
 }
 
 pub fn get_eam_account_by_email(
