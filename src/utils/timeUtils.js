@@ -1,26 +1,25 @@
 import { parseISO } from "date-fns";
 
 export function formatTime(time) {
-    if(!time) return null;
+  if(!time) return null;
   // Convert the string to a Date object
-  const date = typeof time !== 'object' ? parseISO(time) : time;
+  const date = typeof time !== 'object' ? new Date(time) : time;
 
-  // Get the user's locale (you might get this information from user preferences)
-  const userLocale = navigator.language || 'en-US';
-
-  // Format the date and time with zero-based hours
-  const formattedDateTime = date.toLocaleDateString(userLocale, {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }) + ', ' + date.toLocaleTimeString(userLocale, {
-    hour: '2-digit',
-    minute: '2-digit',
-    // second: '2-digit',
-    hour12: false, // Ensure 24-hour format
+  // Create a DateTimeFormat object with the desired format
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
   });
 
-  return formattedDateTime.replace(',', '');
+  // Format the date and time
+  const formattedDateTime = formatter.format(date);
+
+  // Replace '/' with '.' and remove commas
+  return formattedDateTime.replace(/\//g, '.').replace(/,/g, '');
 }
 
 export function getCurrentTime() {
