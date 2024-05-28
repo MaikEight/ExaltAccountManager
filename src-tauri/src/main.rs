@@ -3,18 +3,22 @@
 
 extern crate dirs;
 
+use diesel::r2d2::ConnectionManager;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
 use eam_commons::models;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::DailyLoginReports;
 use eam_commons::models::{AuditLog, ErrorLog};
+use eam_commons::rotmg_updater::FileData;
 use eam_commons::rotmg_updater::UpdaterError;
 use eam_commons::setup_database;
 use eam_commons::DbPool;
 
 use lazy_static::lazy_static;
+use log::{error, info};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
+use simplelog::*;
 use std::collections::HashMap;
 use std::env;
 use std::error::Error as StdError;
@@ -23,14 +27,16 @@ use std::fs::File;
 use std::io::{ErrorKind, Read, Write};
 use std::path::Path;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::mpsc::channel;
+use std::sync::{Arc, Mutex, MutexGuard};
+use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
-use std::sync::mpsc::channel;
-use std::thread;
 use tauri::Error;
 use zip::read::ZipArchive;
 
+use diesel::r2d2::Pool;
+use diesel::SqliteConnection;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
@@ -52,10 +58,37 @@ fn main() {
         fs::create_dir_all(&save_file_path).unwrap();
     }
 
+    // Initialize the logger
+    let log_file = File::create(save_file_path + "\\log.txt").unwrap();
+    CombinedLogger::init(vec![WriteLogger::new(
+        LevelFilter::Info,
+        Config::default(),
+        log_file,
+    )])
+    .unwrap();
+
     //Initialize the database pool
+    info!("Initialize the database pool...");
     let database_url = get_database_path().to_str().unwrap().to_string();
-    let pool = setup_database(&database_url);
-    *POOL.lock().unwrap() = Some(pool);
+    info!("Database URL: {}", database_url);
+    let pool = match setup_database(&database_url) {
+        Ok(pool) => pool,
+        Err(e) => {
+            error!("Failed to setup database: {}", e);
+            return;
+        }
+    };
+    info!("Database pool initialized");
+
+    // Handle a poisoned Mutex
+    match POOL.lock() {
+        Ok(mut guard) => *guard = Some(pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let mut guard = poisoned.into_inner();
+            *guard = Some(pool);
+        }
+    }
 
     //Run the tauri application
     tauri::Builder::default()
@@ -118,21 +151,22 @@ fn main() {
 async fn check_for_game_update(force: bool) -> Result<bool, Error> {
     let (tx, rx) = channel();
 
-    thread::spawn(move || {
-        let pool = POOL.lock().unwrap();
-        if let Some(ref pool) = *pool {
-            let files = eam_commons::rotmg_updater::get_game_files_to_update(pool, force);
-            tx.send(files).unwrap();
+    thread::spawn(move || match POOL.lock() {
+        Ok(pool) => {
+            tx.send(check_for_game_update_impl(pool, force)).unwrap();
         }
-
-        tx.send(Err(UpdaterError::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Database pool not initialized".to_string(),
-        )))).unwrap();
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            tx.send(check_for_game_update_impl(pool, force)).unwrap();
+        }
     });
 
     match rx.recv().unwrap() {
-        Ok(files) => Ok(files.len() > 0),
+        Ok(Ok(files)) => Ok(files.len() > 0),
+        Ok(Err(e)) => Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            e.to_string(),
+        ))),
         Err(e) => Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
             e.to_string(),
@@ -140,21 +174,34 @@ async fn check_for_game_update(force: bool) -> Result<bool, Error> {
     }
 }
 
+fn check_for_game_update_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    force: bool,
+) -> Result<Result<Vec<FileData>, UpdaterError>, Error> {
+    if let Some(ref pool) = *pool {
+        let files = eam_commons::rotmg_updater::get_game_files_to_update(pool, force);
+        return Ok(files);
+    }
+
+    return Err(UpdaterError::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Database pool not initialized".to_string(),
+    )))
+    .unwrap();
+}
+
 #[tauri::command]
 async fn perform_game_update() -> Result<bool, Error> {
     let (tx, rx) = channel();
 
-    thread::spawn(move || {
-        let pool = POOL.lock().unwrap();
-        if let Some(ref pool) = *pool {
-            let result = eam_commons::rotmg_updater::perform_game_update(pool);
-            tx.send(result).unwrap();
+    thread::spawn(move || match POOL.lock() {
+        Ok(pool) => {
+            tx.send(perform_game_update_impl(pool)).unwrap();
         }
-
-        tx.send(Err(UpdaterError::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Database pool not initialized".to_string(),
-        )))).unwrap();
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            tx.send(perform_game_update_impl(pool)).unwrap();
+        }
     });
 
     match rx.recv().unwrap() {
@@ -164,6 +211,20 @@ async fn perform_game_update() -> Result<bool, Error> {
             e.to_string(),
         ))),
     }
+}
+
+fn perform_game_update_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<bool, UpdaterError> {
+    if let Some(ref pool) = *pool {
+        let result = eam_commons::rotmg_updater::perform_game_update(pool);
+        return result;
+    }
+
+    Err(UpdaterError::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Database pool not initialized".to_string(),
+    )))
 }
 
 #[tauri::command]
@@ -744,87 +805,107 @@ fn run_eam_daily_login_task_now() -> Result<bool, String> {
 #[tauri::command]
 async fn get_all_user_data() -> Result<Vec<models::UserData>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_all_user_data(pool)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_all_user_data_impl(pool),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_all_user_data_impl(pool);
+        }
     }
+}
+
+fn get_all_user_data_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>
+) -> Result<Vec<models::UserData>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_all_user_data(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 async fn get_user_data_by_key(key: String) -> Result<models::UserData, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_user_data_by_key(pool, key)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_user_data_by_key_impl(pool, key),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_user_data_by_key_impl(pool, key);
+        }
     }
 }
 
+fn get_user_data_by_key_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    key: String,
+) -> Result<models::UserData, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_user_data_by_key(pool, key).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
 #[tauri::command]
-async fn insert_or_update_user_data(
+async fn insert_or_update_user_data(user_data: models::UserData) -> Result<usize, tauri::Error> {
+    match POOL.lock() {
+        Ok(pool) => insert_or_update_user_data_impl(pool, user_data),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return insert_or_update_user_data_impl(pool, user_data);
+        }
+    }
+}
+
+fn insert_or_update_user_data_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
     user_data: models::UserData,
 ) -> Result<usize, tauri::Error> {
-    match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_or_update_user_data(pool, user_data)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_or_update_user_data(pool, user_data).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
     }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 async fn delete_user_data_by_key(key: String) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::delete_user_data_by_key(pool, key)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => delete_user_data_by_key_impl(pool, key),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return delete_user_data_by_key_impl(pool, key);
+        }
     }
+}
+
+fn delete_user_data_by_key_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    key: String,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::delete_user_data_by_key(pool, key).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 //#########################
@@ -834,22 +915,27 @@ async fn delete_user_data_by_key(key: String) -> Result<usize, tauri::Error> {
 #[tauri::command]
 async fn get_all_daily_login_reports() -> Result<Vec<DailyLoginReports>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_all_daily_login_reports(pool)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_all_daily_login_reports_impl(pool),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_all_daily_login_reports_impl(pool);
+        }
     }
+}
+
+fn get_all_daily_login_reports_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<DailyLoginReports>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_all_daily_login_reports(pool).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -857,22 +943,29 @@ async fn get_daily_login_reports_of_last_days(
     amount_of_days: i64,
 ) -> Result<Vec<DailyLoginReports>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_daily_login_reports_of_last_days(pool, amount_of_days)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_daily_login_reports_of_last_days_impl(pool, amount_of_days),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_daily_login_reports_of_last_days_impl(pool, amount_of_days);
+        }
     }
+}
+
+fn get_daily_login_reports_of_last_days_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    amount_of_days: i64,
+) -> Result<Vec<DailyLoginReports>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_daily_login_reports_of_last_days(pool, amount_of_days)
+            .map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -880,22 +973,28 @@ async fn get_daily_login_report_by_id(
     report_id: String,
 ) -> Result<DailyLoginReports, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_daily_login_report_by_id(pool, report_id)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_daily_login_report_by_id_impl(pool, report_id),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_daily_login_report_by_id_impl(pool, report_id);
+        }
     }
+}
+
+fn get_daily_login_report_by_id_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    report_id: String,
+) -> Result<DailyLoginReports, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_daily_login_report_by_id(pool, report_id).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -903,22 +1002,29 @@ async fn insert_or_update_daily_login_report(
     daily_login_report: DailyLoginReports,
 ) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_or_update_daily_login_report(pool, daily_login_report)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => insert_or_update_daily_login_report_impl(pool, daily_login_report),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return insert_or_update_daily_login_report_impl(pool, daily_login_report);
+        }
     }
+}
+
+fn insert_or_update_daily_login_report_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    daily_login_report: DailyLoginReports,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_or_update_daily_login_report(pool, daily_login_report)
+            .map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 // #############################
@@ -928,22 +1034,27 @@ async fn insert_or_update_daily_login_report(
 #[tauri::command]
 async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_all_daily_login_report_entries(pool)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_all_daily_login_report_entries_impl(pool),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_all_daily_login_report_entries_impl(pool);
+        }
     }
+}
+
+fn get_all_daily_login_report_entries_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_all_daily_login_report_entries(pool).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -951,22 +1062,29 @@ async fn get_daily_login_report_entry_by_id(
     report_id: i32,
 ) -> Result<DailyLoginReportEntries, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_daily_login_report_entry_by_id(pool, Some(report_id))
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_daily_login_report_entry_by_id_impl(pool, report_id),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_daily_login_report_entry_by_id_impl(pool, report_id);
+        }
     }
+}
+
+fn get_daily_login_report_entry_by_id_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    report_id: i32,
+) -> Result<DailyLoginReportEntries, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_daily_login_report_entry_by_id(pool, Some(report_id))
+            .map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -974,22 +1092,29 @@ async fn get_daily_login_report_entries_by_report_id(
     report_id: String,
 ) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_daily_login_report_entries_by_report_id(pool, report_id)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_daily_login_report_entries_by_report_id_impl(pool, report_id),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_daily_login_report_entries_by_report_id_impl(pool, report_id);
+        }
     }
+}
+
+fn get_daily_login_report_entries_by_report_id_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    report_id: String,
+) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_daily_login_report_entries_by_report_id(pool, report_id)
+            .map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -997,23 +1122,30 @@ async fn insert_or_update_daily_login_report_entry(
     daily_login_report_entry: DailyLoginReportEntries,
 ) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_or_update_daily_login_report_entry(pool, daily_login_report_entry)
-                    .map(|i| i as usize)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => insert_or_update_daily_login_report_entry_impl(pool, daily_login_report_entry),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return insert_or_update_daily_login_report_entry_impl(pool, daily_login_report_entry);
+        }
     }
+}
+
+fn insert_or_update_daily_login_report_entry_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    daily_login_report_entry: DailyLoginReportEntries,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_or_update_daily_login_report_entry(pool, daily_login_report_entry)
+            .map(|i| i as usize)
+            .map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 //########################
@@ -1023,94 +1155,123 @@ async fn insert_or_update_daily_login_report_entry(
 #[tauri::command]
 async fn get_all_eam_accounts() -> Result<Vec<models::EamAccount>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_all_eam_accounts(pool)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_all_eam_accounts_impl(pool),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_all_eam_accounts_impl(pool);
+        }
     }
 }
 
-#[tauri::command]
-async fn get_eam_account_by_email(account_email: String) -> Result<models::EamAccount, tauri::Error> {
-    match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_eam_account_by_email(pool, account_email)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+fn get_all_eam_accounts_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<models::EamAccount>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_all_eam_accounts(pool).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
     }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
-async fn insert_or_update_eam_account(eam_account: models::EamAccount) -> Result<usize, tauri::Error> {
+async fn get_eam_account_by_email(
+    account_email: String,
+) -> Result<models::EamAccount, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_or_update_eam_account(pool, eam_account)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_eam_account_by_email_impl(pool, account_email),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_eam_account_by_email_impl(pool, account_email);
+        }
     }
+}
+
+fn get_eam_account_by_email_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    account_email: String,
+) -> Result<models::EamAccount, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_eam_account_by_email(pool, account_email).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn insert_or_update_eam_account(
+    eam_account: models::EamAccount,
+) -> Result<usize, tauri::Error> {
+    match POOL.lock() {
+        Ok(pool) => insert_or_update_eam_account_impl(pool, eam_account),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return insert_or_update_eam_account_impl(pool, eam_account);
+        }
+    }
+}
+
+fn insert_or_update_eam_account_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    eam_account: models::EamAccount,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_or_update_eam_account(pool, eam_account)
+            .map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                let audit_log_entry = AuditLog {
-                    id: None,
-                    time: "".to_string(),
-                    accountEmail: Some(account_email.clone()),
-                    message: ("Deleting account from database: ".to_owned() + &account_email).to_string(),
-                    sender: "tauri".to_string(),
-                };
-                let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
-
-                diesel_functions::delete_eam_account(pool, account_email)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => delete_eam_account_impl(pool, account_email),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return delete_eam_account_impl(pool, account_email);
+        }
     }
+}
+
+fn delete_eam_account_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    account_email: String,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        let audit_log_entry = AuditLog {
+            id: None,
+            time: "".to_string(),
+            accountEmail: Some(account_email.clone()),
+            message: ("Deleting account from database: ".to_owned() + &account_email)
+                .to_string(),
+            sender: "tauri".to_string(),
+        };
+        let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
+
+        return diesel_functions::delete_eam_account(pool, account_email).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -1134,64 +1295,84 @@ fn decrypt_string(data: String) -> Result<String, tauri::Error> {
 #[tauri::command]
 async fn get_all_eam_groups() -> Result<Vec<models::EamGroup>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_all_eam_groups(pool)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_all_eam_groups_impl(pool),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_all_eam_groups_impl(pool);
+        }
     }
 }
 
-#[tauri::command]
-async fn insert_or_update_eam_group(eam_group: models::EamGroup) -> Result<usize, tauri::Error> {
-    match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_or_update_eam_group(pool, eam_group)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+fn get_all_eam_groups_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<models::EamGroup>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_all_eam_groups(pool).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
     }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn insert_or_update_eam_group(
+    eam_group: models::EamGroup,
+) -> Result<usize, tauri::Error> {
+    match POOL.lock() {
+        Ok(pool) => insert_or_update_eam_group_impl(pool, eam_group),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return insert_or_update_eam_group_impl(pool, eam_group);
+        }
+    }
+}
+
+fn insert_or_update_eam_group_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    eam_group: models::EamGroup,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_or_update_eam_group(pool, eam_group)
+            .map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::delete_eam_group(pool, group_id)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => delete_eam_group_impl(pool, group_id),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return delete_eam_group_impl(pool, group_id);
+        }
     }
+}
+
+fn delete_eam_group_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    group_id: i32,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::delete_eam_group(pool, group_id).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
@@ -1275,24 +1456,32 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#   char_list_dataset   #
 //#########################
 #[tauri::command]
-async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<usize, tauri::Error> {
+async fn insert_char_list_dataset(
+    dataset: models::CharListDataset,
+) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_char_list_dataset(pool, dataset)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => insert_char_list_dataset_impl(pool, dataset),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return insert_char_list_dataset_impl(pool, dataset);
+        }
     }
+}
+
+fn insert_char_list_dataset_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    dataset: models::CharListDataset,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_char_list_dataset(pool, dataset).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 //#########################
@@ -1302,106 +1491,134 @@ async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<us
 #[tauri::command]
 fn get_all_audit_logs() -> Result<Vec<AuditLog>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_all_audit_logs(pool)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_all_audit_logs_impl(pool),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_all_audit_logs_impl(pool);
+        }
     }
+}
+
+fn get_all_audit_logs_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<AuditLog>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_all_audit_logs(pool).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 fn get_audit_log_for_account(account_email: String) -> Result<Vec<AuditLog>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_audit_log_for_account(pool, account_email)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_audit_log_for_account_impl(pool, account_email),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_audit_log_for_account_impl(pool, account_email);
+        }
     }
+}
+
+fn get_audit_log_for_account_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    account_email: String,
+) -> Result<Vec<AuditLog>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_audit_log_for_account(pool, account_email).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 fn log_to_audit_log(log: AuditLog) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_audit_log(pool, log)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => log_to_audit_log_impl(pool, log),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return log_to_audit_log_impl(pool, log);
+        }
     }
+}
+
+fn log_to_audit_log_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    log: AuditLog,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_audit_log(pool, log).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 fn get_all_error_logs() -> Result<Vec<ErrorLog>, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::get_all_error_logs(pool)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => get_all_error_logs_impl(pool),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return get_all_error_logs_impl(pool);
+        }
     }
+}
+
+fn get_all_error_logs_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<ErrorLog>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_all_error_logs(pool).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 #[tauri::command]
 fn log_to_error_log(log: ErrorLog) -> Result<usize, tauri::Error> {
     match POOL.lock() {
-        Ok(pool) => {
-            if let Some(ref pool) = *pool {
-                diesel_functions::insert_error_log(pool, log)
-                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
-            } else {
-                Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Pool is not initialized",
-                )))
-            }
-        },
-        Err(_) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "Mutex lock poisoned",
-        ))),
+        Ok(pool) => log_to_error_log_impl(pool, log),
+        Err(poisoned) => {
+            let pool = poisoned.into_inner();
+            return log_to_error_log_impl(pool, log);
+        }
     }
+}
+
+fn log_to_error_log_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    log: ErrorLog,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_error_log(pool, log).map_err(|e| {
+            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+        });
+    }
+
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 //Helper function to get the path to the application directory
