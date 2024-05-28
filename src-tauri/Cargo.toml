@@ -43,7 +43,9 @@ uuid = "1.7.0"
 base64 = "0.22.0"
 h2 = "0.4.4"
 mio = "0.8.11"
-libsqlite3-sys = { version = "*", features = ["bundled"] }
+libsqlite3-sys = { version = "0.28.0", features = ["bundled"] }
+log = "0.4"
+simplelog = "0.12.2"
 eam_commons = { path = "../src-modules/eam_commons" }
 
 [features]
