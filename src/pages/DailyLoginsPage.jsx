@@ -19,7 +19,14 @@ import DailyLoginsGridToolbar from "../components/GridComponents/DailyLoginsGrid
 import DailyLoginsSlideout from "../components/DailyLoginsSlideout";
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
-Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend ,{
+    id: 'paddingBelowLegends',
+    beforeInit: function(chart, options) {
+      chart.legend.afterFit = function() {
+        this.height = this.height + 50;
+      };
+    }
+  });
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -197,6 +204,21 @@ function DailyLoginsPage() {
         ]
     };
 
+    const plugin = {
+        beforeInit(chart) {
+          // Get a reference to the original fit function
+          const originalFit = chart.legend.fit;
+      
+          // Override the fit function
+          chart.legend.fit = function fit() {
+            // Call the original function and bind scope in order to use `this` correctly inside it
+            originalFit.bind(chart.legend)();
+            // Change the height as suggested in other answers
+            this.height += 15;
+          }
+        }
+      }
+
     const options = {
         plugins: {
             tooltip: {
@@ -219,9 +241,14 @@ function DailyLoginsPage() {
                     font: {
                         size: 14,
                         family: theme.typography.fontFamily,
-                    }
-                }
-            },
+                    },
+                    padding: 20,
+                    useBorderRadius: true,
+                    borderRadius: 3,
+                },
+                align: 'center',
+                position: 'bottom',
+            }
         },
         scales: {
             y: {
@@ -397,7 +424,7 @@ function DailyLoginsPage() {
                         alignItems: 'center',
                     }}
                 >
-                    <Bar data={data} options={options} />
+                    <Bar id="paddingBelowLegends" data={data} options={options} />
                 </Box>
             </ComponentBox>
             <Box
