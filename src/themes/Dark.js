@@ -33,6 +33,9 @@ export const darkTheme = createTheme({
             paperLight: '#3D3759'
         },
     },
+    shape: {
+        borderRadius: 6,
+    },
     components: {
         MuiTooltip: {
             defaultProps: {
