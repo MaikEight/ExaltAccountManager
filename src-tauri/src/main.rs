@@ -96,6 +96,7 @@ fn main() {
             get_save_file_path,
             combine_paths,
             start_application,
+            open_folder_in_explorer,
             get_temp_folder_path,
             get_temp_folder_path_with_creation,
             create_folder,
@@ -266,6 +267,30 @@ fn start_application(
         _ => {
             let mut cmd = std::process::Command::new(&application_path);
             cmd.arg(&start_parameters);
+            let _child = cmd.spawn().expect("Failed to start process");
+        }
+    };
+
+    Ok(())
+}
+
+#[tauri::command]
+fn open_folder_in_explorer(path: String) -> Result<(), Error> {
+    match std::env::consts::OS {
+        "windows" => {
+            let mut cmd = std::process::Command::new("explorer");
+            cmd.arg(&path);
+            let _child = cmd.spawn().expect("Failed to start process");
+        }
+        "macos" => {
+            let mut cmd = std::process::Command::new("open");
+            cmd.arg("-R");
+            cmd.arg(&path);
+            let _child = cmd.spawn().expect("Failed to start process");
+        }
+        _ => {
+            let mut cmd = std::process::Command::new("xdg-open");
+            cmd.arg(&path);
             let _child = cmd.spawn().expect("Failed to start process");
         }
     };
