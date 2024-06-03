@@ -4,7 +4,7 @@ import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { useContext, useEffect, useState } from 'react';
 import StyledButton from './../components/StyledButton';
-import { dialog } from '@tauri-apps/api';
+import { dialog, invoke } from '@tauri-apps/api';
 import useUserSettings from '../hooks/useUserSettings';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
@@ -17,7 +17,7 @@ import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import ServerContext from '../contexts/ServerContext';
 import { useTheme } from '@emotion/react';
 import ServerChip from '../components/GridComponents/ServerChip';
-import { invoke } from 'lodash';
+import useSnack from '../hooks/useSnack';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,6 +49,7 @@ function SettingsPage() {
     const userSettings = useUserSettings();
     const colorContext = useContext(ColorContext);
     const { serverList } = useContext(ServerContext);
+    const { showSnackbar } = useSnack();
 
     const setTheSettings = async () => {
         const s = userSettings.get;
@@ -109,7 +110,22 @@ function SettingsPage() {
                         label="Path to RotMG Exalt.exe"
                         variant="standard"
                         value={gameExePath}
-                        onChange={(event) => setGameExePath(event.target.value)}
+                        onChange={async (event) => {                            
+                            if (event.target.value.endsWith("RotMG Exalt Launcher.exe")) {
+                                showSnackbar("You have chosen the launcher instead of the game executable. Please choose the RotMG Exalt.exe instead.", "error");
+                                
+                                const defaultGamePath = await invoke('get_default_game_path');
+                                if (defaultGamePath) {
+                                    setGameExePath(defaultGamePath);
+                                    return;
+                                }
+                                setGameExePath("");
+
+                                return;
+                            }
+
+                            setGameExePath(event.target.value)
+                        }}
                     />
                     <Box
                         sx={{
@@ -124,6 +140,11 @@ function SettingsPage() {
                             onClick={async () => {
                                 const filePath = await dialog.open({ multiple: false });
                                 if (filePath) {
+                                    if (filePath.endsWith("RotMG Exalt Launcher.exe")) {
+                                        showSnackbar("You have chosen the launcher instead of the game executable. Please choose the RotMG Exalt.exe instead.", "error");
+                                        return;
+                                    }
+
                                     setGameExePath(filePath);
                                 }
                             }}
@@ -134,7 +155,7 @@ function SettingsPage() {
                             color="secondary"
                             startIcon={<RestartAltOutlinedIcon />}
                             onClick={async () => {
-                                const defaultGamePath = invoke('get_default_game_path');
+                                const defaultGamePath = await invoke('get_default_game_path');
                                 if (defaultGamePath) {
                                     setGameExePath(defaultGamePath);
                                     return;
@@ -286,7 +307,7 @@ function SettingsPage() {
                             ].map((server) => (
                                 <MenuItem
                                     key={server.DNS}
-                                    value={server.Name}     
+                                    value={server.Name}
                                     sx={{
                                         '&.Mui-selected': {
                                             backgroundColor: theme.palette.action.selected,
@@ -297,7 +318,7 @@ function SettingsPage() {
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                    }}                               
+                                    }}
                                 >
                                     <ServerChip params={{ value: server.Name }} />
                                 </MenuItem>
