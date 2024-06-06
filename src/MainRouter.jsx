@@ -13,6 +13,7 @@ import { PopupContextProvider } from './contexts/PopupContext';
 import FeedbackPage from './pages/FeedbackPage';
 import LogsPage from './pages/LogsPage';
 import DailyLoginsPage from './pages/DailyLoginsPage';
+import ImporterPage from './pages/ImporterPage';
 
 function MainRouter() {
     const theme = useTheme();
@@ -39,6 +40,7 @@ function MainRouter() {
                                         <Route path='/logs' element={<LogsPage />}></Route>
                                         <Route path='/about' element={<AboutPage />}></Route>
                                         <Route path='/feedback' element={<FeedbackPage />}></Route>
+                                        <Route path='/importer' element={<ImporterPage />}></Route>
                                         <Route path='*' element={<AccountsPage />}></Route>
                                     </Routes>
                                 </PopupContextProvider>
