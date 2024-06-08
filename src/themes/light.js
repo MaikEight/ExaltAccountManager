@@ -34,7 +34,7 @@ export const lightTheme = createTheme({
         },
     },
     shape: {
-        borderRadius: 6,
+        borderRadius: 9,
     },
     components: {
         MuiTooltip: {
