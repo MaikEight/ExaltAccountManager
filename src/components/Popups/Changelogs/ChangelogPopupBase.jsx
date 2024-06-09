@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import ComponentBox from "../../ComponentBox";
 
-function ChangelogPopupBase({ version, releaseDate, title, icon, children }) {
+function ChangelogPopupBase({ version, releaseDate, title, icon, children, width }) {
 
     const getTitle = () => {
         return <Box
@@ -42,6 +42,7 @@ function ChangelogPopupBase({ version, releaseDate, title, icon, children }) {
             icon={icon}
             sx={{
                 userSelect: "none",
+                ...(width && { width: width })
             }}
         >
             <Box
