@@ -14,6 +14,8 @@ import FeedbackPage from './pages/FeedbackPage';
 import LogsPage from './pages/LogsPage';
 import DailyLoginsPage from './pages/DailyLoginsPage';
 import ImporterPage from './pages/ImporterPage';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorBoundaryFallback from './components/ErrorBoundaryFallback';
 
 function MainRouter() {
     const theme = useTheme();
@@ -25,30 +27,37 @@ function MainRouter() {
                 backgroundColor: theme.palette.background.default,
             }}
         >
-            <Router id="router">
-                <Sidebar id="sidebar">
-                    <AccountsContextProvider>
-                        <GroupsContextProvider>
-                            <ServerContextProvider>
-                                <PopupContextProvider>
-                                    <Routes>
-                                        <Route path='/' element={<AccountsPage />}></Route>
-                                        <Route path='/accounts' element={<AccountsPage />}></Route>
-                                        <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
-                                        <Route path='/utilities' element={<UtilitiesPage />}></Route>
-                                        <Route path='/settings' element={<SettingsPage />}></Route>
-                                        <Route path='/logs' element={<LogsPage />}></Route>
-                                        <Route path='/about' element={<AboutPage />}></Route>
-                                        <Route path='/feedback' element={<FeedbackPage />}></Route>
-                                        <Route path='/importer' element={<ImporterPage />}></Route>
-                                        <Route path='*' element={<AccountsPage />}></Route>
-                                    </Routes>
-                                </PopupContextProvider>
-                            </ServerContextProvider>
-                        </GroupsContextProvider>
-                    </AccountsContextProvider>
-                </Sidebar>
-            </Router>
+            <ErrorBoundary fallback={<div>EAM crashed, please restart!</div>}>
+                <Router id="router">
+                    <Sidebar id="sidebar">
+                        <AccountsContextProvider>
+                            <GroupsContextProvider>
+                                <ServerContextProvider>
+                                    <PopupContextProvider>
+                                        <ErrorBoundary
+                                            fallback={<ErrorBoundaryFallback />}
+                                            onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}                                            
+                                        >
+                                            <Routes>
+                                                <Route path='/' element={<AccountsPage />}></Route>
+                                                <Route path='/accounts' element={<AccountsPage />}></Route>
+                                                <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
+                                                <Route path='/utilities' element={<UtilitiesPage />}></Route>
+                                                <Route path='/settings' element={<SettingsPage />}></Route>
+                                                <Route path='/logs' element={<LogsPage />}></Route>
+                                                <Route path='/about' element={<AboutPage />}></Route>
+                                                <Route path='/feedback' element={<FeedbackPage />}></Route>
+                                                <Route path='/importer' element={<ImporterPage />}></Route>
+                                                <Route path='*' element={<AccountsPage />}></Route>
+                                            </Routes>
+                                        </ErrorBoundary>
+                                    </PopupContextProvider>
+                                </ServerContextProvider>
+                            </GroupsContextProvider>
+                        </AccountsContextProvider>
+                    </Sidebar>
+                </Router>
+            </ErrorBoundary>
         </Box>
     );
 }
