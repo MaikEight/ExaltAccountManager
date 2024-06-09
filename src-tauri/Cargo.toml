@@ -46,6 +46,7 @@ mio = "0.8.11"
 libsqlite3-sys = { version = "0.28.0", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12.2"
+webbrowser = "1.0.1"
 eam_commons = { path = "../src-modules/eam_commons" }
 
 [features]
