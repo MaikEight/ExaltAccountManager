@@ -34,7 +34,7 @@ use std::thread::sleep;
 use std::time::{Duration, Instant};
 use tauri::Error;
 use zip::read::ZipArchive;
-
+use webbrowser::{open_browser, Browser};
 use diesel::r2d2::Pool;
 use diesel::SqliteConnection;
 
@@ -93,6 +93,7 @@ fn main() {
     //Run the tauri application
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            open_url,
             get_save_file_path,
             combine_paths,
             start_application,
@@ -146,6 +147,11 @@ fn main() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn open_url(url: &str) {
+    open_browser(Browser::Default, &url).expect("Failed to start browser");
 }
 
 #[tauri::command]
