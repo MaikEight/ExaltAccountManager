@@ -21,6 +21,9 @@ import useAccounts from "../hooks/useAccounts";
 import useGroups from "../hooks/useGroups";
 import useServerList from './../hooks/useServerList';
 import { getRequestState, storeCharList } from "../utils/charListUtil";
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -87,7 +90,7 @@ function AddNewAccount({ isOpen, onClose }) {
 
     const accountAlreadyExists = () => accounts.find((account) => account.email === newAccount.email) !== undefined;
 
-    const getFooterButtons = (backButtonText, nextButtontext, onClickBack, onClickNext,) => {
+    const getFooterButtons = (backButton, nextButton) => {
         return (<Box
             sx={{
                 display: 'flex',
@@ -98,14 +101,17 @@ function AddNewAccount({ isOpen, onClose }) {
         >
             <StyledButton
                 color="secondary"
-                onClick={onClickBack}
+                onClick={backButton.onClick}
+                {...(backButton.icon && { startIcon: backButton.icon })}
             >
-                {backButtonText}
+                {backButton.text}
             </StyledButton>
             <StyledButton
-                onClick={onClickNext}
+                onClick={nextButton.onClick}
+                {...(nextButton.endIcon && { endIcon: nextButton.endIcon })}
+                {...(nextButton.startIcon && { startIcon: nextButton.startIcon })}
             >
-                {nextButtontext}
+                {nextButton.text}
             </StyledButton>
         </Box>);
     };
@@ -219,6 +225,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                         <StyledButton
                                             disabled={isLoginButtonDisabled()}
                                             onClick={handleLoginButtonClick}
+                                            startIcon={<LoginOutlinedIcon />}
                                         >
                                             login
                                         </StyledButton>
@@ -239,7 +246,7 @@ function AddNewAccount({ isOpen, onClose }) {
                             }}
                             isCollapseable={true}
                             defaultCollapsed={true}
-                        >                            
+                        >
                             <Typography variant="body2">
                                 To add a steam account, you need to first get the two required values: <b>Steamworks ID</b> and the <b>secret</b>.
                             </Typography>
@@ -302,14 +309,22 @@ function AddNewAccount({ isOpen, onClose }) {
                                 label="Daily login"
                             />
                         </Box>
-                        {getFooterButtons(
-                            'BACK',
-                            'NEXT',
-                            () => {
-                                setNewAccount({ email: '', password: '' });
-                                setActiveStep(0)
-                            },
-                            () => setActiveStep(2))
+                        {
+                            getFooterButtons(
+                                {
+                                    text: 'BACK',
+                                    onClick: () => {
+                                        setNewAccount({ email: '', password: '' });
+                                        setActiveStep(0)
+                                    },
+                                    icon: <ArrowBackIosNewOutlinedIcon />
+                                },
+                                {
+                                    text: 'NEXT',
+                                    onClick: () => setActiveStep(2),
+                                    endIcon: <ArrowForwardIosOutlinedIcon />
+                                }
+                            )
                         }
                     </ComponentBox>
                 );
@@ -364,15 +379,20 @@ function AddNewAccount({ isOpen, onClose }) {
                         </Box>
                         {
                             getFooterButtons(
-                                'BACK',
-                                'SAVE ACCOUNT',
-                                () => {
-                                    setActiveStep(1)
+                                {
+                                    text: 'BACK',
+                                    onClick: () => setActiveStep(1),
+                                    icon: <ArrowBackIosNewOutlinedIcon />
                                 },
-                                () => {
-                                    updateAccount({ ...newAccount, isDeleted: false }, true);
-                                    onClose();
-                                })
+                                {
+                                    text: 'SAVE ACCOUNT',
+                                    onClick: () => {
+                                        updateAccount({ ...newAccount, isDeleted: false }, true);
+                                        onClose();
+                                    },
+                                    startIcon: <DoneOutlinedIcon />
+                                }
+                            )
                         }
                     </ComponentBox>
                 );
@@ -391,11 +411,11 @@ function AddNewAccount({ isOpen, onClose }) {
                         width: 500,
                         backgroundColor: theme.palette.background.default,
                         border: 'none',
-                        borderRadius: '6px 10px 10px 6px',
+                        borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: '6px 10px 10px 6px', overflow: 'hidden' } }}
+                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, overflow: 'hidden' } }}
                 SlideProps={{ container: containerRef.current }}
                 variant="persistent"
                 anchor="right"
