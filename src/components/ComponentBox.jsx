@@ -13,7 +13,7 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                 position: "relative",
                 display: "flex",
                 flexDirection: "column",
-                borderRadius: 1.5,
+                borderRadius: `${theme.shape.borderRadius}px`,
                 paddingLeft: 1.5,
                 paddingRight: 1.5,
                 paddingTop: 1.5,
@@ -32,7 +32,7 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                         top: 0,
                         left: 0,
                         width: '100%',
-                        borderRadius: '6px 6px 0 0',
+                        borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                         zIndex: 9999
                     }}
                 />
