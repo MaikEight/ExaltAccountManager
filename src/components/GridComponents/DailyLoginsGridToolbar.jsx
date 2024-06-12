@@ -14,7 +14,7 @@ function DailyLoginsGridToolbar({ onRefresh }) {
                     justifyContent: "start",
                     minHeight: 49,
                     backgroundColor: theme.palette.background.paper,
-                    borderRadius: '6px 6px 0 0',
+                    borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                     pt: 0.5,
                     pb: 0.5,
                     pl: 1,
