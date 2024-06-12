@@ -79,11 +79,11 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                         width: 500,
                         backgroundColor: theme.palette.background.default,
                         border: 'none',
-                        borderRadius: '6px 10px 10px 6px',
+                        borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: '6px 10px 10px 6px', overflow: 'hidden' } }}
+                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, overflow: 'hidden' } }}
                 SlideProps={{ container: containerRef.current }}
                 variant="persistent"
                 anchor="right"
@@ -184,8 +184,9 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
 export default DailyLoginsSlideout;
 
 function DailyLoginsLoginData({ logins }) {
-
+    const theme = useTheme();
     const navigate = useNavigate();
+    
     return (
         <Box
             sx={{
@@ -207,7 +208,7 @@ function DailyLoginsLoginData({ logins }) {
                         },
                         '& tbody tr': {
                             cursor: 'pointer',
-                            borderRadius: '6px',
+                            borderRadius: theme.shape.borderRadius,
                         },
                     }}
                 >
