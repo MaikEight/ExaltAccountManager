@@ -127,11 +127,11 @@ function AccountDetails({ acc, onClose }) {
                         width: 500,
                         backgroundColor: theme.palette.background.default,
                         border: 'none',
-                        borderRadius: '6px 10px 10px 6px',
+                        borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: '6px 10px 10px 6px', overflow: 'hidden' } }}
+                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, overflow: 'hidden' } }}
                 SlideProps={{ container: containerRef.current }}
                 variant="persistent"
                 anchor="right"
