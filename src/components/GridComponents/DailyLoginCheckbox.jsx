@@ -4,7 +4,7 @@ function DailyLoginCheckbox({ params, onChange, sx }) {
     
   const handleCheckboxChange = (event) => {
     event.stopPropagation();
-    onChange(event);
+    onChange?.(event);
   };
 
   return (
