@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
 import { GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
 import Searchbar from "./Searchbar";
 import AddIcon from '@mui/icons-material/Add';
@@ -8,7 +8,7 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
     const theme = useTheme();
 
     return (
-        <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderRadius: theme.shape.borderRadius}}>
+        <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderRadius: theme.shape.borderRadius }}>
             <GridToolbarContainer
                 sx={{
                     display: "flex",
@@ -22,7 +22,9 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
                     pr: 1,
                 }}
             >
-                <GridToolbarColumnsButton />
+                <Tooltip title="Show/Hide Columns">
+                    <GridToolbarColumnsButton />
+                </Tooltip>
                 <GridToolbarFilterButton />
             </GridToolbarContainer>
             <Box
