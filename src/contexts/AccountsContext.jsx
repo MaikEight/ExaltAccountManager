@@ -39,7 +39,7 @@ function AccountsContextProvider({ children }) {
         return enhanceAccountData(await invoke('get_eam_account_by_email', { accountEmail: acc.email }));
     }
 
-    const updateAccount = (updatedAccount, encryptPassword = false) => {
+    const updateAccount = async (updatedAccount, encryptPassword = false) => {
         if (!updatedAccount) return updatedAccount;
 
         let token = null;
@@ -54,26 +54,41 @@ function AccountsContextProvider({ children }) {
 
         const getPassword = async () => {
             if (encryptPassword) {
-                return await invoke('encrypt_string', { data: updatedAccount.password }).then((res) => res);
+                return await invoke('encrypt_string', { data: updatedAccount.password.toString() }).then((res) => res);
             }
 
             return updatedAccount.password;
         };
 
-        getPassword()
-            .then((pw) => {
-                const acc = { ...updatedAccount, token: token, password: pw };
-                saveAccount(acc)
-                    .then((updAccount) => {
-                        const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
-
-                        if (selectedAccount && selectedAccount.email === updatedAccount.email) {
-                            setSelectedAccount(updatedAccountToUse);
-                        }
-
-                        loadAccounts();
-                    });
+        const pw = await getPassword()
+            .catch((err) => {
+                console.error('Error encrypting password:', err);
+                return -1;
             });
+
+        if (pw === -1)
+            return false;
+
+        const acc = { ...updatedAccount, token: token, password: pw };
+        console.log('Saving account:', acc);
+        const updAccount = saveAccount(acc)
+            .catch((err) => {
+                console.error('Error saving account:', err, acc);
+                return null;
+            });
+
+        if (updAccount === null) 
+            return false;
+
+        const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
+
+        if (selectedAccount && selectedAccount.email === updatedAccount.email) {
+            setSelectedAccount(updatedAccountToUse);
+        }
+
+        loadAccounts();
+
+        return true;
     };
 
     const handleSelectedAccountParameter = (accs) => {
@@ -86,9 +101,9 @@ function AccountsContextProvider({ children }) {
         }
     }
 
-    const deleteAccount = async (email) => {        
+    const deleteAccount = async (email) => {
         logToAuditLog('deleteAccount', `Deleting account ${email}`, email);
-        
+
         await invoke('delete_eam_account', { accountEmail: email });
         const updatedAccounts = accounts.filter((account) => account.email !== email);
         setAccounts(updatedAccounts);
