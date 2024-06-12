@@ -24,6 +24,9 @@ import { getRequestState, storeCharList } from "../utils/charListUtil";
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import { useNavigate } from "react-router-dom";
+import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -51,6 +54,7 @@ function AddNewAccount({ isOpen, onClose }) {
     const hwid = useHWID();
     const color = useColorList(0);
     const containerRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false, isDeleted: false });
@@ -259,6 +263,29 @@ function AddNewAccount({ isOpen, onClose }) {
                             <Typography variant="body2">
                                 <b>Big thanks</b> to <a href="https://github.com/jakcodex" target="_blank" rel="noreferrer">jakcodex</a> for creating the great muledump-wiki.
                             </Typography>
+                        </ComponentBox>
+                        <ComponentBox
+                            title="Import accounts"
+                            icon={<GroupAddOutlinedIcon />}
+                            isCollapseable={true}
+                            defaultCollapsed={true}
+                            innerSx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1,
+                            }}
+                        >
+                            <Typography variant="body2">
+                                You can also import accounts from a file. All accepted formats are descriped in the importer.
+                            </Typography>
+                            <StyledButton
+                                onClick={() => {
+                                    navigate('/importer');
+                                }}
+                                startIcon={<GroupAddOutlinedIcon />}
+                            >
+                                Show importer
+                            </StyledButton>
                         </ComponentBox>
                     </Box>);
             case 1:  //Add details
@@ -469,7 +496,7 @@ function AddNewAccount({ isOpen, onClose }) {
                         })}
                     </Stepper>
                 </Box>
-                <Box sx={{ mt: 2 }}>
+                <Box sx={{ mt: 2, overflowX: 'auto' }}>
                     {
                         getStepContent()
                     }
