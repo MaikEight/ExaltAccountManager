@@ -129,7 +129,7 @@ function GroupEditor({ g, onSave, onCancel }) {
                                         m: 0.5,
                                         width: '40px',
                                         height: '16px',
-                                        borderRadius: 1.5,
+                                        borderRadius: theme.shape.borderRadius,
                                         backgroundColor: index === newGroup.color ? color.color : color.background,
                                         '&:hover': {
                                             backgroundColor: color.color,
