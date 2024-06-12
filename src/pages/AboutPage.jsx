@@ -68,19 +68,19 @@ function AboutPage() {
                         <Box>
                             {
                                 showLlama &&
-                                <img src="/logo/llama.gif" alt="Llama" height='40px' style={{ borderRadius: '6px' }} />
+                                <img src="/logo/llama.gif" alt="Llama" height='40px' style={{ borderRadius: theme.shape.borderRadius }} />
                             }
                             <img src="/logo/Logo_NameOnly_2_Medium.jpg"
                                 alt="MeikEight Logo"
                                 height='40px'
                                 width='150.56px'
-                                style={{ borderRadius: '6px' }}
+                                style={{ borderRadius: theme.shape.borderRadius }}
                                 onClick={() => { setShowLlama(true); }}
                             />
 
                             {
                                 showLlama &&
-                                <img src="/logo/llama.gif" alt="Llama" height='40px' style={{ borderRadius: '6px' }} />
+                                <img src="/logo/llama.gif" alt="Llama" height='40px' style={{ borderRadius: theme.shape.borderRadius }} />
                             }
                         </Box>
                     </Box>
@@ -121,12 +121,12 @@ function AboutPage() {
                 >
                     <a href="https://ko-fi.com/maik8" target="_blank" rel="noopener noreferrer">
                         <StyledButton>
-                            <img src="/support/kofi.png" alt="Ko-fi Logo" height='30px' width='30px' heigth='30px' style={{ borderRadius: '6px', marginRight: '4px' }} />Support me on Ko-fi
+                            <img src="/support/kofi.png" alt="Ko-fi Logo" height='30px' width='30px' heigth='30px' style={{ borderRadius: theme.shape.borderRadius, marginRight: '4px' }} />Support me on Ko-fi
                         </StyledButton>
                     </a>
                     <a href="https://www.buymeacoffee.com/maik8" target="_blank" rel="noopener noreferrer">
                         <StyledButton>
-                            <img src="/support/bmc.svg" alt="buymeacoffee Logo" height='30px' width='20.73px' heigth='30px' style={{ borderRadius: '6px', marginRight: '6px' }} />Buy me a coffee
+                            <img src="/support/bmc.svg" alt="buymeacoffee Logo" height='30px' width='20.73px' heigth='30px' style={{ borderRadius: theme.shape.borderRadius, marginRight: '6px' }} />Buy me a coffee
                         </StyledButton>
                     </a>
                 </Box>
