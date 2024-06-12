@@ -114,7 +114,7 @@ function LogsPage() {
                 p: 2,
             }}
         >
-            <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1.5, background: theme.palette.background.paper, }}>
+            <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1, background: theme.palette.background.paper, }}>
                 <StyledDataGrid
                     sx={{
                         minHeight: '200px',
@@ -130,7 +130,7 @@ function LogsPage() {
                         '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
                             backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : darken(theme.palette.background.default, 0.15),
                             border: `3px solid ${theme.palette.background.paper}`,
-                            borderRadius: 1.5
+                            borderRadius: 1
                         },
                     }}
                     initialState={{
