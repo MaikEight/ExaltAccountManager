@@ -38,47 +38,55 @@ async function onStartUp() {
             }
         });
 
-        if (localStorage.getItem("lastUpdateCheck") === null) {
-            checkForUpdates(false);
-            return;
-        }
+    if (localStorage.getItem("lastUpdateCheck") === null) {
+        checkForUpdates(false);
+        return;
+    }
 
-        const lastUpdateCheck = localStorage.getItem("lastUpdateCheck");
-        const [day, month, yearTime] = lastUpdateCheck.split(".");
-        const [year, time] = yearTime.split(" ");
-        const lastUpdateCheckDate = new Date(`${month}.${day}.${year} ${time}`);
-        const currentDate = new Date();
-        const diff = Math.abs(currentDate - lastUpdateCheckDate);
-        const daysSinceLastUpdateCheck = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    const lastUpdateCheck = localStorage.getItem("lastUpdateCheck");
+    const [day, month, yearTime] = lastUpdateCheck.split(".");
+    const [year, time] = yearTime.split(" ");
+    const lastUpdateCheckDate = new Date(`${month}.${day}.${year} ${time}`);
+    const currentDate = new Date();
+    const diff = Math.abs(currentDate - lastUpdateCheckDate);
+    const daysSinceLastUpdateCheck = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
-        if (daysSinceLastUpdateCheck > 1) {
-            console.log("Checking for updates on startup");
-            checkForUpdates(false);
-        }
-    
+    if (daysSinceLastUpdateCheck > 1) {
+        console.log("Checking for updates on startup");
+        checkForUpdates(false);
+    }
+
 }
 
 function addConsoleLogListener() {
     // Override console methods to log to error log
     ['warn', 'error'].forEach((methodName) => {
         const oldMethod = console[methodName];
-        console[methodName] = (...args) => {     
+        console[methodName] = (...args) => {
             let logSource = "";
             try {
-                const originalCallStack = new Error().stack.split('\n');            
-                const originalCallSource = originalCallStack[2]; 
-                const fileNameAndLine = originalCallSource.split('/').pop().split(':');             
-                fileNameAndLine[2] = fileNameAndLine[2].substring(0, fileNameAndLine[2].length - 1);           
+                const originalCallStack = new Error().stack.split('\n');
+                const originalCallSource = originalCallStack[2];
+                const fileNameAndLine = originalCallSource.split('/').pop().split(':');
+                fileNameAndLine[2] = fileNameAndLine[2].substring(0, fileNameAndLine[2].length - 1);
                 fileNameAndLine[0] = (fileNameAndLine[0].substring(0, fileNameAndLine[0].lastIndexOf('?')));
                 logSource = `${fileNameAndLine[0]},${fileNameAndLine[1]}:${fileNameAndLine[2]}`;
                 oldMethod.call(originalCallSource, ...args);
-            } catch (e) { 
+            } catch (e) {
                 oldMethod.call(console, ...args);
-                console.log(e); 
+                console.log(e);
+            }
+            try {
+
+                if (logSource.startsWith("MainRouter") && args.length > 0 && args[0].startsWith("ErrorBoundary")) {
+                    logToErrorLog(logSource, JSON.stringify(args, null, 2));
+                    return;
+                }
+            } catch (e) {
+                console.log(e);
             }
             
-
-            logToErrorLog(logSource, args );
+            logToErrorLog(logSource, args);
         };
     });
 }
