@@ -18,15 +18,11 @@ import { formatTime } from "../utils/timeUtils";
 import DailyLoginsGridToolbar from "../components/GridComponents/DailyLoginsGridToolbar";
 import DailyLoginsSlideout from "../components/DailyLoginsSlideout";
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import InstallDesktopOutlinedIcon from '@mui/icons-material/InstallDesktopOutlined';
+import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
-Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend ,{
-    id: 'paddingBelowLegends',
-    beforeInit: function(chart, options) {
-      chart.legend.afterFit = function() {
-        this.height = this.height + 50;
-      };
-    }
-  });
+Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
@@ -189,8 +185,8 @@ function DailyLoginsPage() {
                 backgroundColor: alpha(theme.palette.primary.main, 0.6),
                 borderColor: theme.palette.primary.main,
                 borderWidth: 2,
-                innerborderRadius: 6,
-                borderRadius: 6,
+                innerborderRadius: theme.shape.borderRadius,
+                borderRadius: theme.shape.borderRadius,
             },
             {
                 label: 'Failed logins',
@@ -198,8 +194,8 @@ function DailyLoginsPage() {
                 backgroundColor: alpha(theme.palette.error.main, 0.6),
                 borderColor: theme.palette.error.main,
                 borderWidth: 2,
-                innerborderRadius: 6,
-                borderRadius: 6,
+                innerborderRadius: theme.shape.borderRadius,
+                borderRadius: theme.shape.borderRadius,
             },
         ]
     };
@@ -335,7 +331,7 @@ function DailyLoginsPage() {
             sx={{
                 // width: 'calc(100% - 32px)',
                 width: '100%',
-                borderRadius: '6px',
+                borderRadius: `${theme.shape.borderRadius}px`,
                 backgroundColor: theme => theme.palette.mode === 'dark' ? theme.palette.error.dark : theme.palette.error.main,
                 display: 'flex',
                 justifyContent: 'center',
@@ -362,7 +358,7 @@ function DailyLoginsPage() {
                             gap: 2,
                             backgroundColor: theme => theme.palette.mode === 'dark' ? '#0000001f' : '#ffffff0f',
                             p: 1,
-                            borderRadius: '6px',
+                            borderRadius: `${theme.shape.borderRadius}px`,
                             mt: 1,
                         }}
                     >
@@ -391,6 +387,7 @@ function DailyLoginsPage() {
                 disabled={isInstallingTask}
                 color="warning"
                 onClick={installTask}
+                startIcon={<InstallDesktopOutlinedIcon />}
             >
                 Install Task
             </StyledButton>
@@ -439,7 +436,7 @@ function DailyLoginsPage() {
                         minHeight: '200px',
                         height: 'calc(100vh - 67px)',
                         width: '100%',
-                        borderRadius: 1.5,
+                        borderRadius: `${theme.shape.borderRadius}px`,
                         background: theme.palette.background.paper,
                     }}
                 >
@@ -458,7 +455,7 @@ function DailyLoginsPage() {
                             '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
                                 backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : darken(theme.palette.background.default, 0.15),
                                 border: `3px solid ${theme.palette.background.paper}`,
-                                borderRadius: 1.5
+                                borderRadius: `${theme.shape.borderRadius}px`
                             },
                         }}
                         initialState={{
@@ -532,6 +529,7 @@ function DailyLoginsPage() {
                             onClick={() => {
                                 installTask();
                             }}
+                            startIcon={<InstallDesktopOutlinedIcon />}
                         >
                             Install Task Now
                         </StyledButton>
@@ -553,6 +551,7 @@ function DailyLoginsPage() {
                                     showSnackbar('Failed to start the task, please try again later.', 'error');
                                 });
                         }}
+                        startIcon={<PlayCircleFilledWhiteOutlinedIcon />}
                     >
                         Run Task now
                     </StyledButton>
@@ -571,6 +570,7 @@ function DailyLoginsPage() {
                                     showSnackbar('Failed to uninstall the task, please try again later.', 'error');
                                 });
                         }}
+                        startIcon={<DeleteOutlineOutlinedIcon />}
                     >
                         Uninstall Task
                     </StyledButton>
