@@ -256,7 +256,7 @@ function SettingsPage() {
                             To add servers to this list, please add an account and click on "Refresh data".
                         </Typography>
                 }
-                <FormControl sx={{}}>
+                <FormControl>
                     <Select
                         sx={{
                             height: 39,
@@ -272,7 +272,7 @@ function SettingsPage() {
                                 },
                             }),
                             transition: theme.transitions.create('background-color'),
-                            borderRadius: '6px',
+                            borderRadius: theme.shape.borderRadius,
                         }}
                         id="default-server-list-label"
                         value={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
