@@ -9,6 +9,7 @@ import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined';
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
 import { checkForUpdates, updateGame } from '../utils/realmUpdaterUtils';
 import useSnack from '../hooks/useSnack';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 function RealmUpdater() {
     const settings = useUserSettings();
@@ -142,7 +143,8 @@ function RealmUpdater() {
                                 setIsLoading(false);
                                 showSnackbar('Failed to update the game', 'error');
                             }
-                        }}
+                        }}   
+                        startIcon={<SystemUpdateAltOutlinedIcon />}                     
                     >
                         update game
                     </StyledButton>
@@ -163,6 +165,7 @@ function RealmUpdater() {
                             showSnackbar('Failed to check for game updates', 'error');
                         }
                     }}
+                    startIcon={<SearchOutlinedIcon />}
                 >
                     search for updates
                 </StyledButton>
