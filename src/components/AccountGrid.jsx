@@ -30,13 +30,11 @@ const StyledDataGrid = styled(DataGrid)`
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount } = useAccounts();
-
     const [shownAccounts, setShownAccounts] = useState(accounts);
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
 
     const settings = useUserSettings();
-
     useEffect(() => {
         setShownAccounts(getSearchedAccounts());
     }, [accounts]);
