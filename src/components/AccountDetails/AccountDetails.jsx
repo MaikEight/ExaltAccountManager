@@ -242,7 +242,8 @@ function AccountDetails({ acc, onClose }) {
                                                 </IconButton>
                                             </Tooltip>
                                         </Box>
-                                    </Box>}
+                                    </Box>
+                                }
                                 icon={<ArticleOutlinedIcon />}
                                 sx={{
                                     width: '100%',
@@ -309,7 +310,7 @@ function AccountDetails({ acc, onClose }) {
                                                 if (res.Error) {
                                                     const requestState = getRequestState(res);
                                                     logToErrorLog("Start Game", "Failed to start the game for " + account.email + ", got state: " + requestState);
-                                                    if (!!res) {
+                                                    if (res) {
                                                         showSnackbar("Failed to start the game: " + requestState, 'error');
 
                                                         const newAcc = ({ ...acc, state: requestState });
@@ -329,7 +330,7 @@ function AccountDetails({ acc, onClose }) {
 
                                                 showSnackbar("Starting the game...");
                                                 const args = `data:{platform:Deca,guid:${btoa(acc.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
-                                                
+
                                                 tauri.invoke(
                                                     "start_application",
                                                     { applicationPath: gameExePath, startParameters: args }
@@ -430,57 +431,59 @@ function AccountDetails({ acc, onClose }) {
                                 </StyledButton>
                             </Grid>
                             <Grid xs={6}>
-                                {!isDeleteMode ?
-                                    <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
-                                        '&:hover': {
-                                            backgroundColor: theme => theme.palette.error.main,
-                                        },
-                                    }}
-                                        onClick={() => {
-                                            setIsDeleteMode(true);
+                                {
+                                    !isDeleteMode ?
+                                        <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
+                                            '&:hover': {
+                                                backgroundColor: theme => theme.palette.error.main,
+                                            },
                                         }}
-                                    >
-                                        delete account
-                                    </StyledButton> :
-                                    <ComponentBox
-                                        title="Are you sure?"
-                                        icon={<WarningAmberRoundedIcon />}
-                                        sx={{
-                                            width: '100%',
-                                            height: '100%',
-                                            m: 0,
-                                            transition: 'height 0.5s',
-                                        }}
-                                    >
-                                        <Typography variant="body2" component="div">
-                                            This action cannot be undone.
-                                        </Typography>
-                                        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', mt: 1 }}>
-                                            <IconButton
-                                                color='error'
-                                                size="small"
-                                                onClick={() => {
-                                                    deleteAccount(account.email);
-                                                    onClose();
-                                                }}
-                                            >
-                                                <DeleteOutlineOutlinedIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                sx={{ color: theme.palette.text.primary }}
-                                                size="small"
-                                                onClick={() => setIsDeleteMode(false)}
-                                            >
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </Box>
-                                    </ComponentBox>
+                                            onClick={() => {
+                                                setIsDeleteMode(true);
+                                            }}
+                                        >
+                                            delete account
+                                        </StyledButton>
+                                        :
+                                        <ComponentBox
+                                            title="Are you sure?"
+                                            icon={<WarningAmberRoundedIcon />}
+                                            sx={{
+                                                width: '100%',
+                                                height: '100%',
+                                                m: 0,
+                                                transition: 'height 0.5s',
+                                            }}
+                                        >
+                                            <Typography variant="body2" component="div">
+                                                This action cannot be undone.
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', mt: 1 }}>
+                                                <IconButton
+                                                    color='error'
+                                                    size="small"
+                                                    onClick={() => {
+                                                        deleteAccount(account.email);
+                                                        onClose();
+                                                    }}
+                                                >
+                                                    <DeleteOutlineOutlinedIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    sx={{ color: theme.palette.text.primary }}
+                                                    size="small"
+                                                    onClick={() => setIsDeleteMode(false)}
+                                                >
+                                                    <CloseIcon />
+                                                </IconButton>
+                                            </Box>
+                                        </ComponentBox>
                                 }
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
-            </Drawer >
+            </Drawer>
         </Box>
     );
 }
