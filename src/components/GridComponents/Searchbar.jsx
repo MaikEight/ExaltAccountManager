@@ -2,6 +2,9 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
+import { useTheme } from '@emotion/react';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -36,7 +39,8 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     justifyContent: 'center',
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
+const StyledInputBase = styled(InputBase)(({ theme, value }) => ({
+    position: 'relative',
     color: 'inherit',
     width: '100%',
     '& .MuiInputBase-input': {
@@ -44,7 +48,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
         [theme.breakpoints.up('md')]: {
-            width: '18ch',
+            width: value ? '30ch' : '18ch',
             '&:focus': {
                 width: '30ch',
             },
@@ -52,9 +56,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-function Searchbar({onSearchChanged}) {
+function Searchbar({ onSearchChanged }) {
     const [search, setSearch] = useState('');
-    
+    const theme = useTheme();
+
     return (
         <Search>
             <SearchIconWrapper>
@@ -69,6 +74,25 @@ function Searchbar({onSearchChanged}) {
                     onSearchChanged(event.target.value);
                 }}
             />
+            {search?.length > 0 && (
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        right: 4, 
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: alpha(theme.palette.text.primary, 0.4)
+                    }}
+                    size='small'
+                    aria-label="clear search"                    
+                    onClick={() => {
+                        setSearch('');
+                        onSearchChanged('');
+                    }}
+                >
+                    <CloseIcon sx={{ fontSize: '20px' }} />
+                </IconButton>
+            )}
         </Search>
     );
 }
