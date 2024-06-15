@@ -70,9 +70,9 @@ function AccountGrid({ setShowAddNewAccount }) {
 
     const handleDailyLoginCheckboxChange = async (event, params) => {
         const acc = accounts.find((account) => account.id === params.id);
-        if (!acc) { 
+        if (!acc) {
             console.error('Account not found');
-            return; 
+            return;
         }
         const updatedAccount = { ...acc, performDailyLogin: event.target.checked };
         await updateAccount(updatedAccount, false);

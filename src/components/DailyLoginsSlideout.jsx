@@ -36,9 +36,10 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
             setIsUtcZero(false);
             return;
         }
-        setIsUtcZero(new Date(report.endTime).getUTCHours() === 0 
-                        && new Date(report.endTime).getUTCMinutes() === 0 
-                        && new Date(report.endTime).getUTCSeconds() === 0);
+        setIsUtcZero(new Date(report.endTime).getUTCHours() === 0
+            && new Date(report.endTime).getUTCMinutes() === 0
+            && new Date(report.endTime).getUTCSeconds() === 0
+        );
 
         invoke('get_daily_login_report_entries_by_report_id', { reportId: report.id })
             .then((data) => {
@@ -53,7 +54,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
             });
 
         setReportDuration(getReportDuration());
-    }, [report]);    
+    }, [report]);
 
     const getReportDuration = () => {
         if (!report) return '';
@@ -174,7 +175,8 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                             isCollapseable
                         >
                             <DailyLoginsLoginData logins={reportData.succeeded} />
-                        </ComponentBox>}
+                        </ComponentBox>
+                    }
                 </Box>
             </Drawer>
         </Box>
@@ -186,7 +188,7 @@ export default DailyLoginsSlideout;
 function DailyLoginsLoginData({ logins }) {
     const theme = useTheme();
     const navigate = useNavigate();
-    
+
     return (
         <Box
             sx={{
