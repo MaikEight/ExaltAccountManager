@@ -20,6 +20,7 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                 paddingBottom: 1.5,
                 m: 2,
                 background: theme.palette.background.paper,
+                transition: theme.transitions.create('background-color'),
                 ...(fullwidth && { width: '100%' }),
                 ...sx
             }}

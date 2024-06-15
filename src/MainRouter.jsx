@@ -25,6 +25,7 @@ function MainRouter() {
             sx={{
                 width: '100%',
                 backgroundColor: theme.palette.background.default,
+                transition: theme.transitions.create(['background-color', 'color']),
             }}
         >
             <ErrorBoundary fallback={<div>EAM crashed, please restart!</div>}>

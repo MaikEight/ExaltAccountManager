@@ -10,8 +10,9 @@ function StyledButton({ children, fullWidth, ...props }) {
             fullWidth={fullWidth}
             {...props}
             sx={{
-                borderRadius: `${theme.shape.borderRadius}px`,                
+                borderRadius: `${theme.shape.borderRadius}px`,
                 boxShadow: theme.palette.mode === 'dark' ? 'rgba(19, 17, 32, 0.42) 0px 4px 8px -4px;' : 'rgba(58, 53, 65, 0.42) 0px 4px 8px -4px;',
+                transition: theme.transitions.create('background-color'),
                 ...props.sx,
             }}
         >
