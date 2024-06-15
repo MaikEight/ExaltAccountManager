@@ -54,10 +54,15 @@ function AccountsContextProvider({ children }) {
 
         const getPassword = async () => {
             if (encryptPassword) {
-                return await invoke('encrypt_string', { data: updatedAccount.password.toString() }).then((res) => res);
+                const data = { data: updatedAccount?.password?.toString() };
+                if (!data.data) {
+                    console.error('Error encrypting password: data is empty');
+                    return -1;
+                }
+                return await invoke('encrypt_string', data).then((res) => res);
             }
 
-            return updatedAccount.password;
+            return updatedAccount?.password;
         };
 
         const pw = await getPassword()
@@ -65,29 +70,29 @@ function AccountsContextProvider({ children }) {
                 console.error('Error encrypting password:', err);
                 return -1;
             });
-
+            
         if (pw === -1)
             return false;
-
+        
         const acc = { ...updatedAccount, token: token, password: pw };
-        console.log('Saving account:', acc);
-        const updAccount = saveAccount(acc)
+        
+        const updAccount = await saveAccount(acc)
             .catch((err) => {
                 console.error('Error saving account:', err, acc);
                 return null;
             });
-
-        if (updAccount === null) 
+            
+        if (updAccount === null)
             return false;
-
+        
         const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
-
+        
         if (selectedAccount && selectedAccount.email === updatedAccount.email) {
             setSelectedAccount(updatedAccountToUse);
         }
-
+        
         loadAccounts();
-
+        
         return true;
     };
 
