@@ -90,7 +90,7 @@ function DailyLoginsPage() {
 
         invoke('get_all_daily_login_reports')
             .then((res) => {
-                const reports = res.map((report, index) => {
+                const reports = res.map((report) => {
                     return {
                         ...report,
                         startTime: new Date(report.startTime),
@@ -199,21 +199,6 @@ function DailyLoginsPage() {
             },
         ]
     };
-
-    const plugin = {
-        beforeInit(chart) {
-            // Get a reference to the original fit function
-            const originalFit = chart.legend.fit;
-
-            // Override the fit function
-            chart.legend.fit = function fit() {
-                // Call the original function and bind scope in order to use `this` correctly inside it
-                originalFit.bind(chart.legend)();
-                // Change the height as suggested in other answers
-                this.height += 15;
-            }
-        }
-    }
 
     const options = {
         plugins: {
