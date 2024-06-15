@@ -59,23 +59,23 @@ function DailyLoginsPage() {
     const theme = useTheme();
 
     const isUtcZero = (date) => {
-        if(!date) return false;
-        
-        return new Date(date).getUTCHours() === 0 
-                && new Date(date).getUTCMinutes() === 0 
-                && new Date(date).getUTCSeconds() === 0
+        if (!date) return false;
+
+        return new Date(date).getUTCHours() === 0
+            && new Date(date).getUTCMinutes() === 0
+            && new Date(date).getUTCSeconds() === 0
     }
 
     const columns = [
         { field: 'startTime', headerName: 'Start Time', width: 165, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
-        { field: 'endTime', headerName: 'End Time', width: 165, type: 'dateTime', renderCell: (params) => isUtcZero(params.value) ? null : <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div>},
+        { field: 'endTime', headerName: 'End Time', width: 165, type: 'dateTime', renderCell: (params) => isUtcZero(params.value) ? null : <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
         { field: 'hasFinished', headerName: 'Finished', width: 90, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
         { field: 'amountOfAccounts', headerName: 'Accounts', width: 120 },
         { field: 'amountOfAccountsFailed', headerName: 'Failed', width: 120 },
         { field: 'amountOfAccountsSucceeded', headerName: 'Successful', width: 150 }
     ];
 
-    const getAllReportData = async () => {   
+    const getAllReportData = async () => {
         setIsLoadingReports(true);
         let tasksDone = [false, false]
         invoke('get_daily_login_reports_of_last_days', { amountOfDays: 7 })
@@ -113,20 +113,20 @@ function DailyLoginsPage() {
     };
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-        invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
-            .then((res) => {
-                setIsTaskInstalled(!!res);
-                localStorage.setItem('dailyLoginTaskInstalled', res ? 'true' : 'false');
-            });
+        const timeout = setTimeout(async () => {
+            invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
+                .then((res) => {
+                    setIsTaskInstalled(!!res);
+                    localStorage.setItem('dailyLoginTaskInstalled', res ? 'true' : 'false');
+                });
 
-        invoke('check_for_installed_eam_daily_login_task', { checkForV1: true })
-            .then((res) => {
-                setIsTaskV1Installed(!!res);
-                localStorage.setItem('dailyLoginTaskV1Installed', res ? 'true' : 'false');
-            });
+            invoke('check_for_installed_eam_daily_login_task', { checkForV1: true })
+                .then((res) => {
+                    setIsTaskV1Installed(!!res);
+                    localStorage.setItem('dailyLoginTaskV1Installed', res ? 'true' : 'false');
+                });
 
-        getAllReportData();
+            await getAllReportData();
         }, 10);
 
         return () => {
@@ -202,18 +202,18 @@ function DailyLoginsPage() {
 
     const plugin = {
         beforeInit(chart) {
-          // Get a reference to the original fit function
-          const originalFit = chart.legend.fit;
-      
-          // Override the fit function
-          chart.legend.fit = function fit() {
-            // Call the original function and bind scope in order to use `this` correctly inside it
-            originalFit.bind(chart.legend)();
-            // Change the height as suggested in other answers
-            this.height += 15;
-          }
+            // Get a reference to the original fit function
+            const originalFit = chart.legend.fit;
+
+            // Override the fit function
+            chart.legend.fit = function fit() {
+                // Call the original function and bind scope in order to use `this` correctly inside it
+                originalFit.bind(chart.legend)();
+                // Change the height as suggested in other answers
+                this.height += 15;
+            }
         }
-      }
+    }
 
     const options = {
         plugins: {
@@ -324,7 +324,7 @@ function DailyLoginsPage() {
         if (typeof (event.target.type) !== 'undefined') {
             event.stopPropagation();
         }
-    };    
+    };
 
     const taskNotInstalledWarningBanner = (
         <Paper
