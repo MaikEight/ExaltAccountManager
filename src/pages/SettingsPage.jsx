@@ -272,7 +272,7 @@ function SettingsPage() {
                                 },
                             }),
                             transition: theme.transitions.create('background-color'),
-                            borderRadius: theme.shape.borderRadius,
+                            borderRadius: `${theme.shape.borderRadius}px`,
                         }}
                         id="default-server-list-label"
                         value={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
