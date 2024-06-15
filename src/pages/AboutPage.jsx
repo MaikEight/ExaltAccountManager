@@ -52,8 +52,8 @@ function AboutPage() {
                     sx={{ mr: 0, userSelect: "none", flexGrow: 1 }}
                 >
                     <Typography>
-                        Exalt Account Manager version 4.1.4<br />
-                        Released on 29.05.2024.
+                        Exalt Account Manager version 4.1.5<br />
+                        Released on 16.06.2024.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
