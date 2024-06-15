@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useMemo } from "react";
 import UserSettingsContext from "./UserSettingsContext";
 import { createTheme } from "@mui/material";
 import { darkTheme } from "../themes/dark";

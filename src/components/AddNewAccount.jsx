@@ -24,7 +24,6 @@ import { getRequestState, storeCharList } from "../utils/charListUtil";
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { useNavigate } from "react-router-dom";
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 
