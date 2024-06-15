@@ -1,4 +1,4 @@
-import { Box, Chip, FormControl, Input, LinearProgress, MenuItem, Pagination, Paper, Radio, Select, Step, StepLabel, Stepper, Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, alpha } from "@mui/material";
+import { Box, Chip, FormControl, Input, LinearProgress, MenuItem, Pagination, Paper, Radio, Select, Step, StepLabel, Stepper, Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, alpha, darken } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { listen } from '@tauri-apps/api/event'
 import { dialog, invoke } from '@tauri-apps/api';
@@ -63,27 +63,6 @@ const MenuProps = {
         },
     },
 };
-
-async function getAccountsAsCSV(accounts) {
-    accounts = await Promise.all(accounts.map(async (obj) => {
-        delete obj.extra;
-        delete obj.isDeleted;
-        delete obj.lastLogin;
-        delete obj.lastRefresh;
-        delete obj.serverName;
-        delete obj.serverName;
-        delete obj.state;
-        delete obj.steamId;
-        delete obj.token;
-
-        const pw = await invoke("decrypt_string", { data: obj.password });
-        obj.password = pw;
-        return obj;
-    }));
-
-    let csv = Papa.unparse(accounts);
-    return csv;
-}
 
 function parseCsvToObject(csv) {
     let result = Papa.parse(csv, {
@@ -396,7 +375,7 @@ function ImporterPage() {
                 }}
             >
                 {
-                    shownDuplicates.map((duplicate, index) => {
+                    shownDuplicates.map((duplicate) => {
                         return <DuplicateAccountBox
                             key={duplicate.renderId}
                             duplicate={duplicate}
