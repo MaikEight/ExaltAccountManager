@@ -21,7 +21,7 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'end' }}>
-            <FormControl variant="standard" sx={{ m: 1, minWidth: '175px', ...sx}}>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: '175px', ...sx }}>
                 <InputLabel id="group selector">Select a group</InputLabel>
                 <Select
                     labelId="select-a-group"
@@ -64,7 +64,8 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
                     >
                         <AddCircleOutlineIcon />
                     </IconButton>
-                </Tooltip>}
+                </Tooltip>
+            }
         </Box>
     );
 }
