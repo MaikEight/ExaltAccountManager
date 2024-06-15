@@ -848,7 +848,7 @@ function ImporterPage() {
                                                                                 },
                                                                             }),
                                                                             transition: theme.transitions.create('background-color'),
-                                                                            borderRadius: theme.shape.borderRadius,
+                                                                            borderRadius: `${theme.shape.borderRadius}px`,
                                                                         }}
                                                                         id={"data-field-list-label-" + index}
                                                                         value={dataFieldsMapping[field]}
