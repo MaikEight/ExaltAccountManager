@@ -71,7 +71,7 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                                     },
                                 }),
                                 transition: theme.transitions.create('background-color'),
-                                borderRadius: theme.shape.borderRadius,
+                                borderRadius: `${theme.shape.borderRadius}px`,
                             }}
                             id="select-logtype"
                             value={selectedLogtype}
