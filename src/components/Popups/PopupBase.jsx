@@ -11,7 +11,8 @@ function PopupBase({ title, children }) {
                     gap: 2,
                 }}
             >
-                {title &&
+                {
+                    title &&
                     <Box
                         sx={{
                             display: 'flex',

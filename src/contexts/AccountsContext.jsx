@@ -16,7 +16,7 @@ function AccountsContextProvider({ children }) {
         try {
             const response = await invoke('get_all_eam_accounts');
             const accounts = response.map((acc) => {
-                if (!!acc.token) {
+                if (acc.token) {
                     const token = JSON.parse(acc.token);
                     acc.token = token;
                 }
@@ -85,7 +85,7 @@ function AccountsContextProvider({ children }) {
         if (updAccount === null)
             return false;
         
-        const updatedAccountToUse = !!updAccount ? updAccount : updatedAccount;
+        const updatedAccountToUse = updAccount ? updAccount : updatedAccount;
         
         if (selectedAccount && selectedAccount.email === updatedAccount.email) {
             setSelectedAccount(updatedAccountToUse);

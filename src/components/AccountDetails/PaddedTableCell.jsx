@@ -15,39 +15,40 @@ function PaddedTableCell({ children, sx, isEditMode, isPassword, onChange, allow
 
     return (
         <TableCell {...props} sx={{ pl: 4, pr: 4, pt: 1.5, pb: 1.5, ...sx }}>
-            {isEditMode ?
-                (
-                    <>
-                        <TextField
-                            hiddenLabel
-                            variant="standard"
-                            size="small"
-                            InputProps={{
-                                style: {
-                                    fontSize: '0.875rem',
-                                    fontWeight: 300,
-                                    fontFamily: 'Roboto',
-                                    padding: 0,
-                                },
-                            }}
-                            value={children.props.children}
-                            onChange={(event) => onChange(event.target.value)}
-                            type={isPassword && !showPassword ? "password" : "text"}
-                        />
-                        {
-                            isPassword &&
-                            <IconButton
-                                sx={{ ml: -3.25 }}
+            {
+                isEditMode ?
+                    (
+                        <>
+                            <TextField
+                                hiddenLabel
+                                variant="standard"
                                 size="small"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
-                            </IconButton>
-                        }
-                    </>
-                )
-                :
-                children
+                                InputProps={{
+                                    style: {
+                                        fontSize: '0.875rem',
+                                        fontWeight: 300,
+                                        fontFamily: 'Roboto',
+                                        padding: 0,
+                                    },
+                                }}
+                                value={children.props.children}
+                                onChange={(event) => onChange(event.target.value)}
+                                type={isPassword && !showPassword ? "password" : "text"}
+                            />
+                            {
+                                isPassword &&
+                                <IconButton
+                                    sx={{ ml: -3.25 }}
+                                    size="small"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                                </IconButton>
+                            }
+                        </>
+                    )
+                    :
+                    children
             }
             {
                 allowCopy && !isEditMode ?

@@ -142,7 +142,8 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
                         startIcon={<AddIcon />}
                     >
                         ADD New
-                    </Button>}
+                    </Button>
+                }
                 <Box
                     sx={{
                         mr: 0.5,
@@ -200,13 +201,13 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
                                 onChange={(event) => setIncludeAditionalColumns(event.target.checked)}
                             />
                         }
-                        label={(
+                        label={
                             <Typography
                                 variant="body2"
                             >
                                 Include additional columns
                             </Typography>
-                        )}
+                        }
                     />
                 </Box>
                 <Box

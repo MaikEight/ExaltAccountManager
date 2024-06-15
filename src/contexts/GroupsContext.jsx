@@ -38,8 +38,8 @@ function GroupsContextProvider({ children }) {
         } else {
             setGroups(DEFAULT_GROUPS);
 
-            for (let i = 0; i < DEFAULT_GROUPS.length; i++) {
-                await saveGroup(DEFAULT_GROUPS[i]);
+            for (const g of DEFAULT_GROUPS) {
+                await saveGroup(g);
             }
         }
     };

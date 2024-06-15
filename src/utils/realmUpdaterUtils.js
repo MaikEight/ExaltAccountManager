@@ -14,7 +14,7 @@ async function checkForUpdates(force) {
     console.log('Checking for updates...');
     const updateNeeded = await invoke('check_for_game_update', { force: !!force })
         .catch((error) => {
-            logToErrorLog('checkForUpdates', error);            
+            logToErrorLog('checkForUpdates', error);
             return false;
         });
     console.log('Update needed:', updateNeeded);
@@ -34,7 +34,7 @@ async function updateGame() {
 
     sessionStorage.setItem('updateInProgress', 'true');
 
-    tauri.invoke('perform_game_update').then(() => {        
+    tauri.invoke('perform_game_update').then(() => {
         localStorage.removeItem('updateNeeded');
     }).catch((error) => {
         logToErrorLog('updateGame', error);

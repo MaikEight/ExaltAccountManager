@@ -51,7 +51,7 @@ function FeedbackPage() {
         const dislikes = value3 && value3.length > 2 ? `**Dislikes**\n${value3}` : '';
         const feature = value4 && value4.length > 2 ? `**Feature**\n${value4}` : '';
 
-        return `${rating}${!!rating ? '\n\n' : ''}${likes}${!!likes ? '\n\n' : ''}${dislikes}${!!dislikes ? '\n\n' : ''}${feature}`;
+        return `${rating}${rating ? '\n\n' : ''}${likes}${likes ? '\n\n' : ''}${dislikes}${dislikes ? '\n\n' : ''}${feature}`;
     }
 
     const handleSubmit = async () => {
