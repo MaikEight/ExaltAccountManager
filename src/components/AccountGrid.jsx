@@ -68,9 +68,14 @@ function AccountGrid({ setShowAddNewAccount }) {
         { field: 'state', headerName: 'Last State', width: 110 },
     ];
 
-    const handleDailyLoginCheckboxChange = (event, params) => {
-        const updatedAccount = { ...accounts.find((account) => account.id === params.id), performDailyLogin: event.target.checked };
-        updateAccount(updatedAccount, false);
+    const handleDailyLoginCheckboxChange = async (event, params) => {
+        const acc = accounts.find((account) => account.id === params.id);
+        if (!acc) { 
+            console.error('Account not found');
+            return; 
+        }
+        const updatedAccount = { ...acc, performDailyLogin: event.target.checked };
+        await updateAccount(updatedAccount, false);
     };
 
     const handleCellClick = (params, event) => {
