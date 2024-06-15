@@ -1,7 +1,5 @@
 import { invoke, tauri } from '@tauri-apps/api';
-import { getAppInit, getGameFileList } from '../backend/decaApi';
 import { getCurrentTime } from './timeUtils';
-import { UPDATE_URLS } from '../constants';
 import { logToErrorLog } from './loggingUtils';
 
 async function checkForUpdates(force) {
