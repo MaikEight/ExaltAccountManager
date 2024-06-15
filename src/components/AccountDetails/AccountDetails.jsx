@@ -280,7 +280,7 @@ function AccountDetails({ acc, onClose }) {
                                                 value={account.performDailyLogin ? account.performDailyLogin : false}
                                                 onChange={(event) => {
                                                     const newAcc = ({ ...account, performDailyLogin: event.target.checked });
-                                                    updateAccount(newAcc);
+                                                    updateAccount(newAcc, false);
                                                 }}
                                             />
                                             {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
