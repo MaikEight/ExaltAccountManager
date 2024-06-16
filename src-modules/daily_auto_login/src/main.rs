@@ -81,7 +81,7 @@ async fn main() {
     let database_url = get_database_path().to_str().unwrap().to_string();
     {
         let _pool = setup_database(&database_url);
-        *POOL.lock().unwrap() = Some(_pool);
+        *POOL.lock().unwrap() = Some(_pool.expect("Failed to initialize database pool. Exiting..."));
 
         let binding = POOL.lock().unwrap();
         let _pool = &binding.as_ref().unwrap();
