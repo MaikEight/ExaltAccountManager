@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ComponentBox from './../components/ComponentBox';
 import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
