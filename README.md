@@ -39,8 +39,13 @@
 </a>
 <a href="https://tauri.app" style="display: inline">
   <img
-    src="https://img.shields.io/badge/Tauri-1.5.1-violet.svg?style=flat&logo=Tauri&color=512BD4"
-    alt="Tauri version 1.6.7" />
+    src="https://img.shields.io/badge/Tauri-1.6.8-violet.svg?style=flat&logo=Tauri&color=512BD4"
+    alt="Tauri version 1.6.8" />
+</a>
+<a href="https://good-labs.github.io/greater-good-affirmation" style="display: inline">
+<img
+    src="https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg"
+    alt="Greater Good Affirmation" />
 </a>
 <a href="https://github.com/MaikEight/ExaltAccountManager/releases/latest" style="display: inline">
   <img
