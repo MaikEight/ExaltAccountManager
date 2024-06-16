@@ -2,7 +2,6 @@ import { Box, Modal } from "@mui/material";
 import { createContext, useEffect, useState } from "react";
 import useStartupPopups from "../hooks/useStartupPopups";
 import useAccounts from "../hooks/useAccounts";
-import ChangeLogVersion4_1_0 from "../components/Popups/Changelogs/ChangelogVersion4_1_0";
 
 const PopupContext = createContext();
 
