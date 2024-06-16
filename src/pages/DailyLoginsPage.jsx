@@ -46,7 +46,6 @@ function DailyLoginsPage() {
         successfulLogins: [],
         failedLogins: []
     });
-    const [dailyLoginReportsOfLastWeekDataSetsMax, setDailyLoginReportsOfLastWeekDataSetsMax] = useState(0);
     const [isInstallingTask, setIsInstallingTask] = useState(false);
     const [allDailyLoginReports, setAllDailyLoginReports] = useState([]);
     const [isLoadingReports, setIsLoadingReports] = useState(false);
@@ -134,14 +133,6 @@ function DailyLoginsPage() {
         };
     }, []);
 
-    const getMaxChatValue = (lastWeek) => {
-        const successfulLoginsMax = Math.max(...lastWeek.successfulLogins);
-        const failedLoginsMax = Math.max(...lastWeek.failedLogins);
-        const mv = Math.max(successfulLoginsMax, failedLoginsMax);
-        const val = mv + Math.ceil(mv * 0.1);
-        return val;
-    };
-
     useEffect(() => {
         let successfulLogins = [];
         let failedLogins = [];
@@ -167,7 +158,7 @@ function DailyLoginsPage() {
             successfulLogins,
             failedLogins
         };
-        setDailyLoginReportsOfLastWeekDataSetsMax(getMaxChatValue(lastWeek));
+        
         setDailyLoginReportsOfLastWeekDataSets(lastWeek);
 
     }, [dailyLoginReportsOfLastWeek]);
