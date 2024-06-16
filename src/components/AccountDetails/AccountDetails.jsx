@@ -388,7 +388,7 @@ function AccountDetails({ acc, onClose }) {
                                                 if (res.Error) {
                                                     const requestState = getRequestState(res);
                                                     logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + requestState);
-                                                    if (!!res) {
+                                                    if (res) {
                                                         showSnackbar("Failed to refresh data: " + requestState, 'error');
 
                                                         const newAcc = ({ ...acc, state: requestState });
