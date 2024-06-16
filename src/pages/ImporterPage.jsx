@@ -102,11 +102,12 @@ const steps = [
 ];
 
 const dataFields = [
-    { name: 'email', description: 'The email address of the account, this field must be unique', required: true, nameVariants: ['email', 'mail', 'e-mail', 'e_mail'] },
-    { name: 'password', description: 'The password of the account', required: true, nameVariants: ['password', 'pw', 'pass'] },
+    { name: 'email', description: 'The email address of the account, this field must be unique', required: true, nameVariants: ['email', 'mail', 'e-mail', 'e_mail', 'guid'] },
+    { name: 'password', description: 'The password of the account', required: true, nameVariants: ['password', 'pw', 'pass', 'secret'] },
     { name: 'name', description: 'The name of the account', required: false, nameVariants: ['name', 'accountname', 'account_name', 'acc'] },
     { name: 'performDailyLogin', description: 'If the daily login should be performed', required: false, nameVariants: ['performdailylogin', 'perform_daily_login', 'dailylogin', 'daily_login', 'dailylogin', 'daily'] },
-    { name: 'isSteamAccount', description: 'If the account is a steam account', required: false, nameVariants: ['issteamaccount', 'is_steam_account', 'steamaccount', 'steam_account', 'issteam', 'steam'] },
+    { name: 'isSteam', description: 'If the account is a steam account', required: false, nameVariants: ['issteamaccount', 'is_steam_account', 'steamaccount', 'steam_account', 'issteam', 'steam'] },
+    { name: 'steamId', description: 'Steam ID 32 of the account. (only filled out for steam accounts)', required: false, nameVariants: ['steamid', 'steam_id', 'steam_guid'] },
     { name: 'group', description: 'The EAM-Group of the account', required: false, nameVariants: ['group', 'eamgroup', 'eam_group', 'eam'] },
 ];
 
@@ -559,8 +560,10 @@ function ImporterPage() {
                                                 <li>isSteamAccount</li>
                                                 <li>group</li>
                                             </ul>
+                                            <ul style={{ marginTop: 8 }}>
+                                                <li>steamId</li>
+                                            </ul>
                                         </Box>
-
                                     </Box>
                                 </Box>
                             </ComponentBox>
@@ -678,7 +681,7 @@ function ImporterPage() {
                                         ",<br />
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"password": "
                                         <span style={{ color: theme.palette.primary.main }}>
-                                            AnotherPassword
+                                            MySecretHere
                                         </span>
                                         ",<br />
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"accountname": "
@@ -694,6 +697,11 @@ function ImporterPage() {
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"isSteamAccount": "
                                         <span style={{ color: theme.palette.primary.main }}>
                                             true
+                                        </span>
+                                        ",<br />
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"steamId": "
+                                        <span style={{ color: theme.palette.primary.main }}>
+                                            76561198037281736
                                         </span>
                                         ",<br />
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"group": "
@@ -1290,7 +1298,7 @@ function ImporterPage() {
                                 >
                                     <Box>
                                         <Typography variant="body1" fontWeight={'bold'}>
-                                         All set and done 😎 
+                                            All set and done 😎
                                         </Typography>
                                         <Typography variant="body1">
                                             {accountsImported - accountsFailed.length} accounts have been imported successfully.
@@ -1303,7 +1311,7 @@ function ImporterPage() {
                                                     flexDirection: 'column',
                                                     mt: 1
                                                 }}
-                                            >                                                
+                                            >
                                                 <Typography variant="body1" fontWeight={'bold'} color="error">
                                                     Failed to import {accountsFailed.length} accounts.
                                                 </Typography>
