@@ -16,16 +16,19 @@ const getGameExePath = async () => {
                     return res;
                 })
                 .catch((err) => {
+                    console.error('Failed to get game exe path', err);
                     return null;
                 });
         })
         .catch((err) => {
+            console.warn('Failed to get game exe path (1/2)', err);
             return invoke('get_default_game_path')
                 .then((res) => {
+                    console.log('Got game exe path (2/2)', res);
                     return res;
                 })
                 .catch((err) => {
-                    console.error('Failed to get game exe path', err);
+                    console.error('Failed to get game exe path (2/2)', err);
                     return null;
                 });
         });
