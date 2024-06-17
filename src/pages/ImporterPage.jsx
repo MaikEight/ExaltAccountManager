@@ -255,8 +255,27 @@ function ImporterPage() {
         }
 
         if (lowerCaseFileName.endsWith('eam.accounts')) {
-            console.log('Parsing EAM.accounts file:', fileName);
-            //TODO: Implement EAM.accounts file parsing
+            const oldAccountsString = await invoke('format_eam_v3_save_file_to_readable_json');
+            const oldAccounts = JSON.parse(oldAccountsString);
+            const accsToAdd = oldAccounts.map((oldAccount, index) => {
+                return {
+                    ...oldAccount,
+                    id: index,
+                    isSteam: false,
+                    isDeleted: false,
+                }
+            });
+            setAccountsWithMappedFields(accsToAdd);
+            const _importObject = await checkForDuplicates(accsToAdd);
+            setImportObject(_importObject);
+            if (_importObject.duplicates?.length > 0) {
+                setActiveStep(2);
+                return;
+            }
+
+            const _accountsToImport = mergeSelectedDuplicatesWithAccountsToImport(_importObject);
+            setAccountsToImport(_accountsToImport);
+            setActiveStep(3);
             return;
         }
 
@@ -269,11 +288,15 @@ function ImporterPage() {
         return { ...acc, password: pw };
     };
 
-    const checkForDuplicates = async () => {
+    const checkForDuplicates = async (_accountsWithMappedFields) => {
         const _duplicates = [];
 
-        for (const acc of accountsWithMappedFields) {
-            const importedAccs = accountsWithMappedFields.filter((a) => a.email === acc.email);
+        if (!_accountsWithMappedFields) {
+            _accountsWithMappedFields = accountsWithMappedFields;
+        }
+
+        for (const acc of _accountsWithMappedFields) {
+            const importedAccs = _accountsWithMappedFields.filter((a) => a.email === acc.email);
             const existingAccsPromise = currentAccounts?.filter((a) => a.email === acc.email).map(async (a) => {
                 return await decryptAccountPassword(a);
             });
@@ -732,7 +755,10 @@ function ImporterPage() {
                                     p: 1
                                 }}
                             >
-                                <Typography variant="body2">
+                                <Typography variant="h6">
+                                    EAM.accounts files are currently only supported when the filepath is the one descriped below.
+                                </Typography>
+                                <Typography variant="body2" sx={{ mt: 2 }}>
                                     EAM.accounts files are encrypted files that contain all the accounts.
                                 </Typography>
                                 <Typography variant="body2">
@@ -741,8 +767,7 @@ function ImporterPage() {
                                 <Typography variant="body2" sx={{ mt: 0.5 }}>
                                     <b>Note:</b> Only save files of EAM v3.0.0 and newer are supported.
                                     If you have an older save file, please try to update EAM to the version 3.3 and import the file there.
-                                </Typography>import useSnack from './../hooks/useSnack';
-
+                                </Typography>
 
                                 <Typography variant="body1" sx={{ mt: 1 }}>
                                     You can find the file in the EAM save file folder located at:
