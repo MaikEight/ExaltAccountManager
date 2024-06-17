@@ -130,19 +130,21 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
             >
                 {
                     onAddNew &&
-                    <Button
-                        variant="text"
-                        color="primary"
-                        onClick={onAddNew}
-                        size="small"
-                        sx={{
-                            mt: 0.5,
-                            mb: 0.5,
-                        }}
-                        startIcon={<AddIcon />}
-                    >
-                        ADD New
-                    </Button>
+                    <Tooltip title="Add Accounts">
+                        <Button
+                            variant="text"
+                            color="primary"
+                            onClick={onAddNew}
+                            size="small"
+                            sx={{
+                                mt: 0.5,
+                                mb: 0.5,
+                            }}
+                            startIcon={<AddIcon />}
+                        >
+                            Add
+                        </Button>
+                    </Tooltip>
                 }
                 <Box
                     sx={{
