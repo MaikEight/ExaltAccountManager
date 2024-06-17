@@ -53,7 +53,7 @@ function AboutPage() {
                 >
                     <Typography>
                         Exalt Account Manager version 4.1.5<br />
-                        Released on 16.06.2024.
+                        Released on 18.06.2024.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
