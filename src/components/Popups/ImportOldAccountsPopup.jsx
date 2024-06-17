@@ -47,6 +47,7 @@ function ImportOldAccountsPopup() {
                         const acc = {
                             ...oldAccount,
                             isSteam: false,
+                            isDeleted: false,
                         }
                         updateAccount(acc, true);
                     });
