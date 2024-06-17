@@ -4,20 +4,20 @@ import { fetch, ResponseType } from '@tauri-apps/api/http';
 import { invoke } from '@tauri-apps/api/tauri';
 import { logToErrorLog } from '../utils/loggingUtils';
 
-async function postAccountVerify(account, clientId, decryptNeeded = true) {    
+async function postAccountVerify(account, clientId, decryptNeeded = true) {
     if (!account || !clientId) return null;
 
-    const url = `${ROTMG_BASE_URL}/account/verify?__source=ExaltAccountManager`;    
+    const url = `${ROTMG_BASE_URL}/account/verify?__source=ExaltAccountManager`;
     const pw = decryptNeeded ? await invoke('decrypt_string', { data: account.password }) : account.password;
     const data = {
         guid: account.email,
-        ...(account.isSteam ? 
-            { 
+        ...(account.isSteam ?
+            {
                 steamid: account.steamId,
-                secret: pw 
-            } : 
-            { 
-                password: pw 
+                secret: pw
+            } :
+            {
+                password: pw
             }
         ),
         clientToken: clientId,
@@ -60,6 +60,38 @@ async function postCharList(accessToken) {
     }
 }
 
+async function postRegisterAccount(account) {
+    if (!account) return null;
+
+    const url = `${ROTMG_BASE_URL}/account/register`;
+
+    const data = {
+        newGUID: account.email,
+        newPassword: account.password,
+        isAgeVerified: 'true',
+        entrytag: '',
+        signedUpKabamEmail: '0',
+        name: account.name,
+        game_net: 'Unity',
+        play_platform: 'Unity',
+        game_net_user_id: '',
+        __source: "ExaltAccountManager"
+    }
+
+    try {
+        return await invoke('send_post_request_with_form_url_encoded_data', { url, data })
+            .catch(error => {
+                console.error(`Error: ${error}`);
+                logToErrorLog('postRegisterAccount', error);
+                return 'EAM API error';
+            });
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        logToErrorLog('postCharList', error);
+        return null;
+    }
+}
+
 async function getAppInit() {
     try {
         const response = await fetch(
@@ -79,7 +111,7 @@ async function getAppInit() {
         }
 
         const appSettings = xmlToJson(await response.data);
-        
+
         sessionStorage.setItem('buildHash', appSettings.BuildHash);
         sessionStorage.setItem('buildCDN', appSettings.BuildCDN ? appSettings.BuildCDN.replace('build-release/', '') : 'https://rotmg-build.decagames.com/');
 
@@ -92,17 +124,17 @@ async function getAppInit() {
 }
 
 async function getGameFileList(buildHash) {
-    if(!buildHash || buildHash === '' && sessionStorage.getItem('buildHash') !== null){
+    if (!buildHash || buildHash === '' && sessionStorage.getItem('buildHash') !== null) {
         buildHash = sessionStorage.getItem('buildHash');
     }
 
-    if(sessionStorage.getItem('buildCDN') === null) {
+    if (sessionStorage.getItem('buildCDN') === null) {
         await getAppInit();
     }
     const buildCDN = sessionStorage.getItem('buildCDN');
 
     if (!buildHash || !buildCDN) throw new Error('Build hash or CDN not found');
-    
+
     try {
         const response = await fetch(
             `${buildCDN}build-release/${UPDATE_URLS(1, buildHash)}`,
@@ -110,7 +142,7 @@ async function getGameFileList(buildHash) {
                 method: 'GET',
                 responseType: ResponseType.JSON
             });
-            
+
         return response.data.files;
     } catch (error) {
         console.log(error);
@@ -122,6 +154,7 @@ async function getGameFileList(buildHash) {
 export {
     postAccountVerify,
     postCharList,
+    postRegisterAccount,
     getAppInit,
     getGameFileList,
 };
