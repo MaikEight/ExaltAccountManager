@@ -14,6 +14,7 @@ tauri-build = { version = "1.5.2", features = [] }
 
 [dependencies]
 tauri = { version = "1.6.8", features = [ "updater", "dialog-all", "http-all", "devtools", "path-all", "macos-private-api", "window-set-min-size", "window-unminimize", "window-unmaximize", "window-start-dragging", "window-close", "window-minimize", "window-hide", "window-show", "window-maximize", "fs-all", "shell-open"] }
+devtools = "0.3.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-std = "1.12"
