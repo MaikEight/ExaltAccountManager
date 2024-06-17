@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import AccountGrid from "../components/AccountGrid";
 import { useState } from "react";
 import AccountDetails from "../components/AccountDetails/AccountDetails";
-import AddNewAccount from "../components/AddNewAccount";
+import AddNewAccount from "../components/AddNewAccount/AddNewAccount";
 import useAccounts from "../hooks/useAccounts";
 
 function AccountsPage() {
