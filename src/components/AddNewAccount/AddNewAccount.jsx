@@ -6,26 +6,28 @@ import { useTheme } from "@emotion/react";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
-import useColorList from "../hooks/useColorList";
+import useColorList from "../../hooks/useColorList";
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
-import ComponentBox from "./ComponentBox";
-import StyledButton from "./StyledButton";
-import useHWID from "../hooks/useHWID";
-import { postAccountVerify, postCharList } from "../backend/decaApi";
-import GroupSelector from "./AccountDetails/GroupSelector";
-import GroupRow from "./AccountDetails/GroupRow";
-import TextTableRow from "./AccountDetails/TextTableRow";
-import DailyLoginCheckBoxTableRow from "./AccountDetails/DailyLoginCheckBoxTableRow";
-import PaddedTableCell from "./AccountDetails/PaddedTableCell";
-import useAccounts from "../hooks/useAccounts";
-import useGroups from "../hooks/useGroups";
-import useServerList from './../hooks/useServerList';
-import { getRequestState, storeCharList } from "../utils/charListUtil";
+import ComponentBox from "../ComponentBox";
+import StyledButton from "../StyledButton";
+import useHWID from "../../hooks/useHWID";
+import { postAccountVerify, postCharList } from "../../backend/decaApi";
+import GroupSelector from "../AccountDetails/GroupSelector";
+import GroupRow from "../AccountDetails/GroupRow";
+import TextTableRow from "../AccountDetails/TextTableRow";
+import DailyLoginCheckBoxTableRow from "../AccountDetails/DailyLoginCheckBoxTableRow";
+import PaddedTableCell from "../AccountDetails/PaddedTableCell";
+import useAccounts from "../../hooks/useAccounts";
+import useGroups from "../../hooks/useGroups";
+import useServerList from '../../hooks/useServerList';
+import { getRequestState, storeCharList } from "../../utils/charListUtil";
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import { useNavigate } from "react-router-dom";
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import RegisterAccount from "./RegisterAccount";
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -41,7 +43,7 @@ function AddNewAccount({ isOpen, onClose }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [newAccount, setNewAccount] = useState({ email: '', password: '', isSteam: false, steamId: null });
-
+    const [showRegisterForm, setShowRegisterForm] = useState(false);
     const { saveServerList } = useServerList();
 
     //STEP 1
@@ -220,7 +222,14 @@ function AddNewAccount({ isOpen, onClose }) {
                                 />
                             </Box>
 
-                            <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <StyledButton
+                                    color="secondary"
+                                    onClick={() => setShowRegisterForm(true)}
+                                    startIcon={<AddCircleOutlineOutlinedIcon />}
+                                >
+                                    Register
+                                </StyledButton>
                                 <Tooltip
                                     title={isLoginButtonDisabled() ? 'Please enter a valid login credentials' : ''}
                                 >
@@ -470,34 +479,40 @@ function AddNewAccount({ isOpen, onClose }) {
                         <CloseIcon sx={{ fontSize: 21 }} />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                        Add new account
+                        {showRegisterForm? 'Register new Account' : 'Add new account'}
                     </Typography>
                 </Box>
 
-                <Box sx={{ mt: 2, pl: 1, pr: 1, }}>
-                    <Stepper activeStep={activeStep} alternativeLabel sx={{ width: '100%' }}>
-                        {steps.map((label, index) => {
-                            const stepProps = {};
-                            const labelProps = {};
-                            if (isStepOptional(index)) {
-                                labelProps.optional = (
-                                    <Typography variant="caption">Optional</Typography>
+                {
+                    !showRegisterForm &&
+                    <Box sx={{ mt: 2, pl: 1, pr: 1, }}>
+                        <Stepper activeStep={activeStep} alternativeLabel sx={{ width: '100%' }}>
+                            {steps.map((label, index) => {
+                                const stepProps = {};
+                                const labelProps = {};
+                                if (isStepOptional(index)) {
+                                    labelProps.optional = (
+                                        <Typography variant="caption">Optional</Typography>
+                                    );
+                                }
+
+                                stepProps.completed = activeStep > index;
+
+                                return (
+                                    <Step key={label} {...stepProps}>
+                                        <StepLabel icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]} {...labelProps} sx={{ ...(activeStep === index ? { color: color.color } : {}) }}>{label}</StepLabel>
+                                    </Step>
                                 );
-                            }
-
-                            stepProps.completed = activeStep > index;
-
-                            return (
-                                <Step key={label} {...stepProps}>
-                                    <StepLabel icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]} {...labelProps} sx={{ ...(activeStep === index ? { color: color.color } : {}) }}>{label}</StepLabel>
-                                </Step>
-                            );
-                        })}
-                    </Stepper>
-                </Box>
+                            })}
+                        </Stepper>
+                    </Box>
+                }
                 <Box sx={{ mt: 2, overflowX: 'auto' }}>
                     {
-                        getStepContent()
+                        showRegisterForm ?
+                            <RegisterAccount open={showRegisterForm} onClose={() => setShowRegisterForm(false)} />
+                            :
+                            getStepContent()
                     }
                 </Box>
             </Drawer>
