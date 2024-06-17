@@ -7,28 +7,28 @@ function ChangelogVersion4_1_5() {
     return (
         <ChangelogPopupBase        
             version="4.1.5"
-            title="Importer, Account creator, Stability impro. and more!"
-            releaseDate={"02.06.2024"}
+            title="Importer, Register Accounts, Stability Improvements. and more!"
+            releaseDate={"18.06.2024"}
             icon={<CalendarMonthOutlinedIcon />}
-            width={'750px'}
+            width={'850px'}
         >
             <ChangelogEntry
                 title={'Im- & Exporter'}
                 listOfChanges={[
                     "Added an importer and exporter for accounts. Supported formats are JSON, CSV and EAM.accounts.",
                     "The importer can be found in the add new accounts slideout.",
-                    "The exporter can be found in the accounts page and supports JSON and CSV.",
+                    "The exporter can be found in the toolbar of the accounts page and supports JSON and CSV.",
                 ]}
             />
             <ChangelogEntry
-                title={'Create accounts'}
+                title={'Register Accounts'}
                 listOfChanges={[
-                    "Added a new feature to create accounts.",
+                    "Added a new feature to register accounts.",
                     "The feature can be found in the add new accounts slideout.",
                 ]}
             />
             <ChangelogEntry
-                title={'Stability improvements'}
+                title={'Stability Improvements'}
                 listOfChanges={[
                     "Added more error handling to the application to prevent crashes and improve stability.",
                     "A new error boundary has been added to catch errors and display a fallback UI.",
@@ -37,7 +37,11 @@ function ChangelogVersion4_1_5() {
             <ChangelogEntry
                 title={'Miscellaneous'}
                 listOfChanges={[
-                    "",
+                    "Added new devtools for debugging purposes.",
+                    "Added a new console greeting message.",
+                    "Improved the Toolbar of the Accounts page.",
+                    "Improved the border radius of the application. It is now more rounded. 6px -> 9px.",
+                    "Improved the Daily Logins graph UI.",
                 ]}
             />            
             <Box
@@ -64,14 +68,13 @@ function ChangelogVersion4_1_5() {
                             <ul>
                                 <li>TheDangerScrew</li>
                                 <li>Pro90</li>
-                                <li>N1k-o</li>
+                                <li>Crixxxu</li>
                             </ul>
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
-                                <li>Robin</li>
-                                <li>BlastaMan</li>
-                                <li>and many more...</li>
+                                <li>Avyora</li>
+                                <li>and more...</li>
                             </ul>
                         </Typography>
                     </Box>
