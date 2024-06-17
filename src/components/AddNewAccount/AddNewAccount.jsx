@@ -58,6 +58,7 @@ function AddNewAccount({ isOpen, onClose }) {
     const navigate = useNavigate();
 
     useEffect(() => {
+        setShowRegisterForm(false);
         setNewAccount({ email: '', password: '', isSteam: false, steamId: null, performDailyLogin: false, isDeleted: false });
         setActiveStep(0);
     }, [isOpen]);
@@ -479,7 +480,7 @@ function AddNewAccount({ isOpen, onClose }) {
                         <CloseIcon sx={{ fontSize: 21 }} />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                        {showRegisterForm? 'Register new Account' : 'Add new account'}
+                        {showRegisterForm ? 'Register new Account' : 'Add new account'}
                     </Typography>
                 </Box>
 
@@ -510,7 +511,15 @@ function AddNewAccount({ isOpen, onClose }) {
                 <Box sx={{ mt: 2, overflowX: 'auto' }}>
                     {
                         showRegisterForm ?
-                            <RegisterAccount open={showRegisterForm} onClose={() => setShowRegisterForm(false)} />
+                            <RegisterAccount
+                                open={showRegisterForm}
+                                onClose={(closeAll) => {
+                                    setShowRegisterForm(false);
+                                    if (closeAll) {
+                                        onClose();
+                                    } 
+                                }}
+                            />
                             :
                             getStepContent()
                     }
