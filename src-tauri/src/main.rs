@@ -51,7 +51,8 @@ const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
     include_bytes!("../IncludedBinaries/EAM_Daily_Auto_Login.exe");
 const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "8da7094f31996c0a1f08aee856039e16";
 
-fn main() {
+fn main() {    
+    let devtools = devtools::init();
     //Create the save file directory if it does not exist
     let save_file_path = get_save_file_path();
     if !Path::new(&save_file_path).exists() {
@@ -59,13 +60,13 @@ fn main() {
     }
 
     // Initialize the logger
-    let log_file = File::create(save_file_path + "\\log.txt").unwrap();
-    CombinedLogger::init(vec![WriteLogger::new(
-        LevelFilter::Info,
-        Config::default(),
-        log_file,
-    )])
-    .unwrap();
+    // let log_file = File::create(save_file_path + "\\log.txt").unwrap();
+    // CombinedLogger::init(vec![WriteLogger::new(
+    //     LevelFilter::Info,
+    //     Config::default(),
+    //     log_file,
+    // )])
+    // .unwrap();
 
     //Initialize the database pool
     info!("Initialize the database pool...");
@@ -92,6 +93,7 @@ fn main() {
 
     //Run the tauri application
     tauri::Builder::default()
+        .plugin(devtools)
         .invoke_handler(tauri::generate_handler![
             open_url,
             get_save_file_path,
@@ -145,7 +147,7 @@ fn main() {
             uninstall_eam_daily_login_task,
             run_eam_daily_login_task_now
         ])
-        .run(tauri::generate_context!())
+        .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
 }
 
