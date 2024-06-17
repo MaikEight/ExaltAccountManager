@@ -60,7 +60,7 @@ function AccountGrid({ setShowAddNewAccount }) {
     const columns = [
         { field: 'group', headerName: 'Group', width: 65, renderCell: (params) => getGroupUI(params) },
         { field: 'name', headerName: 'Accountname', minWidth: 150, width: 230, flex: 0.2 },
-        { field: 'email', headerName: 'Email', minWidth: 150, flex: 0.3, renderCell: (params) => { return (params.value && params.value.startsWith('steamworks:')) ? <SteamworksMailColumn params={params} /> : params.value } },
+        { field: 'email', headerName: 'Email', minWidth: 150, flex: 0.3, renderCell: (params) => {  return (params.value && params.row.isSteam ) ? <SteamworksMailColumn params={params} /> : params.value } },
         { field: 'lastLogin', headerName: 'Last Login', minWidth: 115, flex: 0.125, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
         { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
         { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 115, flex: 0.125, renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
