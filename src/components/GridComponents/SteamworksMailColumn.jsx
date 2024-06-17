@@ -2,7 +2,10 @@ import { useTheme } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
 
 function SteamworksMailColumn(params) {
-    const id = params.params.value && params.params.value.startsWith('steamworks:') ? params.params.value.split(':')[1] : "-";
+    const id = params.params.value
+        && params.params.value.startsWith('steamworks:')
+        ? params.params.value.split(':')[1]
+        : params.params.row.email;
     const theme = useTheme();
 
     return (
