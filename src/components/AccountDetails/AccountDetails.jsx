@@ -106,7 +106,7 @@ function AccountDetails({ acc, onClose }) {
     };
 
     const getServerToJoin = () => {
-        if (acc?.serverName && acc.serverName !== "Default") {
+        if (acc?.serverName && acc.serverName !== "Default" && acc.serverName !== "Last Server") {
             return acc.serverName;
         }
 
