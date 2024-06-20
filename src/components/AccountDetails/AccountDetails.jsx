@@ -276,11 +276,21 @@ function AccountDetails({ acc, onClose }) {
                                             {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
                                             {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={newDecryptedPassword} onChange={(value) => setNewDecryptedPassword(value)} />}
                                             {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
-                                            <ServerTableRow key='server' keyValue={"Server"} value={account.server} />
+                                            <ServerTableRow
+                                                key='server'
+                                                keyValue={"Server"}
+                                                value={account.serverName}
+                                                onChange={(value) => handleAccountEdit({ ...account, serverName: value })}
+                                                showSaveButton={accountOrg?.serverName !== account?.serverName}
+                                                onSave={() => {
+                                                    const newAcc = ({ ...accountOrg, serverName: account.serverName });
+                                                    updateAccount(newAcc, false);
+                                                }}
+                                            />
                                             <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
                                                 value={account.performDailyLogin ? account.performDailyLogin : false}
                                                 onChange={(event) => {
-                                                    const newAcc = ({ ...account, performDailyLogin: event.target.checked });
+                                                    const newAcc = ({ ...accountOrg, performDailyLogin: event.target.checked });
                                                     updateAccount(newAcc, false);
                                                 }}
                                             />
