@@ -1,5 +1,5 @@
 
-import { Box, FormControl, FormControlLabel, Input, MenuItem, Select, Switch, TextField, Tooltip, Typography, alpha } from '@mui/material';
+import { Box, FormControlLabel, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { useContext, useEffect, useState } from 'react';
@@ -14,21 +14,10 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import ColorContext from '../contexts/ColorContext';
 import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
-import ServerContext from '../contexts/ServerContext';
 import { useTheme } from '@emotion/react';
-import ServerChip from '../components/GridComponents/ServerChip';
 import useSnack from '../hooks/useSnack';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 150,
-        },
-    },
-};
+import useServerList from '../hooks/useServerList';
+import ServerListSelect from '../components/ServerListSelect';
 
 function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
@@ -48,7 +37,7 @@ function SettingsPage() {
     const theme = useTheme();
     const userSettings = useUserSettings();
     const colorContext = useContext(ColorContext);
-    const { serverList } = useContext(ServerContext);
+    const { serverList } = useServerList();
     const { showSnackbar } = useSnack();
 
     const setTheSettings = async () => {
@@ -256,78 +245,14 @@ function SettingsPage() {
                             To add servers to this list, please add an account and click on "Refresh data".
                         </Typography>
                 }
-                <FormControl>
-                    <Select
-                        sx={{
-                            height: 39,
-                            ...(theme.palette.mode === 'dark' ? {
-                                backgroundColor: alpha(theme.palette.background.default, 0.5),
-                                '&:hover': {
-                                    backgroundColor: alpha(theme.palette.common.white, 0.08),
-                                },
-                            } : {
-                                backgroundColor: alpha(theme.palette.background.default, 0.75),
-                                '&:hover': {
-                                    backgroundColor: alpha(theme.palette.text.primary, 0.05),
-                                },
-                            }),
-                            transition: theme.transitions.create('background-color'),
-                            borderRadius: `${theme.shape.borderRadius}px`,
-                        }}
-                        id="default-server-list-label"
-                        value={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
-                        onChange={(event) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: event.target.value } }) }}
-                        input={
-                            <Input
-                                id="default-server-list-label"
-                                disableUnderline
-                            />
-                        }
-                        renderValue={(selected) => (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: '100%',
-                                    height: '100%',
-                                    ml: 0.5,
-                                    mr: 0.5
-                                }}
-                            >
-                                <ServerChip key={"key-" + selected} params={{ value: selected }} />
-                            </Box>
-                        )}
-                        MenuProps={MenuProps}
-                    >
-                        {
-                            [
-                                { Name: 'Last server', DNS: 'LAST' },
-                                ...(serverList && serverList.length > 0 ? serverList : [])
-                            ].map((server) => (
-                                <MenuItem
-                                    key={server.DNS}
-                                    value={server.Name}
-                                    sx={{
-                                        '&.Mui-selected': {
-                                            backgroundColor: theme.palette.action.selected,
-                                        },
-                                        '&.Mui-selected:hover': {
-                                            backgroundColor: theme.palette.action.selected,
-                                        },
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <ServerChip params={{ value: server.Name }} />
-                                </MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
+                <ServerListSelect
+                    serversToAdd={[{ Name: 'Last server', DNS: 'LAST' },]}
+                    selectedServer={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
+                    onChange={(server) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: server } }) }}
+                    defaultValue={'Last server'}
+                />
+                
             </ComponentBox>
-
             {/* Theme */}
             <ComponentBox
                 title="Theme"
