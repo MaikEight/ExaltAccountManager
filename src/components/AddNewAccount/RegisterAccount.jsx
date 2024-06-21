@@ -226,7 +226,7 @@ function RegisterAccount({ open, onClose }) {
                 >
                     <StyledButton
                         color="secondary"
-                        onClick={() => onClose(true)}
+                        onClick={() => onClose(false)}
                         startIcon={<ArrowBackIosNewOutlinedIcon />}
                     >
                         Back
