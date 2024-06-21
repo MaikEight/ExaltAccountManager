@@ -2,14 +2,12 @@ import { Box, IconButton, TableRow, Tooltip, Typography } from "@mui/material";
 import PaddedTableCell from "./PaddedTableCell";
 import ServerChip from "../GridComponents/ServerChip";
 import { useState } from "react";
-import { useTheme } from "@emotion/react";
 import ServerListSelect from "../ServerListSelect";
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 
 function ServerTableRow({ keyValue, value, showSaveButton, onSave, ...rest }) {
     const [selected, setSelected] = useState(value);
-    const theme = useTheme();
 
     const { onChange } = rest;
     const params = {

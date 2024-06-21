@@ -14,7 +14,6 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import ColorContext from '../contexts/ColorContext';
 import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
-import { useTheme } from '@emotion/react';
 import useSnack from '../hooks/useSnack';
 import useServerList from '../hooks/useServerList';
 import ServerListSelect from '../components/ServerListSelect';
@@ -34,7 +33,6 @@ function SettingsPage() {
         { field: 'performDailyLogin', headerName: 'Daily Login' },
         { field: 'state', headerName: 'Last State' }
     ];
-    const theme = useTheme();
     const userSettings = useUserSettings();
     const colorContext = useContext(ColorContext);
     const { serverList } = useServerList();
