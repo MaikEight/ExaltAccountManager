@@ -4,6 +4,7 @@ import WelcomeToEamPopup from '../components/Popups/WelcomeToEamPopup';
 import useAccounts from "./useAccounts";
 import ChangelogVersion4_1_0 from "../components/Popups/Changelogs/ChangelogVersion4_1_0";
 import ChangelogVersion4_1_5 from "../components/Popups/Changelogs/ChangelogVersion4_1_5";
+import ChangelogVersion4_2_0 from "../components/Popups/Changelogs/ChangelogVersion4_2_0";
 
 function useStartupPopups() {
     const { accounts } = useAccounts();
@@ -18,7 +19,12 @@ function useStartupPopups() {
             version: "4.1.5",
             preventClose: false,
             content: <ChangelogVersion4_1_5 />
-        }        
+        },
+        {
+            version: "4.2.0",
+            preventClose: false,
+            content: <ChangelogVersion4_2_0 />
+        },
     ]
 
     const checkForFirstEamStart = () => {
