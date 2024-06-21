@@ -1,3 +1,7 @@
+import { Box, Typography } from '@mui/material';
+import ChangelogEntry from './ChangelogEntry';
+import ChangelogPopupBase from './ChangelogPopupBase';
+import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
 
 function ChangelogVersion4_2_0() {
     return (
@@ -5,7 +9,7 @@ function ChangelogVersion4_2_0() {
             version="4.2.0"
             title="Vault Peeker, Server list and bug fixes!"
             releaseDate={"26.06.2024"}
-            icon={<CalendarMonthOutlinedIcon />}
+            icon={<CelebrationOutlinedIcon />}
         >
             <ChangelogEntry
                 title={'Vault Peeker'}
