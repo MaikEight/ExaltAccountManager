@@ -48,7 +48,7 @@ function CustomToolbar(props) {
                     onClick={() => appWindow.close()}
                     sx={{
                         color: theme.palette.text.primary,
-                        borderRadius: '0px 8px 4px 0px',
+                        borderRadius: `0px 9px ${theme.shape.borderRadius}px 0px`,
                     }}
                 >
                     <CloseIcon />
