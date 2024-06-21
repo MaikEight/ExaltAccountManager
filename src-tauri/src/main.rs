@@ -15,6 +15,8 @@ use eam_commons::rotmg_updater::UpdaterError;
 use eam_commons::setup_database;
 use eam_commons::DbPool;
 
+use diesel::r2d2::Pool;
+use diesel::SqliteConnection;
 use lazy_static::lazy_static;
 use log::{error, info};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
@@ -33,10 +35,8 @@ use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 use tauri::Error;
-use zip::read::ZipArchive;
 use webbrowser::{open_browser, Browser};
-use diesel::r2d2::Pool;
-use diesel::SqliteConnection;
+use zip::read::ZipArchive;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
@@ -51,7 +51,8 @@ const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
     include_bytes!("../IncludedBinaries/EAM_Daily_Auto_Login.exe");
 const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "8da7094f31996c0a1f08aee856039e16";
 
-fn main() {    
+fn main() {
+    #[cfg(debug_assertions)]
     let devtools = devtools::init();
     //Create the save file directory if it does not exist
     let save_file_path = get_save_file_path();
@@ -60,13 +61,15 @@ fn main() {
     }
 
     // Initialize the logger
-    // let log_file = File::create(save_file_path + "\\log.txt").unwrap();
-    // CombinedLogger::init(vec![WriteLogger::new(
-    //     LevelFilter::Info,
-    //     Config::default(),
-    //     log_file,
-    // )])
-    // .unwrap();
+    #[cfg(not(debug_assertions))]
+    let log_file = File::create(save_file_path + "\\log.txt").unwrap();
+    #[cfg(not(debug_assertions))]
+    CombinedLogger::init(vec![WriteLogger::new(
+        LevelFilter::Info,
+        Config::default(),
+        log_file,
+    )])
+    .unwrap();
 
     //Initialize the database pool
     info!("Initialize the database pool...");
@@ -91,9 +94,12 @@ fn main() {
         }
     }
 
+    let builder = tauri::Builder::default();
+    #[cfg(debug_assertions)]
+    let builder = builder.plugin(devtools);
+
     //Run the tauri application
-    tauri::Builder::default()
-        .plugin(devtools)
+    builder
         .invoke_handler(tauri::generate_handler![
             open_url,
             get_save_file_path,
@@ -847,7 +853,7 @@ async fn get_all_user_data() -> Result<Vec<models::UserData>, tauri::Error> {
 }
 
 fn get_all_user_data_impl(
-    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
 ) -> Result<Vec<models::UserData>, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::get_all_user_data(pool)
@@ -876,9 +882,8 @@ fn get_user_data_by_key_impl(
     key: String,
 ) -> Result<models::UserData, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_user_data_by_key(pool, key).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_user_data_by_key(pool, key)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -903,9 +908,8 @@ fn insert_or_update_user_data_impl(
     user_data: models::UserData,
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::insert_or_update_user_data(pool, user_data).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::insert_or_update_user_data(pool, user_data)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -930,9 +934,8 @@ fn delete_user_data_by_key_impl(
     key: String,
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::delete_user_data_by_key(pool, key).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::delete_user_data_by_key(pool, key)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -960,9 +963,8 @@ fn get_all_daily_login_reports_impl(
     pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
 ) -> Result<Vec<DailyLoginReports>, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_all_daily_login_reports(pool).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_all_daily_login_reports(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -990,9 +992,7 @@ fn get_daily_login_reports_of_last_days_impl(
 ) -> Result<Vec<DailyLoginReports>, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::get_daily_login_reports_of_last_days(pool, amount_of_days)
-            .map_err(|e| {
-                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-            });
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1019,9 +1019,8 @@ fn get_daily_login_report_by_id_impl(
     report_id: String,
 ) -> Result<DailyLoginReports, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_daily_login_report_by_id(pool, report_id).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_daily_login_report_by_id(pool, report_id)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1049,9 +1048,7 @@ fn insert_or_update_daily_login_report_impl(
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::insert_or_update_daily_login_report(pool, daily_login_report)
-            .map_err(|e| {
-                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-            });
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1065,7 +1062,8 @@ fn insert_or_update_daily_login_report_impl(
 // #############################
 
 #[tauri::command]
-async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
+async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntries>, tauri::Error>
+{
     match POOL.lock() {
         Ok(pool) => get_all_daily_login_report_entries_impl(pool),
         Err(poisoned) => {
@@ -1079,9 +1077,8 @@ fn get_all_daily_login_report_entries_impl(
     pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
 ) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_all_daily_login_report_entries(pool).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_all_daily_login_report_entries(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1109,9 +1106,7 @@ fn get_daily_login_report_entry_by_id_impl(
 ) -> Result<DailyLoginReportEntries, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::get_daily_login_report_entry_by_id(pool, Some(report_id))
-            .map_err(|e| {
-                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-            });
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1139,9 +1134,7 @@ fn get_daily_login_report_entries_by_report_id_impl(
 ) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::get_daily_login_report_entries_by_report_id(pool, report_id)
-            .map_err(|e| {
-                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-            });
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1168,11 +1161,12 @@ fn insert_or_update_daily_login_report_entry_impl(
     daily_login_report_entry: DailyLoginReportEntries,
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::insert_or_update_daily_login_report_entry(pool, daily_login_report_entry)
-            .map(|i| i as usize)
-            .map_err(|e| {
-                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-            });
+        return diesel_functions::insert_or_update_daily_login_report_entry(
+            pool,
+            daily_login_report_entry,
+        )
+        .map(|i| i as usize)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1200,9 +1194,8 @@ fn get_all_eam_accounts_impl(
     pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
 ) -> Result<Vec<models::EamAccount>, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_all_eam_accounts(pool).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_all_eam_accounts(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1229,9 +1222,8 @@ fn get_eam_account_by_email_impl(
     account_email: String,
 ) -> Result<models::EamAccount, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_eam_account_by_email(pool, account_email).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_eam_account_by_email(pool, account_email)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1259,9 +1251,7 @@ fn insert_or_update_eam_account_impl(
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::insert_or_update_eam_account(pool, eam_account)
-            .map_err(|e| {
-                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-            });
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1290,15 +1280,13 @@ fn delete_eam_account_impl(
             id: None,
             time: "".to_string(),
             accountEmail: Some(account_email.clone()),
-            message: ("Deleting account from database: ".to_owned() + &account_email)
-                .to_string(),
+            message: ("Deleting account from database: ".to_owned() + &account_email).to_string(),
             sender: "tauri".to_string(),
         };
         let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
 
-        return diesel_functions::delete_eam_account(pool, account_email).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::delete_eam_account(pool, account_email)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1340,9 +1328,8 @@ fn get_all_eam_groups_impl(
     pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
 ) -> Result<Vec<models::EamGroup>, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_all_eam_groups(pool).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_all_eam_groups(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1352,9 +1339,7 @@ fn get_all_eam_groups_impl(
 }
 
 #[tauri::command]
-async fn insert_or_update_eam_group(
-    eam_group: models::EamGroup,
-) -> Result<usize, tauri::Error> {
+async fn insert_or_update_eam_group(eam_group: models::EamGroup) -> Result<usize, tauri::Error> {
     match POOL.lock() {
         Ok(pool) => insert_or_update_eam_group_impl(pool, eam_group),
         Err(poisoned) => {
@@ -1370,9 +1355,7 @@ fn insert_or_update_eam_group_impl(
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::insert_or_update_eam_group(pool, eam_group)
-            .map_err(|e| {
-                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-            });
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1397,9 +1380,8 @@ fn delete_eam_group_impl(
     group_id: i32,
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::delete_eam_group(pool, group_id).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::delete_eam_group(pool, group_id)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1489,9 +1471,7 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#   char_list_dataset   #
 //#########################
 #[tauri::command]
-async fn insert_char_list_dataset(
-    dataset: models::CharListDataset,
-) -> Result<usize, tauri::Error> {
+async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<usize, tauri::Error> {
     match POOL.lock() {
         Ok(pool) => insert_char_list_dataset_impl(pool, dataset),
         Err(poisoned) => {
@@ -1506,9 +1486,8 @@ fn insert_char_list_dataset_impl(
     dataset: models::CharListDataset,
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::insert_char_list_dataset(pool, dataset).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::insert_char_list_dataset(pool, dataset)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1536,9 +1515,8 @@ fn get_all_audit_logs_impl(
     pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
 ) -> Result<Vec<AuditLog>, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_all_audit_logs(pool).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_all_audit_logs(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1563,9 +1541,8 @@ fn get_audit_log_for_account_impl(
     account_email: String,
 ) -> Result<Vec<AuditLog>, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_audit_log_for_account(pool, account_email).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_audit_log_for_account(pool, account_email)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1590,9 +1567,8 @@ fn log_to_audit_log_impl(
     log: AuditLog,
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::insert_audit_log(pool, log).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::insert_audit_log(pool, log)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1616,9 +1592,8 @@ fn get_all_error_logs_impl(
     pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
 ) -> Result<Vec<ErrorLog>, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::get_all_error_logs(pool).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::get_all_error_logs(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
@@ -1643,9 +1618,8 @@ fn log_to_error_log_impl(
     log: ErrorLog,
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
-        return diesel_functions::insert_error_log(pool, log).map_err(|e| {
-            tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
-        });
+        return diesel_functions::insert_error_log(pool, log)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
     Err(tauri::Error::from(std::io::Error::new(
