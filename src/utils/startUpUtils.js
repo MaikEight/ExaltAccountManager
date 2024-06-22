@@ -7,8 +7,6 @@ import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
 import { logToErrorLog } from "./loggingUtils";
 
 async function performCheckForUpdates() {
-
-    console.log("Checking for EAM-Updates");
     try {
         const update = await checkUpdate();
         if (update.shouldUpdate) {
@@ -27,6 +25,7 @@ async function onStartUp() {
     writeStartupLogoToConsole();
     addConsoleLogListener();
 
+    //Check for EAM update
     performCheckForUpdates();
     getLatestEamVersion()
         .then((version) => {
@@ -44,6 +43,7 @@ async function onStartUp() {
         return;
     }
 
+    // Check for game updates every 24 hours
     const lastUpdateCheck = localStorage.getItem("lastUpdateCheck");
     const [day, month, yearTime] = lastUpdateCheck.split(".");
     const [year, time] = yearTime.split(" ");
@@ -53,9 +53,20 @@ async function onStartUp() {
     const daysSinceLastUpdateCheck = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
     if (daysSinceLastUpdateCheck > 1) {
-        console.log("Checking for updates on startup");
         checkForUpdates(false);
     }
+
+    //Delete old Error logs
+    invoke('delete_from_error_log', { days: 7 })
+        .then((res) => {
+            if (res > 0) {
+                console.log(`Deleted ${res} old error logs`);
+            }
+        })
+        .catch((e) => {
+            console.error(e);
+            logToErrorLog("delete_from_error_log", e);
+        });
 }
 
 function writeStartupLogoToConsole() {
@@ -92,7 +103,7 @@ function addConsoleLogListener() {
             } catch (e) {
                 console.log(e);
             }
-            
+
             logToErrorLog(logSource, args);
         };
     });
