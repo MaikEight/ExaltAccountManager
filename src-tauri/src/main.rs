@@ -136,6 +136,7 @@ fn main() {
             log_to_audit_log,
             get_all_error_logs,
             log_to_error_log,
+            delete_from_error_log,
             get_all_user_data, //USER DATA
             get_user_data_by_key,
             insert_or_update_user_data,
@@ -1777,6 +1778,36 @@ fn log_to_error_log_impl(
 ) -> Result<usize, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::insert_error_log(pool, log)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+fn delete_from_error_log(days: i64) -> Result<usize, tauri::Error> {
+    info!("Deleting from error log...");
+
+    match POOL.lock() {
+        Ok(pool) => delete_from_error_log_impl(pool, days),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return delete_from_error_log_impl(pool, days);
+        }
+    }
+}
+
+fn delete_from_error_log_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    days: i64,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::delete_error_logs_older_than_days(pool, days)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
