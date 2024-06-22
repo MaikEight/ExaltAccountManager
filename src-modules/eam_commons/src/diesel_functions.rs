@@ -509,3 +509,14 @@ pub fn insert_error_log(pool: &DbPool, log: ErrorLog) -> Result<usize, diesel::r
         .values(&insertable)
         .execute(&mut conn)
 }
+
+pub fn delete_error_logs_older_than_days(pool: &DbPool, days: i64) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let target_date = Utc::now().naive_utc() - Duration::days(days);    
+    let target_date_str = target_date.format("%Y-%m-%d %H:%M:%S").to_string();    
+    let num_deleted = diesel::delete(error_logs::table.filter(error_logs::time.lt(target_date_str)))
+        .execute(&mut conn)?;
+    
+    Ok(num_deleted)
+}
