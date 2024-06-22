@@ -32,6 +32,7 @@ use diesel::RunQueryDsl;
 use diesel::sql_types::Nullable;
 use uuid::Uuid;
 use log::{info, error};
+use chrono::{Duration, Local, Utc, TimeZone, NaiveDateTime};
 
 //########################
 //#       UserData       #
@@ -481,7 +482,21 @@ pub fn insert_audit_log(pool: &DbPool, log: AuditLog) -> Result<usize, diesel::r
 
 pub fn get_all_error_logs(pool: &DbPool) -> Result<Vec<ErrorLog>, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    error_logs::table.load::<ErrorLog>(&mut conn)
+    let logs = error_logs::table.load::<ErrorLog>(&mut conn)?;
+
+    let converted_logs = logs.into_iter().map(|mut log| {
+        match NaiveDateTime::parse_from_str(&log.time, "%Y-%m-%d %H:%M:%S%.f") {
+            Ok(naive_datetime) => {
+                let utc_time = Utc.from_utc_datetime(&naive_datetime);
+                let local_time = utc_time.with_timezone(&Local);
+                log.time = local_time.format("%Y-%m-%d %H:%M:%S").to_string();
+            },
+            Err(e) => println!("Failed to parse time '{}': {}", log.time, e),
+        }
+        log
+    }).collect::<Vec<ErrorLog>>();
+
+    Ok(converted_logs)
 }
 
 pub fn insert_error_log(pool: &DbPool, log: ErrorLog) -> Result<usize, diesel::result::Error> {
