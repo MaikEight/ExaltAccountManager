@@ -72,13 +72,13 @@ function DailyLoginsPage() {
     }
 
     const columns = [
-        { field: 'hasFinished', headerName: 'Finished', width: 90, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
-        { field: 'startTime', headerName: 'Start Time', width: 165, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{formatTime(params.value)} </MUITooltip> </div> },
-        { field: 'endTime', headerName: 'End Time', width: 165, type: 'dateTime', renderCell: (params) => isUtcZero(params.value) ? null : <div style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{formatTime(params.value)} </MUITooltip></div> },
-        { headerName: 'Duration', width: 120, renderCell: (params) => params.row.endTime && params.row.startTime && <div style={{ textAlign: 'center' }}> {params.row.endTime ? `${Math.floor((new Date(params.row.endTime) - new Date(params.row.startTime)) / 1000 / 60)} min` : 'N/A'} </div> },
-        { field: 'amountOfAccounts', headerName: 'Accounts #', width: 120 },
-        { field: 'amountOfAccountsFailed', headerName: 'Failed', width: 120 },
-        { field: 'amountOfAccountsSucceeded', headerName: 'Successful', width: 150 }
+        { field: 'hasFinished', headerName: '🏁 Finished', width: 90, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
+        { field: 'startTime', headerName: '🕛 Start Time', width: 165, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
+        { field: 'endTime', headerName: '🕛 End Time', width: 165, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
+        { field: 'duration', headerName: '⏱️ Duration', width: 120, renderCell: (params) => params.row.endTime && params.row.startTime && <div style={{ textAlign: 'center' }}> {params.row.endTime ? `${Math.floor((new Date(params.row.endTime) - new Date(params.row.startTime)) / 1000 / 60)} min` : 'N/A'} </div> },
+        { field: 'amountOfAccounts', headerName: '#️⃣ Accounts', width: 120 },
+        { field: 'amountOfAccountsFailed', headerName: '🔴 Failed', width: 120 },
+        { field: 'amountOfAccountsSucceeded', headerName: '🟢 Successful', width: 150 }
     ];
 
     const getAllReportData = async () => {
