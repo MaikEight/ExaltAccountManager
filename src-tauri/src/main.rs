@@ -165,12 +165,13 @@ fn open_url(url: &str) {
 #[tauri::command]
 async fn check_for_game_update(force: bool) -> Result<bool, Error> {
     let (tx, rx) = channel();
-
+    info!("Checking for game update...");
     thread::spawn(move || match POOL.lock() {
         Ok(pool) => {
             tx.send(check_for_game_update_impl(pool, force)).unwrap();
         }
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             tx.send(check_for_game_update_impl(pool, force)).unwrap();
         }
@@ -182,10 +183,13 @@ async fn check_for_game_update(force: bool) -> Result<bool, Error> {
             ErrorKind::Other,
             e.to_string(),
         ))),
-        Err(e) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            e.to_string(),
-        ))),
+        Err(e) => {
+            error!("Error while checking for game update: {}", e);
+            Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                e.to_string(),
+            )))
+        }
     }
 }
 
@@ -198,6 +202,7 @@ fn check_for_game_update_impl(
         return Ok(files);
     }
 
+    error!("Database pool not initialized");
     return Err(UpdaterError::from(std::io::Error::new(
         ErrorKind::Other,
         "Database pool not initialized".to_string(),
@@ -208,12 +213,13 @@ fn check_for_game_update_impl(
 #[tauri::command]
 async fn perform_game_update() -> Result<bool, Error> {
     let (tx, rx) = channel();
-
+    info!("Performing game update...");
     thread::spawn(move || match POOL.lock() {
         Ok(pool) => {
             tx.send(perform_game_update_impl(pool)).unwrap();
         }
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             tx.send(perform_game_update_impl(pool)).unwrap();
         }
@@ -221,10 +227,13 @@ async fn perform_game_update() -> Result<bool, Error> {
 
     match rx.recv().unwrap() {
         Ok(result) => Ok(result),
-        Err(e) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            e.to_string(),
-        ))),
+        Err(e) => {
+            error!("Error while performing game update: {}", e);
+            Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                e.to_string(),
+            )))
+        }
     }
 }
 
@@ -233,9 +242,11 @@ fn perform_game_update_impl(
 ) -> Result<bool, UpdaterError> {
     if let Some(ref pool) = *pool {
         let result = eam_commons::rotmg_updater::perform_game_update(pool);
+        info!("Game update performed successfully");
         return result;
     }
 
+    error!("Database pool not initialized");
     Err(UpdaterError::from(std::io::Error::new(
         ErrorKind::Other,
         "Database pool not initialized".to_string(),
@@ -244,6 +255,7 @@ fn perform_game_update_impl(
 
 #[tauri::command]
 fn get_save_file_path() -> String {
+    info!("Getting save file path...");
     //OS dependent fixed path
     //Windows: C:\Users\USERNAME\AppData\Local\ExaltAccountManager\v4\
     //Mac: /Users/USERNAME/Library/Application Support/ExaltAccountManager/v4/
@@ -261,6 +273,7 @@ pub fn get_database_path() -> PathBuf {
 
 #[tauri::command]
 fn combine_paths(path1: String, path2: String) -> Result<String, Error> {
+    info!("Combining paths...");
     let mut path_buf = PathBuf::from(path1);
     path_buf.push(&path2);
 
@@ -272,6 +285,7 @@ fn start_application(
     application_path: String,
     start_parameters: String,
 ) -> Result<(), tauri::Error> {
+    info!("Starting application...");
     match std::env::consts::OS {
         "windows" => {
             let mut cmd = std::process::Command::new(&application_path);
@@ -290,6 +304,7 @@ fn start_application(
 
 #[tauri::command]
 fn open_folder_in_explorer(path: String) -> Result<(), Error> {
+    info!("Opening folder in explorer...");
     match std::env::consts::OS {
         "windows" => {
             let mut cmd = std::process::Command::new("explorer");
@@ -331,6 +346,8 @@ fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
 
 #[tauri::command]
 fn get_temp_folder_path_with_creation(sub_path: String) -> String {
+    info!("Getting temp folder path with creation...");
+
     let mut path_buf = get_temp_folder_path();
     path_buf.push_str(&sub_path);
     let _ = create_folder(path_buf.clone());
@@ -339,12 +356,16 @@ fn get_temp_folder_path_with_creation(sub_path: String) -> String {
 
 #[tauri::command]
 fn create_folder(path: String) -> Result<(), Error> {
+    info!("Creating folder...");
+
     std::fs::create_dir_all(path)?;
     Ok(())
 }
 
 #[tauri::command]
 fn get_temp_folder_path() -> String {
+    info!("Getting temp folder path...");
+
     let mut path_buf = PathBuf::from(std::env::temp_dir());
     path_buf.push("ExaltAccountManager");
     path_buf.to_string_lossy().to_string()
@@ -352,6 +373,8 @@ fn get_temp_folder_path() -> String {
 
 #[tauri::command]
 fn get_os_user_identity() -> String {
+    info!("Getting user identity...");
+
     // get_os_user_identity_impl()
     get_os_user_identity_impl()
 }
@@ -451,6 +474,8 @@ use num_bigint::{BigUint, ToBigInt};
 
 #[tauri::command]
 fn quick_hash(secret: &str) -> String {
+    info!("Hashing...");
+
     let secret_bytes = secret.as_bytes();
     let result = md5::compute(secret_bytes);
     let secret_hash = result.0;
@@ -472,6 +497,8 @@ async fn send_post_request_with_form_url_encoded_data(
     url: String,
     data: HashMap<String, String>,
 ) -> Result<String, String> {
+    info!("Sending post request with form url encoded data...");
+
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("deflate, gzip"));
     headers.insert(
@@ -494,6 +521,8 @@ async fn send_post_request_with_form_url_encoded_data(
 
 #[tauri::command]
 async fn send_post_request_with_json_body(url: String, data: String) -> Result<String, String> {
+    info!("Sending post request with json body...");
+
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
@@ -514,6 +543,8 @@ async fn send_post_request_with_json_body(url: String, data: String) -> Result<S
 
 #[tauri::command]
 async fn send_patch_request_with_json_body(url: String, data: String) -> Result<String, String> {
+    info!("Sending patch request with json body...");
+
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
@@ -534,6 +565,8 @@ async fn send_patch_request_with_json_body(url: String, data: String) -> Result<
 
 #[tauri::command]
 async fn get_device_unique_identifier() -> Result<String, String> {
+    info!("Getting device unique identifier...");
+
     use sha1::{Digest, Sha1};
     use std::collections::HashMap;
     use wmi::{COMLibrary, Variant, WMIConnection};
@@ -580,6 +613,7 @@ async fn get_device_unique_identifier() -> Result<String, String> {
 
 #[tauri::command]
 fn get_default_game_path() -> String {
+    info!("Getting default game path...");
     let os = env::consts::OS;
 
     match os {
@@ -603,6 +637,7 @@ fn get_default_game_path() -> String {
 
 #[tauri::command]
 async fn download_and_run_hwid_tool() -> Result<bool, String> {
+    info!("Downloading and running HWID tool...");
     let result = download_and_run_hwid_tool_impl().await;
 
     match result {
@@ -728,7 +763,10 @@ fn wait_for_file_creation(file_path: &str, timeout: u64) -> bool {
 
 #[tauri::command]
 fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
+    info!("Installing EAM daily login task...");
+
     if std::env::consts::OS != "windows" {
+        info!("This function is only available on Windows");
         return Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
             "This function is only available on Windows",
@@ -750,16 +788,20 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
 
     match result {
         Ok(_) => Ok(true),
-        Err(e) => Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            e.to_string(),
-        ))),
+        Err(e) => {
+            error!("Failed to install EAM daily login task: {}", e.to_string());
+            Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                e.to_string(),
+            )))
+        }
     }
 }
 
 #[tauri::command]
 fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
+        info!("This function is only available on Windows");
         return Err("This function is only available on Windows".to_string());
     }
 
@@ -767,13 +809,20 @@ fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, String> {
 
     match result {
         Ok(_) => Ok(true),
-        Err(e) => Err(e.to_string()),
+        Err(e) => {
+            error!(
+                "Failed to uninstall EAM daily login task: {}",
+                e.to_string()
+            );
+            Err(e.to_string())
+        }
     }
 }
 
 #[tauri::command]
 fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
+        info!("This function is only available on Windows");
         return Ok(false);
     }
 
@@ -790,7 +839,7 @@ fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, 
                 let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
 
                 if !path.exists() {
-                    println!("EAM_Daily_Auto_Login.exe does not exist, creating it");
+                    info!("EAM_Daily_Auto_Login.exe does not exist, creating it");
                     fs::write(path.clone(), EAM_DAILY_AUTO_LOGIN).map_err(|e| e.to_string())?;
                     return Ok(result);
                 }
@@ -804,9 +853,7 @@ fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, 
                 let hash_string = format!("{:x}", hash);
 
                 if hash_string != EAM_DAILY_AUTO_LOGIN_HASH {
-                    println!("Hashes do not match, updating the installed version");
-                    println!("Hash: {}", hash_string);
-                    println!("Expected Hash: {}", EAM_DAILY_AUTO_LOGIN_HASH);
+                    info!("Hashes do not match, updating the installed version");
                     fs::write(path.clone(), EAM_DAILY_AUTO_LOGIN).map_err(|e| e.to_string())?;
                 }
 
@@ -819,7 +866,10 @@ fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, 
 
 #[tauri::command]
 fn run_eam_daily_login_task_now() -> Result<bool, String> {
+    info!("Running EAM daily login task now...");
+
     if std::env::consts::OS != "windows" {
+        info!("This function is only available on Windows");
         return Err("This function is only available on Windows".to_string());
     }
 
@@ -827,6 +877,7 @@ fn run_eam_daily_login_task_now() -> Result<bool, String> {
     let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
 
     if !path.exists() {
+        error!("EAM_Daily_Auto_Login.exe does not exist");
         return Err("EAM_Daily_Auto_Login.exe does not exist".to_string());
     }
 
@@ -843,9 +894,12 @@ fn run_eam_daily_login_task_now() -> Result<bool, String> {
 
 #[tauri::command]
 async fn get_all_user_data() -> Result<Vec<models::UserData>, tauri::Error> {
+    info!("Getting all user data...");
+
     match POOL.lock() {
         Ok(pool) => get_all_user_data_impl(pool),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_all_user_data_impl(pool);
         }
@@ -860,6 +914,7 @@ fn get_all_user_data_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -868,9 +923,11 @@ fn get_all_user_data_impl(
 
 #[tauri::command]
 async fn get_user_data_by_key(key: String) -> Result<models::UserData, tauri::Error> {
+    info!("Getting user data by key...");
     match POOL.lock() {
         Ok(pool) => get_user_data_by_key_impl(pool, key),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_user_data_by_key_impl(pool, key);
         }
@@ -886,6 +943,7 @@ fn get_user_data_by_key_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -894,9 +952,12 @@ fn get_user_data_by_key_impl(
 
 #[tauri::command]
 async fn insert_or_update_user_data(user_data: models::UserData) -> Result<usize, tauri::Error> {
+    info!("Inserting or updating user data...");
+
     match POOL.lock() {
         Ok(pool) => insert_or_update_user_data_impl(pool, user_data),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return insert_or_update_user_data_impl(pool, user_data);
         }
@@ -912,6 +973,7 @@ fn insert_or_update_user_data_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -920,9 +982,12 @@ fn insert_or_update_user_data_impl(
 
 #[tauri::command]
 async fn delete_user_data_by_key(key: String) -> Result<usize, tauri::Error> {
+    info!("Deleting user data by key...");
+
     match POOL.lock() {
         Ok(pool) => delete_user_data_by_key_impl(pool, key),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return delete_user_data_by_key_impl(pool, key);
         }
@@ -938,6 +1003,7 @@ fn delete_user_data_by_key_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -950,9 +1016,12 @@ fn delete_user_data_by_key_impl(
 
 #[tauri::command]
 async fn get_all_daily_login_reports() -> Result<Vec<DailyLoginReports>, tauri::Error> {
+    info!("Getting all daily login reports...");
+
     match POOL.lock() {
         Ok(pool) => get_all_daily_login_reports_impl(pool),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_all_daily_login_reports_impl(pool);
         }
@@ -967,6 +1036,7 @@ fn get_all_daily_login_reports_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -977,9 +1047,12 @@ fn get_all_daily_login_reports_impl(
 async fn get_daily_login_reports_of_last_days(
     amount_of_days: i64,
 ) -> Result<Vec<DailyLoginReports>, tauri::Error> {
+    info!("Getting daily login reports of last days...");
+
     match POOL.lock() {
         Ok(pool) => get_daily_login_reports_of_last_days_impl(pool, amount_of_days),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_daily_login_reports_of_last_days_impl(pool, amount_of_days);
         }
@@ -995,6 +1068,7 @@ fn get_daily_login_reports_of_last_days_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1005,9 +1079,12 @@ fn get_daily_login_reports_of_last_days_impl(
 async fn get_daily_login_report_by_id(
     report_id: String,
 ) -> Result<DailyLoginReports, tauri::Error> {
+    info!("Getting daily login report by id...");
+
     match POOL.lock() {
         Ok(pool) => get_daily_login_report_by_id_impl(pool, report_id),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_daily_login_report_by_id_impl(pool, report_id);
         }
@@ -1023,6 +1100,7 @@ fn get_daily_login_report_by_id_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1033,9 +1111,12 @@ fn get_daily_login_report_by_id_impl(
 async fn insert_or_update_daily_login_report(
     daily_login_report: DailyLoginReports,
 ) -> Result<usize, tauri::Error> {
+    info!("Inserting or updating daily login report...");
+
     match POOL.lock() {
         Ok(pool) => insert_or_update_daily_login_report_impl(pool, daily_login_report),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return insert_or_update_daily_login_report_impl(pool, daily_login_report);
         }
@@ -1051,6 +1132,7 @@ fn insert_or_update_daily_login_report_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1064,9 +1146,12 @@ fn insert_or_update_daily_login_report_impl(
 #[tauri::command]
 async fn get_all_daily_login_report_entries() -> Result<Vec<DailyLoginReportEntries>, tauri::Error>
 {
+    info!("Getting all daily login report entries...");
+
     match POOL.lock() {
         Ok(pool) => get_all_daily_login_report_entries_impl(pool),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_all_daily_login_report_entries_impl(pool);
         }
@@ -1081,6 +1166,7 @@ fn get_all_daily_login_report_entries_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1091,9 +1177,12 @@ fn get_all_daily_login_report_entries_impl(
 async fn get_daily_login_report_entry_by_id(
     report_id: i32,
 ) -> Result<DailyLoginReportEntries, tauri::Error> {
+    info!("Getting daily login report entry by id...");
+
     match POOL.lock() {
         Ok(pool) => get_daily_login_report_entry_by_id_impl(pool, report_id),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_daily_login_report_entry_by_id_impl(pool, report_id);
         }
@@ -1109,6 +1198,7 @@ fn get_daily_login_report_entry_by_id_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1119,9 +1209,12 @@ fn get_daily_login_report_entry_by_id_impl(
 async fn get_daily_login_report_entries_by_report_id(
     report_id: String,
 ) -> Result<Vec<DailyLoginReportEntries>, tauri::Error> {
+    info!("Getting daily login report entries by report id...");
+
     match POOL.lock() {
         Ok(pool) => get_daily_login_report_entries_by_report_id_impl(pool, report_id),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_daily_login_report_entries_by_report_id_impl(pool, report_id);
         }
@@ -1137,6 +1230,7 @@ fn get_daily_login_report_entries_by_report_id_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1147,9 +1241,12 @@ fn get_daily_login_report_entries_by_report_id_impl(
 async fn insert_or_update_daily_login_report_entry(
     daily_login_report_entry: DailyLoginReportEntries,
 ) -> Result<usize, tauri::Error> {
+    info!("Inserting or updating daily login report entry...");
+
     match POOL.lock() {
         Ok(pool) => insert_or_update_daily_login_report_entry_impl(pool, daily_login_report_entry),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return insert_or_update_daily_login_report_entry_impl(pool, daily_login_report_entry);
         }
@@ -1169,6 +1266,7 @@ fn insert_or_update_daily_login_report_entry_impl(
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1181,9 +1279,12 @@ fn insert_or_update_daily_login_report_entry_impl(
 
 #[tauri::command]
 async fn get_all_eam_accounts() -> Result<Vec<models::EamAccount>, tauri::Error> {
+    info!("Getting all EAM accounts...");
+
     match POOL.lock() {
         Ok(pool) => get_all_eam_accounts_impl(pool),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_all_eam_accounts_impl(pool);
         }
@@ -1198,6 +1299,7 @@ fn get_all_eam_accounts_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1208,9 +1310,12 @@ fn get_all_eam_accounts_impl(
 async fn get_eam_account_by_email(
     account_email: String,
 ) -> Result<models::EamAccount, tauri::Error> {
+    info!("Getting EAM account by email...");
+
     match POOL.lock() {
         Ok(pool) => get_eam_account_by_email_impl(pool, account_email),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_eam_account_by_email_impl(pool, account_email);
         }
@@ -1226,6 +1331,7 @@ fn get_eam_account_by_email_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1236,9 +1342,12 @@ fn get_eam_account_by_email_impl(
 async fn insert_or_update_eam_account(
     eam_account: models::EamAccount,
 ) -> Result<usize, tauri::Error> {
+    info!("Inserting or updating EAM account...");
+
     match POOL.lock() {
         Ok(pool) => insert_or_update_eam_account_impl(pool, eam_account),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return insert_or_update_eam_account_impl(pool, eam_account);
         }
@@ -1254,6 +1363,7 @@ fn insert_or_update_eam_account_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1262,9 +1372,12 @@ fn insert_or_update_eam_account_impl(
 
 #[tauri::command]
 async fn delete_eam_account(account_email: String) -> Result<usize, tauri::Error> {
+    info!("Deleting EAM account...");
+
     match POOL.lock() {
         Ok(pool) => delete_eam_account_impl(pool, account_email),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return delete_eam_account_impl(pool, account_email);
         }
@@ -1289,6 +1402,7 @@ fn delete_eam_account_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1297,6 +1411,8 @@ fn delete_eam_account_impl(
 
 #[tauri::command]
 fn encrypt_string(data: String) -> Result<String, tauri::Error> {
+    info!("Encrypting string...");
+
     let encrypted_data = encryption_utils::encrypt_data(&data)
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     Ok(encrypted_data)
@@ -1304,6 +1420,8 @@ fn encrypt_string(data: String) -> Result<String, tauri::Error> {
 
 #[tauri::command]
 fn decrypt_string(data: String) -> Result<String, tauri::Error> {
+    info!("Decrypting string...");
+
     let decrypted_data = encryption_utils::decrypt_data(&data)
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     Ok(decrypted_data)
@@ -1315,9 +1433,12 @@ fn decrypt_string(data: String) -> Result<String, tauri::Error> {
 
 #[tauri::command]
 async fn get_all_eam_groups() -> Result<Vec<models::EamGroup>, tauri::Error> {
+    info!("Getting all EAM groups...");
+
     match POOL.lock() {
         Ok(pool) => get_all_eam_groups_impl(pool),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_all_eam_groups_impl(pool);
         }
@@ -1332,6 +1453,7 @@ fn get_all_eam_groups_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1340,9 +1462,12 @@ fn get_all_eam_groups_impl(
 
 #[tauri::command]
 async fn insert_or_update_eam_group(eam_group: models::EamGroup) -> Result<usize, tauri::Error> {
+    info!("Inserting or updating EAM group...");
+
     match POOL.lock() {
         Ok(pool) => insert_or_update_eam_group_impl(pool, eam_group),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return insert_or_update_eam_group_impl(pool, eam_group);
         }
@@ -1358,6 +1483,7 @@ fn insert_or_update_eam_group_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1366,9 +1492,12 @@ fn insert_or_update_eam_group_impl(
 
 #[tauri::command]
 async fn delete_eam_group(group_id: i32) -> Result<usize, tauri::Error> {
+    info!("Deleting EAM group...");
+
     match POOL.lock() {
         Ok(pool) => delete_eam_group_impl(pool, group_id),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return delete_eam_group_impl(pool, group_id);
         }
@@ -1384,6 +1513,7 @@ fn delete_eam_group_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1392,7 +1522,9 @@ fn delete_eam_group_impl(
 
 #[tauri::command]
 async fn has_old_eam_save_file() -> Result<bool, tauri::Error> {
-    if std::env::consts::OS != "windows" {
+    info!("Checking for old EAM save file...");
+
+    if std::env::consts::OS != "windows" {        
         return Ok(false);
     }
 
@@ -1407,6 +1539,8 @@ async fn has_old_eam_save_file() -> Result<bool, tauri::Error> {
 
 #[tauri::command]
 async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Error> {
+    info!("Formatting EAM v3 save file to readable JSON...");
+
     if std::env::consts::OS != "windows" {
         return Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
@@ -1460,6 +1594,7 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
         };
         let _ = log_to_error_log(log);
 
+        error!("{}", error_message);
         Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
             error_message,
@@ -1472,9 +1607,12 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#########################
 #[tauri::command]
 async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<usize, tauri::Error> {
+    info!("Inserting char list dataset...");
+
     match POOL.lock() {
         Ok(pool) => insert_char_list_dataset_impl(pool, dataset),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return insert_char_list_dataset_impl(pool, dataset);
         }
@@ -1490,6 +1628,7 @@ fn insert_char_list_dataset_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1502,9 +1641,12 @@ fn insert_char_list_dataset_impl(
 
 #[tauri::command]
 fn get_all_audit_logs() -> Result<Vec<AuditLog>, tauri::Error> {
+    info!("Getting all audit logs...");
+
     match POOL.lock() {
         Ok(pool) => get_all_audit_logs_impl(pool),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_all_audit_logs_impl(pool);
         }
@@ -1519,6 +1661,7 @@ fn get_all_audit_logs_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");    
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1527,9 +1670,12 @@ fn get_all_audit_logs_impl(
 
 #[tauri::command]
 fn get_audit_log_for_account(account_email: String) -> Result<Vec<AuditLog>, tauri::Error> {
+    info!("Getting audit log for account...");
+
     match POOL.lock() {
         Ok(pool) => get_audit_log_for_account_impl(pool, account_email),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_audit_log_for_account_impl(pool, account_email);
         }
@@ -1545,6 +1691,7 @@ fn get_audit_log_for_account_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1553,9 +1700,12 @@ fn get_audit_log_for_account_impl(
 
 #[tauri::command]
 fn log_to_audit_log(log: AuditLog) -> Result<usize, tauri::Error> {
+    info!("Logging to audit log...");
+
     match POOL.lock() {
         Ok(pool) => log_to_audit_log_impl(pool, log),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return log_to_audit_log_impl(pool, log);
         }
@@ -1571,6 +1721,7 @@ fn log_to_audit_log_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1579,9 +1730,12 @@ fn log_to_audit_log_impl(
 
 #[tauri::command]
 fn get_all_error_logs() -> Result<Vec<ErrorLog>, tauri::Error> {
+    info!("Getting all error logs...");
+
     match POOL.lock() {
         Ok(pool) => get_all_error_logs_impl(pool),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return get_all_error_logs_impl(pool);
         }
@@ -1596,6 +1750,7 @@ fn get_all_error_logs_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
@@ -1604,9 +1759,12 @@ fn get_all_error_logs_impl(
 
 #[tauri::command]
 fn log_to_error_log(log: ErrorLog) -> Result<usize, tauri::Error> {
+    info!("Logging to error log...");
+
     match POOL.lock() {
         Ok(pool) => log_to_error_log_impl(pool, log),
         Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
             return log_to_error_log_impl(pool, log);
         }
@@ -1622,6 +1780,7 @@ fn log_to_error_log_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
