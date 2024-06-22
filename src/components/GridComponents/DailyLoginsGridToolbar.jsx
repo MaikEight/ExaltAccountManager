@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import { GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 
@@ -21,11 +21,12 @@ function DailyLoginsGridToolbar({ onRefresh }) {
                     pr: 1,
                 }}
             >
-                <GridToolbarColumnsButton />
+                <Tooltip title="Show/Hide Columns">
+                    <GridToolbarColumnsButton />
+                </Tooltip>
                 <GridToolbarFilterButton />
             </GridToolbarContainer>
             <Box
-                id="Test"
                 sx={{
                     mr: 1.5,
                     display: 'flex',
@@ -34,12 +35,14 @@ function DailyLoginsGridToolbar({ onRefresh }) {
                     overflow: 'hidden',
                 }}
             >
-                <IconButton
-                    size="small"
-                    onClick={onRefresh}
-                >
-                    <RefreshOutlinedIcon />
-                </IconButton>
+                <Tooltip title="Refresh data">
+                    <IconButton
+                        size="small"
+                        onClick={onRefresh}
+                    >
+                        <RefreshOutlinedIcon />
+                    </IconButton>
+                </Tooltip>
             </Box>
         </Box>
     );
