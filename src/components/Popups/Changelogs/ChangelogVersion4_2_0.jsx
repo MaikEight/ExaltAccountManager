@@ -8,7 +8,7 @@ function ChangelogVersion4_2_0() {
         <ChangelogPopupBase
             version="4.2.0"
             title="Vault Peeker, Server list and bug fixes!"
-            releaseDate={"26.06.2024"}
+            releaseDate={"26.07.2024"}
             icon={<CelebrationOutlinedIcon />}
         >
             <ChangelogEntry
@@ -27,9 +27,12 @@ function ChangelogVersion4_2_0() {
             <ChangelogEntry
                 title={'Miscellaneous'}
                 listOfChanges={[
+                    "Improved the file-logs of the whole application.",
                     "Improved the Daily Logins Page Layout and Table rendering.",
                     "Improved the border radius of the Close Button.",
                     "Fixed the 'Back'-Button in the Register Accounts view to not close the side panel.",
+                    "Fixed timestamps in the Logs to display in the correct timezone instead of UTC.",
+                    "Error Logs now get deleted after 7 days automatically to reduce database size.",
                 ]}
             />
             <Box
