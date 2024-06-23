@@ -1,5 +1,4 @@
 import { Box, useTheme } from '@mui/material';
-import './DiscordLogo.css';
 
 function DiscordLogo({ sx }) {
     const theme = useTheme();
