@@ -1,4 +1,4 @@
-import { Box, Collapse, LinearProgress, Paper, Typography, Tooltip as MUITooltip, alpha, darken } from "@mui/material";
+import { Box, Collapse, LinearProgress, Paper, Typography, Tooltip as MUITooltip, alpha, darken, IconButton } from "@mui/material";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 import StyledButton from "../components/StyledButton";
@@ -21,6 +21,8 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import InstallDesktopOutlinedIcon from '@mui/icons-material/InstallDesktopOutlined';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -51,9 +53,9 @@ function DailyLoginsPage() {
     const [isLoadingReports, setIsLoadingReports] = useState(false);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
     const [slideoutOpen, setSlideoutOpen] = useState(false);
-
     const [selectedReport, setSelectedReport] = useState(null);
     const [timeoutFunction, setTimeoutFunction] = useState(null);
+    const [isCurrentlyCollapsed, setIsCurrentlyCollapsed] = useState();
     const { showSnackbar } = useSnack();
     const theme = useTheme();
 
@@ -64,13 +66,13 @@ function DailyLoginsPage() {
     }
 
     const columns = [
-        { field: 'hasFinished', headerName: '🏁 Finished', width: 90, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
+        { field: 'hasFinished', headerName: '🏁 Finished', width: 100, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
         { field: 'startTime', headerName: '🕛 Start Time', width: 165, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
         { field: 'endTime', headerName: '🕛 End Time', width: 165, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
-        { field: 'duration', headerName: '⏱️ Duration', width: 120, renderCell: (params) => params.row.endTime && params.row.startTime && <div style={{ textAlign: 'center' }}> {params.row.endTime ? `${Math.floor((new Date(params.row.endTime) - new Date(params.row.startTime)) / 1000 / 60)} min` : 'N/A'} </div> },
-        { field: 'amountOfAccounts', headerName: '#️⃣ Accounts', width: 120 },
-        { field: 'amountOfAccountsFailed', headerName: '🔴 Failed', width: 120 },
-        { field: 'amountOfAccountsSucceeded', headerName: '🟢 Successful', width: 150 }
+        { field: 'duration', headerName: '⏱️ Duration', width: 120, renderCell: (params) => params.row.endTime && params.row.startTime && <div style={{ textAlign: 'center', width: '100%' }}> {params.row.endTime ? `${Math.floor((new Date(params.row.endTime) - new Date(params.row.startTime)) / 1000 / 60)} min` : 'N/A'} </div> },
+        { field: 'amountOfAccounts', headerName: '#️⃣ Accounts', width: 100, renderCell: (params) => <div style={{ textAlign: 'center', width: '100%' }}> {params.value} </div> },
+        { field: 'amountOfAccountsFailed', headerName: '🔴 Failed', width: 90, renderCell: (params) => <div style={{ textAlign: 'center', width: '100%' }}> {params.value} </div> },
+        { field: 'amountOfAccountsSucceeded', headerName: '🟢 Successful', width: 120, renderCell: (params) => <div style={{ textAlign: 'center', width: '100%' }}> {params.value} </div> }
     ];
 
     const getAllReportData = async () => {
@@ -247,7 +249,7 @@ function DailyLoginsPage() {
                 ticks: {
                     font: {
                         size: 14,
-                        family: 'Roboto'
+                        family: theme.typography.fontFamily,
                     }
                 }
             }
@@ -383,9 +385,11 @@ function DailyLoginsPage() {
                 }
             </Collapse>
             <ComponentBox
-                title={'Daily Login Reports of the Last Week'}
+                title={<ChatComponentBoxTitle defaultCollapsedChart={isCurrentlyCollapsed} setDefaultCollapsedChart={setIsCurrentlyCollapsed} />}
                 icon={<BarChartOutlinedIcon />}
                 isCollapseable
+                defaultCollapsed={localStorage.getItem('dailyLoginChartCollapsed') === 'true'}
+                setIsCurrentlyCollapsed={setIsCurrentlyCollapsed}
             >
                 <Box
                     sx={{
@@ -560,3 +564,62 @@ function DailyLoginsPage() {
 }
 
 export default DailyLoginsPage;
+
+function ChatComponentBoxTitle({ defaultCollapsedChart }) {
+    const [savedCollapsed, setSavedCollapsed] = useState(localStorage.getItem('dailyLoginChartCollapsed') === 'true');
+    const [refresh, setRefresh] = useState(0);
+
+    useEffect(() => {
+        setSavedCollapsed(localStorage.getItem('dailyLoginChartCollapsed') === 'true');
+    }, [defaultCollapsedChart, refresh]);
+
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: '100%',
+            }}
+        >
+            <Typography
+                variant="h6"
+                sx={{
+                    fontWeight: 600,
+                    textAlign: 'center',
+                }}
+
+            >
+                Daily Login Reports of the Last Week
+            </Typography>
+            {
+                (defaultCollapsedChart || defaultCollapsedChart !== savedCollapsed) &&
+                <IconButton
+                    size="small"
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        const storedvalue = localStorage.getItem('dailyLoginChartCollapsed');
+                        if (storedvalue === 'true') {
+                            localStorage.removeItem('dailyLoginChartCollapsed');
+                            setSavedCollapsed(false);
+                            setRefresh(refresh + 1);
+                            return;
+                        }
+
+                        localStorage.setItem('dailyLoginChartCollapsed', defaultCollapsedChart);
+                        setSavedCollapsed(true);
+                        setRefresh(refresh + 1);
+                    }}
+                >
+                    {
+                        (defaultCollapsedChart === savedCollapsed) ?
+                            <LockIcon />
+                            :
+                            <LockOpenOutlinedIcon />
+                    }
+                </IconButton>
+            }
+        </Box>
+    )
+}
