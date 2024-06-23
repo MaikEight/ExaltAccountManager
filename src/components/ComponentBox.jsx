@@ -1,11 +1,17 @@
 import { useTheme } from "@emotion/react";
 import { Box, Collapse, IconButton, LinearProgress, Paper, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
-function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapseable, defaultCollapsed = false, sx, innerSx }) {
+function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapseable, defaultCollapsed = false, setIsCurrentlyCollapsed, sx, innerSx }) {
     const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
     const theme = useTheme();
+
+    useEffect(() => {
+        if (setIsCurrentlyCollapsed !== undefined) {
+            setIsCurrentlyCollapsed(isCollapsed);
+        }
+    }, [isCollapsed]);
 
     return (
         <Paper
