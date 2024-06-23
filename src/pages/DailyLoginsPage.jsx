@@ -57,14 +57,6 @@ function DailyLoginsPage() {
     const { showSnackbar } = useSnack();
     const theme = useTheme();
 
-    const isUtcZero = (date) => {
-        if (!date) return false;
-
-        return new Date(date).getUTCHours() === 0
-            && new Date(date).getUTCMinutes() === 0
-            && new Date(date).getUTCSeconds() === 0
-    }
-
     const convertUtcDatetoLocalDate = (date) => {
         if (!date) return null;
 
