@@ -12,10 +12,11 @@ import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import FeedbackButton from "./FeedbackButton";
 import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import DiscordButton from "./DiscordButton";
 
 function Sidebar({ children }) {
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
-
+    const [isHovered, setIsHovered] = useState(false);
     const { showSnackbar } = useSnack();
     const navigate = useNavigate();
     const location = useLocation();
@@ -168,16 +169,29 @@ function Sidebar({ children }) {
                             flexDirection: "row",
                             alignItems: "start",
                             justifyContent: "start",
+                            gap: 2,
                             width: 210,
                             ml: 2,
                             mb: 2,
+                            mr: 2,
                         }}
                     >
                         <FeedbackButton
-                            action={() => {
-                                // setSelectedIndex(-1);
-                            }}
+                            smallSize={isHovered}
                         />
+                        <a
+                            href="https://discord.exalt-account-manager.eu"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <DiscordButton
+                                isHovered={isHovered}
+                                setIsHovered={setIsHovered}
+                                action={() => {
+                                    // setSelectedIndex(-1);
+                                }}
+                            />
+                        </a>
                         {
                             menuItems.map((menu, index) => (
                                 !menu.showInFooter ? null :
