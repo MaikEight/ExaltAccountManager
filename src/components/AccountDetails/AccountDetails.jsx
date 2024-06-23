@@ -406,20 +406,33 @@ function AccountDetails({ acc, onClose }) {
                                 <StyledButton
                                     fullWidth={true}
                                     startIcon={<RefreshOutlinedIcon />}
-                                    color="secondary"
+                                    color={account.state === 'Registered' ? "primary" : "secondary"}
                                     onClick={() => {
                                         postAccountVerify(account, hwid)
                                             .then(async (res) => {
                                                 if (res === null) {
                                                     logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got null response");
                                                     showSnackbar("Failed to refresh data", 'error');
+
+                                                    if(account.state === 'Registered') {
+                                                        return;
+                                                    }
+
+                                                    const requestState = getRequestState(res);
+                                                    const newAcc = ({ ...acc, state: requestState });
+                                                    updateAccount(newAcc);
                                                     return;
-                                                }
+                                                }                                               
 
                                                 if (res.Error) {
                                                     const requestState = getRequestState(res);
                                                     logToErrorLog("Refresh Data", "Failed to refresh data for " + account.email + ", got state: " + requestState);
                                                     if (res) {
+                                                        
+                                                        if (account.state === "Registered") {
+                                                            showSnackbar("Failed to refresh data, please activate your account", 'error');
+                                                            return;
+                                                        }
                                                         showSnackbar("Failed to refresh data: " + requestState, 'error');
 
                                                         const newAcc = ({ ...acc, state: requestState });
