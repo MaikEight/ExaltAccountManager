@@ -21,8 +21,17 @@ function ErrorBoundaryFallback() {
         }
         locs.push(location.pathname);
         sessionStorage.setItem('autoFixTried', locs.join(','));
-
+        const _lastTry = sessionStorage.getItem('lastAutoFixTried');
+        if (_lastTry) {
+            const lastTry = new Date(_lastTry);
+            const now = new Date();
+            const diff = now - lastTry;
+            if (diff < 3000) { // 5 seconds
+                return () => sessionStorage.removeItem('autoFixTried');
+            }
+        }
         console.log('ErrorBoundaryFallback', location);
+        sessionStorage.setItem('lastAutoFixTried', new Date().toISOString());
         resetBoundary();
 
         return () => {
