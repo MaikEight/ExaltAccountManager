@@ -16,6 +16,7 @@ import DailyLoginsPage from './pages/DailyLoginsPage';
 import ImporterPage from './pages/ImporterPage';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorBoundaryFallback from './components/ErrorBoundaryFallback';
+import VaultPeekerPage from './pages/VaultPeekerPage';
 
 function MainRouter() {
     const theme = useTheme();
@@ -42,6 +43,7 @@ function MainRouter() {
                                             <Routes>
                                                 <Route path='/' element={<AccountsPage />}></Route>
                                                 <Route path='/accounts' element={<AccountsPage />}></Route>
+                                                <Route path='/vaultPeeker' element={<VaultPeekerPage />}></Route>
                                                 <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
                                                 <Route path='/utilities' element={<UtilitiesPage />}></Route>
                                                 <Route path='/settings' element={<SettingsPage />}></Route>
