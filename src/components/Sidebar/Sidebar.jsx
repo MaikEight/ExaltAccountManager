@@ -13,6 +13,8 @@ import FeedbackButton from "./FeedbackButton";
 import HistoryEduOutlinedIcon from '@mui/icons-material/HistoryEduOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import DiscordButton from "./DiscordButton";
+import VaultPeekerLogo from "../VaultPeekerLogo";
+import { useTheme } from "@emotion/react";
 
 function Sidebar({ children }) {
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
@@ -20,6 +22,7 @@ function Sidebar({ children }) {
     const { showSnackbar } = useSnack();
     const navigate = useNavigate();
     const location = useLocation();
+    const theme = useTheme();
 
     useEffect(() => {
         const intervallId = setInterval(() => {
@@ -54,6 +57,13 @@ function Sidebar({ children }) {
             action: handleNavigate,
             navigate: '/accounts',
             additionalPaths: ['/'],
+            showInFooter: false
+        },
+        {
+            name: 'Vault Peeker',
+            icon: <VaultPeekerLogo sx={{ml: '2px', mt: '3px', width: '20px'}} color={theme.palette.text.primary} />,
+            action: handleNavigate,
+            navigate: '/vaultPeeker',
             showInFooter: false
         },
         {
