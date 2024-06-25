@@ -67,12 +67,12 @@ function DailyLoginsPage() {
 
     const columns = [
         { field: 'hasFinished', headerName: '🏁 Finished', width: 100, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
-        { field: 'startTime', headerName: '🕛 Start Time', width: 165, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
-        { field: 'endTime', headerName: '🕛 End Time', width: 165, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
-        { field: 'duration', headerName: '⏱️ Duration', width: 120, renderCell: (params) => params.row.endTime && params.row.startTime && <div style={{ textAlign: 'center', width: '100%' }}> {params.row.endTime ? `${Math.floor((new Date(params.row.endTime) - new Date(params.row.startTime)) / 1000 / 60)} min` : 'N/A'} </div> },
-        { field: 'amountOfAccounts', headerName: '#️⃣ Accounts', width: 100, renderCell: (params) => <div style={{ textAlign: 'center', width: '100%' }}> {params.value} </div> },
-        { field: 'amountOfAccountsFailed', headerName: '🔴 Failed', width: 90, renderCell: (params) => <div style={{ textAlign: 'center', width: '100%' }}> {params.value} </div> },
-        { field: 'amountOfAccountsSucceeded', headerName: '🟢 Successful', width: 120, renderCell: (params) => <div style={{ textAlign: 'center', width: '100%' }}> {params.value} </div> }
+        { field: 'startTime', headerName: '🕛 Start Time', width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
+        { field: 'endTime', headerName: '🕛 End Time', width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
+        { field: 'duration', headerName: '⏱️ Duration', width: 120, flex: 0.1, renderCell: (params) => params.row.endTime && params.row.startTime && <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.row.endTime ? `${Math.floor((new Date(params.row.endTime) - new Date(params.row.startTime)) / 1000 / 60)} min` : 'N/A'} </div> },
+        { field: 'amountOfAccounts', headerName: '#️⃣ Accounts', width: 100, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> },
+        { field: 'amountOfAccountsFailed', headerName: '🔴 Failed', width: 90, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> },
+        { field: 'amountOfAccountsSucceeded', headerName: '🟢 Successful', width: 120, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> }
     ];
 
     const getAllReportData = async () => {
@@ -114,6 +114,8 @@ function DailyLoginsPage() {
 
     useEffect(() => {
         const timeout = setTimeout(async () => {
+            await getAllReportData();
+            
             invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
                 .then((res) => {
                     setIsTaskInstalled(!!res);
@@ -126,7 +128,6 @@ function DailyLoginsPage() {
                     localStorage.setItem('dailyLoginTaskV1Installed', res ? 'true' : 'false');
                 });
 
-            await getAllReportData();
         }, 10);
 
         return () => {
