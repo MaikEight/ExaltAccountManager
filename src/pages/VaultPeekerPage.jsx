@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import MuledumpCanvas from "../components/RealmItems/MuledumpCanvas";
+import ItemCanvas from "../components/RealmItems/ItemCanvas";
 import items from "../assets/constants";
 import ComponentBox from "../components/ComponentBox";
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
@@ -82,7 +82,7 @@ function VaultPeekerPage() {
                 title='Totals'
                 isCollapseable={true}
             >
-                <MuledumpCanvas imgSrc="renders.png" itemIds={filteredTotals} items={items} totals={totals} />
+                <ItemCanvas imgSrc="renders.png" itemIds={filteredTotals} items={items} totals={totals} />
             </ComponentBox>
         </Box>
     );
