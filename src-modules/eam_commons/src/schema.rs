@@ -66,7 +66,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    char_list_entries (id) {
+    Char_list_entries (id) {
         id -> Nullable<Text>,
         email -> Nullable<Text>,
         timestamp -> Nullable<Timestamp>,
@@ -188,7 +188,7 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(account -> char_list_entries (entry_id));
+diesel::joinable!(account -> Char_list_entries (entry_id));
 diesel::joinable!(class_stats -> account (entry_id));
 diesel::joinable!(AuditLog -> EamAccount (accountEmail));
 diesel::joinable!(DailyLoginReportEntries -> DailyLoginReports (reportId));
@@ -198,7 +198,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     EamAccount,
     EamGroup,
     account,
-    char_list_entries,
+    Char_list_entries,
     character,
     class_stats,
     AuditLog,
