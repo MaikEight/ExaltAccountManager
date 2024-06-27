@@ -10,12 +10,15 @@ use crate::models::{EamGroup, NewEamGroup, UpdateEamGroup};
 use crate::models::{ErrorLog, NewErrorLog};
 use crate::models::{NewAccount, NewCharacter, NewClassStats};
 use crate::models::{NewUserData, UpdateUserData, UserData};
-use crate::schema::account::dsl::*;
-use crate::schema::char_list_entries::dsl::*;
-use crate::schema::character::dsl::*;
-use crate::schema::class_stats::dsl::*;
+use crate::models::ClassStats;
+use crate::models::Character;
+use crate::models::Account;
+use crate::schema::Account as account;
+use crate::schema::Character as character;
+use crate::schema::Class_stats as class_stats;
 use crate::schema::AuditLog as audit_logs;
 use crate::schema::AuditLog::dsl::*;
+use crate::schema::Char_list_entries as char_list_entries;
 use crate::schema::DailyLoginReportEntries as daily_login_report_entries;
 use crate::schema::DailyLoginReports as daily_login_reports;
 use crate::schema::EamAccount as eam_accounts;
@@ -23,16 +26,17 @@ use crate::schema::EamGroup as eam_groups;
 use crate::schema::EamGroup::dsl::*;
 use crate::schema::ErrorLog as error_logs;
 use crate::schema::UserData as user_data;
-use diesel::insert_into;
-use diesel::prelude::*;
+use chrono::{Local, NaiveDateTime, TimeZone, Utc};
 use diesel::dsl::sql;
+use diesel::insert_into;
+use diesel::prelude::QueryDsl;
+use diesel::prelude::*;
 use diesel::result::Error::DatabaseError;
-use diesel::sql_types::Text;
+use diesel::sql_types::{Nullable, Text};
+use diesel::ExpressionMethods;
 use diesel::RunQueryDsl;
-use diesel::sql_types::Nullable;
+use log::{error, info};
 use uuid::Uuid;
-use log::{info, error};
-use chrono::{Duration, Local, Utc, TimeZone, NaiveDateTime};
 
 //########################
 //#       UserData       #
@@ -207,8 +211,83 @@ pub fn insert_or_update_daily_login_report_entry(
 }
 
 //########################
+//#       CharList       #
+//########################
+
+pub fn get_all_char_list(pool: &DbPool) -> Result<Vec<CharListEntries>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    char_list_entries::table.load::<CharListEntries>(&mut conn)
+}
+
+
+pub fn get_latest_char_list_for_each_account(
+    pool: &DbPool,
+) -> Result<Vec<CharListEntries>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    // Get all emails (distinct) from the char_list_entries table
+    let emails_result: Vec<Option<String>> = char_list_entries::table
+        .select(char_list_entries::email.nullable())
+        .distinct()
+        .load::<Option<String>>(&mut conn)?;
+
+    let emails: Vec<String> = emails_result.into_iter().filter_map(|x| x).collect();
+
+    // Get the latest entry for each email
+    let mut entries = Vec::new();
+    for mail in emails {
+        let entry = char_list_entries::table
+            .filter(char_list_entries::email.eq(&mail))
+            .order(char_list_entries::id.desc())
+            .first::<CharListEntries>(&mut conn)?;
+        entries.push(entry);
+    }
+
+    Ok(entries)    
+}
+
+//########################
 //#    CharListDataset   #
 //########################
+
+pub fn get_latest_char_list_dataset_for_each_account(
+    pool: &DbPool,
+) -> Result<Vec<CharListDataset>, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let char_list_entries = get_latest_char_list_for_each_account(pool)?;
+
+    let mut datasets = Vec::new();
+
+    for entry in char_list_entries {
+        let account = account::table
+            .filter(account::entry_id.eq(&entry.id))
+            .first::<Account>(&mut conn)
+            .expect("Failed to get account");
+
+        let class_stats = class_stats::table
+            .filter(class_stats::entry_id.eq(entry.id.clone()))
+            .load::<ClassStats>(&mut conn)
+            .expect("Failed to get class_stats");
+
+        let character = character::table
+            .filter(character::entry_id.eq(entry.id))
+            .load::<Character>(&mut conn)
+            .expect("Failed to get character");
+
+        datasets.push(CharListDataset {
+            email: entry.email.unwrap(),
+            account,
+            class_stats,
+            character,
+        });        
+    }
+
+    Ok(datasets)
+    
+}
+
 pub fn insert_char_list_dataset(
     pool: &DbPool,
     dataset: CharListDataset,
@@ -221,7 +300,7 @@ pub fn insert_char_list_dataset(
     let new_entry = NewCharListEntries::from(entry);
 
     //char_list_entries
-    let result = insert_into(char_list_entries)
+    let result = insert_into(char_list_entries::table)
         .values(&new_entry)
         .execute(&mut conn);
     if result.is_err() {
@@ -231,7 +310,7 @@ pub fn insert_char_list_dataset(
     //account
     let mut acc = NewAccount::from(dataset.account);
     acc.entry_id = Some(entry_uuid.clone());
-    let result = insert_into(account).values(acc).execute(&mut conn);
+    let result = insert_into(account::table).values(acc).execute(&mut conn);
     if result.is_err() {
         return Err(result.unwrap_err());
     }
@@ -239,7 +318,7 @@ pub fn insert_char_list_dataset(
     //class_stats
     dataset.class_stats.iter().for_each(|class_stat| {
         let entry_uuid_opt_clone = entry_uuid_opt.as_ref().map(|s| s.clone());
-        insert_into(class_stats)
+        insert_into(class_stats::table)
             .values(NewClassStats::from_class_stats(
                 class_stat,
                 entry_uuid_opt_clone,
@@ -251,7 +330,7 @@ pub fn insert_char_list_dataset(
     //character
     dataset.character.iter().for_each(|chara| {
         let entry_uuid_opt_clone = entry_uuid_opt.clone();
-        insert_into(character)
+        insert_into(character::table)
             .values(NewCharacter::from_character(
                 chara,
                 Some(entry_uuid_opt_clone.expect("Panick: entry_uuid_opt_clone is none")),
@@ -313,7 +392,10 @@ pub fn get_eam_account_by_email(
     account_email: String,
 ) -> Result<EamAccount, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
-    eam_accounts::table.find(account_email).filter(eam_accounts::isDeleted.eq(false)).first(&mut conn)
+    eam_accounts::table
+        .find(account_email)
+        .filter(eam_accounts::isDeleted.eq(false))
+        .first(&mut conn)
 }
 
 pub fn insert_or_update_eam_account(
@@ -401,16 +483,16 @@ pub fn delete_eam_account(
     )?;
 
     diesel::update(eam_accounts::table.filter(eam_accounts::email.eq(&account_email)))
-    .set((
-        eam_accounts::isDeleted.eq(true),
-        eam_accounts::performDailyLogin.eq(false),
-        eam_accounts::password.eq(""),
-        eam_accounts::group.eq(sql::<Nullable<Text>>("NULL")),
-        eam_accounts::extra.eq(sql::<Nullable<Text>>("NULL")),
-        eam_accounts::token.eq(sql::<Nullable<Text>>("NULL")),
-        eam_accounts::serverName.eq(sql::<Nullable<Text>>("NULL")),
-    ))
-    .execute(&mut conn)?;
+        .set((
+            eam_accounts::isDeleted.eq(true),
+            eam_accounts::performDailyLogin.eq(false),
+            eam_accounts::password.eq(""),
+            eam_accounts::group.eq(sql::<Nullable<Text>>("NULL")),
+            eam_accounts::extra.eq(sql::<Nullable<Text>>("NULL")),
+            eam_accounts::token.eq(sql::<Nullable<Text>>("NULL")),
+            eam_accounts::serverName.eq(sql::<Nullable<Text>>("NULL")),
+        ))
+        .execute(&mut conn)?;
 
     Ok(0)
 }
@@ -484,17 +566,20 @@ pub fn get_all_error_logs(pool: &DbPool) -> Result<Vec<ErrorLog>, diesel::result
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     let logs = error_logs::table.load::<ErrorLog>(&mut conn)?;
 
-    let converted_logs = logs.into_iter().map(|mut log| {
-        match NaiveDateTime::parse_from_str(&log.time, "%Y-%m-%d %H:%M:%S%.f") {
-            Ok(naive_datetime) => {
-                let utc_time = Utc.from_utc_datetime(&naive_datetime);
-                let local_time = utc_time.with_timezone(&Local);
-                log.time = local_time.format("%Y-%m-%d %H:%M:%S").to_string();
-            },
-            Err(e) => println!("Failed to parse time '{}': {}", log.time, e),
-        }
-        log
-    }).collect::<Vec<ErrorLog>>();
+    let converted_logs = logs
+        .into_iter()
+        .map(|mut log| {
+            match NaiveDateTime::parse_from_str(&log.time, "%Y-%m-%d %H:%M:%S%.f") {
+                Ok(naive_datetime) => {
+                    let utc_time = Utc.from_utc_datetime(&naive_datetime);
+                    let local_time = utc_time.with_timezone(&Local);
+                    log.time = local_time.format("%Y-%m-%d %H:%M:%S").to_string();
+                }
+                Err(e) => println!("Failed to parse time '{}': {}", log.time, e),
+            }
+            log
+        })
+        .collect::<Vec<ErrorLog>>();
 
     Ok(converted_logs)
 }
@@ -510,13 +595,17 @@ pub fn insert_error_log(pool: &DbPool, log: ErrorLog) -> Result<usize, diesel::r
         .execute(&mut conn)
 }
 
-pub fn delete_error_logs_older_than_days(pool: &DbPool, days: i64) -> Result<usize, diesel::result::Error> {
+pub fn delete_error_logs_older_than_days(
+    pool: &DbPool,
+    days: i64,
+) -> Result<usize, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
-    let target_date = Utc::now().naive_utc() - Duration::days(days);    
-    let target_date_str = target_date.format("%Y-%m-%d %H:%M:%S").to_string();    
-    let num_deleted = diesel::delete(error_logs::table.filter(error_logs::time.lt(target_date_str)))
-        .execute(&mut conn)?;
-    
+    let target_date = chrono::Utc::now().naive_utc() - chrono::Duration::try_days(days as i64).expect("Failed to create duration");
+    let target_date_str = target_date.format("%Y-%m-%d %H:%M:%S").to_string();
+    let num_deleted =
+        diesel::delete(error_logs::table.filter(error_logs::time.lt(target_date_str)))
+            .execute(&mut conn)?;
+
     Ok(num_deleted)
 }
