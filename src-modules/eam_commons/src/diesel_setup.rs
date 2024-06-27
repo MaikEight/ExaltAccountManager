@@ -1,7 +1,7 @@
 use diesel::sqlite::SqliteConnection;
 use diesel::r2d2::{self, ConnectionManager};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
-use diesel::r2d2::{Pool, PooledConnection};
+use diesel::r2d2::PooledConnection;
 use std::error::Error;
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations");
