@@ -33,7 +33,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    account (entry_id) {
+    Account (entry_id) {
         entry_id -> Nullable<Text>,
         account_id -> Nullable<Text>,
         credits -> Nullable<Integer>,
@@ -74,7 +74,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    character (id) {
+    Character (id) {
         id -> Nullable<Integer>,
         entry_id -> Nullable<Text>,
         char_id -> Nullable<Integer>,
@@ -125,7 +125,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    class_stats (id) {
+    Class_stats (id) {
         id -> Nullable<Integer>,
         entry_id -> Nullable<Text>,
         account_id -> Nullable<Text>,
@@ -188,8 +188,8 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(account -> Char_list_entries (entry_id));
-diesel::joinable!(class_stats -> account (entry_id));
+diesel::joinable!(Account -> Char_list_entries (entry_id));
+diesel::joinable!(Class_stats -> Account (entry_id));
 diesel::joinable!(AuditLog -> EamAccount (accountEmail));
 diesel::joinable!(DailyLoginReportEntries -> DailyLoginReports (reportId));
 diesel::joinable!(DailyLoginReportEntries -> EamAccount (accountEmail));
@@ -197,10 +197,10 @@ diesel::joinable!(DailyLoginReportEntries -> EamAccount (accountEmail));
 diesel::allow_tables_to_appear_in_same_query!(
     EamAccount,
     EamGroup,
-    account,
+    Account,
     Char_list_entries,
-    character,
-    class_stats,
+    Character,
+    Class_stats,
     AuditLog,
     ErrorLog,
     DailyLoginReportEntries,
