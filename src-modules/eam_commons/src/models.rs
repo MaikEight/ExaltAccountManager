@@ -27,10 +27,11 @@ pub struct CharListDataset {
 pub struct CharListEntries {
     pub id: Option<String>,
     pub email: Option<String>,
+    pub timestamp: Option<String>,
 }
 
 #[derive(Insertable, Serialize)]
-#[diesel(table_name = schema::char_list_entries)]
+#[diesel(table_name = schema::Char_list_entries)]
 pub struct NewCharListEntries {
     pub id: Option<String>,
     pub email: Option<String>,
@@ -42,6 +43,7 @@ impl From<CharListDataset> for CharListEntries {
         CharListEntries {
             id: None,
             email: Some(char_list_dataset.email.clone()),
+            timestamp: None,
         }
     }
 }
@@ -93,7 +95,7 @@ pub struct Account {
 }
 
 #[derive(Insertable, Serialize)]
-#[diesel(table_name = schema::account)]
+#[diesel(table_name = schema::Account)]
 pub struct NewAccount {
     pub entry_id: Option<String>,
     pub account_id: Option<String>,
@@ -126,7 +128,7 @@ pub struct NewAccount {
 }
 
 #[derive(AsChangeset, Serialize)]
-#[diesel(table_name = schema::account)]
+#[diesel(table_name = schema::Account)]
 pub struct UpdateAccount {
     pub entry_id: Option<String>,
     pub account_id: Option<String>,
@@ -244,7 +246,7 @@ pub struct ClassStats {
 }
 
 #[derive(Insertable, Serialize)]
-#[diesel(table_name = schema::class_stats)]
+#[diesel(table_name = schema::Class_stats)]
 pub struct NewClassStats {
     pub id: Option<i32>,
     pub entry_id: Option<String>,
@@ -256,7 +258,7 @@ pub struct NewClassStats {
 }
 
 #[derive(AsChangeset, Serialize)]
-#[diesel(table_name = schema::class_stats)]
+#[diesel(table_name = schema::Class_stats)]
 pub struct UpdateClassStats {
     pub id: Option<i32>,
     pub entry_id: Option<String>,
@@ -315,6 +317,7 @@ impl NewClassStats {
 
 #[derive(Queryable, Serialize, Deserialize, Clone)]
 pub struct Character {
+    pub id: Option<i32>,
     pub entry_id: Option<String>,
     pub char_id: Option<i32>,
     pub char_class: Option<i32>,
@@ -363,7 +366,7 @@ pub struct Character {
 }
 
 #[derive(Insertable, Serialize)]
-#[diesel(table_name = schema::character)]
+#[diesel(table_name = schema::Character)]
 pub struct NewCharacter {
     pub entry_id: Option<String>,
     pub char_id: Option<i32>,
@@ -413,8 +416,9 @@ pub struct NewCharacter {
 }
 
 #[derive(AsChangeset, Serialize)]
-#[diesel(table_name = schema::character)]
+#[diesel(table_name = schema::Character)]
 pub struct UpdateCharacter {
+    pub id: Option<i32>,
     pub entry_id: Option<String>,
     pub char_id: Option<i32>,
     pub char_class: Option<i32>,
@@ -517,6 +521,7 @@ impl From<Character> for NewCharacter {
 impl From<Character> for UpdateCharacter {
     fn from(character: Character) -> Self {
         UpdateCharacter {
+            id: character.id,
             entry_id: character.entry_id,
             char_id: character.char_id,
             char_class: character.char_class,
@@ -568,7 +573,7 @@ impl From<Character> for UpdateCharacter {
 
 impl NewCharacter {
     pub fn from_character(character: &Character, entry_id: Option<String>) -> Self {
-        NewCharacter {
+        NewCharacter {            
             entry_id: entry_id,
             char_id: character.char_id,
             char_class: character.char_class,
