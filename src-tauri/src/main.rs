@@ -125,7 +125,9 @@ fn main() {
             get_all_eam_groups, //EAM GROUPS
             insert_or_update_eam_group,
             delete_eam_group,
-            insert_char_list_dataset, //CHAR LIST ENTRIES
+            get_latest_char_list_for_each_account, //CHAR LIST ENTRIES
+            get_latest_char_list_dataset_for_each_account,
+            insert_char_list_dataset, 
             download_and_run_hwid_tool,
             encrypt_string,
             decrypt_string,
@@ -1606,6 +1608,65 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#########################
 //#   char_list_dataset   #
 //#########################
+
+#[tauri::command]
+async fn get_latest_char_list_dataset_for_each_account() -> Result<Vec<models::CharListDataset>, tauri::Error> {
+    info!("Getting latest char list dataset for each account...");
+
+    match POOL.lock() {
+        Ok(pool) => get_latest_char_list_dataset_for_each_account_impl(pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return get_latest_char_list_dataset_for_each_account_impl(pool);
+        }
+    }
+}
+
+fn get_latest_char_list_dataset_for_each_account_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<models::CharListDataset>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_latest_char_list_dataset_for_each_account(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn get_latest_char_list_for_each_account() -> Result<Vec<models::CharListEntries>, tauri::Error> {
+    info!("Getting latest char list for each account...");
+
+    match POOL.lock() {
+        Ok(pool) => get_latest_char_list_for_each_account_impl(pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return get_latest_char_list_for_each_account_impl(pool);
+        }
+    }
+}
+
+fn get_latest_char_list_for_each_account_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<models::CharListEntries>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_latest_char_list_for_each_account(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
 #[tauri::command]
 async fn insert_char_list_dataset(dataset: models::CharListDataset) -> Result<usize, tauri::Error> {
     info!("Inserting char list dataset...");
