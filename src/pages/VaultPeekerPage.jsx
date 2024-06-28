@@ -72,7 +72,8 @@ function VaultPeekerPage() {
                                 onSearchChanged={searchChanged}
                             />
                         </Box>
-                    </Box>}
+                    </Box>
+                }
                 icon={<FilterListOutlinedIcon />}
                 isCollapseable={true}
             >
