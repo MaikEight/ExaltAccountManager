@@ -1,10 +1,13 @@
 import { Box, Typography } from "@mui/material";
-import ItemCanvas from "../components/RealmItems/ItemCanvas";
+import ItemCanvas from "../components/Realm/ItemCanvas";
 import items from "../assets/constants";
 import ComponentBox from "../components/ComponentBox";
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Searchbar from './../components/GridComponents/Searchbar';
+import { invoke } from "@tauri-apps/api";
+import { extractRealmItemsFromCharListDatasets } from './../utils/realmItemUtils';
+import ItemLocationPopper from "../components/Realm/ItemLocationPopper";
 
 const chunkArray = (array, chunkSize) => {
     const chunks = [];
@@ -15,20 +18,18 @@ const chunkArray = (array, chunkSize) => {
 };
 
 function VaultPeekerPage() {
+    const [totalItems, setTotalItems] = useState();
     const [filteredTotals, setFilteredTotals] = useState([]);
-    const chunkSize = 1000;
-    const itemIds = Object.keys(items);
-    const itemChunks = chunkArray(itemIds, chunkSize);
-    const totals = {
-        2591: 8,
-        2592: 2,
-        2593: 3,
-        2594: 1111,
-        2595: 11,
-    };
+    const [popperAnchor, setPopperAnchor] = useState(null);
 
     useEffect(() => {
-        setFilteredTotals(itemChunks[0]);
+        const loadItems = async () => {
+            const res = await invoke('get_latest_char_list_dataset_for_each_account');
+            const items = extractRealmItemsFromCharListDatasets(res);
+            setTotalItems(items);
+            console.log(items);
+        };
+        loadItems();
     }, []);
 
     const searchChanged = (search) => {
@@ -37,10 +38,10 @@ function VaultPeekerPage() {
             return;
         }
 
-        const filteredItems = itemIds.filter((id) => {
-            return items[id][0].toLowerCase().includes(search.toLowerCase());
-        });
-        setFilteredTotals(filteredItems);
+        // const filteredItems = itemIds.filter((id) => {
+        //     return items[id][0].toLowerCase().includes(search.toLowerCase());
+        // });
+        // setFilteredTotals(filteredItems);
     };
 
     return (
@@ -81,8 +82,30 @@ function VaultPeekerPage() {
             <ComponentBox
                 title='Totals'
                 isCollapseable={true}
+                innerSx={{ position: 'relative', overflow: 'hidden', }}
             >
-                <ItemCanvas imgSrc="renders.png" itemIds={filteredTotals} items={items} totals={totals} />
+                <ItemCanvas
+                    imgSrc="renders.png"
+                    itemIds={totalItems?.itemIds ? totalItems.itemIds : []}
+                    items={items} totals={totalItems?.totals ? totalItems.totals : {}}
+                    setPopperAnchor={(target) => setPopperAnchor(target)}
+                />
+
+                <img
+                    src={'/logo/logo_inner_big.png'}
+                    alt="EAM Logo"
+                    style={{
+                        height: '50%',
+                        maxWidth: '50%',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        opacity: 0.05,
+                        pointerEvents: 'none',
+                        zIndex: 1,
+                    }}
+                />
             </ComponentBox>
         </Box>
     );
