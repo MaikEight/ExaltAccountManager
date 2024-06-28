@@ -1,3 +1,8 @@
+import items from "../assets/constants";
+
+export function getItemById(itemId) {
+    return items[itemId];
+}
 
 export function extractRealmItemsFromCharListDatasets(charListDatasets) {
     if (!charListDatasets) {
