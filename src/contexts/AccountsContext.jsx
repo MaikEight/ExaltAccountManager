@@ -166,6 +166,7 @@ function AccountsContextProvider({ children }) {
 
         setSelectedAccount,
 
+        getAccountByEmail: (email) => accounts?.find((acc) => acc.email === email),
         updateAccount,
         reloadAccounts: loadAccounts,
         deleteAccount,
