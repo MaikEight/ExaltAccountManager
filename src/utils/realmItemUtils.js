@@ -4,6 +4,136 @@ export function getItemById(itemId) {
     return items[itemId];
 }
 
+export function formatAccountDataFromCharListDatasets(charListDatasets) {
+    if(!charListDatasets) {
+        return null;
+    }
+
+    if(charListDatasets.length === 1) {
+        return [formatAccountDataFromCharListDataset(charListDatasets[0])];
+    }
+
+    return charListDatasets.map((charListDataset) => formatAccountDataFromCharListDataset(charListDataset));
+};
+
+export function formatAccountDataFromCharListDataset(charListDataset) {
+    if (!charListDataset) {
+        return null;
+    }
+
+    const accountData = {
+        email: charListDataset.email,
+        account: {},
+        character: [],
+    };
+
+    //Extract items from account
+    const account = {
+        vault: {
+            itemIds: [],
+            totals: {},
+        },
+        gifts: {
+            itemIds: [],
+            totals: {},            
+        },
+        material_storage: {
+            itemIds: [],
+            totals: {},
+        },
+        temporary_gifts: {
+            itemIds: [],
+            totals: {},
+        },
+        potions: {
+            itemIds: [],
+            totals: {},
+        },
+    }
+
+    const extracedVault = extractItemIdsFromValueString(charListDataset.account.vault);
+    const extractedGifts = extractItemIdsFromValueString(charListDataset.account.gifts);
+    const extractedMaterialStorage = extractItemIdsFromValueString(charListDataset.account.material_storage);
+    const extractedTemporaryGifts = extractItemIdsFromValueString(charListDataset.account.temporary_gifts);
+    const extractedPotions = extractItemIdsFromValueString(charListDataset.account.potions);
+
+    extracedVault.forEach((itemId) => {
+        account.vault.itemIds.push(itemId);
+        account.vault.totals[itemId] = account.vault.totals[itemId] ? account.vault.totals[itemId] + 1 : 1;
+    });
+    account.vault.itemIds = Array.from(new Set(account.vault.itemIds));
+
+    extractedGifts.forEach((itemId) => {
+        account.gifts.itemIds.push(itemId);
+        account.gifts.totals[itemId] = account.gifts.totals[itemId] ? account.gifts.totals[itemId] + 1 : 1;
+    });
+    account.gifts.itemIds = Array.from(new Set(account.gifts.itemIds));
+
+    extractedMaterialStorage.forEach((itemId) => {
+        account.material_storage.itemIds.push(itemId);
+        account.material_storage.totals[itemId] = account.material_storage.totals[itemId] ? account.material_storage.totals[itemId] + 1 : 1;
+    });
+    account.material_storage.itemIds = Array.from(new Set(account.material_storage.itemIds));
+
+    extractedTemporaryGifts.forEach((itemId) => {
+        account.temporary_gifts.itemIds.push(itemId);
+        account.temporary_gifts.totals[itemId] = account.temporary_gifts.totals[itemId] ? account.temporary_gifts.totals[itemId] + 1 : 1;
+    });
+    account.temporary_gifts.itemIds = Array.from(new Set(account.temporary_gifts.itemIds));
+
+    extractedPotions.forEach((itemId) => {
+        account.potions.itemIds.push(itemId);
+        account.potions.totals[itemId] = account.potions.totals[itemId] ? account.potions.totals[itemId] + 1 : 1;
+    });
+    account.potions.itemIds = Array.from(new Set(account.potions.itemIds));
+
+    accountData.account = account;
+
+    if (charListDataset.character.length === 1) {
+        accountData.character.push(formatCharacterDataFromCharListDataset(charListDataset.character));
+    } else {
+        charListDataset.character.forEach((character) => {
+            accountData.character.push(formatCharacterDataFromCharListDataset(character));
+        });
+    }
+
+    //Extract character data
+    accountData.character = accountData.character.filter((character) => character !== null && character.char_id !== undefined);
+
+    return accountData;
+}
+
+export function formatCharacterDataFromCharListDataset(character) {
+    if(!character) {
+        return null;
+    }
+    if(character.char_id === undefined) {
+        return null;
+    }    
+
+    return {
+        char_id: character.char_id,
+        creation_date: character.creation_date,
+        class: character.char_class,
+        level: character.level,
+        backpackSlots: character.backpack_slots,
+        hasBelt: character.has3_quickslots === 1,
+        equipment: extractItemIdsFromValueString(character.equipment),
+        maxHp: character.max_hit_points,
+        maxMp: character.max_magic_points,
+        def: character.defense,
+        spd: character.speed,
+        dex: character.dexterity,
+        vit: character.hp_regen,
+        wis: character.mp_regen,
+        atk: character.attack,
+        exp: character.exp,
+        fame: character.current_fame,
+        seasonal: character.seasonal,
+        dead: character.dead,
+    };
+}
+
 export function extractRealmItemsFromCharListDatasets(charListDatasets) {
     if (!charListDatasets) {
         return {
@@ -60,8 +190,16 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
         const materialStorageItems = extractItemIdsFromValueString(charListDataset.account.material_storage);
         const temporaryGiftsItems = extractItemIdsFromValueString(charListDataset.account.temporary_gifts);
         const potionsItems = extractItemIdsFromValueString(charListDataset.account.potions);
+        const characterItems = [];
+        if (charListDataset.character.length === 1) {
+            characterItems.push(extractItemIdsFromValueString(charListDataset.character.equipment));
+        } else {
+            charListDataset.character.forEach((character) => {
+                characterItems.push(extractItemIdsFromValueString(character.equipment));
+            });
+        }
 
-        const allItems = new Set([...vaultItems, ...giftsItems, ...materialStorageItems, ...temporaryGiftsItems, ...potionsItems]);
+        const allItems = new Set([...vaultItems, ...giftsItems, ...materialStorageItems, ...temporaryGiftsItems, ...potionsItems, ...characterItems.flat()]);
         realmItems.itemIds = Array.from(allItems);
 
         // Extract totals from account
@@ -88,7 +226,8 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
                         gift: 0,
                         materialStorage: 0,
                         temporaryGifts: 0,
-                        potions: 0
+                        potions: 0,
+                        character: 0,
                     };
         });
 
@@ -114,7 +253,8 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
                         gift: 1,
                         materialStorage: 0,
                         temporaryGifts: 0,
-                        potions: 0
+                        potions: 0,
+                        character: 0,
                     };
         });
 
@@ -140,7 +280,8 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
                         gift: 0,
                         materialStorage: 1,
                         temporaryGifts: 0,
-                        potions: 0
+                        potions: 0,
+                        character: 0,
                     };
         });
 
@@ -166,7 +307,8 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
                         gift: 0,
                         materialStorage: 0,
                         temporaryGifts: 1,
-                        potions: 0
+                        potions: 0,
+                        character: 0,
                     };
         });
 
@@ -192,8 +334,38 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
                         gift: 0,
                         materialStorage: 0,
                         temporaryGifts: 0,
-                        potions: 1
+                        potions: 1,
+                        character: 0,
                     };
+        });
+
+        characterItems.forEach((characterItem) => {
+            characterItem.forEach((itemId) => {
+                realmItems.totals[itemId] = realmItems.totals[itemId] ?
+                    {
+                        ...realmItems.totals[itemId],
+                        amount: realmItems.totals[itemId].amount + 1,
+                    }
+                    :
+                    {
+                        amount: 1,
+                        location: {},
+                    };
+                realmItems.totals[itemId].location[email] =
+                    realmItems.totals[itemId].location[email] ?
+                        {
+                            ...realmItems.totals[itemId].location[email],
+                            character: realmItems.totals[itemId].location[email].character + 1,
+                        }
+                        : {
+                            vault: 0,
+                            gift: 0,
+                            materialStorage: 0,
+                            temporaryGifts: 0,
+                            potions: 0,
+                            character: 1,
+                        };
+            });
         });
     }
 
