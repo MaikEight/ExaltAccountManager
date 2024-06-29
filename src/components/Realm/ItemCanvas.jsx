@@ -65,12 +65,12 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
                 minTotal: 1,
             };
 
-            for (let i = 0; i < itemIds.length; i++) {
-                const id = itemIds[i];
+            for (const itemId of itemIds) {
+                const id = itemId;
                 const it = items[id] ? items[id] : items[0];
 
                 if (!it) {
-                    console.log(`Item with ID ${id} not found in items`);
+                    //Item not found'
                     continue;
                 }
 
@@ -118,8 +118,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
             ct.drawImage(baseCanvas, 0, 0);
         };
 
-        img.onload = () => {
-            console.log('Image loaded successfully');
+        img.onload = () => {            
             drawBaseImage();
             redrawCanvas(hoveredItem);
         };
@@ -160,18 +159,16 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
         }
 
         setHoveredItem(hoverId);
-    }, 100); // Throttle mouse move event to every 100ms
+    }, 10); // Throttle mouse move event to every 100ms
 
     const handleClick = (event) => {
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        setSelectedItem({
-            itemId: hoveredItem,
-            totals: totals[hoveredItem]
-        });
-
+        const canvasMidpoint = rect.width / 2.5;
+        const isLeftHalf = x < canvasMidpoint;
+    
         for (let position of itemPositionsRef.current) {
             if (
                 x >= position.x &&
@@ -180,10 +177,34 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
                 y <= position.y + position.height
             ) {
                 const offset = 3;
-                setPopperPosition({ top: position.y + rect.top - offset, left: position.x + rect.left + position.width + offset });
+                // Initialize popperY considering the space above the item
+                let popperY;
+                const spaceAbove = position.y; // Space above the item
+                if (spaceAbove < 0) {
+                    // Not enough space above, position below the item
+                    popperY = position.y + rect.top + position.height + offset;
+                } else {
+                    // Enough space above, position as before
+                    popperY = position.y + rect.top - offset;
+                }
+        
+                let popperX;
+                if (isLeftHalf) {
+                    // Position to the right of the item if clicked on the left half
+                    popperX = position.x + rect.left + position.width + offset;
+                } else {
+                    // Position to the left of the item if clicked on the right half
+                    popperX = position.x + rect.left - offset;
+                }
+                setPopperPosition({ top: popperY, left: popperX, isLeftHalf: isLeftHalf });
                 break;
             }
         }
+
+        setSelectedItem({
+            itemId: hoveredItem,
+            totals: totals[hoveredItem]
+        });
     };
 
     const redrawCanvas = (hoverId) => {
