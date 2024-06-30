@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Fade, Paper, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, Paper, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getItemById } from "../../utils/realmItemUtils";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import useAccounts from './../../hooks/useAccounts';
 
 function ItemLocationPopper({ open, position, selectedItem, onClose }) {
     const [item, setItem] = useState(null);
+    const [totals, setTotals] = useState(null);
     const theme = useTheme();
     const navigate = useNavigate();
     const { getAccountByEmail } = useAccounts();
@@ -18,6 +19,7 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
             if (item) {
                 const timeout = setTimeout(() => {
                     setItem(null);
+                    setTotals(null);
                 }, 150);
                 return () => clearTimeout(timeout);
             }
@@ -26,10 +28,11 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
 
         setItem(getItemById(selectedItem.itemId));
         const acc = [];
-        if (!selectedItem.totals.location) {
+        if (!selectedItem.totals?.location) {
             setAccounts(acc);
             return;
         }
+        setTotals(selectedItem.totals);
         Object.keys(selectedItem.totals.location).forEach((location) => {
             acc.push(getAccountByEmail(location));
         });
@@ -77,7 +80,7 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
             <Paper
                 sx={{
                     padding: item ? 0.25 : 0,
-                    backgroundColor: theme.palette.background.paper,
+                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.paper,
                     borderRadius: `${theme.shape.borderRadius}px`,
                 }}
             >
@@ -117,11 +120,11 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                     sx={{
                         padding: 1,
                         borderRadius: `${theme.shape.borderRadius}px`,
-                        backgroundColor: theme.palette.background.default,
+                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.background.paperLight,
                     }}
                 >
                     {
-                        selectedItem?.totals.location &&
+                        totals?.location &&
                         <Box
                             sx={{
                                 pl: 1,
@@ -130,12 +133,12 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                             }}
                         >
                             <Typography fontWeight={100}>
-                                You own {selectedItem?.totals.amount} of this item in total acros {Object.keys(selectedItem?.totals?.location).length} accounts.
+                                You own {totals?.amount} of this item in total acros {Object.keys(totals?.location).length} accounts.
                             </Typography>
                         </Box>
                     }
                     {
-                        selectedItem?.totals.location &&
+                        totals?.location &&
                         <TableContainer>
                             <Table
                                 sx={{
@@ -161,70 +164,87 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                         </TableCell>
                                         <TableCell>
                                             <Tooltip title="Gift Chest">
-                                                <img src="realm/gift_chest.png" alt="Vault" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
+                                                <img src="realm/gift_chest.png" alt="Gift" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell>
                                             <Tooltip title="Material Storage">
-                                                <img src="realm/material_storage.png" alt="Vault" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
+                                                <img src="realm/material_storage.png" alt="Mat. Storage" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell>
                                             <Tooltip title="Temporary Gifts">
-                                                <img src="realm/chest.png" alt="Vault" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
+                                                <img src="realm/chest.png" alt="Temp. Gift" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell>
                                             <Tooltip title="Potion Storage">
-                                                <img src="realm/potion_storage_small.png" alt="Vault" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
+                                                <img src="realm/potion_storage_small.png" alt="Pot. Storage" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
+                                            </Tooltip>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Tooltip title="Character">
+                                                <img src="realm/character.png" alt="Chars" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
                                             </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {
-                                        Object.keys(selectedItem.totals.location).map((location) => {
+                                        Object.keys(totals.location).map((location) => {
                                             return (
-                                                <TableRow
+                                                <Tooltip
+                                                    title={"Click to open the Account Details of this account"}
+                                                    placement="top-end"
                                                     key={location}
-                                                    hover
-                                                    sx={{
-                                                        cursor: 'pointer',
-                                                        userSelect: 'none',
-                                                    }}
-                                                    onClick={() => {
-                                                        navigate(`/account?selectedAccount=${location}`);
-                                                        onClose();
-                                                    }}
                                                 >
-                                                    <TableCell sx={{ borderBottom: 'none', textAlign: 'start', borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px` }}>
-                                                        {accounts?.find(acc => acc.email === location)?.name || location}
-                                                    </TableCell>
-                                                    <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
-                                                        {selectedItem.totals.location[location].vault}
-                                                    </TableCell>
-                                                    <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
-                                                        {selectedItem.totals.location[location].gift}
-                                                    </TableCell>
-                                                    <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
-                                                        {selectedItem.totals.location[location].materialStorage}
-                                                    </TableCell>
-                                                    <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
-                                                        {selectedItem.totals.location[location].temporaryGifts}
-                                                    </TableCell>
-                                                    <TableCell sx={{ borderBottom: 'none', textAlign: 'center', borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0` }}>
-                                                        {selectedItem.totals.location[location].potions}
-                                                    </TableCell>
-                                                </TableRow>
+                                                    <TableRow
+                                                        key={location}
+                                                        hover
+                                                        sx={{
+                                                            cursor: 'pointer',
+                                                            userSelect: 'none',
+                                                        }}
+                                                        onClick={() => {
+                                                            navigate(`/account?selectedAccount=${location}`);
+                                                            onClose();
+                                                        }}
+                                                    >
+                                                        <TableCell sx={{ borderBottom: 'none', textAlign: 'start', borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px` }}>
+                                                            {accounts?.find(acc => acc.email === location)?.name || location}
+                                                        </TableCell>
+                                                        <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
+                                                            {totals.location[location].vault}
+                                                        </TableCell>
+                                                        <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
+                                                            {totals.location[location].gift}
+                                                        </TableCell>
+                                                        <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
+                                                            {totals.location[location].materialStorage}
+                                                        </TableCell>
+                                                        <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
+                                                            {totals.location[location].temporaryGifts}
+                                                        </TableCell>
+                                                        <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>
+                                                            {totals.location[location].potions}
+                                                        </TableCell>
+                                                        <TableCell sx={{ borderBottom: 'none', textAlign: 'center', borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0` }}>
+                                                            {
+                                                                totals.location[location].character
+                                                            }
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </Tooltip>
                                             );
                                         })
                                     }
                                 </TableBody>
                             </Table>
                         </TableContainer>
+
                     }
                 </Box>
-            </Paper>
+            </Paper >
         );
     };
 
@@ -232,13 +252,12 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
         <Popover
             open={open && Boolean(item)}
             anchorReference="anchorPosition"
-            anchorPosition={position}
-            anchorOrigin={{
+            transformOrigin={{
                 vertical: 'top',
-                horizontal: 'left',
+                horizontal: position?.isLeftHalf ? 'left' : 'right',
             }}
+            anchorPosition={position}
             placement='top'
-            transition
             onClose={onClose}
         >
             {getContent()}
