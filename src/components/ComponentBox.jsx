@@ -69,7 +69,6 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                                     fontWeight: 600,
                                     textAlign: 'center',
                                 }}
-
                             >
                                 {title}
                             </Typography>
