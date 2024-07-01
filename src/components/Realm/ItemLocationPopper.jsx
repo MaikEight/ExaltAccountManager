@@ -195,7 +195,7 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                             return (
                                                 <Tooltip
                                                     title={"Click to open the Account Details of this account"}
-                                                    placement="top-end"
+                                                    placement="bottom-end"
                                                     key={location}
                                                 >
                                                     <TableRow
