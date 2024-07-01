@@ -103,7 +103,7 @@ function VaultPeekerPage() {
                     src={theme.palette.mode === 'dark' ? '/logo/logo_inner_big.png' : '/logo/logo_inner_big_dark.png'}
                     alt="EAM Logo"
                     style={{
-                        height: '50%',
+                        maxHeight: '50%',
                         maxWidth: '50%',
                         position: 'absolute',
                         top: '50%',
@@ -125,17 +125,33 @@ function VaultPeekerPage() {
                             key={index}
                             title={accountData.name ? accountData.name : accountData.email}
                             isCollapseable={true}
-                            innerSx={{ position: 'relative', overflow: 'hidden', }}
+                            innerSx={{
+                                dispaly: 'flex',
+                                flexDirection: 'coulmn',
+                                gap: 1
+                            }}
                         >
-                            {
-                                // accountData.character &&
-                                // accountData.character.map((char, index) => {
-                                //     // console.log(accountData.email + ' : ' + char.class);
-                                //     return (
-                                //         <Character key={index} character={char}/>
-                                //     );
-                                // })
-                            }
+
+                            {/* Characters */}
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',                                    
+                                    gap: 1,
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                {
+                                    accountData.character &&
+                                    accountData.character.map((char, index) => {
+                                        return (
+                                            <Character key={index} character={char} />
+                                        );
+                                    })
+                                }
+                            </Box>
+
+
                         </ComponentBox>
                     );
                 })
