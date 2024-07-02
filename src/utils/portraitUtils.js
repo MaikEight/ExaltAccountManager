@@ -22,12 +22,14 @@ function p_css(s, x, y) {
 // Initialize ready state and sprites object
 let ready = false;
 const sprites = {};
-let sprc;
 
 // Function to extract sprites
-function extract_sprites(img, sx = 8, sy = sx) {
+function extract_sprites(img, sx, sy) {
+    sx = sx || 8;
+    sy = sy || sx;
     const sprc = document.createElement('canvas');
     const c = sprc;
+    c.crossOrigin = 'anonymous';
     c.width = img.width;
     c.height = img.height;
     const ctx = c.getContext('2d');
@@ -46,9 +48,12 @@ function extract_sprites(img, sx = 8, sy = sx) {
     return r;
 }
 
-function extract_skins(img, size = 8) {
+// Function to extract skins
+function extract_skins(img, size) {
+    size = size || 8;
     const sprc = document.createElement('canvas');
     const c = sprc;
+    c.crossOrigin = "anonymous";
     c.width = img.width;
     c.height = img.height;
     const ctx = c.getContext('2d');
@@ -86,7 +91,6 @@ function load_sheets() {
             .then(img => {
                 const size = key.includes('16') ? 16 : 8;
                 sprites[key] = extract_skins(img, size);
-                console.log(`Loaded skinsheet ${key} with ${sprites[key].length} skins.`);
             })
             .catch(e => {
                 console.error(`Failed to load skinsheet ${key} from ${src}`, e);
@@ -97,27 +101,14 @@ function load_sheets() {
         const src = textiles[key];
         return load_img(src, key, +key)
             .then(img => {
-                const size = key.includes('16') ? 16 : 8;
-                sprites[key] = extract_sprites(img, size);
-                console.log(`Loaded textile ${key} with ${sprites[key].length} sprites.`);
-                if (key === '4') { // Focus on the specific key with discrepancies
-                    console.log(`Details for textile key ${key}:`);
-                    sprites[key].forEach((sprite, index) => {
-                        console.log(`Sprite ${index}:`, sprite);
-                    });
-                }
+                sprites[key] = extract_sprites(img, +key);             
             })
             .catch(e => {
-                console.error(`Failed to load textile ${key} from ${src}`, e);
+                console.warn(`Failed to load textile ${key} from ${src}`, e);
             });
     });
 
-    return Promise.all([...skinsheetPromises, ...textilePromises]).then(() => {
-        console.log('Summary of loaded sprites:', Object.keys(sprites).map(key => ({
-            key,
-            count: sprites[key].length
-        })));
-    });
+    return Promise.all([...skinsheetPromises, ...textilePromises]);    
 }
 
 const fs = {};
@@ -163,14 +154,11 @@ function makeTexPattern(tex, ratio) {
     cact.fillStyle = p;
     cact.fillRect(0, 0, spr.width, spr.height);
     dict[tex] = cact.createPattern(ca, 'repeat');
-    console.log(`Created pattern for texture ${tex} with ratio ${ratio}`);
     return dict[tex];
 }
 
 // Function to generate sprite based on skin, textures, etc.
 function portrait(type, skin, tex1Id, tex2Id, adjust) {
-    console.log('portrait:', type, skin, tex1Id, tex2Id, adjust);
-
     if (!ready) {
         console.error('Sprites are not ready yet.');
         return;
@@ -189,18 +177,10 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
             console.error('Default skin not found.');
             return;
         }
-    }
-
-    if (adjust !== false && skinData[2] && [11, 13].indexOf(skinData[1]) > -1) {
-        // Adjust CSS properties or perform adjustments here
-    }
+    }   
 
     const tex1 = textures[tex1Id] ? textures[tex1Id][0] : null;
     const tex2 = textures[tex2Id] ? textures[tex2Id][2] : null;
-
-    if (tex1 || tex2) {
-        // Implement tooltip rendering based on textures
-    }
 
     const size = skinData[2] ? 16 : 8;
     const ratio = skinData[2] ? 2 : 4;
@@ -224,7 +204,7 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
         const x = xi * ratio;
         const w = ratio;
         for (let yi = 0; yi < size; yi++) {
-            if (p_comp(spr, xi, yi, 3) < 2) continue; // Transparent
+            if (p_comp(spr, xi, yi, 3) < 2) continue; 
             const y = yi * ratio;
             const h = ratio;
 
@@ -253,7 +233,7 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
 
             ctx.save();
             ctx.globalCompositeOperation = 'destination-over';
-            ctx.strokeRect(x - 0.5, y - 5, w + 1, h + 1);
+            ctx.strokeRect(x - 0.5, y - 0.5, w + 1, h + 1);
             ctx.restore();
         }
     }
