@@ -121,6 +121,14 @@ diesel::table! {
         backpack_slots -> Nullable<Integer>,
         has3_quickslots -> Nullable<Integer>,
         creation_date -> Nullable<Text>,
+        pc_stats -> Nullable<Text>,
+        tex1 -> Nullable<Text>,
+        tex2 -> Nullable<Text>,
+        texture -> Nullable<Text>,
+        xp_boosted -> Nullable<Integer>,
+        xp_timer -> Nullable<Integer>,
+        ld_timer -> Nullable<Integer>,
+        lt_timer -> Nullable<Integer>,
     }
 }
 
