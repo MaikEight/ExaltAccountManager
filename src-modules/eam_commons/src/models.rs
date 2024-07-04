@@ -363,6 +363,14 @@ pub struct Character {
     pub backpack_slots: Option<i32>,
     pub has3_quickslots: Option<i32>,
     pub creation_date: Option<String>,
+    pub pc_stats: Option<String>,
+    pub tex1: Option<String>,
+    pub tex2: Option<String>,
+    pub texture: Option<String>,
+    pub xp_boosted: Option<i32>,
+    pub xp_timer: Option<i32>,
+    pub ld_timer: Option<i32>,
+    pub lt_timer: Option<i32>,
 }
 
 #[derive(Insertable, Serialize)]
@@ -413,6 +421,14 @@ pub struct NewCharacter {
     pub backpack_slots: Option<i32>,
     pub has3_quickslots: Option<i32>,
     pub creation_date: Option<String>,
+    pub pc_stats: Option<String>,
+    pub tex1: Option<String>,
+    pub tex2: Option<String>,
+    pub texture: Option<String>,
+    pub xp_boosted: Option<i32>,
+    pub xp_timer: Option<i32>,
+    pub ld_timer: Option<i32>,
+    pub lt_timer: Option<i32>,
 }
 
 #[derive(AsChangeset, Serialize)]
@@ -464,6 +480,14 @@ pub struct UpdateCharacter {
     pub backpack_slots: Option<i32>,
     pub has3_quickslots: Option<i32>,
     pub creation_date: Option<String>,
+    pub pc_stats: Option<String>,
+    pub tex1: Option<String>,
+    pub tex2: Option<String>,
+    pub texture: Option<String>,
+    pub xp_boosted: Option<i32>,
+    pub xp_timer: Option<i32>,
+    pub ld_timer: Option<i32>,
+    pub lt_timer: Option<i32>,
 }
 
 impl From<Character> for NewCharacter {
@@ -514,6 +538,14 @@ impl From<Character> for NewCharacter {
             backpack_slots: character.backpack_slots,
             has3_quickslots: character.has3_quickslots,
             creation_date: character.creation_date,
+            pc_stats: character.pc_stats,
+            tex1: character.tex1,
+            tex2: character.tex2,
+            texture: character.texture,
+            xp_boosted: character.xp_boosted,
+            xp_timer: character.xp_timer,
+            ld_timer: character.ld_timer,
+            lt_timer: character.lt_timer,
         }
     }    
 }
@@ -567,6 +599,14 @@ impl From<Character> for UpdateCharacter {
             backpack_slots: character.backpack_slots,
             has3_quickslots: character.has3_quickslots,
             creation_date: character.creation_date,
+            pc_stats: character.pc_stats,
+            tex1: character.tex1,
+            tex2: character.tex2,
+            texture: character.texture,
+            xp_boosted: character.xp_boosted,
+            xp_timer: character.xp_timer,
+            ld_timer: character.ld_timer,
+            lt_timer: character.lt_timer,
         }
     }
 }
@@ -619,6 +659,14 @@ impl NewCharacter {
             backpack_slots: character.backpack_slots,
             has3_quickslots: character.has3_quickslots,
             creation_date: character.creation_date.clone(),
+            pc_stats: character.pc_stats.clone(),
+            tex1: character.tex1.clone(),
+            tex2: character.tex2.clone(),
+            texture: character.texture.clone(),
+            xp_boosted: character.xp_boosted,
+            xp_timer: character.xp_timer,
+            ld_timer: character.ld_timer,
+            lt_timer: character.lt_timer,
         }
     }    
 }
