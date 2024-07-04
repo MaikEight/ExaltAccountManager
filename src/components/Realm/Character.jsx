@@ -11,7 +11,6 @@ const CharacterPortrait = (type, skin, tex1, tex2, adjust) => {
 
     useEffect(() => {
         const _url = portrait(type, skin, tex1, tex2, adjust);
-        console.log('url:', _url);
         setUrl(_url);
     }, [type, skin, tex1, tex2, adjust]);
 
@@ -26,7 +25,8 @@ function Character({ character }) {
     if (!character) {
         return null;
     }
-
+    if (character.tex1 !== null)
+        console.log(character);
     useEffect(() => {
         if (!character.class) {
             setCharClass([]);
@@ -41,7 +41,7 @@ function Character({ character }) {
 
         return classes[character.class][0];
     };
-    console.log(character);
+    
     return (
         <Box
             sx={{
@@ -61,10 +61,9 @@ function Character({ character }) {
                     gap: 1,
                 }}
             >
-                {CharacterPortrait(29816, 29816, 167772208, 33554431, false)}
+                {CharacterPortrait(character.class, character?.texture, character?.tex1, character?.tex1, false)}
                 <Typography variant="h6">{getCharacterClassName()}</Typography>
             </Box>
-            {/* {CharacterPortrait(872, 872, 167772197, 167772197, false)} */}
             <CharacterStats character={character} charClass={charClass} />
             <ItemCanvas imgSrc="renders.png" itemIds={character.equipment} items={items} />
         </Box>
@@ -97,7 +96,7 @@ function CharacterStats({ character, charClass }) {
 
     const getStatsTable = useMemo(() => {
         return (
-            <Box sx={{display: 'flex', height: 'fit-content', width: 'fit-content'}}>
+            <Box sx={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
                 <TableContainer>
                     <Table>
                         <TableBody>
