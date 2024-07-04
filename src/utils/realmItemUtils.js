@@ -109,7 +109,7 @@ export function formatCharacterDataFromCharListDataset(character) {
     }
     if(character.char_id === undefined) {
         return null;
-    }    
+    }
 
     return {
         char_id: character.char_id,
@@ -118,7 +118,7 @@ export function formatCharacterDataFromCharListDataset(character) {
         level: character.level,
         backpackSlots: character.backpack_slots,
         hasBelt: character.has3_quickslots === 1,
-        equipment: extractItemIdsFromValueString(character.equipment),
+        equipment: extractItemIdsFromValueString(character.equipment, true, false),
         maxHp: character.max_hit_points,
         maxMp: character.max_magic_points,
         def: character.defense,
@@ -131,6 +131,9 @@ export function formatCharacterDataFromCharListDataset(character) {
         fame: character.current_fame,
         seasonal: character.seasonal,
         dead: character.dead,
+        tex1: character.tex1,
+        tex2: character.tex2,
+        texture: character.texture,
     };
 }
 
