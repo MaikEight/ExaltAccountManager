@@ -239,7 +239,7 @@ pub fn get_latest_char_list_for_each_account(
     for mail in emails {
         let entry = char_list_entries::table
             .filter(char_list_entries::email.eq(&mail))
-            .order(char_list_entries::id.desc())
+            .order(char_list_entries::timestamp.desc())
             .first::<CharListEntries>(&mut conn)?;
         entries.push(entry);
     }
