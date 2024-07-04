@@ -163,6 +163,14 @@ function charToCharModel(char) {
         backpack_slots: char.BackpackSlots ? parseInt(char.BackpackSlots, 10) : 0,
         has3_quickslots: char.Has3Quickslots ? parseInt(char.Has3Quickslots, 10) : 0,
         creation_date: char.CreationDate,
+        pc_stats: char.PCStats,
+        tex1: char.Tex1 ?? null,
+        tex2: char.Tex2 ?? null,
+        texture: char.Texture ?? null,
+        xp_boosted: char.XpBoosted ? parseInt(char.XpBoosted, 10) : 0,
+        xp_timer: char.XpTimer ? parseInt(char.XpTimer, 10) : 0,
+        ld_timer: char.LdTimer ? parseInt(char.LdTimer, 10) : 0,
+        lt_timer: char.LtTimer ? parseInt(char.LtTimer, 10) : 0,
     };
 }
 
