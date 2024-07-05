@@ -39,12 +39,8 @@ function extract_sprites(img, sx, sy) {
     for (let y = 0; y < c.height; y += sy) {
         for (let x = 0; x < c.width; x += sx, i++) {
             r[i] = ctx.getImageData(x, y, sx, sy);
-            if ([4, 5, 9, 10].includes(+sx)) {
-                console.log(`Extracted sprite ${i} at (${x}, ${y}) of size ${sx}x${sy}`);
-            }
         }
     }
-    console.log(`Extracted ${r.length} sprites of size ${sx}x${sy} from image ${img.src}`);
     return r;
 }
 
@@ -63,7 +59,6 @@ function extract_skins(img, size) {
     for (let y = 0; y < c.height; y += size * 3, i++) {
         r[i] = ctx.getImageData(0, y, size, size);
     }
-    console.log(`Extracted ${r.length} skins of size ${size} from image ${img.src}`);
     return r;
 }
 
@@ -116,7 +111,6 @@ let fsc;
 
 // Function to create pattern from texture
 function makeTexPattern(tex, ratio) {
-    console.log(tex, ratio);
     if (!fs[ratio]) fs[ratio] = {};
     const dict = fs[ratio];
     tex = +tex || 0;
@@ -169,7 +163,6 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
     }
 
     let skinData = skins[skin];
-    console.log('skinData:', skinData, skin);
     if (!skinData || !sprites[skinData[3]][skinData[1]]) {
         skin = type;
         skinData = skins[skin];
