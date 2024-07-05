@@ -155,7 +155,7 @@ function makeTexPattern(tex, ratio) {
 function portrait(type, skin, tex1Id, tex2Id, adjust) {
     if (!ready) {
         console.error('Sprites are not ready yet.');
-        return;
+        return '';
     }
 
     if (!skins[skin]) {
@@ -168,7 +168,7 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
         skinData = skins[skin];
         if (!skinData) {
             console.error('Default skin not found.');
-            return;
+            return '';
         }
     }   
 
