@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import throttle from 'lodash.throttle';
-import { useTheme } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import ItemLocationPopper from './ItemLocationPopper';
 import { Box } from '@mui/material';
 
-const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
+const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = false, filter = [] }) => {
     const canvasRef = useRef(null);
-    const baseCanvasRef = useRef(null); // To store the base image
-    const itemPositionsRef = useRef([]); // To store item positions and ids
-    const [hoveredItem, setHoveredItem] = useState(null); // Track the hovered item
+    const baseCanvasRef = useRef(null);
+    const itemPositionsRef = useRef([]);
+    const [hoveredItem, setHoveredItem] = useState(null);
     const theme = useTheme();
     const [selectedItem, setSelectedItem] = useState(null);
-    const [poppoverPosition, setPopperPosition] = useState(null);
+    const [popperPosition, setPopperPosition] = useState(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -44,7 +44,6 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
             baseCanvas.height = canvas.height;
 
             //if the canvas element has a width or height of 0, the canvas will not be displayed
-            //this is a workaround to fix that
             if (canvas.width === 0 || canvas.height === 0) {
                 return;
             }
@@ -57,15 +56,15 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
 
             itemPositionsRef.current = [];
 
-            const filter = {};
             const override = {
                 totals: true,
-                fillStyle: '#ffcd57',
+                fillStyle: alpha(theme.palette.primary.main, 0.3),
                 fillNumbers: true,
                 minTotal: 1,
             };
 
-            for (const itemId of itemIds) {
+            for (let index = 0; index < itemIds.length; index++) {
+                const itemId = itemIds[index];
                 const id = itemId;
                 const it = items[id] ? items[id] : items[0];
 
@@ -85,8 +84,8 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
                 // Draw background box
                 baseCt.fillStyle = '#00000000';
                 baseCt.fillRect(0, 0, itemBoxSize, itemBoxSize);
-
-                if (id in filter) {
+                
+                if (filter.includes(id)) {
                     baseCt.fillStyle = override.fillStyle;
                     baseCt.fillRect(0, 0, itemBoxSize, itemBoxSize);
                 }
@@ -95,7 +94,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
                 baseCt.drawImage(img, it[3], it[4], itemSize, itemSize, itemPadding, itemPadding, itemSize, itemSize);
 
                 // Store the position and ID of the item
-                itemPositionsRef.current.push({ id, x, y, width: itemBoxSize, height: itemBoxSize, name: it[0] });
+                itemPositionsRef.current.push({ uniqueId: `${id}-${index}`, id, x, y, width: itemBoxSize, height: itemBoxSize, name: it[0] });
 
                 if (override.fillNumbers !== false && totals[id]?.amount > (override.minTotal || 1)) {
                     baseCt.save();
@@ -153,13 +152,13 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
                 y >= position.y &&
                 y <= position.y + position.height
             ) {
-                hoverId = position.id;
+                hoverId = position.uniqueId;
                 break;
             }
         }
 
         setHoveredItem(hoverId);
-    }, 10); // Throttle mouse move event to every 100ms
+    }, 10);
 
     const handleClick = (event) => {
         const canvas = canvasRef.current;
@@ -197,14 +196,14 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
                     popperX = position.x + rect.left - offset;
                 }
                 setPopperPosition({ top: popperY, left: popperX, isLeftHalf: isLeftHalf });
+                setSelectedItem({
+                    itemId: position.id,
+                    uniqueId: position.uniqueId,
+                    totals: totals[position.id]
+                });
                 break;
             }
         }
-
-        setSelectedItem({
-            itemId: hoveredItem,
-            totals: totals[hoveredItem]
-        });
     };
 
     const redrawCanvas = (hoverId) => {
@@ -224,7 +223,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
 
         // Highlight the hovered item
         if (hoverId) {
-            const _hoveredPosition = itemPositionsRef.current.find(item => item.id === hoverId);
+            const _hoveredPosition = itemPositionsRef.current.find(item => item.uniqueId === hoverId);
             const hoveredPosition = _hoveredPosition ? {
                 ..._hoveredPosition,
                 x: _hoveredPosition.x - 2,
@@ -270,7 +269,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {} }) => {
             />
             <ItemLocationPopper
                 open={Boolean(selectedItem)}
-                position={poppoverPosition}
+                position={popperPosition}
                 selectedItem={selectedItem}
                 onClose={() => {
                     setSelectedItem(null);
