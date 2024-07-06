@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme, darken, lighten } from "@mui/material";
 import Zoom from '@mui/material/Zoom';
 
 export const lightTheme = createTheme({
@@ -55,6 +55,63 @@ export const lightTheme = createTheme({
                 },
             },
         },
+        MuiDataGrid: {
+            styleOverrides: {
+              root: {
+                '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell': {
+                  outline: 'none',
+                  height: '42px',
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+                '& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
+                  outline: 'none',
+                },
+                '& .css-1oudwrl::after': {
+                  height: 0,
+                },
+              },
+            },
+            defaultProps: {
+              sx: {
+                minHeight: '200px',
+                width: '100%',
+                border: 0,
+                '& [class^=MuiDataGrid]': { 
+                    border: 'none' 
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: 'background.paperLight',
+                },
+                '& .MuiDataGrid-columnHeader': {
+                  backgroundColor: 'background.paperLight',
+                },
+                '& .MuiDataGrid-scrollbarFiller, .MuiDataGrid-scrollbarFiller--header': {
+                  backgroundColor: 'background.paperLight',
+                },
+                '& [class^=MuiDataGrid]::-webkit-scrollbar': {
+                  backgroundColor: 'background.paper',
+                },
+                '& [class^=MuiDataGrid]::-webkit-scrollbar-track': {
+                  borderRadius: theme => theme.shape.borderRadius,
+                },
+                '& [class^=MuiDataGrid]::-webkit-scrollbar-thumb': {
+                  backgroundColor: theme => theme.palette.mode === 'dark'
+                    ? theme.palette.background.default
+                    : darken(theme.palette.background.default, 0.15),
+                  border: theme => `3px solid ${theme.palette.background.paper}`,
+                  borderRadius: theme => theme.shape.borderRadius,
+                },
+                '& [class^=MuiDataGrid]::-webkit-scrollbar-thumb:hover': {
+                  backgroundColor: theme => theme.palette.mode === 'dark'
+                    ? lighten(theme.palette.background.default, 0.12)
+                    : darken(theme.palette.background.default, 0.2),
+                  border: theme => `3px solid ${theme.palette.background.paper}`,
+                  borderRadius: theme => theme.shape.borderRadius,
+                },
+              },
+            },
+          },
     },
     shadows: [
         "none",
