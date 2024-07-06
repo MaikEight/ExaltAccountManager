@@ -7,20 +7,6 @@ import styled, { useTheme } from "styled-components";
 import { formatTime } from "../utils/timeUtils";
 import LogsGridToolbar from "../components/GridComponents/LogsGridToolbar";
 
-const StyledDataGrid = styled(DataGrid)`
-  &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
-  &.MuiDataGrid-root .MuiDataGrid-cell {
-    outline: none;
-    height: 42px;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
-    outline: none;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus {
-    outline: none;
-  }
-`;
-
 function LogsPage() {
     const [currentLogMode, setCurrentLogMode] = useState('AuditLog'); // 'AuditLog' or 'ErrorLog'
     const [currentLog, setCurrentLog] = useState([]);
@@ -115,24 +101,7 @@ function LogsPage() {
             }}
         >
             <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1, background: theme.palette.background.paper, }}>
-                <StyledDataGrid
-                    sx={{
-                        minHeight: '200px',
-                        width: '100%',
-                        border: 0,
-                        '&, [class^=MuiDataGrid]': { border: 'none' },
-                        '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: theme.palette.background.paperLight,
-                        },
-                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
-                            backgroundColor: theme.palette.background.paper,
-                        },
-                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                            backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : darken(theme.palette.background.default, 0.15),
-                            border: `3px solid ${theme.palette.background.paper}`,
-                            borderRadius: 1
-                        },
-                    }}
+                <DataGrid                    
                     initialState={{
                         columns: {
 
@@ -144,7 +113,6 @@ function LogsPage() {
                     pageSizeOptions={[10, 25, 50, 100]}
                     rowSelection
                     getEstimatedRowHeight={() => 41}
-                    rowCount={currentShownLog.length}
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
                     checkboxSelection={false}
