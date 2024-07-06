@@ -1,8 +1,7 @@
 import { useTheme } from "@emotion/react";
-import { LinearProgress, Paper, darken } from "@mui/material";
+import { LinearProgress, Paper} from "@mui/material";
 import { DataGrid, } from '@mui/x-data-grid';
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { CustomPagination } from "./GridComponents/CustomPagination";
 import ServerChip from "./GridComponents/ServerChip";
 import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
@@ -13,20 +12,6 @@ import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";
 import SteamworksMailColumn from "./GridComponents/SteamworksMailColumn";
 import useGroups from "../hooks/useGroups";
-
-const StyledDataGrid = styled(DataGrid)`
-  &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
-  &.MuiDataGrid-root .MuiDataGrid-cell {
-    outline: none;
-    height: 42px;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
-    outline: none;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus {
-    outline: none;
-  }
-`;
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount } = useAccounts();
@@ -60,7 +45,7 @@ function AccountGrid({ setShowAddNewAccount }) {
     const columns = [
         { field: 'group', headerName: 'Group', width: 65, renderCell: (params) => getGroupUI(params) },
         { field: 'name', headerName: 'Accountname', minWidth: 150, width: 230, flex: 0.2 },
-        { field: 'email', headerName: 'Email', minWidth: 150, flex: 0.3, renderCell: (params) => {  return (params.value && params.row.isSteam ) ? <SteamworksMailColumn params={params} /> : params.value } },
+        { field: 'email', headerName: 'Email', minWidth: 150, flex: 0.3, renderCell: (params) => { return (params.value && params.row.isSteam) ? <SteamworksMailColumn params={params} /> : params.value } },
         { field: 'lastLogin', headerName: 'Last Login', minWidth: 115, flex: 0.125, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
         { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
         { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 115, flex: 0.125, renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
@@ -100,25 +85,7 @@ function AccountGrid({ setShowAddNewAccount }) {
 
     return (
         <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', background: theme.palette.background.paper, }}>
-            <StyledDataGrid
-                sx={{
-                    minHeight: '200px',
-                    width: '100%',
-                    border: 0,
-                    '&, [class^=MuiDataGrid]': { border: 'none' },
-                    '& .MuiDataGrid-columnHeaders': {
-                        backgroundColor: theme.palette.background.paperLight,
-                    },
-                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
-                        borderRadius: theme.shape.borderRadius,
-                        backgroundColor: theme.palette.background.paper,
-                    },
-                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : darken(theme.palette.background.default, 0.15),
-                        border: `3px solid ${theme.palette.background.paper}`,
-                        borderRadius: theme.shape.borderRadius,
-                    },
-                }}
+            <DataGrid
                 initialState={{
                     columns: {
                         columnVisibilityModel: settings.getByKeyAndSubKey('accounts', 'columnsHidden'),
@@ -131,7 +98,6 @@ function AccountGrid({ setShowAddNewAccount }) {
                 getRowHeight={() => "auto"}
                 rowSelection
                 getEstimatedRowHeight={() => 41}
-                rowCount={shownAccounts.length}
                 onCellClick={handleCellClick}
                 onRowSelectionModelChange={(ids) => {
                     const selectedId = ids[0];
