@@ -420,24 +420,7 @@ function DailyLoginsPage() {
                         background: theme.palette.background.paper,
                     }}
                 >
-                    <StyledDataGrid
-                        sx={{
-                            minHeight: '200px',
-                            width: '100%',
-                            border: 0,
-                            '&, [class^=MuiDataGrid]': { border: 'none' },
-                            '& .MuiDataGrid-columnHeaders': {
-                                backgroundColor: theme.palette.background.paperLight,
-                            },
-                            '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
-                                backgroundColor: theme.palette.background.paper,
-                            },
-                            '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                                backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : darken(theme.palette.background.default, 0.15),
-                                border: `3px solid ${theme.palette.background.paper}`,
-                                borderRadius: `${theme.shape.borderRadius}px`
-                            },
-                        }}
+                    <DataGrid                        
                         initialState={{
                             columns: {
 
@@ -450,7 +433,6 @@ function DailyLoginsPage() {
                         pageSizeOptions={[10, 25, 50, 100]}
                         rowSelection
                         getEstimatedRowHeight={() => 41}
-                        rowCount={allDailyLoginReports.length}
                         onCellClick={handleCellClick}
                         onRowSelectionModelChange={(ids) => {
                             const selectedId = ids[0];
