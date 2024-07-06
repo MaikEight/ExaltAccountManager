@@ -39,20 +39,6 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useNavigate } from "react-router-dom";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 
-const StyledDataGrid = styled(DataGrid)`
-  &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
-  &.MuiDataGrid-root .MuiDataGrid-cell {
-    outline: none;
-    height: 42px;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
-    outline: none;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus {
-    outline: none;
-  }
-`;
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -1024,24 +1010,9 @@ function ImporterPage() {
                                                 p: 0,
                                             }}
                                         >
-                                            <StyledDataGrid
+                                            <DataGrid
                                                 sx={{
-                                                    minHeight: '200px',
-                                                    width: '100%',
                                                     maxHeight: '600px',
-                                                    border: 0,
-                                                    '&, [class^=MuiDataGrid]': { border: 'none' },
-                                                    '& .MuiDataGrid-columnHeaders': {
-                                                        backgroundColor: theme.palette.background.paperLight,
-                                                    },
-                                                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
-                                                        backgroundColor: theme.palette.background.paper,
-                                                    },
-                                                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                                                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : darken(theme.palette.background.default, 0.15),
-                                                        border: `3px solid ${theme.palette.background.paper}`,
-                                                        borderRadius: 1
-                                                    },
                                                 }}
                                                 rows={accountsWithMappedFields}
                                                 getRowId={(row) => row.id}
@@ -1050,7 +1021,6 @@ function ImporterPage() {
                                                 getRowHeight={() => "auto"}
                                                 rowSelection
                                                 getEstimatedRowHeight={() => 41}
-                                                rowCount={accountsWithMappedFields.length}
                                                 paginationModel={paginationModel}
                                                 onPaginationModelChange={setPaginationModel}
                                                 checkboxSelection={false}
