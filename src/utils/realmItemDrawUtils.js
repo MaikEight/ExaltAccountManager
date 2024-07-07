@@ -1,9 +1,12 @@
 
-export const drawItem = (imgSrc, item, callback) => {
+export const drawItem = (imgSrc, item, callback, itemPadding = 5) => {
+    if(!item) {
+        callback(null);
+        return;
+    }
     
     const itemSize = 40;
-    const itemPadding = 5;
-    const canvasSize = itemSize + 2 * itemPadding;
+    const canvasSize = itemSize + (2 * itemPadding);
     
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
