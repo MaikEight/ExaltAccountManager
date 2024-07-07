@@ -5,33 +5,53 @@ import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
 import ItemCanvas from "./ItemCanvas";
 import items from './../../assets/constants';
+import EquipmentCanvas from "./EquipmentCanvas";
+import CharacterPortrait from "./CharacterPortrait";
 
-const CharacterPortrait = (type, skin, tex1, tex2, adjust) => {
-    const [url, setUrl] = useState('');
-
-    useEffect(() => {
-        const _url = portrait(type, skin, tex1, tex2, adjust);
-        setUrl(_url);
-    }, [type, skin, tex1, tex2, adjust]);
-
-    return (
-        <img src={url} width={34} height={34} id="characterPortrait" alt="Character Portrait" />
-    );
+const emptyItemOverride = {
+    all: {
+        imgSrc: 'realm/itemSlot.png',
+        size: 50,
+        padding: 0,
+    }
 };
 
 function Character({ character }) {
     const [charClass, setCharClass] = useState([]);
+    const [equipment, setEquipment] = useState([]);
+    const [charItems, setCharItems] = useState([]);
+    const [backpackItems, setBackpackItems] = useState([]);
 
-    if (!character) {
-        return null;
-    }
-    if (character.tex1 !== null)
-        console.log(character);
     useEffect(() => {
         if (!character.class) {
             setCharClass([]);
+            setEquipment([]);
+            setCharItems([]);
+            setBackpackItems([]);
+            return;
         }
         setCharClass(classes[character.class]);
+        if (character.equipment) {
+            //First 4 items are equipment
+            if (character.equipment.length >= 4) {
+                setEquipment(character.equipment.slice(0, 4));
+            } else {
+                const emptySlots = 4 - character.equipment.length;
+                const eq = character.equipment;
+                for (let i = 0; i < emptySlots; i++) {
+                    eq.push(-1);
+                }
+                setEquipment([]);
+                setCharItems([]);
+                setBackpackItems([]);
+                return;
+            }
+
+            //Rest of the items are in the inventory
+            setCharItems(character.equipment.slice(4, 12));
+            setBackpackItems(character.equipment.slice(12, character.equipment.length));
+        }
+
     }, [character]);
 
     const getCharacterClassName = () => {
@@ -41,7 +61,11 @@ function Character({ character }) {
 
         return classes[character.class][0];
     };
-    
+
+    if (!character) {
+        return null;
+    }
+
     return (
         <Box
             sx={{
@@ -58,14 +82,27 @@ function Character({ character }) {
                     justifyContent: 'start',
                     alignItems: 'center',
                     mb: 0.5,
-                    gap: 1,
                 }}
             >
-                {CharacterPortrait(character.class, character?.texture, character?.tex1, character?.tex1, false)}
+                <CharacterPortrait type={character.class} skin={character?.texture} tex1={character?.tex1} tex2={character?.tex2} adjust={false} />
                 <Typography variant="h6">{getCharacterClassName()}</Typography>
             </Box>
             <CharacterStats character={character} charClass={charClass} />
-            <ItemCanvas imgSrc="renders.png" itemIds={character.equipment} items={items} />
+            
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '216px',
+                }}
+            >
+                <EquipmentCanvas character={character}/>
+                <ItemCanvas imgSrc="renders.png" itemIds={charItems} items={items} overrideItemImages={emptyItemOverride} />
+                {
+                    backpackItems.length > 0 &&
+                    <ItemCanvas imgSrc="renders.png" itemIds={backpackItems} items={items} overrideItemImages={emptyItemOverride} />
+                }
+            </Box>
         </Box>
     );
 }
