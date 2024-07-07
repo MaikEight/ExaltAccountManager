@@ -5,11 +5,11 @@ export function getItemById(itemId) {
 }
 
 export function formatAccountDataFromCharListDatasets(charListDatasets) {
-    if(!charListDatasets) {
+    if (!charListDatasets) {
         return null;
     }
 
-    if(charListDatasets.length === 1) {
+    if (charListDatasets.length === 1) {
         return [formatAccountDataFromCharListDataset(charListDatasets[0])];
     }
 
@@ -35,7 +35,7 @@ export function formatAccountDataFromCharListDataset(charListDataset) {
         },
         gifts: {
             itemIds: [],
-            totals: {},            
+            totals: {},
         },
         material_storage: {
             itemIds: [],
@@ -89,13 +89,11 @@ export function formatAccountDataFromCharListDataset(charListDataset) {
 
     accountData.account = account;
 
-    if (charListDataset.character.length === 1) {
-        accountData.character.push(formatCharacterDataFromCharListDataset(charListDataset.character));
-    } else {
-        charListDataset.character.forEach((character) => {
-            accountData.character.push(formatCharacterDataFromCharListDataset(character));
-        });
-    }
+
+    charListDataset.character.forEach((character) => {
+        accountData.character.push(formatCharacterDataFromCharListDataset(character));
+    });
+
 
     //Extract character data
     accountData.character = accountData.character.filter((character) => character !== null && character.char_id !== undefined);
@@ -104,10 +102,10 @@ export function formatAccountDataFromCharListDataset(charListDataset) {
 }
 
 export function formatCharacterDataFromCharListDataset(character) {
-    if(!character) {
+    if (!character) {
         return null;
     }
-    if(character.char_id === undefined) {
+    if (character.char_id === undefined) {
         return null;
     }
 
