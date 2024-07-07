@@ -4,7 +4,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 import ItemLocationPopper from './ItemLocationPopper';
 import { Box } from '@mui/material';
 
-const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = false, filter = [] }) => {
+const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filter = [] }) => {
     const canvasRef = useRef(null);
     const baseCanvasRef = useRef(null);
     const itemPositionsRef = useRef([]);
@@ -29,6 +29,17 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = fals
 
         const img = new Image();
         img.src = imgSrc;
+
+        const overrideImages = {};
+        if (overrideItemImages) {
+            Object.keys(overrideItemImages)
+                .forEach(overrideItem => {
+                    const overrideImg = new Image();
+                    overrideImg.src = overrideItemImages[overrideItem].imgSrc;
+                    overrideImages[overrideItem] = overrideImg;
+                    overrideItemImages[overrideItem].img = overrideImages[overrideImages.length - 1];
+                });
+        }
 
         const drawBaseImage = () => {
             const { width } = canvas.getBoundingClientRect();
@@ -69,7 +80,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = fals
                 const it = items[id] ? items[id] : items[0];
 
                 if (!it) {
-                    //Item not found'
+                    //Item not found, skip it
                     continue;
                 }
 
@@ -84,14 +95,23 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = fals
                 // Draw background box
                 baseCt.fillStyle = '#00000000';
                 baseCt.fillRect(0, 0, itemBoxSize, itemBoxSize);
-                
+
+                if(overrideImages['all']) {
+                    baseCt.drawImage(overrideImages['all'], 0, 0, overrideItemImages['all'].size, overrideItemImages['all'].size, overrideItemImages['all'].padding, overrideItemImages['all'].padding, overrideItemImages['all'].size, overrideItemImages['all'].size);
+                }
+
                 if (filter.includes(id)) {
                     baseCt.fillStyle = override.fillStyle;
                     baseCt.fillRect(0, 0, itemBoxSize, itemBoxSize);
                 }
 
-                // Draw the item in the center of the box
-                baseCt.drawImage(img, it[3], it[4], itemSize, itemSize, itemPadding, itemPadding, itemSize, itemSize);
+                if (overrideImages[id]) {
+                    // Draw the item with the custom image                    
+                    baseCt.drawImage(overrideImages[id], 0, 0, overrideItemImages[id].size, overrideItemImages[id].size, overrideItemImages[id].padding, overrideItemImages[id].padding, overrideItemImages[id].size, overrideItemImages[id].size);
+                } else {
+                    // Draw the item in the center of the box
+                    baseCt.drawImage(img, it[3], it[4], itemSize, itemSize, itemPadding, itemPadding, itemSize, itemSize);
+                }
 
                 // Store the position and ID of the item
                 itemPositionsRef.current.push({ uniqueId: `${id}-${index}`, id, x, y, width: itemBoxSize, height: itemBoxSize, name: it[0] });
@@ -117,7 +137,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = fals
             ct.drawImage(baseCanvas, 0, 0);
         };
 
-        img.onload = () => {            
+        img.onload = () => {
             drawBaseImage();
             redrawCanvas(hoveredItem);
         };
@@ -167,7 +187,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = fals
         const y = event.clientY - rect.top;
         const canvasMidpoint = rect.width / 2.5;
         const isLeftHalf = x < canvasMidpoint;
-    
+
         for (let position of itemPositionsRef.current) {
             if (
                 x >= position.x &&
@@ -186,7 +206,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, totals = {}, drawEmptySlots = fals
                     // Enough space above, position as before
                     popperY = position.y + rect.top - offset;
                 }
-        
+
                 let popperX;
                 if (isLeftHalf) {
                     // Position to the right of the item if clicked on the left half
