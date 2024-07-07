@@ -32,7 +32,7 @@ function extract_sprites(img, sx, sy) {
     c.crossOrigin = 'anonymous';
     c.width = img.width;
     c.height = img.height;
-    const ctx = c.getContext('2d');
+    const ctx = c.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(img, 0, 0);
     let i = 0;
     const r = [];
@@ -52,7 +52,7 @@ function extract_skins(img, size) {
     c.crossOrigin = "anonymous";
     c.width = img.width;
     c.height = img.height;
-    const ctx = c.getContext('2d');
+    const ctx = c.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(img, 0, 0);
     let i = 0;
     const r = [];
