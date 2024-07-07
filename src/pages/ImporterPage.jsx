@@ -1,4 +1,4 @@
-import { Box, Chip, FormControl, Input, LinearProgress, MenuItem, Pagination, Paper, Radio, Select, Step, StepLabel, Stepper, Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, alpha, darken } from "@mui/material";
+import { Box, Chip, FormControl, Input, LinearProgress, MenuItem, Pagination, Paper, Radio, Select, Step, StepLabel, Stepper, Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, alpha, darken, lighten } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { listen } from '@tauri-apps/api/event'
 import { dialog, invoke } from '@tauri-apps/api';
@@ -24,11 +24,10 @@ import { readFileUTF8 } from "../utils/readFileUtil";
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import PaddedTableCell from "../components/AccountDetails/PaddedTableCell";
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import styled from "styled-components";
 import GroupUI from "../components/GridComponents/GroupUI";
 import useGroups from "../hooks/useGroups";
 import SteamworksMailColumn from "../components/GridComponents/SteamworksMailColumn";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -1011,8 +1010,9 @@ function ImporterPage() {
                                             }}
                                         >
                                             <DataGrid
-                                                sx={{
+                                                style={{
                                                     maxHeight: '600px',
+                                                    height: '600px',
                                                 }}
                                                 rows={accountsWithMappedFields}
                                                 getRowId={(row) => row.id}
