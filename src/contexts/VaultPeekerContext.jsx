@@ -2,10 +2,13 @@ import { createContext, useEffect, useState } from "react";
 import useAccounts from "../hooks/useAccounts";
 import { invoke } from "@tauri-apps/api";
 import { extractRealmItemsFromCharListDatasets, formatAccountDataFromCharListDatasets } from "../utils/realmItemUtils";
+import ItemLocationPopper from "../components/Realm/ItemLocationPopper";
 
 const VaultPeekerContext = createContext();
 
 function VaultPeekerContextProvider({ children }) {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [popperPosition, setPopperPosition] = useState(null);
     const [totalItems, setTotalItems] = useState([]);
     const [accountsData, setAccountsData] = useState([]);
     const [filteredTotals, setFilteredTotals] = useState([]);
@@ -35,11 +38,24 @@ function VaultPeekerContextProvider({ children }) {
         accountsData,
         filteredTotals,
         getAccountByEmail,
+        popperPosition,
+        setPopperPosition,
+        selectedItem,
+        setSelectedItem,
     };
 
     return (
         <VaultPeekerContext.Provider value={contextValue}>
             {children}
+            <ItemLocationPopper
+                open={Boolean(selectedItem)}
+                position={popperPosition}
+                selectedItem={selectedItem}
+                onClose={() => {
+                    setSelectedItem(null);
+                    setPopperPosition(null);
+                }}
+            />
         </VaultPeekerContext.Provider>
     );
 }
