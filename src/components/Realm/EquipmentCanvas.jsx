@@ -1,37 +1,50 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import itemsSlotTypeMap from "../../assets/slotmap";
 import items, { classes } from "../../assets/constants";
 import { drawItem } from "../../utils/realmItemDrawUtils";
 import { Box } from "@mui/material";
+import useItemCanvas from "../../hooks/useItemCanvas";
+import useVaultPeeker from "../../hooks/useVaultPeeker";
 
-function EquipmentCanvas({ character }) {
-    const [imageData, setImageData] = useState([null, null, null, null]);
-    const [equipment, setEquipment] = useState([]);
+function EquipmentCanvas({ canvasIdentifier, character }) {
+    const [itemData, setItemData] = useState([null, null, null, null]);
     const [hoveredId, setHoveredId] = useState(-1);
+    const { hoveredConvasId, setHoveredConvasId } = useItemCanvas();
+    const { selectedItem, setPopperPosition, setSelectedItem, totalItems } = useVaultPeeker();
+    const itemRef1 = useRef(null);
+    const itemRef2 = useRef(null);
+    const itemRef3 = useRef(null);
+    const itemRef4 = useRef(null);
 
-    useEffect(() => {
+    useEffect(() => {        
+        const logMode = canvasIdentifier?.includes('guima_cs@hotmail.com') ?? false;
+
         const charSlots = classes[character.class]?.[4];
         const slotMapKeys = charSlots.map((slot) => Object.keys(itemsSlotTypeMap).find((key) => itemsSlotTypeMap[key].slotType === slot));
         const slotMapValues = slotMapKeys.map((key) => itemsSlotTypeMap[key]);
-
         for (let i = 0; i < 4; i++) {
             const slot = slotMapValues[i];
             const itemId = character.equipment[i];
             const item = items[itemId];
-            if (itemId !== -1) {
+            if(logMode) console.log(itemId, item, slot);
+            if (itemId && itemId !== -1) {
                 drawItem(
                     "renders.png",
                     item,
                     (imageUrl) => {
-                        setImageData((prev) => {
+                        setItemData((prev) => {
                             const newState = [...prev];
-                            newState[i] = imageUrl;
+                            newState[i] = {
+                                itemId: itemId,
+                                img: imageUrl
+                            };
                             return newState;
                         })
                     }
                 );
                 continue;
             }
+
             const slotItem = [
                 itemId,
                 null,
@@ -39,14 +52,17 @@ function EquipmentCanvas({ character }) {
                 slot.sheet[0],
                 slot.sheet[1],
             ];
-            
+
             drawItem(
                 "realm/itemsilhouettes_25p.png",
                 slotItem,
                 (imageUrl) => {
-                    setImageData((prev) => {
+                    setItemData((prev) => {
                         const newState = [...prev];
-                        newState[i] = imageUrl;
+                        newState[i] = {
+                            itemId: itemId,
+                            img: imageUrl
+                        };
                         return newState;
                     })
                 },
@@ -55,18 +71,28 @@ function EquipmentCanvas({ character }) {
         }
     }, [character]);
 
+    useEffect(() => {
+        if (hoveredConvasId !== canvasIdentifier) {
+            setHoveredId(-1);
+        }
+    }, [hoveredConvasId, canvasIdentifier]);
+
+
     return (
         <Box
             sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                // gap: '4px',
+                backgroundColor: theme => theme.palette.background.default,
+                borderRadius: theme => `${theme.shape.borderRadius}px`,
             }}
         >
             {
-                imageData.map((data, index) => {
+                itemData.map((data, index) => {
+                    const uniqueId = `${canvasIdentifier}__${index}`;
                     return (
                         <Box
+                            ref={index === 0 ? itemRef1 : index === 1 ? itemRef2 : index === 2 ? itemRef3 : itemRef4}
                             key={index}
                             sx={{
                                 p: '2px',
@@ -74,14 +100,28 @@ function EquipmentCanvas({ character }) {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 borderRadius: theme => `${theme.shape.borderRadius}px`,
-                                ...(hoveredId === index && { backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)'}),
+                                ...((hoveredId === index || (selectedItem?.itemId === data?.itemId && selectedItem?.uniqueId === uniqueId)) && { backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)' }),
                             }}
-                            onMouseEnter={() => setHoveredId(index)}
+                            onMouseEnter={() => {
+                                setHoveredConvasId(canvasIdentifier);
+                                setHoveredId(index);
+                            }}
                             onMouseLeave={() => setHoveredId(-1)}
+                            onClick={() => {
+                                const imgRef = index === 0 ? itemRef1.current : index === 1 ? itemRef2.current : index === 2 ? itemRef3.current : itemRef4.current;
+                                if (!imgRef) return;
+                                const rect = imgRef.getBoundingClientRect();
+                                setPopperPosition({ top: rect.top, left: index > 2 ? rect.left : rect.right, isLeftHalf: index < 2 });
+                                setSelectedItem({
+                                    itemId: data.itemId ?? -1,
+                                    uniqueId: uniqueId,
+                                    totals: totalItems?.totals[data.itemId] ?? {}
+                                });
+                            }}
                         >
                             {
                                 data &&
-                                <img src={data} width={50} height={50} alt="Equipment Image" />
+                                <img src={data.img} width={50} height={50} alt="Equipment Image" />
                             }
                         </Box>
                     );
