@@ -16,9 +16,11 @@ function TotalsView() {
             innerSx={{ position: 'relative', overflow: 'hidden', }}
         >
             <ItemCanvas
+                canvasIdentifier="totals"
                 imgSrc="renders.png"
                 itemIds={totalItems?.itemIds ? totalItems.itemIds : []}
-                items={items} totals={totalItems?.totals ? totalItems.totals : {}}
+                items={items} 
+                totals={totalItems?.totals ? totalItems.totals : {}}
             />
 
             <img
