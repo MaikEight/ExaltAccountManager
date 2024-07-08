@@ -1,12 +1,12 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { portrait } from "../../utils/portraitUtils";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
 import ItemCanvas from "./ItemCanvas";
 import items from './../../assets/constants';
 import EquipmentCanvas from "./EquipmentCanvas";
 import CharacterPortrait from "./CharacterPortrait";
+import useVaultPeeker from "../../hooks/useVaultPeeker";
 
 const emptyItemOverride = {
     all: {
@@ -16,32 +16,48 @@ const emptyItemOverride = {
     }
 };
 
-function Character({ character }) {
+function Character({ charIdentifier, character }) {
     const [charClass, setCharClass] = useState([]);
-    const [equipment, setEquipment] = useState([]);
     const [charItems, setCharItems] = useState([]);
     const [backpackItems, setBackpackItems] = useState([]);
+    const [xof8, setXof8] = useState(0);
+    const { totalItems } = useVaultPeeker();
+
+    const theme = useTheme();
 
     useEffect(() => {
         if (!character.class) {
             setCharClass([]);
-            setEquipment([]);
             setCharItems([]);
             setBackpackItems([]);
             return;
         }
-        setCharClass(classes[character.class]);
+        const cls = classes[character.class];
+        setCharClass(cls);
+
+        let x = 0;
+        try {
+            x += cls[3][0] - character.maxHp <= 0 ? 1 : 0;
+            x += cls[3][1] - character.maxMp <= 0 ? 1 : 0;
+            x += cls[3][2] - character.atk <= 0 ? 1 : 0;
+            x += cls[3][3] - character.def <= 0 ? 1 : 0;
+            x += cls[3][4] - character.spd <= 0 ? 1 : 0;
+            x += cls[3][5] - character.dex <= 0 ? 1 : 0;
+            x += cls[3][6] - character.vit <= 0 ? 1 : 0;
+            x += cls[3][7] - character.wis <= 0 ? 1 : 0;
+        } catch (e) {
+            console.error(e);
+        }
+        setXof8(x);
+
         if (character.equipment) {
             //First 4 items are equipment
-            if (character.equipment.length >= 4) {
-                setEquipment(character.equipment.slice(0, 4));
-            } else {
+            if (character.equipment.length < 4) {
                 const emptySlots = 4 - character.equipment.length;
                 const eq = character.equipment;
                 for (let i = 0; i < emptySlots; i++) {
                     eq.push(-1);
                 }
-                setEquipment([]);
                 setCharItems([]);
                 setBackpackItems([]);
                 return;
@@ -51,7 +67,6 @@ function Character({ character }) {
             setCharItems(character.equipment.slice(4, 12));
             setBackpackItems(character.equipment.slice(12, character.equipment.length));
         }
-
     }, [character]);
 
     const getCharacterClassName = () => {
@@ -82,26 +97,51 @@ function Character({ character }) {
                     justifyContent: 'start',
                     alignItems: 'center',
                     mb: 0.5,
+                    gap: 1,
                 }}
             >
                 <CharacterPortrait type={character.class} skin={character?.texture} tex1={character?.tex1} tex2={character?.tex2} adjust={false} />
-                <Typography variant="h6">{getCharacterClassName()}</Typography>
+                <Box>
+                    <Typography variant="h6">{getCharacterClassName()}</Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                        }}
+                    >
+                        <Typography variant="body2">#{character.char_id}</Typography>
+                        <Typography variant="body2" color={character.level === 20 ? theme.palette.warning.main : theme.palette.text.primary}>{character.level}</Typography>
+                        <Typography variant="body2" color={xof8 === 8 ? theme.palette.warning.main : theme.palette.text.primary}> {xof8}/8</Typography>
+                    </Box>
+                </Box>
             </Box>
             <CharacterStats character={character} charClass={charClass} />
-            
+
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     width: '216px',
+                    gap: 1,
                 }}
             >
-                <EquipmentCanvas character={character}/>
-                <ItemCanvas imgSrc="renders.png" itemIds={charItems} items={items} overrideItemImages={emptyItemOverride} />
-                {
-                    backpackItems.length > 0 &&
-                    <ItemCanvas imgSrc="renders.png" itemIds={backpackItems} items={items} overrideItemImages={emptyItemOverride} />
-                }
+                <EquipmentCanvas canvasIdentifier={charIdentifier + "_EQ"} character={character} />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        backgroundColor: theme => theme.palette.background.default,
+                        borderRadius: theme => `${theme.shape.borderRadius + 1}px`,
+                        gap: 1,
+                    }}
+                >
+                    <ItemCanvas canvasIdentifier={charIdentifier + "_INV"} imgSrc="renders.png" itemIds={charItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
+                    {
+                        backpackItems.length > 0 &&
+                        <ItemCanvas canvasIdentifier={charIdentifier + "_BACK"} imgSrc="renders.png" itemIds={backpackItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
+                    }
+                </Box>
             </Box>
         </Box>
     );
