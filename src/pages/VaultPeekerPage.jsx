@@ -7,6 +7,7 @@ import SingleItemCanvas from "../components/Realm/SingleItemCanvas";
 import { VaultPeekerContextProvider } from "../contexts/VaultPeekerContext";
 import TotalsView from "../components/VaultPeeker/TotalsView";
 import AccountsView from "../components/VaultPeeker/AccountsView";
+import { ItemCanvasContextProvider } from "../contexts/ItemCanvasContext";
 
 function VaultPeekerPage() {
 
@@ -24,47 +25,49 @@ function VaultPeekerPage() {
 
     return (
         <VaultPeekerContextProvider>
-            <Box sx={{ width: '100%', overflow: 'auto' }}>
-                <ComponentBox
-                    title={
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                width: '100%',
-                            }}
-                        >
-                            <Typography
-                                variant="h6"
+            <ItemCanvasContextProvider>
+                <Box sx={{ width: '100%', overflow: 'auto' }}>
+                    <ComponentBox
+                        title={
+                            <Box
                                 sx={{
-                                    fontWeight: 600,
-                                    textAlign: 'center',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    width: '100%',
                                 }}
                             >
-                                Filter
-                            </Typography>
-                            <Box
-                                onClick={(event) => { event.stopPropagation(); }}
-                            >
-                                <Searchbar
-                                    onSearchChanged={searchChanged}
-                                />
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: 600,
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    Filter
+                                </Typography>
+                                <Box
+                                    onClick={(event) => { event.stopPropagation(); }}
+                                >
+                                    <Searchbar
+                                        onSearchChanged={searchChanged}
+                                    />
+                                </Box>
                             </Box>
-                        </Box>
-                    }
-                    icon={<FilterListOutlinedIcon />}
-                    isCollapseable={true}
-                >
-                    <SingleItemCanvas item={items[2594]} />
-                </ComponentBox>
+                        }
+                        icon={<FilterListOutlinedIcon />}
+                        isCollapseable={true}
+                    >
+                        <SingleItemCanvas item={items[2594]} />
+                    </ComponentBox>
 
-                {/* Totals */}
-                <TotalsView />
+                    {/* Totals */}
+                    <TotalsView />
 
-                {/* Accounts */}
-                <AccountsView />
-            </Box>
+                    {/* Accounts */}
+                    <AccountsView />
+                </Box>
+            </ItemCanvasContextProvider>
         </VaultPeekerContextProvider>
     );
 }
