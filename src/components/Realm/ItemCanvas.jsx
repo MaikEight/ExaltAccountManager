@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import throttle from 'lodash.throttle';
 import { alpha, useTheme } from '@mui/material/styles';
-import ItemLocationPopper from './ItemLocationPopper';
 import { Box } from '@mui/material';
+import useItemCanvas from '../../hooks/useItemCanvas';
+import useVaultPeeker from '../../hooks/useVaultPeeker';
 
-const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filter = [] }) => {
+const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, override = {}, filter = [] }) => {
     const canvasRef = useRef(null);
     const baseCanvasRef = useRef(null);
     const itemPositionsRef = useRef([]);
     const [hoveredItem, setHoveredItem] = useState(null);
     const theme = useTheme();
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [popperPosition, setPopperPosition] = useState(null);
+    const { hoveredConvasId, setHoveredConvasId } = useItemCanvas();
+    const { setSelectedItem, setPopperPosition } = useVaultPeeker();
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -66,12 +67,13 @@ const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = 
             let y = 2;
 
             itemPositionsRef.current = [];
-
-            const override = {
+            
+            override = {
                 totals: true,
                 fillStyle: alpha(theme.palette.primary.main, 0.3),
                 fillNumbers: true,
                 minTotal: 1,
+                ...override
             };
 
             for (let index = 0; index < itemIds.length; index++) {
@@ -139,7 +141,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = 
 
         img.onload = () => {
             drawBaseImage();
-            redrawCanvas(hoveredItem);
+            redrawCanvas(hoveredItem, true);
         };
 
         img.onerror = () => {
@@ -157,6 +159,12 @@ const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = 
             window.removeEventListener('resize', handleResize);
         };
     }, [itemIds, items, imgSrc, hoveredItem]);
+
+    useEffect(() => {
+        if (hoveredConvasId !== canvasIdentifier) {
+            setHoveredItem(null);
+        }
+    }, [hoveredConvasId]);
 
     const handleMouseMove = throttle((event) => {
         const canvas = canvasRef.current;
@@ -178,6 +186,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = 
         }
 
         setHoveredItem(hoverId);
+        setHoveredConvasId(canvasIdentifier);
     }, 10);
 
     const handleClick = (event) => {
@@ -226,7 +235,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = 
         }
     };
 
-    const redrawCanvas = (hoverId) => {
+    const redrawCanvas = (hoverId) => {        
         const canvas = canvasRef.current;
         const baseCanvas = baseCanvasRef.current;
         if (!canvas || !baseCanvas) return;
@@ -276,7 +285,7 @@ const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = 
     }, [hoveredItem]);
 
     return (
-        <Box style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <Box id="itemCanvasBox" sx={{ width: '100%', height: 'fit-content', position: 'relative', p: 0, m:0, mb: '-7px' }}>
             <canvas
                 ref={canvasRef}
                 onMouseMove={handleMouseMove}
@@ -286,15 +295,6 @@ const ItemCanvas = ({ itemIds, items, imgSrc, overrideItemImages = {}, totals = 
             <canvas
                 ref={baseCanvasRef}
                 style={{ display: 'none', zIndex: 2 }}
-            />
-            <ItemLocationPopper
-                open={Boolean(selectedItem)}
-                position={popperPosition}
-                selectedItem={selectedItem}
-                onClose={() => {
-                    setSelectedItem(null);
-                    setPopperPosition(null);
-                }}
             />
         </Box>
     );
