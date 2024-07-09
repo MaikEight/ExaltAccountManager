@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
@@ -111,13 +111,53 @@ function Character({ charIdentifier, character }) {
                         }}
                     >
                         <Typography variant="body2">#{character.char_id}</Typography>
-                        <Typography variant="body2" color={character.level === 20 ? theme.palette.warning.main : theme.palette.text.primary}>{character.level}</Typography>
-                        <Typography variant="body2" color={xof8 === 8 ? theme.palette.warning.main : theme.palette.text.primary}> {xof8}/8</Typography>
                     </Box>
                 </Box>
             </Box>
-            <CharacterStats character={character} charClass={charClass} />
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    pr: 1,
+                    gap: 1,
+                }}
+            >
+                <CharacterStats character={character} charClass={charClass} />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'start',
+                        alignItems: 'end',
+                    }}
+                >
+                    <Tooltip title="Fame">
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 0.5,
+                            }}
+                        >
 
+                            {
+                                character.fame > 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
+                                <img src="/realm/fame.png" alt="Fame" height={20} />
+                            }
+                            <Typography variant="body1">{character.fame}</Typography>
+                        </Box>
+                    </Tooltip>
+                    <Tooltip title="Level">
+                        <Typography variant="h6" color={character.level === 20 ? theme.palette.warning.main : theme.palette.text.primary}>lvl {character.level}</Typography>
+                    </Tooltip>
+                    <Tooltip title="Maxed out stats">
+                        <Typography variant="h6" color={xof8 === 8 ? theme.palette.warning.main : theme.palette.text.primary}> {xof8}/8</Typography>
+                    </Tooltip>
+                </Box>
+            </Box>
             <Box
                 sx={{
                     display: 'flex',
