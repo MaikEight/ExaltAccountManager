@@ -39,7 +39,7 @@ function AccountView({ account }) {
                 account && account.account &&
                 <Box>
                     {/* Vault */}
-                    <StorageView canvasIdentifier={account.email + "_Vault"} title={<StorageViewTitle title="Vault" image="realm/vault_portal.png"/>} itemIds={account.account.vault.itemIds} totals={totalItems?.totals} />
+                    <StorageView canvasIdentifier={account.email + "_Vault"} title={<StorageViewTitle title="Vault" image="realm/vault_portal.png" sx={{gap: 0.5}}/>} itemIds={account.account.vault.itemIds} totals={totalItems?.totals} />
                     {/* Gift Chest */}
                     <StorageView canvasIdentifier={account.email + "_Gift"} title={<StorageViewTitle title="Gift Chest" image="realm/gift_chest.png"/>} itemIds={account.account.gifts.itemIds} totals={totalItems?.totals} />
                     {/* Trade Chest */}
@@ -58,7 +58,7 @@ function AccountView({ account }) {
 export default AccountView;
 
 function StorageView({ canvasIdentifier, title, itemIds, totals }) {
-    if(!itemIds || itemIds.length === 0) return null;
+    // if(!itemIds || itemIds.length === 0) return null;
 
     return (
         <Box
@@ -75,7 +75,7 @@ function StorageView({ canvasIdentifier, title, itemIds, totals }) {
     );
 }
 
-function StorageViewTitle({ title, image }) {
+function StorageViewTitle({ title, image, sx }) {
     return (
         <Box
             sx={{
@@ -83,7 +83,8 @@ function StorageViewTitle({ title, image }) {
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'end',
-                gap: 0.5,
+                gap: 1,
+                ...sx
             }}
         >
             <img src={image} alt={title} style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
