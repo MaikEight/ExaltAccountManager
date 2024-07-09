@@ -47,18 +47,37 @@ function VaultPeekerPage() {
                                     Filter
                                 </Typography>
                                 <Box
-                                    onClick={(event) => { event.stopPropagation(); }}
+                                //onClick={(event) => { event.stopPropagation(); }}
                                 >
-                                    <Searchbar
-                                        onSearchChanged={searchChanged}
-                                    />
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            fontWeight: 600,
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        EAM v4.2.0b Vault Peeker Beta #1
+                                    </Typography>
+                                    {
+                                        /* <Searchbar
+                                            onSearchChanged={searchChanged}
+                                        /> */
+                                    }
                                 </Box>
                             </Box>
                         }
                         icon={<FilterListOutlinedIcon />}
                         isCollapseable={true}
+                        defaultCollapsed={true}
+                        innerSx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                        }}
                     >
-                        <SingleItemCanvas item={items[2594]} />
+                        <Typography variant="h6">Filters are coming soon&#x2122;</Typography>
                     </ComponentBox>
 
                     {/* Totals */}
