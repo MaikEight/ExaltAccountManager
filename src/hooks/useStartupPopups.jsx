@@ -5,6 +5,9 @@ import useAccounts from "./useAccounts";
 import ChangelogVersion4_1_0 from "../components/Popups/Changelogs/ChangelogVersion4_1_0";
 import ChangelogVersion4_1_5 from "../components/Popups/Changelogs/ChangelogVersion4_1_5";
 import ChangelogVersion4_2_0 from "../components/Popups/Changelogs/ChangelogVersion4_2_0";
+import BetaTestPopup from "../components/Popups/BetaTestPopup";
+
+const isBetaVersion = true;
 
 function useStartupPopups() {
     const { accounts } = useAccounts();
@@ -20,12 +23,12 @@ function useStartupPopups() {
             preventClose: false,
             content: <ChangelogVersion4_1_5 />
         },
-        {
-            version: "4.2.0",
-            preventClose: false,
-            content: <ChangelogVersion4_2_0 />
-        },
-    ]
+        // {
+        //     version: "4.2.0",
+        //     preventClose: false,
+        //     content: <ChangelogVersion4_2_0 />
+        // },
+    ];
 
     const checkForFirstEamStart = () => {
         const firstEamStart = localStorage.getItem('firstEamStart');
@@ -63,6 +66,13 @@ function useStartupPopups() {
     }
 
     const performPopupCheck = async () => {
+        if(isBetaVersion) {
+            return {
+                preventClose: false,
+                content: (<BetaTestPopup />)
+            }
+        }
+
         const isFirstEamStart = checkForFirstEamStart();
         if (isFirstEamStart) {
             return await getFirstWelcomePopup();
