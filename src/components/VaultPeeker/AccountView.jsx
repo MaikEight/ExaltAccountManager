@@ -58,7 +58,7 @@ function AccountView({ account }) {
 export default AccountView;
 
 function StorageView({ canvasIdentifier, title, itemIds, totals }) {
-    // if(!itemIds || itemIds.length === 0) return null;
+    if(!itemIds || itemIds.length === 0) return null;
 
     return (
         <Box
