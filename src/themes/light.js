@@ -109,6 +109,9 @@ export const lightTheme = createTheme({
                   border: theme => `3px solid ${theme.palette.background.paper}`,
                   borderRadius: theme => theme.shape.borderRadius,
                 },
+                '& .css-tgsonj': {
+                  borderTop: 'none',
+                }
               },
             },
           },
