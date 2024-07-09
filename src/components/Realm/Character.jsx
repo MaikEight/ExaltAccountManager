@@ -101,16 +101,36 @@ function Character({ charIdentifier, character }) {
                 }}
             >
                 <CharacterPortrait type={character.class} skin={character?.texture} tex1={character?.tex1} tex2={character?.tex2} adjust={false} />
-                <Box>
-                    <Typography variant="h6">{getCharacterClassName()}</Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        pr: 1,
+                    }}
+                >
+
                     <Box
                         sx={{
                             display: 'flex',
-                            flexDirection: 'row',
-                            gap: 1,
+                            flexDirection: 'column',
                         }}
                     >
+                        <Typography variant="h6">{getCharacterClassName()}</Typography>
                         <Typography variant="body2">#{character.char_id}</Typography>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        {
+                            character.seasonal &&
+                            <Typography variant="body2" color={theme.palette.warning.main}>Seasonal</Typography>
+                        }
                     </Box>
                 </Box>
             </Box>
@@ -144,7 +164,7 @@ function Character({ charIdentifier, character }) {
                         >
 
                             {
-                                character.fame > 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
+                                character.fame >= 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
                                 <img src="/realm/fame.png" alt="Fame" height={20} />
                             }
                             <Typography variant="body1">{character.fame}</Typography>
