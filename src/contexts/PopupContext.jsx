@@ -35,7 +35,7 @@ function PopupContextProvider({ children }) {
         }, 250);
 
         return () => clearTimeout(timeoutId);
-    }, [accounts]);
+    }, []);
 
     const value = {
         showPopup,

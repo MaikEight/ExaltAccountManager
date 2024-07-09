@@ -7,6 +7,7 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 
 function AccountView({ account }) {
     const { totalItems } = useVaultPeeker();
+
     return (
         <ComponentBox
             title={account.name ? account.name : account.email}
@@ -48,7 +49,6 @@ function AccountView({ account }) {
                     <StorageView canvasIdentifier={account.email + "_Temp"} title={<StorageViewTitle title="Temporary Gifts" image="realm/chest.png"/>} itemIds={account.account.temporary_gifts.itemIds} totals={totalItems?.totals} />
                     {/* Potion Storage */}
                     <StorageView canvasIdentifier={account.email + "_Potion"} title={<StorageViewTitle title="Potion Storage" image="realm/potion_storage_small.png"/>} itemIds={account.account.potions.itemIds} totals={totalItems?.totals} />
-
                 </Box>
             }
         </ComponentBox>
