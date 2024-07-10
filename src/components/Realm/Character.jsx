@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, Chip, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
@@ -7,6 +7,7 @@ import items from './../../assets/constants';
 import EquipmentCanvas from "./EquipmentCanvas";
 import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
+import useColorList from './../../hooks/useColorList';
 
 const emptyItemOverride = {
     all: {
@@ -32,6 +33,7 @@ function Character({ charIdentifier, character }) {
             setBackpackItems([]);
             return;
         }
+
         const cls = classes[character.class];
         setCharClass(cls);
 
@@ -124,12 +126,19 @@ function Character({ charIdentifier, character }) {
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            justifyContent: 'center',
+                            justifyContent: 'end',
                         }}
                     >
                         {
                             character.seasonal &&
-                            <Typography variant="body2" color={theme.palette.warning.main}>Seasonal</Typography>
+                            <Chip
+                                sx={{
+                                    ...useColorList(4),
+                                }}
+                                clickable={false}
+                                label={'Seasonal'}
+                                size="small"
+                            />
                         }
                     </Box>
                 </Box>
