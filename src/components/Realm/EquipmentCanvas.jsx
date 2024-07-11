@@ -8,25 +8,28 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 
 function EquipmentCanvas({ canvasIdentifier, character }) {
     const [itemData, setItemData] = useState([null, null, null, null]);
+    const [filteredItemIds, setFilteredItemIds] = useState([-1, -1, -1, -1]);
     const [hoveredId, setHoveredId] = useState(-1);
     const { hoveredConvasId, setHoveredConvasId } = useItemCanvas();
-    const { selectedItem, setPopperPosition, setSelectedItem, totalItems } = useVaultPeeker();
+    const { selectedItem, setPopperPosition, setSelectedItem, totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
     const itemRef1 = useRef(null);
     const itemRef2 = useRef(null);
     const itemRef3 = useRef(null);
     const itemRef4 = useRef(null);
 
-    useEffect(() => {        
-        const logMode = canvasIdentifier?.includes('guima_cs@hotmail.com') ?? false;
-
+    useEffect(() => {
         const charSlots = classes[character.class]?.[4];
         const slotMapKeys = charSlots.map((slot) => Object.keys(itemsSlotTypeMap).find((key) => itemsSlotTypeMap[key].slotType === slot));
         const slotMapValues = slotMapKeys.map((key) => itemsSlotTypeMap[key]);
+        const eqItemIds = character.equipment.slice(0, 4);
+        while (eqItemIds.length < 4) eqItemIds.push(-1);
+        setFilteredItemIds(eqItemIds);
+        addItemFilterCallback(canvasIdentifier, (itemIds) => { setFilteredItemIds(itemIds); }, eqItemIds);
+
         for (let i = 0; i < 4; i++) {
             const slot = slotMapValues[i];
             const itemId = character.equipment[i];
             const item = items[itemId];
-            if(logMode) console.log(itemId, item, slot);
             if (itemId && itemId !== -1) {
                 drawItem(
                     "renders.png",
@@ -36,7 +39,8 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                             const newState = [...prev];
                             newState[i] = {
                                 itemId: itemId,
-                                img: imageUrl
+                                img: imageUrl,
+                                hidden: false,
                             };
                             return newState;
                         })
@@ -61,7 +65,8 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                         const newState = [...prev];
                         newState[i] = {
                             itemId: itemId,
-                            img: imageUrl
+                            img: imageUrl,
+                            hidden: false,
                         };
                         return newState;
                     })
@@ -69,7 +74,11 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                 5
             );
         }
-    }, [character]);
+
+        return () => {
+            removeItemFilterCallback(canvasIdentifier);
+        };
+    }, [character]);    
 
     useEffect(() => {
         if (hoveredConvasId !== canvasIdentifier) {
@@ -77,6 +86,19 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         }
     }, [hoveredConvasId, canvasIdentifier]);
 
+    useEffect(() => {
+        const data = itemData.map((data, index) => {
+            if(!data) return null;
+            return {
+                itemId: data.itemId,
+                img: data.img,
+                hidden: !filteredItemIds.includes(data.itemId),
+            };
+        });
+        setItemData(data);
+    }, [filteredItemIds]);
+
+    if(!filteredItemIds || filteredItemIds.length === 0) return null;
 
     return (
         <Box
@@ -120,7 +142,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                             }}
                         >
                             {
-                                data &&
+                                data && !data.hidden &&
                                 <img src={data.img} width={50} height={50} alt="Equipment Image" />
                             }
                         </Box>
