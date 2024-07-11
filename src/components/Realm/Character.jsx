@@ -22,8 +22,10 @@ function Character({ charIdentifier, character }) {
     const [charItems, setCharItems] = useState([]);
     const [backpackItems, setBackpackItems] = useState([]);
     const [xof8, setXof8] = useState(0);
-    const { totalItems } = useVaultPeeker();
 
+    const { totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const seasonalChipColor = useColorList(1);
+    const crucibleChipColor = useColorList(3);
     const theme = useTheme();
 
     useEffect(() => {
@@ -60,14 +62,27 @@ function Character({ charIdentifier, character }) {
                 for (let i = 0; i < emptySlots; i++) {
                     eq.push(-1);
                 }
-                setCharItems([]);
+                setCharItems(eq);
                 setBackpackItems([]);
-                return;
+
+                addItemFilterCallback(charIdentifier + "_INV", (itemIds) => { setCharItems(itemIds); }, eq);
+                return () => {
+                    removeItemFilterCallback(charIdentifier + "_INV");
+                };
             }
 
             //Rest of the items are in the inventory
-            setCharItems(character.equipment.slice(4, 12));
-            setBackpackItems(character.equipment.slice(12, character.equipment.length));
+            const cItems = character.equipment.slice(4, 12);
+            const bItems = character.equipment.slice(12, character.equipment.length);
+            setCharItems(cItems);
+            setBackpackItems(bItems);
+
+            addItemFilterCallback(charIdentifier + "_INV", (itemIds) => { setCharItems(itemIds); }, cItems);
+            addItemFilterCallback(charIdentifier + "_BACK", (itemIds) => { setBackpackItems(itemIds); }, bItems);
+            return () => {
+                removeItemFilterCallback(charIdentifier + "_INV");
+                removeItemFilterCallback(charIdentifier + "_BACK");
+            };
         }
     }, [character]);
 
@@ -116,30 +131,55 @@ function Character({ charIdentifier, character }) {
                     <Box
                         sx={{
                             display: 'flex',
-                            flexDirection: 'column',
+                            flexDirection: 'row',
+                            width: '100%',
                         }}
                     >
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'start',
+                                justifyContent: 'start',
+                                gap: 1,
+                            }}
+                        > 
                         <Typography variant="h6">{getCharacterClassName()}</Typography>
                         <Typography variant="body2">#{character.char_id}</Typography>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'end',
-                        }}
-                    >
-                        {
-                            character.seasonal &&
-                            <Chip
-                                sx={{
-                                    ...useColorList(4),
-                                }}
-                                clickable={false}
-                                label={'Seasonal'}
-                                size="small"
-                            />
-                        }
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'start',
+                                gap: 0.5,
+                            }}
+                        >                            
+                            {
+                                character.seasonal &&
+                                <Chip
+                                    sx={{
+                                        ...seasonalChipColor,
+                                    }}
+                                    clickable={false}
+                                    label={'Seasonal'}
+                                    size="small"
+                                />
+                            }
+                            {
+                                character.crucibleActive &&
+                                <Chip
+                                    sx={{
+                                        ...crucibleChipColor,
+                                    }}
+                                    clickable={false}
+                                    label={'Crucible'}
+                                    size="small"
+                                />
+                            }
+                        </Box>
                     </Box>
                 </Box>
             </Box>
@@ -196,21 +236,24 @@ function Character({ charIdentifier, character }) {
                 }}
             >
                 <EquipmentCanvas canvasIdentifier={charIdentifier + "_EQ"} character={character} />
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        backgroundColor: theme => theme.palette.background.default,
-                        borderRadius: theme => `${theme.shape.borderRadius + 1}px`,
-                        gap: 1,
-                    }}
-                >
-                    <ItemCanvas canvasIdentifier={charIdentifier + "_INV"} imgSrc="renders.png" itemIds={charItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
-                    {
-                        backpackItems.length > 0 &&
-                        <ItemCanvas canvasIdentifier={charIdentifier + "_BACK"} imgSrc="renders.png" itemIds={backpackItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
-                    }
-                </Box>
+                {
+                    ((charItems && charItems.length > 0) || (backpackItems && backpackItems.length > 0)) &&
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            backgroundColor: theme => theme.palette.background.default,
+                            borderRadius: theme => `${theme.shape.borderRadius + 1}px`,
+                            gap: 1,
+                        }}
+                    >
+                        <ItemCanvas canvasIdentifier={charIdentifier + "_INV"} imgSrc="renders.png" itemIds={charItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
+                        {
+                            backpackItems.length > 0 &&
+                            <ItemCanvas canvasIdentifier={charIdentifier + "_BACK"} imgSrc="renders.png" itemIds={backpackItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
+                        }
+                    </Box>
+                }
             </Box>
         </Box>
     );
