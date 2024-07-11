@@ -3,10 +3,24 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 import ComponentBox from "../ComponentBox";
 import ItemCanvas from "../Realm/ItemCanvas";
 import items from "../../assets/constants";
+import { useEffect, useState } from "react";
 
 function TotalsView() {
-    const { totalItems } = useVaultPeeker();
+    const [filteredTotalItems, setFilteredTotalItems] = useState([]);
+    const { totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
     const theme = useTheme();
+
+    useEffect(() => {
+        setFilteredTotalItems(totalItems?.itemIds ?? []);
+
+        if (totalItems?.itemIds) {
+            addItemFilterCallback('totals', (itemIds) => { setFilteredTotalItems(itemIds); }, totalItems.itemIds);
+        }
+
+        return () => {
+            removeItemFilterCallback('totals');
+        };
+    }, [totalItems]);
 
     return (
         <ComponentBox
@@ -18,8 +32,8 @@ function TotalsView() {
             <ItemCanvas
                 canvasIdentifier="totals"
                 imgSrc="renders.png"
-                itemIds={totalItems?.itemIds ? totalItems.itemIds : []}
-                items={items} 
+                itemIds={filteredTotalItems}
+                items={items}
                 totals={totalItems?.totals ? totalItems.totals : {}}
             />
 
