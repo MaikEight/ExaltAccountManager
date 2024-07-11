@@ -1,0 +1,1 @@
+Alter Table Character Add Column crucible_active Text;
