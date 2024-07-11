@@ -131,6 +131,7 @@ export function formatCharacterDataFromCharListDataset(character) {
         tex1: character.tex1,
         tex2: character.tex2,
         texture: character.texture,
+        crucibleActive: character.crucible_active,
     };
 }
 
