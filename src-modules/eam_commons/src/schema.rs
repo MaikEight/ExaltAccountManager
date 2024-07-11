@@ -129,6 +129,7 @@ diesel::table! {
         xp_timer -> Nullable<Integer>,
         ld_timer -> Nullable<Integer>,
         lt_timer -> Nullable<Integer>,
+        crucible_active -> Nullable<Text>,
     }
 }
 

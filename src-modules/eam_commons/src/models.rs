@@ -371,6 +371,7 @@ pub struct Character {
     pub xp_timer: Option<i32>,
     pub ld_timer: Option<i32>,
     pub lt_timer: Option<i32>,
+    pub crucible_active: Option<String>,
 }
 
 #[derive(Insertable, Serialize)]
@@ -429,6 +430,7 @@ pub struct NewCharacter {
     pub xp_timer: Option<i32>,
     pub ld_timer: Option<i32>,
     pub lt_timer: Option<i32>,
+    pub crucible_active: Option<String>,
 }
 
 #[derive(AsChangeset, Serialize)]
@@ -488,6 +490,7 @@ pub struct UpdateCharacter {
     pub xp_timer: Option<i32>,
     pub ld_timer: Option<i32>,
     pub lt_timer: Option<i32>,
+    pub crucible_active: Option<String>,
 }
 
 impl From<Character> for NewCharacter {
@@ -546,6 +549,7 @@ impl From<Character> for NewCharacter {
             xp_timer: character.xp_timer,
             ld_timer: character.ld_timer,
             lt_timer: character.lt_timer,
+            crucible_active: character.crucible_active,
         }
     }    
 }
@@ -607,6 +611,7 @@ impl From<Character> for UpdateCharacter {
             xp_timer: character.xp_timer,
             ld_timer: character.ld_timer,
             lt_timer: character.lt_timer,
+            crucible_active: character.crucible_active,
         }
     }
 }
@@ -667,6 +672,7 @@ impl NewCharacter {
             xp_timer: character.xp_timer,
             ld_timer: character.ld_timer,
             lt_timer: character.lt_timer,
+            crucible_active: character.crucible_active.clone(),
         }
     }    
 }
