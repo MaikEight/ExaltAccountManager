@@ -171,6 +171,7 @@ function charToCharModel(char) {
         xp_timer: char.XpTimer ? parseInt(char.XpTimer, 10) : 0,
         ld_timer: char.LdTimer ? parseInt(char.LdTimer, 10) : 0,
         lt_timer: char.LtTimer ? parseInt(char.LtTimer, 10) : 0,
+        crucible_active: char.CrucibleActive ?? null,
     };
 }
 
