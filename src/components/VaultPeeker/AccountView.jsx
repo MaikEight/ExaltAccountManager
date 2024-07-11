@@ -4,6 +4,7 @@ import Character from "../Realm/Character";
 import ItemCanvas from "../Realm/ItemCanvas";
 import items from "../../assets/constants";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
+import { useEffect, useState } from "react";
 
 function AccountView({ account }) {
     const { totalItems } = useVaultPeeker();
@@ -58,7 +59,19 @@ function AccountView({ account }) {
 export default AccountView;
 
 function StorageView({ canvasIdentifier, title, itemIds, totals }) {
-    if(!itemIds || itemIds.length === 0) return null;
+    const [filteredItemIds, setFilteredItemIds] = useState(itemIds);
+    const { addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+
+    useEffect(() => {
+        setFilteredItemIds(itemIds);
+
+        addItemFilterCallback(canvasIdentifier, (itemIds) => { setFilteredItemIds(itemIds); }, itemIds);
+        return () => {
+            removeItemFilterCallback(canvasIdentifier);
+        };
+    }, [itemIds]);
+
+    if(!filteredItemIds || filteredItemIds.length === 0) return null;
 
     return (
         <Box
@@ -70,7 +83,7 @@ function StorageView({ canvasIdentifier, title, itemIds, totals }) {
             }}
         >
             {title}
-            <ItemCanvas canvasIdentifier={canvasIdentifier} imgSrc="renders.png" itemIds={itemIds} items={items} totals={totals} override={{ fillNumbers: false }} />
+            <ItemCanvas canvasIdentifier={canvasIdentifier} imgSrc="renders.png" itemIds={filteredItemIds} items={items} totals={totals} override={{ fillNumbers: false }} />
         </Box>
     );
 }
