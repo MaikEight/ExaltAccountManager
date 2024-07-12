@@ -1,4 +1,4 @@
-import { Box, FormControl, IconButton, InputLabel, MenuItem, Select, Tooltip } from "@mui/material";
+import { Box, FormControl, IconButton, Input, InputLabel, MenuItem, Select, Tooltip } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
@@ -21,20 +21,40 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'start', alignItems: 'end' }}>
-            <FormControl variant="standard" sx={{ m: 1, minWidth: '175px', ...sx }}>
-                <InputLabel id="group selector">Select a group</InputLabel>
+            <FormControl
+                variant="standard"
+                sx={{
+                    m: 1,
+                    minWidth: '175px',
+                    borderRadius: `${theme.shape.borderRadius}px`,
+                    overflow: 'hidden',
+                    ...sx
+                }}
+            >
                 <Select
-                    labelId="select-a-group"
                     id="select-a-group"
                     value={selectedGroup ? selectedGroup : ''}
                     onChange={handleChange}
-                    label="Select a group"
-                    renderValue={(selected) => (
-                        <Box sx={{ p: 0.25, display: 'flex', flexDirection: 'row', gap: 0.75, alignItems: 'center' }}>
+                    input={
+                        <Input
+                            id="server-list-label"
+                            disableUnderline
+                            sx={{
+                                borderRadius: `${theme.shape.borderRadius}px`,
+                            }}
+                        />
+                    }
+                    renderValue={(selected) => {
+                        if(!selected || selected === '' || selected === null || selected === undefined) {
+                            return null;
+                        }
+
+                        return (
+                        <Box id="value-box" sx={{ p: 0.75, px: 1, display: 'flex', flexDirection: 'row', gap: 0.75, alignItems: 'center', justifyContent: 'start' }}>
                             <GroupUI group={groups.find((g) => g.name === selected)} />
                             {selected}
                         </Box>
-                    )}
+                    );}}
                 >
                     <MenuItem key="None" value="">
                         <em>None</em>
