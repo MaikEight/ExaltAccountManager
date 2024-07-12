@@ -57,22 +57,6 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                     <FormControl sx={{ width: 120 }}>
                         {/* <InputLabel id="logtype-label">Logtype</InputLabel> */}
                         <Select
-                            sx={{
-                                height: 39,
-                                ...(theme.palette.mode === 'dark' ? {
-                                    backgroundColor: alpha(theme.palette.background.default, 0.5),
-                                    '&:hover': {
-                                        backgroundColor: alpha(theme.palette.common.white, 0.08),
-                                    },
-                                } : {
-                                    backgroundColor: alpha(theme.palette.background.default, 0.75),
-                                    '&:hover': {
-                                        backgroundColor: alpha(theme.palette.text.primary, 0.05),
-                                    },
-                                }),
-                                transition: theme.transitions.create('background-color'),
-                                borderRadius: `${theme.shape.borderRadius}px`,
-                            }}
                             id="select-logtype"
                             value={selectedLogtype}
                             onChange={(event) => setSelectedLogtype(event.target.value)}

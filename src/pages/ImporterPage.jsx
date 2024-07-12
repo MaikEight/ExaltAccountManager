@@ -830,23 +830,7 @@ function ImporterPage() {
                                                         <PaddedTableCell sx={{ p: 0.75 }} align="left">
                                                             <Typography variant="body2" fontWeight={300} component="span" sx={{ textAlign: 'center' }}>
                                                                 <FormControl sx={{ width: '175px' }}>
-                                                                    <Select
-                                                                        sx={{
-                                                                            height: 39,
-                                                                            ...(theme.palette.mode === 'dark' ? {
-                                                                                backgroundColor: alpha(theme.palette.background.default, 0.5),
-                                                                                '&:hover': {
-                                                                                    backgroundColor: alpha(theme.palette.common.white, 0.08),
-                                                                                },
-                                                                            } : {
-                                                                                backgroundColor: alpha(theme.palette.background.default, 0.75),
-                                                                                '&:hover': {
-                                                                                    backgroundColor: alpha(theme.palette.text.primary, 0.05),
-                                                                                },
-                                                                            }),
-                                                                            transition: theme.transitions.create('background-color'),
-                                                                            borderRadius: `${theme.shape.borderRadius}px`,
-                                                                        }}
+                                                                    <Select                                                                        
                                                                         id={"data-field-list-label-" + index}
                                                                         value={dataFieldsMapping[field]}
                                                                         onChange={(event) => {
