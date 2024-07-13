@@ -1,14 +1,24 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Chip, FormControl, Input, MenuItem, Select, Typography } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 import Searchbar from "../GridComponents/Searchbar";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
+import { useEffect, useState } from "react";
+import items from "../../assets/constants";
+import { useTheme } from "@emotion/react";
+import TierFilter from "./Filter/TierFilter";
+import FilterOverview from "./Filter/FilterOverview";
+
+
 
 function ItemFilterBox() {
     const { filter, changeFilter } = useVaultPeeker();
 
     const searchChanged = (search) => {
-        changeFilter('search', search);
+        changeFilter('search', {
+            enabled: search && search !== '',
+            value: search
+        });
     };
 
     return (
@@ -31,6 +41,9 @@ function ItemFilterBox() {
                     >
                         Filter
                     </Typography>
+                    <Box>
+                        <FilterOverview />
+                    </Box>
                     <Box
                         onClick={(event) => { event.stopPropagation(); }}
                     >
@@ -48,11 +61,12 @@ function ItemFilterBox() {
                 flexDirection: 'row',
                 gap: 1,
                 flexWrap: 'wrap',
-                justifyContent: 'center',
             }}
         >
-            <Typography variant="h6">Filters are coming soon&#x2122;</Typography>
-        </ComponentBox>
+            {/* <TierFilter /> */}
+            <TierFilter />
+            
+        </ComponentBox >
     );
 }
 
