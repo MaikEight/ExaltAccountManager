@@ -8,7 +8,16 @@ import items from "../assets/constants";
 const VaultPeekerContext = createContext();
 
 const defaultFilter = {
-    search: '',
+    search: {
+        enabled: false,
+        value: '',
+    },
+    tier: {
+        enabled: false,
+        direction: 'up', //up (>= value), down (<= value), equal (== value)
+        value: -2,
+        flag: -1, //0 = no tier, 1 = UT, 2 = ST (UT and ST > Tier 15 and UT > ST)
+    }
 };
 
 function VaultPeekerContextProvider({ children }) {
@@ -23,17 +32,84 @@ function VaultPeekerContextProvider({ children }) {
 
     const applyFilter = (itemIds) => {
         let filteredItemIds = itemIds;
-        
-        // TEXT SEARCH
-        if (filter.search !== '') {
-            const searchTextLower = filter.search.toLowerCase();
+
+        // TEXT SEARCH FILTER
+        if (filter.search.enabled && filter.search !== '') {
+            const searchTextLower = filter.search.value.toLowerCase();
             filteredItemIds = itemIds.filter((itemId) => {
                 const item = items[itemId];
                 if (!item) return false;
                 return item[0].toLowerCase().includes(searchTextLower);
             });
         }
-        
+
+        // TIER FILTER
+        if (filter.tier.enabled) {
+            filteredItemIds = filteredItemIds.filter(itemId => {
+                const item = items[itemId];
+                if (!item) return false;
+                const tier = item[2];
+                const flag = item[9];
+                const { value, direction, flag: filterFlag } = filter.tier;
+
+                switch (direction) {
+                    case 'up':
+                        if (value === -1 && filterFlag === 0) {
+                            return true;
+                        }
+                        //UT items are always shown for 'up' filter
+                        if (tier === -1) {
+                            if (flag === 1) {
+                                return true;
+                            }
+
+                            if (flag === 2 && (filterFlag === 0 || filterFlag === 2)) {
+                                return true;
+                            }
+
+                            return false;
+                        }
+
+                        if (filterFlag === 2 || filterFlag === 1) {
+                            return false;
+                        }
+
+                        return tier >= value;
+                    case 'down':
+                        if (value === -1 && filterFlag === 0) {
+                            return tier === value && flag === filterFlag;
+                        }
+
+                        if (tier === -1) {
+                            //UT items are only shown for 'down' filter if the flag is set to 1 (UT)
+                            if (flag === 1) {
+                                return filterFlag === 1;
+                            }
+
+                            if (flag === 2 && (filterFlag >= 1)) {
+                                return true;
+                            }
+
+                            return false;
+                        }
+
+                        return tier <= value;
+                    case 'equal':
+                        if (value === -1) {
+                            if (filterFlag === 0) {
+                                return tier === value && flag === filterFlag;
+                            }
+
+                            return filterFlag === flag;
+                        }
+
+                        return tier === value;
+                    default:
+                        return false;
+                }
+            });
+        }
+
         return filteredItemIds;
     };
 
@@ -56,12 +132,12 @@ function VaultPeekerContextProvider({ children }) {
         loadItems();
     }, []);
 
-    useEffect(() => {        
+    useEffect(() => {
         Object.keys(filterItemsCallbacks).forEach((id) => {
             const { callback, items } = filterItemsCallbacks[id];
             if (callback && items && items.length > 0) {
                 callback(applyFilter(items));
-            } 
+            }
         });
     }, [filter]);
 
@@ -89,7 +165,16 @@ function VaultPeekerContextProvider({ children }) {
                 [filterType]: value,
             };
         });
-    };    
+    };
+
+    const resetFilterType = (filterType) => {
+        setFilter((prev) => {
+            return {
+                ...prev,
+                [filterType]: defaultFilter[filterType],
+            };
+        });
+    };
 
     const contextValue = {
         totalItems,
@@ -102,6 +187,7 @@ function VaultPeekerContextProvider({ children }) {
         selectedItem,
         setSelectedItem,
         changeFilter,
+        resetFilterType,
 
         addItemFilterCallback,
         removeItemFilterCallback,
