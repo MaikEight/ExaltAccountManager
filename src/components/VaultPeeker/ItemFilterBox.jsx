@@ -64,9 +64,9 @@ function ItemFilterBox() {
         >
             {/* Filter */}
             <TierFilter />
-            <SoulboundFilter />
             <FeedPowerFilter />
             <ItemTypeFilter />
+            <SoulboundFilter />
         </ComponentBox >
     );
 }
