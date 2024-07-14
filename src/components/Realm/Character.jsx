@@ -94,7 +94,9 @@ function Character({ charIdentifier, character }) {
         return classes[character.class][0];
     };
 
-    if (!character) {
+    if (!character || //No character data
+        ((!backpackItems || backpackItems.length === 0) && (!charItems || charItems.length === 0)) //Items filtered out
+    ) {
         return null;
     }
 
