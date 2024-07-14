@@ -174,7 +174,6 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                                 data && !data.hidden ?
                                 <img src={data.img} width={50} height={50} alt="Equipment Image" />
                                 :
-                                !console.log('slotMapData', slotMapData, index) &&
                                 slotMapData && slotMapData[index] &&
                                 <img src={slotMapData[index].img} width={50} height={50} alt="Equipment Image" />
                             }
