@@ -13,6 +13,9 @@ function AccountView({ account }) {
         <ComponentBox
             title={account.name ? account.name : account.email}
             isCollapseable={true}
+            sx={{
+                mx: 0,
+            }}
             innerSx={{
                 dispaly: 'flex',
                 flexDirection: 'coulmn',

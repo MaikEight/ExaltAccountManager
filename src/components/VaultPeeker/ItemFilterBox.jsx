@@ -54,6 +54,9 @@ function ItemFilterBox() {
             icon={<FilterListOutlinedIcon />}
             isCollapseable={true}
             defaultCollapsed={true}
+            sx={{
+                mb: 0,
+            }}
             innerSx={{
                 display: 'flex',
                 flexDirection: 'row',

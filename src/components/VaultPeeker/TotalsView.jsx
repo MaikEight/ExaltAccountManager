@@ -28,6 +28,10 @@ function TotalsView() {
             isCollapseable={true}
             defaultCollapsed
             innerSx={{ position: 'relative', overflow: 'hidden', }}
+            sx={{
+                mt: 0,
+                mx: 0,
+            }}
         >
             <ItemCanvas
                 canvasIdentifier="totals"
