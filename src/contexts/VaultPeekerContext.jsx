@@ -7,6 +7,23 @@ import items from "../assets/constants";
 
 const VaultPeekerContext = createContext();
 
+const feedPowerFilterOptions = [
+    { feedPower: -1, name: 'None' },
+    { feedPower: 1300, name: '1300+' },
+    { feedPower: 1000, name: '1000' },
+    { feedPower: 900, name: '900' },
+    { feedPower: 800, name: '800' },
+    { feedPower: 700, name: '700' },
+    { feedPower: 650, name: '650' },
+    { feedPower: 600, name: '600' },
+    { feedPower: 550, name: '550' },
+    { feedPower: 500, name: '500' },
+    { feedPower: 450, name: '450' },
+    { feedPower: 400, name: '400' },
+    { feedPower: 300, name: '300' },
+    { feedPower: 200, name: '200' },
+];
+
 const defaultFilter = {
     search: {
         enabled: false,
@@ -17,7 +34,15 @@ const defaultFilter = {
         direction: 'up', //up (>= value), down (<= value), equal (== value)
         value: -2,
         flag: -1, //0 = no tier, 1 = UT, 2 = ST (UT and ST > Tier 15 and UT > ST)
-    }
+    },
+    soulbound: {
+        enabled: false,
+        value: 2, //2 = all, 0 = soulbound, 1 = tradeable
+    },
+    feedPower: {
+        enabled: false,
+        value: 0,
+    },
 };
 
 function VaultPeekerContextProvider({ children }) {
@@ -45,12 +70,12 @@ function VaultPeekerContextProvider({ children }) {
 
         // TIER FILTER
         if (filter.tier.enabled) {
+            const { value, direction, flag: filterFlag } = filter.tier;
             filteredItemIds = filteredItemIds.filter(itemId => {
                 const item = items[itemId];
                 if (!item) return false;
                 const tier = item[2];
                 const flag = item[9];
-                const { value, direction, flag: filterFlag } = filter.tier;
 
                 switch (direction) {
                     case 'up':
@@ -107,6 +132,35 @@ function VaultPeekerContextProvider({ children }) {
                     default:
                         return false;
                 }
+            });
+        }
+
+        // SOULBOUND FILTER
+        if (filter.soulbound.enabled) {
+            const { value } = filter.soulbound;
+            filteredItemIds = filteredItemIds.filter(itemId => {
+                const item = items[itemId];
+                if (!item) return false;
+                const soulbound = item[8];                
+
+                if (value === 2) {
+                    return true;
+                }
+
+                return value === 0 ? soulbound : !soulbound;
+            });
+        }
+
+        // FEED POWER FILTER
+        if (filter.feedPower.enabled) {
+            const { value } = filter.feedPower;
+            const minFilterPower = feedPowerFilterOptions[value].feedPower;
+            filteredItemIds = filteredItemIds.filter(itemId => {
+                const item = items[itemId];
+                if (!item) return false;
+                const feedPower = item[6];
+
+                return feedPower >= minFilterPower;
             });
         }
 
@@ -191,6 +245,8 @@ function VaultPeekerContextProvider({ children }) {
 
         addItemFilterCallback,
         removeItemFilterCallback,
+
+        feedPowerFilterOptions,
     };
 
     return (
