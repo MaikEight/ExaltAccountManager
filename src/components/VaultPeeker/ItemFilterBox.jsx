@@ -61,7 +61,6 @@ function ItemFilterBox() {
                 display: 'flex',
                 flexDirection: 'row',
                 gap: 1,
-                flexWrap: 'wrap',
                 alignItems: 'end',
             }}
         >
