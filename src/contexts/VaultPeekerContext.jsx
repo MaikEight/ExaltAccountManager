@@ -24,6 +24,40 @@ const feedPowerFilterOptions = [
     { feedPower: 200, name: '200' },
 ];
 
+const slotMapFilter = {
+    all: { slotType: 0, name: 'All' },
+    items: { slotType: 10, name: 'Items' },
+    swords: { slotType: 1, name: 'Swords' },
+    daggers: { slotType: 2, name: 'Daggers' },
+    bows: { slotType: 3, name: 'Bows' },
+    wands: { slotType: 8, name: 'Wands' },
+    staves: { slotType: 17, name: 'Staves' },
+    katanas: { slotType: 24, name: 'Katanas' },
+    lightarmor: { slotType: 6, name: 'Light Armor' },
+    heavyarmor: { slotType: 7, name: 'Heavy Armor' },
+    robes: { slotType: 14, name: 'Robes' },
+    rings: { slotType: 9, name: 'Rings' },
+    tomes: { slotType: 4, name: 'Tomes' },
+    shields: { slotType: 5, name: 'Shields' },
+    spells: { slotType: 11, name: 'Spells' },
+    seals: { slotType: 12, name: 'Seals' },
+    cloaks: { slotType: 13, name: 'Cloaks' },
+    quivers: { slotType: 15, name: 'Quivers' },
+    helms: { slotType: 16, name: 'Helms' },
+    poisons: { slotType: 18, name: 'Poisons' },
+    skulls: { slotType: 19, name: 'Skulls' },
+    traps: { slotType: 20, name: 'Traps' },
+    orbs: { slotType: 21, name: 'Orbs' },
+    prisms: { slotType: 22, name: 'Prisms' },
+    scepters: { slotType: 23, name: 'Scepters' },
+    stars: { slotType: 25, name: 'Stars' },
+    wakis: { slotType: 27, name: 'Wakis' },
+    lutes: { slotType: 28, name: 'Lutes' },
+    maces: { slotType: 29, name: 'Maces' },
+    sheaths: { slotType: 30, name: 'Sheaths' },
+    eggs: { slotType: 26, name: 'Eggs' },
+}
+
 const defaultFilter = {
     search: {
         enabled: false,
@@ -43,6 +77,11 @@ const defaultFilter = {
         enabled: false,
         value: 0,
     },
+    itemType: {
+        enabled: false,
+        value: 0,
+        key: 'all',
+    }
 };
 
 function VaultPeekerContextProvider({ children }) {
@@ -141,7 +180,7 @@ function VaultPeekerContextProvider({ children }) {
             filteredItemIds = filteredItemIds.filter(itemId => {
                 const item = items[itemId];
                 if (!item) return false;
-                const soulbound = item[8];                
+                const soulbound = item[8];
 
                 if (value === 2) {
                     return true;
@@ -161,6 +200,18 @@ function VaultPeekerContextProvider({ children }) {
                 const feedPower = item[6];
 
                 return feedPower >= minFilterPower;
+            });
+        }
+
+        // ITEM TYPE FILTER
+        if (filter.itemType.enabled) {
+            const { value } = filter.itemType;
+            filteredItemIds = filteredItemIds.filter(itemId => {
+                const item = items[itemId];
+                if (!item) return false;
+                const itemType = item[1];
+
+                return itemType === value;
             });
         }
 
@@ -247,6 +298,7 @@ function VaultPeekerContextProvider({ children }) {
         removeItemFilterCallback,
 
         feedPowerFilterOptions,
+        slotMapFilter,
     };
 
     return (
