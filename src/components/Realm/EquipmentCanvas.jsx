@@ -8,6 +8,7 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 
 function EquipmentCanvas({ canvasIdentifier, character }) {
     const [itemData, setItemData] = useState([null, null, null, null]);
+    const [slotMapData, setSlotMapData] = useState([null, null, null, null]);
     const [filteredItemIds, setFilteredItemIds] = useState([-1, -1, -1, -1]);
     const [hoveredId, setHoveredId] = useState(-1);
     const { hoveredConvasId, setHoveredConvasId } = useItemCanvas();
@@ -75,10 +76,39 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
             );
         }
 
+        for (let i = 0; i < 4; i++) {
+            const slot = slotMapValues[i];
+            const itemId = character.equipment[i];
+
+            const slotItem = [
+                itemId,
+                null,
+                null,
+                slot.sheet[0],
+                slot.sheet[1],
+            ];
+
+            drawItem(
+                "realm/itemsilhouettes_25p.png",
+                slotItem,
+                (imageUrl) => {
+                    setSlotMapData((prev) => {
+                        const newState = [...prev];
+                        newState[i] = {
+                            itemId: itemId,
+                            img: imageUrl,
+                        };
+                        return newState;
+                    })
+                },
+                5
+            );
+        }
+
         return () => {
             removeItemFilterCallback(canvasIdentifier);
         };
-    }, [character]);    
+    }, [character]);
 
     useEffect(() => {
         if (hoveredConvasId !== canvasIdentifier) {
@@ -97,8 +127,6 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         });
         setItemData(data);
     }, [filteredItemIds]);
-
-    if(!filteredItemIds || filteredItemIds.length === 0) return null;
 
     return (
         <Box
@@ -130,6 +158,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                             }}
                             onMouseLeave={() => setHoveredId(-1)}
                             onClick={() => {
+                                if(!data || data.hidden) return;
                                 const imgRef = index === 0 ? itemRef1.current : index === 1 ? itemRef2.current : index === 2 ? itemRef3.current : itemRef4.current;
                                 if (!imgRef) return;
                                 const rect = imgRef.getBoundingClientRect();
@@ -142,8 +171,12 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                             }}
                         >
                             {
-                                data && !data.hidden &&
+                                data && !data.hidden ?
                                 <img src={data.img} width={50} height={50} alt="Equipment Image" />
+                                :
+                                !console.log('slotMapData', slotMapData, index) &&
+                                slotMapData && slotMapData[index] &&
+                                <img src={slotMapData[index].img} width={50} height={50} alt="Equipment Image" />
                             }
                         </Box>
                     );
