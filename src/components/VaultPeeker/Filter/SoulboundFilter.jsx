@@ -34,15 +34,23 @@ function SoulboundFilter() {
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                ml: 1.25,
             }}
         >
             <Tooltip title={getTooltipTitle()}>
                 <FormControlLabel
                     label="Soulbound"
+                    labelPlacement="top"
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'start',
+                        alignItems: 'start',
+                        p: 0,
+                        m: 0,
+                        ml: 1,
+                    }}
                     control={
                         <Checkbox
-                            sx={{ mr: 0.25 }}
+                            sx={{ ml: -1 }}
                             checked={filter.soulbound.value === 0}
                             indeterminate={filter.soulbound.value === 1}
                             onChange={handleChange}
