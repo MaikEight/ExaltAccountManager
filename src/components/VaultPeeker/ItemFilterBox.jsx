@@ -7,6 +7,7 @@ import TierFilter from "./Filter/TierFilter";
 import FilterOverview from "./Filter/FilterOverview";
 import SoulboundFilter from "./Filter/SoulboundFilter";
 import FeedPowerFilter from "./Filter/FeedPowerFilter";
+import ItemTypeFilter from "./Filter/ItemTypeFilter";
 
 function ItemFilterBox() {
     const { changeFilter } = useVaultPeeker();
@@ -65,6 +66,7 @@ function ItemFilterBox() {
             <TierFilter />
             <SoulboundFilter />
             <FeedPowerFilter />
+            <ItemTypeFilter />
         </ComponentBox >
     );
 }
