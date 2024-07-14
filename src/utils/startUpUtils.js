@@ -71,9 +71,8 @@ async function onStartUp() {
 
 function writeStartupLogoToConsole() {
     console.log('');
-    console.log('%c _______     ___      .___  ___. \n|   ____|   /   \\     |   \\/   |\n|  |__     /  ^  \\    |  \\  /  |\n|   __|   /  /_\\  \\   |  |\\/|  |\n|  |____ /  _____  \\  |  |  |  |\n|_______/__/     \\__\\ |__|  |__|\n\n                           by MaikEight', 'color: #9155FD;');
+    console.log('%c  _______     ___    .___  ___.\n |   ____|   /   \\   |   \\/   |\n |  |__     /  ^  \\  |  \\  /  |\n |   __|   /  /_\\  \\ |  |\\/|  |\n |  |____ /  _____  \\|  |  |  |\n |_______/__/     \\__\\__|  |__|\n\n                        by MaikEight', 'color: #9155FD;');
     console.log('');
-
 }
 
 function addConsoleLogListener() {
