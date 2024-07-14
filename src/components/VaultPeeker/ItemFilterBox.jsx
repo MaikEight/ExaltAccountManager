@@ -1,18 +1,15 @@
-import { Box, Chip, FormControl, Input, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 import Searchbar from "../GridComponents/Searchbar";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
-import { useEffect, useState } from "react";
-import items from "../../assets/constants";
-import { useTheme } from "@emotion/react";
 import TierFilter from "./Filter/TierFilter";
 import FilterOverview from "./Filter/FilterOverview";
-
-
+import SoulboundFilter from "./Filter/SoulboundFilter";
+import FeedPowerFilter from "./Filter/FeedPowerFilter";
 
 function ItemFilterBox() {
-    const { filter, changeFilter } = useVaultPeeker();
+    const { changeFilter } = useVaultPeeker();
 
     const searchChanged = (search) => {
         changeFilter('search', {
@@ -61,11 +58,13 @@ function ItemFilterBox() {
                 flexDirection: 'row',
                 gap: 1,
                 flexWrap: 'wrap',
+                alignItems: 'end',
             }}
         >
-            {/* <TierFilter /> */}
+            {/* Filter */}
             <TierFilter />
-            
+            <SoulboundFilter />
+            <FeedPowerFilter />
         </ComponentBox >
     );
 }
