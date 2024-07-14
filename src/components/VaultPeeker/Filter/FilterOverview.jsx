@@ -9,9 +9,10 @@ const directions = {
     'up': '>=',
     'down': '<='
 };
+
 function FilterOverview() {
     const [filterChipEntries, setFilterChipEntries] = useState([]);
-    const { filter, resetFilterType } = useVaultPeeker();
+    const { filter, resetFilterType, feedPowerFilterOptions } = useVaultPeeker();
     const theme = useTheme();
 
     useEffect(() => {
@@ -52,6 +53,23 @@ function FilterOverview() {
                 value: tier,
             });
         }
+
+        if(filter.soulbound.enabled) {
+            filterChipEntries.push({
+                title: 'Soulbound',
+                delteKey: 'soulbound',
+                value: filter.soulbound.value === 1 ? 'Tradeable' : 'Soulbound',
+            });
+        }
+
+        if(filter.feedPower.enabled) {
+            filterChipEntries.push({
+                title: 'FeedPower',
+                delteKey: 'feedPower',
+                value: filter.feedPower.value === 0 ? 'All' : `FP ${feedPowerFilterOptions[filter.feedPower.value]?.name}`,
+            });
+        }
+        
         setFilterChipEntries(filterChipEntries);
     }, [filter]);
 
@@ -59,7 +77,7 @@ function FilterOverview() {
         <Box
             sx={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 gap: 0.5,
             }}
         >

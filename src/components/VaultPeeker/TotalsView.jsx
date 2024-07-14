@@ -36,7 +36,6 @@ function TotalsView() {
                 items={items}
                 totals={totalItems?.totals ? totalItems.totals : {}}
             />
-
             <img
                 src={theme.palette.mode === 'dark' ? '/logo/logo_inner_big.png' : '/logo/logo_inner_big_dark.png'}
                 alt="EAM Logo"
