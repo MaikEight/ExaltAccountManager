@@ -36,7 +36,7 @@ function TierFilter() {
             const itemTier = items[itemId][2];
             return itemTier > max ? itemTier : max;
         }, 0);
-        const tierOptions = [{ tier: -2, flag: -1, name: 'OFF' }];
+        const tierOptions = [];
         tierOptions.push({ tier: -1, flag: 0, name: 'None' });
         for (let i = 0; i <= maxTier; i++) {
             tierOptions.push({ tier: i, flag: 0, name: `T${i}` });
@@ -45,7 +45,7 @@ function TierFilter() {
         tierOptions.push({ tier: -1, flag: 2, name: <Typography color={theme.palette.warning.main}>ST</Typography> });
         tierOptions.push({ tier: -1, flag: 1, name: <Typography color="primary">UT</Typography> });
 
-        setTierFilterOptions(tierOptions);
+        setTierFilterOptions([{ tier: -2, flag: -1, name: 'OFF' }, ...tierOptions.reverse()]);
     }, []);
 
     useEffect(() => {
@@ -105,7 +105,7 @@ function TierFilter() {
                         }}
                         input={
                             <Input
-                                id="select-logtype"
+                                id="select-tier-direction-input"
                                 disableUnderline
                             />
                         }
@@ -162,7 +162,7 @@ function TierFilter() {
                         }}
                         input={
                             <Input
-                                id="select-logtype"
+                                id="select-tier-value-input"
                                 disableUnderline
                             />
                         }
