@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { useTheme } from "@emotion/react";
 
-
 const directions = {
     'equal': '=',
     'up': '>=',
@@ -12,7 +11,7 @@ const directions = {
 
 function FilterOverview() {
     const [filterChipEntries, setFilterChipEntries] = useState([]);
-    const { filter, resetFilterType, feedPowerFilterOptions } = useVaultPeeker();
+    const { filter, resetFilterType, feedPowerFilterOptions, slotMapFilter } = useVaultPeeker();
     const theme = useTheme();
 
     useEffect(() => {
@@ -67,6 +66,14 @@ function FilterOverview() {
                 title: 'FeedPower',
                 delteKey: 'feedPower',
                 value: filter.feedPower.value === 0 ? 'All' : `FP ${feedPowerFilterOptions[filter.feedPower.value]?.name}`,
+            });
+        }
+
+        if(filter.itemType.enabled) {
+            filterChipEntries.push({
+                title: 'Type',
+                delteKey: 'itemType',
+                value: slotMapFilter[filter.itemType.key]?.name,
             });
         }
         
