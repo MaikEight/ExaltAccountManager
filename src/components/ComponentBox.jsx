@@ -38,7 +38,8 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                         position: 'absolute',
                         top: 0,
                         left: 0,
-                        width: '100%',
+                        right: 0,
+                        height: '6px',
                         borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                         zIndex: 9999
                     }}
