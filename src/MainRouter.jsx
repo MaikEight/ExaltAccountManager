@@ -32,13 +32,13 @@ function MainRouter() {
             <ErrorBoundary fallback={<div>EAM crashed, please restart!</div>}>
                 <Router id="router">
                     <Sidebar id="sidebar">
-                        <AccountsContextProvider>
-                            <GroupsContextProvider>
-                                <ServerContextProvider>
+                        <ServerContextProvider>
+                            <AccountsContextProvider>
+                                <GroupsContextProvider>
                                     <PopupContextProvider>
                                         <ErrorBoundary
                                             fallback={<ErrorBoundaryFallback />}
-                                            onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}                                            
+                                            onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}
                                         >
                                             <Routes>
                                                 <Route path='/' element={<AccountsPage />}></Route>
@@ -55,9 +55,9 @@ function MainRouter() {
                                             </Routes>
                                         </ErrorBoundary>
                                     </PopupContextProvider>
-                                </ServerContextProvider>
-                            </GroupsContextProvider>
-                        </AccountsContextProvider>
+                                </GroupsContextProvider>
+                            </AccountsContextProvider>
+                        </ServerContextProvider>
                     </Sidebar>
                 </Router>
             </ErrorBoundary>
