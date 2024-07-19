@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api";
 import { extractRealmItemsFromCharListDatasets, formatAccountDataFromCharListDatasets } from "../utils/realmItemUtils";
 import ItemLocationPopper from "../components/Realm/ItemLocationPopper";
 import items from "../assets/constants";
+import useGroups from './../hooks/useGroups';
 
 const VaultPeekerContext = createContext();
 
@@ -81,7 +82,11 @@ const defaultFilter = {
         enabled: false,
         value: 0,
         key: 'all',
-    }
+    },
+    characterType: {
+        enabled: false,
+        value: 0, // 0 = all, 1 = seasonal, 2 = normal, 3 = not on character
+    },
 };
 
 function VaultPeekerContextProvider({ children }) {
@@ -92,7 +97,8 @@ function VaultPeekerContextProvider({ children }) {
     const [filter, setFilter] = useState(defaultFilter);
     const [filterItemsCallbacks, setFilterItemsCallbacks] = useState({});
 
-    const { getAccountByEmail } = useAccounts();
+    const { groups } = useGroups();
+    const { accounts, getAccountByEmail } = useAccounts();
 
     const applyFilter = (itemIds) => {
         let filteredItemIds = itemIds;
@@ -140,21 +146,24 @@ function VaultPeekerContextProvider({ children }) {
 
                         return tier >= value;
                     case 'down':
-                        if (value === -1 && filterFlag === 0) {
-                            return tier === value && flag === filterFlag;
-                        }
-
-                        if (tier === -1) {
-                            //UT items are only shown for 'down' filter if the flag is set to 1 (UT)
-                            if (flag === 1) {
-                                return filterFlag === 1;
-                            }
-
-                            if (flag === 2 && (filterFlag >= 1)) {
+                        if (filterFlag > 0) { //filter <= UT / ST
+                            if (flag === 0) { //item is not UT or ST so it matches
                                 return true;
                             }
 
-                            return false;
+                            if (flag === 1) { 
+                                return filterFlag === 1; //item is UT and we want UT
+                            }
+
+                            if (flag === 2) {
+                                return filterFlag >= 2; //item is ST
+                            }
+
+                            return true; //item is Tiered and we want UT or ST and lower
+                        }
+
+                        if(flag > 0) {
+                            return false; //item is UT or ST and we want tiered
                         }
 
                         return tier <= value;
@@ -214,6 +223,38 @@ function VaultPeekerContextProvider({ children }) {
                 return itemType === value;
             });
         }
+        // CHARACTER TYPE FILTER
+        if (filter.characterType.enabled && filter.characterType.value !== 0) {
+            const { value } = filter.characterType;
+            if (value === 1 || value === 2) {
+                const allowedItemIdsList = [];
+                accountsData.forEach((acc) => {
+                    acc.character.forEach((char) => {
+                        if (char.seasonal && (value === 1) || !char.seasonal && (value === 2)) {
+                            allowedItemIdsList.push(...char.equipment);
+                        }
+                    });
+                });
+                const allowedItemIds = [...new Set(allowedItemIdsList)];
+                filteredItemIds = filteredItemIds.filter(itemId => {
+                    return allowedItemIds.includes(itemId);
+                });
+            } else if (value === 3) {
+                // Show only items not on characters
+                const allowedItemIdsList = [];
+                accountsData.forEach((acc) => {
+                    allowedItemIdsList.push(...acc.account.gifts.itemIds);
+                    allowedItemIdsList.push(...acc.account.material_storage.itemIds);
+                    allowedItemIdsList.push(...acc.account.potions.itemIds);
+                    allowedItemIdsList.push(...acc.account.temporary_gifts.itemIds);
+                    allowedItemIdsList.push(...acc.account.vault.itemIds);
+                });
+                const allowedItemIds = [...new Set(allowedItemIdsList)];
+                filteredItemIds = filteredItemIds.filter(itemId => {
+                    return allowedItemIds.includes(itemId);
+                });
+            }
+        }
 
         return filteredItemIds;
     };
@@ -226,16 +267,19 @@ function VaultPeekerContextProvider({ children }) {
             let accs = formatAccountDataFromCharListDatasets(res);
             if (accs?.length > 0) {
                 accs = accs.map((acc) => {
+                    const eamAcc = getAccountByEmail(acc.email);
+                    const group = eamAcc?.group ? groups.find((g) => g.name === eamAcc?.group) : null;
                     return {
                         ...acc,
-                        name: getAccountByEmail(acc.email)?.name,
+                        name: eamAcc?.name,
+                        group: group,
                     }
                 });
             }
             setAccountsData(accs);
         };
         loadItems();
-    }, []);
+    }, [accounts]);
 
     useEffect(() => {
         Object.keys(filterItemsCallbacks).forEach((id) => {
