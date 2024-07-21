@@ -23,7 +23,7 @@ function Character({ charIdentifier, character }) {
     const [backpackItems, setBackpackItems] = useState([]);
     const [xof8, setXof8] = useState(0);
 
-    const { totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const { filter, totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
     const seasonalChipColor = useColorList(1);
     const crucibleChipColor = useColorList(3);
     const theme = useTheme();
@@ -94,8 +94,11 @@ function Character({ charIdentifier, character }) {
         return classes[character.class][0];
     };
 
-    if (!character || //No character data
-        ((!backpackItems || backpackItems.length === 0) && (!charItems || charItems.length === 0)) //Items filtered out
+    if (!character //No character data
+        || ((!backpackItems || backpackItems.length === 0) && (!charItems || charItems.length === 0)) //Items filtered out
+        || filter.characterType.value === 1 && !character.seasonal //Seasonal character filter
+        || filter.characterType.value === 2 && character.seasonal //Normal character filter
+        || filter.characterType.value === 3 //Items not on characters filter
     ) {
         return null;
     }
