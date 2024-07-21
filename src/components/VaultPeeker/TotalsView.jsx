@@ -4,11 +4,16 @@ import ComponentBox from "../ComponentBox";
 import ItemCanvas from "../Realm/ItemCanvas";
 import items from "../../assets/constants";
 import { useEffect, useState } from "react";
+import VaultPeekerLogo from "../VaultPeekerLogo";
+import useItemCanvas from "../../hooks/useItemCanvas";
+import useUserSettings from "../../hooks/useUserSettings";
 
 function TotalsView() {
     const [filteredTotalItems, setFilteredTotalItems] = useState([]);
     const { totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const { setHoveredConvasId } = useItemCanvas();
     const theme = useTheme();
+    const collapsedFileds = useUserSettings().getByKeyAndSubKey('vaultPeeker', 'collapsedFileds');
 
     useEffect(() => {
         setFilteredTotalItems(totalItems?.itemIds ?? []);
@@ -25,13 +30,24 @@ function TotalsView() {
     return (
         <ComponentBox
             title='Totals'
+            icon={
+                <VaultPeekerLogo
+                    sx={{ ml: '2px', mt: '3px', width: '20px', mr: 0.25 }}
+                    color={
+                        theme.palette.mode === 'light' ?
+                        theme.palette.background.default
+                        : theme.palette.text.primary
+                    }
+                />
+            }
             isCollapseable={true}
-            defaultCollapsed
+            defaultCollapsed={collapsedFileds !== undefined ? collapsedFileds.totals : false}
             innerSx={{ position: 'relative', overflow: 'hidden', }}
             sx={{
                 mt: 0,
                 mx: 0,
             }}
+            onMouseMove={() => { setHoveredConvasId(null); }}
         >
             <ItemCanvas
                 canvasIdentifier="totals"
