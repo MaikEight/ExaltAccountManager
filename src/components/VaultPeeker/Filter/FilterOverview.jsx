@@ -53,7 +53,7 @@ function FilterOverview() {
             });
         }
 
-        if(filter.soulbound.enabled) {
+        if (filter.soulbound.enabled) {
             filterChipEntries.push({
                 title: 'Soulbound',
                 delteKey: 'soulbound',
@@ -61,7 +61,7 @@ function FilterOverview() {
             });
         }
 
-        if(filter.feedPower.enabled) {
+        if (filter.feedPower.enabled) {
             filterChipEntries.push({
                 title: 'FeedPower',
                 delteKey: 'feedPower',
@@ -69,14 +69,22 @@ function FilterOverview() {
             });
         }
 
-        if(filter.itemType.enabled) {
+        if (filter.itemType.enabled) {
             filterChipEntries.push({
                 title: 'Type',
                 delteKey: 'itemType',
                 value: slotMapFilter[filter.itemType.key]?.name,
             });
         }
-        
+
+        if (filter.characterType.enabled) {
+            filterChipEntries.push({
+                title: 'Character Type',
+                delteKey: 'characterType',
+                value: filter.characterType.value === 1 ? 'Seasonal' : filter.characterType.value === 2 ? 'Normal' : 'Non Character',
+            });
+        }
+
         setFilterChipEntries(filterChipEntries);
     }, [filter]);
 
@@ -85,7 +93,9 @@ function FilterOverview() {
             sx={{
                 display: 'flex',
                 flexDirection: 'row',
+                flexWrap: 'wrap',
                 gap: 0.5,
+                mx: 1.5,
             }}
         >
             {
@@ -94,7 +104,7 @@ function FilterOverview() {
                         <Chip
                             label={entry.value}
                             size="small"
-                            onDelete={() => { 
+                            onDelete={() => {
                                 resetFilterType(entry.delteKey);
                             }}
                         />
