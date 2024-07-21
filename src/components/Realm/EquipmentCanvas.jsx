@@ -23,7 +23,11 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         const slotMapKeys = charSlots.map((slot) => Object.keys(itemsSlotTypeMap).find((key) => itemsSlotTypeMap[key].slotType === slot));
         const slotMapValues = slotMapKeys.map((key) => itemsSlotTypeMap[key]);
         const eqItemIds = character.equipment.slice(0, 4);
-        while (eqItemIds.length < 4) eqItemIds.push(-1);
+
+        while (eqItemIds.length < 4) {
+            eqItemIds.push(-1);
+        }
+        
         setFilteredItemIds(eqItemIds);
         addItemFilterCallback(canvasIdentifier, (itemIds) => { setFilteredItemIds(itemIds); }, eqItemIds);
 

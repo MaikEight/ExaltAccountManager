@@ -16,7 +16,6 @@ function CharacterPortrait({type, skin, tex1, tex2, adjust}) {
         );
     }
 
-
     return (
         <img src={url} width={34} height={34} alt="Character Portrait" />
     );
