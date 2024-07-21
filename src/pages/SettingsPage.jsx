@@ -1,8 +1,8 @@
 
-import { Box, FormControlLabel, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Paper, Popover, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import { useContext, useEffect, useState } from 'react';
+import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import StyledButton from './../components/StyledButton';
 import { dialog, invoke } from '@tauri-apps/api';
 import useUserSettings from '../hooks/useUserSettings';
@@ -17,11 +17,17 @@ import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import useSnack from '../hooks/useSnack';
 import useServerList from '../hooks/useServerList';
 import ServerListSelect from '../components/ServerListSelect';
+import VaultPeekerLogo from '../components/VaultPeekerLogo';
+import { useTheme } from '@emotion/react';
+import useAccounts from '../hooks/useAccounts';
+import { TableVirtuoso } from 'react-virtuoso';
 
 function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
     const [settings, setSettings] = useState({});
     const [gameExePath, setGameExePath] = useState("");
+    const [openVaultPeekerAccountsPoppover, setOpenVaultPeekerAccountsPoppover] = useState(false);
+    const openVaultPeekerButtonRef = useRef(null);
 
     const columns = [
         { field: 'group', headerName: 'Group' },
@@ -37,6 +43,7 @@ function SettingsPage() {
     const colorContext = useContext(ColorContext);
     const { serverList } = useServerList();
     const { showSnackbar } = useSnack();
+    const theme = useTheme();
 
     const setTheSettings = async () => {
         const s = userSettings.get;
@@ -97,10 +104,10 @@ function SettingsPage() {
                         label="Path to RotMG Exalt.exe"
                         variant="standard"
                         value={gameExePath}
-                        onChange={async (event) => {                            
+                        onChange={async (event) => {
                             if (event.target.value.endsWith("RotMG Exalt Launcher.exe")) {
                                 showSnackbar("You have chosen the launcher instead of the game executable. Please choose the RotMG Exalt.exe instead.", "error");
-                                
+
                                 const defaultGamePath = await invoke('get_default_game_path');
                                 if (defaultGamePath) {
                                     setGameExePath(defaultGamePath);
@@ -249,8 +256,86 @@ function SettingsPage() {
                     onChange={(server) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: server } }) }}
                     defaultValue={'Last server'}
                 />
-                
+
             </ComponentBox>
+
+            {/* Vault Peeker */}
+            <ComponentBox
+                title="Vault Peeker"
+                icon={
+                    <VaultPeekerLogo
+                        sx={{ ml: '2px', mt: '3px', width: '20px', mr: 0.25 }}
+                        color={
+                            theme.palette.mode === 'light' ?
+                                theme.palette.background.default
+                                : theme.palette.text.primary
+                        }
+                    />
+                }
+
+            >
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Choose which fields should be collapsed by default in the Vault Peeker.
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
+                    <ColumnSwitch
+                        label="Filter"
+                        checked={settings?.vaultPeeker?.collapsedFileds?.filter !== undefined ? settings.vaultPeeker.collapsedFileds.filter : true}
+                        onChange={(event) => {
+                            const newSettings = { ...settings };
+                            if (!newSettings.vaultPeeker.collapsedFileds) newSettings.vaultPeeker.collapsedFileds = {};
+                            newSettings.vaultPeeker.collapsedFileds.filter = event.target.checked;
+                            setSettings(newSettings);
+                        }}
+                    />
+                    <ColumnSwitch
+                        label="Totals"
+                        checked={settings?.vaultPeeker?.collapsedFileds?.totals !== undefined ? settings.vaultPeeker.collapsedFileds.totals : false}
+                        onChange={(event) => {
+                            const newSettings = { ...settings };
+                            if (!newSettings.vaultPeeker.collapsedFileds) newSettings.vaultPeeker.collapsedFileds = {};
+                            newSettings.vaultPeeker.collapsedFileds.totals = event.target.checked;
+                            setSettings(newSettings);
+                        }}
+                    />
+                </Box>
+                <Box ref={openVaultPeekerButtonRef} sx={{ display: 'flex', flexDirection: 'row', mt: 2 }}>
+                    <StyledButton
+                        color="secondary"
+                        startIcon={<VisibilityOutlinedIcon />}
+                        onClick={() => {
+                            setOpenVaultPeekerAccountsPoppover(true);
+                        }}
+                    >
+                        Select default collapsed accounts
+                    </StyledButton>
+                    <Popover
+                        open={openVaultPeekerAccountsPoppover}
+                        anchorReference="anchorPosition"
+                        anchorPosition={{ top: 200, left: 380 }}
+                        onClose={() => setOpenVaultPeekerAccountsPoppover(false)}
+                    >
+                        <Paper
+                            sx={{
+                                p: 0.25,
+                                backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.paper,
+                                borderRadius: `${theme.shape.borderRadius}px`,
+                            }}
+                        >
+                            <AccountSelectorTable
+                                settings={settings}
+                                setCheckedMails={(emails) => {
+                                    const newSettings = { ...settings };
+                                    if (!newSettings.vaultPeeker.collapsedFileds) newSettings.vaultPeeker.collapsedFileds = {};
+                                    newSettings.vaultPeeker.collapsedFileds.accounts = emails;
+                                    setSettings(newSettings);
+                                }}
+                            />
+                        </Paper>
+                    </Popover>
+                </Box>
+            </ComponentBox>
+
             {/* Theme */}
             <ComponentBox
                 title="Theme"
@@ -267,10 +352,135 @@ function SettingsPage() {
     );
 }
 
+export default SettingsPage;
+
 function ColumnSwitch({ label, checked, onChange }) {
     return (
         <FormControlLabel sx={{ gap: 0.5 }} control={<Switch size="small" checked={checked} onChange={onChange} />} label={label} />
     );
 }
 
-export default SettingsPage;
+const VirtuosoTableComponents = {
+    Scroller: forwardRef((props, ref) => (
+        <TableContainer
+            component={Paper}
+            {...props}
+            ref={ref}
+            sx={{
+                maxHeight: '500px',
+                overflowY: 'auto',
+                borderRadius: theme => `${theme.shape.borderRadius - 2}px`,
+            }}
+        />
+    )),
+    Table: (props) => (
+        <Table
+            stickyHeader
+            {...props}
+            sx={{
+                borderCollapse: 'separate',
+                tableLayout: 'fixed',
+                backgroundColor: theme => theme.palette.background.default,
+                '& thead th': {
+                    borderBottom: 'none',
+                    backgroundColor: theme => theme.palette.background.paper,
+                },
+                '& tbody tr:last-child td, & tbody tr:last-child th': {
+                    borderBottom: 'none',
+                },
+            }}
+        />
+    ),
+    TableHead: forwardRef((props, ref) => <TableHead {...props} ref={ref} />),
+    TableRow: forwardRef((props, ref) => <TableRow {...props} ref={ref} />),
+    TableBody: forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+};
+
+function AccountSelectorTable({ settings, setCheckedMails }) {
+    const [rows, setRows] = useState([]);
+
+    const { accounts } = useAccounts();
+    const vaultPeekerSettings = settings.vaultPeeker.collapsedFileds;
+
+    useEffect(() => {
+        const emails = vaultPeekerSettings.accounts;
+        const newRows = accounts.map((acc) => {
+            return {
+                checked: emails.includes(acc.email),
+                email: acc.email,
+                name: acc.name,
+            };
+        });
+
+        setRows(newRows);
+    }, []);
+
+    const tableHeaderContent = () => {
+        return (
+            <TableRow>
+                <TableCell sx={{ minWidth: 100, maxWidth: 100, width: 100, textAlign: 'start' }}>
+                    <Typography>
+                        Collapsed
+                    </Typography>
+                </TableCell>
+                <TableCell sx={{ minWidth: 175, maxWidth: 175, width: 175, textAlign: 'start' }}>
+                    <Typography>
+                        Accountname
+                    </Typography>
+                </TableCell>
+                <TableCell sx={{ textAlign: 'start' }}>
+                    <Typography>
+                        Email
+                    </Typography>
+                </TableCell>
+            </TableRow>
+        );
+    };
+
+    const rowContent = (_index, row) => {
+        return (
+            <TableRow
+                key={`${row.email}_${_index}`}
+            >
+                <TableCell sx={{ minWidth: 100, maxWidth: 100, width: 100, borderBottom: 'none', textAlign: 'start', borderRadius: theme => `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px` }}>
+                    <Checkbox
+                        checked={row.checked}
+                        onChange={(event) => {                            
+                            const checkedState = rows.find((r) => r.email === row.email).checked;
+                            const r = rows;
+                            const index = r.findIndex((r) => r.email === row.email);
+                            r[index].checked = !checkedState;
+                            setRows(r);
+
+                            const checkedRows = r.filter((r) => r.checked);
+                            const emails = checkedRows.map((r) => r.email);
+                            setCheckedMails(emails);
+                        }}
+                    />
+                </TableCell>
+                <TableCell sx={{ minWidth: 175, maxWidth: 175, width: 175, borderBottom: 'none', textAlign: 'start' }}>
+                    {row.name}
+                </TableCell>
+                <TableCell sx={{ borderBottom: 'none', textAlign: 'start', borderRadius: theme => `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0` }}>
+                    {row.email}
+                </TableCell>
+            </TableRow>
+        );
+    };
+
+    return (
+        <Box
+            sx={{
+                width: '600px',
+                height: '500px',
+            }}
+        >
+            <TableVirtuoso
+                data={rows}
+                components={VirtuosoTableComponents}
+                fixedHeaderContent={tableHeaderContent}
+                itemContent={rowContent}
+            />
+        </Box>
+    );
+}
