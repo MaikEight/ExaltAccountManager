@@ -1,4 +1,4 @@
-import { Box, FormControl, Input, MenuItem, Select, Typography } from "@mui/material";
+import { Box, FormControl, Input, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { useEffect, useState } from "react";
 import items from "../../../assets/constants";
@@ -19,6 +19,11 @@ const directions = {
     '=': 'equal',
     '>=': 'up',
     '<=': 'down'
+};
+const directionsTooltip = {
+    '=': 'equal tier',
+    '>=': 'same or higher tier',
+    '<=': 'same or lower tier'
 };
 
 function TierFilter() {
@@ -59,16 +64,16 @@ function TierFilter() {
     }, [tierFilter]);
 
     useEffect(() => {
-        if(!filter.tier) {
+        if (!filter.tier) {
             console.warn("HOW!?");
             return;
         }
 
         const direction = Object.keys(directions).find(key => directions[key] === filter.tier.direction);
         const option = tierFilterOptions.findIndex(opt => opt.tier === filter.tier.value && opt.flag === filter.tier.flag);
-        
-        if(direction === undefined || option === -1) return;
-        if(direction === tierFilter.direction && option === tierFilter.option) return;
+
+        if (direction === undefined || option === -1) return;
+        if (direction === tierFilter.direction && option === tierFilter.option) return;
 
         setTierFilter({ direction, option });
     }, [filter.tier]);
@@ -136,18 +141,25 @@ function TierFilter() {
                     >
                         {
                             Object.keys(directions).map((dir) => (
-                                <MenuItem
+                                <Tooltip
                                     key={directions[dir]}
                                     value={dir}
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}
+                                    title={directionsTooltip[dir]}
+                                    placement='right'
                                 >
-                                    {dir}
-                                </MenuItem>
+                                    <MenuItem
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <span>
+                                            {dir}
+                                        </span>
+                                    </MenuItem>
+                                </Tooltip>
                             ))
                         }
                     </Select>
