@@ -8,10 +8,12 @@ import FilterOverview from "./Filter/FilterOverview";
 import SoulboundFilter from "./Filter/SoulboundFilter";
 import FeedPowerFilter from "./Filter/FeedPowerFilter";
 import ItemTypeFilter from "./Filter/ItemTypeFilter";
+import CharacterSeasonalTypeFilter from "./Filter/CharacterSeasonalTypeFilter";
+import useUserSettings from "../../hooks/useUserSettings";
 
 function ItemFilterBox() {
     const { changeFilter } = useVaultPeeker();
-
+    const collapsedFileds = useUserSettings().getByKeyAndSubKey('vaultPeeker', 'collapsedFileds');
     const searchChanged = (search) => {
         changeFilter('search', {
             enabled: search && search !== '',
@@ -53,7 +55,7 @@ function ItemFilterBox() {
             }
             icon={<FilterListOutlinedIcon />}
             isCollapseable={true}
-            defaultCollapsed={true}
+            defaultCollapsed={collapsedFileds !== undefined ? collapsedFileds.filter : true}
             sx={{
                 mb: 0,
             }}
@@ -69,6 +71,7 @@ function ItemFilterBox() {
             <ItemTypeFilter />
             <FeedPowerFilter />
             <SoulboundFilter />
+            <CharacterSeasonalTypeFilter />
         </ComponentBox >
     );
 }
