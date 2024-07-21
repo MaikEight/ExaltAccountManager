@@ -104,30 +104,55 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                             px: 0.5,
                         }}
                     >
-                        <Box
-                            sx={{
-                                my: 0.5,
-                                height: '40px',
-                                width: '40px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: `${theme.shape.borderRadius}px`,
-                            }}
-                        >
-                            <SingleItemCanvas item={item} />
-                        </Box>
+                        {
+                            item[0] !== 'Empty Slot' &&
+                            <Box
+                                sx={{
+                                    my: 0.5,
+                                    height: '40px',
+                                    width: '40px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: `${theme.shape.borderRadius}px`,
+                                }}
+                            >
+                                <SingleItemCanvas item={item} />
+                            </Box>
+                        }
                         {getTierText()}
                         <Typography variant="h6">
                             {item[0]}
                         </Typography>
                     </Box>
-                    {
-                        item[8] === true &&
-                        <Tooltip title="Soulbound">
-                            <LockOutlinedIcon />
-                        </Tooltip>
-                    }
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 1,
+                        }}
+                    >
+                        {
+                            item[6] > 0 &&
+                            <Tooltip title="Feed Power">
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+
+                                    }}
+                                >
+                                    {item[6]}FP
+                                </Typography>
+                            </Tooltip>
+                        }
+                        {
+                            item[8] === true &&
+                            <Tooltip title="Soulbound">
+                                <LockOutlinedIcon />
+                            </Tooltip>
+                        }
+                    </Box>
                 </Box>
                 {/* Location */}
                 <Box
@@ -164,8 +189,14 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                             }
                             {
                                 totals?.location &&
-                                <TableContainer>
+                                <TableContainer
+                                    sx={{
+                                        maxHeight: '280px',
+                                        overflowY: 'auto',
+                                    }}
+                                >
                                     <Table
+                                        stickyHeader
                                         sx={{
                                             '& thead th': {
                                                 borderBottom: 'none',
