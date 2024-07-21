@@ -45,6 +45,13 @@ const defaultSettings = {
     },
     game: {
         defaultServer: "Last server",
+    },
+    vaultPeeker: {
+        collapsedFileds: {
+            filter: true,
+            totals: false,
+            accounts: [] //Array of account emails that are collapsed
+        }
     }
 };
 
