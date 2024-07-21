@@ -61,7 +61,15 @@ function Sidebar({ children }) {
         },
         {
             name: 'Vault Peeker',
-            icon: <VaultPeekerLogo sx={{ml: '2px', mt: '3px', width: '20px'}} color={theme.palette.text.primary} />,
+            icon:
+                <VaultPeekerLogo
+                    sx={{ ml: '2px', mt: '3px', width: '20px' }}
+                    color={
+                        location.pathname === '/vaultPeeker' && theme.palette.mode === 'light' ?
+                        theme.palette.background.default
+                        : theme.palette.text.primary
+                    }
+                />,
             action: handleNavigate,
             navigate: '/vaultPeeker',
             showInFooter: false
