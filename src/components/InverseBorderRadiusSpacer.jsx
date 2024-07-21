@@ -1,18 +1,45 @@
 import { Box } from "@mui/material";
 
 function InverseBorderRadiusSpacer({ sx, bottomBorder = true, upperBorder = false }) {
-    
+
     return (
         <Box
             id="filter-box-spacer"
             sx={{
                 position: 'relative',
                 height: theme => theme.spacing(2),
-                backgroundColor: 'background.default',
+                backgroundColor: theme => theme.palette.background.default,
                 borderRadius: '0 0 0 0',
+                
                 ...sx,
             }}
         >
+            {/* Overlay left */}
+            <Box
+                id="filter-box-overlay-left"
+                sx={{
+                    position: 'absolute',
+                    backgroundColor: theme => theme.palette.background.default,
+                    top: 0,
+                    left: theme => -theme.shape.borderRadius,
+                    height: theme => theme.spacing(2.75),
+                    width: theme => `${theme.shape.borderRadius}px`,
+                    zIndex: 1,
+                }}
+            />
+            {/* Overlay right */}
+            <Box
+                id="filter-box-overlay-right"
+                sx={{
+                    position: 'absolute',
+                    backgroundColor: theme => theme.palette.background.default,
+                    top: 0,
+                    right: theme => -theme.shape.borderRadius,
+                    height: '100%',
+                    width: theme => `${theme.shape.borderRadius}px`,
+                    zIndex: 1,
+                }}
+            />
             {/* Bottom-left-corner */}
             {
                 bottomBorder &&
