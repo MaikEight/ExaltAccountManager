@@ -53,7 +53,7 @@ function VaultPeekerPage() {
                             <TotalsView />
 
                             {/* Accounts */}
-                            <AccountsView />                           
+                            <AccountsView />
                         </Box>
                     </Box>
                 </Box>
