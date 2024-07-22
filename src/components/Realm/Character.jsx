@@ -9,13 +9,15 @@ import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import useColorList from './../../hooks/useColorList';
 
-const emptyItemOverride = {
-    all: {
-        imgSrc: 'realm/itemSlot.png',
-        size: 50,
-        padding: 0,
-    }
-};
+function emptyItemOverride(darkMode) {    
+    return {
+        all: {
+            imgSrc: darkMode ? 'realm/itemSlot.png' : 'realm/itemSlot_light.png',
+                size: 50,
+                    padding: 0,
+            }
+    };
+}
 
 function Character({ charIdentifier, character }) {
     const [charClass, setCharClass] = useState([]);
@@ -149,9 +151,9 @@ function Character({ charIdentifier, character }) {
                                 justifyContent: 'start',
                                 gap: 1,
                             }}
-                        > 
-                        <Typography variant="h6">{getCharacterClassName()}</Typography>
-                        <Typography variant="body2">#{character.char_id}</Typography>
+                        >
+                            <Typography variant="h6">{getCharacterClassName()}</Typography>
+                            <Typography variant="body2">#{character.char_id}</Typography>
                         </Box>
                         <Box
                             sx={{
@@ -161,7 +163,7 @@ function Character({ charIdentifier, character }) {
                                 justifyContent: 'start',
                                 gap: 0.5,
                             }}
-                        >                            
+                        >
                             {
                                 character.seasonal &&
                                 <Chip
@@ -252,10 +254,10 @@ function Character({ charIdentifier, character }) {
                             gap: 1,
                         }}
                     >
-                        <ItemCanvas canvasIdentifier={charIdentifier + "_INV"} imgSrc="renders.png" itemIds={charItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
+                        <ItemCanvas canvasIdentifier={charIdentifier + "_INV"} imgSrc="renders.png" itemIds={charItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride(theme.palette.mode === 'dark')} override={{ fillNumbers: false }} />
                         {
                             backpackItems.length > 0 &&
-                            <ItemCanvas canvasIdentifier={charIdentifier + "_BACK"} imgSrc="renders.png" itemIds={backpackItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride} override={{ fillNumbers: false }} />
+                            <ItemCanvas canvasIdentifier={charIdentifier + "_BACK"} imgSrc="renders.png" itemIds={backpackItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride(theme.palette.mode === 'dark')} override={{ fillNumbers: false }} />
                         }
                     </Box>
                 }
