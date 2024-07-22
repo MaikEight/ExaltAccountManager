@@ -32,12 +32,8 @@ function TotalsView() {
             title='Totals'
             icon={
                 <VaultPeekerLogo
-                    sx={{ ml: '2px', mt: '3px', width: '20px', mr: 0.25 }}
-                    color={
-                        theme.palette.mode === 'light' ?
-                        theme.palette.background.default
-                        : theme.palette.text.primary
-                    }
+                    sx={{ ml: '2px', mt: '6px', width: '20px', mr: 0.25 }}
+                    color={theme.palette.text.primary}
                 />
             }
             isCollapseable={true}

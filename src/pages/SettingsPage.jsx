@@ -264,15 +264,10 @@ function SettingsPage() {
                 title="Vault Peeker"
                 icon={
                     <VaultPeekerLogo
-                        sx={{ ml: '2px', mt: '3px', width: '20px', mr: 0.25 }}
-                        color={
-                            theme.palette.mode === 'light' ?
-                                theme.palette.background.default
-                                : theme.palette.text.primary
-                        }
+                        sx={{ ml: '2px', mt: '6px', width: '20px', mr: 0.25 }}
+                        color={theme.palette.text.primary}
                     />
                 }
-
             >
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Choose which fields should be collapsed by default in the Vault Peeker.
