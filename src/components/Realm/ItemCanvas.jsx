@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import useItemCanvas from '../../hooks/useItemCanvas';
 import useVaultPeeker from '../../hooks/useVaultPeeker';
 
-const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, override = {}, filter = [] }) => {
+const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filteredTotals = {}, override = {}, filter = [] }) => {
     const canvasRef = useRef(null);
     const baseCanvasRef = useRef(null);
     const itemPositionsRef = useRef([]);
@@ -126,8 +126,9 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
                     baseCt.shadowBlur = 3;
                     baseCt.font = '16px Roboto, bold';
                     baseCt.textAlign = 'right';
-                    baseCt.strokeText(totals[id].amount, itemBoxSize - 3, itemBoxSize - 5);
-                    baseCt.fillText(totals[id].amount, itemBoxSize - 3, itemBoxSize - 5);
+                    const text = (totals[id].amount !== filteredTotals[id]?.amount && filteredTotals[id]?.amount !== undefined) ? `${filteredTotals[id].amount} (${totals[id]?.amount})` : `${totals[id].amount}`;
+                    baseCt.strokeText(text, itemBoxSize - 3, itemBoxSize - 5);
+                    baseCt.fillText(text, itemBoxSize - 3, itemBoxSize - 5);
                     baseCt.restore();
                 }
                 baseCt.restore();
