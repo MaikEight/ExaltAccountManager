@@ -11,7 +11,6 @@ async function logToAuditLog(sender, message, accountEmail = null) {
         accountEmail: accountEmail ? "" + accountEmail : null
     }
 
-    console.info(`Logging to audit log: ${JSON.stringify(logData)}`);
     await invoke('log_to_audit_log', { log: logData })
         .catch((err) => {
             console.error('logToAuditLog', err);
@@ -42,6 +41,7 @@ async function logToErrorLog(sender, message) {
         message: "" + message
     }
 
+    console.info(`Logging to error log: ${JSON.stringify(logData)}`);
     await invoke('log_to_error_log', { log: logData })
         .catch((err) => {
             console.log('logToErrorLog', err);
