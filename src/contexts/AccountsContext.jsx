@@ -3,7 +3,11 @@ import { APP_VERSION } from "../constants";
 import { startSession } from "../backend/eamApi";
 import { useSearchParams } from "react-router-dom";
 import { invoke } from "@tauri-apps/api";
-import { logToAuditLog } from "../utils/loggingUtils";
+import { logToAuditLog, logToErrorLog } from "../utils/loggingUtils";
+import useHWID from "../hooks/useHWID";
+import { postAccountVerify, postCharList } from "../backend/decaApi";
+import { getRequestState, storeCharList } from "../utils/charListUtil";
+import useServerList from "../hooks/useServerList";
 
 const AccountsContext = createContext();
 
@@ -11,6 +15,10 @@ function AccountsContextProvider({ children }) {
     const [accounts, setAccounts] = useState([]);
     const [selectedAccount, setSelectedAccount] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
+    const hwid = useHWID();
+    const { saveServerList } = useServerList();
+
+    const getAccountByEmail = (email) => accounts.find((acc) => acc.email === email);
 
     const loadAccounts = async () => {
         try {
@@ -70,30 +78,128 @@ function AccountsContextProvider({ children }) {
                 console.error('Error encrypting password:', err);
                 return -1;
             });
-            
+
         if (pw === -1)
             return false;
-        
+
         const acc = { ...updatedAccount, token: token, password: pw };
-        
+
         const updAccount = await saveAccount(acc)
             .catch((err) => {
                 console.error('Error saving account:', err, acc);
                 return null;
             });
-            
+
         if (updAccount === null)
             return false;
-        
+
         const updatedAccountToUse = updAccount ? updAccount : updatedAccount;
-        
+
         if (selectedAccount && selectedAccount.email === updatedAccount.email) {
             setSelectedAccount(updatedAccountToUse);
         }
-        
+
         loadAccounts();
-        
+
         return true;
+    };
+
+    const sendAccountVerify = async (email) => {
+        const acc = getAccountByEmail(email);
+
+        if (!acc) return { success: false, message: 'Account not found' };
+
+        logToAuditLog('sendAccountVerify', `Sending account/verify request...`, email);
+        try {
+            const response = await postAccountVerify(acc, hwid)
+                .catch((err) => {
+                    logToErrorLog('sendAccountVerify', `Error sending account/verify request: ${err}`, email);
+                    return null;
+                });
+
+            const requestState = getRequestState(response);
+            const newAcc = ({ ...acc, state: requestState });
+            updateAccount(newAcc);
+
+            if (!response || response.Error) {
+                logToAuditLog('sendAccountVerify', `Account/verify request failed.`, email);
+
+                return { success: false, message: 'Failed to verify account' };
+            }
+
+            logToAuditLog('sendAccountVerify', `Account/verify request successful.`, email);
+            return { success: true, message: 'Account verified', data: response };
+
+
+        } catch (error) {
+            logToErrorLog('postAccountVerify', error);
+            return { success: false, message: 'Failed to verify account' };
+        }
+    }
+
+    const sendCharList = async (email, accessToken) => {
+        const acc = getAccountByEmail(email);
+        if (!acc) return { success: false, message: 'Account not found' };
+
+        logToAuditLog('sendCharList', `Sending char/list request...`, email);
+        try {
+            const response = await postCharList(accessToken)
+                .catch((err) => {
+                    logToErrorLog('sendCharList', `Error sending char/list request: ${err}`, email);
+                    return null;
+                });
+
+            const requestState = getRequestState(response);
+            const newAcc = ({ ...acc, state: requestState });
+            updateAccount(newAcc);
+
+            if (!response || response.Error) {
+                logToAuditLog('sendCharList', `Char/list request failed.`, email);
+                return { success: false, message: 'Failed to get character list' };
+            }
+
+            storeCharList(response, acc.email);
+
+            const servers = response.Chars?.Servers?.Server;
+            if (servers && servers.length > 0) {
+                saveServerList(servers);
+            }
+
+            logToAuditLog('sendCharList', `Char/list request successful.`, email);
+            return { success: true, message: 'Character list received', data: response };
+        } catch (error) {
+            logToErrorLog('postCharList', error);
+            return { success: false, message: 'Failed to get character list' };
+        };
+    }
+
+    const refreshData = async (email) => {
+        const acc = getAccountByEmail(email);
+        if (!acc) {
+            return;
+        }
+
+        const accResponse = await sendAccountVerify(acc.email);
+        if (accResponse === null || !accResponse.success) {
+            logToErrorLog("refresh Data", "Failed to refresh data for " + acc.email);
+            showSnackbar("Failed to refresh data", 'error');
+            return;
+        }
+
+        const token = {
+            AccessToken: accResponse.data.Account.AccessToken,
+            AccessTokenTimestamp: accResponse.data.Account.AccessTokenTimestamp,
+            AccessTokenExpiration: accResponse.data.Account.AccessTokenExpiration,
+        };
+
+        const charList = await sendCharList(acc.email, token.AccessToken);
+        if (charList === null || !charList.success) {
+            logToErrorLog("refresh Data", "Failed to refresh data for " + acc.email);
+            showSnackbar("Failed to refresh data", 'error');
+            return;
+        }
+
+        return token;
     };
 
     const handleSelectedAccountParameter = (accs) => {
@@ -166,10 +272,12 @@ function AccountsContextProvider({ children }) {
 
         setSelectedAccount,
 
-        getAccountByEmail: (email) => accounts?.find((acc) => acc.email === email),
+        getAccountByEmail: getAccountByEmail,
         updateAccount,
         reloadAccounts: loadAccounts,
         deleteAccount,
+        sendAccountVerify,
+        sendCharList,
     };
 
     return (
