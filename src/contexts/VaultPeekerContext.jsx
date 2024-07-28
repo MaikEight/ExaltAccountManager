@@ -93,6 +93,7 @@ function VaultPeekerContextProvider({ children }) {
     const [selectedItem, setSelectedItem] = useState(null);
     const [popperPosition, setPopperPosition] = useState(null);
     const [totalItems, setTotalItems] = useState([]);
+    const [filteredTotalItems, setFilteredTotalItems] = useState([]);
     const [accountsData, setAccountsData] = useState([]);
     const [filter, setFilter] = useState(defaultFilter);
     const [filterItemsCallbacks, setFilterItemsCallbacks] = useState({});
@@ -235,10 +236,31 @@ function VaultPeekerContextProvider({ children }) {
                         }
                     });
                 });
+
                 const allowedItemIds = [...new Set(allowedItemIdsList)];
                 filteredItemIds = filteredItemIds.filter(itemId => {
                     return allowedItemIds.includes(itemId);
                 });
+
+                // const totalKeys = Object.keys(totalItems.totals);
+                // console.log('totalKeys', totalKeys);
+                // console.log('allowedItemIds', allowedItemIds);
+                // const newfilteredTotalItemsKeys = totalKeys.filter((itemId) => allowedItemIds.includes(itemId));
+                // console.log('newfilteredTotalItemsKeys', newfilteredTotalItemsKeys);
+                // const newfilteredTotalItems = {};
+                // newfilteredTotalItemsKeys.forEach((key) => {
+                //     newfilteredTotalItems[key] = totalItems.totals[key];
+                // });
+                const newfilteredTotalItems = {};
+                allowedItemIds.forEach((itemId) => {
+                    if(totalItems.totals[itemId]) {
+                        newfilteredTotalItems[itemId] = totalItems.totals[itemId];
+                    }
+                });
+                console.log('newfilteredTotalItems', newfilteredTotalItems);
+                // console.log(newfilteredTotalItems);
+
+                setFilteredTotalItems(newfilteredTotalItems);
             } else if (value === 3) {
                 // Show only items not on characters
                 const allowedItemIdsList = [];
@@ -249,11 +271,22 @@ function VaultPeekerContextProvider({ children }) {
                     allowedItemIdsList.push(...acc.account.temporary_gifts.itemIds);
                     allowedItemIdsList.push(...acc.account.vault.itemIds);
                 });
+
                 const allowedItemIds = [...new Set(allowedItemIdsList)];
                 filteredItemIds = filteredItemIds.filter(itemId => {
                     return allowedItemIds.includes(itemId);
                 });
+
+                const newfilteredTotalItemsKeys = Object.keys(totalItems.totals).filter((itemId) => allowedItemIds.includes(itemId));
+                const newfilteredTotalItems = {};
+                newfilteredTotalItemsKeys.forEach((key) => {
+                    newfilteredTotalItems[key] = totalItems.totals[key];
+                });
+
+                setFilteredTotalItems(newfilteredTotalItems);
             }
+        } else {
+            setFilteredTotalItems(totalItems);
         }
 
         return filteredItemIds;
@@ -264,6 +297,8 @@ function VaultPeekerContextProvider({ children }) {
             const res = await invoke('get_latest_char_list_dataset_for_each_account');
             const items = extractRealmItemsFromCharListDatasets(res);
             setTotalItems(items);
+            setFilteredTotalItems(items);
+
             let accs = formatAccountDataFromCharListDatasets(res);
             if (accs?.length > 0) {
                 accs = accs.map((acc) => {
@@ -327,6 +362,7 @@ function VaultPeekerContextProvider({ children }) {
 
     const contextValue = {
         totalItems,
+        filteredTotalItems,
         accountsData,
         getAccountByEmail,
         popperPosition,
