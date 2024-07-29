@@ -9,17 +9,17 @@ import useItemCanvas from "../../hooks/useItemCanvas";
 import useUserSettings from "../../hooks/useUserSettings";
 
 function TotalsView() {
-    const [filteredTotalItems, setFilteredTotalItems] = useState([]);
-    const { totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const [filteredItems, setFilteredItems] = useState([]);
+    const { totalItems, addItemFilterCallback, removeItemFilterCallback, filteredTotalItems } = useVaultPeeker();
     const { setHoveredConvasId } = useItemCanvas();
     const theme = useTheme();
     const collapsedFileds = useUserSettings().getByKeyAndSubKey('vaultPeeker', 'collapsedFileds');
 
     useEffect(() => {
-        setFilteredTotalItems(totalItems?.itemIds ?? []);
+        setFilteredItems(totalItems?.itemIds ?? []);
 
         if (totalItems?.itemIds) {
-            addItemFilterCallback('totals', (itemIds) => { setFilteredTotalItems(itemIds); }, totalItems.itemIds);
+            addItemFilterCallback('totals', (itemIds) => { setFilteredItems(itemIds); }, totalItems.itemIds);
         }
 
         return () => {
@@ -48,9 +48,10 @@ function TotalsView() {
             <ItemCanvas
                 canvasIdentifier="totals"
                 imgSrc="renders.png"
-                itemIds={filteredTotalItems}
+                itemIds={filteredItems}
                 items={items}
                 totals={totalItems?.totals ? totalItems.totals : {}}
+                filteredTotalItems={filteredTotalItems}
             />
             <img
                 src={theme.palette.mode === 'dark' ? '/logo/logo_inner_big.png' : '/logo/logo_inner_big_dark.png'}
