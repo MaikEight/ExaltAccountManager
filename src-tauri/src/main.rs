@@ -127,7 +127,7 @@ fn main() {
             delete_eam_group,
             get_latest_char_list_for_each_account, //CHAR LIST ENTRIES
             get_latest_char_list_dataset_for_each_account,
-            insert_char_list_dataset, 
+            insert_char_list_dataset,
             download_and_run_hwid_tool,
             encrypt_string,
             decrypt_string,
@@ -1527,7 +1527,7 @@ fn delete_eam_group_impl(
 async fn has_old_eam_save_file() -> Result<bool, tauri::Error> {
     info!("Checking for old EAM save file...");
 
-    if std::env::consts::OS != "windows" {        
+    if std::env::consts::OS != "windows" {
         return Ok(false);
     }
 
@@ -1610,7 +1610,8 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#########################
 
 #[tauri::command]
-async fn get_latest_char_list_dataset_for_each_account() -> Result<Vec<models::CharListDataset>, tauri::Error> {
+async fn get_latest_char_list_dataset_for_each_account(
+) -> Result<Vec<models::CharListDataset>, tauri::Error> {
     info!("Getting latest char list dataset for each account...");
 
     match POOL.lock() {
@@ -1639,7 +1640,8 @@ fn get_latest_char_list_dataset_for_each_account_impl(
 }
 
 #[tauri::command]
-async fn get_latest_char_list_for_each_account() -> Result<Vec<models::CharListEntries>, tauri::Error> {
+async fn get_latest_char_list_for_each_account(
+) -> Result<Vec<models::CharListEntries>, tauri::Error> {
     info!("Getting latest char list for each account...");
 
     match POOL.lock() {
@@ -1723,7 +1725,7 @@ fn get_all_audit_logs_impl(
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
-    error!("Database pool not initialized");    
+    error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
