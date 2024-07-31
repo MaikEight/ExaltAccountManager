@@ -101,6 +101,27 @@ function VaultPeekerContextProvider({ children }) {
     const { groups } = useGroups();
     const { accounts, getAccountByEmail } = useAccounts();
 
+    const refreshItemData = async () => {
+        const res = await invoke('get_latest_char_list_dataset_for_each_account');
+        const items = extractRealmItemsFromCharListDatasets(res);
+        setTotalItems(items);
+        setFilteredTotalItems(items);
+
+        let accs = formatAccountDataFromCharListDatasets(res);
+        if (accs?.length > 0) {
+            accs = accs.map((acc) => {
+                const eamAcc = getAccountByEmail(acc.email);
+                const group = eamAcc?.group ? groups.find((g) => g.name === eamAcc?.group) : null;
+                return {
+                    ...acc,
+                    name: eamAcc?.name,
+                    group: group,
+                }
+            });
+        }
+        setAccountsData(accs);
+    };
+
     const applyFilter = (itemIds) => {
         let filteredItemIds = itemIds;
 
@@ -241,26 +262,16 @@ function VaultPeekerContextProvider({ children }) {
                 filteredItemIds = filteredItemIds.filter(itemId => {
                     return allowedItemIds.includes(itemId);
                 });
-
-                // const totalKeys = Object.keys(totalItems.totals);
-                // console.log('totalKeys', totalKeys);
-                // console.log('allowedItemIds', allowedItemIds);
-                // const newfilteredTotalItemsKeys = totalKeys.filter((itemId) => allowedItemIds.includes(itemId));
-                // console.log('newfilteredTotalItemsKeys', newfilteredTotalItemsKeys);
+                
                 // const newfilteredTotalItems = {};
-                // newfilteredTotalItemsKeys.forEach((key) => {
-                //     newfilteredTotalItems[key] = totalItems.totals[key];
+                // allowedItemIds.forEach((itemId) => {
+                //     if(totalItems.totals[itemId]) {
+                //         newfilteredTotalItems[itemId] = totalItems.totals[itemId];
+                //     }
                 // });
-                const newfilteredTotalItems = {};
-                allowedItemIds.forEach((itemId) => {
-                    if(totalItems.totals[itemId]) {
-                        newfilteredTotalItems[itemId] = totalItems.totals[itemId];
-                    }
-                });
-                console.log('newfilteredTotalItems', newfilteredTotalItems);
-                // console.log(newfilteredTotalItems);
+                // console.log('newfilteredTotalItems', newfilteredTotalItems);
 
-                setFilteredTotalItems(newfilteredTotalItems);
+                // setFilteredTotalItems(newfilteredTotalItems);
             } else if (value === 3) {
                 // Show only items not on characters
                 const allowedItemIdsList = [];
@@ -277,13 +288,13 @@ function VaultPeekerContextProvider({ children }) {
                     return allowedItemIds.includes(itemId);
                 });
 
-                const newfilteredTotalItemsKeys = Object.keys(totalItems.totals).filter((itemId) => allowedItemIds.includes(itemId));
-                const newfilteredTotalItems = {};
-                newfilteredTotalItemsKeys.forEach((key) => {
-                    newfilteredTotalItems[key] = totalItems.totals[key];
-                });
+                // const newfilteredTotalItemsKeys = Object.keys(totalItems.totals).filter((itemId) => allowedItemIds.includes(itemId));
+                // const newfilteredTotalItems = {};
+                // newfilteredTotalItemsKeys.forEach((key) => {
+                //     newfilteredTotalItems[key] = totalItems.totals[key];
+                // });
 
-                setFilteredTotalItems(newfilteredTotalItems);
+                // setFilteredTotalItems(newfilteredTotalItems);
             }
         } else {
             setFilteredTotalItems(totalItems);
@@ -293,27 +304,7 @@ function VaultPeekerContextProvider({ children }) {
     };
 
     useEffect(() => {
-        const loadItems = async () => {
-            const res = await invoke('get_latest_char_list_dataset_for_each_account');
-            const items = extractRealmItemsFromCharListDatasets(res);
-            setTotalItems(items);
-            setFilteredTotalItems(items);
-
-            let accs = formatAccountDataFromCharListDatasets(res);
-            if (accs?.length > 0) {
-                accs = accs.map((acc) => {
-                    const eamAcc = getAccountByEmail(acc.email);
-                    const group = eamAcc?.group ? groups.find((g) => g.name === eamAcc?.group) : null;
-                    return {
-                        ...acc,
-                        name: eamAcc?.name,
-                        group: group,
-                    }
-                });
-            }
-            setAccountsData(accs);
-        };
-        loadItems();
+        refreshItemData();
     }, [accounts]);
 
     useEffect(() => {
