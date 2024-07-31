@@ -8,6 +8,7 @@ import useHWID from "../hooks/useHWID";
 import { postAccountVerify, postCharList } from "../backend/decaApi";
 import { getRequestState, storeCharList } from "../utils/charListUtil";
 import useServerList from "../hooks/useServerList";
+import useSnack from "../hooks/useSnack";
 
 const AccountsContext = createContext();
 
@@ -17,6 +18,7 @@ function AccountsContextProvider({ children }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const hwid = useHWID();
     const { saveServerList } = useServerList();
+    const { showSnackbar } = useSnack();
 
     const getAccountByEmail = (email) => accounts.find((acc) => acc.email === email);
 
@@ -176,14 +178,14 @@ function AccountsContextProvider({ children }) {
     const refreshData = async (email) => {
         const acc = getAccountByEmail(email);
         if (!acc) {
-            return;
+            return null;
         }
 
         const accResponse = await sendAccountVerify(acc.email);
         if (accResponse === null || !accResponse.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + acc.email);
             showSnackbar("Failed to refresh data", 'error');
-            return;
+            return null;
         }
 
         const token = {
@@ -196,7 +198,7 @@ function AccountsContextProvider({ children }) {
         if (charList === null || !charList.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + acc.email);
             showSnackbar("Failed to refresh data", 'error');
-            return;
+            return null;
         }
 
         return token;
@@ -278,6 +280,7 @@ function AccountsContextProvider({ children }) {
         deleteAccount,
         sendAccountVerify,
         sendCharList,
+        refreshData,
     };
 
     return (
