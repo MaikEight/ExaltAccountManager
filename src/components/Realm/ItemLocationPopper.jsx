@@ -229,8 +229,8 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                                     </Tooltip>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Tooltip title="Temporary Gifts">
-                                                        <img src="realm/chest.png" alt="Temp. Gift" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
+                                                    <Tooltip title="Seasonal Spoils">
+                                                        <img src="realm/seasonal_spoils_chest.png" alt="Ssnl. Spoils" style={{ padding: '0', maxWidth: 32, maxHeight: 32 }} />
                                                     </Tooltip>
                                                 </TableCell>
                                                 <TableCell>
