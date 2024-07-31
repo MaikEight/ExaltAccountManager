@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 import Character from "../Realm/Character";
 import ItemCanvas from "../Realm/ItemCanvas";
@@ -7,13 +7,20 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 import { useEffect, useMemo, useState } from "react";
 import GroupUI from "../GridComponents/GroupUI";
 import useUserSettings from "../../hooks/useUserSettings";
+import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
+import useAccounts from "../../hooks/useAccounts";
+import useSnack from "../../hooks/useSnack";
 
 function AccountView({ account }) {
     const [accountItemIds, setAccountItemIds] = useState([]);
     const [filteredAccountItemIds, setfilteredAccountItemIds] = useState([]);
+    const [isRefreshingAccount, setIsRefreshingAccount] = useState(false);
+
     const { totalItems, filter, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const { refreshData } = useAccounts();
     const collapsedFileds = useUserSettings().getByKeyAndSubKey('vaultPeeker', 'collapsedFileds');
-    
+    const { showSnackbar } = useSnack();
+
     const isDefaultCollapsed = !account ? false : collapsedFileds !== undefined ? collapsedFileds.accounts?.includes(account?.email) : false;
 
     useEffect(() => {
@@ -43,22 +50,48 @@ function AccountView({ account }) {
         };
     }, [accountItemIds]);
 
+    const refreshAccountData = async (event) => {
+        event.stopPropagation();
+
+        if(!account  || !account.email) return;
+        setIsRefreshingAccount(true);
+
+        const token = await refreshData(account.email);
+
+        if(token) {
+            showSnackbar("Refreshing finished");
+        }
+
+        setIsRefreshingAccount(false);
+    };
+
     const boxTitle = useMemo(() => {
         return (
-            <>
-                {account.group && <GroupUI group={account.group} />}
-                <Typography
-                    variant="h6"
-                    sx={{
-                        fontWeight: 600,
-                        textAlign: 'center',
-                    }}
-                >
-                    {account.name ? account.name : account.email}
-                </Typography>
-            </>
+            <Box sx={{display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <Box sx={{display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+                    {account.group && <GroupUI group={account.group} />}
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: 600,
+                            textAlign: 'center',
+                        }}
+                    >
+                        {account.name ? account.name : account.email}
+                    </Typography>
+                </Box>
+                <Tooltip title="Refresh account">
+                    <IconButton
+                        disabled={isRefreshingAccount}
+                        size="small"
+                        onClick={refreshAccountData}
+                    >
+                        <RefreshOutlinedIcon />
+                    </IconButton>
+                </Tooltip>
+            </Box>
         );
-    }, [account]);
+    }, [account, isRefreshingAccount]);
 
     if (!account || !filteredAccountItemIds || filteredAccountItemIds.length === 0) {
         return null;
@@ -108,7 +141,7 @@ function AccountView({ account }) {
                     {/* Trade Chest */}
                     <StorageView canvasIdentifier={account.email + "_Trade"} title={<StorageViewTitle title="Material Storage" image="realm/material_storage.png" />} itemIds={account.account.material_storage.itemIds} totals={totalItems?.totals} />
                     {/* Temporary Gifts */}
-                    <StorageView canvasIdentifier={account.email + "_Temp"} title={<StorageViewTitle title="Temporary Gifts" image="realm/chest.png" />} itemIds={account.account.temporary_gifts.itemIds} totals={totalItems?.totals} />
+                    <StorageView canvasIdentifier={account.email + "_Temp"} title={<StorageViewTitle title="Seasonal Spoils" image="realm/seasonal_spoils_chest.png" />} itemIds={account.account.temporary_gifts.itemIds} totals={totalItems?.totals} />
                     {/* Potion Storage */}
                     <StorageView canvasIdentifier={account.email + "_Potion"} title={<StorageViewTitle title="Potion Storage" image="realm/potion_storage_small.png" />} itemIds={account.account.potions.itemIds} totals={totalItems?.totals} />
                 </Box>
