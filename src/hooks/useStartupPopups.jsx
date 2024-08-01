@@ -7,7 +7,7 @@ import ChangelogVersion4_1_5 from "../components/Popups/Changelogs/ChangelogVers
 import ChangelogVersion4_2_0 from "../components/Popups/Changelogs/ChangelogVersion4_2_0";
 import BetaTestPopup from "../components/Popups/BetaTestPopup";
 
-const isBetaVersion = true;
+const isBetaVersion = false;
 
 function useStartupPopups() {
     const { accounts } = useAccounts();
