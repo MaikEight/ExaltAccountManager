@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Paper, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Paper, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getItemById } from "../../utils/realmItemUtils";
 import { useNavigate } from "react-router-dom";
@@ -177,14 +177,26 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                 totals?.location &&
                                 <Box
                                     sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
                                         pl: 1,
-                                        pr: 1,
                                         pt: 0.5,
                                     }}
                                 >
                                     <Typography fontWeight={100}>
                                         You own {totals?.amount} of this item in total acros {Object.keys(totals?.location).length} accounts.
                                     </Typography>
+                                    <Tooltip title="Search on realmeye">
+                                        <a href={`https://www.realmeye.com/wiki-search?q=${encodeURI(item[0])}`} target="_blank" rel="noreferrer">
+                                            <IconButton
+                                                size="small"
+                                                sx={{ zIndex: 10, mt: -0.5 }}
+                                            >
+                                                <img src="realm/eye-big.png" alt="Realmeye" style={{ padding: '0', maxWidth: 30, maxHeight: 30 }} />
+                                            </IconButton>
+                                        </a>
+                                    </Tooltip>
                                 </Box>
                             }
                             {
@@ -193,6 +205,7 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                     sx={{
                                         maxHeight: '280px',
                                         overflowY: 'auto',
+                                        mt: -1,
                                     }}
                                 >
                                     <Table
