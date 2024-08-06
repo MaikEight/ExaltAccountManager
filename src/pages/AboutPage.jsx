@@ -7,10 +7,14 @@ import GitHubStars from "../components/GitHubStars";
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
 import { useEffect, useState } from "react";
 import StyledButton from "../components/StyledButton";
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import usePopups from './../hooks/usePopups';
+import CreditsPopup from "../components/Popups/CreditsPopup";
 
 function AboutPage() {
     const [showLlama, setShowLlama] = useState(false);
     const theme = useTheme();
+    const { showPopup } = usePopups();
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -52,8 +56,8 @@ function AboutPage() {
                     sx={{ mr: 0, userSelect: "none", flexGrow: 1 }}
                 >
                     <Typography>
-                        Exalt Account Manager version 4.2.0b<br />
-                        Released on 09.07.2024.
+                        Exalt Account Manager version 4.2.0<br />
+                        Released on 02.08.2024.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
@@ -87,18 +91,50 @@ function AboutPage() {
 
                 </ComponentBox>
             </Box>
-            <ComponentBox
-                title="Open Source"
-                icon={<CodeOutlinedIcon />}
-                sx={{ userSelect: "none" }}
+            <Box
+                sx={{ display: 'flex', flexDirection: 'row', mt: -2, mb: -2 }}
             >
-                <Typography>
-                    EAM is open source and available on <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">GitHub</a>.
-                    <br />Feel free to contribute!
-                </Typography>
+                <ComponentBox
+                    title="Open Source"
+                    icon={<CodeOutlinedIcon />}
+                    sx={{ mr: 0, userSelect: "none", minWidth: '475px', flexGrow: 1 }}
+                    innerSx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        position: 'relative',
+                        height: '100%',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <Typography>
+                        EAM is open source and available on <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer">GitHub</a>.
+                        <br />Feel free to contribute!
+                    </Typography>
 
-                <GitHubStars style={{ position: 'absolute', top: '25%', right: 24 }} />
-            </ComponentBox>
+                    <GitHubStars style={{ marginTop: '-16px' }} />
+                </ComponentBox>
+                <ComponentBox
+                    title="Credits & Thanks"
+                    icon={<FavoriteBorderOutlinedIcon />}
+                    sx={{ userSelect: "none", flexGrow: 1 }}
+                    innerSx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 1,
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Typography>
+                        Special thanks to every Framework, Library, Resource and Person that made this project possible.
+                    </Typography>
+                    <StyledButton
+                        onClick={() => { showPopup({ content: <CreditsPopup /> }) }}
+                    >
+                        Show Credits & Thanks
+                    </StyledButton>
+                </ComponentBox>
+            </Box>
             <ComponentBox
                 title="Want to support this project?"
                 icon={<CelebrationOutlinedIcon />}
