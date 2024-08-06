@@ -40,6 +40,7 @@ function CreditsPopup() {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1.25,
+                    width: 'fit-content',
                 }}
             >
                 <CreditEntry title={'Muledump'} url={'https://github.com/jakcodex/muledump'} image={'muledump.png'} />
@@ -48,26 +49,19 @@ function CreditsPopup() {
                 <Typography variant="body1" color="textSecondary">
                     A Special <b>THANKS</b> goes to these legends:
                 </Typography>
-                <Typography variant="body1" color="textSecondary">
-                    <Box sx={{ display: 'flex', alignContent: 'center', gap: 0.75 }}>
-                        <ThanksLink title={'Jakcodex'} url={'https://github.com/jakcodex'} />
-                        for his muledump fork and the asset compiler.
-                    </Box>
-                </Typography>
+                <SpecialThanks>
+                    <ThanksLink title={'Jakcodex'} url={'https://github.com/jakcodex'} />
+                    for his muledump fork and the asset compiler.
+                </SpecialThanks>
 
-                <Typography variant="body1" color="textSecondary">
-                    <Box sx={{ display: 'flex', alignContent: 'center', gap: 0.75 }}>
-                        <ThanksLink title={'TadusPro'} url={'https://github.com/TadusPro'} />
-                        for his muledump fork and active support / feedback.
-                    </Box>
-                </Typography>
+                <SpecialThanks>
+                    <ThanksLink title={'TadusPro'} url={'https://github.com/TadusPro'} />
+                    for his muledump fork and active support / feedback.
+                </SpecialThanks>
 
-                <Typography variant="body1" color="textSecondary">
-                    <Box sx={{ display: 'flex', alignContent: 'center', gap: 0.75 }}>
-                        {/* <ThanksLink title={'Faynt'} url={'https://github.com/Faynt'} /> */}
-                        Faynt for his active help with solving a render issue and contributions to muledump.
-                    </Box>
-                </Typography>
+                <SpecialThanks>
+                    Faynt for his active help with solving a render issue and contributions to muledump.
+                </SpecialThanks>
 
             </ComponentBox>
             <ComponentBox
@@ -82,13 +76,11 @@ function CreditsPopup() {
                     gap: 1.25,
                 }}
             >
-                <Typography variant="body1" color="textSecondary">
-                    <Box sx={{ display: 'flex', alignContent: 'center', gap: 0.75 }}>
-                        <ThanksLink title={'DECA Games'} url={'https://decagames.com/'} />
-                        for creating the game 
-                        <ThanksLink title={'Realm of the Mad God Exalt'} url={'https://www.realmofthemadgod.com/'} />
-                    </Box>
-                </Typography>
+                <SpecialThanks>
+                    <ThanksLink title={'DECA Games'} url={'https://decagames.com/'} />
+                    for creating the game
+                    <ThanksLink title={'Realm of the Mad God Exalt'} url={'https://www.realmofthemadgod.com/'} />
+                </SpecialThanks>
             </ComponentBox>
         </PopupBase>
     );
@@ -101,7 +93,7 @@ function ThanksLink({ title, url }) {
             target="_blank"
             rel="noopener noreferrer"
         >
-            <div
+            <span
                 style={{
                     display: 'flex',
                     gap: 2,
@@ -110,9 +102,19 @@ function ThanksLink({ title, url }) {
                 }}
             >
                 {title} <OpenInNewOutlinedIcon sx={{ fontSize: '18px' }} />
-            </div>
+            </span>
         </a>
     );
+}
+
+function SpecialThanks({ children }) {
+    return (
+        <Typography variant="body1" color="textSecondary">
+            <Box component={'span'} sx={{ display: 'flex', alignContent: 'center', gap: 0.75 }}>
+                {children}
+            </Box>
+        </Typography>
+    )
 }
 
 function CreditEntry({ title, image, url }) {
@@ -129,7 +131,7 @@ function CreditEntry({ title, image, url }) {
     }
 
     return (
-        <>
+        <Box sx={{ width: 'fit-content' }}>
             {
                 wrapInLink(
                     <Box
@@ -138,7 +140,6 @@ function CreditEntry({ title, image, url }) {
                             flexDirection: 'row',
                             alignItems: 'center',
                             gap: 1,
-                            maxWidth: 'fit-content',
                         }}
                     >
                         {
@@ -170,7 +171,7 @@ function CreditEntry({ title, image, url }) {
                     </Box>
                 )
             }
-        </>
+        </Box>
     );
 }
 
