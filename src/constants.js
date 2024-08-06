@@ -1,7 +1,6 @@
 import { invoke } from '@tauri-apps/api';
 
-export const APP_NAME = 'Exalt Account Manager';
-export const APP_VERSION = '4.0.0';
+export const APP_VERSION = '4.2.0';
 
 export function isUpdateAvailable(latestVersion) {
     if (!latestVersion) return false;
