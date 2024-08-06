@@ -7,9 +7,12 @@ import { useEffect, useState } from "react";
 import VaultPeekerLogo from "../VaultPeekerLogo";
 import useItemCanvas from "../../hooks/useItemCanvas";
 import useUserSettings from "../../hooks/useUserSettings";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 
 function TotalsView() {
     const [filteredItems, setFilteredItems] = useState([]);
+    const [saveCanvas, setSaveCanvas] = useState(0);
     const { totalItems, addItemFilterCallback, removeItemFilterCallback, filteredTotalItems } = useVaultPeeker();
     const { setHoveredConvasId } = useItemCanvas();
     const theme = useTheme();
@@ -29,10 +32,41 @@ function TotalsView() {
 
     return (
         <ComponentBox
-            title='Totals'
+            title={
+                (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            width: '100%',
+                        }}
+                    >
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                fontWeight: 600,
+                                textAlign: 'center',
+                            }}
+                        >
+                            Totals
+                        </Typography>
+                        <Tooltip title="Export totals as image">
+                            <IconButton
+                                onClick={(event) => { 
+                                    event.stopPropagation();
+                                    setSaveCanvas((prev) => prev + 1); 
+                                }}                                
+                            >
+                                <FileUploadOutlinedIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                )
+            }
             icon={
                 <VaultPeekerLogo
-                    sx={{ ml: '2px', mt: '6px', width: '20px', mr: 0.25 }}
+                    sx={{ display: 'flex', ml: '2px', width: '20px', height: '24px', mr: 0.25 }}
                     color={theme.palette.text.primary}
                 />
             }
@@ -52,6 +86,7 @@ function TotalsView() {
                 items={items}
                 totals={totalItems?.totals ? totalItems.totals : {}}
                 filteredTotalItems={filteredTotalItems}
+                saveCanvas={saveCanvas}
             />
             <img
                 src={theme.palette.mode === 'dark' ? '/logo/logo_inner_big.png' : '/logo/logo_inner_big_dark.png'}
