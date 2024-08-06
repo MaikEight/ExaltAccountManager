@@ -13,21 +13,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { postAccountVerify, postCharList } from "../../backend/decaApi";
 import { tauri } from "@tauri-apps/api";
 import useUserSettings from "../../hooks/useUserSettings";
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import GroupRow from "./GroupRow";
-import useHWID from "../../hooks/useHWID";
 import useSnack from "../../hooks/useSnack";
 import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import useAccounts from "../../hooks/useAccounts";
 import useGroups from "../../hooks/useGroups";
-import { getRequestState, storeCharList } from "../../utils/charListUtil";
-import useServerList from './../../hooks/useServerList';
 import { logToErrorLog } from "../../utils/loggingUtils";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
@@ -43,7 +39,6 @@ function AccountDetails({ acc, onClose }) {
     const [newDecryptedPassword, setNewDecryptedPassword] = useState("");
     const [gameExePath, setGameExePath] = useState("");
 
-    const { saveServerList } = useServerList();
     const groupsContext = useGroups();
     const { groups } = groupsContext;
 
@@ -53,7 +48,6 @@ function AccountDetails({ acc, onClose }) {
     const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
 
     const settings = useUserSettings();
-    const hwid = useHWID();
     const theme = useTheme();
     const containerRef = useRef(null);
 
