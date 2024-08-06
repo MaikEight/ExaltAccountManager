@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import useItemCanvas from '../../hooks/useItemCanvas';
 import useVaultPeeker from '../../hooks/useVaultPeeker';
 
-const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filteredTotals = {}, override = {}, filter = [] }) => {
+const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filteredTotals = {}, override = {}, filter = [], saveCanvas }) => {
     const canvasRef = useRef(null);
     const baseCanvasRef = useRef(null);
     const itemPositionsRef = useRef([]);
@@ -13,6 +13,77 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
     const theme = useTheme();
     const { hoveredConvasId, setHoveredConvasId } = useItemCanvas();
     const { setSelectedItem, setPopperPosition } = useVaultPeeker();
+
+    useEffect(() => {
+        if (!saveCanvas || saveCanvas === 0) {
+            return;
+        }
+    
+        const baseCanvas = baseCanvasRef.current;
+    
+        if (!baseCanvas) {
+            console.error('Canvas element not found');
+            return;
+        }
+    
+        const baseCanvasWidth = baseCanvas.width;
+        const baseCanvasHeight = baseCanvas.height;
+    
+        // Create an off-screen canvas
+        const offScreenCanvas = document.createElement('canvas');
+        offScreenCanvas.width = baseCanvasWidth;
+        offScreenCanvas.height = baseCanvasHeight;
+        const ctx = offScreenCanvas.getContext('2d');
+    
+        // Draw the background color
+        ctx.fillStyle = theme.palette.background.paper;
+        ctx.fillRect(0, 0, baseCanvasWidth, baseCanvasHeight);
+    
+        // Load the branding logo
+        const brandingLogo = new Image();
+        brandingLogo.src = theme.palette.mode === 'dark' ? '/logo/logo_inner_big.png' : '/logo/logo_inner_big_dark.png';
+        brandingLogo.onload = () => {
+            // Calculate the dimensions and position for the branding logo while maintaining aspect ratio
+            const aspectRatio = brandingLogo.width / brandingLogo.height;
+            let brandingWidth = baseCanvasWidth * 0.75;
+            let brandingHeight = brandingWidth / aspectRatio;
+    
+            if (brandingHeight > baseCanvasHeight * 0.75) {
+                brandingHeight = baseCanvasHeight * 0.75;
+                brandingWidth = brandingHeight * aspectRatio;
+            }
+    
+            const brandingX = (baseCanvasWidth - brandingWidth) / 2;
+            const brandingY = (baseCanvasHeight - brandingHeight) / 2;
+    
+            // Set the opacity for the branding logo
+            ctx.globalAlpha = theme.palette.mode === 'dark' ? 0.075 : 0.2;
+    
+            // Draw the branding logo
+            ctx.drawImage(brandingLogo, brandingX, brandingY, brandingWidth, brandingHeight);
+    
+            // Reset the opacity
+            ctx.globalAlpha = 1.0;
+    
+            // Draw the baseCanvas image on top of the branding
+            const baseCanvasImage = new Image();
+            baseCanvasImage.src = baseCanvas.toDataURL('image/png');
+            baseCanvasImage.onload = () => {
+                ctx.drawImage(baseCanvasImage, 0, 0);
+    
+                // Save the resulting image
+                const img = new Image();
+                img.src = offScreenCanvas.toDataURL('image/png');
+    
+                img.onload = () => {
+                    const link = document.createElement('a');
+                    link.download = 'totals.png';
+                    link.href = img.src;
+                    link.click();
+                };
+            };
+        };
+    }, [saveCanvas]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
