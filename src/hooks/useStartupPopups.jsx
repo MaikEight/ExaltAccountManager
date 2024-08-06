@@ -23,11 +23,11 @@ function useStartupPopups() {
             preventClose: false,
             content: <ChangelogVersion4_1_5 />
         },
-        // {
-        //     version: "4.2.0",
-        //     preventClose: false,
-        //     content: <ChangelogVersion4_2_0 />
-        // },
+        {
+            version: "4.2.0",
+            preventClose: false,
+            content: <ChangelogVersion4_2_0 />
+        },
     ];
 
     const checkForFirstEamStart = () => {
