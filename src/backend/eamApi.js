@@ -53,7 +53,6 @@ async function heartBeat() {
         const response = await invoke('send_patch_request_with_json_body', { url, data });
         return response ? JSON.parse(response) : "";
     } catch (error) {
-        console.error(`Error: ${error}`);
         logToErrorLog('heartBeat', error);
         return null;
     }
