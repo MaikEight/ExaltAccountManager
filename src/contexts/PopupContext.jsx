@@ -1,14 +1,12 @@
 import { Box, Modal } from "@mui/material";
 import { createContext, useEffect, useState } from "react";
 import useStartupPopups from "../hooks/useStartupPopups";
-import useAccounts from "../hooks/useAccounts";
 
 const PopupContext = createContext();
 
 function PopupContextProvider({ children }) {
     const [popupData, setPopupData] = useState(null);
     const { performPopupCheck } = useStartupPopups();
-    const { accounts } = useAccounts();    
 
     const showPopup = (data) => {
         setPopupData(data);
@@ -32,7 +30,7 @@ function PopupContextProvider({ children }) {
             if (popupData) {
                 showPopup(popupData);
             }
-        }, 250);
+        }, 500);
 
         return () => clearTimeout(timeoutId);
     }, []);
