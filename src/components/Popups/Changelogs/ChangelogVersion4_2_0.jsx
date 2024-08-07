@@ -16,14 +16,15 @@ function ChangelogVersion4_2_0() {
                 title={'Vault Peeker'}
                 listOfChanges={[
                     "View all your items on all your accounts in one place.",
-                    "Usefull and extensive filters allow you to find the items / accounts you are looking for.",
+                    "Useful and extensive filters allow you to find the items or accounts you are looking for.",
+                    "Export your items as an image to share with your friends.",
                     "Note: Ordering accounts is not possible yet, but will be added in a future update.",
                 ]}
             />
             <ChangelogEntry
                 title={'Server List'}
                 listOfChanges={[
-                    "Added a new dropdown to select the next server to join inside the Account Details."
+                    "Added a dropdown menu in Account Details to select the next server to join."
                 ]}
             />
             <ChangelogEntry
@@ -35,16 +36,16 @@ function ChangelogVersion4_2_0() {
             <ChangelogEntry
                 title={'Miscellaneous'}
                 listOfChanges={[
-                    "Added a new Discord-invite-link to the sidebar.",
+                    "Added a new Discord invite link to the sidebar.",
                     "Added a new Vault Peeker section to the settings.",
-                    "Improved the file-logs of the whole application.",
+                    "Improved application-wide file logs.",
                     "Improved the Daily Logins Page Layout and Table rendering.",
                     "Improved the border radius of the Close Button.",
                     "Improved the DataGrid styling.",
-                    "Fixed the 'Back'-Button in the Register Accounts view to not close the side panel.",
-                    "Fixed timestamps in the Logs to display in the correct timezone instead of UTC.",
-                    "Error Logs now get deleted after 7 days automatically to reduce database size.",
-                    "Diverse code improvements and bug fixes..."
+                    "Fixed the 'Back' button in the Register Accounts view to not close the side panel.",
+                    "Fixed log timestamps to display in the correct timezone instead of UTC.",
+                    "Error logs now get deleted after 7 days automatically to reduce database size.",
+                    "Various code improvements and bug fixes."
                 ]}
             />
             <Box
@@ -86,5 +87,6 @@ function ChangelogVersion4_2_0() {
         </ChangelogPopupBase >
     );
 }
+
 
 export default ChangelogVersion4_2_0;
