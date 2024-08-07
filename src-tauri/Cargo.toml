@@ -1,6 +1,6 @@
 [package]
 name = "exalt-account-manager"
-version = "4.1.5"
+version = "4.2.0"
 description = "Exalt Account Manager"
 authors = ["MaikEight"]
 license = "GPL-3.0 license"
