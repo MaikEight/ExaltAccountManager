@@ -47,8 +47,9 @@ function CreditsPopup() {
                 <CreditEntry title={'Muledump (Tadus Fork)'} url={'https://github.com/TadusPro/muledump'} image={'muledump.png'} />
                 <CreditEntry title={'Muledump-Asset-Compiler'} url={'https://github.com/jakcodex/muledump-asset-compiler'} image={'muledump-asset-compiler.png'} />
                 <Typography variant="body1" color="textSecondary">
-                    A Special <b>THANKS</b> goes to these legends:
+                    A Special <b>THANKS</b> goes to these legends
                 </Typography>
+                
                 <SpecialThanks>
                     <ThanksLink title={'Jakcodex'} url={'https://github.com/jakcodex'} />
                     for his muledump fork and the asset compiler.
