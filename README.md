@@ -7,7 +7,7 @@
 # Exalt Account Manager
 
 <div align="center">
-<a href="https://github.com/MaikEight/ExaltAccountManager#:~:text=README.md-,Exalt%20Account%20Manager,-The%20Exalt%20Account" style="display: inline">
+<a href="https://exaltaccountmanager.com" style="display: inline">
   <img
    src="https://img.shields.io/badge/Project-Exalt%20Account%20Manager-violet.svg?style=flat&color=6200EE"
     alt="Exalt Account Manager" />
@@ -39,8 +39,8 @@
 </a>
 <a href="https://tauri.app" style="display: inline">
   <img
-    src="https://img.shields.io/badge/Tauri-1.6.8-violet.svg?style=flat&logo=Tauri&color=512BD4"
-    alt="Tauri version 1.6.8" />
+    src="https://img.shields.io/badge/Tauri-1.7.1-violet.svg?style=flat&logo=Tauri&color=512BD4"
+    alt="Tauri version 1.7.1" />
 </a>
 <a href="https://good-labs.github.io/greater-good-affirmation" style="display: inline">
 <img
@@ -71,7 +71,9 @@
 
 <br >
 
+<a href="https://exaltaccountmanager.com" style="display: inline">
 <img  width="250" height="250" src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/main/src-tauri/icons/logo.png" alt="EAM logo" title="EAM logo">  
+</a>
 </div>
 
 
@@ -93,6 +95,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 ## Features ✨
 - Quickly launch Exalt with different accounts
 - Open multiple instances of Exalt simultaneously with the click of a button
+- View and manage all your items across your accounts
 - Securely store account data with Windows Data Protection API encrypted save-file
 - Rapid updater for both the game and EAM
 - Automatically fetch the Account name
@@ -102,8 +105,9 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 ## How to get started 🚀
 
 1. Get the latest release of EAM [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
-2. Run the installer
-3. Enjoy!
+2. If you don't have it installed already, install [Visual C++ Redistributable Version X64](https://learn.microsoft.com/de-de/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version)
+3. Run the installer
+4. Enjoy!
 
 ## Need support or have questions? 📝
 Join the [Discord server](https://discord.exalt-account-manager.eu) and leave a message in the help-request or general channel. I respond to inquiries promptly!
@@ -133,8 +137,10 @@ If you want, you can donate a buck or two, any money generated will be re-invest
 Purchases: 
 - The awesome, custom made application-logo.
 - The domain exalt-account-manager.eu.
+- The domain ExaltAccountManager.com.
 - A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
 - 2x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
+- Webhosting for the [website](https://ExaltAccountManager.com).
 
 <b>Any help is greatly appreciated</b> 🍻
 
@@ -170,7 +176,12 @@ Purchases:
     style="border-radius: 2px"
   />
 </a>
+<a href="https://tauri.app" style="display: inline">
+  <img
+    src="https://img.shields.io/badge/Tauri-violet.svg?style=flat&logo=Tauri&color=575757"
+    alt="Tauri" />
+</a>
 
-<b>Big</b> thanks to [MUI](https://mui.com) for the wonderful React component library!
+A **big** thanks to [MUI](https://mui.com) for the wonderful React component library, and another **big** thanks to [Tauri](https://tauri.app) for the awesome application framework!
 
 And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the commits & markdown files. 
