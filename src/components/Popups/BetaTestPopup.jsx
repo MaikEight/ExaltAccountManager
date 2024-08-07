@@ -4,7 +4,7 @@ import PopupBase from "./PopupBase";
 function BetaTestPopup() {
     return (
         <PopupBase
-            title={'EAM v4.2.0b - Vault Peeker Beta #1'}
+            title={'EAM v4.2.0b - Vault Peeker Beta #3'}
         >
             <Box
                 sx={{
