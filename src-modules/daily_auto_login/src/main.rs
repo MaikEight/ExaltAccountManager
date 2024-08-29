@@ -55,6 +55,7 @@ pub struct GameAccessToken {
 }
  
 const GAME_START_TIMEOUT: u64 = 90;
+const BASE_URL: &str = "https://www.realmofthemadgod.com";
 
 #[tokio::main]
 async fn main() {
@@ -527,7 +528,7 @@ pub fn send_account_verify_request(pool: Arc<DbPool>, account_email: String, hwi
         let acc = get_eam_account_by_email(&pool, account_email.clone()).unwrap();
         let pw = encryption_utils::decrypt_data(&acc.password).unwrap();
 
-        let url = "https://www.realmofthemadgod.com/account/verify".to_string();
+        let url = format!("{}/account/verify", BASE_URL);
         let mut data = HashMap::new();
 
         data.insert("guid".to_string(), account_email.clone());    
@@ -603,6 +604,49 @@ fn get_access_token(xml: &str) -> Option<GameAccessToken> {
     }
 
     Some(access_token)
+}
+
+fn send_char_list_request(access_token: GameAccessToken, account_email: String, pool: Arc<DbPool>) {
+    let url = format!("{}/char/list", BASE_URL);
+    
+    let mut data = HashMap::new();
+    data.insert("do_login".to_string(), "true".to_string());
+    data.insert("accessToken".to_string(), access_token.access_token);
+    data.insert("game_net".to_string(), "Unity".to_string());
+    data.insert("play_platform".to_string(), "Unity".to_string());
+    data.insert("game_net_user_id".to_string(), "".to_string());
+    data.insert("muleDump".to_string(), "true".to_string());
+    data.insert("__source".to_string(), "ExaltAccountManager".to_string());
+
+    let deca_timeout_time = *DECA_API_TIMEOUT_UNTIL.lock().unwrap();
+    if deca_timeout_time > Utc::now().timestamp_millis() {
+        println!("API Limit reached, waiting 5 minutes.");
+        let _ = log_to_audit_log(&pool, "API Limit reached, waiting 5 minutes.".to_string(), Some(account_email.clone()));
+        thread::sleep(Duration::from_secs(315));
+    }
+
+    let _ = log_to_audit_log(&pool, "Sending char/list request.".to_string(), Some(account_email.clone()));
+    let response = send_post_request_with_form_url_encoded_data(url, data).await.unwrap();    
+        //TODO: Extract the char list from the response and save it to the database
+        let token = get_access_token(&response);
+        if token.is_none() {
+            //Check if the API Limit has been reached
+            let doc = Document::parse(&response).unwrap();
+            for node in doc.descendants() {
+                if node.has_tag_name("Error") {
+                    let error_message = node.text().map(|s| s.to_string()).unwrap();
+                    if error_message == "Internal error, please wait 5 minutes to try again!" {
+                        let _ = log_to_audit_log(&pool, "API Limit reached, waiting 5 minutes.".to_string(), Some(account_email.clone()));
+                        println!("API Limit reached, retrying in 5 minutes...");
+                        {
+                            let mut deca_timeout_time = DECA_API_TIMEOUT_UNTIL.lock().unwrap();
+                            *deca_timeout_time = Utc::now().timestamp_millis() + 315000;
+                        }
+                        return send_account_verify_request(pool, account_email.clone(), hwid.clone()).await;
+                    }              
+                }
+            }
+        }
 }
 
 async fn send_post_request_with_form_url_encoded_data(
