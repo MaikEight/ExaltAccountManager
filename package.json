@@ -14,11 +14,11 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
-    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
-    "@mui/x-data-grid": "^7.14.0",
-    "@mui/x-date-pickers": "^7.14.0",
+    "@mui/styled-engine-sc": "^6.0.2",
+    "@mui/x-data-grid": "^7.16.0",
+    "@mui/x-date-pickers": "^7.16.0",
     "@tauri-apps/api": "^1.6.0",
-    "axios": "^1.7.5",
+    "axios": "^1.7.7",
     "date-fns": "^3.6.0",
     "hash-string": "^1.0.0",
     "lodash": "^4.17.21",
@@ -30,15 +30,15 @@
     "react-dom": "^18.3.1",
     "react-error-boundary": "^4.0.13",
     "react-router-dom": "^6.26.1",
-    "react-virtuoso": "^4.10.1",
+    "react-virtuoso": "^4.10.2",
     "react-window": "^1.8.10",
     "stream-browserify": "^3.0.0",
-    "styled-components": "^6.1.12",
+    "styled-components": "^6.1.13",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.6.1",
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.2"
+    "vite": "^5.4.3"
   }
 }
