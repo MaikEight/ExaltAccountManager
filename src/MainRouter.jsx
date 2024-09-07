@@ -17,6 +17,7 @@ import ImporterPage from './pages/ImporterPage';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorBoundaryFallback from './components/ErrorBoundaryFallback';
 import VaultPeekerPage from './pages/VaultPeekerPage';
+import FatalErrorPage from './pages/FatalErrorPage';
 
 function MainRouter() {
     const theme = useTheme();
@@ -29,7 +30,7 @@ function MainRouter() {
                 transition: theme.transitions.create(['background-color', 'color']),
             }}
         >
-            <ErrorBoundary fallback={<div>EAM crashed, please restart!</div>}>
+            <ErrorBoundary fallback={<FatalErrorPage/>}>
                 <Router id="router">
                     <Sidebar id="sidebar">
                         <ServerContextProvider>
@@ -42,6 +43,7 @@ function MainRouter() {
                                         >
                                             <Routes>
                                                 <Route path='/' element={<AccountsPage />}></Route>
+                                                <Route path='/error' element={<FatalErrorPage />}></Route>
                                                 <Route path='/accounts' element={<AccountsPage />}></Route>
                                                 <Route path='/vaultPeeker' element={<VaultPeekerPage />}></Route>
                                                 <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
