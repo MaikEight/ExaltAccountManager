@@ -435,13 +435,15 @@ function ImporterPage() {
         setImportObject([]);
         setAccountsToImport([]);
 
-        const accKeys = Object.keys(accounts[0]);
-        setAccountKeys(accKeys);
-        const mapping = {};
-        accKeys.forEach(key => {
-            mapping[key] = guessMappingField(key);
-        });
-        setDataFieldsMapping(mapping);
+        if (accounts && accounts.length > 0) {
+            const accKeys = Object.keys(accounts[0]);
+            setAccountKeys(accKeys);
+            const mapping = {};
+            accKeys.forEach(key => {
+                mapping[key] = guessMappingField(key);
+            });
+            setDataFieldsMapping(mapping);
+        }
     }, [accounts]);
 
     useEffect(() => {
@@ -830,7 +832,7 @@ function ImporterPage() {
                                                         <PaddedTableCell sx={{ p: 0.75 }} align="left">
                                                             <Typography variant="body2" fontWeight={300} component="span" sx={{ textAlign: 'center' }}>
                                                                 <FormControl sx={{ width: '175px' }}>
-                                                                    <Select                                                                        
+                                                                    <Select
                                                                         id={"data-field-list-label-" + index}
                                                                         value={dataFieldsMapping[field]}
                                                                         onChange={(event) => {
