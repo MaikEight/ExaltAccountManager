@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { invoke } from "@tauri-apps/api";
 import { logToAuditLog, logToErrorLog } from "../utils/loggingUtils";
 import useHWID from "../hooks/useHWID";
-import { postAccountVerify, postCharList } from "../backend/decaApi";
+import { postAccountVerify, postCharList } from 'eam-commons-js';
 import { getRequestState, storeCharList } from "../utils/charListUtil";
 import useServerList from "../hooks/useServerList";
 import useSnack from "../hooks/useSnack";

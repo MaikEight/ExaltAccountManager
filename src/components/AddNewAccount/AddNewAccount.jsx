@@ -11,7 +11,7 @@ import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import ComponentBox from "../ComponentBox";
 import StyledButton from "../StyledButton";
 import useHWID from "../../hooks/useHWID";
-import { postAccountVerify, postCharList } from "../../backend/decaApi";
+import { postAccountVerify, postCharList } from 'eam-commons-js';
 import GroupSelector from "../AccountDetails/GroupSelector";
 import GroupRow from "../AccountDetails/GroupRow";
 import TextTableRow from "../AccountDetails/TextTableRow";

@@ -4,7 +4,7 @@ import StyledButton from "../StyledButton";
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import { useEffect, useState } from "react";
-import { postRegisterAccount } from "../../backend/decaApi";
+import { postRegisterAccount } from "eam-commons-js";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { de } from 'date-fns/locale/de';
