@@ -40,7 +40,7 @@ function useStartupPopups() {
 
     const getFirstWelcomePopup = async () => {
         const hasOldAccountData = await invoke('has_old_eam_save_file');
-        if (hasOldAccountData && accounts.length === 0) {
+        if (hasOldAccountData && (accounts && accounts.length === 0)) {
             return {
                 preventClose: true,
                 content: (<ImportOldAccountsPopup />),
