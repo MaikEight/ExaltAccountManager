@@ -239,6 +239,39 @@ function ImporterPage() {
             return;
         }
 
+        //Muledump accounts file
+        if (lowerCaseFileName.endsWith('.js')) {
+            const fileContent = await readFileUTF8(filePath);
+            if (!fileContent) {
+                showSnackbar('Error reading file', 'error');
+                return;
+            }
+
+            const accountsMatch = fileContent.match(/accounts\s*=\s*({[^}]*})/);
+            if (accountsMatch && accountsMatch[1]) {
+                // Parse the extracted string into a JavaScript object
+                const accountsObj = JSON.parse(accountsMatch[1].replace(/'/g, '"'));
+                const _accounts = Object.keys(accountsObj).map((email, index) => {
+                    return {
+                        email: email,
+                        password: accountsObj[email],
+                    };
+                });
+
+                if (!_accounts || _accounts.length === 0) {
+                    showSnackbar('Error parsing JS file, no accounts found', 'error');
+                    return;
+                }
+
+                setAccounts(_accounts);
+                setActiveStep(1);
+                return;
+            }
+
+            showSnackbar('Error parsing JS file, no accounts found', 'error');
+            return;
+        }
+
         if (lowerCaseFileName.endsWith('eam.accounts')) {
             const oldAccountsString = await invoke('format_eam_v3_save_file_to_readable_json');
             const oldAccounts = JSON.parse(oldAccountsString);
