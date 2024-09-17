@@ -37,6 +37,7 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useNavigate } from "react-router-dom";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import ImportExportOutlinedIcon from '@mui/icons-material/ImportExportOutlined';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -584,7 +585,7 @@ function ImporterPage() {
                                             The following fields are available
                                         </Typography>
                                         <Typography variant="body2">
-                                            Only email and password are required. Steam accounts use the Steam ID inside like this <b>Steamwork:{'id'}</b> the email field and the <b>secret</b> in the password field. Also the isSteamAccount field needs to be set to true.
+                                            Only email and password are required. Steam accounts use the Steam ID inside like this <b>Steamwork:{'id'}</b> in the email field and the <b>secret</b> in the password field. Also the isSteamAccount field needs to be set to true for steam accounts.
                                         </Typography>
                                         <Box
                                             sx={{
@@ -815,6 +816,37 @@ function ImporterPage() {
                                 >
                                     Open folder
                                 </StyledButton>
+                            </ComponentBox>
+                            <ComponentBox
+                                title={<TitleTypography title="Muledump accounts.js File" />}
+                                icon={<ImportExportOutlinedIcon />}
+                                isCollapseable={true}
+                                defaultCollapsed={true}
+                                sx={{
+                                    background: theme.palette.background.default,
+                                    m: 1,
+                                    p: 1,
+                                }}
+                                innerSx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'start',
+                                    p: 1
+                                }}
+                            >
+                                <Typography variant="body2">
+                                    The accounts.js file is the export file of Muledump.
+                                </Typography>
+                                <Typography variant="body2">
+                                    If you want to export your accounts from Muledump, simply follow these steps.
+                                    <ol>
+                                        <li>Open Muledump</li>
+                                        <li>Click on Setup (Top-right Menu)</li>
+                                        <li>Click on Accounts</li>
+                                        <li>Click on Export Accounts.js (Bottom-Right)</li>
+                                        <li>Drag & Drop the Accounts.js file here</li>
+                                    </ol>
+                                </Typography>
                             </ComponentBox>
                         </ComponentBox>
                     </Box>
