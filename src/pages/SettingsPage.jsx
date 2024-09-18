@@ -37,8 +37,10 @@ function SettingsPage() {
         { field: 'serverName', headerName: 'Server' },
         { field: 'lastRefresh', headerName: 'Last refresh' },
         { field: 'performDailyLogin', headerName: 'Daily Login' },
-        { field: 'state', headerName: 'Last State' }
+        { field: 'state', headerName: 'Last State' },
+        { field: 'comment', headerName: 'Comment' }
     ];
+    
     const userSettings = useUserSettings();
     const colorContext = useContext(ColorContext);
     const { serverList } = useServerList();
