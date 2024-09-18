@@ -16,6 +16,7 @@ diesel::table! {
         lastLogin -> Nullable<Text>,
         lastRefresh -> Nullable<Text>,
         group -> Nullable<Text>,
+        comment -> Nullable<Text>,
         token -> Nullable<Text>,
         extra -> Nullable<Text>,
     }
