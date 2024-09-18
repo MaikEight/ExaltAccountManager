@@ -700,6 +700,7 @@ pub struct EamAccount {
     #[serde(rename = "lastRefresh")]
     pub last_refresh: Option<String>,
     pub group: Option<String>,
+    pub comment: Option<String>,
     pub token: Option<String>,
     pub extra: Option<String>,
 }
@@ -723,6 +724,7 @@ pub struct NewEamAccount {
     pub last_login: Option<String>,
     pub lastRefresh: Option<String>,
     pub group: Option<String>,
+    pub comment: Option<String>,
     pub token: Option<String>,
     pub extra: Option<String>,
 }
@@ -747,6 +749,7 @@ pub struct UpdateEamAccount {
     #[serde(rename = "lastRefresh")]
     pub lastRefresh: Option<String>,
     pub group: Option<String>,
+    pub comment: Option<String>,
     pub token: Option<String>,
     pub extra: Option<String>,
 }
@@ -767,6 +770,7 @@ impl From<EamAccount> for NewEamAccount {
             last_login: account.last_login,
             lastRefresh: account.last_refresh,
             group: account.group,
+            comment: account.comment,
             token: account.token,
             extra: account.extra,
         }
@@ -789,6 +793,7 @@ impl From<EamAccount> for UpdateEamAccount {
             last_login: account.last_login,
             lastRefresh: account.last_refresh,
             group: account.group,
+            comment: account.comment,
             token: account.token,
             extra: account.extra,
         }
