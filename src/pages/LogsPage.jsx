@@ -1,9 +1,9 @@
-import { Box, LinearProgress, Paper, darken } from "@mui/material";
+import { Box, LinearProgress, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getAuditLog, getErrorLog } from "../utils/loggingUtils";
 import { DataGrid } from "@mui/x-data-grid";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
-import styled, { useTheme } from "styled-components";
+import { useTheme } from "styled-components";
 import { formatTime } from "../utils/timeUtils";
 import LogsGridToolbar from "../components/GridComponents/LogsGridToolbar";
 
@@ -101,7 +101,7 @@ function LogsPage() {
             }}
         >
             <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', borderRadius: 1, background: theme.palette.background.paper, }}>
-                <DataGrid                    
+                <DataGrid
                     initialState={{
                         columns: {
 
