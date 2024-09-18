@@ -1,4 +1,4 @@
-import { Box, Drawer, IconButton, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
+import { Box, Drawer, IconButton, Input, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
 import { Unstable_Grid2 as Grid } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
@@ -387,7 +387,7 @@ function AccountDetails({ acc, onClose }) {
                                             onClick={async () => {
                                                 setIsLoading(true);
                                                 await startGame();
-                                                setIsLoading(false);                                                
+                                                setIsLoading(false);
                                             }}
                                         >
                                             <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
@@ -463,6 +463,46 @@ function AccountDetails({ acc, onClose }) {
                                             </Box>
                                         </ComponentBox>
                                 }
+                            </Grid>
+                            <Grid xs={12}>
+                                <Input
+                                    id="comment"
+                                    name="comment"
+                                    placeholder="Comment..."
+                                    type="text"
+                                    sx={{
+                                        borderRadius: `${theme.shape.borderRadius}px`,
+                                        p: 1.2,
+                                        backgroundColor: theme.palette.background.paper,
+                                    }}
+                                    value={account.comment ?? ''}
+                                    onChange={(event) => handleAccountEdit({ ...account, comment: event.target.value })}
+                                    endAdornment={
+                                        <IconButton
+                                            disabled={account?.comment === accountOrg?.comment}
+                                            onClick={() => {
+                                                updateAccount({ ...accountOrg, comment: account.comment });
+                                                showSnackbar("Comment saved", 'success');
+                                            }}
+                                        >
+                                            <SaveOutlinedIcon />
+                                        </IconButton>
+                                    }
+                                    fullWidth
+                                    multiline
+                                    minRows={3}
+                                    disableUnderline
+                                />
+                                {/* <TextField
+                                    id="comment"
+                                    label="Comment"
+                                    variant="outlined"
+                                    multiline
+                                    minRows={2}
+                                    value={account.comment ?? ''}
+                                    onChange={(event) => handleAccountEdit({ ...account, comment: event.target.value })}
+                                    fullWidth
+                                /> */}
                             </Grid>
                         </Grid>
                     </Box>
