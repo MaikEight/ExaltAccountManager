@@ -41,6 +41,7 @@ const defaultSettings = {
     accounts: {
         columnsHidden: {
             state: false,
+            comment: false,
         },
     },
     game: {
