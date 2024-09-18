@@ -6,7 +6,7 @@ import { useTheme } from "@emotion/react";
 import GroupUI from "../GridComponents/GroupUI";
 import { FixedSizeGrid as FixedGrid } from 'react-window';
 import StyledButton from "../StyledButton";
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid2 from '@mui/material/Grid2';
 import useGroups from "../../hooks/useGroups";
 
 const allIcons = Object.keys(Icons).map((key) => key.includes('Outlined') ? key : null).filter((key) => key !== null);
@@ -182,8 +182,8 @@ function GroupEditor({ g, onSave, onCancel }) {
                 min={0}
                 max={MAX_ICON_PADDING}
             />
-            <Grid container spacing={1}>
-                <Grid xs={8}>
+            <Grid2 container spacing={1}>
+                <Grid2 size={8}>
                     <StyledButton
                         fullWidth
                         disabled={!isGroupNameValid()}
@@ -192,8 +192,8 @@ function GroupEditor({ g, onSave, onCancel }) {
                     >
                         Save
                     </StyledButton>
-                </Grid>
-                <Grid xs={4}>
+                </Grid2>
+                <Grid2 size={4}>
                     <StyledButton
                         color="secondary"
                         fullWidth
@@ -202,8 +202,8 @@ function GroupEditor({ g, onSave, onCancel }) {
                     >
                         Cancel
                     </StyledButton>
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
         </Box>
     );
 }
