@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import Box from '@mui/material/Box';
 
-const GradientBorderButton = styled(Box)(({ theme, selected }) => ({
+const GradientBorderButton = styled('div')(({ theme, selected }) => ({
     position: 'relative',
     color: !selected ? theme.palette.text.primary : theme.palette.mode === 'light' ? theme.palette.background.default : theme.palette.text.primary,
     textTransform: 'none',
