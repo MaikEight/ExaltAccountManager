@@ -1,5 +1,5 @@
 import { Box, Drawer, IconButton, Input, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
-import { Unstable_Grid2 as Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import ComponentBox from "../ComponentBox";
@@ -360,8 +360,8 @@ function AccountDetails({ acc, onClose }) {
                         </Box>
 
                         {/* 3. */}
-                        <Grid container spacing={2}>
-                            <Grid xs={12}>
+                        <Grid2 container spacing={2}>
+                            <Grid2 size={12}>
                                 <Tooltip
                                     title={account.state === 'Registered' ?
                                         (
@@ -395,8 +395,8 @@ function AccountDetails({ acc, onClose }) {
                                         </StyledButton>
                                     </span>
                                 </Tooltip>
-                            </Grid>
-                            <Grid xs={6}>
+                            </Grid2>
+                            <Grid2 size={6}>
                                 <StyledButton
                                     disabled={isLoading}
                                     fullWidth={true}
@@ -413,8 +413,8 @@ function AccountDetails({ acc, onClose }) {
                                 >
                                     refresh data
                                 </StyledButton>
-                            </Grid>
-                            <Grid xs={6}>
+                            </Grid2>
+                            <Grid2 size={6}>
                                 {
                                     !isDeleteMode ?
                                         <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
@@ -463,8 +463,8 @@ function AccountDetails({ acc, onClose }) {
                                             </Box>
                                         </ComponentBox>
                                 }
-                            </Grid>
-                            <Grid xs={12}>
+                            </Grid2>
+                            <Grid2 size={12}>
                                 <Input
                                     id="comment"
                                     name="comment"
@@ -493,18 +493,8 @@ function AccountDetails({ acc, onClose }) {
                                     minRows={3}
                                     disableUnderline
                                 />
-                                {/* <TextField
-                                    id="comment"
-                                    label="Comment"
-                                    variant="outlined"
-                                    multiline
-                                    minRows={2}
-                                    value={account.comment ?? ''}
-                                    onChange={(event) => handleAccountEdit({ ...account, comment: event.target.value })}
-                                    fullWidth
-                                /> */}
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                        </Grid2>
                     </Box>
                 </Box>
             </Drawer>
