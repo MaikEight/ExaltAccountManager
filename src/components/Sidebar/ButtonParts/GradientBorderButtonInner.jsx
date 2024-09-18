@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import Box from '@mui/material/Box';
 
-const GradientBorderButtonInner = styled(Box)(({ theme, selected }) => ({
+const GradientBorderButtonInner = styled('div')(({ theme, selected }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
