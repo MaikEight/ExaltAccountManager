@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { LinearProgress, Paper} from "@mui/material";
+import { LinearProgress, Paper } from "@mui/material";
 import { DataGrid, } from '@mui/x-data-grid';
 import { useEffect, useState } from "react";
 import { CustomPagination } from "./GridComponents/CustomPagination";
@@ -44,13 +44,14 @@ function AccountGrid({ setShowAddNewAccount }) {
 
     const columns = [
         { field: 'group', headerName: 'Group', width: 65, renderCell: (params) => getGroupUI(params) },
-        { field: 'name', headerName: 'Accountname', minWidth: 150, width: 230, flex: 0.2 },
-        { field: 'email', headerName: 'Email', minWidth: 150, flex: 0.3, renderCell: (params) => { return (params.value && params.row.isSteam) ? <SteamworksMailColumn params={params} /> : params.value } },
+        { field: 'name', headerName: 'Accountname', minWidth: 150, width: 230, flex: 0.25 },
+        { field: 'email', headerName: 'Email', minWidth: 160, flex: 0.35, renderCell: (params) => { return (params.value && params.row.isSteam) ? <SteamworksMailColumn params={params} /> : params.value } },
         { field: 'lastLogin', headerName: 'Last Login', minWidth: 115, flex: 0.125, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
         { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
         { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 115, flex: 0.125, renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
         { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
         { field: 'state', headerName: 'Last State', width: 110 },
+        { field: 'comment', headerName: 'Comment', minWidth: 100, flex: 0.125, renderCell: (params) => (<div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{params.value}</div>) },
     ];
 
     const handleDailyLoginCheckboxChange = async (event, params) => {
