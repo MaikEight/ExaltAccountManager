@@ -78,7 +78,7 @@ export const darkTheme = createTheme({
                     width: '100%',
                     border: 0,
                     '& [class^=MuiDataGrid]': {
-                        border: 'none'
+                        border: 'none !important'
                     },
                     '& .MuiDataGrid-columnHeaders': {
                         backgroundColor: 'background.paperLight',
@@ -109,9 +109,6 @@ export const darkTheme = createTheme({
                         border: theme => `3px solid ${theme.palette.background.paper}`,
                         borderRadius: theme => theme.shape.borderRadius,
                     },
-                    '& .css-tgsonj, .css-1jlz3st': {
-                        borderTop: 'none',
-                    }
                 },
             },
         },
