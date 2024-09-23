@@ -8,11 +8,9 @@ async function storeCharList(charList, email) {
         email: email,
         account: charToAccountModel(charList?.Chars?.Account ?? null),
         class_stats: charList?.Chars?.Account?.Stats?.ClassStats
-            ? charList.Chars.Char ?
-                Array.isArray(charList.Chars.Char)
-                    ? charList.Chars.Account.Stats.ClassStats.map(stats => charToClassStatsModel(stats, accountId))
-                    : [charToClassStatsModel(charList.Chars.Account?.Stats?.ClassStats, accountId)].filter(c => c !== null)
-                : []
+            ? Array.isArray(charList.Chars.Account.Stats.ClassStats)
+                ? charList.Chars.Account.Stats.ClassStats.map(stats => charToClassStatsModel(stats, accountId))
+                : [charToClassStatsModel(charList.Chars.Account.Stats.ClassStats, accountId)].filter(c => c !== null)
             : [],
         character: charList?.Chars?.Char
             ? Array.isArray(charList.Chars.Char)
