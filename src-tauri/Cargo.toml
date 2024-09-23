@@ -10,10 +10,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.4", features = [] }
+tauri-build = { version = "1.5.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.7.2", features = [ "process-all", "updater", "dialog-all", "http-all", "devtools", "path-all", "macos-private-api", "window-set-min-size", "window-unminimize", "window-unmaximize", "window-start-dragging", "window-close", "window-minimize", "window-hide", "window-show", "window-maximize", "fs-all", "shell-open"] }
+tauri = { version = "1.8.0", features = [ "process-all", "updater", "dialog-all", "http-all", "devtools", "path-all", "macos-private-api", "window-set-min-size", "window-unminimize", "window-unmaximize", "window-start-dragging", "window-close", "window-minimize", "window-hide", "window-show", "window-maximize", "fs-all", "shell-open"] }
 devtools = "0.3.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -30,7 +30,7 @@ zip = "2.2.0"
 mpsc = "0.2.3"
 anyhow = "1.0"
 curl = "0.4"
-wmi = "0.13.4"
+wmi = "0.14.0"
 sha1 = "0.10.6"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
 num-bigint = "0.4.6"
@@ -47,7 +47,7 @@ mio = "1.0.2"
 libsqlite3-sys = { version = "0.30.1", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12.2"
-webbrowser = "1.0.1"
+webbrowser = "1.0.2"
 eam_commons = { path = "../src-modules/eam_commons" }
 
 [features]
