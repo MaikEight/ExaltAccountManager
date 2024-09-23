@@ -10,7 +10,7 @@ export default defineConfig(async () => ({
   // 1. prevent vite from obscuring rust errors
   clearScreen: false,
   optimizeDeps: {
-    include: ['@mui/material/Tooltip', '@emotion/styled', '@mui/material/Unstable_Grid2'],
+    include: ['@mui/material/Tooltip', '@emotion/styled', '@mui/material/Grid2'],
   },
   resolve: {
     alias: {
