@@ -12,7 +12,7 @@ import ViewColumnOutlinedIcon from '@mui/icons-material/ViewColumnOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import ColorContext from '../contexts/ColorContext';
+import { ColorContext } from 'eam-commons-js';
 import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import useSnack from '../hooks/useSnack';
 import useServerList from '../hooks/useServerList';

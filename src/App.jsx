@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ColorContextProvider } from "./contexts/ColorContext";
+import { ColorContextProvider } from "eam-commons-js";
 import { onStartUp, setApiHwidHash } from "./utils/startUpUtils";
 import useHWID from "./hooks/useHWID";
 import { heartBeat } from "./backend/eamApi";

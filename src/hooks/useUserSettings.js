@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import UserSettingsContext from './../contexts/UserSettingsContext';
+import { UserSettingsContext } from 'eam-commons-js';
 
 function useUserSettings() {
     return useContext(UserSettingsContext);

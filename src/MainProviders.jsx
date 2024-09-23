@@ -1,7 +1,7 @@
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import styled, { ThemeProvider as StyledThemeProvider } from "styled-components";
-import ColorContext from "./contexts/ColorContext";
+import { ColorContext } from "eam-commons-js";
 import { useContext } from "react";
 import { MaterialDesignContent, SnackbarProvider, useSnackbar } from "notistack";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -41,7 +41,7 @@ const CloseAction = (key) => {
 function MainProviders() {
     const colorContext = useContext(ColorContext);
     const theme = colorContext.theme;
-        
+
     return (
         <StyledThemeProvider theme={theme}>
             <MuiThemeProvider theme={theme}>

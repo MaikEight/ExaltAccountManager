@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles.css";
-import { UserSettingsProvider } from "./contexts/UserSettingsContext";
+import { UserSettingsProvider } from "eam-commons-js";
 
 
 ReactDOM.createRoot(document.getElementById("root"))
