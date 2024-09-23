@@ -10,6 +10,7 @@ import StyledButton from "../components/StyledButton";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import usePopups from './../hooks/usePopups';
 import CreditsPopup from "../components/Popups/CreditsPopup";
+import { APP_VERSION, IS_PRE_RELEASE } from "../constants";
 
 function AboutPage() {
     const [showLlama, setShowLlama] = useState(false);
@@ -56,8 +57,8 @@ function AboutPage() {
                     sx={{ mr: 0, userSelect: "none", flexGrow: 1 }}
                 >
                     <Typography>
-                        Exalt Account Manager version 4.2.0<br />
-                        Released on 07.08.2024.
+                        Exalt Account Manager version {APP_VERSION}{IS_PRE_RELEASE && ' Preview'}<br />
+                        Released on 23.09.2024.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
