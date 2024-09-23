@@ -6,11 +6,13 @@ async function storeCharList(charList, email) {
     const accountId = charList?.Chars?.Account?.AccountId;
     const dataset = {
         email: email,
-        account: charToAccountModel(charList?.Chars?.Account),
+        account: charToAccountModel(charList?.Chars?.Account ?? null),
         class_stats: charList?.Chars?.Account?.Stats?.ClassStats
-            ? Array.isArray(charList.Chars.Char)
-                ? charList.Chars.Account.Stats.ClassStats.map(stats => charToClassStatsModel(stats, accountId))
-                : [charToClassStatsModel(charList.Chars.Account.Stats.ClassStats, accountId)]
+            ? charList.Chars.Char ?
+                Array.isArray(charList.Chars.Char)
+                    ? charList.Chars.Account.Stats.ClassStats.map(stats => charToClassStatsModel(stats, accountId))
+                    : [charToClassStatsModel(charList.Chars.Account?.Stats?.ClassStats, accountId)].filter(c => c !== null)
+                : []
             : [],
         character: charList?.Chars?.Char
             ? Array.isArray(charList.Chars.Char)
