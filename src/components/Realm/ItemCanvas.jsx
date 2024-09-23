@@ -239,7 +239,12 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
     }, [hoveredConvasId]);
 
     const handleMouseMove = throttle((event) => {
-        const canvas = canvasRef.current;
+        const canvas = canvasRef?.current;
+        
+        if (!canvas) {
+            return;
+        }
+
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
