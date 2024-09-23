@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api';
 
-export const APP_VERSION = '4.2.0';
+export const APP_VERSION = '4.2.1';
+export const IS_PRE_RELEASE = true;
 
 export function isUpdateAvailable(latestVersion) {
     if (!latestVersion) return false;
