@@ -1,8 +1,12 @@
 {
   "name": "eam-commons-js",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Commons Lib for EAM",
   "main": "dist/eam-commons-js.umd.js",
+  "files": [
+    "dist/",
+    "src/themes/styles.css"
+  ],
   "module": "dist/eam-commons-js.es.js",
   "scripts": {
     "build": "vite build"
@@ -21,15 +25,16 @@
     "buffer": "^6.0.3",
     "date-fns": "^3.6.0",
     "hash-string": "^1.0.0",
-    "stream-browserify": "^3.0.0",
-    "xml-js": "^1.6.11",
     "lodash": "^4.17.21",
+    "notistack": "^3.0.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"    
+    "react-dom": "^18.3.1",
+    "stream-browserify": "^3.0.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.6.2",
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.3"
+    "vite": "^5.4.8"
   }
 }
