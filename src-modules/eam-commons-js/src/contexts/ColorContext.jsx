@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo } from "react";
 import { createTheme } from "@mui/material";
-import { darkTheme } from "eam-commons-js";
-import { lightTheme } from "eam-commons-js";
+import { darkTheme } from "../themes/dark";
+import { lightTheme } from "../themes/light";
 import { UserSettingsContext } from "./UserSettingsContext";
 
 const ColorContext = createContext();
@@ -11,7 +11,8 @@ function ColorContextProvider({ children }) {
 
     const theme = useMemo(
         () => {
-            const t = createTheme(userSettings.getByKeyAndSubKey("general", "theme") === "dark" ? darkTheme : lightTheme);            
+            const mode = userSettings.getByKeyAndSubKey("general", "theme");
+            const t = createTheme((!mode || mode === "dark") ? darkTheme : lightTheme);
             const body = document.body;
             body.classList.toggle('dark-theme', t.palette.mode === 'dark');
             return t;
@@ -21,7 +22,8 @@ function ColorContextProvider({ children }) {
 
     const colorMode = {
         toggleColorMode: () => {
-            const m = userSettings.getByKeyAndSubKey("general", "theme") === "dark" ? "light" : "dark";
+            const mode = userSettings.getByKeyAndSubKey("general", "theme");
+            const m = (!mode || mode === "dark") ? "light" : "dark";
             userSettings.setByKeyAndSubKey("general", "theme", m);
             document.documentElement.setAttribute('data-color-mode', m);
         },
