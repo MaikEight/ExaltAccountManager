@@ -1,5 +1,5 @@
 
-export function formatTime(time) {
+function formatTime(time) {
   if(!time) return null;
   // Convert the string to a Date object
   const date = typeof time !== 'object' ? new Date(time) : time;
@@ -21,6 +21,11 @@ export function formatTime(time) {
   return formattedDateTime.replace(/\//g, '.').replace(/,/g, '');
 }
 
-export function getCurrentTime() {
+function getCurrentTime() {
     return formatTime(new Date().toISOString());
 }
+
+export {
+    formatTime,
+    getCurrentTime
+};
