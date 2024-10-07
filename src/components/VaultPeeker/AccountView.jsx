@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Collapse, IconButton, Tooltip, Typography } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 import Character from "../Realm/Character";
 import ItemCanvas from "../Realm/ItemCanvas";
@@ -10,6 +10,7 @@ import useUserSettings from "../../hooks/useUserSettings";
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import useAccounts from "../../hooks/useAccounts";
 import useSnack from "../../hooks/useSnack";
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 function AccountView({ account }) {
     const [accountItemIds, setAccountItemIds] = useState([]);
@@ -53,12 +54,12 @@ function AccountView({ account }) {
     const refreshAccountData = async (event) => {
         event.stopPropagation();
 
-        if(!account  || !account.email) return;
+        if (!account || !account.email) return;
         setIsRefreshingAccount(true);
 
         const token = await refreshData(account.email);
 
-        if(token) {
+        if (token) {
             showSnackbar("Refreshing finished");
         }
 
@@ -67,8 +68,8 @@ function AccountView({ account }) {
 
     const boxTitle = useMemo(() => {
         return (
-            <Box sx={{display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                <Box sx={{display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
                     {account.group && <GroupUI group={account.group} />}
                     <Typography
                         variant="h6"
@@ -135,15 +136,15 @@ function AccountView({ account }) {
                 account && account.account &&
                 <Box>
                     {/* Vault */}
-                    <StorageView canvasIdentifier={account.email + "_Vault"} title={<StorageViewTitle title="Vault" image="realm/vault_portal.png" sx={{ gap: 0.5 }} />} itemIds={account.account.vault.itemIds} totals={totalItems?.totals} />
+                    <StorageView vaultName={"vault"} canvasIdentifier={account.email + "_Vault"} title={<StorageViewTitle title="Vault" image="realm/vault_portal.png" sx={{ gap: 0.5 }} />} itemIds={account.account.vault.itemIds} totals={totalItems?.totals} />
                     {/* Gift Chest */}
-                    <StorageView canvasIdentifier={account.email + "_Gift"} title={<StorageViewTitle title="Gift Chest" image="realm/gift_chest.png" />} itemIds={account.account.gifts.itemIds} totals={totalItems?.totals} />
+                    <StorageView vaultName={"gift_chest"} canvasIdentifier={account.email + "_Gift"} title={<StorageViewTitle title="Gift Chest" image="realm/gift_chest.png" />} itemIds={account.account.gifts.itemIds} totals={totalItems?.totals} />
                     {/* Trade Chest */}
-                    <StorageView canvasIdentifier={account.email + "_Trade"} title={<StorageViewTitle title="Material Storage" image="realm/material_storage.png" />} itemIds={account.account.material_storage.itemIds} totals={totalItems?.totals} />
+                    <StorageView vaultName={"trade_chest"} canvasIdentifier={account.email + "_Trade"} title={<StorageViewTitle title="Material Storage" image="realm/material_storage.png" />} itemIds={account.account.material_storage.itemIds} totals={totalItems?.totals} />
                     {/* Temporary Gifts */}
-                    <StorageView canvasIdentifier={account.email + "_Temp"} title={<StorageViewTitle title="Seasonal Spoils" image="realm/seasonal_spoils_chest.png" />} itemIds={account.account.temporary_gifts.itemIds} totals={totalItems?.totals} />
+                    <StorageView vaultName={"temp_chest"} canvasIdentifier={account.email + "_Temp"} title={<StorageViewTitle title="Seasonal Spoils" image="realm/seasonal_spoils_chest.png" />} itemIds={account.account.temporary_gifts.itemIds} totals={totalItems?.totals} />
                     {/* Potion Storage */}
-                    <StorageView canvasIdentifier={account.email + "_Potion"} title={<StorageViewTitle title="Potion Storage" image="realm/potion_storage_small.png" />} itemIds={account.account.potions.itemIds} totals={totalItems?.totals} />
+                    <StorageView vaultName={"potion_chest"} canvasIdentifier={account.email + "_Potion"} title={<StorageViewTitle title="Potion Storage" image="realm/potion_storage_small.png" />} itemIds={account.account.potions.itemIds} totals={totalItems?.totals} />
                 </Box>
             }
         </ComponentBox>
@@ -152,9 +153,17 @@ function AccountView({ account }) {
 
 export default AccountView;
 
-function StorageView({ canvasIdentifier, title, itemIds, totals }) {
+function StorageView({ vaultName, canvasIdentifier, title, itemIds, totals }) {
     const [filteredItemIds, setFilteredItemIds] = useState(itemIds);
     const { addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const settings = useUserSettings();
+    const accSettings = settings.getByKeyAndSubKey('vaultPeeker', 'accountView');
+    const [hideStorage, setHideStorage] = useState(false);
+
+    useEffect(() => {
+        const isHidden = accSettings?.hiddenVaults?.includes(vaultName);
+        setHideStorage(isHidden);
+    }, [vaultName]);
 
     useEffect(() => {
         setFilteredItemIds(itemIds);
@@ -164,6 +173,19 @@ function StorageView({ canvasIdentifier, title, itemIds, totals }) {
             removeItemFilterCallback(canvasIdentifier);
         };
     }, [itemIds]);
+
+    const toggleStorage = () => {
+        const isVisible = hideStorage;
+        setHideStorage(!isVisible);
+
+        if (isVisible) {
+            const hiddenVaults = accSettings?.hiddenVaults?.filter((v) => v !== vaultName);
+            settings.setByKeyAndSubKey('vaultPeeker', 'accountView', { ...accSettings, hiddenVaults: hiddenVaults });
+            return;
+        }
+
+        settings.setByKeyAndSubKey('vaultPeeker', 'accountView', { ...accSettings, hiddenVaults: [...accSettings?.hiddenVaults, vaultName] });
+    };
 
     if (!filteredItemIds || filteredItemIds.length === 0) return null;
 
@@ -176,8 +198,44 @@ function StorageView({ canvasIdentifier, title, itemIds, totals }) {
                 gap: 1,
             }}
         >
-            {title}
-            <ItemCanvas canvasIdentifier={canvasIdentifier} imgSrc="renders.png" itemIds={filteredItemIds} items={items} totals={totals} override={{ fillNumbers: false }} />
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 1,
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    cursor: 'pointer',
+                }}
+                onClick={() => {
+                    toggleStorage();
+                }}
+            >
+                <Box
+                    sx={{
+                        ...(hideStorage ? {
+                            opacity: 0.5
+                        } : {}),
+                        transition: theme => theme.transitions.create('opacity'),
+                    }}
+                >
+                    {title}
+                </Box>
+                <IconButton
+                    sx={{
+                        marginLeft: 'auto',
+                        transition: 'transform 0.2s',
+                        transform: hideStorage ? 'rotate(0deg)' : 'rotate(90deg)',
+                    }}
+                    size="small"
+                >
+                    <KeyboardArrowLeftIcon />
+                </IconButton>
+            </Box>
+            <Collapse in={!hideStorage}>
+                <ItemCanvas canvasIdentifier={canvasIdentifier} imgSrc="renders.png" itemIds={filteredItemIds} items={items} totals={totals} override={{ fillNumbers: false }} />
+            </Collapse>
         </Box>
     );
 }
