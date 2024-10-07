@@ -7,7 +7,7 @@ import { invoke } from "@tauri-apps/api";
 import ComponentBox from "./ComponentBox";
 import PaddedTableCell from "./AccountDetails/PaddedTableCell";
 import TextTableRow from "./AccountDetails/TextTableRow";
-import { formatTime } from "../utils/timeUtils";
+import { formatTime } from "eam-commons-js";
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
