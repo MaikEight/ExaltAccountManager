@@ -52,6 +52,9 @@ const defaultSettings = {
             filter: true,
             totals: false,
             accounts: [] //Array of account emails that are collapsed
+        },
+        accountView: {
+            hiddenVaults: [], //Array of vault names that are hidden
         }
     }
 };
