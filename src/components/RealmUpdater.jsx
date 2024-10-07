@@ -7,7 +7,7 @@ import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutl
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined';
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
-import { checkForUpdates, updateGame } from '../utils/realmUpdaterUtils';
+import { checkForUpdates, updateGame } from 'eam-commons-js';
 import useSnack from '../hooks/useSnack';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
