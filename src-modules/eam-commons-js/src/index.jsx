@@ -18,6 +18,15 @@ export {
     xmlToJson
 } from './utils/XmlUtils';
 
+export {
+    checkForUpdates,
+    updateGame
+} from './utils/realmUpdaterUtils';
+
+export {
+    formatTime,
+    getCurrentTime
+} from './utils/timeUtils';
 
 export {
     UserSettingsContext,
@@ -30,9 +39,17 @@ export {
 } from './contexts/ColorContext';
 
 export {
+    storeCharList,
+    getRequestState,
+    requestStateToMessage
+} from './utils/charListUtil';
+
+export {
     darkTheme
 } from './themes/dark';
 
 export {
     lightTheme
 } from './themes/light';
+
+export * from './components';
