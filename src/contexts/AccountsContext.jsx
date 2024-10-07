@@ -3,10 +3,8 @@ import { APP_VERSION } from "../constants";
 import { startSession } from "../backend/eamApi";
 import { useSearchParams } from "react-router-dom";
 import { invoke } from "@tauri-apps/api";
-import { logToAuditLog, logToErrorLog } from "../utils/loggingUtils";
+import { logToAuditLog, logToErrorLog, postAccountVerify, postCharList, getRequestState, storeCharList, requestStateToMessage } from "eam-commons-js";
 import useHWID from "../hooks/useHWID";
-import { postAccountVerify, postCharList } from 'eam-commons-js';
-import { getRequestState, storeCharList } from "../utils/charListUtil";
 import useServerList from "../hooks/useServerList";
 import useSnack from "../hooks/useSnack";
 
@@ -84,8 +82,7 @@ function AccountsContextProvider({ children }) {
         if (pw === -1)
             return false;
 
-        const acc = { ...updatedAccount, token: token, password: pw };
-
+        const acc = { ...updatedAccount, token: token, password: pw };        
         const updAccount = await saveAccount(acc)
             .catch((err) => {
                 console.error('Error saving account:', err, acc);
@@ -106,7 +103,7 @@ function AccountsContextProvider({ children }) {
         return true;
     };
 
-    const sendAccountVerify = async (email) => {
+    const sendAccountVerify = async (email, updateAccountInDatabase = true) => {
         const acc = getAccountByEmail(email);
 
         if (!acc) return { success: false, message: 'Account not found' };
@@ -121,7 +118,14 @@ function AccountsContextProvider({ children }) {
 
             const requestState = getRequestState(response);
             const newAcc = ({ ...acc, state: requestState });
-            updateAccount(newAcc);
+
+            if (!acc.name || acc.name === '') {
+                newAcc.name = response?.Account?.Name;
+            }
+
+            if (updateAccountInDatabase || requestState !== 'Success') {
+                await updateAccount(newAcc);
+            }
 
             if (!response || response.Error) {
                 logToAuditLog('sendAccountVerify', `Account/verify request failed.`, email);
@@ -130,20 +134,23 @@ function AccountsContextProvider({ children }) {
             }
 
             logToAuditLog('sendAccountVerify', `Account/verify request successful.`, email);
-            return { success: true, message: 'Account verified', data: response };
 
-
+            return { success: true, message: 'Account verified', data: response, acc: newAcc };
         } catch (error) {
             logToErrorLog('postAccountVerify', error);
             return { success: false, message: 'Failed to verify account' };
         }
     }
 
-    const sendCharList = async (email, accessToken) => {
-        const acc = getAccountByEmail(email);
+    const sendCharList = async (email, accessToken, acc = null) => {
+        if (!acc) {
+            acc = getAccountByEmail(email);
+        }
+
         if (!acc) return { success: false, message: 'Account not found' };
 
         logToAuditLog('sendCharList', `Sending char/list request...`, email);
+        let requestState = 'Error';
         try {
             const response = await postCharList(accessToken)
                 .catch((err) => {
@@ -151,13 +158,13 @@ function AccountsContextProvider({ children }) {
                     return null;
                 });
 
-            const requestState = getRequestState(response);
+            requestState = getRequestState(response);
             const newAcc = ({ ...acc, state: requestState });
-            updateAccount(newAcc);
+            await updateAccount(newAcc);
 
             if (!response || response.Error) {
                 logToAuditLog('sendCharList', `Char/list request failed.`, email);
-                return { success: false, message: 'Failed to get character list' };
+                return { success: false, message: 'Failed to get character list', requestState: requestState };
             }
 
             storeCharList(response, acc.email);
@@ -168,20 +175,20 @@ function AccountsContextProvider({ children }) {
             }
 
             logToAuditLog('sendCharList', `Char/list request successful.`, email);
-            return { success: true, message: 'Character list received', data: response };
+            return { success: true, message: 'Character list received', data: response, requestState: requestState };
         } catch (error) {
             logToErrorLog('postCharList', error);
-            return { success: false, message: 'Failed to get character list' };
+            return { success: false, message: 'Failed to get character list', requestState: requestState};
         };
     }
 
     const refreshData = async (email) => {
-        const acc = getAccountByEmail(email);
+        let acc = getAccountByEmail(email);
         if (!acc) {
             return null;
         }
 
-        const accResponse = await sendAccountVerify(acc.email);
+        const accResponse = await sendAccountVerify(acc.email, false);
         if (accResponse === null || !accResponse.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + acc.email);
             showSnackbar("Failed to refresh data", 'error');
@@ -194,10 +201,12 @@ function AccountsContextProvider({ children }) {
             AccessTokenExpiration: accResponse.data.Account.AccessTokenExpiration,
         };
 
-        const charList = await sendCharList(acc.email, token.AccessToken);
+        acc = accResponse.acc;
+
+        const charList = await sendCharList(acc.email, token.AccessToken, acc);
         if (charList === null || !charList.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + acc.email);
-            showSnackbar("Failed to refresh data", 'error');
+            showSnackbar(`Failed to refresh data${charList?.requestState ? `: ${requestStateToMessage(charList.requestState)}` :''}`, 'error');
             return null;
         }
 
