@@ -1,4 +1,4 @@
-import { logToErrorLog } from "./loggingUtils";
+import { logToErrorLog } from "eam-commons-js";
 
 export async function writeFileUTF8(filePath, content, stringifyAsJSON = false) {
     try {
