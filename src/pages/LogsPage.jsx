@@ -1,10 +1,9 @@
 import { Box, LinearProgress, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getAuditLog, getErrorLog } from "../utils/loggingUtils";
+import { getAuditLog, getErrorLog, formatTime } from "eam-commons-js";
 import { DataGrid } from "@mui/x-data-grid";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
 import { useTheme } from "styled-components";
-import { formatTime } from "../utils/timeUtils";
 import LogsGridToolbar from "../components/GridComponents/LogsGridToolbar";
 
 function LogsPage() {
