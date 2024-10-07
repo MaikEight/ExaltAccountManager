@@ -1,4 +1,4 @@
-import { logToErrorLog } from "./loggingUtils";
+import { logToErrorLog } from "eam-commons-js";
 
 async function readFileUTF8(filePath, parseAsJSON = false) {
     try {        
