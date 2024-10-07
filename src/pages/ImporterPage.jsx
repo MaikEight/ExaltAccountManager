@@ -837,7 +837,7 @@ function ImporterPage() {
                                 <Typography variant="body2">
                                     The accounts.js file is the export file of Muledump.
                                 </Typography>
-                                <Typography variant="body2">
+                                <Typography component={'span'} variant="body2">
                                     If you want to export your accounts from Muledump, simply follow these steps.
                                     <ol>
                                         <li>Open Muledump</li>
