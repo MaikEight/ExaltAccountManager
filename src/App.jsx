@@ -22,7 +22,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (hasTriggeredStartup || !hwid) return;
+    if (hasTriggeredStartup || !hwid) {
+      return;
+    }
 
     setApiHwidHash(hwid);
     setHasTriggeredStartup(true);
