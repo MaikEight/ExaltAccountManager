@@ -14,7 +14,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
-import { formatTime } from "../utils/timeUtils";
+import { formatTime } from "eam-commons-js";
 import DailyLoginsGridToolbar from "../components/GridComponents/DailyLoginsGridToolbar";
 import DailyLoginsSlideout from "../components/DailyLoginsSlideout";
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
