@@ -1,4 +1,3 @@
-
 export const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 
 const updateBaseUrls = [
