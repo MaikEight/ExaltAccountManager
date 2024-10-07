@@ -19,7 +19,6 @@ async function storeCharList(charList, email) {
             : [],
     };
 
-    //store the dataset in the sqlite db
     return await invoke('insert_char_list_dataset', { dataset: dataset });
 }
 
@@ -29,7 +28,7 @@ function getRequestState(charList) {
     if (hasErrors) {
         console.info('charList has error', charList.Error);
         const error = charList.Error?.toLowerCase();
-
+        
         if (error.includes("passworderror")) {
             return "WrongPassword";
         } else if (error.includes("wait") || error.includes("try again later")) {
@@ -38,12 +37,35 @@ function getRequestState(charList) {
             return "Captcha";
         } else if (error.includes("suspended")) {
             return "AccountSuspended";
+        } else if (error.includes("account in use")) {
+            return "AccountInUse";
         } else {
             return "Error";
         }
     }
 
     return "Success";
+}
+
+function requestStateToMessage(requestState) {
+    switch (requestState) {
+        case "WrongPassword":
+            return "Wrong password";
+        case "TooManyRequests":
+            return "Too many requests. Try again later.";
+        case "Captcha":
+            return "Captcha lock";
+        case "AccountSuspended":
+            return "Account suspended";
+        case "AccountInUse":
+            return "Account in use";
+        case "Error":
+            return "Error";
+        case "Success":
+            return "Success";
+        default:
+            return "Unknown Error";
+    }
 }
 
 function charToAccountModel(account) {
@@ -175,4 +197,4 @@ function charToCharModel(char) {
     };
 }
 
-export { storeCharList, getRequestState };
+export { storeCharList, getRequestState, requestStateToMessage };
