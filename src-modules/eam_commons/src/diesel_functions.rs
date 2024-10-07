@@ -1,4 +1,7 @@
 use crate::diesel_setup::DbPool;
+use crate::models::Account;
+use crate::models::Character;
+use crate::models::ClassStats;
 use crate::models::{AuditLog, NewAuditLog};
 use crate::models::{CharListDataset, CharListEntries, NewCharListEntries};
 use crate::models::{
@@ -10,15 +13,12 @@ use crate::models::{EamGroup, NewEamGroup, UpdateEamGroup};
 use crate::models::{ErrorLog, NewErrorLog};
 use crate::models::{NewAccount, NewCharacter, NewClassStats};
 use crate::models::{NewUserData, UpdateUserData, UserData};
-use crate::models::ClassStats;
-use crate::models::Character;
-use crate::models::Account;
 use crate::schema::Account as account;
-use crate::schema::Character as character;
-use crate::schema::Class_stats as class_stats;
 use crate::schema::AuditLog as audit_logs;
 use crate::schema::AuditLog::dsl::*;
 use crate::schema::Char_list_entries as char_list_entries;
+use crate::schema::Character as character;
+use crate::schema::Class_stats as class_stats;
 use crate::schema::DailyLoginReportEntries as daily_login_report_entries;
 use crate::schema::DailyLoginReports as daily_login_reports;
 use crate::schema::EamAccount as eam_accounts;
@@ -220,7 +220,6 @@ pub fn get_all_char_list(pool: &DbPool) -> Result<Vec<CharListEntries>, diesel::
     char_list_entries::table.load::<CharListEntries>(&mut conn)
 }
 
-
 pub fn get_latest_char_list_for_each_account(
     pool: &DbPool,
 ) -> Result<Vec<CharListEntries>, diesel::result::Error> {
@@ -232,7 +231,13 @@ pub fn get_latest_char_list_for_each_account(
         .distinct()
         .load::<Option<String>>(&mut conn)?;
 
-    let emails: Vec<String> = emails_result.into_iter().filter_map(|x| x).collect();
+    let allowed_emails = get_all_eam_account_emails(pool)?;
+
+    let emails: Vec<String> = emails_result
+        .into_iter()
+        .filter_map(|x| x)
+        .filter(|x| allowed_emails.contains(x))
+        .collect();
 
     // Get the latest entry for each email
     let mut entries = Vec::new();
@@ -244,7 +249,7 @@ pub fn get_latest_char_list_for_each_account(
         entries.push(entry);
     }
 
-    Ok(entries)    
+    Ok(entries)
 }
 
 //########################
@@ -281,11 +286,10 @@ pub fn get_latest_char_list_dataset_for_each_account(
             account,
             class_stats,
             character,
-        });        
+        });
     }
 
     Ok(datasets)
-    
 }
 
 pub fn insert_char_list_dataset(
@@ -387,10 +391,29 @@ pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::re
     result
 }
 
+pub fn get_all_eam_account_emails(pool: &DbPool) -> Result<Vec<String>, diesel::result::Error> {
+    info!("Getting all EAM account emails...");
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    info!("Got connection from pool. Loading emails...");
+    let result = eam_accounts::table
+        .select(eam_accounts::email)
+        .filter(eam_accounts::isDeleted.eq(false))
+        .load::<String>(&mut conn);
+
+    match &result {
+        Ok(emails) => info!("Loaded {} emails.", emails.len()),
+        Err(e) => error!("Failed to load emails: {}", e),
+    }
+
+    result
+}
+
 pub fn get_eam_account_by_email(
     pool: &DbPool,
     account_email: String,
 ) -> Result<EamAccount, diesel::result::Error> {
+    info!("Getting EAM account by email: {}", account_email);
+
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     eam_accounts::table
         .find(account_email)
@@ -601,7 +624,8 @@ pub fn delete_error_logs_older_than_days(
 ) -> Result<usize, diesel::result::Error> {
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
-    let target_date = chrono::Utc::now().naive_utc() - chrono::Duration::try_days(days as i64).expect("Failed to create duration");
+    let target_date = chrono::Utc::now().naive_utc()
+        - chrono::Duration::try_days(days as i64).expect("Failed to create duration");
     let target_date_str = target_date.format("%Y-%m-%d %H:%M:%S").to_string();
     let num_deleted =
         diesel::delete(error_logs::table.filter(error_logs::time.lt(target_date_str)))
