@@ -11,13 +11,16 @@ function useHWID() {
             const path = await HWID_FILE_PATH();
             const _hwid = await readFileUTF8(path, false);
             if (_hwid === null || _hwid === undefined || _hwid === '') {
-                tauri.invoke('get_device_unique_identifier')
-                    .then((id) => setHwid(id));
+                const id = await tauri.invoke('get_device_unique_identifier');
+                setHwid(id);
+                
                 return;
             }
             setHwid(_hwid);
-        }
-        readHwidFile().catch(error => console.error(error));
+        };
+
+        readHwidFile()
+            .catch(error => console.error(error));
     }, []);
 
     return hwid;
