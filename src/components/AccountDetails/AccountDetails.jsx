@@ -7,7 +7,6 @@ import PaddedTableCell from "./PaddedTableCell";
 import TextTableRow from "./TextTableRow";
 import ServerTableRow from "./ServerTableRow";
 import DailyLoginCheckBoxTableRow from "./DailyLoginCheckBoxTableRow";
-import { formatTime } from "../../utils/timeUtils";
 import StyledButton from './../StyledButton';
 import CloseIcon from '@mui/icons-material/Close';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
@@ -24,7 +23,7 @@ import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import useAccounts from "../../hooks/useAccounts";
 import useGroups from "../../hooks/useGroups";
-import { logToErrorLog } from "../../utils/loggingUtils";
+import { logToErrorLog, formatTime } from "eam-commons-js";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
 function AccountDetails({ acc, onClose }) {
@@ -42,7 +41,7 @@ function AccountDetails({ acc, onClose }) {
     const groupsContext = useGroups();
     const { groups } = groupsContext;
 
-    const { updateAccount, deleteAccount, sendAccountVerify, sendCharList } = useAccounts();
+    const { updateAccount, deleteAccount, sendAccountVerify, sendCharList, refreshData } = useAccounts();
     const { showSnackbar } = useSnack();
 
     const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
@@ -110,33 +109,33 @@ function AccountDetails({ acc, onClose }) {
         return serverToJoin === "Last Server" ? "" : serverToJoin;
     };
 
-    const refreshData = async () => {
-        if (!account) {
-            return;
-        }
+    // const refreshData = async () => {
+    //     if (!account) {
+    //         return;
+    //     }
 
-        const accResponse = await sendAccountVerify(account.email);
-        if (accResponse === null || !accResponse.success) {
-            logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
-            showSnackbar("Failed to refresh data", 'error');
-            return;
-        }
+    //     const accResponse = await sendAccountVerify(account.email);
+    //     if (accResponse === null || !accResponse.success) {
+    //         logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
+    //         showSnackbar("Failed to refresh data", 'error');
+    //         return;
+    //     }
 
-        const token = {
-            AccessToken: accResponse.data.Account.AccessToken,
-            AccessTokenTimestamp: accResponse.data.Account.AccessTokenTimestamp,
-            AccessTokenExpiration: accResponse.data.Account.AccessTokenExpiration,
-        };
+    //     const token = {
+    //         AccessToken: accResponse.data.Account.AccessToken,
+    //         AccessTokenTimestamp: accResponse.data.Account.AccessTokenTimestamp,
+    //         AccessTokenExpiration: accResponse.data.Account.AccessTokenExpiration,
+    //     };
 
-        const charList = await sendCharList(account.email, token.AccessToken);
-        if (charList === null || !charList.success) {
-            logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
-            showSnackbar("Failed to refresh data", 'error');
-            return;
-        }
+    //     const charList = await sendCharList(account.email, token.AccessToken);
+    //     if (charList === null || !charList.success) {
+    //         logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
+    //         showSnackbar("Failed to refresh data", 'error');
+    //         return;
+    //     }
 
-        return token;
-    };
+    //     return token;
+    // };
 
     const startGame = async () => {
         if (!account) {
@@ -330,7 +329,7 @@ function AccountDetails({ acc, onClose }) {
                                                 group={group}
                                                 onChange={(value) => handleAccountEdit({ ...account, group: value })}
                                             />
-                                            <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={true} />
+                                            <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={account.name && account.name.length > 0} />
                                             {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
                                             {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={newDecryptedPassword} onChange={(value) => setNewDecryptedPassword(value)} />}
                                             {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
@@ -404,7 +403,7 @@ function AccountDetails({ acc, onClose }) {
                                     color={account.state === 'Registered' ? "primary" : "secondary"}
                                     onClick={async () => {
                                         setIsLoading(true);
-                                        const response = await refreshData();
+                                        const response = await refreshData(account.email);
                                         if (response) {
                                             showSnackbar("Refreshing finished");
                                         }
