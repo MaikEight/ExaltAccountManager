@@ -2,9 +2,8 @@ import { getLatestEamVersion } from "../backend/eamApi";
 import { isUpdateAvailable } from "../constants";
 import { appWindow, PhysicalSize } from '@tauri-apps/api/window';
 import { invoke } from '@tauri-apps/api/tauri';
-import { checkForUpdates } from "./realmUpdaterUtils";
 import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
-import { logToErrorLog } from "./loggingUtils";
+import { logToErrorLog, checkForUpdates } from "eam-commons-js";
 
 async function performCheckForUpdates() {
     try {
@@ -57,16 +56,15 @@ async function onStartUp() {
     }
 
     //Delete old Error logs
-    invoke('delete_from_error_log', { days: 7 })
-        .then((res) => {
-            if (res > 0) {
-                console.log(`Deleted ${res} old error logs`);
-            }
-        })
+    const res = await invoke('delete_from_error_log', { days: 7 })
         .catch((e) => {
             console.error(e);
             logToErrorLog("delete_from_error_log", e);
         });
+
+    if (res > 0) {
+        console.log(`Deleted ${res} old error logs`);
+    }
 }
 
 function writeStartupLogoToConsole() {
@@ -120,6 +118,7 @@ function setApiHwidHash(hwid) {
         while (hwid === null || hwid === undefined) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
+
         const compSecret = hwid + hash;
         const hwidHash = await invoke('quick_hash', { secret: compSecret });
 
