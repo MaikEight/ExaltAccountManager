@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import AccountView from "./AccountView";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import ComponentBox from "../ComponentBox";
@@ -16,7 +15,6 @@ function AccountsView() {
                     })
                     :
                     <ComponentBox title='No Accounts Found' isCollapseable={true} sx={{ mx: 0 }} />
-                //TODO: Add no accounts found message
             }
         </Fragment>
     );
