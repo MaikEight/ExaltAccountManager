@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { CustomPagination } from "./GridComponents/CustomPagination";
 import ServerChip from "./GridComponents/ServerChip";
 import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
-import { formatTime } from "../utils/timeUtils";
+import { formatTime } from "eam-commons-js";
 import CustomToolbar from "./GridComponents/CustomToolbar";
 import GroupUI from "./GridComponents/GroupUI";
 import useUserSettings from "../hooks/useUserSettings";
