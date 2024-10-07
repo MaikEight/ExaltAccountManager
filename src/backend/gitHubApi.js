@@ -1,5 +1,5 @@
 import { fetch } from "@tauri-apps/api/http";
-import { logToErrorLog } from "../utils/loggingUtils";
+import { logToErrorLog } from "eam-commons-js";
 
 async function getGitHubStars() {
     if (sessionStorage.getItem('githubStars')) {

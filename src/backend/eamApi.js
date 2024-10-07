@@ -2,7 +2,7 @@ import { fetch } from "@tauri-apps/api/http";
 import { EAM_BASE_URL } from "../constants";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Body } from "@tauri-apps/api/http"
-import { logToErrorLog } from "../utils/loggingUtils";
+import { logToErrorLog } from "eam-commons-js";
 
 async function getLatestEamVersion() {
     return await fetch(`${EAM_BASE_URL}v1/ExaltAccountManager/version`,
