@@ -1,13 +1,11 @@
 import { Box, Chip, Slider, TextField, Typography } from "@mui/material";
-import useColorList from "../../hooks/useColorList";
+import { useColorList, GroupUI, useGroups } from "eam-commons-js";
 import React, { useEffect, useState } from "react";
 import * as Icons from '@mui/icons-material';
 import { useTheme } from "@emotion/react";
-import GroupUI from "../GridComponents/GroupUI";
 import { FixedSizeGrid as FixedGrid } from 'react-window';
 import StyledButton from "../StyledButton";
 import Grid2 from '@mui/material/Grid2';
-import useGroups from "../../hooks/useGroups";
 
 const allIcons = Object.keys(Icons).map((key) => key.includes('Outlined') ? key : null).filter((key) => key !== null);
 const MAX_ICON_PADDING = 30;
@@ -21,7 +19,7 @@ function GroupEditor({ g, onSave, onCancel }) {
             icon: 'AccountCircle',
             padding: '10%',
         });
-    
+
     const theme = useTheme();
     const colors = useColorList();
     const { groups } = useGroups();
@@ -30,7 +28,7 @@ function GroupEditor({ g, onSave, onCancel }) {
         if (g) {
             setNewGroup(g);
         }
-    }, [g]);    
+    }, [g]);
 
     const isGroupNameValid = () => {
         if (newGroup.name.length === 0) return false;
