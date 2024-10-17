@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import GroupsContext from "../contexts/GroupsContext";
+import { GroupsContext } from "../contexts/GroupsContext";
 
 function useGroups() {
     return useContext(GroupsContext);
 }
 
-export default useGroups;
+export { useGroups };
