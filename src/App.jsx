@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     onStartUp();
-    
+
     const heartBeatInterval = setInterval(async () => {
       heartBeat();
     }, 59_000);
@@ -30,10 +30,10 @@ function App() {
     setHasTriggeredStartup(true);
   }, [hwid]);
 
-  return (    
-      <ColorContextProvider>
-        <MainProviders />
-      </ColorContextProvider>
+  return (
+    <ColorContextProvider>
+      <MainProviders />
+    </ColorContextProvider>
   );
 }
 
