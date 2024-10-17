@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 
 const GroupsContext = createContext();
 
@@ -67,6 +67,4 @@ function GroupsContextProvider({ children }) {
     );
 }
 
-
-export { GroupsContextProvider };
-export default GroupsContext;
+export { GroupsContextProvider, GroupsContext };
