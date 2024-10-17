@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import ComponentBox from "./ComponentBox";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
-import { invoke } from "@tauri-apps/api/tauri";
 import { useTheme } from "@emotion/react";
 
 function ErrorBoundaryFallback() {
@@ -39,10 +38,6 @@ function ErrorBoundaryFallback() {
             sessionStorage.removeItem('autoFixTried');
         }
     }, [location]);
-
-    const handleClickUrl = async (url) => {
-        await invoke("open_url", { url: url });
-    }
 
     return (
         <Box
@@ -92,12 +87,17 @@ function ErrorBoundaryFallback() {
                     <li>
 
                         <Typography variant='body1' component={'span'}>
-                            <span
-                                onClick={() => handleClickUrl("https://discord.exalt-account-manager.eu/")}
-                                style={{ cursor: 'pointer', color: theme.palette.primary.main, textDecoration: 'underline', paddingRight: '0.3rem' }}
-                            >
-                                Join our Discord server
-                            </span>
+                            <a href="https://discord.exalt-account-manager.eu/" target="_blank" rel="noopener noreferrer">
+                                <span
+                                    style={{ 
+                                        color: theme.palette.primary.main, 
+                                        textDecoration: 'underline', 
+                                        paddingRight: '0.3rem' 
+                                    }}
+                                >
+                                    Join our Discord server
+                                </span>
+                            </a>
                             and ask for help in the support-center or help-request channel.
                         </Typography>
                     </li>
