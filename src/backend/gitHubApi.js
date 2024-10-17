@@ -1,4 +1,4 @@
-import { fetch } from "@tauri-apps/api/http";
+import { fetch } from "@tauri-apps/plugin-http";
 import { logToErrorLog } from "eam-commons-js";
 
 async function getGitHubStars() {
@@ -6,7 +6,7 @@ async function getGitHubStars() {
         return sessionStorage.getItem('githubStars');
     }
 
-    return await fetch('https://api.github.com/repos/MaikEight/ExaltAccountManager',
+    const response = await fetch('https://api.github.com/repos/MaikEight/ExaltAccountManager',
         {
             method: 'GET',
             headers: {
@@ -14,13 +14,15 @@ async function getGitHubStars() {
                 'User-Agent': 'ExaltAccountManager'
             }
         })
-        .then(response => {
-            if (response.status === 200) {
-                sessionStorage.setItem('githubStars', response.data.stargazers_count);   
-                return response.data.stargazers_count
-            }
-        })
-        .catch(error => logToErrorLog('getGitHubStars', error));
+        .catch (error => logToErrorLog('getGitHubStars', error));
+
+    if (response.status === 200) {
+        const body = await response.json();
+        console.log('body', body);
+        const stars = body.stargazers_count;
+        sessionStorage.setItem('githubStars', stars);
+        return stars;
+    }
 }
 
 export { getGitHubStars };
