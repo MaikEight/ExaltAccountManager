@@ -1,11 +1,11 @@
 import ComponentBox from './ComponentBox';
 import { Box, Typography } from '@mui/material';
 import StyledButton from './StyledButton';
-import { tauri } from '@tauri-apps/api';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
 import { useState } from 'react';
 import useSnack from '../hooks/useSnack';
+import { invoke } from '@tauri-apps/api/core';
 
 function HwidTool() {
     const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +71,7 @@ function HwidTool() {
                             disabled={isLoading}
                             onClick={() => {
                                 setIsLoading(true);
-                                tauri.invoke("download_and_run_hwid_tool")
+                                invoke("download_and_run_hwid_tool")
                                     .then((response) => {
                                         setIsLoading(false);
                                         if (response === true) {
