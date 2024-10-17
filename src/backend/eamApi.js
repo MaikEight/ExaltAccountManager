@@ -1,7 +1,6 @@
-import { fetch } from "@tauri-apps/api/http";
+import { fetch } from "@tauri-apps/plugin-http";
 import { EAM_BASE_URL } from "../constants";
-import { invoke } from "@tauri-apps/api/tauri";
-import { Body } from "@tauri-apps/api/http"
+import { invoke } from "@tauri-apps/api/core";
 import { logToErrorLog } from "eam-commons-js";
 
 async function getLatestEamVersion() {
@@ -96,7 +95,7 @@ async function sendFeedback(feedback) {
                 'User-Agent': 'ExaltAccountManager',
                 'Content-Type': 'application/json'
             },
-            body: Body.json(feedback)
+            body: JSON.stringify(feedback)
         })
         .catch(error => { logToErrorLog('sendFeedback', error); })
         .then(response => response.data);
