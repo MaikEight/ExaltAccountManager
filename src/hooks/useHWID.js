@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { HWID_FILE_PATH } from "../constants";
 import { readFileUTF8 } from "../utils/readFileUtil";
-import { tauri } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 
 function useHWID() {
     const [hwid, setHwid] = useState(null);
@@ -11,7 +11,7 @@ function useHWID() {
             const path = await HWID_FILE_PATH();
             const _hwid = await readFileUTF8(path, false);
             if (_hwid === null || _hwid === undefined || _hwid === '') {
-                const id = await tauri.invoke('get_device_unique_identifier');
+                const id = await invoke('get_device_unique_identifier');
                 setHwid(id);
                 
                 return;
