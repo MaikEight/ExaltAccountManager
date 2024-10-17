@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@mui/material';
 
 const useColorList = (index) => {
     const theme = useTheme();
-
+    
     const colorList = useMemo(
         () => [
             { background: '#9155fd1f', color: theme.palette.primary.main },
@@ -19,4 +19,4 @@ const useColorList = (index) => {
     return index !== undefined ? colorList[index >= colorList.length ? index % colorList.length : index] : colorList;
 };
 
-export default useColorList;
+export { useColorList };
