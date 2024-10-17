@@ -8,6 +8,11 @@ function GitHubStars({style}) {
     const [stars, setStars] = useState(undefined);
 
     useEffect(() => {
+        if(sessionStorage.getItem('githubStars')) {
+            setStars(sessionStorage.getItem('githubStars'));
+            return;
+        }
+
         getGitHubStars()
             .then((stars) => {
                 setStars(stars);
