@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { resolve } from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [react()],
 
@@ -10,11 +10,20 @@ export default defineConfig(async () => ({
   // 1. prevent vite from obscuring rust errors
   clearScreen: false,
   optimizeDeps: {
-    include: ['@mui/material/Tooltip', '@emotion/styled', '@mui/material/Grid2'],
+    include: [
+      '@mui/material/Tooltip',
+      '@emotion/styled',
+      '@mui/material/Grid2',
+      '@mui/material',
+      'styled-components'
+    ],
+    exclude: ['eam-commons-js'],
   },
   resolve: {
     alias: {
       'stream': 'stream-browserify',
+      '@mui/material': resolve(__dirname, 'node_modules/@mui/material'),
+      'styled-components': resolve(__dirname, 'node_modules/styled-components'),
     }
   },
   // 2. tauri expects a fixed port, fail if that port is not available
