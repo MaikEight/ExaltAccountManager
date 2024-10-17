@@ -3,7 +3,7 @@ import { useTheme } from "@emotion/react";
 import { Box, Drawer, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import ComponentBox from "./ComponentBox";
 import PaddedTableCell from "./AccountDetails/PaddedTableCell";
 import TextTableRow from "./AccountDetails/TextTableRow";
@@ -71,7 +71,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
     };
 
     return (
-        <Box ref={containerRef} sx={{ overflow: 'hidden', borderRadius: '10px' }}>
+        <Box ref={containerRef} sx={{ overflow: 'hidden' }}>
             <Drawer
                 sx={{
                     width: 500,
@@ -79,8 +79,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                     '& .MuiDrawer-paper': {
                         width: 500,
                         backgroundColor: theme.palette.background.default,
-                        border: 'none',
-                        borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`,
+                        borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
                 }}
