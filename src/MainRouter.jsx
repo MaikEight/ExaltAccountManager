@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from "./components/Sidebar/Sidebar";
 import AccountsPage from "./pages/AccountsPage";
 import UtilitiesPage from "./pages/UtilitiesPage";
-import { GroupsContextProvider } from "./contexts/GroupsContext";
+import { GroupsContextProvider } from "eam-commons-js";
 import SettingsPage from "./pages/SettingsPage";
 import { ServerContextProvider } from "./contexts/ServerContext";
 import AboutPage from "./pages/AboutPage";
@@ -18,9 +18,11 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorBoundaryFallback from './components/ErrorBoundaryFallback';
 import VaultPeekerPage from './pages/VaultPeekerPage';
 import FatalErrorPage from './pages/FatalErrorPage';
+import DeepLinkingComponent from './components/DeepLinkingComponent';
+import ProfilePage from './pages/ProfilePage';
 
 function MainRouter() {
-    const theme = useTheme();
+    const theme = useTheme();    
 
     return (
         <Box
@@ -30,7 +32,7 @@ function MainRouter() {
                 transition: theme.transitions.create(['background-color', 'color']),
             }}
         >
-            <ErrorBoundary fallback={<FatalErrorPage/>}>
+            <ErrorBoundary fallback={<FatalErrorPage />}>
                 <Router id="router">
                     <Sidebar id="sidebar">
                         <ServerContextProvider>
@@ -41,6 +43,7 @@ function MainRouter() {
                                             fallback={<ErrorBoundaryFallback />}
                                             onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}
                                         >
+                                            <DeepLinkingComponent />
                                             <Routes>
                                                 <Route path='/' element={<AccountsPage />}></Route>
                                                 <Route path='/error' element={<FatalErrorPage />}></Route>
@@ -50,6 +53,7 @@ function MainRouter() {
                                                 <Route path='/utilities' element={<UtilitiesPage />}></Route>
                                                 <Route path='/settings' element={<SettingsPage />}></Route>
                                                 <Route path='/logs' element={<LogsPage />}></Route>
+                                                <Route path='/profile' element={<ProfilePage />}></Route>
                                                 <Route path='/about' element={<AboutPage />}></Route>
                                                 <Route path='/feedback' element={<FeedbackPage />}></Route>
                                                 <Route path='/importer' element={<ImporterPage />}></Route>
