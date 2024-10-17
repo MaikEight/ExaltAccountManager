@@ -12,7 +12,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { tauri } from "@tauri-apps/api";
 import useUserSettings from "../../hooks/useUserSettings";
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -22,9 +21,9 @@ import useSnack from "../../hooks/useSnack";
 import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import useAccounts from "../../hooks/useAccounts";
-import useGroups from "../../hooks/useGroups";
-import { logToErrorLog, formatTime } from "eam-commons-js";
+import { logToErrorLog, formatTime, useGroups } from "eam-commons-js";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import { invoke } from '@tauri-apps/api/core';
 
 function AccountDetails({ acc, onClose }) {
     const [account, setAccount] = useState(null);
@@ -38,8 +37,7 @@ function AccountDetails({ acc, onClose }) {
     const [newDecryptedPassword, setNewDecryptedPassword] = useState("");
     const [gameExePath, setGameExePath] = useState("");
 
-    const groupsContext = useGroups();
-    const { groups } = groupsContext;
+    const { groups } = useGroups();
 
     const { updateAccount, deleteAccount, sendAccountVerify, sendCharList, refreshData } = useAccounts();
     const { showSnackbar } = useSnack();
@@ -74,7 +72,7 @@ function AccountDetails({ acc, onClose }) {
 
         if (acc) {
             setAccount(acc);
-            tauri.invoke("decrypt_string", { data: acc.password }).then((res) => {
+            invoke("decrypt_string", { data: acc.password }).then((res) => {
                 setDecryptedPassword(res);
             });
             const timeoutId = setTimeout(() => {
@@ -158,7 +156,7 @@ function AccountDetails({ acc, onClose }) {
         showSnackbar("Starting the game...");
         const args = `data:{platform:Deca,guid:${btoa(account.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
 
-        tauri.invoke(
+        invoke(
             "start_application",
             { applicationPath: gameExePath, startParameters: args }
         );
@@ -176,19 +174,18 @@ function AccountDetails({ acc, onClose }) {
     }
 
     return (
-        <Box ref={containerRef} sx={{ overflow: 'hidden', borderRadius: '10px', }}>
+        <Box ref={containerRef} sx={{ overflow: 'hidden', }}>
             <Drawer
                 sx={{
                     width: 500,
                     '& .MuiDrawer-paper': {
                         width: 500,
                         backgroundColor: theme.palette.background.default,
-                        border: 'none',
-                        borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`,
+                        borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, overflow: 'hidden' } }}
+                PaperProps={{ elevation: 0, square: false, sx: { overflow: 'hidden' } }}
                 SlideProps={{ container: containerRef.current }}
                 variant="persistent"
                 anchor="right"
@@ -269,7 +266,7 @@ function AccountDetails({ acc, onClose }) {
                                                         onClick={() => {
                                                             console.log("save account", account);
                                                             if (newDecryptedPassword !== decryptedPassword) {
-                                                                tauri.invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
+                                                                invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
                                                                     const newAcc = ({ ...account, password: res });
                                                                     updateAccount(newAcc);
                                                                 });
