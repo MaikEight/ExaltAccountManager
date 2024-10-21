@@ -21,6 +21,7 @@ use lazy_static::lazy_static;
 use log::{error, info};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use simplelog::*;
+use tauri::http::HeaderName;
 use std::collections::HashMap;
 use std::env;
 use std::error::Error as StdError;
@@ -29,13 +30,13 @@ use std::fs::File;
 use std::io::{ErrorKind, Read, Write};
 use std::path::Path;
 use std::path::PathBuf;
+use std::str::FromStr;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 use tauri::Error;
-use webbrowser::{open_browser, Browser};
 use zip::read::ZipArchive;
 
 lazy_static! {
@@ -52,8 +53,6 @@ const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
 const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "8da7094f31996c0a1f08aee856039e16";
 
 fn main() {
-    #[cfg(debug_assertions)]
-    let devtools = devtools::init();
     //Create the save file directory if it does not exist
     let save_file_path = get_save_file_path();
     if !Path::new(&save_file_path).exists() {
@@ -61,9 +60,7 @@ fn main() {
     }
 
     // Initialize the logger
-    #[cfg(not(debug_assertions))]
     let log_file = File::create(save_file_path + "\\log.txt").unwrap();
-    #[cfg(not(debug_assertions))]
     CombinedLogger::init(vec![WriteLogger::new(
         LevelFilter::Info,
         Config::default(),
@@ -94,12 +91,18 @@ fn main() {
         }
     }
 
-    let builder = tauri::Builder::default();
-    #[cfg(debug_assertions)]
-    let builder = builder.plugin(devtools);
-
     //Run the tauri application
-    builder
+    tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
+            println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
+        }))
+        .plugin(tauri_plugin_deep_link::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             open_url,
             get_save_file_path,
@@ -111,6 +114,7 @@ fn main() {
             create_folder,
             check_for_game_update,
             perform_game_update,
+            send_get_request,
             send_post_request_with_form_url_encoded_data,
             send_post_request_with_json_body,
             send_patch_request_with_json_body,
@@ -156,13 +160,14 @@ fn main() {
             uninstall_eam_daily_login_task,
             run_eam_daily_login_task_now
         ])
-        .run(tauri::generate_context!("./tauri.conf.json"))
+        .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
 #[tauri::command]
-fn open_url(url: &str) {
-    open_browser(Browser::Default, &url).expect("Failed to start browser");
+async fn open_url(url: String) -> Result<(), Error> {
+    info!("Opening URL: {}", &url);
+    Ok(open::that(url)?)
 }
 
 #[tauri::command]
@@ -493,6 +498,34 @@ fn quick_hash(secret: &str) -> String {
     } else {
         format!("{:x}", big_int)
     }
+}
+
+#[tauri::command]
+async fn send_get_request(url: String, custom_headers: HashMap<String, String>) -> Result<String, String> {
+    info!("Sending get request...");
+
+    let mut headers = HeaderMap::new();
+    custom_headers.into_iter().for_each(|(key, value)| {
+        let header_name = HeaderName::from_str(&key).unwrap();
+        let header_value = HeaderValue::from_str(&value).unwrap();
+        headers.append(
+            header_name,
+            header_value,
+        );
+    });
+
+    headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
+
+    let client = reqwest::Client::new();
+    let res = client
+        .get(&url)
+        .headers(headers)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let body = res.text().await.map_err(|e| e.to_string())?;
+    Ok(body)    
 }
 
 #[tauri::command]
