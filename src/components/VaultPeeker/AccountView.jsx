@@ -5,7 +5,7 @@ import ItemCanvas from "../Realm/ItemCanvas";
 import items from "../../assets/constants";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import { useEffect, useMemo, useState } from "react";
-import GroupUI from "../GridComponents/GroupUI";
+import { GroupUI } from "eam-commons-js";
 import useUserSettings from "../../hooks/useUserSettings";
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import useAccounts from "../../hooks/useAccounts";
