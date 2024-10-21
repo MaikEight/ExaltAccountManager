@@ -1,0 +1,20 @@
+{
+  "identifier": "desktop-capability",
+  "platforms": [
+    "windows"
+  ],
+  "windows": [
+    "main",
+    "local"
+  ],
+  "permissions": [
+    "updater:default",
+    "fs:default",
+    "shell:default",
+    "http:default",
+    "process:default",
+    "dialog:default",
+    "core:event:default",
+    "deep-link:default"
+  ]
+}
