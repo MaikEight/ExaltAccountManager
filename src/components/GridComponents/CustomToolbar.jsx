@@ -10,7 +10,7 @@ import DataArrayOutlinedIcon from '@mui/icons-material/DataArrayOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import useAccounts from './../../hooks/useAccounts';
 import Papa from 'papaparse';
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 
 function CustomToolbar({ onSearchChanged, onAddNew }) {
     const [anchorElPopover, setAnchorElPopover] = useState(null);
