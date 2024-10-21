@@ -4,7 +4,7 @@ import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import StyledButton from './../components/StyledButton';
-import { dialog, invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import useUserSettings from '../hooks/useUserSettings';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
@@ -21,6 +21,7 @@ import VaultPeekerLogo from '../components/VaultPeekerLogo';
 import { useTheme } from '@emotion/react';
 import useAccounts from '../hooks/useAccounts';
 import { TableVirtuoso } from 'react-virtuoso';
+import * as dialog from "@tauri-apps/plugin-dialog"
 
 function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
