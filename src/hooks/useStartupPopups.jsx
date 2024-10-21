@@ -1,12 +1,13 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import ImportOldAccountsPopup from '../components/Popups/ImportOldAccountsPopup';
 import WelcomeToEamPopup from '../components/Popups/WelcomeToEamPopup';
 import useAccounts from "./useAccounts";
+import BetaTestPopup from "../components/Popups/BetaTestPopup";
 import ChangelogVersion4_1_0 from "../components/Popups/Changelogs/ChangelogVersion4_1_0";
 import ChangelogVersion4_1_5 from "../components/Popups/Changelogs/ChangelogVersion4_1_5";
 import ChangelogVersion4_2_0 from "../components/Popups/Changelogs/ChangelogVersion4_2_0";
-import BetaTestPopup from "../components/Popups/BetaTestPopup";
 import ChangelogVersion4_2_1 from "../components/Popups/Changelogs/ChangelogVersion4_2_1";
+import ChangelogVersion4_2_2 from "../components/Popups/Changelogs/ChangelogVersion4_2_2";
 
 const isBetaVersion = false;
 
@@ -33,6 +34,11 @@ function useStartupPopups() {
             version: "4.2.1",
             preventClose: false,
             content: <ChangelogVersion4_2_1 />
+        },
+        {
+            version: "4.2.2",
+            preventClose: false,
+            content: <ChangelogVersion4_2_2 />
         },
     ];
 
