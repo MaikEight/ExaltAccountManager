@@ -1,10 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 import useAccounts from "../hooks/useAccounts";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { extractRealmItemsFromCharListDatasets, formatAccountDataFromCharListDatasets } from "../utils/realmItemUtils";
 import ItemLocationPopper from "../components/Realm/ItemLocationPopper";
 import items from "../assets/constants";
-import useGroups from './../hooks/useGroups';
+import { useGroups } from 'eam-commons-js';
 
 const VaultPeekerContext = createContext();
 
@@ -173,7 +173,7 @@ function VaultPeekerContextProvider({ children }) {
                                 return true;
                             }
 
-                            if (flag === 1) { 
+                            if (flag === 1) {
                                 return filterFlag === 1; //item is UT and we want UT
                             }
 
@@ -184,7 +184,7 @@ function VaultPeekerContextProvider({ children }) {
                             return true; //item is Tiered and we want UT or ST and lower
                         }
 
-                        if(flag > 0) {
+                        if (flag > 0) {
                             return false; //item is UT or ST and we want tiered
                         }
 
@@ -262,7 +262,7 @@ function VaultPeekerContextProvider({ children }) {
                 filteredItemIds = filteredItemIds.filter(itemId => {
                     return allowedItemIds.includes(itemId);
                 });
-                
+
                 // const newfilteredTotalItems = {};
                 // allowedItemIds.forEach((itemId) => {
                 //     if(totalItems.totals[itemId]) {
