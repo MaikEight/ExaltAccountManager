@@ -6,19 +6,17 @@ import { useTheme } from "@emotion/react";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
-import useColorList from "../../hooks/useColorList";
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import ComponentBox from "../ComponentBox";
 import StyledButton from "../StyledButton";
 import useHWID from "../../hooks/useHWID";
-import { postAccountVerify, postCharList, getRequestState, storeCharList } from 'eam-commons-js';
+import { postAccountVerify, postCharList, getRequestState, storeCharList, useColorList, useGroups } from 'eam-commons-js';
 import GroupSelector from "../AccountDetails/GroupSelector";
 import GroupRow from "../AccountDetails/GroupRow";
 import TextTableRow from "../AccountDetails/TextTableRow";
 import DailyLoginCheckBoxTableRow from "../AccountDetails/DailyLoginCheckBoxTableRow";
 import PaddedTableCell from "../AccountDetails/PaddedTableCell";
 import useAccounts from "../../hooks/useAccounts";
-import useGroups from "../../hooks/useGroups";
 import useServerList from '../../hooks/useServerList';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
@@ -437,7 +435,7 @@ function AddNewAccount({ isOpen, onClose }) {
     };
 
     return (
-        <Box ref={containerRef} sx={{ overflow: 'hidden', borderRadius: '10px' }}>
+        <Box ref={containerRef} sx={{ overflow: 'hidden' }}>
             <Drawer
                 sx={{
                     width: 500,
@@ -445,8 +443,7 @@ function AddNewAccount({ isOpen, onClose }) {
                     '& .MuiDrawer-paper': {
                         width: 500,
                         backgroundColor: theme.palette.background.default,
-                        border: 'none',
-                        borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`,
+                        borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
                 }}
