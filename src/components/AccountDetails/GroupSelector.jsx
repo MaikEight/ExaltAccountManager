@@ -2,8 +2,7 @@ import { Box, FormControl, IconButton, Input, InputLabel, MenuItem, Select, Tool
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
-import GroupUI from "../GridComponents/GroupUI";
-import useGroups from "../../hooks/useGroups";
+import { GroupUI, useGroups } from "eam-commons-js";
 
 function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor, sx }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
@@ -45,16 +44,17 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
                         />
                     }
                     renderValue={(selected) => {
-                        if(!selected || selected === '' || selected === null || selected === undefined) {
+                        if (!selected || selected === '' || selected === null || selected === undefined) {
                             return null;
                         }
 
                         return (
-                        <Box id="value-box" sx={{ p: 0.75, px: 1, display: 'flex', flexDirection: 'row', gap: 0.75, alignItems: 'center', justifyContent: 'start' }}>
-                            <GroupUI group={groups.find((g) => g.name === selected)} />
-                            {selected}
-                        </Box>
-                    );}}
+                            <Box id="value-box" sx={{ p: 0.75, px: 1, display: 'flex', flexDirection: 'row', gap: 0.75, alignItems: 'center', justifyContent: 'start' }}>
+                                <GroupUI group={groups.find((g) => g.name === selected)} />
+                                {selected}
+                            </Box>
+                        );
+                    }}
                 >
                     <MenuItem key="None" value="">
                         <em>None</em>
