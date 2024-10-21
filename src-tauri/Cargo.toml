@@ -1,38 +1,46 @@
 [package]
 name = "exalt-account-manager"
-version = "4.2.0"
-description = "Exalt Account Manager"
+version = "4.2.2"
+description = "Exalt Account Manager is a powerful toolset designed to streamline multi-account management for Realm of the Mad God."
+homepage = "https://exaltaccountmanager.com"
 authors = ["MaikEight"]
 license = "GPL-3.0 license"
 repository = "https://github.com/MaikEight/ExaltAccountManager"
+publish = false
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.5", features = [] }
+tauri-build = { version = "2.0.1", features = [] }
 
 [dependencies]
-tauri = { version = "1.8.0", features = [ "process-all", "updater", "dialog-all", "http-all", "devtools", "path-all", "macos-private-api", "window-set-min-size", "window-unminimize", "window-unmaximize", "window-start-dragging", "window-close", "window-minimize", "window-hide", "window-show", "window-maximize", "fs-all", "shell-open"] }
-devtools = "0.3.3"
+tauri = { version = "2.0.3", features = ["devtools", "macos-private-api"] }
+tauri-plugin-deep-link = "2.0.1"
+tauri-plugin-single-instance = { version = "2.0.1", features = ["deep-link"] }
+tauri-plugin-fs = "2.0.1"
+tauri-plugin-shell = "2.0.1"
+tauri-plugin-http = "2.0.1"
+tauri-plugin-process = "2.0.1"
+tauri-plugin-dialog = "2.0.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-std = "1.13"
-window-vibrancy = "0.4.0"
+window-vibrancy = "0.5.2"
 dirs = "5.0.1"
 md5 = "0.7.0"
 tokio = "1.40.0"
-futures = "0.3.30"
-flate2 = "1.0.33"
+futures = "0.3.31"
+flate2 = "1.0.34"
 walkdir = "2.5.0"
-reqwest = { version = "0.12.7", features = ["blocking"] }
+reqwest = { version = "0.12.8", features = ["blocking"] }
 zip = "2.2.0"
 mpsc = "0.2.3"
 anyhow = "1.0"
 curl = "0.4"
 wmi = "0.14.0"
 sha1 = "0.10.6"
-winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
+winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "winbase"] }
 num-bigint = "0.4.6"
 num-traits = "0.2.19"
 hex = "0.4.3"
@@ -47,10 +55,14 @@ mio = "1.0.2"
 libsqlite3-sys = { version = "0.30.1", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12.2"
-webbrowser = "1.0.2"
+winreg = "0.52.0"
+open = "5.3.0"
 eam_commons = { path = "../src-modules/eam_commons" }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+[target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
+tauri-plugin-updater = "2"
