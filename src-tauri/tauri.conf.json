@@ -1,115 +1,71 @@
 {
   "build": {
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": true
+    "beforeBuildCommand": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command .\\buildEnvKeys.ps1 && npm run build",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "Exalt Account Manager",
-    "version": "4.2.1"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true        
-      },      
-      "window": {
-        "all": false,
-        "close": true,
-        "hide": true,
-        "show": true,
-        "maximize": true,
-        "minimize": true,
-        "unmaximize": true,
-        "unminimize": true,
-        "startDragging": true,
-        "setMinSize": true
-      },
-      "fs": {
-        "all": true,
-        "readFile": true,
-        "writeFile": true,
-        "readDir": true,
-        "copyFile": true,
-        "createDir": true,
-        "removeDir": true,
-        "removeFile": true,
-        "renameFile": true,
-        "exists": true,
-        "scope": [
-          "**"
-        ]
-      },
-      "path": {
-        "all": true
-      },
-      "http": {
-        "all": true, 
-        "request": true,
-        "scope": [
-          "https://*",
-          "https://api.exalt-account-manager.eu/*",
-          "http://localhost*"
-        ]
-      },
-      "process": {
-        "all": true
-      },
-      "dialog": {
-        "all": true, 
-        "ask": true, 
-        "confirm": true, 
-        "message": true, 
-        "open": true
+  "bundle": {
+    "active": true,
+    "publisher": "MaikEight",
+    "shortDescription": "Exalt Account Manager is a powerful toolset designed to streamline multi-account management for Realm of the Mad God.",
+    "targets": "all",
+    "homepage": "http://localhost:1420/",
+    "windows": {
+      "allowDowngrades": false,
+      "certificateThumbprint": "b082652dc70f2ab8338976148c895d3d77db928e",
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://time.certum.pl",
+      "webviewInstallMode": {
+        "silent": true,
+        "type": "downloadBootstrapper"
       }
     },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": "v1Compatible"
+  },
+  "productName": "Exalt Account Manager",
+  "mainBinaryName": "Exalt Account Manager",
+  "version": "4.2.2",
+  "identifier": "eu.exalt-account-manager.app",
+  "plugins": {
     "updater": {
-      "active": true,
+      "windows": {
+        "installMode": "passive"
+      },
       "endpoints": [
         "https://api.exalt-account-manager.eu/v2/ExaltAccountManager/release"
       ],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYwNzFDMEM1NzVFODhDQjIKUldTeWpPaDF4Y0J4OERhL1NsQ1FEVmRkcW9jcWpjUGl2TGQ2d3hlVWxaWjQ1V0sxTmlqOGhGbGIK",
-      "dialog": false,
-      "windows": {
-        "installMode": "passive"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYwNzFDMEM1NzVFODhDQjIKUldTeWpPaDF4Y0J4OERhL1NsQ1FEVmRkcW9jcWpjUGl2TGQ2d3hlVWxaWjQ1V0sxTmlqOGhGbGIK"
+    },
+    "deep-link": {      
+      "desktop": {
+        "schemes": ["eam", "exalt-account-manager"]
       }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "eu.exalt-account-manager.app",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "windows": {
-        "certificateThumbprint": "b082652dc70f2ab8338976148c895d3d77db928e",
-        "digestAlgorithm": "sha256",
-        "timestampUrl": "http://time.certum.pl"
-      }
-    },
-    "security": {
-      "csp": null
-    },
+    }
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "macOSPrivateApi": true,
     "windows": [
       {
         "fullscreen": false,
         "resizable": true,
         "decorations": false,
         "transparent": true,
-        "fileDropEnabled": true,
         "title": "Exalt Account Manager",
         "width": 1200,
         "height": 800
       }
     ],
-    "macOSPrivateApi": true
+    "security": {
+      "csp": null
+    }
   }
 }
