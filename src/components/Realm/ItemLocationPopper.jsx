@@ -185,7 +185,7 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                     }}
                                 >
                                     <Typography fontWeight={100}>
-                                        You own {totals?.amount} of this item in total acros {Object.keys(totals?.location).length} accounts.
+                                        You own {totals?.amount} of this item in total across {Object.keys(totals?.location).length} accounts.
                                     </Typography>
                                     <Tooltip title="Search on realmeye">
                                         <a href={`https://www.realmeye.com/wiki-search?q=${encodeURI(item[0])}`} target="_blank" rel="noreferrer">
