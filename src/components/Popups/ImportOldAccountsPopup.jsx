@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import StyledButton from "../StyledButton";
 import PopupBase from "./PopupBase";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { useState } from "react";
 import usePopups from "../../hooks/usePopups";
 import useAccounts from "../../hooks/useAccounts";
