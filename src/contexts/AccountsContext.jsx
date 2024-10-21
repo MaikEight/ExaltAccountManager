@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { APP_VERSION } from "../constants";
 import { startSession } from "../backend/eamApi";
 import { useSearchParams } from "react-router-dom";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { logToAuditLog, logToErrorLog, postAccountVerify, postCharList, getRequestState, storeCharList, requestStateToMessage } from "eam-commons-js";
 import useHWID from "../hooks/useHWID";
 import useServerList from "../hooks/useServerList";
