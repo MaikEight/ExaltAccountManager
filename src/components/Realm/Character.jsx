@@ -7,15 +7,15 @@ import items from './../../assets/constants';
 import EquipmentCanvas from "./EquipmentCanvas";
 import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
-import useColorList from './../../hooks/useColorList';
+import { useColorList } from 'eam-commons-js';
 
-function emptyItemOverride(darkMode) {    
+function emptyItemOverride(darkMode) {
     return {
         all: {
             imgSrc: darkMode ? 'realm/itemSlot.png' : 'realm/itemSlot_light.png',
-                size: 50,
-                    padding: 0,
-            }
+            size: 50,
+            padding: 0,
+        }
     };
 }
 
