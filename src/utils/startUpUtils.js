@@ -1,16 +1,23 @@
 import { getLatestEamVersion } from "../backend/eamApi";
 import { isUpdateAvailable } from "../constants";
-import { appWindow, PhysicalSize } from '@tauri-apps/api/window';
-import { invoke } from '@tauri-apps/api/tauri';
-import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
+import { PhysicalSize } from '@tauri-apps/api/window';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { invoke } from '@tauri-apps/api/core';
+import { check  } from '@tauri-apps/plugin-updater';
 import { logToErrorLog, checkForUpdates } from "eam-commons-js";
+import { relaunch } from '@tauri-apps/plugin-process';
+
+const appWindow = getCurrentWebviewWindow()
 
 async function performCheckForUpdates() {
     try {
-        const update = await checkUpdate();
-        if (update.shouldUpdate) {
-            console.log(`Installing update ${update.manifest?.version}, ${update.manifest?.date}, ${update.manifest.body}`);
-            await installUpdate();
+        const update = await check();
+        if (update?.available) {
+            console.log(`Update to ${update.version} available! Date: ${update.date}`);
+            console.log(`Installing update version: ${update.version} from ${update.date}.`);
+            console.log(`Release notes: ${update.body}`);
+            await update.downloadAndInstall();
+            await relaunch();
         }
     }
     catch (e) {
