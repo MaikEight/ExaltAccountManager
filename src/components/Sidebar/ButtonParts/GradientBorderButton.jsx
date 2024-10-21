@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const GradientBorderButton = styled('div')(({ theme, selected }) => ({
+const GradientBorderButton = styled('div')(({ theme, selected, sx }) => ({
     position: 'relative',
     color: !selected ? theme.palette.text.primary : theme.palette.mode === 'light' ? theme.palette.background.default : theme.palette.text.primary,
     textTransform: 'none',
@@ -11,6 +11,7 @@ const GradientBorderButton = styled('div')(({ theme, selected }) => ({
     '&:hover': {
         color: theme.palette.mode === 'light' ? theme.palette.background.default : theme.palette.text.primary,
     },
+    ...sx
 }));
 
 export default GradientBorderButton;
