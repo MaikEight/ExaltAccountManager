@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import SideBarLogo from "../components/Sidebar/SideBarLogo";
 import CustomToolbar from "../components/Sidebar/CustomToolbar";
 import StyledButton from "../components/StyledButton";
-import { relaunch } from '@tauri-apps/api/process';
+import { relaunch } from '@tauri-apps/plugin-process';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import DiscordLogoFull from "../components/DiscordLogoFull";
