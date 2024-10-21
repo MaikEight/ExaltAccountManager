@@ -15,6 +15,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import DiscordButton from "./DiscordButton";
 import VaultPeekerLogo from "../VaultPeekerLogo";
 import { useTheme } from "@emotion/react";
+import SidebarLoginBox from "./SidebarLoginBox";
 
 function Sidebar({ children }) {
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
@@ -66,8 +67,8 @@ function Sidebar({ children }) {
                     sx={{ ml: '2px', mt: '3px', width: '20px' }}
                     color={
                         location.pathname === '/vaultPeeker' && theme.palette.mode === 'light' ?
-                        theme.palette.background.default
-                        : theme.palette.text.primary
+                            theme.palette.background.default
+                            : theme.palette.text.primary
                     }
                 />,
             action: handleNavigate,
@@ -182,51 +183,63 @@ function Sidebar({ children }) {
 
                     {/* Footer */}
                     <Box
+                        id="footer"
                         sx={{
                             display: "flex",
-                            flexDirection: "row",
+                            flexDirection: "column",
                             alignItems: "start",
                             justifyContent: "start",
                             gap: 2,
-                            width: 210,
                             ml: 2,
                             mb: 2,
                             mr: 2,
                         }}
                     >
-                        <FeedbackButton
-                            smallSize={isHovered}
-                        />
-                        <a
-                            href="https://discord.exalt-account-manager.eu"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <SidebarLoginBox />
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "start",
+                                justifyContent: "start",
+                                gap: 2,
+                            }}
                         >
-                            <DiscordButton
-                                isHovered={isHovered}
-                                setIsHovered={setIsHovered}
-                                action={() => {
-                                    // setSelectedIndex(-1);
-                                }}
+                            <FeedbackButton
+                                smallSize={isHovered}
                             />
-                        </a>
-                        {
-                            menuItems.map((menu, index) => (
-                                !menu.showInFooter ? null :
-                                    <Tooltip title={menu.name} key={index + menu.name}>
-                                        <IconButton
-                                            key={index + menu.name}
-                                            onClick={menu.action}
-                                            sx={{
-                                                color: menu.navigate === location.pathname ? 'primary.main' : 'text.primary',
-                                                transition: 'color 0.2s ease-in-out',
-                                            }}
-                                        >
-                                            {menu.icon}
-                                        </IconButton>
-                                    </Tooltip>
-                            ))
-                        }
+                            <a
+                                href="https://discord.exalt-account-manager.eu"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <DiscordButton
+                                    isHovered={isHovered}
+                                    setIsHovered={setIsHovered}
+                                    action={() => {
+                                        // setSelectedIndex(-1);
+                                    }}
+                                />
+                            </a>
+                            {
+                                menuItems.map((menu, index) => (
+                                    !menu.showInFooter ? null :
+                                        <Tooltip title={menu.name} key={index + menu.name}>
+                                            <IconButton
+                                                key={index + menu.name}
+                                                onClick={menu.action}
+                                                sx={{
+                                                    color: menu.navigate === location.pathname ? 'primary.main' : 'text.primary',
+                                                    transition: 'color 0.2s ease-in-out',
+                                                }}
+                                            >
+                                                {menu.icon}
+                                            </IconButton>
+                                        </Tooltip>
+                                ))
+                            }
+                        </Box>
                     </Box>
                 </Box>
                 {/* CONTENT */}
