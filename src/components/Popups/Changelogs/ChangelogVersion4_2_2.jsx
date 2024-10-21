@@ -19,10 +19,17 @@ function ChangelogVersion4_2_2() {
                 ]}
             />
             <ChangelogEntry
+                title={'Daily Logins'}
+                listOfChanges={[
+                    'Fixed the columns "🕛 End Time" and "⏱️ Duration" to behave correctly while the Daily Login taks is running.',
+                ]}
+            />
+            <ChangelogEntry
                 title={'Miscellaneous'}
                 listOfChanges={[
                     "Improved error message when refreshing of an account / logging in fails.",
                     "Fixed the account name fetching not working.",
+                    "Fixed spelling mistakes.",
                 ]}
             />
             <Box
