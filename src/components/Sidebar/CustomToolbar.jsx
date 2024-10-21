@@ -1,9 +1,10 @@
 import { Box, Button, ButtonGroup } from "@mui/material";
-import { appWindow } from '@tauri-apps/api/window'
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import CloseIcon from '@mui/icons-material/Close';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
 import { useTheme } from "@emotion/react";
+const appWindow = getCurrentWebviewWindow()
 
 function CustomToolbar(props) {
     const theme = useTheme();
