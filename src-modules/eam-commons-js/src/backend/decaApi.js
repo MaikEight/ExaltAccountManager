@@ -1,5 +1,5 @@
-import { fetch, ResponseType } from '@tauri-apps/api/http';
-import { invoke } from '@tauri-apps/api/tauri';
+import { fetch } from '@tauri-apps/plugin-http';
+import { invoke } from '@tauri-apps/api/core';
 import { logToErrorLog } from '../utils/loggingUtils';
 import { ROTMG_BASE_URL, UPDATE_URLS } from '../../constants';
 import { xmlToJson } from '../utils/XmlUtils';
@@ -98,7 +98,7 @@ async function getAppInit() {
             UPDATE_URLS(0),
             {
                 method: 'POST',
-                responseType: ResponseType.Text,
+                // responseType: ResponseType.Text,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Content-Length': '0'
