@@ -1,4 +1,4 @@
-import { invoke, tauri } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import { getCurrentTime } from './timeUtils';
 import { logToErrorLog } from './loggingUtils';
 
@@ -32,7 +32,7 @@ async function updateGame() {
 
     sessionStorage.setItem('updateInProgress', 'true');
 
-    tauri.invoke('perform_game_update').then(() => {
+    invoke('perform_game_update').then(() => {
         localStorage.removeItem('updateNeeded');
     }).catch((error) => {
         logToErrorLog('updateGame', error);
