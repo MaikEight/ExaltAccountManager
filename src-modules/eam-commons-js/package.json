@@ -1,6 +1,6 @@
 {
   "name": "eam-commons-js",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Commons Lib for EAM",
   "main": "dist/eam-commons-js.umd.js",
   "files": [
@@ -15,11 +15,15 @@
   "author": "Maik8",
   "license": "GPL-3.0",
   "dependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-react": "^7.24.7",
-    "@mui/material": "^6.1.0",
-    "@tauri-apps/api": "^1.6.0",
+    "@babel/core": "^7.25.7",
+    "@babel/preset-env": "^7.25.7",
+    "@babel/preset-react": "^7.25.7",    
+    "@tauri-apps/api": "^2.0.2",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.3",
+    "@mui/material": "^6.1.3",
+    "@mui/styled-engine-sc": "^6.1.3",
     "axios": "^1.7.7",
     "babel-loader": "^9.2.1",
     "buffer": "^6.0.3",
@@ -30,11 +34,12 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "stream-browserify": "^3.0.0",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.6.2",
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.8"
+    "@tauri-apps/cli": "^2.0.4",
+    "@vitejs/plugin-react": "^4.3.3",
+    "vite": "^5.4.10"
   }
 }
