@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 
 async function logToAuditLog(sender, message, accountEmail = null) {
     if (!sender || !message) return;
