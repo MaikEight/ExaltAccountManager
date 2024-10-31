@@ -52,3 +52,7 @@ export function UPDATE_URLS(index, values) {
             return null;
     }
 }
+
+export const AUTH0_CLIENT_ID = 'o1W1coVQMV9qrIg4G2SmZJbz1G5vRCpZ';
+export const AUTH0_DOMAIN = 'https://login.exaltaccountmanager.com';
+export const STRIPE_CUSTOMER_PORTAL_URL = 'https://billing.stripe.com/p/login/test_dR63erdeEeUo5nGcMM';
