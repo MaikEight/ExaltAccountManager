@@ -314,7 +314,7 @@ function VaultPeekerContextProvider({ children }) {
                 callback(applyFilter(items));
             }
         });
-    }, [filter]);
+    }, [filter, totalItems]);
 
     const addItemFilterCallback = (id, callback, items) => {
         setFilterItemsCallbacks((prev) => {
