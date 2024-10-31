@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 
 async function storeCharList(charList, email) {
     //format the charList to a model::dataset
