@@ -107,34 +107,6 @@ function AccountDetails({ acc, onClose }) {
         return serverToJoin === "Last Server" ? "" : serverToJoin;
     };
 
-    // const refreshData = async () => {
-    //     if (!account) {
-    //         return;
-    //     }
-
-    //     const accResponse = await sendAccountVerify(account.email);
-    //     if (accResponse === null || !accResponse.success) {
-    //         logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
-    //         showSnackbar("Failed to refresh data", 'error');
-    //         return;
-    //     }
-
-    //     const token = {
-    //         AccessToken: accResponse.data.Account.AccessToken,
-    //         AccessTokenTimestamp: accResponse.data.Account.AccessTokenTimestamp,
-    //         AccessTokenExpiration: accResponse.data.Account.AccessTokenExpiration,
-    //     };
-
-    //     const charList = await sendCharList(account.email, token.AccessToken);
-    //     if (charList === null || !charList.success) {
-    //         logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
-    //         showSnackbar("Failed to refresh data", 'error');
-    //         return;
-    //     }
-
-    //     return token;
-    // };
-
     const startGame = async () => {
         if (!account) {
             return;
