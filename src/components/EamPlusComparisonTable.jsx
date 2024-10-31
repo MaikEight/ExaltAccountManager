@@ -8,14 +8,14 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { useEffect, useState } from "react";
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import { useAuth0 } from "@auth0/auth0-react";
-import { invoke } from "@tauri-apps/api/core";
 import StyledButton from "./StyledButton";
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
-import { useColorList, getEamPlusPrices } from 'eam-commons-js';
+import { useColorList, getEamPlusPrices, useUserLogin } from 'eam-commons-js';
 
 function EamPlusComparisonTable() {
+    const { user } = useUserLogin();
+
     const [expandedAccounts, setExpandedAccounts] = useState(false);
     const [expandedVP, setExpandedVP] = useState(false);
     const [prices, setPrices] = useState(null);
@@ -26,27 +26,32 @@ function EamPlusComparisonTable() {
     const chipColor = useColorList(0);
 
     useEffect(() => {
-        getEamPlusPrices()
-            .then(priceDataStr => {
-                const priceData = JSON.parse(priceDataStr);
-                let _prices = ['monthly', 'yearly', 'permanent']
-                    .map(lookup_key => {
-                        const p = priceData.find(p => p.lookup_key === lookup_key);
-                        return {
-                            key: lookup_key,
-                            data: {
-                                ...p,
-                                displayPrice: p.unit_amount / 100 + '€'
-                            }
-                        };
-                    }).filter(p => p.data !== undefined);
-                _prices = new Map(_prices.map(p => [p.key, p.data]));
-                console.log('_prices', _prices);
-                setPrices(_prices);
-            });
+        const fetchPrices = async () => {
+            const storedPrices = sessionStorage.getItem('eam_plus_prices');
+            if (storedPrices !== null) {
+                setPrices(new Map(JSON.parse(storedPrices)));
+                return;
+            }
+
+            const priceDataStr = await getEamPlusPrices();
+            const priceData = JSON.parse(priceDataStr);
+            let _prices = ['monthly', 'yearly', 'permanent']
+                .map(lookup_key => {
+                    const p = priceData.find(p => p.lookup_key === lookup_key);
+                    return {
+                        key: lookup_key,
+                        data: {
+                            ...p,
+                            displayPrice: p.unit_amount / 100 + '€'
+                        }
+                    };
+                }).filter(p => p.data !== undefined);
+            _prices = new Map(_prices.map(p => [p.key, p.data]));
+            sessionStorage.setItem('eam_plus_prices', JSON.stringify([..._prices]));
+            setPrices(_prices);
+        };
+        fetchPrices();
     }, []);
-
-
 
     const checkout = (variant) => {
         console.log('checkout', variant);
@@ -85,7 +90,8 @@ function EamPlusComparisonTable() {
                     <TableBody>
                         <PriceTableRow
                             plan="EAM Plus Monthly"
-                            price={`${prices.get('monthly').displayPrice} / Monthly`}
+                            price={`/ Monthly`}
+                            priceData={prices.get('monthly')}
                             onClick={() => checkout('monthly')}
                         />
                         <PriceTableRow
@@ -111,12 +117,14 @@ function EamPlusComparisonTable() {
                                     />
                                 </Box>
                             }
-                            price={`${prices.get('yearly').displayPrice} / Year`}
+                            priceData={prices.get('yearly')}
+                            price={` / Year`}
                             onClick={() => checkout('yearly')}
                         />
                         <PriceTableRow
                             plan="EAM Plus Permanent"
-                            price={`${prices.get('permanent').displayPrice}`}
+                            price={''}
+                            priceData={prices.get('permanent')}
                             onClick={() => checkout('permanent')}
                         />
                     </TableBody>
@@ -134,6 +142,8 @@ function EamPlusComparisonTable() {
                 flexDirection: 'column',
                 alignItems: 'center',
             }}
+            defaultCollapsed={user?.isPlusUser}
+            isCollapseable={user?.isPlusUser}
         >
             <Box
                 sx={{
@@ -305,35 +315,41 @@ function EamPlusComparisonTable() {
                 </Typography>
             </Box>
 
-            <Box
-                sx={{
-                    mt: 4,
-                    p: 1,
-                    borderRadius: theme => `${theme.shape.borderRadius}px`,
-                    backgroundColor: theme => theme.palette.background.default,
-                }}
-            >
-                {pricesTable()}
-            </Box>
+            {
+                !user?.isPlusUser &&
+                <Box
+                    sx={{
+                        mt: 4,
+                        p: 1,
+                        borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        backgroundColor: theme => theme.palette.background.default,
+                    }}
+                >
+                    {pricesTable()}
+                </Box>
+            }
         </ComponentBox>
     );
 }
 
-function PriceTableRow({ plan, price, onClick, sx }) {
-    const { isAuthenticated, loginWithRedirect } = useAuth0();
+function PriceTableRow({ plan, price, priceData, onClick, sx }) {
+    const { isAuthenticated, user, login } = useUserLogin();
+    price = priceData ? `${priceData.displayPrice} ${price}` : price;
 
-    const login = async () => {
-        await loginWithRedirect({
-            async openUrl(url) {
-                invoke('open_url', { url: url });
-            }
-        });
-    };
+    const getPaymentMode = (type) => {
+        switch (type) {
+            case 'one_time':
+                return 'payment';
+            case 'recurring':
+                return 'subscription';
+            default:
+                return 'Unknown';
+        }
+    }
 
     return (
         <TableRow
             sx={{
-                cursor: 'pointer',
                 ...sx
             }}
             onClick={onClick}
@@ -378,12 +394,19 @@ function PriceTableRow({ plan, price, onClick, sx }) {
                 }}
             >
                 {
-                    isAuthenticated ?
-                        <StyledButton
-                            startIcon={<AddShoppingCartOutlinedIcon />}
-                        >
-                            Checkout
-                        </StyledButton>
+                    (isAuthenticated && user) ?
+                        <form action="https://payments.exaltaccountmanager.com/eam-plus-create-checkout-session" target="_blank" method="POST">
+                            <input type="hidden" name="lookup_key" value={priceData.id} />
+                            <input type="hidden" name="mode" value={getPaymentMode(priceData.type)} />
+                            <input type="hidden" name="client_reference_id" value={user.sub} />
+                            <StyledButton
+                                startIcon={<AddShoppingCartOutlinedIcon />}
+                                type="submit"
+                                id="checkout-button"
+                            >
+                                Checkout
+                            </StyledButton>
+                        </form>
                         :
                         <StyledButton
                             sx={{
