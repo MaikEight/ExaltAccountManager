@@ -31,6 +31,8 @@ function ChangelogVersion4_2_2() {
                     "Improved error message when refreshing of an account / logging in fails.",
                     "Fixed the account name fetching not working.",
                     "Fixed spelling mistakes.",
+                    "Fixed the server in the accout details not updating correctly when switching accounts.",
+                    "Fixed filter in vault peeker not getting re-applied after refreshing an account.",
                 ]}
             />
             <Box
@@ -69,6 +71,7 @@ function ChangelogVersion4_2_2() {
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>                                
+                                <li>rengarbage</li>
                                 <li>and many more...</li>
                             </ul>
                         </Typography>
