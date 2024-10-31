@@ -21,6 +21,7 @@ use lazy_static::lazy_static;
 use log::{error, info};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use simplelog::*;
+use serde_json::Value;
 use tauri::http::HeaderName;
 use std::collections::HashMap;
 use std::env;
@@ -115,6 +116,7 @@ fn main() {
             check_for_game_update,
             perform_game_update,
             send_get_request,
+            send_post_request,
             send_post_request_with_form_url_encoded_data,
             send_post_request_with_json_body,
             send_patch_request_with_json_body,
@@ -526,6 +528,35 @@ async fn send_get_request(url: String, custom_headers: HashMap<String, String>) 
 
     let body = res.text().await.map_err(|e| e.to_string())?;
     Ok(body)    
+}
+
+#[tauri::command]
+async fn send_post_request(url: String, custom_headers: HashMap<String, String>, body: Value) -> Result<String, String> {
+    info!("Sending post request...");
+
+    let mut headers = HeaderMap::new();
+    custom_headers.into_iter().for_each(|(key, value)| {
+        let header_name = HeaderName::from_str(&key).unwrap();
+        let header_value = HeaderValue::from_str(&value).unwrap();
+        headers.append(
+            header_name,
+            header_value,
+        );
+    });
+
+    headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
+
+    let client = reqwest::Client::new();
+    let res = client
+        .post(&url)
+        .headers(headers)
+        .json(&body)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let body = res.text().await.map_err(|e| e.to_string())?;
+    Ok(body)
 }
 
 #[tauri::command]
