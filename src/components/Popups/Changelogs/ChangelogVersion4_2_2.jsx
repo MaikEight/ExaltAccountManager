@@ -16,6 +16,7 @@ function ChangelogVersion4_2_2() {
                 title={'Vault Peeker'}
                 listOfChanges={[
                     "Added support for hidding vault types.",
+                    "Updated the items and pictures.",
                 ]}
             />
             <ChangelogEntry
@@ -61,8 +62,13 @@ function ChangelogVersion4_2_2() {
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
+                                <li>Surrender</li>
                                 <li>Connie</li>
                                 <li>Rodrigo</li>
+                            </ul>
+                        </Typography>
+                        <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
+                            <ul>                                
                                 <li>and many more...</li>
                             </ul>
                         </Typography>
