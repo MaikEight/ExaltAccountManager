@@ -1,6 +1,6 @@
 import { useEffect, useState, createContext } from "react";
 import _ from "lodash";
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import { logToAuditLog } from "../utils/loggingUtils";
 
 const UserSettingsContext = createContext();
