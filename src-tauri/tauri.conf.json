@@ -1,7 +1,7 @@
 {
   "build": {
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command .\\buildEnvKeys.ps1 && npm run build",
+    "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420"
   },
