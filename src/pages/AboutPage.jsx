@@ -58,7 +58,7 @@ function AboutPage() {
                 >
                     <Typography>
                         Exalt Account Manager version {APP_VERSION}{IS_PRE_RELEASE && ' Preview'}<br />
-                        Released on 23.09.2024.
+                        Released on 31.10.2024.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
@@ -76,7 +76,7 @@ function AboutPage() {
                                 <img src="/logo/llama.gif" alt="Llama" height='40px' style={{ borderRadius: theme.shape.borderRadius }} />
                             }
                             <img src="/logo/Logo_NameOnly_2_Medium.jpg"
-                                alt="MeikEight Logo"
+                                alt="MaikEight Logo"
                                 height='40px'
                                 width='150.56px'
                                 style={{ borderRadius: theme.shape.borderRadius }}
