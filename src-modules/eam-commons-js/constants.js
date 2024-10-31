@@ -22,3 +22,9 @@ export function UPDATE_URLS(index, values) {
             return null;
     }
 }
+
+export const AUTH0_CLIENT_ID = 'o1W1coVQMV9qrIg4G2SmZJbz1G5vRCpZ';
+export const AUTH0_DOMAIN = 'login.exaltaccountmanager.com';
+export const AUTH0_REDIRECT_URL = 'eam:profile/callback';
+
+export const EAM_USERS_API = 'https://user.api.exaltaccountmanager.com';
