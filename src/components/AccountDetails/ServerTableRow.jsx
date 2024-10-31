@@ -1,18 +1,21 @@
 import { Box, IconButton, TableRow, Tooltip, Typography } from "@mui/material";
 import PaddedTableCell from "./PaddedTableCell";
 import ServerChip from "../GridComponents/ServerChip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ServerListSelect from "../ServerListSelect";
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 
 function ServerTableRow({ keyValue, value, showSaveButton, onSave, ...rest }) {
-    const [selected, setSelected] = useState(value);
-
     const { onChange } = rest;
-    const params = {
-        value: value,
-    };
+
+    const [selected, setSelected] = useState(value);
+    const [params, setParams] = useState({ value: value });
+
+    useEffect(() => {
+        setParams({ value: value });
+        setSelected(value);
+    }, [value]);    
 
     const handleChangeServer = (server) => {
         setSelected(server);
