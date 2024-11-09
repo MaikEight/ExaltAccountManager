@@ -1,33 +1,23 @@
-import { Box, Checkbox, FormControlLabel, Tooltip } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Typography, Tooltip, Divider, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
+import FilterListOffOutlinedIcon from '@mui/icons-material/FilterListOffOutlined';
 
 function CharacterSeasonalTypeFilter() {
     const { filter, changeFilter } = useVaultPeeker();
 
-    const handleChange = () => {
-        const checked = filter.characterType.value === 3 ? 0 : filter.characterType.value + 1;
+    const handleChange = (_, newValue) => {
+        if (newValue === null || newValue === filter.characterType.value) {
+            return;
+        }
+
+        const checked = newValue;
         changeFilter('characterType', {
             enabled: checked !== 0,
             value: checked,
         });
-    };
-
-    const getTooltipTitle = () => {
-        switch (filter.characterType.value) {
-            case 0:
-                return "Show all items";
-            case 1:
-                return "Show only items on seasonal characters";
-            case 2:
-                return "Show only items on normal characters";
-            case 3:
-                return "Show only items not on characters";
-            default:
-                return "";
-        }
     };
 
     return (
@@ -35,38 +25,58 @@ function CharacterSeasonalTypeFilter() {
             id="character-seasonal-type-filter-root"
             sx={{
                 display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
+                flexDirection: 'column',
+                gap: 0.25,
             }}
         >
-            <Tooltip title={getTooltipTitle()}>
-                <FormControlLabel
-                    label="Character Type"
-                    labelPlacement="top"
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'start',
-                        alignItems: 'start',
-                        p: 0,
-                        m: 0,
-                        ml: 1,
-                    }}
-                    control={
-                        <Checkbox
-                            sx={{ ml: -1 }}
-                            checked={filter.characterType.value === 1}
-                            indeterminate={filter.characterType.value >= 2}
-                            onChange={handleChange}
-                            indeterminateIcon={
-                                filter.characterType.value === 2 ?
-                                    <PersonOutlineOutlinedIcon /> :
-                                    <PersonOffOutlinedIcon />
-                            }
-                            checkedIcon={<AccessTimeOutlinedIcon />}
-                        />
-                    }
-                />
-            </Tooltip>
+            <Typography
+                sx={{
+                    ml: 0.5,
+                }}
+            >
+                Character Type
+            </Typography>            
+            <ToggleButtonGroup
+                value={filter.characterType.value}
+                exclusive
+                onChange={handleChange}
+                aria-label="Character Type filter"
+                size="small"
+                sx={{
+                    backgroundColor: theme => theme.palette.background.backdrop,
+                    height: '39px',
+                    gap: 0.5,
+                    '& .MuiToggleButtonGroup-grouped': {
+                        border: 'none',
+                        borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        width: '39px',
+                    },
+                }}
+            >
+                <Tooltip title={'Show all items'}>
+                    <ToggleButton value={0} aria-label="All items" key={'All'} >
+                        <FilterListOffOutlinedIcon color={filter.characterType.value === 0 ? 'primary' : ''} />
+                    </ToggleButton>
+                </Tooltip>
+                <Divider orientation="vertical" variant="middle" flexItem />
+                <Tooltip title={'Show only items on seasonal characters'}>
+                    <ToggleButton value={1} aria-label="On seasonal characters" key={'SeasonalChars'}>
+                        <AccessTimeOutlinedIcon color={filter.characterType.value === 1 ? 'primary' : ''} />
+                    </ToggleButton>
+                </Tooltip>
+                <Divider orientation="vertical" variant="middle" flexItem />
+                <Tooltip title={'Show only items on normal characters'}>
+                    <ToggleButton value={2} aria-label="On normal characters" key={'NormalChars'}>
+                        <PersonOutlineOutlinedIcon color={filter.characterType.value === 2 ? 'primary' : ''} />
+                    </ToggleButton>
+                </Tooltip>
+                <Divider orientation="vertical" variant="middle" flexItem />
+                <Tooltip title={'Show only items not on characters'}>
+                    <ToggleButton value={3} aria-label="On character" key={'OnChars'}>
+                        <PersonOffOutlinedIcon color={filter.characterType.value === 3 ? 'primary' : ''} />
+                    </ToggleButton>
+                </Tooltip>
+            </ToggleButtonGroup>
         </Box>
     );
 }
