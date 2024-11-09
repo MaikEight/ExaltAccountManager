@@ -18,7 +18,6 @@ async function getGitHubStars() {
 
     if (response.status === 200) {
         const body = await response.json();
-        console.log('body', body);
         const stars = body.stargazers_count;
         sessionStorage.setItem('githubStars', stars);
         return stars;
