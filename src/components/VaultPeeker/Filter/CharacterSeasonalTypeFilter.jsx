@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControlLabel, Typography, Tooltip, Divider, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { Box, Typography, Tooltip, Divider, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
