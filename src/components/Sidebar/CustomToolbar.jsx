@@ -37,7 +37,7 @@ function CustomToolbar(props) {
                     <MinimizeIcon />
                 </Button>
                 <Button
-                    onClick={async () => await getCurrentWindow().maximize()}
+                    onClick={async () => await getCurrentWindow().toggleMaximize()}
                     sx={{
                         color: theme.palette.text.primary
                     }}
