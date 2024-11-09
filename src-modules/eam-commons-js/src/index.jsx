@@ -1,6 +1,7 @@
 export {
     getProfileImageUrl,
-    getProfileImage
+    getProfileImage,
+    patchUserLlama
 } from './backend/eamUsersApi.js';
 
 export {

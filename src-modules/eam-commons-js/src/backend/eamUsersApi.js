@@ -1,4 +1,5 @@
 import { fetch } from '@tauri-apps/plugin-http';
+import { EAM_USERS_API } from '../../constants';
 
 async function getProfileImage(imageUrl) {
     const response = await fetch(
@@ -31,10 +32,34 @@ function arrayBufferToBase64(buffer) {
     return window.btoa(binary);
 }
 
-function getProfileImageUrl(imageUrl) 
-{ 
+function getProfileImageUrl(imageUrl) {
     return imageUrl;
-    // return `https://user.exaltaccountmanager.com/get-image.php?imageUrl=${imageUrl}&origin=ExaltAccountManager`;
 }
 
-export { getProfileImage, getProfileImageUrl };
+async function patchUserLlama(id_token) {
+    const myHeaders = {
+        "Authorization": `Bearer ${id_token}`
+    };
+
+    const requestOptions = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: JSON.stringify({}) // Assuming an empty body as in the original axios call
+    };
+
+    try {
+        const response = await fetch(`${EAM_USERS_API}/user/llama`, requestOptions);
+
+        if (!response?.ok) {
+            console.error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+            return { error: true, message: response?.statusText };
+        }
+
+        return response;
+    } catch (e) {
+        console.error(e);
+        return { error: true, message: e?.message };
+    }
+}
+
+export { getProfileImage, getProfileImageUrl, patchUserLlama };
