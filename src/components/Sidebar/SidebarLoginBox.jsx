@@ -33,6 +33,7 @@ const GREETING_TEXTS = [
     'The legend returns, ',
     'Party time, ',
     'There you are, ',
+    'Allons-y, ',
 ];
 
 function SidebarLoginBox() {
