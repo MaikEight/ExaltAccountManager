@@ -1,30 +1,22 @@
-import { Box, Checkbox, FormControlLabel, Tooltip } from "@mui/material";
+import { Box, Tooltip, Typography, Divider, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import LockIcon from '@mui/icons-material/Lock';
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
+import FilterListOffOutlinedIcon from '@mui/icons-material/FilterListOffOutlined';
 
 function SoulboundFilter() {
     const { filter, changeFilter } = useVaultPeeker();
 
-    const handleChange = () => {
-        const checked = filter.soulbound.value === 2 ? 0 : filter.soulbound.value + 1;
+    const handleChange = (_, newValue) => {
+        if (newValue === null || newValue === filter.soulbound.value) {
+            return;
+        }
+
+        const checked = newValue;
         changeFilter('soulbound', {
             enabled: checked !== 2,
             value: checked,
         });
-    };
-
-    const getTooltipTitle = () => {
-        switch (filter.soulbound.value) {
-            case 0:
-                return "Show only soulbound items";
-            case 1:
-                return "Show only tradeable items";
-            case 2:
-                return "Show all items";
-            default:
-                return "";
-        }
     };
 
     return (
@@ -32,34 +24,52 @@ function SoulboundFilter() {
             id="soulbound-filter-root"
             sx={{
                 display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
+                flexDirection: 'column',
+                gap: 0.25,
             }}
         >
-            <Tooltip title={getTooltipTitle()}>
-                <FormControlLabel
-                    label="Soulbound"
-                    labelPlacement="top"
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'start',
-                        alignItems: 'start',
-                        p: 0,
-                        m: 0,
-                        ml: 1,
-                    }}
-                    control={
-                        <Checkbox
-                            sx={{ ml: -1 }}
-                            checked={filter.soulbound.value === 0}
-                            indeterminate={filter.soulbound.value === 1}
-                            onChange={handleChange}
-                            indeterminateIcon={<LockOpenOutlinedIcon />}
-                            checkedIcon={<LockIcon />}
-                        />
-                    }
-                />
-            </Tooltip>
+            <Typography
+                sx={{
+                    ml: 0.5,
+                }}
+            >
+                Soulbound
+            </Typography>
+            <ToggleButtonGroup
+                value={filter.soulbound.value}
+                exclusive
+                onChange={handleChange}
+                aria-label="Soulbound filter"
+                size="small"
+                sx={{
+                    backgroundColor: theme => theme.palette.background.backdrop,
+                    height: '39px',
+                    gap: 0.5,
+                    '& .MuiToggleButtonGroup-grouped': {
+                        border: 'none',
+                        borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        width: '39px',
+                    },
+                }}
+            >
+                <Tooltip title={'Show all items'}>
+                    <ToggleButton value={2} aria-label="All items" key={'All'} >
+                        <FilterListOffOutlinedIcon color={filter.soulbound.value === 2 ? 'primary' : ''} />
+                    </ToggleButton>
+                </Tooltip>
+                <Divider orientation="vertical" variant="middle" flexItem />
+                <Tooltip title={'Show only tradeable items'}>
+                    <ToggleButton value={1} aria-label="Tradeable" key={'Tradeable'}>
+                        <LockOpenOutlinedIcon color={filter.soulbound.value === 1 ? 'primary' : ''} />
+                    </ToggleButton>
+                </Tooltip>
+                <Divider orientation="vertical" variant="middle" flexItem />
+                <Tooltip title={'Show only soulbound items'}>
+                    <ToggleButton value={0} aria-label="Soulbound" key={'Soulbound'}>
+                        <LockIcon color={filter.soulbound.value === 0 ? 'primary' : ''} />
+                    </ToggleButton>
+                </Tooltip>
+            </ToggleButtonGroup>
         </Box>
     );
 }
