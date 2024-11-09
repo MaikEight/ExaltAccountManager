@@ -20,6 +20,7 @@ import VaultPeekerPage from './pages/VaultPeekerPage';
 import FatalErrorPage from './pages/FatalErrorPage';
 import DeepLinkingComponent from './components/DeepLinkingComponent';
 import ProfilePage from './pages/ProfilePage';
+import PaymentSuccessful from './pages/PaymentSuccessful';
 
 function MainRouter() {
     const theme = useTheme();    
@@ -57,6 +58,7 @@ function MainRouter() {
                                                 <Route path='/about' element={<AboutPage />}></Route>
                                                 <Route path='/feedback' element={<FeedbackPage />}></Route>
                                                 <Route path='/importer' element={<ImporterPage />}></Route>
+                                                <Route path='/payment/successful' element={<PaymentSuccessful />}></Route>
                                                 <Route path='*' element={<AccountsPage />}></Route>
                                             </Routes>
                                         </ErrorBoundary>
