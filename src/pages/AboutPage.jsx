@@ -11,16 +11,31 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import usePopups from './../hooks/usePopups';
 import CreditsPopup from "../components/Popups/CreditsPopup";
 import { APP_VERSION, IS_PRE_RELEASE } from "../constants";
+import { useUserLogin, patchUserLlama } from "eam-commons-js";
+import Confetti from "react-confetti";
 
 function AboutPage() {
     const [showLlama, setShowLlama] = useState(false);
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
     const theme = useTheme();
     const { showPopup } = usePopups();
+    const { user, idToken } = useUserLogin();
 
     useEffect(() => {
         const timeout = setTimeout(() => {
             setShowLlama(false);
         }, 5000);
+
+        if (showLlama &&
+            user &&
+            idToken &&
+            !user.user_metadata?.llama?.found
+        ) {
+            patchUserLlama(idToken);
+        }
 
         return () => {
             clearTimeout(timeout);
@@ -29,6 +44,14 @@ function AboutPage() {
 
     return (
         <Box sx={{ width: '100%', overflow: 'auto' }}>
+            {
+                showLlama &&
+                <Confetti
+                    width={windowSize.width}
+                    height={windowSize.height}
+
+                />
+            }
             <ComponentBox
                 title="About Exalt Account Manager"
                 icon={<img src={theme.palette.mode === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'} alt="EAM Logo" height='35.18px' width='35.18px' />}
