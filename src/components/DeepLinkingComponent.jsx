@@ -49,7 +49,9 @@ function DeepLinkingComponent() {
 
                 if (success === 'true') {
                     console.log('🥳 - Purchase successful - 🎉');
+                    navigate('/payment/successful');
                     refreshUserAfterDelay();
+                    return;
                 }
 
                 navigate('/profile');
@@ -59,7 +61,7 @@ function DeepLinkingComponent() {
             const urlData = url.pathname.replace(/^\/+|\/+$/g, '');
             if (deepLinkingPaths.has(urlData)) {
                 navigate(deepLinkingPaths.get(urlData) + url.search);
-                console.log("Nav:", deepLinkingPaths.get(urlData));
+                console.log(deepLinkingPaths.get(urlData));
             }
         });
     }
