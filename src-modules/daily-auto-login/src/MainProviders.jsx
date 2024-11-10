@@ -1,13 +1,14 @@
+import { ColorContext, GroupsContextProvider } from "eam-commons-js";
+import { useContext } from "react";
+import MainRouter from "./MainRouter";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import styled, { ThemeProvider as StyledThemeProvider } from "styled-components";
-import { ColorContext } from "eam-commons-js";
-import { useContext } from "react";
-import { MaterialDesignContent, SnackbarProvider, useSnackbar } from "notistack";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import MainRouterRoutes from "./MainRouter";
+import { MaterialDesignContent, SnackbarProvider, useSnackbar } from "notistack";
+
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const getSnackbarStyles = (theme) => ({
     '&.notistack-MuiContent-default': {
@@ -37,12 +38,10 @@ const CloseAction = (key) => {
         </IconButton>
     );
 };
-
 function MainProviders() {
     const colorContext = useContext(ColorContext);
-    console.log('colorContext', colorContext);
     const theme = colorContext.theme;
-    
+
     return (
         <StyledThemeProvider theme={theme}>
             <MuiThemeProvider theme={theme}>
@@ -58,10 +57,12 @@ function MainProviders() {
                     }}
                     action={CloseAction}
                 >
-                    <MainRouterRoutes />
+                    <GroupsContextProvider>
+                        <MainRouter />
+                    </GroupsContextProvider>
                 </SnackbarProvider>
             </MuiThemeProvider>
-        </StyledThemeProvider >
+        </StyledThemeProvider>
     );
 }
 
