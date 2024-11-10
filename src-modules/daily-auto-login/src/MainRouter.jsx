@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import { ErrorBoundary } from 'react-error-boundary';
 import Sidebar from './components/sidebar/Sidebar';
