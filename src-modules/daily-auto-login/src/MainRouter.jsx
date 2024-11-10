@@ -5,6 +5,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Sidebar from './components/sidebar/Sidebar';
 import DashboardPage from './pages/DashboardPage';
 import { TaskProvider } from './contexts/TaskContext';
+import { WorkerContextProvider } from './contexts/WorkerContext';
 
 function MainRouter() {
     const theme = useTheme();
@@ -25,10 +26,12 @@ function MainRouter() {
                             onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}
                         >
                             <TaskProvider>
-                                <Routes>
-                                    <Route path='/' element={<DashboardPage />}></Route>
-                                    <Route path='/dashboard' element={<DashboardPage />}></Route>
-                                </Routes>
+                                <WorkerContextProvider>
+                                    <Routes>
+                                        <Route path='/' element={<DashboardPage />}></Route>
+                                        <Route path='/dashboard' element={<DashboardPage />}></Route>
+                                    </Routes>
+                                </WorkerContextProvider>
                             </TaskProvider>
                         </ErrorBoundary>
                     </Sidebar>
