@@ -210,7 +210,7 @@ function UserLoginProvider({ children }) {
                 && subEndDate > Date.now()
             );
         _user.isPlusUser = isPlusUser;
-        _user.subName = isPlusUser ? 'Plus User' : 'Default User';
+        _user.subName = isPlusUser ? 'Plus' : 'Default';
         if (subEndDate) {
             _user.subscriptionEndDate = subEndDate;
         }
