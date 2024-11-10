@@ -30,7 +30,8 @@ export const darkTheme = createTheme({
         background: {
             default: '#28243D',
             paper: '#312D4B',
-            paperLight: '#3D3759'
+            paperLight: '#3D3759',
+            backdrop: 'rgba(40, 36, 61, 0.5)'
         },
     },
     shape: {

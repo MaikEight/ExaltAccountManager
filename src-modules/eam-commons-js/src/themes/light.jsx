@@ -30,7 +30,8 @@ export const lightTheme = createTheme({
         background: {
             default: '#F4F5FA',
             paper: '#FFFFFF',
-            paperLight: '#F9FAFC'
+            paperLight: '#F9FAFC',
+            backdrop: 'rgba(244, 245, 250, 0.75)',
         },
     },
     shape: {
