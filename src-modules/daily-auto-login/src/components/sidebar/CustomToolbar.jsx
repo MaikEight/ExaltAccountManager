@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup } from "@mui/material";
-import { appWindow } from '@tauri-apps/api/window'
+import { getCurrentWindow  } from '@tauri-apps/api/window'
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import CloseIcon from '@mui/icons-material/Close';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
@@ -24,12 +24,12 @@ function CustomToolbar(props) {
                 aria-label="Toolbar buttons"
                 sx={{
                     mt: 0.25,
-                    mr: 0.25,
+                    mr: 0.375,
                     height: 25,
                 }}
             >
                 <Button
-                    onClick={() => appWindow.minimize()}
+                    onClick={async () => await getCurrentWindow().minimize()}
                     sx={{
                         color: theme.palette.text.primary,
                     }}
@@ -37,7 +37,7 @@ function CustomToolbar(props) {
                     <MinimizeIcon />
                 </Button>
                 <Button
-                    onClick={() => appWindow.toggleMaximize()}
+                    onClick={async () => await getCurrentWindow().toggleMaximize()}
                     sx={{
                         color: theme.palette.text.primary
                     }}
@@ -45,15 +45,14 @@ function CustomToolbar(props) {
                     <CropSquareIcon />
                 </Button>
                 <Button
-                    onClick={() => appWindow.close()}
+                    onClick={async () => await getCurrentWindow().close()}
                     sx={{
                         color: theme.palette.text.primary,
-                        borderRadius: `0px 9px ${theme.shape.borderRadius}px 0px`,
+                        borderRadius: `0px ${theme.shape.borderRadius - 2}px ${theme.shape.borderRadius - 2}px 0px`,
                     }}
                 >
                     <CloseIcon />
                 </Button>
-
             </ButtonGroup>
         </Box>
     );
