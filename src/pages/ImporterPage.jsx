@@ -526,11 +526,12 @@ function ImporterPage() {
                                     const filePath = await dialog.open({
                                         multiple: false,
                                         filters: [
-                                            { name: 'Supported Files', extensions: ['csv', 'json', 'txt', 'accounts'] },
+                                            { name: 'Supported Files', extensions: ['csv', 'json', 'txt', 'accounts', 'js'] },
                                             { name: 'CSV Files', extensions: ['csv'] },
                                             { name: 'JSON Files', extensions: ['json'] },
                                             { name: 'Text Files', extensions: ['txt'] },
                                             { name: 'EAM.accounts Files', extensions: ['accounts'] },
+                                            { name: 'JavaScript Files', extensions: ['js'] },
                                             { name: 'All Files', extensions: ['*'] }
                                         ]
                                     });
