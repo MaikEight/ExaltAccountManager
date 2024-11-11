@@ -4,7 +4,6 @@ import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 import SidebarButton from "./SidebarButton";
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -13,8 +12,6 @@ function Sidebar({ children }) {
     const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
-
-    const [isHovered, setIsHovered] = useState(false);    
 
     const handleNavigate = (nav) => {
         console.log(nav);
