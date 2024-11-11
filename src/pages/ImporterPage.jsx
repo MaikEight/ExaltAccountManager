@@ -1,7 +1,7 @@
-import { Box, Chip, FormControl, Input, LinearProgress, MenuItem, Pagination, Paper, Radio, Select, Step, StepLabel, Stepper, Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography, alpha, darken, lighten } from "@mui/material";
+import { Box, Chip, FormControl, Input, LinearProgress, MenuItem, Pagination, Paper, Radio, Select, Step, StepLabel, Stepper, Table, TableBody, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { listen } from '@tauri-apps/api/event'
-import {  invoke } from '@tauri-apps/api/core';
+import { invoke } from '@tauri-apps/api/core';
 import Papa from 'papaparse';
 import ComponentBox from './../components/ComponentBox';
 import PlaylistAddOutlinedIcon from '@mui/icons-material/PlaylistAddOutlined';
@@ -251,7 +251,7 @@ function ImporterPage() {
             if (accountsMatch && accountsMatch[1]) {
                 // Parse the extracted string into a JavaScript object
                 const accountsObj = JSON.parse(accountsMatch[1].replace(/'/g, '"'));
-                const _accounts = Object.keys(accountsObj).map((email, index) => {
+                const _accounts = Object.keys(accountsObj).map((email) => {
                     return {
                         email: email,
                         password: accountsObj[email],
