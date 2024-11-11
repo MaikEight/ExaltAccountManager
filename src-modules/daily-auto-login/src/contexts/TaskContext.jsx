@@ -1,10 +1,9 @@
 import { Box, Grid2, Paper } from "@mui/material";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useRef, useState } from "react";
 import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutlined';
 import CurrentTaskPreview from "../components/tasks/CurrentTaskPreview";
 import TaskControlls from "../components/tasks/TaskControlls";
 import Divider from '@mui/material/Divider';
-import { GroupUI, useGroups, useColorList } from "eam-commons-js";
 
 const TASK_TYPES = {
     "Update check": {
@@ -20,20 +19,19 @@ const TASK_TYPES = {
     "Login": {},
 };
 
-const TASK_DEFAULT = {
-    type: "none", // "Update check", "Update game", "Login"
-    heroImage: null,
-    headline: "",
-    subheadline: "",
-    startTime: null,
-    endTime: null,
-};
+// const TASK_DEFAULT = {
+//     type: "none", // "Update check", "Update game", "Login"
+//     heroImage: null,
+//     headline: "",
+//     subheadline: "",
+//     startTime: null,
+//     endTime: null,
+// };
 
 const TaskContext = createContext();
 
 function TaskProvider({ children }) {
-    const taskRef = useRef(null);
-    const { groups } = useGroups();    
+    const taskRef = useRef(null);  
     
     const [currentTask, setCurrentTask] = useState(null);
 
