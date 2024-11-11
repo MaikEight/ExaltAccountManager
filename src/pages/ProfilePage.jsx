@@ -1,4 +1,4 @@
-import { Box, Typography, Skeleton, Chip } from "@mui/material";
+import { Box, Typography, Skeleton } from "@mui/material";
 import ComponentBox from "../components/ComponentBox";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import StyledButton from "../components/StyledButton";
