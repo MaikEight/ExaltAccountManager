@@ -25,6 +25,18 @@ function AboutPage() {
     const { user, idToken } = useUserLogin();
 
     useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
         const timeout = setTimeout(() => {
             setShowLlama(false);
         }, 5000);
