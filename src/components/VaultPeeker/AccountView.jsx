@@ -179,12 +179,12 @@ function StorageView({ vaultName, canvasIdentifier, title, itemIds, totals }) {
         setHideStorage(!isVisible);
 
         if (isVisible) {
-            const hiddenVaults = accSettings?.hiddenVaults?.filter((v) => v !== vaultName);
+            const hiddenVaults = accSettings?.hiddenVaults?.filter((v) => v !== vaultName) ?? [];
             settings.setByKeyAndSubKey('vaultPeeker', 'accountView', { ...accSettings, hiddenVaults: hiddenVaults });
             return;
         }
 
-        settings.setByKeyAndSubKey('vaultPeeker', 'accountView', { ...accSettings, hiddenVaults: [...accSettings?.hiddenVaults, vaultName] });
+        settings.setByKeyAndSubKey('vaultPeeker', 'accountView', { ...accSettings, hiddenVaults: [...accSettings?.hiddenVaults ?? null, vaultName].filter((v) => v !== null) });
     };
 
     if (!filteredItemIds || filteredItemIds.length === 0) return null;
