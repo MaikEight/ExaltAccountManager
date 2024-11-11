@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useServerList from "../hooks/useServerList";
 import { useTheme } from "@emotion/react";
-import { Box, FormControl, Input, MenuItem, Select, alpha, darken } from "@mui/material";
+import { Box, FormControl, Input, MenuItem, Select, darken } from "@mui/material";
 import ServerChip from "./GridComponents/ServerChip";
 
 const ITEM_HEIGHT = 48;
