@@ -1,6 +1,5 @@
 import { useTheme } from "@emotion/react";
 import { Box, Typography } from "@mui/material"
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 function SideBarLogo() {
     const theme = useTheme();
