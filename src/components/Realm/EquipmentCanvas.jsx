@@ -121,7 +121,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
     }, [hoveredConvasId, canvasIdentifier]);
 
     useEffect(() => {
-        const data = itemData.map((data, index) => {
+        const data = itemData.map((data) => {
             if(!data) return null;
             return {
                 itemId: data.itemId,
