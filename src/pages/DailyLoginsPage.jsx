@@ -1,4 +1,4 @@
-import { Box, Collapse, LinearProgress, Paper, Typography, Tooltip as MUITooltip, alpha, darken, IconButton } from "@mui/material";
+import { Box, Collapse, LinearProgress, Paper, Typography, Tooltip as MUITooltip, alpha, IconButton } from "@mui/material";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import StyledButton from "../components/StyledButton";
@@ -11,7 +11,6 @@ import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import useSnack from './../hooks/useSnack';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
 import { formatTime } from "eam-commons-js";
@@ -25,20 +24,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-const StyledDataGrid = styled(DataGrid)`
-  &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
-  &.MuiDataGrid-root .MuiDataGrid-cell {
-    outline: none;
-    height: 42px;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
-    outline: none;
-  },
-  &.MuiDataGrid-root .MuiDataGrid-cell:focus {
-    outline: none;
-  }
-`;
 
 function DailyLoginsPage() {
     const [isTaskInstalled, setIsTaskInstalled] = useState(localStorage.getItem('dailyLoginTaskInstalled') === 'true');
