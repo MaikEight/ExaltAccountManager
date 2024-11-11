@@ -443,7 +443,7 @@ function AccountSelectorTable({ settings, setCheckedMails }) {
                 <TableCell sx={{ minWidth: 100, maxWidth: 100, width: 100, borderBottom: 'none', textAlign: 'start', borderRadius: theme => `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px` }}>
                     <Checkbox
                         checked={row.checked}
-                        onChange={(event) => {                            
+                        onChange={() => {                            
                             const checkedState = rows.find((r) => r.email === row.email).checked;
                             const r = rows;
                             const index = r.findIndex((r) => r.email === row.email);
