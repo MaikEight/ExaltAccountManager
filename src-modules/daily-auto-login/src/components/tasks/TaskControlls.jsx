@@ -1,7 +1,7 @@
 import { Box, Grid2, IconButton, LinearProgress, Tooltip, Typography } from "@mui/material";
 import useTasks from "../../hooks/useTasks";
 import PlayCircleOutlinedIcon from '@mui/icons-material/PlayCircleOutlined';
-import PauseCircleOutlinedIcon from '@mui/icons-material/PauseCircleOutlined';
+//import PauseCircleOutlinedIcon from '@mui/icons-material/PauseCircleOutlined';
 import SkipNextOutlinedIcon from '@mui/icons-material/SkipNextOutlined';
 import { useEffect, useState } from "react";
 
