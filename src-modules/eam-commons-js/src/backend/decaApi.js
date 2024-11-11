@@ -98,7 +98,6 @@ async function getAppInit() {
             UPDATE_URLS(0),
             {
                 method: 'POST',
-                // responseType: ResponseType.Text,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Content-Length': '0'
@@ -140,7 +139,6 @@ async function getGameFileList(buildHash) {
             `${buildCDN}build-release/${UPDATE_URLS(1, buildHash)}`,
             {
                 method: 'GET',
-                responseType: ResponseType.JSON
             });
 
         return response.data.files;
