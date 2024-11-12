@@ -432,9 +432,9 @@ function DailyLoginsPage() {
                         getRowId={(row) => row.id}
                         columns={columns}
                         pageSizeOptions={[10, 25, 50, 100]}
-                        rowSelection
-                        getEstimatedRowHeight={() => 41}
                         onCellClick={handleCellClick}
+                        rowSelection
+                        rowHeight={42}
                         onRowSelectionModelChange={(ids) => {
                             const selectedId = ids[0];
                             const selected = allDailyLoginReports.find((report) => report.id === selectedId);
