@@ -162,7 +162,7 @@ fn main() {
             uninstall_eam_daily_login_task,
             run_eam_daily_login_task_now
         ])
-        .run(tauri::generate_context!())
+        .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
 }
 
