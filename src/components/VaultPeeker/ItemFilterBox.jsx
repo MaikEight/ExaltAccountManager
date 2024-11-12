@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 import Searchbar from "../GridComponents/Searchbar";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
@@ -68,9 +68,13 @@ function ItemFilterBox() {
         >
             {/* Filter */}
             <TierFilter />
+            <Divider flexItem orientation="vertical" sx={{ mt: 'auto', mb: '6px', height: '27px', width: '1px' }} />
             <ItemTypeFilter />
+            <Divider flexItem orientation="vertical" sx={{ mt: 'auto', mb: '6px', height: '27px', width: '1px' }} />
             <FeedPowerFilter />
+            <Divider flexItem orientation="vertical" sx={{ mt: 'auto', mb: '6px', height: '27px', width: '1px' }} />
             <SoulboundFilter />
+            <Divider flexItem orientation="vertical" sx={{ mt: 'auto', mb: '6px', height: '27px', width: '1px' }} />
             <CharacterSeasonalTypeFilter />
         </ComponentBox >
     );
