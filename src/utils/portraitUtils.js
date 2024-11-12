@@ -242,6 +242,7 @@ const preload = load_sheets();
 // Wait for preload to finish
 preload.then(() => {
     ready = true;
+    window.portraitReady = true;    
 }).catch((error) => {
     console.error('Failed to load sheets:', error);
 });
