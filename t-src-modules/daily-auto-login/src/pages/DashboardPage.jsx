@@ -1,8 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import { useTheme } from '@emotion/react';
+import { useGroups, GroupUI } from 'eam-commons-js';
+import { useContext, useEffect } from 'react';
+import WorkerContext from '../contexts/WorkerContext';
 
 function DashboardPage() {
-    const theme = useTheme();
+
     return (
         <Box
             sx={{
@@ -12,6 +15,7 @@ function DashboardPage() {
                 p: 2,
             }}
         >
+
         </Box>
     );
 }

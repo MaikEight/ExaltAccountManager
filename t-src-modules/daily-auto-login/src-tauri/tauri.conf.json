@@ -46,7 +46,7 @@
     },
     "deep-link": {      
       "desktop": {
-        "schemes": ["eam", "exalt-account-manager"]
+        "schemes": ["eam-daily", "eam-daily-auto-login"]
       }
     }
   },

@@ -13,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "2.0.3", features = [] }
 
 [dependencies]
-tauri = { version = "2.1.0", features = ["devtools", "macos-private-api"] }
+tauri = { version = "2.1.1", features = ["devtools", "macos-private-api"] }
 tauri-plugin-deep-link = "2.0.1"
 tauri-plugin-single-instance = { version = "2.0.1", features = ["deep-link"] }
 tauri-plugin-fs = "2.0.3"
