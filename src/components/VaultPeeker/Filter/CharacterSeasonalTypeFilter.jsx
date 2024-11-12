@@ -51,6 +51,9 @@ function CharacterSeasonalTypeFilter() {
                         borderRadius: theme => `${theme.shape.borderRadius}px`,
                         width: '39px',
                     },
+                    '& .MuiToggleButton-root.Mui-selected': {
+                        backgroundColor: 'inherit',
+                    },
                 }}
             >
                 <Tooltip title={'Show all items'}>

@@ -50,10 +50,13 @@ function SoulboundFilter() {
                         borderRadius: theme => `${theme.shape.borderRadius}px`,
                         width: '39px',
                     },
+                    '& .MuiToggleButton-root.Mui-selected': {
+                        backgroundColor: 'inherit',
+                    },
                 }}
             >
                 <Tooltip title={'Show all items'}>
-                    <ToggleButton value={2} aria-label="All items" key={'All'} >
+                    <ToggleButton value={2} aria-label="All items" key={'All'}  >
                         <FilterListOffOutlinedIcon color={filter.soulbound.value === 2 ? 'primary' : ''} />
                     </ToggleButton>
                 </Tooltip>
