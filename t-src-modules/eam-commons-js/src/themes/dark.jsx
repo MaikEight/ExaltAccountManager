@@ -120,13 +120,7 @@ export const darkTheme = createTheme({
                     backgroundColor: theme => alpha(theme.palette.background.default, 0.5),
                     '&:hover': {
                         backgroundColor: theme => alpha(theme.palette.common.white, 0.08),
-                    },
-
-                    //             {
-                    // backgroundColor: theme =>alpha(theme.palette.background.default, 0.75),
-                    // '&:hover': {
-                    //     backgroundColor:theme => alpha(theme.palette.text.primary, 0.05),
-                    // },            
+                    },        
                     transition: theme => theme.transitions.create('background-color'),
                     borderRadius: theme => `${theme.shape.borderRadius}px`,
                 },
