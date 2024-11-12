@@ -217,9 +217,7 @@ function Sidebar({ children }) {
                                 <DiscordButton
                                     isHovered={isHovered}
                                     setIsHovered={setIsHovered}
-                                    action={() => {
-                                        // setSelectedIndex(-1);
-                                    }}
+                                    action={null}
                                 />
                             </a>
                             {
