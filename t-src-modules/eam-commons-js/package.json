@@ -15,16 +15,16 @@
   "author": "Maik8",
   "license": "GPL-3.0",
   "dependencies": {
-    "@babel/core": "^7.25.7",
-    "@babel/preset-env": "^7.25.7",
-    "@babel/preset-react": "^7.25.7",    
-    "@tauri-apps/api": "^2.0.2",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.3",
-    "@mui/material": "^6.1.3",
-    "@mui/styled-engine-sc": "^6.1.3",
-    "axios": "^1.7.7",
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",    
+    "@tauri-apps/api": "^2.1.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.2.1",
+    "@mui/material": "^6.2.1",
+    "@mui/styled-engine-sc": "^6.2.1",
+    "axios": "^1.7.9",
     "babel-loader": "^9.2.1",
     "buffer": "^6.0.3",
     "date-fns": "^3.6.0",
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.1.0",
-    "@vitejs/plugin-react": "^4.3.3",
-    "vite": "^5.4.10"
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.4"
   }
 }
