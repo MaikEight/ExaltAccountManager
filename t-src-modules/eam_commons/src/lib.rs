@@ -1,5 +1,7 @@
 pub mod encryption_utils;
 pub use encryption_utils::{encrypt_data, decrypt_data};
+pub mod hwid;
+pub use hwid::get_device_unique_identifier;
 
 pub mod models;
 
