@@ -87,9 +87,9 @@ const steps = [
 ];
 
 const dataFields = [
-    { name: 'email', description: 'The email address of the account, this field must be unique', required: true, nameVariants: ['email', 'mail', 'e-mail', 'e_mail', 'guid'] },
-    { name: 'password', description: 'The password of the account', required: true, nameVariants: ['password', 'pw', 'pass', 'secret'] },
-    { name: 'name', description: 'The name of the account', required: false, nameVariants: ['name', 'accountname', 'account_name', 'acc'] },
+    { name: 'email', description: 'The email address of the account, this field must be unique', required: true, nameVariants: ['email', 'mail', 'e-mail', 'e_mail', 'guid', 'email-address', 'email_address'] },
+    { name: 'password', description: 'The password of the account', required: true, nameVariants: ['password', 'pw', 'pass', 'secret', 'key'] },
+    { name: 'name', description: 'The name of the account', required: false, nameVariants: ['name', 'accountname', 'account_name', 'acc', 'accname', 'acc_name', 'username'] },
     { name: 'performDailyLogin', description: 'If the daily login should be performed', required: false, nameVariants: ['performdailylogin', 'perform_daily_login', 'dailylogin', 'daily_login', 'dailylogin', 'daily'] },
     { name: 'isSteam', description: 'If the account is a steam account', required: false, nameVariants: ['issteamaccount', 'is_steam_account', 'steamaccount', 'steam_account', 'issteam', 'steam'] },
     { name: 'steamId', description: 'Steam ID 32 of the account. (only filled out for steam accounts)', required: false, nameVariants: ['steamid', 'steam_id', 'steam_guid'] },
