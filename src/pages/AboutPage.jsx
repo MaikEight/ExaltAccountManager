@@ -43,8 +43,7 @@ function AboutPage() {
 
         if (showLlama &&
             user &&
-            idToken &&
-            !user.user_metadata?.llama?.found
+            idToken
         ) {
             patchUserLlama(idToken);
         }
@@ -61,7 +60,6 @@ function AboutPage() {
                 <Confetti
                     width={windowSize.width}
                     height={windowSize.height}
-
                 />
             }
             <ComponentBox
@@ -93,7 +91,7 @@ function AboutPage() {
                 >
                     <Typography>
                         Exalt Account Manager version {APP_VERSION}{IS_PRE_RELEASE && ' Preview'}<br />
-                        Released on 31.10.2024.
+                        Released on 24.12.2024.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
