@@ -37,8 +37,8 @@ function UserLoginProvider({ children }) {
 
             const refresh_token = response.refresh_token;
             if (refresh_token) {
-                const encToken = await invoke('encrypt_string', { data: refresh_token });
-                await invoke('insert_or_update_user_data', { userData: { dataKey: 'Auth0RefreshToken', dataValue: encToken } });
+                const encToken = await invoke('encrypt_string', { data: refresh_token }).catch(console.error);
+                await invoke('insert_or_update_user_data', { userData: { dataKey: 'Auth0RefreshToken', dataValue: encToken } }).catch(console.error);
             }
 
             setAccessToken(newAccessToken);
@@ -87,7 +87,7 @@ function UserLoginProvider({ children }) {
         window.sessionStorage.removeItem("greetingText");
         window.sessionStorage.removeItem("profileImage");
 
-        invoke('delete_user_data_by_key', { key: 'Auth0RefreshToken' });
+        invoke('delete_user_data_by_key', { key: 'Auth0RefreshToken' }).catch(console.error);
     };
 
     const handleAuthRedirect = async (url) => {
@@ -222,11 +222,11 @@ function UserLoginProvider({ children }) {
             setIsLoading(true);
             try {
                 const encRefreshTokenData = await invoke('get_user_data_by_key', { key: 'Auth0RefreshToken' })
-                    .catch(() => null);
+                    .catch((e) => console.warn("No refresh token found.", e));
 
                 if (encRefreshTokenData && encRefreshTokenData.dataValue) {
                     const encRefreshToken = encRefreshTokenData.dataValue;
-                    const refreshToken = await invoke('decrypt_string', { data: encRefreshToken });
+                    const refreshToken = await invoke('decrypt_string', { data: encRefreshToken }).catch(console.error);
                     await refreshAuthToken(refreshToken);
                 }
             } catch (error) {
