@@ -81,6 +81,10 @@ export {
 } from './hooks/useGroups';
 
 export {
+    useHWID
+} from './hooks/useHWID';
+
+export {
     useUserLogin
 } from './hooks/useUserLogin';
 
