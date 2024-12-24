@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import useTasks from "../hooks/useTasks";
 import { checkForUpdates, updateGame } from 'eam-commons-js';
+import { invoke } from "@tauri-apps/api/core";
 
 const WorkerContext = createContext();
 
@@ -15,7 +16,8 @@ function WorkerContextProvider({ children }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [accountsToPerformDailyLoginFor, setAccountsToPerformDailyLoginFor] = useState([]);
     const [accountsDone, setAccountsDone] = useState([]);
-    
+    const [dailyLoginsReport, setDailyLoginsReport] = useState([]);
+
     useEffect(() => {
         const performStep = async () => {
             switch (STEPS[currentStep]) {
@@ -37,10 +39,41 @@ function WorkerContextProvider({ children }) {
 
     useEffect(() => {
         setCurrentStep(1);
+
+        const fetchAccountsToPerformDailyLoginFor = async (report) => {
+            if (!report || !report.emailsToProcess) {
+                return;
+            }
+            const emails = report.emailsToProcess.split(',').map(email => email.trim());
+
+            const accounts = (
+                await Promise.all(emails.map(async (email) => {
+                    return await invoke('get_eam_account_by_email', { accountEmail: email })
+                        .catch(console.error);
+                }))
+            ).filter(Boolean);
+
+            setAccountsToPerformDailyLoginFor(accounts);
+        };
+
+        const getDailyLoginsReport = async () => {
+            const report = await invoke('get_daily_login_report')
+                .catch(console.error);
+            setDailyLoginsReport(report);
+            console.log('report', report);
+            return report;
+        }
+
+        const fetchData = async () => {
+            const report = await getDailyLoginsReport();
+            const _ = await fetchAccountsToPerformDailyLoginFor(report);
+        };
+
+        fetchData();
     }, []);
 
     const startNextStep = () => {
-        if (currentStep === STEPS.length ) {
+        if (currentStep === STEPS.length) {
             return; // No more steps, we are done.
         }
 
@@ -50,7 +83,7 @@ function WorkerContextProvider({ children }) {
     const performGameUpdate = async () => {
         // Perform game update if needed
         updateTask({
-            type: 'Update check',            
+            type: 'Update check',
             startTime: new Date(),
         });
         const updateNeeded = await checkForUpdates(true);
@@ -72,11 +105,11 @@ function WorkerContextProvider({ children }) {
         // Loop through all accounts
         // Perform login for each account
 
-        
+
 
     };
 
-    const performLogin = async (account) => {        
+    const performLogin = async (account) => {
         // Webrequest account/verify
         // Webrequest char/list
         // Store char/list data in database
@@ -93,6 +126,7 @@ function WorkerContextProvider({ children }) {
 
         accountsToPerformDailyLoginFor: accountsToPerformDailyLoginFor,
         accountsDone: accountsDone,
+        report: dailyLoginsReport,
     };
 
     return (
