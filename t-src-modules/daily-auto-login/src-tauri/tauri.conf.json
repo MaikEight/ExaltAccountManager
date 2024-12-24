@@ -31,7 +31,7 @@
     "createUpdaterArtifacts": "v1Compatible"
   },
   "productName": "EAM Daily Login",
-  "mainBinaryName": "Exalt Account Manager",
+  "mainBinaryName": "Exalt Account Manager Daily Login",
   "version": "1.1.0",
   "identifier": "eu.daily-auto-login.app",
   "plugins": {
