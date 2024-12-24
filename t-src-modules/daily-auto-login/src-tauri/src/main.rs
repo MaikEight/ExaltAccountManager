@@ -3,6 +3,9 @@
 
 extern crate dirs;
 
+use eam_plus_lib;
+use eam_plus_lib::daily_login::daily_login::DailyLoginError::NotAPlusUserError;
+use eam_plus_lib::daily_login::daily_login::GameAccessToken;
 use diesel::r2d2::ConnectionManager;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
@@ -18,6 +21,7 @@ use eam_commons::get_latest_daily_login;
 use eam_commons::get_all_eam_accounts_for_daily_login;
 use eam_commons::insert_or_update_daily_login_report;
 
+use base64::prelude::*;
 use diesel::r2d2::Pool;
 use diesel::SqliteConnection;
 use lazy_static::lazy_static;
@@ -26,6 +30,7 @@ use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use simplelog::*;
 use serde_json::Value;
 use tauri::http::HeaderName;
+use std::process::Command;
 use std::collections::HashMap;
 use std::env;
 use std::error::Error as StdError;
@@ -48,6 +53,7 @@ use uuid::Uuid;
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
 }
+const GAME_START_TIMEOUT: u64 = 90;
 
 fn main() {
     //Create the save file directory if it does not exist
@@ -138,6 +144,8 @@ fn main() {
             perform_game_update,
             encrypt_string, //ENCRYPTION
             decrypt_string, 
+            combine_paths, //UTILS
+            is_plus_user,
             send_get_request, //REQUESTS
             send_post_request, 
             get_all_user_data, //USER DATA
@@ -349,6 +357,227 @@ pub fn get_database_path() -> PathBuf {
     let mut path = PathBuf::from(get_save_file_path());
     path.push("exalt_account_manager.db");
     path
+}
+
+//#########################
+//#      Daily Login      #
+//#########################
+
+struct DailyLoginResult {
+    account_email: String,
+    char_list_xml: String,
+    access_token: Option<GameAccessToken>,
+    used_plus: bool,
+}
+
+#[tauri::command]
+async fn perform_daily_login(
+    id_token: Option<String>,
+    email: String,
+    hwid: String
+) -> Result<DailyLoginResult, Error> {
+    // let (tx, rx) = channel();
+    // info!("Performing daily login for account: {} ...", email);
+    // thread::spawn(move || match POOL.lock() {
+    //     Ok(pool) => {
+    //         tx.send(perform_daily_login_impl(pool, id_token, email, hwid)).unwrap().await;
+    //     }
+    //     Err(poisoned) => {
+    //         error!("Mutex was poisoned. Recovering...");
+    //         let pool = poisoned.into_inner();
+    //         tx.send(perform_daily_login_impl(pool, email, id_token, email, hwid)).unwrap().await;
+    //     }
+    // });
+
+    // match rx.recv().unwrap() {
+    //     Ok(r) => Ok(r),
+    //     Err(e) => {
+    //         error!("Error while performing daily login: {}", e);
+    //         Err(tauri::Error::from(std::io::Error::new(
+    //             ErrorKind::Other,
+    //             e.to_string(),
+    //         )))
+    //     }
+    // }
+
+    info!("Performing daily login for account: {} ...", email);
+    match POOL.lock() {
+        Ok(pool) => perform_daily_login_impl(pool, id_token, email, hwid).await,
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return perform_daily_login_impl(pool, id_token, email, hwid).await;
+        }
+    }
+}
+
+async fn perform_daily_login_impl(
+    pool: MutexGuard<'_,Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    id_token: Option<String>,
+    email: String,
+    hwid: String
+) -> Result<DailyLoginResult, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        // Check if id_token exists, if so, use the eam plus login method
+        if id_token.is_some() {
+            let id_token = id_token.unwrap();
+            let result = eam_plus_lib::daily_login::daily_login::perform_daily_login(id_token, email.clone(), hwid.clone(), pool).await;      
+            match result {
+                Ok(result) => {
+                    if result.success {
+                        info!("🟢 Daily login performed for account: {}", email.clone());
+                        log_to_audit_log_internal_with_pool(
+                            pool,
+                            ("Daily login performed for account: ".to_owned() + &email).to_string(),
+                            Some(email.clone()),
+                        );
+                    } else {
+                        error!("🔴 Failed to perform daily login for account: {}", email.clone());
+                        log_to_audit_log_internal_with_pool(
+                            pool,
+                            ("Failed to perform daily login for account: ".to_owned() + &email).to_string(),
+                            Some(email.clone()),
+                        );
+                    }
+                    return Ok(
+                        DailyLoginResult {
+                            account_email: email.clone(),
+                            char_list_xml: result.char_list,
+                            access_token: None,
+                            used_plus: true
+                        }
+                    );
+                }
+                Err(eam_plus_lib::daily_login::daily_login::DailyLoginError::NotAPlusUserError(_)) => {
+                    error!("🔴 User is not a plus user");
+                    // user normal login method
+                }
+                Err(eam_plus_lib::daily_login::daily_login::DailyLoginError::FailedToGetAccessToken(_)) => {
+                    error!("🔴 Failed to get access token for account: {}", email.clone());
+                    log_to_audit_log_internal_with_pool(
+                        pool,
+                        ("Failed to get access token for account:".to_owned() + &email).to_string(),
+                        Some(email.clone()),
+                    );
+                    return Err(tauri::Error::from(std::io::Error::new(
+                        ErrorKind::Other,
+                        ("Failed to get access token for account:".to_owned() + &email).to_string(),
+                    )));
+                }
+                Err(e) => {
+                    return Err(tauri::Error::from(std::io::Error::new(
+                        ErrorKind::Other,
+                        e.to_string(),
+                    )));
+                }
+            }
+        }
+
+        // Normal login method
+        let access_token_opt = eam_plus_lib::daily_login::daily_login::send_account_verify_request(pool, email.clone(), hwid).await;
+        match access_token_opt {
+            Some(ref token) => {
+                let xml_output = eam_plus_lib::daily_login::daily_login::send_char_list_request(token.clone(), email.clone(), pool).await;
+                info!("🟢 Daily login performed for account: {}", email.clone());
+                log_to_audit_log_internal_with_pool(
+                    pool,
+                    ("Daily login performed for account: ".to_owned() + &email).to_string(),
+                    Some(email.clone()),
+                );
+                return Ok(DailyLoginResult {
+                    account_email: email.clone(),
+                    char_list_xml: xml_output,
+                    access_token: access_token_opt,
+                    used_plus: false
+                });
+            }
+            None => {
+                error!("🔴 Failed to get access token for account: {}", email.clone());
+                log_to_audit_log_internal_with_pool(
+                    pool,
+                    ("Failed to get access token for account: ".to_owned() + &email).to_string(),
+                    Some(email.clone()),
+                );
+                return Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Failed to get access token for account: ".to_owned() + &email,
+                )))
+            }
+        }
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    ))) 
+}
+
+#[tauri::command]
+async fn perform_daily_login_game_run(
+    email: String,
+    access_token: GameAccessToken
+) -> Result<(), Error> {
+    info!("Performing daily login game run...");
+    match POOL.lock() {
+        Ok(pool) => perform_daily_login_game_run_impl(pool, email, access_token).await,
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return perform_daily_login_game_run_impl(pool, email, access_token).await;
+        }
+    }
+}
+
+async fn perform_daily_login_game_run_impl(
+    pool: MutexGuard<'_, Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    email: String, 
+    access_token: GameAccessToken
+) -> Result<(), Error> {
+    //Get the game path from the database
+    
+    if let Some(ref pool) = *pool {        
+        let game_exe_path = diesel_functions::get_user_data_by_key(pool, "game_exe_path".to_string())
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+        let game_exe_path = game_exe_path.unwrap().dataValue;
+
+        if game_exe_path.is_empty() {
+            println!("No game.exe path file found, exiting.");
+            log_to_audit_log_internal_with_pool(pool, "No game.exe file found, exiting.".to_string(), None);
+            return Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                "No game.exe file found, exiting.",
+            )));
+        }
+
+        let args = format!(
+            "data:{{platform:Deca,guid:{},token:{},tokenTimestamp:{},tokenExpiration:{},env:4,serverName:{}}}",
+            BASE64_STANDARD.encode(&email.clone()),
+            BASE64_STANDARD.encode(access_token.access_token),
+            BASE64_STANDARD.encode(access_token.access_token_timestamp),
+            BASE64_STANDARD.encode(access_token.access_token_expiration),
+            "".to_string()
+        );
+
+        //Start the game with the args
+        let mut child = Command::new(game_exe_path.clone())
+            .arg("-batchmode")
+            .arg(args)
+            .spawn()
+            .expect("Failed to start the game.");   
+
+        //Wait for the game to automatically login
+        thread::sleep(Duration::from_secs(GAME_START_TIMEOUT));
+
+        //Close the game
+        child.kill().expect("Failed to close the game.");
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 //########################
@@ -573,6 +802,50 @@ fn insert_or_update_eam_group_impl(
 
     error!("Database pool not initialized");
     Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+fn combine_paths(path1: String, path2: String) -> Result<String, Error> {
+    info!("Combining paths...");
+    let mut path_buf = PathBuf::from(path1);
+    path_buf.push(&path2);
+
+    Ok(path_buf.to_string_lossy().to_string())
+}
+
+//########################
+//#       EAM PLUS       #
+//########################
+
+#[tauri::command]
+async fn is_plus_user(id_token: String) -> Result<bool, tauri::Error> {
+    info!("Checking if user is a plus user...");
+
+    let pool = match POOL.lock() {
+        Ok(pool) => pool.clone(),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            poisoned.into_inner().clone()
+        }
+    };
+
+    check_plus_user(pool, id_token).await
+}
+
+async fn check_plus_user(
+    pool: Option<DbPool>,
+    id_token: String,
+) -> Result<bool, tauri::Error> {
+    if let Some(pool) = pool {
+        let result = eam_plus_lib::user_status_utils::is_plus_user(&id_token.to_string(), &pool).await;
+        return Ok(result);
+    }
+
+    error!("Database pool not initialized");
+    Err(Error::from(std::io::Error::new(
         ErrorKind::Other,
         "Pool is not initialized",
     )))
