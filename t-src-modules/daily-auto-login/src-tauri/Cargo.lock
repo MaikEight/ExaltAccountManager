@@ -943,12 +943,14 @@ dependencies = [
  "anyhow",
  "async-std",
  "base64 0.22.1",
+ "chrono",
  "curl",
  "diesel",
  "diesel_derives",
  "diesel_migrations",
  "dirs",
  "eam_commons",
+ "eam_plus_lib",
  "flate2",
  "futures",
  "h2",
@@ -1318,6 +1320,23 @@ dependencies = [
  "windows-service",
  "wmi 0.13.4",
  "zip",
+]
+
+[[package]]
+name = "eam_plus_lib"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "dirs",
+ "eam_commons",
+ "jsonwebtoken",
+ "lazy_static",
+ "reqwest",
+ "roxmltree",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.8",
+ "tokio",
 ]
 
 [[package]]
@@ -2516,6 +2535,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "jsonwebtoken"
+version = "9.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b9ae10193d25051e74945f1ea2d0b42e03cc3b890f7e4cc5faa44997d808193f"
+dependencies = [
+ "base64 0.21.7",
+ "js-sys",
+ "pem",
+ "ring",
+ "serde",
+ "serde_json",
+ "simple_asn1",
+]
+
+[[package]]
 name = "keyboard-types"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3377,6 +3411,16 @@ checksum = "f8ed6a7761f76e3b9f92dfb0a60a6a6477c61024b775147ff0973a02653abaf2"
 dependencies = [
  "digest",
  "hmac",
+]
+
+[[package]]
+name = "pem"
+version = "3.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8e459365e590736a54c3fa561947c84837534b8e9af6fc5bf781307e82658fae"
+dependencies = [
+ "base64 0.22.1",
+ "serde",
 ]
 
 [[package]]
@@ -4460,6 +4504,18 @@ name = "simd-adler32"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d66dc143e6b11c1eddc06d5c423cfc97062865baf299914ab64caa38182078fe"
+
+[[package]]
+name = "simple_asn1"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "adc4e5204eb1910f40f9cfa375f6f05b68c3abac4b6fd879c8ff5e7ae8a0a085"
+dependencies = [
+ "num-bigint",
+ "num-traits",
+ "thiserror 1.0.69",
+ "time",
+]
 
 [[package]]
 name = "simplelog"
