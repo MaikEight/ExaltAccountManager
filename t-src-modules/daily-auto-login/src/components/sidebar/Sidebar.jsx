@@ -7,11 +7,13 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import { useLocation, useNavigate } from "react-router-dom";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import useTasks from "../../hooks/useTasks";
 
 function Sidebar({ children }) {
     const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
+    const { taskHeight } = useTasks();
 
     const handleNavigate = (nav) => {
         console.log(nav);
@@ -122,7 +124,7 @@ function Sidebar({ children }) {
                             mb: 2,
                             mr: 2,
                         }}
-                    >                        
+                    >
                         {
                             menuItems.map((menu, index) => (
                                 !menu.showInFooter ? null :
@@ -143,7 +145,15 @@ function Sidebar({ children }) {
                     </Box>
                 </Box>
                 {/* CONTENT */}
-                <Box id="content" sx={{ display: 'flex', flex: '1 1 auto', maxWidth: 'calc(100% - 210px)' }}>
+                <Box
+                    id="content"
+                    sx={{
+                        display: 'flex',
+                        flex: '1 1 auto',
+                        maxWidth: 'calc(100% - 210px)',
+                        mb: `${taskHeight ? taskHeight + 8 : 0}px`,
+                    }}
+                >
                     {children}
                 </Box>
             </Box>
