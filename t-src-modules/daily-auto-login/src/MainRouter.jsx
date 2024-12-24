@@ -20,21 +20,21 @@ function MainRouter() {
         >
             <ErrorBoundary fallback={<div>Fatal Fail</div>}>
                 <Router id="router">
-                    <Sidebar id="sidebar">
-                        <ErrorBoundary
-                            fallback={<div>Fail</div>}
-                            onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}
-                        >
-                            <TaskProvider>
-                                <WorkerContextProvider>
+                    <ErrorBoundary
+                        fallback={<div>Fail</div>}
+                        onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}
+                    >
+                        <TaskProvider>
+                            <WorkerContextProvider>
+                                <Sidebar id="sidebar">
                                     <Routes>
                                         <Route path='/' element={<DashboardPage />}></Route>
                                         <Route path='/dashboard' element={<DashboardPage />}></Route>
                                     </Routes>
-                                </WorkerContextProvider>
-                            </TaskProvider>
-                        </ErrorBoundary>
-                    </Sidebar>
+                                </Sidebar>
+                            </WorkerContextProvider>
+                        </TaskProvider>
+                    </ErrorBoundary>
                 </Router>
             </ErrorBoundary>
         </Box>
