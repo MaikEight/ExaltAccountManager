@@ -31,8 +31,8 @@ const TASK_TYPES = {
 const TaskContext = createContext();
 
 function TaskProvider({ children }) {
-    const taskRef = useRef(null);  
-    
+    const taskRef = useRef(null);
+
     const [currentTask, setCurrentTask] = useState(null);
 
     // useEffect(() => {
@@ -60,7 +60,7 @@ function TaskProvider({ children }) {
     //         const nowPlus90Seconds = new Date();
     //         nowPlus90Seconds.setSeconds(nowPlus90Seconds.getSeconds() + 90);
     //         const eamGroup = groups.find(g => g.name === "EAM");
-            
+
     //         setCurrentTask({
     //             type: "Login",
     //             heroImage: <GroupUI group={eamGroup} />,
@@ -78,12 +78,12 @@ function TaskProvider({ children }) {
     // }, [groups]);
 
     const updateTask = (task) => {
-        if(!task) {
+        if (!task) {
             console.error("No task provided.");
             return;
         }
 
-        if(!TASK_TYPES[task.type] === undefined) {
+        if (!TASK_TYPES[task.type] === undefined) {
             console.error(`Task type ${task.type} is not valid.`);
             return;
         }
@@ -98,32 +98,38 @@ function TaskProvider({ children }) {
             endTime: task.endTime ?? null,
         });
     };
-    
+
     const value = {
         currentTask,
         taskTypes: TASK_TYPES,
-        
+
         updateTask,
+        taskHeight: taskRef?.current?.clientHeight || 0,
     }
 
     return (
         <TaskContext.Provider value={value}>
             <Box
+                id="task-context"
                 sx={{
-                    position: "relative",
                     display: "flex",
                     flexDirection: "column",
                     width: "100%",
                 }}
             >
                 {children}
-                <Box
+                {/* <Box
+                    id="task-context-overlay"
                     sx={{
-                        height: taskRef.current?.clientHeight ?? 0,
-                        width: '1px',
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: taskRef?.current?.clientHeight ? taskRef.current.clientHeight + 16 : 0,
                     }}
-                />
+                /> */}
                 <Paper
+                    id="task-context-overlay"
                     ref={taskRef}
                     sx={{
                         position: "absolute",
