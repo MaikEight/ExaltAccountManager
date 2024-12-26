@@ -135,9 +135,11 @@ fn main() {
    .invoke_handler(tauri::generate_handler![
             open_url,
             get_save_file_path,
+            perform_daily_login, //DAILY LOGIN
             get_daily_login_report, //DAILY LOGIN REPORT
             get_all_eam_accounts, //EAM ACCOUNTS
             get_eam_account_by_email,
+            insert_or_update_eam_account,
             get_all_eam_groups, //EAM GROUPS
             insert_or_update_eam_group,
             check_for_game_update, //GAME UPDATER
@@ -363,11 +365,11 @@ pub fn get_database_path() -> PathBuf {
 //#      Daily Login      #
 //#########################
 
-struct DailyLoginResult {
-    account_email: String,
-    char_list_xml: String,
-    access_token: Option<GameAccessToken>,
-    used_plus: bool,
+pub struct DailyLoginResult {
+    pub account_email: String,
+    pub char_list_xml: String,
+    pub access_token: Option<GameAccessToken>,
+    pub used_plus: bool,
 }
 
 #[tauri::command]
@@ -375,7 +377,7 @@ async fn perform_daily_login(
     id_token: Option<String>,
     email: String,
     hwid: String
-) -> Result<DailyLoginResult, Error> {
+) -> tauri::Result<DailyLoginResult> {
     // let (tx, rx) = channel();
     // info!("Performing daily login for account: {} ...", email);
     // thread::spawn(move || match POOL.lock() {
@@ -402,21 +404,21 @@ async fn perform_daily_login(
 
     info!("Performing daily login for account: {} ...", email);
     match POOL.lock() {
-        Ok(pool) => perform_daily_login_impl(pool, id_token, email, hwid).await,
+        Ok(pool) => perform_daily_login_impl(pool, id_token, email, hwid).await.map_err(|e| tauri::Error::from(std::io::Error::new(std::io::ErrorKind::Other, e))),
         Err(poisoned) => {
             error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
-            return perform_daily_login_impl(pool, id_token, email, hwid).await;
+            perform_daily_login_impl(pool, id_token, email, hwid).await.map_err(|e| tauri::Error::from(std::io::Error::new(std::io::ErrorKind::Other, e)))
         }
     }
 }
 
 async fn perform_daily_login_impl(
-    pool: MutexGuard<'_,Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    pool: MutexGuard<'_, Option<Pool<ConnectionManager<SqliteConnection>>>>,
     id_token: Option<String>,
     email: String,
     hwid: String
-) -> Result<DailyLoginResult, tauri::Error> {
+) -> Result<DailyLoginResult, String> {
     if let Some(ref pool) = *pool {
         // Check if id_token exists, if so, use the eam plus login method
         if id_token.is_some() {
@@ -452,23 +454,12 @@ async fn perform_daily_login_impl(
                     error!("🔴 User is not a plus user");
                     // user normal login method
                 }
-                Err(eam_plus_lib::daily_login::daily_login::DailyLoginError::FailedToGetAccessToken(_)) => {
-                    error!("🔴 Failed to get access token for account: {}", email.clone());
-                    log_to_audit_log_internal_with_pool(
-                        pool,
-                        ("Failed to get access token for account:".to_owned() + &email).to_string(),
-                        Some(email.clone()),
-                    );
-                    return Err(tauri::Error::from(std::io::Error::new(
-                        ErrorKind::Other,
-                        ("Failed to get access token for account:".to_owned() + &email).to_string(),
-                    )));
+                Err(eam_plus_lib::daily_login::daily_login::DailyLoginError::FailedToGetAccessToken(e)) => {
+                    error!("🔴 Failed to get access token for account: {}", email.clone());                    
+                    return Err(e.to_string());
                 }
                 Err(e) => {
-                    return Err(tauri::Error::from(std::io::Error::new(
-                        ErrorKind::Other,
-                        e.to_string(),
-                    )));
+                    return Err(e.to_string());
                 }
             }
         }
@@ -498,19 +489,13 @@ async fn perform_daily_login_impl(
                     ("Failed to get access token for account: ".to_owned() + &email).to_string(),
                     Some(email.clone()),
                 );
-                return Err(tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Failed to get access token for account: ".to_owned() + &email,
-                )))
+                return Err("Failed to get access token for account: ".to_owned() + &email);
             }
         }
     }
 
     error!("Database pool not initialized");
-    Err(tauri::Error::from(std::io::Error::new(
-        ErrorKind::Other,
-        "Pool is not initialized",
-    ))) 
+    Err("Pool is not initialized".to_string())
 }
 
 #[tauri::command]
@@ -635,6 +620,38 @@ fn get_eam_account_by_email_impl(
 ) -> Result<models::EamAccount, tauri::Error> {
     if let Some(ref pool) = *pool {
         return diesel_functions::get_eam_account_by_email(pool, account_email)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn insert_or_update_eam_account(
+    eam_account: models::EamAccount,
+) -> Result<usize, tauri::Error> {
+    info!("Inserting or updating EAM account...");
+
+    match POOL.lock() {
+        Ok(pool) => insert_or_update_eam_account_impl(pool, eam_account),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return insert_or_update_eam_account_impl(pool, eam_account);
+        }
+    }
+}
+
+fn insert_or_update_eam_account_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    eam_account: models::EamAccount,
+) -> Result<usize, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::insert_or_update_eam_account(pool, eam_account)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
 
