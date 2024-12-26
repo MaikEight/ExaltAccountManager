@@ -30,6 +30,8 @@ function MainRouter() {
                                     <Routes>
                                         <Route path='/' element={<DashboardPage />}></Route>
                                         <Route path='/dashboard' element={<DashboardPage />}></Route>
+                                        <Route path='/settings' element={<></>}></Route>
+                                        <Route path='/about' element={<></>}></Route>
                                     </Routes>
                                 </Sidebar>
                             </WorkerContextProvider>
