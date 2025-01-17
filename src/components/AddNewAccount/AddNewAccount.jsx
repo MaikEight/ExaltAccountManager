@@ -1,4 +1,4 @@
-import { Table, Box, Checkbox, Drawer, FormControlLabel, IconButton, Step, StepLabel, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Table, Box, Checkbox, Drawer, FormControlLabel, IconButton, Step, StepLabel, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography, Collapse } from "@mui/material";
 import Stepper from '@mui/material/Stepper';
 import { useEffect, useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
@@ -73,23 +73,26 @@ function AddNewAccount({ isOpen, onClose }) {
             return;
         }
 
-        if (newAccount.email.includes('steamworks:') && !newAccount.isSteam) {
-            setNewAccount({ ...newAccount, isSteam: true, steamId: newAccount.email.split(':')[1] });
+        if (newAccount.email.includes('steamworks:')) {
+            const steamId = newAccount.email.split(':')[1];
+            if (newAccount.steamId !== steamId || !newAccount.isSteam) {
+                setNewAccount({ ...newAccount, isSteam: true, steamId: steamId });
+            }
             return;
         }
 
-        if (!newAccount.email.includes('steamworks:') && newAccount.isSteam) {
-            setNewAccount({ ...newAccount, isSteam: false, steamId: null });
-            return;
+        if(!newAccount.isSteam && newAccount.steamId) {
+            const acc = newAccount;
+            delete acc.steamId;
+            setNewAccount(acc);
         }
-
     }, [newAccount]);
 
     const isStepOptional = (step) => {
         return step === -1;
     };
 
-    const isLoginButtonDisabled = () => newAccount.email.length < 3 || !(newAccount.email.includes('@') || newAccount.email.includes('steamworks:')) || newAccount.password.length < 3 || accountAlreadyExists() || isLoading;
+    const isLoginButtonDisabled = () => newAccount.email.length < 3 || !(newAccount.email.includes('@') || (newAccount.isSteam && newAccount.steamId?.length >= 3)) || newAccount.password.length < 3 || accountAlreadyExists() || isLoading;
 
     const accountAlreadyExists = () => accounts.find((account) => account.email === newAccount.email) !== undefined;
 
@@ -188,9 +191,23 @@ function AddNewAccount({ isOpen, onClose }) {
                                     mb: 1.5,
                                 }}
                             >
+
+                                <Tooltip title="Is the account you want to add a steam account?" placement="bottom-start">
+                                    <FormControlLabel
+                                        label="Steam account"
+                                        control={
+                                            <Checkbox
+                                                checked={newAccount.isSteam}
+                                                onChange={(event) => setNewAccount({ ...newAccount, isSteam: event.target.checked })}
+                                                checkedIcon={<img src={theme.palette.mode === 'dark' ? "/steam.svg" : "/steam_light_mode.svg"} alt="Steam Logo" height='24px' width='24px' style={{}} />}
+                                                inputProps={{ 'aria-label': 'Steam account' }}
+                                            />
+                                        }
+                                    />
+                                </Tooltip>
                                 <TextField
                                     id="email"
-                                    label="E-Mail"
+                                    label={newAccount.isSteam ? "Guid" : "E-Mail"}
                                     variant="standard"
                                     error={passwordEmailWrong || accountAlreadyExists()}
                                     helperText={accountAlreadyExists() ? "Account is already in your list" : null}
@@ -199,13 +216,33 @@ function AddNewAccount({ isOpen, onClose }) {
                                     onKeyDown={(event) => {
                                         if (event.key === 'Enter') {
                                             event.preventDefault();
+                                            if (newAccount.isSteam) {
+                                                d
+                                            }
                                             document.getElementById('password').focus();
                                         }
                                     }}
                                 />
+                                <Collapse in={newAccount.isSteam} sx={{ width: '100%' }}>
+                                    <TextField
+                                        id="steamId"
+                                        label="Steam ID"
+                                        variant="standard"
+                                        disabled={newAccount.email?.startsWith('steamworks:')}
+                                        fullWidth
+                                        value={newAccount.steamId || ''}
+                                        onChange={(event) => setNewAccount({ ...newAccount, steamId: event.target.value })}
+                                        onKeyDown={(event) => {
+                                            if (event.key === 'Enter') {
+                                                event.preventDefault();
+                                                handleLoginButtonClick();
+                                            }
+                                        }}
+                                    />
+                                </Collapse>
                                 <TextField
                                     id="password"
-                                    label="Password"
+                                    label={newAccount.isSteam ? "Secret" : "Password"}
                                     type="password"
                                     error={passwordEmailWrong}
                                     variant="standard"
@@ -513,7 +550,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                     setShowRegisterForm(false);
                                     if (closeAll) {
                                         onClose();
-                                    } 
+                                    }
                                 }}
                             />
                             :
