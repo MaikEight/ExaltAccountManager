@@ -119,9 +119,7 @@ function AccountsContextProvider({ children }) {
             const requestState = getRequestState(response);
             const newAcc = ({ ...acc, state: requestState });
 
-            if (!acc.name || acc.name === '') {
-                newAcc.name = response?.Account?.Name;
-            }
+            newAcc.name = response?.Account?.Name;
 
             if (updateAccountInDatabase || requestState !== 'Success') {
                 await updateAccount(newAcc);
