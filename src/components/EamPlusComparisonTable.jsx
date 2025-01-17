@@ -54,7 +54,7 @@ function EamPlusComparisonTable() {
     }, []);
 
     const checkout = (variant) => {
-        console.log('checkout', variant);
+        console.log('checkout', variant, user);
     };
 
     const pricesTable = () => {
@@ -145,6 +145,20 @@ function EamPlusComparisonTable() {
             defaultCollapsed={user?.isPlusUser}
             isCollapseable={user?.isPlusUser}
         >
+            {
+                !user?.isPlusUser &&
+                <Box
+                    sx={{
+                        width: '100%',
+                        mb: 4,
+                        p: 1,
+                        borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        backgroundColor: theme => theme.palette.background.default,
+                    }}
+                >
+                    {pricesTable()}
+                </Box>
+            }
             <Box
                 sx={{
                     width: '600px',
@@ -314,20 +328,6 @@ function EamPlusComparisonTable() {
                     * All features are subject to change and may be removed or added at any time.
                 </Typography>
             </Box>
-
-            {
-                !user?.isPlusUser &&
-                <Box
-                    sx={{
-                        mt: 4,
-                        p: 1,
-                        borderRadius: theme => `${theme.shape.borderRadius}px`,
-                        backgroundColor: theme => theme.palette.background.default,
-                    }}
-                >
-                    {pricesTable()}
-                </Box>
-            }
         </ComponentBox>
     );
 }
@@ -390,15 +390,16 @@ function PriceTableRow({ plan, price, priceData, onClick, sx }) {
             <PaddedTableCell
                 sx={{
                     py: 0,
+                    width: '0px',
                     borderRadius: theme => `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`
                 }}
             >
                 {
                     (isAuthenticated && user) ?
-                        <form action="https://payments.exaltaccountmanager.com/eam-plus-create-checkout-session" target="_blank" method="POST">
+                        <form action="https://payments.exaltaccountmanager.com/eam-plus-create-checkout-session.php" target="_blank" method="POST">
                             <input type="hidden" name="lookup_key" value={priceData.id} />
                             <input type="hidden" name="mode" value={getPaymentMode(priceData.type)} />
-                            <input type="hidden" name="client_reference_id" value={user.sub} />
+                            <input type="hidden" name="client_reference_id" value={user.user_id ?? user.sub ?? null} />
                             <StyledButton
                                 startIcon={<AddShoppingCartOutlinedIcon />}
                                 type="submit"
