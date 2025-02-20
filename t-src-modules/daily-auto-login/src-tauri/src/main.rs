@@ -28,6 +28,7 @@ use lazy_static::lazy_static;
 use log::{error, info};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use simplelog::*;
+use serde::Serialize;
 use serde_json::Value;
 use tauri::http::HeaderName;
 use std::process::Command;
@@ -49,13 +50,18 @@ use tauri::Error;
 use zip::read::ZipArchive;
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
+use tokio::runtime::Runtime;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
+    static ref RUNTIME: Runtime = Runtime::new().unwrap();
 }
 const GAME_START_TIMEOUT: u64 = 90;
 
 fn main() {
+    // Enable backtrace
+    std::env::set_var("RUST_BACKTRACE", "1");
+
     //Create the save file directory if it does not exist
     let save_file_path = get_save_file_path();
     if !Path::new(&save_file_path).exists() {
@@ -136,6 +142,7 @@ fn main() {
             open_url,
             get_save_file_path,
             perform_daily_login, //DAILY LOGIN
+            perform_daily_login_game_run,
             get_daily_login_report, //DAILY LOGIN REPORT
             get_all_eam_accounts, //EAM ACCOUNTS
             get_eam_account_by_email,
@@ -146,7 +153,8 @@ fn main() {
             perform_game_update,
             encrypt_string, //ENCRYPTION
             decrypt_string, 
-            combine_paths, //UTILS
+            combine_paths,
+            get_device_unique_identifier, //UTILS
             is_plus_user,
             send_get_request, //REQUESTS
             send_post_request, 
@@ -365,6 +373,7 @@ pub fn get_database_path() -> PathBuf {
 //#      Daily Login      #
 //#########################
 
+#[derive(Serialize)]
 pub struct DailyLoginResult {
     pub account_email: String,
     pub char_list_xml: String,
@@ -377,7 +386,7 @@ async fn perform_daily_login(
     id_token: Option<String>,
     email: String,
     hwid: String
-) -> tauri::Result<DailyLoginResult> {
+) -> Result<DailyLoginResult, Error> {
     // let (tx, rx) = channel();
     // info!("Performing daily login for account: {} ...", email);
     // thread::spawn(move || match POOL.lock() {
@@ -402,18 +411,49 @@ async fn perform_daily_login(
     //     }
     // }
 
+    let (tx, rx) = channel();
     info!("Performing daily login for account: {} ...", email);
-    match POOL.lock() {
-        Ok(pool) => perform_daily_login_impl(pool, id_token, email, hwid).await.map_err(|e| tauri::Error::from(std::io::Error::new(std::io::ErrorKind::Other, e))),
+    thread::spawn(move || match POOL.lock() {
+        Ok(pool) => {
+            tx.send(perform_daily_login_impl(pool, id_token, email, hwid)).unwrap();
+        }
         Err(poisoned) => {
             error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
-            perform_daily_login_impl(pool, id_token, email, hwid).await.map_err(|e| tauri::Error::from(std::io::Error::new(std::io::ErrorKind::Other, e)))
+            tx.send(perform_daily_login_impl(pool, id_token, email, hwid)).unwrap();
+        }
+    });
+
+    match rx.recv().unwrap() {
+        Ok(result) => Ok(result),
+        Err(e) => {
+            error!("Error while performing the daily login: {}", e);
+            Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                e.to_string(),
+            )))
         }
     }
+    // match POOL.lock() {
+    //     Ok(pool) => perform_daily_login_impl(pool, id_token, email, hwid).await.map_err(|e| tauri::Error::from(std::io::Error::new(std::io::ErrorKind::Other, e))),
+    //     Err(poisoned) => {
+    //         error!("Mutex was poisoned. Recovering...");
+    //         let pool = poisoned.into_inner();
+    //         perform_daily_login_impl(pool, id_token, email, hwid).await.map_err(|e| tauri::Error::from(std::io::Error::new(std::io::ErrorKind::Other, e)))
+    //     }
+    // }
 }
 
-async fn perform_daily_login_impl(
+fn perform_daily_login_impl(
+    pool: MutexGuard<'_, Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    id_token: Option<String>,
+    email: String,
+    hwid: String
+) -> Result<DailyLoginResult, String> {
+    RUNTIME.block_on(async { perform_daily_login_impl_async(pool, id_token, email, hwid).await })
+}
+
+async fn perform_daily_login_impl_async(
     pool: MutexGuard<'_, Option<Pool<ConnectionManager<SqliteConnection>>>>,
     id_token: Option<String>,
     email: String,
@@ -421,9 +461,8 @@ async fn perform_daily_login_impl(
 ) -> Result<DailyLoginResult, String> {
     if let Some(ref pool) = *pool {
         // Check if id_token exists, if so, use the eam plus login method
-        if id_token.is_some() {
-            let id_token = id_token.unwrap();
-            let result = eam_plus_lib::daily_login::daily_login::perform_daily_login(id_token, email.clone(), hwid.clone(), pool).await;      
+        if let Some(id_token) = id_token {
+            let result = eam_plus_lib::daily_login::daily_login::perform_daily_login(id_token, email.clone(), hwid.clone(), pool).await;
             match result {
                 Ok(result) => {
                     if result.success {
@@ -441,21 +480,19 @@ async fn perform_daily_login_impl(
                             Some(email.clone()),
                         );
                     }
-                    return Ok(
-                        DailyLoginResult {
-                            account_email: email.clone(),
-                            char_list_xml: result.char_list,
-                            access_token: None,
-                            used_plus: true
-                        }
-                    );
+                    return Ok(DailyLoginResult {
+                        account_email: email.clone(),
+                        char_list_xml: result.char_list,
+                        access_token: None,
+                        used_plus: true,
+                    });
                 }
                 Err(eam_plus_lib::daily_login::daily_login::DailyLoginError::NotAPlusUserError(_)) => {
                     error!("🔴 User is not a plus user");
                     // user normal login method
                 }
                 Err(eam_plus_lib::daily_login::daily_login::DailyLoginError::FailedToGetAccessToken(e)) => {
-                    error!("🔴 Failed to get access token for account: {}", email.clone());                    
+                    error!("🔴 Failed to get access token for account: {}", email.clone());
                     return Err(e.to_string());
                 }
                 Err(e) => {
@@ -466,7 +503,7 @@ async fn perform_daily_login_impl(
 
         // Normal login method
         let access_token_opt = eam_plus_lib::daily_login::daily_login::send_account_verify_request(pool, email.clone(), hwid).await;
-        match access_token_opt {
+        match access_token_opt.access_token {
             Some(ref token) => {
                 let xml_output = eam_plus_lib::daily_login::daily_login::send_char_list_request(token.clone(), email.clone(), pool).await;
                 info!("🟢 Daily login performed for account: {}", email.clone());
@@ -478,8 +515,8 @@ async fn perform_daily_login_impl(
                 return Ok(DailyLoginResult {
                     account_email: email.clone(),
                     char_list_xml: xml_output,
-                    access_token: access_token_opt,
-                    used_plus: false
+                    access_token: access_token_opt.access_token,
+                    used_plus: false,
                 });
             }
             None => {
@@ -503,28 +540,49 @@ async fn perform_daily_login_game_run(
     email: String,
     access_token: GameAccessToken
 ) -> Result<(), Error> {
+    let (tx, rx) = channel();
     info!("Performing daily login game run...");
-    match POOL.lock() {
-        Ok(pool) => perform_daily_login_game_run_impl(pool, email, access_token).await,
+    thread::spawn(move || match POOL.lock() {
+        Ok(pool) => {
+            tx.send(perform_daily_login_game_run_impl(pool, email, access_token)).unwrap();
+        }
         Err(poisoned) => {
             error!("Mutex was poisoned. Recovering...");
             let pool = poisoned.into_inner();
-            return perform_daily_login_game_run_impl(pool, email, access_token).await;
+            tx.send(perform_daily_login_game_run_impl(pool, email, access_token)).unwrap();
+        }
+    });
+
+    match rx.recv().unwrap() {
+        Ok(result) => Ok(result),
+        Err(e) => {
+            error!("Error while performing the daily login game run: {}", e);
+            Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                e.to_string(),
+            )))
         }
     }
 }
 
-async fn perform_daily_login_game_run_impl(
+fn perform_daily_login_game_run_impl(
     pool: MutexGuard<'_, Option<Pool<ConnectionManager<SqliteConnection>>>>,
     email: String, 
     access_token: GameAccessToken
 ) -> Result<(), Error> {
-    //Get the game path from the database
-    
-    if let Some(ref pool) = *pool {        
+    RUNTIME.block_on(async { perform_daily_login_game_run_impl_async(pool, email, access_token).await })
+}
+
+async fn perform_daily_login_game_run_impl_async(
+    pool: MutexGuard<'_, Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    email: String,
+    access_token: GameAccessToken
+) -> Result<(), Error> {
+    // Get the game path from the database
+    if let Some(ref pool) = *pool {
         let game_exe_path = diesel_functions::get_user_data_by_key(pool, "game_exe_path".to_string())
-            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
-        let game_exe_path = game_exe_path.unwrap().dataValue;
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+        let game_exe_path = game_exe_path.dataValue;
 
         if game_exe_path.is_empty() {
             println!("No game.exe path file found, exiting.");
@@ -544,18 +602,19 @@ async fn perform_daily_login_game_run_impl(
             "".to_string()
         );
 
-        //Start the game with the args
+        // Start the game with the args
         let mut child = Command::new(game_exe_path.clone())
             .arg("-batchmode")
             .arg(args)
             .spawn()
-            .expect("Failed to start the game.");   
+            .expect("Failed to start the game.");
 
-        //Wait for the game to automatically login
+        // Wait for the game to automatically login
         thread::sleep(Duration::from_secs(GAME_START_TIMEOUT));
 
-        //Close the game
+        // Close the game
         child.kill().expect("Failed to close the game.");
+        return Ok(());
     }
 
     error!("Database pool not initialized");
@@ -831,6 +890,54 @@ fn combine_paths(path1: String, path2: String) -> Result<String, Error> {
     path_buf.push(&path2);
 
     Ok(path_buf.to_string_lossy().to_string())
+}
+
+#[tauri::command]
+async fn get_device_unique_identifier() -> Result<String, String> {
+    info!("Getting device unique identifier...");
+
+    use sha1::{Digest, Sha1};
+    use std::collections::HashMap;
+    use wmi::{COMLibrary, Variant, WMIConnection};
+
+    let com_con = COMLibrary::new().map_err(|e| e.to_string())?;
+    let wmi_con = WMIConnection::new(com_con.into()).map_err(|e| e.to_string())?;
+
+    let mut concat_str = String::new();
+
+    let baseboard: Vec<HashMap<String, Variant>> = wmi_con
+        .raw_query("SELECT * FROM Win32_BaseBoard")
+        .map_err(|e| e.to_string())?;
+    for obj in baseboard {
+        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
+            concat_str.push_str(&serial);
+        }
+    }
+
+    let bios: Vec<HashMap<String, Variant>> = wmi_con
+        .raw_query("SELECT * FROM Win32_BIOS")
+        .map_err(|e| e.to_string())?;
+    for obj in bios {
+        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
+            concat_str.push_str(&serial);
+        }
+    }
+
+    let os: Vec<HashMap<String, Variant>> = wmi_con
+        .raw_query("SELECT * FROM Win32_OperatingSystem")
+        .map_err(|e| e.to_string())?;
+    for obj in os {
+        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
+            concat_str.push_str(&serial);
+        }
+    }
+
+    let mut hasher = Sha1::new();
+    hasher.update(concat_str);
+    let result = hasher.finalize();
+    let hashed = format!("{:x}", result);
+
+    Ok(hashed)
 }
 
 //########################
