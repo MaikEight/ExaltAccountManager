@@ -56,6 +56,7 @@ libsqlite3-sys = { version = "0.31.0", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12.2"
 open = "5.3.2"
+glib = "0.20.9"
 chrono = { version = "0.4.39", features = ["serde"] }
 eam_commons = { path = "../../eam_commons" }
 eam_plus_lib = { path = "../../../../eam_plus_lib" }
