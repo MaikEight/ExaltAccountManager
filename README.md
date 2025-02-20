@@ -29,7 +29,7 @@
 </a>
 <a href="https://github.com/MaikEight" style="display: inline">
   <img
-    src="https://img.shields.io/maintenance/yes/2024?label=Maintained"
+    src="https://img.shields.io/maintenance/yes/2025?label=Maintained"
     alt="Maintained" />
 </a>
 <a href="https://github.com/MaikEight/ExaltAccountManager/commits/main" style="display: inline">
