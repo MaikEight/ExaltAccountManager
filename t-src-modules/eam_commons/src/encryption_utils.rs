@@ -35,6 +35,11 @@ pub fn encrypt_data(data: &str) -> Result<String, Box<dyn std::error::Error>> {
 }
 
 pub fn decrypt_data(data: &str) -> Result<String, Box<dyn std::error::Error>> {
+    //if the data is empty, return an empty string
+    if data.is_empty() {
+        return Ok("".to_string());
+    }
+    
     // Decode the Base64 string back into bytes
     let decoded_data = STANDARD.decode(data)?;
 
@@ -54,7 +59,6 @@ pub fn decrypt_data(data: &str) -> Result<String, Box<dyn std::error::Error>> {
 
     // Convert the decrypted blob to a byte slice
     let decrypted_data = unsafe { slice::from_raw_parts(decrypted_blob.pbData, decrypted_blob.cbData as usize) };
-
     // Convert the byte slice to a string
     let decrypted_string = str::from_utf8(decrypted_data)?;
 
