@@ -10,51 +10,53 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.3", features = [] }
+tauri-build = { version = "2.0.5", features = [] }
+
+
 
 [dependencies]
-tauri = { version = "2.1.1", features = ["devtools", "macos-private-api"] }
-tauri-plugin-deep-link = "2.0.1"
-tauri-plugin-single-instance = { version = "2.0.1", features = ["deep-link"] }
-tauri-plugin-fs = "2.0.3"
-tauri-plugin-shell = "2.0.2"
-tauri-plugin-http = "2.0.3"
-tauri-plugin-process = "2.0.1"
-tauri-plugin-dialog = "2.0.3"
+tauri = { version = "2.2.5", features = ["devtools", "macos-private-api"] }
+tauri-plugin-deep-link = "2.2.0"
+tauri-plugin-single-instance = { version = "2.2.1", features = ["deep-link"] }
+tauri-plugin-fs = "2.2.0"
+tauri-plugin-shell = "2.2.0"
+tauri-plugin-http = "2.3.0"
+tauri-plugin-process = "2.2.0"
+tauri-plugin-dialog = "2.2.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-std = "1.13"
-window-vibrancy = "0.5.2"
-dirs = "5.0.1"
+window-vibrancy = "0.5.3"
+dirs = "6.0.0"
 md5 = "0.7.0"
-tokio = "1.41.1"
+tokio = "1.43.0"
 futures = "0.3.31"
-flate2 = "1.0.34"
+flate2 = "1.0.35"
 walkdir = "2.5.0"
-reqwest = { version = "0.12.9", features = ["blocking"] }
-zip = "2.2.0"
+reqwest = { version = "0.12.12", features = ["blocking"] }
+zip = "2.2.2"
 mpsc = "0.2.5"
 anyhow = "1.0"
 curl = "0.4"
-wmi = "0.14.0"
+wmi = "0.15.0"
 sha1 = "0.10.6"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "winbase"] }
 num-bigint = "0.4.6"
 num-traits = "0.2.19"
 hex = "0.4.3"
-diesel = { version = "2.2.4", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel = { version = "2.2.7", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.2.0"
 diesel_derives = "2.2.3"
 lazy_static = "1.5.0"
-uuid = "1.11.0"
+uuid = "1.13.2"
 base64 = "0.22.1"
-h2 = "0.4.6"
-mio = "1.0.2"
-libsqlite3-sys = { version = "0.30.1", features = ["bundled"] }
+h2 = "0.4.8"
+mio = "1.0.3"
+libsqlite3-sys = { version = "0.31.0", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12.2"
-open = "5.3.0"
-chrono = { version = "0.4.38", features = ["serde"] }
+open = "5.3.2"
+chrono = { version = "0.4.39", features = ["serde"] }
 eam_commons = { path = "../../eam_commons" }
 eam_plus_lib = { path = "../../../../eam_plus_lib" }
 
@@ -65,4 +67,4 @@ custom-protocol = ["tauri/custom-protocol"]
 
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.0.2"
+tauri-plugin-updater = "2.5.0"
