@@ -6,27 +6,27 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wmi = "0.13.4"
+wmi = "0.15.0"
 sha1 = "0.10.6"
 base64 = "0.22.1"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
-diesel = { version = "2.2.4", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel = { version = "2.2.7", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.2.0"
 diesel_derives = "2.2.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 lazy_static = "1.5.0"
-libsqlite3-sys = { version = "0.30.1", features = ["bundled"] }
-uuid = { version = "1.10.0", features = ["v4"] }
-chrono = { version = "0.4.38", features = ["serde"] }
-windows-service = "0.7.0"
-dirs = "5.0.1"
+libsqlite3-sys = { version = "0.31.0", features = ["bundled"] }
+uuid = { version = "1.13.2", features = ["v4"] }
+chrono = { version = "0.4.39", features = ["serde"] }
+windows-service = "0.8.0"
+dirs = "6.0.0"
 md5 = "0.7.0"
-reqwest = { version = "0.12.7", features = ["blocking", "json"] }
-futures = "0.3.30"
-flate2 = "1.0.33"
-tokio = { version = "1.40.0", features = ["full"] }
+reqwest = { version = "0.12.12", features = ["blocking", "json"] }
+futures = "0.3.31"
+flate2 = "1.0.35"
+tokio = { version = "1.43.0", features = ["full"] }
 roxmltree = "0.20.0"
-zip = "2.2.0"
-thiserror = "1.0.63"
+zip = "2.2.2"
+thiserror = "1.0.69"
 log = "0.4"
