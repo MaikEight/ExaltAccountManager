@@ -2,7 +2,7 @@
 import { Box, Checkbox, FormControlLabel, Paper, Popover, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
+import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import StyledButton from './../components/StyledButton';
 import { invoke } from '@tauri-apps/api/core';
 import useUserSettings from '../hooks/useUserSettings';
@@ -22,6 +22,7 @@ import { useTheme } from '@emotion/react';
 import useAccounts from '../hooks/useAccounts';
 import { TableVirtuoso } from 'react-virtuoso';
 import * as dialog from "@tauri-apps/plugin-dialog"
+import useApplySettingsToHeaderName from '../hooks/useApplySettingsToHeaderName';
 
 function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
@@ -30,18 +31,23 @@ function SettingsPage() {
     const [openVaultPeekerAccountsPoppover, setOpenVaultPeekerAccountsPoppover] = useState(false);
     const openVaultPeekerButtonRef = useRef(null);
 
-    const columns = [
-        { field: 'group', headerName: 'Group' },
-        { field: 'name', headerName: 'Accountname' },
-        { field: 'email', headerName: 'Email' },
-        { field: 'lastLogin', headerName: 'Last Login' },
-        { field: 'serverName', headerName: 'Server' },
-        { field: 'lastRefresh', headerName: 'Last refresh' },
-        { field: 'performDailyLogin', headerName: 'Daily Login' },
-        { field: 'state', headerName: 'Last State' },
-        { field: 'comment', headerName: 'Comment' }
-    ];
-    
+    const { applySettingsToHeaderName } = useApplySettingsToHeaderName();
+
+    const columns = useMemo(() => {
+        return [
+            { field: 'orderId', headerName: applySettingsToHeaderName('🆔 Order ID') },
+            { field: 'group', headerName: applySettingsToHeaderName('👥 Group') },
+            { field: 'name', headerName: applySettingsToHeaderName('🧑‍💼 Accountname') },
+            { field: 'email', headerName: applySettingsToHeaderName('📧 Email') },
+            { field: 'lastLogin', headerName: applySettingsToHeaderName('⏰ Last Login') },
+            { field: 'serverName', headerName: applySettingsToHeaderName('🌐 Server') },
+            { field: 'lastRefresh', headerName: applySettingsToHeaderName('🔄 Refresh') },
+            { field: 'performDailyLogin', headerName: applySettingsToHeaderName('📅 Daily Login') },
+            { field: 'state', headerName: applySettingsToHeaderName('📊 Last State') },
+            { field: 'comment', headerName: applySettingsToHeaderName('💬 Comment') },
+        ]
+    }, [settings]);
+
     const userSettings = useUserSettings();
     const colorContext = useContext(ColorContext);
     const { serverList } = useServerList();
@@ -174,10 +180,10 @@ function SettingsPage() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Choose which columns should be shown in the accounts table by default.
                 </Typography>
-                <Box sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                <Box sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: 1, px: 1.5 }}>
                     {
                         columns.map((column) =>
-                            <Box key={column.field} sx={{ flexBasis: '20%' }}>
+                            <Box key={column.field} sx={{ flexGrow: 1, flexBasis: '20%' }}>
                                 <ColumnSwitch
                                     label={column.headerName}
                                     checked={settings?.accounts?.columnsHidden[column.field] !== undefined ? settings.accounts.columnsHidden[column.field] : true}
@@ -237,6 +243,27 @@ function SettingsPage() {
                         </StyledButton>
                     </Box>
                 </Box>
+                <Box sx={{ mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Choose if you want the column headers to contain emojis.
+                    </Typography>
+                    <Box
+                        sx={{
+                            px: 1.5,
+                        }}
+                    >
+                        <ColumnSwitch
+                            label="Hide emojis"
+                            checked={settings?.accounts?.hideEmojis !== undefined ? settings.accounts.hideEmojis : false}
+                            onChange={(event) => {
+                                const newSettings = { ...settings };
+                                if (!newSettings.accounts) newSettings.accounts = {};
+                                newSettings.accounts.hideEmojis = event.target.checked;
+                                setSettings(newSettings);
+                            }}
+                        />
+                    </Box>
+                </Box>
             </ComponentBox>
 
             {/* Default Server */}
@@ -275,7 +302,7 @@ function SettingsPage() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Choose which fields should be collapsed by default in the Vault Peeker.
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, px: 1.5 }}>
                     <ColumnSwitch
                         label="Filter"
                         checked={settings?.vaultPeeker?.collapsedFileds?.filter !== undefined ? settings.vaultPeeker.collapsedFileds.filter : true}
@@ -354,7 +381,11 @@ export default SettingsPage;
 
 function ColumnSwitch({ label, checked, onChange }) {
     return (
-        <FormControlLabel sx={{ gap: 0.5 }} control={<Switch size="small" checked={checked} onChange={onChange} />} label={label} />
+        <FormControlLabel
+            id={"fcl-check-" + label}
+            sx={{ gap: 0.5 }}
+            control={<Checkbox sx={{ p: 0, pr: 0.25 }} checked={checked} onChange={onChange} />} label={label}
+        />
     );
 }
 
@@ -443,7 +474,7 @@ function AccountSelectorTable({ settings, setCheckedMails }) {
                 <TableCell sx={{ minWidth: 100, maxWidth: 100, width: 100, borderBottom: 'none', textAlign: 'start', borderRadius: theme => `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px` }}>
                     <Checkbox
                         checked={row.checked}
-                        onChange={() => {                            
+                        onChange={() => {
                             const checkedState = rows.find((r) => r.email === row.email).checked;
                             const r = rows;
                             const index = r.findIndex((r) => r.email === row.email);
