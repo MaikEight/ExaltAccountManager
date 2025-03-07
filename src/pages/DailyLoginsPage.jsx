@@ -22,6 +22,8 @@ import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFil
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+import { useMemo } from "react";
+import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -50,31 +52,38 @@ function DailyLoginsPage() {
         return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
     }
 
-    const columns = [
-        { field: 'hasFinished', headerName: '🏁 Finished', width: 100, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
-        { field: 'startTime', headerName: '🕛 Start Time', width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
-        { field: 'endTime', headerName: '🕛 End Time', width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => {
-            const endTime = params.value;
-            if (endTime && new Date(endTime).getTime() === 0) {
-                return null;
-            }
-            return <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(endTime))}`}>{<span>{formatTime(endTime)}</span>}</MUITooltip> </div>;
-        }},
-        { field: 'duration', headerName: '⏱️ Duration', width: 120, flex: 0.1, renderCell: (params) => {
-            const { startTime, endTime } = params.row;
-            if (endTime && new Date(endTime).getTime() === 0) {
-                return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>In Progress...</div>;
-            }
-            if (startTime && endTime) {
-                const duration = Math.floor((new Date(endTime) - new Date(startTime)) / 1000 / 60);
-                return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>{duration >= 0 ? `${duration} min` : 'N/A'}</div>;
-            }
-            return null;
-        }},
-        { field: 'amountOfAccounts', headerName: '#️⃣ Accounts', width: 100, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> },
-        { field: 'amountOfAccountsFailed', headerName: '🔴 Failed', width: 90, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> },
-        { field: 'amountOfAccountsSucceeded', headerName: '🟢 Successful', width: 120, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> }
-    ];
+    const { applySettingsToHeaderName } = useApplySettingsToHeaderName();
+    const columns = useMemo(() => {
+        return [
+            { field: 'hasFinished', headerName: applySettingsToHeaderName('🏁 Finished'), width: 100, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
+            { field: 'startTime', headerName: applySettingsToHeaderName('🕛 Start Time'), width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
+            {
+                field: 'endTime', headerName: applySettingsToHeaderName('🕛 End Time'), width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => {
+                    const endTime = params.value;
+                    if (endTime && new Date(endTime).getTime() === 0) {
+                        return null;
+                    }
+                    return <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(endTime))}`}>{<span>{formatTime(endTime)}</span>}</MUITooltip> </div>;
+                }
+            },
+            {
+                field: 'duration', headerName: applySettingsToHeaderName('⏱️ Duration'), width: 120, flex: 0.1, renderCell: (params) => {
+                    const { startTime, endTime } = params.row;
+                    if (endTime && new Date(endTime).getTime() === 0) {
+                        return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>In Progress...</div>;
+                    }
+                    if (startTime && endTime) {
+                        const duration = Math.floor((new Date(endTime) - new Date(startTime)) / 1000 / 60);
+                        return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>{duration >= 0 ? `${duration} min` : 'N/A'}</div>;
+                    }
+                    return null;
+                }
+            },
+            { field: 'amountOfAccounts', headerName: applySettingsToHeaderName('#️⃣ Accounts'), width: 100, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> },
+            { field: 'amountOfAccountsFailed', headerName: applySettingsToHeaderName('🔴 Failed'), width: 90, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> },
+            { field: 'amountOfAccountsSucceeded', headerName: applySettingsToHeaderName('🟢 Successful'), width: 120, flex: 0.1, renderCell: (params) => <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}> {params.value} </div> }
+        ]
+    }, []);
 
     const getAllReportData = async () => {
         setIsLoadingReports(true);
@@ -116,7 +125,7 @@ function DailyLoginsPage() {
     useEffect(() => {
         const timeout = setTimeout(async () => {
             await getAllReportData();
-            
+
             invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
                 .then((res) => {
                     setIsTaskInstalled(!!res);
@@ -421,7 +430,7 @@ function DailyLoginsPage() {
                         background: theme.palette.background.paper,
                     }}
                 >
-                    <DataGrid                        
+                    <DataGrid
                         initialState={{
                             columns: {
 
