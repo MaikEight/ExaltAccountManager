@@ -1,7 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { LinearProgress, Paper } from "@mui/material";
 import { DataGrid, } from '@mui/x-data-grid';
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CustomPagination } from "./GridComponents/CustomPagination";
 import ServerChip from "./GridComponents/ServerChip";
 import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
@@ -10,6 +10,7 @@ import CustomToolbar from "./GridComponents/CustomToolbar";
 import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";
 import SteamworksMailColumn from "./GridComponents/SteamworksMailColumn";
+import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount } = useAccounts();
@@ -39,18 +40,21 @@ function AccountGrid({ setShowAddNewAccount }) {
         return <GroupUI group={group} />;
     };
 
-
-    const columns = [
-        { field: 'group', headerName: 'Group', width: 65, renderCell: (params) => getGroupUI(params) },
-        { field: 'name', headerName: 'Accountname', minWidth: 150, width: 230, flex: 0.25 },
-        { field: 'email', headerName: 'Email', minWidth: 160, flex: 0.35, renderCell: (params) => { return (params.value && params.row.isSteam) ? <SteamworksMailColumn params={params} /> : params.value } },
-        { field: 'lastLogin', headerName: 'Last Login', minWidth: 115, flex: 0.125, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
-        { field: 'serverName', headerName: 'Server', width: 125, renderCell: (params) => <ServerChip params={params} /> },
-        { field: 'lastRefresh', headerName: 'Last refresh', minWidth: 115, flex: 0.125, renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
-        { field: 'performDailyLogin', headerName: 'Daily Login', width: 95, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
-        { field: 'state', headerName: 'Last State', width: 110 },
-        { field: 'comment', headerName: 'Comment', minWidth: 100, flex: 0.125, renderCell: (params) => (<div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{params.value}</div>) },
-    ];
+    const { applySettingsToHeaderName, hideEmojis } = useApplySettingsToHeaderName();
+    const columns = useMemo(() => {
+        return [
+            { field: 'orderId', headerName: applySettingsToHeaderName('🆔 Order ID'), width: hideEmojis ? 75 : 95 },
+            { field: 'group', headerName: applySettingsToHeaderName('👥 Group'), width: hideEmojis ? 65 : 80, renderCell: (params) => getGroupUI(params) },
+            { field: 'name', headerName: applySettingsToHeaderName('🧑‍💼 Accountname'), minWidth: 135, width: 230, flex: 0.25 },
+            { field: 'email', headerName: applySettingsToHeaderName('📧 Email'), minWidth: 150, flex: 0.35, renderCell: (params) => { return (params.value && params.row.isSteam) ? <SteamworksMailColumn params={params} /> : params.value } },
+            { field: 'lastLogin', headerName: applySettingsToHeaderName('⏰ Last Login'), minWidth: 115, flex: 0.125, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
+            { field: 'serverName', headerName: applySettingsToHeaderName('🌐 Server'), width: 125, renderCell: (params) => <ServerChip params={params} /> },
+            { field: 'lastRefresh', headerName: applySettingsToHeaderName('🔄 Refresh'), minWidth: 115, flex: 0.125, renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
+            { field: 'performDailyLogin', headerName: applySettingsToHeaderName('📅 Daily Login'), width: hideEmojis ? 95 : 115, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
+            { field: 'state', headerName: applySettingsToHeaderName('📊 Last State'), width: 110 },
+            { field: 'comment', headerName: applySettingsToHeaderName('💬 Comment'), minWidth: hideEmojis ? 100 : 105, flex: 0.125, renderCell: (params) => (<div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{params.value}</div>) },
+        ]
+    }, [settings]);
 
     const handleDailyLoginCheckboxChange = async (event, params) => {
         const acc = accounts.find((account) => account.id === params.id);
@@ -87,7 +91,7 @@ function AccountGrid({ setShowAddNewAccount }) {
             <DataGrid
                 initialState={{
                     columns: {
-                        columnVisibilityModel: settings.getByKeyAndSubKey('accounts', 'columnsHidden'),
+                        columnVisibilityModel: { orderId: false, ...settings.getByKeyAndSubKey('accounts', 'columnsHidden') },
                     },
                 }}
                 rows={shownAccounts}
