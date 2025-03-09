@@ -23,7 +23,7 @@ import ProfilePage from './pages/ProfilePage';
 import PaymentSuccessful from './pages/PaymentSuccessful';
 
 function MainRouter() {
-    const theme = useTheme();    
+    const theme = useTheme();
 
     return (
         <Box
@@ -34,7 +34,13 @@ function MainRouter() {
             }}
         >
             <ErrorBoundary fallback={<FatalErrorPage />}>
-                <Router id="router">
+                <Router
+                    id="router"
+                    future={{
+                        "v7_startTransition": true,
+                        "v7_relativeSplatPath": true,
+                    }}
+                >
                     <Sidebar id="sidebar">
                         <ServerContextProvider>
                             <AccountsContextProvider>
