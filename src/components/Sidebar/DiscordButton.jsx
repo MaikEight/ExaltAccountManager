@@ -27,7 +27,7 @@ function DiscordButton({isHovered, setIsHovered, action}) {
                     selected={selected}
                 >
                     <Box
-                        id="discord-button"
+                        id="discord-button-content"
                         sx={{
                             position: 'relative',
                             display: 'flex',
