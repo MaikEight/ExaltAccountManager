@@ -10,9 +10,8 @@ function CreditsPopup() {
     return (
         <PopupBase
             title={'Credits & Thanks'}
-
         >
-            <Box sx={{ width: '500px', height: 0, mt: -2 }} />
+            <Box sx={{ width: 'fit-content', height: 0, mt: -2 }} />
             <ComponentBox
                 title={'Frameworks & Libraries'}
                 sx={{
@@ -49,7 +48,7 @@ function CreditsPopup() {
                 <Typography variant="body1" color="textSecondary">
                     A Special <b>THANKS</b> goes to these legends
                 </Typography>
-                
+
                 <SpecialThanks>
                     <ThanksLink title={'Jakcodex'} url={'https://github.com/jakcodex'} />
                     for his muledump fork and the asset compiler.
@@ -75,12 +74,22 @@ function CreditsPopup() {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1.25,
+                    width: 'fit-content',
                 }}
             >
                 <SpecialThanks>
-                    <ThanksLink title={'DECA Games'} url={'https://decagames.com/'} />
-                    for creating the game
-                    <ThanksLink title={'Realm of the Mad God Exalt'} url={'https://www.realmofthemadgod.com/'} />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: '0.5rem',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        <ThanksLink title={'DECA Games'} url={'https://decagames.com/'} />
+                        for creating the game
+                        <ThanksLink title={'Realm of the Mad God Exalt'} url={'https://www.realmofthemadgod.com/'} />
+                    </Box>
                 </SpecialThanks>
             </ComponentBox>
         </PopupBase>
@@ -100,6 +109,9 @@ function ThanksLink({ title, url }) {
                     gap: 2,
                     alignItems: 'center',
                     justifyContent: 'center',
+                    textWrap: 'none',
+                    wrap: 'nowrap',
+                    whiteSpace: 'nowrap',
                 }}
             >
                 {title} <OpenInNewOutlinedIcon sx={{ fontSize: '18px' }} />
