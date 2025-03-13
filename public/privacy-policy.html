@@ -5,8 +5,9 @@
     <meta charset="UTF-8" />
     <title>Privacy Policy - Exalt Account Manager (EAM)</title>
     <style>
+        /* Using a system font stack to avoid external fonts */
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Segoe UI Regular", Roboto, "Helvetica Neue", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
             line-height: 1.6;
             margin: 20px;
             padding: 0;
@@ -21,13 +22,21 @@
         h5,
         h6 {
             color: #222;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        p,
+        ul,
+        ol {
+            margin-bottom: 1em;
         }
 
         code {
             background-color: #eee;
             padding: 2px 4px;
             border-radius: 4px;
-            font-family: "Courier New", monospace;
+            font-family: "Courier New", Courier, monospace;
         }
 
         a {
@@ -42,6 +51,12 @@
         .section {
             margin-bottom: 2em;
         }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #ccc;
+            margin: 2em 0;
+        }
     </style>
 </head>
 
@@ -51,12 +66,10 @@
         <em>Last Updated: 15.03.2025</em>
     </p>
 
-    <p style="margin: 0;">Welcome to the Privacy Policy for <strong>Exalt Account Manager (EAM)</strong>.</p>
-    <p style="margin: 0;">
+    <p>Welcome to the Privacy Policy for <strong>Exalt Account Manager (EAM)</strong>.<br />
         This document describes how we collect, use, store, and protect your personal data when you use our software in
         compliance with
-        the <strong>General Data Protection Regulation (GDPR)</strong>.
-    </p>
+        the <strong>General Data Protection Regulation (GDPR)</strong>.</p>
 
     <hr />
 
@@ -138,9 +151,7 @@
         </ol>
 
         <h3>2.3 Analytics &amp; Consent Options</h3>
-        <p>
-            You can choose how much data to share via in-app settings:
-        </p>
+        <p>You can choose how much data to share via in-app settings:</p>
         <ol>
             <li>
                 <strong>Full Analytics</strong><br />
@@ -157,10 +168,7 @@
                 No analytics data is sent at all.
             </li>
         </ol>
-        <p>
-            You can change these settings at any time. If you withdraw consent for analytics, we stop collecting new
-            data immediately.
-        </p>
+        <p>If you withdraw consent for analytics, we stop collecting new data immediately.</p>
     </div>
 
     <div class="section">
@@ -207,7 +215,9 @@
             <li>
                 <strong>Payment Records</strong>: We rely on <strong>Stripe</strong> to handle payments and comply with
                 tax laws
-                (potentially up to 10 years in Germany). We cannot erase financial transaction data required by law.
+                (potentially up to 10 years in Germany, e.g., under local tax code). We cannot erase financial
+                transaction data
+                required by law.
             </li>
             <li>
                 <strong>User-Initiated Deletion</strong>:
@@ -226,8 +236,7 @@
     <div class="section">
         <h2>5. Where Data Is Stored &amp; Transferred</h2>
         <p>
-            We store data on <strong>self-hosted servers</strong> in Germany (NetCup &amp; Hetzner).
-            <br />
+            We store data on <strong>self-hosted servers</strong> in Germany (NetCup &amp; Hetzner).<br />
             <strong>Stripe &amp; Auth0</strong> may process data in the U.S. or other countries. We ensure GDPR
             compliance
             through Standard Contractual Clauses (SCCs) or equivalent safeguards.
@@ -255,8 +264,10 @@
                 Object to certain types of processing or request temporary restriction of data usage.
             </li>
             <li><strong>Lodge a Complaint</strong><br />
-                If you believe your rights are infringed, you may complain to your local Data Protection Authority
-                (e.g., the <a href="https://www.bfdi.bund.de/" target="_blank">BfDI</a> in Germany).
+                You may complain to the German Federal Data Protection Authority (<a href="https://www.bfdi.bund.de/"
+                    target="_blank">BfDI</a>)
+                or the local authority in the EU member state of your residence if you believe your rights have been
+                infringed.
             </li>
         </ol>
         <p>To exercise any of these rights, contact us at
@@ -289,6 +300,10 @@
             typically 13+).
             By choosing to log in via Discord, you confirm you meet Discord&rsquo;s age requirements.
         </p>
+        <p><em>Optional Note</em>: We do not knowingly allow children under 13 to create an authenticated user account.
+            If we become
+            aware that a child under 13 has provided us with personal data without parental consent, we will delete such
+            data.</p>
     </div>
 
     <div class="section">
@@ -314,8 +329,14 @@
 
     <hr />
 
-    <strong>Thank you for using Exalt Account Manager!</strong>
-    <p style="margin: 0;">We are committed to protecting your privacy and handling your data responsibly.</p>
+    <div class="section">
+        <h2>Additional Note: No Cookies on This Webpage</h2>
+        <p>This web-hosted Privacy Policy page does not use cookies or any analytics tracking.
+            It is served as a plain HTML file over HTTPS via Apache.</p>
+    </div>
+
+    <p><strong>Thank you for using Exalt Account Manager!</strong><br />
+        We are committed to protecting your privacy and handling your data responsibly.</p>
 </body>
 
 </html>
