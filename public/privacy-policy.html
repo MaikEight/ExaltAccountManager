@@ -1,102 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - Exalt Account Manager</title>
+    <meta charset="UTF-8" />
+    <title>Privacy Policy - Exalt Account Manager (EAM)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
             line-height: 1.6;
-        }
-        h1, h2 {
+            margin: 20px;
+            padding: 0;
             color: #333;
+            background-color: #f9f9f9;
         }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: #222;
+        }
+
+        code {
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: "Courier New", monospace;
+        }
+
         a {
-            color: #007BFF;
-        }
-        a:hover {
+            color: #0066cc;
             text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 2em;
         }
     </style>
 </head>
+
 <body>
-    <h1>Privacy Policy for Exalt Account Manager</h1>
-    <p><strong>Effective Date:</strong> 15.03.2025</p>
-    
-    <h2>1. Who We Are</h2>
-    <p>EAM is developed and maintained by <strong>Maik Kühne IT-Dienstleistungen</strong> (operated by Maik8, GitHub: MaikEight).</p>
-    <p>For any privacy concerns, you can contact us at:</p>
-    <ul>
-        <li><strong>Email:</strong> <a href="mailto:privacy@maik8.de">privacy@maik8.de</a></li>
-        <li><strong>Discord:</strong> <a href="https://discord.exalt-account-manager.eu/">Support Server</a></li>
-    </ul>
-    
-    <h2>2. What Data We Collect & Why</h2>
-    <h3>2.1 Legal Basis for Processing</h3>
-    <ul>
-        <li><strong>Contractual Necessity</strong> - For authentication (Auth0 login), processing payments (Stripe), and settings sync.</li>
-        <li><strong>Legitimate Interest</strong> - For security measures, fraud prevention, and anonymized analytics.</li>
-        <li><strong>User Consent</strong> - For optional settings sync and opting out of analytics.</li>
-    </ul>
-    
-    <h3>2.2 Data We Collect</h3>
-    <ul>
-        <li>Discord ID (used for authentication via Auth0)</li>
-        <li>Auth0 User ID (authentication metadata storage)</li>
-        <li>Stripe Customer ID (for paying users, stored in Auth0 metadata and our backend)</li>
-        <li>Optional user settings (if sync is enabled, stored in Auth0 metadata)</li>
-        <li>Anonymized analytics (usage statistics, unique session counts, non-identifiable hardware information)</li>
-    </ul>
-    
-    <h3>2.3 Payment Information</h3>
-    <p>All payment processing is handled securely by Stripe. We do not store credit card information or billing details.</p>
-    
-    <h2>3. Data Retention & Deletion</h2>
-    <ul>
-        <li><strong>Auth0 & Stripe metadata</strong> - Retained as long as the user has an active account.</li>
-        <li><strong>Anonymized analytics</strong> - Stored indefinitely unless a user requests deletion.</li>
-        <li><strong>Deleted accounts</strong> - Upon request, all personal data is deleted immediately, except for payment records required by tax laws.</li>
-        <li><strong>Error Logs</strong> - Stored client-side and deleted by the app after 90 days upon app start.</li>
-        <li><strong>Audit Logs</strong> - Logs for game-account data changes (e.g., fetching/storing new data).</li>
-        <li><strong>Debug Logs</strong> - Overwritten each app start.</li>
-    </ul>
-    <p>Users can request data deletion via the in-app settings menu or by emailing <a href="mailto:forget@maik8.de">forget@maik8.de</a>.</p>
-    
-    <h2>4. Where Data is Stored & Transferred</h2>
-    <p>All user-related data is stored within the European Union on NetCup & Hetzner servers (Germany). Stripe & Auth0 may transfer data outside the EU.</p>
-    <p>If data is transferred outside the EU, we ensure GDPR compliance through:</p>
-    <ul>
-        <li>Standard Contractual Clauses (SCCs) approved by the European Commission.</li>
-        <li>Other GDPR-compliant safeguards where applicable.</li>
-    </ul>
-    
-    <h2>5. Your GDPR Rights</h2>
-    <h3>5.1 Right to Access & Data Export</h3>
-    <p>Users can request a copy of their stored data in JSON format via the in-app settings or email <a href="mailto:privacy@maik8.de">privacy@maik8.de</a>.</p>
-    
-    <h3>5.2 Right to Deletion</h3>
-    <p>Users can request data deletion via the in-app settings or by emailing <a href="mailto:forget@maik8.de">forget@maik8.de</a>. Deletion is processed immediately (no grace period). Payment records cannot be deleted due to legal obligations.</p>
-    
-    <h3>5.3 Right to Object & Restrict Processing</h3>
-    <p>Users can opt-out of analytics tracking from within the app.</p>
-    
-    <h2>6. Security Measures</h2>
-    <ul>
-        <li>SSL encryption (HTTPS) for all communications.</li>
-        <li>OAuth2 authentication for secure login.</li>
-        <li>Locally stored sensitive data is encrypted using the Windows Data Protection API.</li>
-    </ul>
-    
-    <h2>7. Privacy Policy Updates & Notifications</h2>
-    <p>The Privacy Policy is available via a dedicated website linked from within EAM. If legally required, major updates will be communicated via an in-app popup. Continued use of EAM implies acceptance of the updated policy.</p>
-    
-    <h2>8. Contact Information</h2>
-    <p>For privacy-related inquiries, contact:</p>
-    <ul>
-        <li><strong>Email:</strong> <a href="mailto:privacy@maik8.de">privacy@maik8.de</a></li>
-        <li><strong>Discord:</strong> <a href="https://discord.exalt-account-manager.eu/">Support Server</a></li>
-    </ul>
+    <h1>Privacy Policy for Exalt Account Manager (EAM)</h1>
+    <p><strong>Effective Date:</strong> 15.03.2025<br />
+        <em>Last Updated: 15.03.2025</em>
+    </p>
+
+    <p style="margin: 0;">Welcome to the Privacy Policy for <strong>Exalt Account Manager (EAM)</strong>.</p>
+    <p style="margin: 0;">
+        This document describes how we collect, use, store, and protect your personal data when you use our software in
+        compliance with
+        the <strong>General Data Protection Regulation (GDPR)</strong>.
+    </p>
+
+    <hr />
+
+    <div class="section">
+        <h2>1. Who We Are</h2>
+        <p>EAM is developed and maintained by <strong>Maik Kühne IT-Dienstleistungen</strong> (operated by Maik8,
+            GitHub: <a href="https://github.com/MaikEight" target="_blank">MaikEight</a>). We are based in Germany.</p>
+        <ul>
+            <li><strong>Controller:</strong><br />
+                <strong>Name</strong>: Maik Kühne IT-Dienstleistungen<br />
+                <strong>Address</strong>:<br />
+                Maik Kühne<br />
+                Postfach 1103<br />
+                37171 Nörten-Hardenberg, Germany
+            </li>
+            <li><strong>Email</strong>: <a href="mailto:privacy@maik8.de">privacy@maik8.de</a></li>
+            <li><strong>Discord</strong>: <a href="https://discord.exalt-account-manager.eu/" target="_blank">Support
+                    Server</a></li>
+        </ul>
+        <p>If you have privacy concerns, please reach out to us using the contact details above.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Data We Collect &amp; Purposes</h2>
+        <h3>2.1 Legal Basis for Processing</h3>
+        <p>Under the GDPR, we process your personal data based on:</p>
+        <ul>
+            <li><strong>Contractual Necessity (Art. 6(1)(b) GDPR)</strong>: For providing authentication via Auth0,
+                managing subscriptions
+                via Stripe, and syncing settings if you opt in.</li>
+            <li><strong>Legitimate Interests (Art. 6(1)(f) GDPR)</strong>: For security, fraud prevention, and certain
+                limited analytics
+                (where not consent-based).</li>
+            <li><strong>Consent (Art. 6(1)(a) GDPR)</strong>: Where you explicitly opt in to analytics, and you may
+                withdraw this consent
+                at any time.</li>
+        </ul>
+
+        <h3>2.2 Types of Data Collected</h3>
+        <ol>
+            <li>
+                <strong>Discord ID &amp; Auth0 User ID</strong><br />
+                <em>Purpose</em>: Authentication for advanced EAM features (e.g., subscription management, settings
+                sync).<br />
+                <em>Storage</em>: Held in your Auth0 &ldquo;app_metadata&rdquo; and used only to identify your account.
+            </li>
+            <li>
+                <strong>Stripe Customer ID (for paid users)</strong><br />
+                <em>Purpose</em>: Subscription management and payment handling.<br />
+                <em>Storage</em>: Stored in Auth0 metadata and on our backend to link your EAM subscription status.
+            </li>
+            <li>
+                <strong>Optional User Settings</strong><br />
+                <em>Purpose</em>: If you enable settings sync, these preferences (e.g., UI preferences) are stored
+                in Auth0 metadata.<br />
+                <em>Control</em>: You can disable or delete synced settings anytime.
+            </li>
+            <li>
+                <strong>Analytics Data</strong><br />
+                <em>Purpose</em>: To improve EAM by understanding usage patterns, app performance, and feature
+                adoption.<br />
+                <em>How It Works</em>:
+                <ul>
+                    <li><strong>Approx. Location</strong> (country, city) is derived server-side from your IP using an
+                        IP-range lookup.
+                        We do <strong>not</strong> store the IP itself.</li>
+                    <li><strong>Hashed Client Hardware ID (HWID)</strong> is sent unless you choose the
+                        &ldquo;Anonymized&rdquo; option.</li>
+                    <li><strong>Anonymized</strong> or <strong>Opt-Out</strong> modes are available (see
+                        &ldquo;Analytics &amp; Consent&rdquo; below).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Payment Information</strong><br />
+                Handled securely by <strong>Stripe</strong>. We never store credit card numbers or billing info.
+                We only store a reference to your <strong>Stripe Customer ID</strong> and subscription details
+                for account verification and subscription management.
+            </li>
+        </ol>
+
+        <h3>2.3 Analytics &amp; Consent Options</h3>
+        <p>
+            You can choose how much data to share via in-app settings:
+        </p>
+        <ol>
+            <li>
+                <strong>Full Analytics</strong><br />
+                Sends <em>hashed HWID</em> and approximate location (country, city). Helps us diagnose recurring issues
+                per device and optimize the app.
+            </li>
+            <li>
+                <strong>Anonymized</strong><br />
+                Replaces your hashed HWID with <code>ANONYMIZED</code>, but still stores approximate location. We cannot
+                link data to a specific device.
+            </li>
+            <li>
+                <strong>Opt-Out</strong><br />
+                No analytics data is sent at all.
+            </li>
+        </ol>
+        <p>
+            You can change these settings at any time. If you withdraw consent for analytics, we stop collecting new
+            data immediately.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>3. Logs (Client-Side Only)</h2>
+        <h3>3.1 Error Logs</h3>
+        <ul>
+            <li><strong>Location</strong>: Stored locally in the app&rsquo;s interface (Logs section).</li>
+            <li><strong>Retention</strong>: 90 days; older entries are deleted upon the next application start.</li>
+            <li><strong>Usage</strong>: For troubleshooting by you or, if you choose, shared with us for support.</li>
+        </ul>
+
+        <h3>3.2 Debug Logs</h3>
+        <ul>
+            <li><strong>Location</strong>: Stored in a local <code>log.txt</code> file on your device.</li>
+            <li><strong>Retention</strong>: Overwritten with each app startup (only the latest session is kept).</li>
+            <li><strong>Usage</strong>: Helpful for diagnosing difficult bugs; only accessible if you manually provide
+                it.</li>
+        </ul>
+
+        <h3>3.3 Audit Logs</h3>
+        <ul>
+            <li><strong>Location</strong>: Stored locally in the app&rsquo;s Logs section.</li>
+            <li><strong>Retention</strong>: Permanent unless you manually delete them.</li>
+            <li><strong>Usage</strong>: Tracks changes to your game accounts (e.g., which account was launched, when
+                data was fetched).</li>
+        </ul>
+
+        <p><em>Note</em>: We do not automatically receive any logs. They remain on your device, and you may share them
+            with us at your discretion (e.g., for troubleshooting).</p>
+    </div>
+
+    <div class="section">
+        <h2>4. Data Retention &amp; Deletion</h2>
+        <ul>
+            <li>
+                <strong>Auth0 &amp; Stripe Metadata</strong>: Retained as long as you have an active account or
+                subscription.
+                Deleted upon account closure, unless necessary for tax or legal obligations.
+            </li>
+            <li>
+                <strong>Anonymized Analytics</strong>: Stored indefinitely, as it is non-identifiable. If you opt out or
+                withdraw consent, no further analytics are collected.
+            </li>
+            <li>
+                <strong>Payment Records</strong>: We rely on <strong>Stripe</strong> to handle payments and comply with
+                tax laws
+                (potentially up to 10 years in Germany). We cannot erase financial transaction data required by law.
+            </li>
+            <li>
+                <strong>User-Initiated Deletion</strong>:
+                <ul>
+                    <li><em>In-App</em>: You can delete or reset your user data or logs.</li>
+                    <li><em>Via Email</em>: Send requests to
+                        <a href="mailto:forget@maik8.de">forget@maik8.de</a>.
+                    </li>
+                    <li><em>Immediate Action</em>: We delete requested data promptly, unless retained for legal or
+                        contractual reasons.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>5. Where Data Is Stored &amp; Transferred</h2>
+        <p>
+            We store data on <strong>self-hosted servers</strong> in Germany (NetCup &amp; Hetzner).
+            <br />
+            <strong>Stripe &amp; Auth0</strong> may process data in the U.S. or other countries. We ensure GDPR
+            compliance
+            through Standard Contractual Clauses (SCCs) or equivalent safeguards.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>6. Your GDPR Rights</h2>
+        <p>Under the GDPR, you have the right to:</p>
+        <ol>
+            <li><strong>Access &amp; Data Portability</strong><br />
+                Obtain a copy of your personal data in a commonly used format (e.g., JSON).
+            </li>
+            <li><strong>Rectification</strong><br />
+                Request correction of inaccurate or incomplete data.
+            </li>
+            <li><strong>Erasure (&ldquo;Right to be Forgotten&rdquo;)</strong><br />
+                Request deletion of your data, processed promptly unless legal obligations require retention.
+            </li>
+            <li><strong>Withdraw Consent</strong><br />
+                Revoke any consent-based processing (e.g., analytics) at any time via in-app settings or by contacting
+                us.
+            </li>
+            <li><strong>Object or Restrict Processing</strong><br />
+                Object to certain types of processing or request temporary restriction of data usage.
+            </li>
+            <li><strong>Lodge a Complaint</strong><br />
+                If you believe your rights are infringed, you may complain to your local Data Protection Authority
+                (e.g., the <a href="https://www.bfdi.bund.de/" target="_blank">BfDI</a> in Germany).
+            </li>
+        </ol>
+        <p>To exercise any of these rights, contact us at
+            <a href="mailto:privacy@maik8.de">privacy@maik8.de</a>.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>7. Security Measures</h2>
+        <ul>
+            <li><strong>Encryption in Transit</strong>: We use SSL/TLS (HTTPS) to secure data sent over the internet.
+            </li>
+            <li><strong>Local Encryption</strong>: Sensitive data (e.g., Auth0 refresh tokens) is encrypted on your
+                device
+                with Windows Data Protection API.</li>
+            <li><strong>Limited Server-Side Data</strong>: We do not store raw IP addresses, only approximate location
+                from
+                an IP lookup.</li>
+            <li><strong>No Automated Decision-Making</strong>: We do not use automated profiling that produces legal or
+                significant effects on you.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>8. Age Requirements</h2>
+        <p>We do not explicitly restrict minors from using EAM. However, advanced features (e.g., subscription
+            management,
+            settings sync) require a <strong>Discord login</strong>, which is subject to
+            <a href="https://discord.com/terms" target="_blank">Discord&rsquo;s Terms of Service</a> (minimum age
+            typically 13+).
+            By choosing to log in via Discord, you confirm you meet Discord&rsquo;s age requirements.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>9. Policy Updates &amp; Notifications</h2>
+        <p>We may update this Privacy Policy to reflect changes in our practices or for legal reasons. Major changes
+            will be
+            communicated in-app or via a prominent notice. The latest version is always linked within EAM. Continued use
+            of EAM
+            after updates indicates acceptance of the revised policy.</p>
+    </div>
+
+    <div class="section">
+        <h2>10. Contact Information</h2>
+        <p>If you have any privacy-related questions or requests (including data access, rectification, or deletion),
+            please reach out:</p>
+        <ul>
+            <li><strong>Email</strong>: <a href="mailto:privacy@maik8.de">privacy@maik8.de</a></li>
+            <li><strong>Discord</strong>: <a href="https://discord.exalt-account-manager.eu/" target="_blank">Support
+                    Server</a></li>
+            <li><strong>Data Deletion Requests</strong>: <a href="mailto:forget@maik8.de">forget@maik8.de</a></li>
+        </ul>
+    </div>
+
+    <hr />
+
+    <strong>Thank you for using Exalt Account Manager!</strong>
+    <p style="margin: 0;">We are committed to protecting your privacy and handling your data responsibly.</p>
 </body>
+
 </html>
