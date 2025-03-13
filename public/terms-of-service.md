@@ -1,124 +1,190 @@
-# Terms of Service for Exalt Account Manager
+# **Terms of Service (AGB) for Exalt Account Manager (EAM)**
+**Effective Date**: 15.03.2025  
+*(English Version Only)*
 
-**Effective Date:** 15.03.2025
-
-Welcome to the Terms of Service for **Exalt Account Manager (EAM)**. This document explains the rules and policies you agree to by using EAM.
-
----
-
-## 1. General Information
-
-**Developer & Ownership:**
-- EAM is developed by **Maik Kühne IT-Dienstleistungen** (operated by Maik8, GitHub: MaikEight).
-- Legal contact address:  
-  **Maik Kühne**  
-  **Postfach 1103**  
-  **37171 Nörten-Hardenberg, Germany**
-
-**Software Description:**
-- EAM is a **third-party tool** for managing **Realm of the Mad God (RotMG) accounts**.
-- Features include **multi-account management, credential storage, inventory tracking, and more**.
-- **EAM is not affiliated with Deca Games (RotMG developers).**
+By using Exalt Account Manager (EAM), you agree to the following terms. If you do not agree, you must discontinue using EAM.
 
 ---
 
-## 2. User Accounts & Eligibility
+## **1. General Information**
 
-**Who Can Use EAM?**
-- Available for **Windows 10 or later**.
-- **No minimum age requirement**.
-- **No country restrictions**.
+**Developer & Ownership**  
+- EAM is developed by **Maik Kühne IT-Dienstleistungen** (operated by Maik8, GitHub: [MaikEight](https://github.com/MaikEight)).  
+- Legal Contact Address (Imprint): 
+```
+  Maik Kühne   
+  Postfach 1103 
+  37171 Nörten-Hardenberg 
+  Germany
+```
+- Email: [privacy@maik8.de](mailto:privacy@maik8.de)  
+- Discord (Support): [Support Server](https://discord.exalt-account-manager.eu/)
 
-**Account Requirement:**
-- **No login required** for basic use.
-- Logging in via **Discord (Auth0)** unlocks additional features (e.g., settings sync, EAM Plus).
+**Software Description**  
+- EAM is a third-party tool for **Realm of the Mad God (RotMG)**, offering multi-account management, credential storage, and additional features (“EAM Plus”).  
+- **Not affiliated with Deca Games** (the developer of RotMG).
 
-**Bans & Suspensions:**
-- **EAM accounts (Auth0 accounts) can be suspended or banned**.
-- **Banned users can still use free EAM features** but lose login-only features.
-- **Appeals can be sent via [email](mailto:privacy@maik8.de) or [Discord](https://discord.exalt-account-manager.eu/).**
+**Where to Find These Terms**  
+- Hosted on EAM’s dedicated website, accessible via the “View Terms of Service” button in EAM’s Settings.  
+- We do not store a personal copy of your contract. You can always view the current version online.
 
----
-
-## 3. Subscriptions & Payments
-
-**EAM Plus Subscriptions:**
-- Monthly or yearly payments for **extra features & project support**.
-- **Managed via Stripe**.
-- **Auto-renews** unless canceled.
-- **Subscription management** via the **Profile Page → Manage Subscription** button in EAM.
-- **Cancellation takes effect at the end of the billing cycle**.
-- **7-day grace period** for failed payments (Stripe policy).
-
-**Refund Policy:**
-- **Payments are non-refundable** (including for banned users).
+**Contract Language**  
+- These Terms are provided **only in English**. By using EAM, you acknowledge and accept the English version as binding.
 
 ---
 
-## 4. Acceptable Use Policy
+## **2. Formation of Contract**
 
-**Prohibited Activities:**
-- **Cheating in RotMG** (hacking, botting, multi-boxing).
-- **Modifying EAM to commit fraud**.
-- **Reverse-engineering closed-source components (EAM Plus features)**.
-- **Account sharing of EAM subscriptions is not allowed**.
-- **Excessive multi-account usage that impacts service availability is prohibited**.
+1. **Offer & Acceptance**  
+ - When you click **“Purchase”** on the Stripe Checkout page, you make a **binding offer** to subscribe to EAM Plus.  
+ - The contract is formed once your payment is successfully processed by Stripe and we **provide you with access** to EAM Plus features.
 
-**Fair Use Policy:**
-- **No specific account limits** (EAM is designed for multi-account management).
-- **Excessive usage that impacts service availability is prohibited**.
+2. **No Individual Storage of Contract**  
+ - We do not store a unique contract text for each user. The latest version of these Terms is always accessible on our website for reference.
 
----
+3. **VAT & Currency**  
+ - All subscription fees **include VAT** (if applicable under German/EU law) and are charged in **EUR (€)**.  
+ - If you pay in another currency, your bank or credit card provider handles any currency conversion.
 
-## 5. Liability & Disclaimers
-
-**No Guarantees from Deca Games:**
-- **EAM is a third-party tool & not officially supported**.
-- **No guarantees** that Deca Games won’t take action against users.
-
-**Liability Disclaimer:**
-- **EAM is used at your own risk**.
-- **Not responsible for lost RotMG accounts, bans, or data loss**.
-
-**No Support for RotMG Issues:**
-- **EAM does not handle RotMG account support**.
-- **Support is limited to EAM-related technical issues via Discord/email**.
-
-**Warranty Disclaimer:**
-- **EAM is provided “as-is” without guarantees.**
-- **While feedback and feature requests are welcome, their implementation is not guaranteed.**
+4. **Invoices**  
+ - After a successful purchase, an **invoice** is generated by Stripe. You can access and download it via the **Manage Subscription** page (linked from EAM’s Profile Page).
 
 ---
 
-## 6. Termination & Policy Changes
+## **3. License & Intellectual Property**
 
-**Account Termination:**
-- **EAM accounts (Auth0) can be suspended or terminated**.
-- **Users will still have access to free EAM features**.
-- **Paid users lose access to premium features upon suspension**.
-
-**How Changes Are Communicated:**
-- **Via in-app popup or changelog** (shown on the first launch after an update).
-- **Continued use of EAM is considered acceptance of the new terms**.
-
-**Where the ToS is Hosted:**
-- **Same as the Privacy Policy (dedicated website linked from EAM).**
+1. **Open-Source & Closed-Source**  
+ - Portions of EAM are open-source, subject to their respective licenses. However, **EAM Plus** is **proprietary** and closed-source.  
+2. **License Grant**  
+ - We grant you a limited, non-exclusive, non-transferable, revocable license to use EAM, subject to these Terms.  
+3. **IP Ownership**  
+ - All trademarks, brand assets, and intellectual property relating to EAM remain the sole property of Maik Kühne IT-Dienstleistungen.  
+4. **Use of Name & Logo**  
+ - You may reference EAM for tutorials or discussions but must not impersonate EAM, pass yourself off as an official representative, or sell EAM/parts of it without permission.
 
 ---
 
-## 7. Legal Details & Governing Law
+## **4. User Accounts & Eligibility**
 
-**Jurisdiction:**
-- **German law applies** (Maik Kühne IT-Dienstleistungen is based in Germany).
-- **Legal disputes must be filed in writing to:**
-
-  **Maik Kühne**  
-  **Postfach 1103**  
-  **37171 Nörten-Hardenberg, Germany**
-
-**Severability Clause:**
-- **If any part of these Terms is found invalid, the rest remains in effect.**
+1. **General Usage**  
+ - EAM runs on **Windows 10 or later**.  
+ - Basic features do not require login; advanced features (like settings sync, EAM Plus) require **Discord (Auth0)** login.  
+2. **No Minimum Age**  
+ - We do not impose a specific age restriction, but Discord’s Terms commonly require users to be **13+**.  
+3. **Bans & Suspensions**  
+ - We may suspend or ban your EAM (Auth0) account for violating these Terms.  
+ - Banned users can still access free EAM features but lose login-only features.  
+ - Appeals can be sent via email or [Discord Support](https://discord.exalt-account-manager.eu/).
 
 ---
 
-By using EAM, you agree to these Terms of Service. If you have any questions, contact us at **[privacy@maik8.de](mailto:privacy@maik8.de).**
+## **5. Subscriptions & Payment**
+
+1. **EAM Plus**  
+ - Offers additional functionality and supports the project.  
+ - Subscriptions auto-renew (monthly or yearly) unless canceled.  
+ - Cancellation takes effect at the end of the billing period, plus a possible **1-day grace**.
+
+2. **Right of Withdrawal (EU Consumers)**  
+ - By subscribing, you request **immediate access** to digital services. To the fullest extent permitted by law, you **waive your 14-day withdrawal right**.  
+ - If you do not agree to this waiver, do not purchase a subscription.
+
+3. **Refund & Chargeback Policy**  
+ - All subscription fees are **non-refundable**, unless required by applicable law.  
+ - In the event of a **chargeback** or payment dispute, we may **suspend your subscription** or account until resolved.  
+ - **Contact Us First**: Before disputing a charge, please email [privacy@maik8.de](mailto:privacy@maik8.de) or reach out via Discord. We aim to find a solution with minimal hassle.
+
+---
+
+## **6. Acceptable Use & Settings Sync**
+
+1. **Prohibited Activities**  
+ - Cheating in RotMG (hacking, botting, multi-boxing).  
+ - Modifying EAM to commit fraud or circumvent EAM Plus.  
+ - Reverse-engineering **closed-source** components.  
+ - Reselling or redistributing EAM in unauthorized ways.  
+ - Excessive usage that degrades service for others.
+
+2. **Fair Use**  
+ - No strict account limit, but we reserve the right to limit or suspend service if your usage negatively impacts overall server performance.
+
+3. **User Content & Settings Sync**  
+ - If you opt to sync settings across devices, any data you upload is your responsibility. You agree not to store unlawful or infringing materials.  
+ - If we are notified or discover settings that violate the law or these Terms, we may remove or disable access to such data.
+
+4. **User Indemnification**  
+ - You agree to **indemnify and hold us harmless** from any claims arising from your misuse of EAM (e.g., illegal content in synced settings or violation of third-party rights).
+
+---
+
+## **7. Third-Party Services**
+
+1. **Auth0 & Stripe**  
+ - EAM relies on **Auth0** for login and **Stripe** for payment processing.  
+ - We are **not liable** for downtime or security incidents of these external services, but we strive to work with reputable providers.
+
+2. **Realm of the Mad God (RotMG)**  
+ - EAM is not affiliated with Deca Games. Any bans or account actions imposed by RotMG are outside our control.  
+ - We are not responsible for RotMG updates that may break EAM’s functionality.
+
+---
+
+## **8. Liability & Warranties**
+
+1. **Use at Your Own Risk**  
+ - EAM is provided **“as is”**. We cannot guarantee continuous availability or compatibility with future RotMG updates.
+
+2. **Performance & Remedy**  
+ - If EAM Plus is fundamentally non-functional, contact [help@maik8.de](mailto:help@maik8.de). We will make a reasonable effort to fix critical issues in a timely manner.
+
+3. **Limitation of Liability** *(German Law)*  
+ - We are liable for **intent and gross negligence**, and for damages resulting in injury to life, body, or health.  
+ - In cases of **slight negligence**, we are only liable for breaches of essential contractual obligations (Kardinalpflichten) and limited to **foreseeable damages** typical for this type of contract.  
+ - We disclaim all liability for indirect, incidental, or consequential damages to the fullest extent permitted by law.
+
+---
+
+## **9. Support & Communication**
+
+1. **Primary Support Channels**  
+ - Discord: [Support Server](https://discord.exalt-account-manager.eu/)  
+ - Email: [privacy@maik8.de](mailto:privacy@maik8.de) / [help@maik8.de](mailto:help@maik8.de)
+
+2. **Languages**  
+ - **English** or **German** primarily, though we may try to assist in other languages if possible.
+
+3. **Response Time**  
+ - We typically respond within **24 hours**, but this is not guaranteed and no liability is assumed for delays.
+
+---
+
+## **10. Termination & Policy Changes**
+
+1. **Contract Duration & Termination**  
+ - Subscriptions renew automatically unless canceled.  
+ - If you cancel, you retain EAM Plus features until the current billing cycle ends (plus ~1 day grace), then revert to free features.  
+ - We may suspend or terminate your account for violations of these Terms, without refund.
+
+2. **Changes to These Terms**  
+ - We may update these Terms at any time. Material changes will be communicated **in-app**.  
+ - Your continued use of EAM after changes take effect constitutes acceptance. We do not guarantee advance notice, though we may provide it.
+
+---
+
+## **11. Governing Law, Dispute Resolution & Entire Agreement**
+
+1. **Governing Law**  
+ - These Terms are governed by **German law**.  
+ - Legal disputes should be addressed in writing to the address listed under Section 1.
+
+2. **EU Online Dispute Resolution Platform**  
+ - The European Commission provides an ODR platform at [https://ec.europa.eu/consumers/odr/](https://ec.europa.eu/consumers/odr/).  
+ - We are **neither willing nor obliged** to participate in dispute resolution before a consumer arbitration board.
+
+3. **Entire Agreement & Severability**  
+ - These Terms, together with our [Privacy Policy](./PrivacyPolicy.html), constitute the entire agreement between you and Maik Kühne IT-Dienstleistungen regarding EAM.  
+ - If any provision is found invalid or unenforceable, the remaining provisions remain in effect.
+
+---
+
+By clicking **“Purchase”** (for EAM Plus) or continuing to use Exalt Account Manager (EAM), you confirm that you have read, understood, and agree to these Terms. For questions, please contact [privacy@maik8.de](mailto:privacy@maik8.de) or join our [Discord Support Server](https://discord.exalt-account-manager.eu/).
