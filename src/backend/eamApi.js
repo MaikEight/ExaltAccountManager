@@ -28,6 +28,18 @@ async function startSession(amountOfAccounts, clientIdHash, clientVersion) {
 
     const url = `${EAM_BASE_URL}v1/Analytics/session/start`;
 
+    // The version needs to be in the C# System.Version format. 
+    // So we need to remove parts that are not needed.
+    // Example: 4.2.3b -> 4.2.3
+    // Example: 4.2.3 -> 4.2.3
+    const versionParts = clientVersion.split('.');
+    if (versionParts.length > 3) {
+        versionParts.splice(3, versionParts.length - 3);
+    }
+    clientVersion = versionParts.map(vp => isNaN(vp) ? vp.replace(/[^0-9]/g, '') : vp)
+        .filter(vp => vp !== '')
+        .join('.');
+
     const data = JSON.stringify({
         ClientIdHash: clientIdHash,
         ClientVersion: clientVersion,
@@ -36,6 +48,7 @@ async function startSession(amountOfAccounts, clientIdHash, clientVersion) {
 
     const response = await invoke('send_post_request_with_json_body', { url, data })
         .catch(error => { logToErrorLog('startSession', error); });
+
     return response ? JSON.parse(response) : "";
 }
 
