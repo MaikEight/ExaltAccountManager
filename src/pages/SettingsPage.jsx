@@ -1,5 +1,5 @@
 
-import { Box, Checkbox, FormControlLabel, Paper, Popover, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, FormGroup, Paper, Popover, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,24 +12,40 @@ import ViewColumnOutlinedIcon from '@mui/icons-material/ViewColumnOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import { ColorContext } from 'eam-commons-js';
+import { ColorContext, useUserLogin } from 'eam-commons-js';
 import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import useSnack from '../hooks/useSnack';
 import useServerList from '../hooks/useServerList';
 import ServerListSelect from '../components/ServerListSelect';
 import VaultPeekerLogo from '../components/VaultPeekerLogo';
+import PolicyOutlinedIcon from '@mui/icons-material/PolicyOutlined';
+import FindInPageOutlinedIcon from '@mui/icons-material/FindInPageOutlined';
+import GavelOutlinedIcon from '@mui/icons-material/GavelOutlined';
 import { useTheme } from '@emotion/react';
 import useAccounts from '../hooks/useAccounts';
 import { TableVirtuoso } from 'react-virtuoso';
 import * as dialog from "@tauri-apps/plugin-dialog"
 import useApplySettingsToHeaderName from '../hooks/useApplySettingsToHeaderName';
+import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
+import { fetch } from '@tauri-apps/plugin-http';
+import { EAM_PRIVACY_GATE_API } from 'eam-commons-js/constants';
 
 function SettingsPage() {
+    const userSettings = useUserSettings();
+    const colorContext = useContext(ColorContext);
+    const { serverList } = useServerList();
+    const { showSnackbar } = useSnack();
+    const { idToken, isAuthenticated } = useUserLogin();
+    const theme = useTheme();
+
+    const openVaultPeekerButtonRef = useRef(null);
+
     const [initialSettings, setInitialSettings] = useState(true);
     const [settings, setSettings] = useState({});
     const [gameExePath, setGameExePath] = useState("");
     const [openVaultPeekerAccountsPoppover, setOpenVaultPeekerAccountsPoppover] = useState(false);
-    const openVaultPeekerButtonRef = useRef(null);
+    const [analyticsSettings, setAnalyticsSettings] = useState(null);
+    const [analyticsRequestLoading, setAnalyticsRequestLoading] = useState(false);
 
     const { applySettingsToHeaderName } = useApplySettingsToHeaderName();
 
@@ -48,17 +64,37 @@ function SettingsPage() {
         ]
     }, [settings]);
 
-    const userSettings = useUserSettings();
-    const colorContext = useContext(ColorContext);
-    const { serverList } = useServerList();
-    const { showSnackbar } = useSnack();
-    const theme = useTheme();
-
     const setTheSettings = async () => {
         const s = userSettings.get;
         const _gameExePath = await userSettings.getByKeyAndSubKey('game', 'exePath');
         setSettings(s);
         setGameExePath(_gameExePath);
+
+        // Set the analytics settings
+        const analyticsSettingsUserData = await invoke('get_user_data_by_key', { key: 'analytics' })
+            .catch(() => {
+                return null;
+            });
+
+        if (analyticsSettingsUserData) {
+            const analyticsSettingsString = analyticsSettingsUserData.dataValue;
+
+            if (analyticsSettingsString === null
+                || analyticsSettingsString === undefined) {
+                setAnalyticsSettings({ sendAnonymizedData: false, optOut: false });
+                return;
+            }
+
+            const analyticsSettingsObj = JSON.parse(analyticsSettingsString);
+            if (analyticsSettingsObj === null || analyticsSettingsObj === undefined) {
+                setAnalyticsSettings({ sendAnonymizedData: false, optOut: false });
+                return;
+            }
+
+            setAnalyticsSettings(analyticsSettingsObj);
+        } else {
+            setAnalyticsSettings({ sendAnonymizedData: false, optOut: false });
+        }
     };
 
     useEffect(() => {
@@ -84,6 +120,17 @@ function SettingsPage() {
 
         userSettings.setByKeyAndSubKey('game', 'exePath', gameExePath);
     }, [gameExePath]);
+
+    useEffect(() => {
+        if (!analyticsSettings) {
+            return;
+        }
+
+        const updateAnalytics = async () => {
+            await invoke('insert_or_update_user_data', { userData: { dataKey: 'analytics', dataValue: JSON.stringify(analyticsSettings) } });
+        };
+        updateAnalytics();
+    }, [analyticsSettings]);
 
     const isDarkMode = () => {
         if (settings === undefined || settings.general === undefined || settings.general.theme === undefined)
@@ -372,6 +419,207 @@ function SettingsPage() {
                 <Tooltip title={isDarkMode() ? "Burn your eyes!" : "Come to the dark side, we have cookies!"}>
                     <FormControlLabel sx={{ gap: 0.5 }} control={<Switch checked={isDarkMode()} onChange={() => colorContext.toggleColorMode()} />} label={'Darkmode'} />
                 </Tooltip>
+            </ComponentBox>
+            {/* Privacy & Legal */}
+            <ComponentBox
+                title="Privacy & Legal"
+                icon={<PolicyOutlinedIcon />}
+                innerSx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1.5,
+                }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0,
+                    }}
+                >
+                    <Typography variant="body2" color="text.secondary" >
+                        Here you can find the privacy policy and the Terms of service... yes we have to have this... yes you should read it.
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" >
+                        If you have any questions or concerns, please feel free to ask.
+                    </Typography>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1.5,
+                    }}
+                >
+                    <a href="https://exaltaccountmanager.com/privacy-policy/" target="_blank" rel="noreferrer">
+                        <StyledButton
+                            color="secondary"
+                            startIcon={<FindInPageOutlinedIcon />}
+                        >
+                            View Privacy Policy
+                        </StyledButton>
+                    </a>
+                    <a href="https://exaltaccountmanager.com/terms-of-service/" target="_blank" rel="noreferrer">
+                        <StyledButton
+                            color="secondary"
+                            startIcon={<GavelOutlinedIcon />}
+                        >
+                            View Terms of Service
+                        </StyledButton>
+                    </a>
+                </Box>
+                {/* ANALYTICS */}
+                <Box
+                    sx={{
+                        mt: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0,
+                    }}
+                >
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        color="text.secondary"
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            alignItems: 'center',
+                            mb: 1,
+                        }}
+                    >
+                        <TroubleshootOutlinedIcon /> Analytics
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" >
+                        We collect analytics to improve the application and to see how it is used.
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" >
+                        If you want, you can request a copy of the data we have collected about you or request a delete of everything we know about you.
+                    </Typography>
+                    <Box
+                        sx={{
+                            mt: 1,
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1.5,
+                            mb: 1.5,
+                        }}
+                    >
+                        <StyledButton
+                            disabled={analyticsRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
+                            color="secondary"
+                            startIcon={<VisibilityOutlinedIcon />}
+                            onClick={async () => {
+                                setAnalyticsRequestLoading(true);
+
+                                const myHeaders = {
+                                    "Authorization": `Bearer ${idToken}`
+                                };
+
+                                const requestOptions = {
+                                    method: "GET",
+                                    headers: isAuthenticated ? myHeaders : {}
+                                };
+
+                                try {
+                                    const hwid = localStorage.getItem("apiHwidHash");
+                                    const sessionId = sessionStorage.getItem("sessionId");
+                                    if (!hwid || !sessionId) {
+                                        console.error("No HWID or Session ID found");
+                                        showSnackbar("No HWID or Session ID found, can't request your data.", "error");
+                                        setAnalyticsRequestLoading(false);
+                                        return;
+                                    }
+                                    const url = `${EAM_PRIVACY_GATE_API}/user-data-request?clientIdHash=${hwid}&sessionId=${sessionId}`;
+                                    const response = await fetch(url, requestOptions);
+
+                                    if (!response.ok) {
+                                        console.error("Error requesting data:", response.statusText);
+                                        showSnackbar("Error requesting your data, please try again later.", "error");
+                                        setAnalyticsRequestLoading(false);
+                                        return;
+                                    }
+
+                                    const data = await response.json();
+                                    if (!data) {
+                                        console.error("Error requesting data: No data returned");
+                                        showSnackbar("Error requesting your data, please try again later.", "error");
+                                        setAnalyticsRequestLoading(false);
+                                        return;
+                                    }
+
+                                    //Download the data
+                                    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+                                    const data_url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = data_url;
+                                    a.download = 'eam_data.json';
+                                    a.click();
+                                    URL.revokeObjectURL(data_url);
+
+                                    showSnackbar("Your data has been downloaded as eam_data.json, you can open it using notepad.", "success");
+                                } catch (error) {
+                                    console.error(error);
+                                    showSnackbar("Error requesting your data, please try again later.", "error");
+                                } finally {
+                                    setAnalyticsRequestLoading(false);
+                                }
+                            }}
+                        >
+                            {
+                                !analyticsRequestLoading ?
+                                    "Request your data"
+                                    :
+                                    "Loading please wait..."
+                            }
+                        </StyledButton>
+                    </Box>
+                    <Typography variant="body2" color="text.secondary" >
+                        If you want, you can choose to send only anonymized data or opt-out of the analytics that are collect entirely.
+                    </Typography>
+                    {
+                        analyticsSettings &&
+                        <Box
+                            sx={{
+                                mt: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1,
+                                px: 1.5
+                            }}
+                        >
+                            <ColumnSwitch
+                                label="Send only fully anonymized data"
+                                checked={analyticsSettings.sendAnonymizedData}
+                                onChange={(event) => {
+                                    setAnalyticsSettings({
+                                        sendAnonymizedData: event.target.checked,
+                                        optOut: analyticsSettings.optOut,
+                                    });
+
+                                    if (event.target.checked) {
+                                        showSnackbar("You need to restart EAM in order for the changes to take effect.", "success");
+                                    }
+                                }}
+                            />
+                            <ColumnSwitch
+                                label="Opt-out of all analytics"
+                                checked={analyticsSettings.optOut}
+                                onChange={(event) => {
+                                    setAnalyticsSettings({
+                                        sendAnonymizedData: analyticsSettings.sendAnonymizedData,
+                                        optOut: event.target.checked,
+                                    });
+
+                                    if (event.target.checked) {
+                                        showSnackbar("You need to restart EAM in order for the changes to take effect.", "success");
+                                    }
+                                }}
+                            />
+                        </Box>
+                    }
+                </Box>
             </ComponentBox>
         </Box>
     );
