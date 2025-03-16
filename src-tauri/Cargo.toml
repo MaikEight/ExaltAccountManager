@@ -57,6 +57,7 @@ log = "0.4"
 simplelog = "0.12.2"
 winreg = "0.55.0"
 open = "5.3.2"
+
 eam_commons = { path = "../t-src-modules/eam_commons" }
 
 [features]
@@ -65,4 +66,4 @@ eam_commons = { path = "../t-src-modules/eam_commons" }
 custom-protocol = ["tauri/custom-protocol"]
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.0.2"
+tauri-plugin-updater = "2.5.0"
