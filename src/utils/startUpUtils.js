@@ -81,6 +81,9 @@ function writeStartupLogoToConsole() {
 }
 
 function addConsoleLogListener() {
+    if (process.env.NODE_ENV === 'development'){
+        return;
+    }
     // Override console methods to log to error log
     ['warn', 'error'].forEach((methodName) => {
         const oldMethod = console[methodName];
