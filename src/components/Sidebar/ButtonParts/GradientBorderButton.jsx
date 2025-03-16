@@ -1,8 +1,14 @@
 import styled from "styled-components";
 
-const GradientBorderButton = styled('div')(({ theme, selected, sx }) => ({
+const GradientBorderButton = styled('div').withConfig({
+    shouldForwardProp: (prop) => prop !== 'sx'
+})(({ theme, selected, sx }) => ({
     position: 'relative',
-    color: !selected ? theme.palette.text.primary : theme.palette.mode === 'light' ? theme.palette.background.default : theme.palette.text.primary,
+    color: !selected
+        ? theme.palette.text.primary
+        : theme.palette.mode === 'light'
+            ? theme.palette.background.default
+            : theme.palette.text.primary,
     textTransform: 'none',
     borderRadius: '30px',
     cursor: 'pointer',

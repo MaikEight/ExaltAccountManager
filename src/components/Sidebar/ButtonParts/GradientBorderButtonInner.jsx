@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-const GradientBorderButtonInner = styled('div')(({ theme, selected, sx }) => ({
+const GradientBorderButtonInner = styled('div').withConfig({
+    shouldForwardProp: (prop) => prop !== 'sx'
+})(({ theme, selected, sx }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
