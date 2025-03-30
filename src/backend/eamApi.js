@@ -21,6 +21,19 @@ async function getLatestEamVersion() {
 }
 
 async function startSession(amountOfAccounts, clientIdHash, clientVersion) {
+    const analyticsData = await invoke('get_user_data_by_key', { key: 'analytics' }).catch(() => null);
+    if (analyticsData) {
+        try {
+            const analytics = JSON.parse(analyticsData.dataValue);
+            if (analytics && analytics.sendAnonymizedData) {
+                clientIdHash = "ANONYMIZED";
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
     if (clientIdHash === null || clientIdHash === undefined) {
         console.log("HWID is null or undefined, not starting session");
         return "";
