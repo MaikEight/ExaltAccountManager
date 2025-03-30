@@ -82,7 +82,7 @@ function AccountsContextProvider({ children }) {
         if (pw === -1)
             return false;
 
-        const acc = { ...updatedAccount, token: token, password: pw };        
+        const acc = { ...updatedAccount, token: token, password: pw };
         const updAccount = await saveAccount(acc)
             .catch((err) => {
                 console.error('Error saving account:', err, acc);
@@ -103,7 +103,7 @@ function AccountsContextProvider({ children }) {
         return true;
     };
 
-    const sendAccountVerify = async (email, updateAccountInDatabase = true) => {
+    const sendAccountVerify = async (email, updateAccountInDatabase = true, updateLastLogin = false) => {
         const acc = getAccountByEmail(email);
 
         if (!acc) return { success: false, message: 'Account not found' };
@@ -116,8 +116,12 @@ function AccountsContextProvider({ children }) {
                     return null;
                 });
 
-            const requestState = getRequestState(response);
+            const requestState = getRequestState(response);            
             const newAcc = ({ ...acc, state: requestState });
+            if (updateLastLogin 
+                && requestState === 'Success') {
+                newAcc.lastLogin = new Date();
+            }
 
             newAcc.name = response?.Account?.Name;
 
@@ -176,7 +180,7 @@ function AccountsContextProvider({ children }) {
             return { success: true, message: 'Character list received', data: response, requestState: requestState };
         } catch (error) {
             logToErrorLog('postCharList', error);
-            return { success: false, message: 'Failed to get character list', requestState: requestState};
+            return { success: false, message: 'Failed to get character list', requestState: requestState };
         };
     }
 
@@ -204,7 +208,7 @@ function AccountsContextProvider({ children }) {
         const charList = await sendCharList(acc.email, token.AccessToken, acc);
         if (charList === null || !charList.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + acc.email);
-            showSnackbar(`Failed to refresh data${charList?.requestState ? `: ${requestStateToMessage(charList.requestState)}` :''}`, 'error');
+            showSnackbar(`Failed to refresh data${charList?.requestState ? `: ${requestStateToMessage(charList.requestState)}` : ''}`, 'error');
             return null;
         }
 
