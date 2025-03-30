@@ -43,6 +43,7 @@ const defaultSettings = {
             state: false,
             comment: false,
         },
+        hideEmojis: false,
     },
     game: {
         defaultServer: "Last server",
