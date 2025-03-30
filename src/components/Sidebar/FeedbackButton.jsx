@@ -44,8 +44,7 @@ function FeedbackButton({ smallSize, action }) {
                             gap: '8px',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            ml: 0.25,
-                            mr: 0.25,
+                            mx: 0.25,
                         }}
                     >
                         <FavoriteBorderOutlinedIcon />
