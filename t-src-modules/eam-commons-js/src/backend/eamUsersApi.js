@@ -8,7 +8,6 @@ async function getProfileImage(imageUrl) {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': '0'
             },
         });
 
