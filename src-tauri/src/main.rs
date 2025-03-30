@@ -20,9 +20,8 @@ use diesel::SqliteConnection;
 use lazy_static::lazy_static;
 use log::{error, info};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
-use simplelog::*;
 use serde_json::Value;
-use tauri::http::HeaderName;
+use simplelog::*;
 use std::collections::HashMap;
 use std::env;
 use std::error::Error as StdError;
@@ -37,6 +36,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use tauri::http::HeaderName;
 use tauri::Error;
 use zip::read::ZipArchive;
 
@@ -54,11 +54,13 @@ const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
 const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "8da7094f31996c0a1f08aee856039e16";
 
 fn main() {
+    println!("Starting Exalt Account Manager...");
     //Create the save file directory if it does not exist
     let save_file_path = get_save_file_path();
     if !Path::new(&save_file_path).exists() {
         fs::create_dir_all(&save_file_path).unwrap();
     }
+    println!("Save file path: {}", save_file_path.clone());
 
     // Initialize the logger
     let log_file = File::create(save_file_path + "\\log.txt").unwrap();
@@ -68,6 +70,15 @@ fn main() {
         log_file,
     )])
     .unwrap();
+    
+    //Print the Startup ASCII art
+    info!("  _______     ___    .___  ___.");
+    info!(" |   ____|   /   \\   |   \\/   |");
+    info!(" |  |__     /  ^  \\  |  \\  /  |");
+    info!(" |   __|   /  /_\\  \\ |  |\\/|  |");
+    info!(" |  |____ /  _____  \\|  |  |  |");
+    info!(" |_______/__/     \\__\\__|  |__|");
+    info!("                           by MaikEight");
 
     //Initialize the database pool
     info!("Initialize the database pool...");
@@ -503,17 +514,17 @@ fn quick_hash(secret: &str) -> String {
 }
 
 #[tauri::command]
-async fn send_get_request(url: String, custom_headers: HashMap<String, String>) -> Result<String, String> {
+async fn send_get_request(
+    url: String,
+    custom_headers: HashMap<String, String>,
+) -> Result<String, String> {
     info!("Sending get request...");
 
     let mut headers = HeaderMap::new();
     custom_headers.into_iter().for_each(|(key, value)| {
         let header_name = HeaderName::from_str(&key).unwrap();
         let header_value = HeaderValue::from_str(&value).unwrap();
-        headers.append(
-            header_name,
-            header_value,
-        );
+        headers.append(header_name, header_value);
     });
 
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
@@ -527,21 +538,22 @@ async fn send_get_request(url: String, custom_headers: HashMap<String, String>) 
         .map_err(|e| e.to_string())?;
 
     let body = res.text().await.map_err(|e| e.to_string())?;
-    Ok(body)    
+    Ok(body)
 }
 
 #[tauri::command]
-async fn send_post_request(url: String, custom_headers: HashMap<String, String>, body: Value) -> Result<String, String> {
+async fn send_post_request(
+    url: String,
+    custom_headers: HashMap<String, String>,
+    body: Value,
+) -> Result<String, String> {
     info!("Sending post request...");
 
     let mut headers = HeaderMap::new();
     custom_headers.into_iter().for_each(|(key, value)| {
         let header_name = HeaderName::from_str(&key).unwrap();
         let header_value = HeaderValue::from_str(&value).unwrap();
-        headers.append(
-            header_name,
-            header_value,
-        );
+        headers.append(header_name, header_value);
     });
 
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
