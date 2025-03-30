@@ -1,6 +1,6 @@
 [package]
 name = "exalt-account-manager"
-version = "4.2.2"
+version = "4.2.3"
 description = "Exalt Account Manager is a powerful toolset designed to streamline multi-account management for Realm of the Mad God."
 homepage = "https://exaltaccountmanager.com"
 authors = ["MaikEight"]
@@ -12,15 +12,16 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.5", features = [] }
+tauri-build = { version = "2.1.0", features = [] }
 
 [dependencies]
-tauri = { version = "2.2.5", features = ["devtools", "macos-private-api"] }
+tauri = { version = "2.4.0", features = ["devtools", "macos-private-api"] }
+tauri-plugin = "2.1.0"
 tauri-plugin-deep-link = "2.2.0"
-tauri-plugin-single-instance = { version = "2.2.1", features = ["deep-link"] }
+tauri-plugin-single-instance = { version = "2.2.2", features = ["deep-link"] }
 tauri-plugin-fs = "2.2.0"
 tauri-plugin-shell = "2.2.0"
-tauri-plugin-http = "2.3.0"
+tauri-plugin-http = "2.4.2"
 tauri-plugin-process = "2.2.0"
 tauri-plugin-dialog = "2.2.0"
 serde = { version = "1.0", features = ["derive"] }
@@ -66,4 +67,4 @@ eam_commons = { path = "../t-src-modules/eam_commons" }
 custom-protocol = ["tauri/custom-protocol"]
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.5.0"
+tauri-plugin-updater = "2.6.1"
