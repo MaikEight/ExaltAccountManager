@@ -10,7 +10,7 @@
     "publisher": "MaikEight",
     "shortDescription": "Exalt Account Manager is a powerful toolset designed to streamline multi-account management for Realm of the Mad God.",
     "targets": "all",
-    "homepage": "http://localhost:1420/",
+    "homepage": "https://exaltaccountmanager.com/",
     "windows": {
       "allowDowngrades": false,
       "certificateThumbprint": "b082652dc70f2ab8338976148c895d3d77db928e",
@@ -32,7 +32,7 @@
   },
   "productName": "Exalt Account Manager",
   "mainBinaryName": "Exalt Account Manager",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "identifier": "eu.exalt-account-manager.app",
   "plugins": {
     "updater": {
