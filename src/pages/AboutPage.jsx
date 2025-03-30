@@ -10,7 +10,7 @@ import StyledButton from "../components/StyledButton";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import usePopups from './../hooks/usePopups';
 import CreditsPopup from "../components/Popups/CreditsPopup";
-import { APP_VERSION, IS_PRE_RELEASE } from "../constants";
+import { APP_VERSION, APP_VERSION_RELEASE_DATE, IS_PRE_RELEASE } from "../constants";
 import { useUserLogin, patchUserLlama } from "eam-commons-js";
 import Confetti from "react-confetti";
 
@@ -91,7 +91,7 @@ function AboutPage() {
                 >
                     <Typography>
                         Exalt Account Manager version {APP_VERSION}{IS_PRE_RELEASE && ' Preview'}<br />
-                        Released on 24.12.2024.
+                        Released on {APP_VERSION_RELEASE_DATE}.
                     </Typography>
                 </ComponentBox>
                 <ComponentBox
