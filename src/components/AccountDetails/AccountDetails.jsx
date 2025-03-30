@@ -112,7 +112,7 @@ function AccountDetails({ acc, onClose }) {
             return;
         }
 
-        const accResponse = await sendAccountVerify(account.email);
+        const accResponse = await sendAccountVerify(account.email, true, true);
         if (accResponse === null || !accResponse.success || !accResponse.data.Account) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
             showSnackbar("Failed to refresh data", 'error');
@@ -276,7 +276,6 @@ function AccountDetails({ acc, onClose }) {
                                     transition: 'height 0.5s',
                                 }}
                             >
-
                                 <TableContainer component={Box} sx={{ borderRadius: 0 }}>
                                     <Table
                                         sx={{
