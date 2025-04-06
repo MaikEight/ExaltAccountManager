@@ -11,6 +11,7 @@ import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";
 import SteamworksMailColumn from "./GridComponents/SteamworksMailColumn";
 import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
+import NoRowsOverlay from "./GridComponents/NoRowsOverlay";
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount } = useAccounts();
@@ -120,10 +121,12 @@ function AccountGrid({ setShowAddNewAccount }) {
                     pagination: CustomPagination,
                     toolbar: CustomToolbar,
                     loadingOverlay: LinearProgress,
+                    noRowsOverlay: NoRowsOverlay,
                 }}
                 slotProps={{
                     toolbar: { onSearchChanged: (search) => setSearch(search), onAddNew: () => setShowAddNewAccount(true) },
-                    pagination: { labelRowsPerPage: "Accounts per page:" }
+                    pagination: { labelRowsPerPage: "Accounts per page:" },
+                    noRowsOverlay: { onAddNew: () => setShowAddNewAccount(true) },
                 }}
             />
         </Paper>
