@@ -446,6 +446,7 @@ function SettingsPage() {
                 }}
                 isCollapseable={true}
                 defaultCollapsed={true}
+                isLoading={analyticsRequestLoading}
             >
                 <Box
                     sx={{
