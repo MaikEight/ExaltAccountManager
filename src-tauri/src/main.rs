@@ -1956,10 +1956,3 @@ fn delete_from_error_log_impl(
         "Pool is not initialized",
     )))
 }
-
-//Helper function to get the path to the application directory
-fn get_game_root_path(game_exe_path: String) -> String {
-    let mut path_buf = PathBuf::from(game_exe_path);
-    path_buf.pop();
-    return path_buf.to_string_lossy().to_string();
-}
