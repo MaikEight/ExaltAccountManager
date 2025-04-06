@@ -17,9 +17,9 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.4.9",
-    "@mui/material": "^6.4.9",
-    "@mui/styled-engine-sc": "^6.4.9",
+    "@mui/icons-material": "^6.4.10",
+    "@mui/material": "^6.4.10",
+    "@mui/styled-engine-sc": "^7.0.1",
     "@tauri-apps/api": "^2.4.0",
     "axios": "^1.8.4",
     "babel-loader": "10.0.0",
@@ -31,13 +31,13 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "stream-browserify": "^3.0.0",
-    "styled-components": "^6.1.16",
+    "styled-components": "^6.1.17",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.4.0",
+    "@tauri-apps/cli": "^2.4.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "esbuild": "^0.25.1",
-    "vite": "^6.2.3"
+    "esbuild": "^0.25.2",
+    "vite": "^6.2.5"
   }
 }
