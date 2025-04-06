@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ImportExportOutlinedIcon from '@mui/icons-material/ImportExportOutlined';
 import * as dialog from "@tauri-apps/plugin-dialog"
+import AddAccountSvg from "../components/Illustrations/AddAccountSvg";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -510,6 +511,7 @@ function ImporterPage() {
                             title="Select a file to import"
                             icon={<PlaylistAddOutlinedIcon />}
                             innerSx={{
+                                position: 'relative',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'center',
@@ -542,6 +544,19 @@ function ImporterPage() {
                             >
                                 Choose a file
                             </StyledButton>
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    bottom: 16,
+                                    right: 16,
+                                    top: -32,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <AddAccountSvg h="100%" />
+                            </Box>
                         </ComponentBox>
                         <ComponentBox
                             title="Supported file types and data fields"
