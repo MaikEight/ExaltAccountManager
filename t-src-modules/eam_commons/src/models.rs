@@ -684,6 +684,7 @@ impl NewCharacter {
 #[derive(Queryable, Serialize, Deserialize, Clone)]
 pub struct EamAccount {
     pub id: Option<i32>,
+    pub orderId: Option<i32>,
     pub name: Option<String>,
     pub email: String,
     pub isDeleted: bool,
@@ -709,6 +710,7 @@ pub struct EamAccount {
 #[diesel(table_name = schema::EamAccount)]
 pub struct NewEamAccount {
     pub id: Option<i32>,
+    pub orderId: Option<i32>,
     pub name: Option<String>,
     pub email: String,
     pub isDeleted: bool,
@@ -733,6 +735,7 @@ pub struct NewEamAccount {
 #[diesel(table_name = schema::EamAccount)]
 pub struct UpdateEamAccount {
     pub id: Option<i32>,
+    pub orderId: Option<i32>,
     pub name: Option<String>,
     pub email: String,
     pub isDeleted: bool,
@@ -758,6 +761,7 @@ impl From<EamAccount> for NewEamAccount {
     fn from(account: EamAccount) -> Self {
         NewEamAccount {
             id: account.id,
+            orderId: account.orderId,
             name: account.name,
             email: account.email,
             isSteam: account.isSteam,
@@ -781,6 +785,7 @@ impl From<EamAccount> for UpdateEamAccount {
     fn from(account: EamAccount) -> Self {
         UpdateEamAccount {
             id: account.id,
+            orderId: account.orderId,
             name: account.name,
             email: account.email,
             isDeleted: account.isDeleted,

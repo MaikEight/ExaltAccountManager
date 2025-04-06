@@ -4,6 +4,7 @@
 diesel::table! {
     EamAccount (email) {
         id -> Nullable<Integer>,
+        orderId -> Nullable<Integer>,
         name -> Nullable<Text>,
         email -> Text,
         isDeleted -> Bool,
