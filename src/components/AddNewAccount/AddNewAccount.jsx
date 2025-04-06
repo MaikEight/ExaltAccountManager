@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import RegisterAccount from "./RegisterAccount";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import AddAccountSvg from "../Illustrations/AddAccountSvg";
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -81,7 +82,7 @@ function AddNewAccount({ isOpen, onClose }) {
             return;
         }
 
-        if(!newAccount.isSteam && newAccount.steamId) {
+        if (!newAccount.isSteam && newAccount.steamId) {
             const acc = newAccount;
             delete acc.steamId;
             setNewAccount(acc);
@@ -330,7 +331,22 @@ function AddNewAccount({ isOpen, onClose }) {
                                 Show importer
                             </StyledButton>
                         </ComponentBox>
-                    </Box>);
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                bottom: 16,
+                                left: 0,
+                                right: 0,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                zIndex: -1,
+                            }}
+                        >
+                            <AddAccountSvg h="152px" />
+                        </Box>
+                    </Box>
+                );
             case 1:  //Add details
                 return (
                     <ComponentBox
