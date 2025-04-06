@@ -12,7 +12,7 @@ const appWindow = getCurrentWebviewWindow()
 async function performCheckForUpdates() {
     try {
         const update = await check();
-        if (update?.available) {
+        if (update) {
             console.log(`Update to ${update.version} available! Date: ${update.date}`);
             console.log(`Installing update version: ${update.version} from ${update.date}.`);
             console.log(`Release notes: ${update.body}`);
@@ -102,7 +102,6 @@ function addConsoleLogListener() {
                 console.log(e);
             }
             try {
-
                 if (logSource.startsWith("MainRouter") && args.length > 0 && args[0].startsWith("ErrorBoundary")) {
                     logToErrorLog(logSource, JSON.stringify(args, null, 2));
                     return;
