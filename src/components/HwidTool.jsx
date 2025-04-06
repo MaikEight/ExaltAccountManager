@@ -20,7 +20,7 @@ function HwidTool() {
             <ComponentBox
                 title={
                     <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                        HWID-Tool
+                        HWID-Reader
                     </Typography>
                 }
                 icon={<InfoOutlinedIcon />}
@@ -47,14 +47,14 @@ function HwidTool() {
                         }}
                     >
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            If you encounter the <strong>Token for different machine</strong> error, consider using the HWID Tool.
+                            If you encounter the <strong>Token for different machine</strong> error, consider using the HWID-Reader.
                             This tool provides a more accurate HWID for use in EAM.
                         </Typography>
                         <Typography variant="body2" color="text.secondary" fontWeight={700}>
                             Note
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            The HWID-Tool only needs to be executed once, or after any changes to your PC hardware.
+                            The HWID-Reader only needs to be executed once, or after you made any changes to your PC hardware.
                         </Typography>
                     </Box>
                     <Box
@@ -87,7 +87,7 @@ function HwidTool() {
                                     });
                             }}
                         >
-                            {!isLoading ? "Grab & Launch HWID Tool" : "Hang tight! Doing our magic..."}
+                            {!isLoading ? "Run HWID Reader" : "Doing magic..."}
                         </StyledButton>
                     </Box>
                 </Box>
