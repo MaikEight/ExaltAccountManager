@@ -27,7 +27,6 @@ function CreditsPopup() {
                 <CreditEntry title={'Tauri'} url={'https://tauri.app/'} image={'tauri.svg'} />
                 <CreditEntry title={'React'} url={'https://react.dev/'} image={'react.svg'} />
                 <CreditEntry title={'Material UI'} url={'https://mui.com/'} image={'mui.svg'} />
-
             </ComponentBox>
             <ComponentBox
                 title={'Resources & People'}
@@ -42,10 +41,11 @@ function CreditsPopup() {
                     width: 'fit-content',
                 }}
             >
-                <CreditEntry title={'Muledump'} url={'https://github.com/jakcodex/muledump'} image={'muledump.png'} />
-                <CreditEntry title={'Muledump (Tadus Fork)'} url={'https://github.com/TadusPro/muledump'} image={'muledump.png'} />
-                <CreditEntry title={'Muledump-Asset-Compiler'} url={'https://github.com/jakcodex/muledump-asset-compiler'} image={'muledump-asset-compiler.png'} />
-                <Typography variant="body1" color="textSecondary">
+                <CreditEntry title={'Muledump'} url={'https://github.com/jakcodex/muledump'} image={'muledump.png'} text={"Thank you for the great project, it helped a lot."}/>
+                <CreditEntry title={'Muledump (Tadus Fork)'} url={'https://github.com/TadusPro/muledump'} image={'muledump.png'} text={"Thanks for providing this fork."}/>
+                <CreditEntry title={'Muledump-Asset-Compiler'} url={'https://github.com/jakcodex/muledump-asset-compiler'} image={'muledump-asset-compiler.png'} text={"Thanks for the nice assets!"}/>
+                <CreditEntry title={'unDraw'} url={'https://undraw.co/'} image={'unDraw.svg'} text={'Thanks for providing the nice illustrations free of charge.'} />
+                <Typography component={"div"} variant="body1" color="textSecondary" sx={{mt: 1}}>
                     A Special <b>THANKS</b> goes to these legends
                 </Typography>
 
@@ -122,7 +122,7 @@ function ThanksLink({ title, url }) {
 
 function SpecialThanks({ children }) {
     return (
-        <Typography variant="body1" color="textSecondary">
+        <Typography component={"div"} variant="body1" color="textSecondary">
             <Box component={'span'} sx={{ display: 'flex', alignContent: 'center', gap: 0.75 }}>
                 {children}
             </Box>
@@ -130,7 +130,7 @@ function SpecialThanks({ children }) {
     )
 }
 
-function CreditEntry({ title, image, url }) {
+function CreditEntry({ title, image, url, text }) {
 
     const wrapInLink = (children) => {
         if (url) {
@@ -144,7 +144,15 @@ function CreditEntry({ title, image, url }) {
     }
 
     return (
-        <Box sx={{ width: 'fit-content' }}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 0.75,
+                alignItems: 'center',
+                width: 'fit-content'
+            }}
+        >
             {
                 wrapInLink(
                     <Box
@@ -174,7 +182,7 @@ function CreditEntry({ title, image, url }) {
                                 />
                             </Box>
                         }
-                        <Typography variant="body1">
+                        <Typography component={"div"} variant="body1">
                             {title}
                         </Typography>
                         {
@@ -183,6 +191,33 @@ function CreditEntry({ title, image, url }) {
                         }
                     </Box>
                 )
+            }
+            {
+                text &&
+                <>
+                    <Typography
+                        component={"div"}
+                        variant="body1"
+                        color="textSecondary"
+                        sx={{
+                            textDecoration: 'none',
+                            fontSize: '0.9rem',
+                        }}
+                    >
+                        -
+                    </Typography>
+                    <Typography
+                        component={"div"}
+                        variant="body1"
+                        color="textSecondary"
+                        sx={{
+                            textDecoration: 'none',
+                            fontSize: '0.9rem',
+                        }}
+                    >
+                        {text}
+                    </Typography>
+                </>
             }
         </Box>
     );
