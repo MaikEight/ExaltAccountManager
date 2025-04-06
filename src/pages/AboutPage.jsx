@@ -13,6 +13,9 @@ import CreditsPopup from "../components/Popups/CreditsPopup";
 import { APP_VERSION, APP_VERSION_RELEASE_DATE, IS_PRE_RELEASE } from "../constants";
 import { useUserLogin, patchUserLlama } from "eam-commons-js";
 import Confetti from "react-confetti";
+import DeveloperSvg from "../components/Illustrations/DeveloperSvg";
+import useStartupPopups from "../hooks/useStartupPopups";
+import FeaturedPlayListOutlinedIcon from '@mui/icons-material/FeaturedPlayListOutlined';
 
 function AboutPage() {
     const [showLlama, setShowLlama] = useState(false);
@@ -23,6 +26,7 @@ function AboutPage() {
     const theme = useTheme();
     const { showPopup } = usePopups();
     const { user, idToken } = useUserLogin();
+    const { changelogPopups } = useStartupPopups();
 
     useEffect(() => {
         const handleResize = () => {
@@ -85,14 +89,54 @@ function AboutPage() {
             </ComponentBox>
             <Box sx={{ display: 'flex', flexDirection: 'row', mt: -2, mb: -2 }}>
                 <ComponentBox
-                    title="Version"
+                    title={`Version ${APP_VERSION}${IS_PRE_RELEASE ? ' Preview' : ''}`}
                     icon={<NumbersOutlinedIcon />}
                     sx={{ mr: 0, userSelect: "none", flexGrow: 1 }}
                 >
-                    <Typography>
-                        Exalt Account Manager version {APP_VERSION}{IS_PRE_RELEASE && ' Preview'}<br />
-                        Released on {APP_VERSION_RELEASE_DATE}.
-                    </Typography>
+                    <Box
+                        id="version-content"
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 1,
+                            height: '100%',
+
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 1,
+                            }}
+                        >
+                            <Typography>
+                                Released on {APP_VERSION_RELEASE_DATE}.
+                            </Typography>
+                            <StyledButton
+                                startIcon={<FeaturedPlayListOutlinedIcon />}
+                                onClick={() => {
+                                    const lastChangelog = changelogPopups?.[changelogPopups.length - 1];                                    
+                                    if (lastChangelog) {
+                                        showPopup(lastChangelog);
+                                    }
+                                }}
+                            >
+                                View Changelog
+                            </StyledButton>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexGrow: 1,
+                                maxHeight: '78px',
+                                mr: 0.5,
+                                justifyContent: 'flex-end',
+                            }}
+                        >
+                            <DeveloperSvg h='100%' />
+                        </Box>
+                    </Box>
                 </ComponentBox>
                 <ComponentBox
                     title="Developer"
