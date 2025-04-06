@@ -12,18 +12,18 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.1.0", features = [] }
+tauri-build = { version = "2.1.1", features = [] }
 
 [dependencies]
-tauri = { version = "2.4.0", features = ["devtools", "macos-private-api"] }
-tauri-plugin = "2.1.0"
-tauri-plugin-deep-link = "2.2.0"
-tauri-plugin-single-instance = { version = "2.2.2", features = ["deep-link"] }
-tauri-plugin-fs = "2.2.0"
-tauri-plugin-shell = "2.2.0"
-tauri-plugin-http = "2.4.2"
-tauri-plugin-process = "2.2.0"
-tauri-plugin-dialog = "2.2.0"
+tauri = { version = "2.4.1", features = ["devtools", "macos-private-api"] }
+tauri-plugin = "2"
+tauri-plugin-deep-link = "2"
+tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-http = "2"
+tauri-plugin-process = "2"
+tauri-plugin-dialog = "2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-std = "1.13"
@@ -67,4 +67,4 @@ eam_commons = { path = "../t-src-modules/eam_commons" }
 custom-protocol = ["tauri/custom-protocol"]
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.6.1"
+tauri-plugin-updater = "2.7.0"

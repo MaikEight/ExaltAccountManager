@@ -4838,9 +4838,9 @@ checksum = "61c41af27dd6d1e27b1b16b489db798443478cef1f06a660c96db617ba5de3b1"
 
 [[package]]
 name = "tauri"
-version = "2.4.0"
+version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "511dd38065a5d3b36c33cdba4362b99a40a5103bebcd4aebb930717e7c8ba292"
+checksum = "4d08db1ff9e011e04014e737ec022610d756c0eae0b3b3a9037bccaf3003173a"
 dependencies = [
  "anyhow",
  "bytes",
@@ -4888,9 +4888,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-build"
-version = "2.1.0"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ffa8732a66f90903f5a585215f3cf1e87988d0359bc88c18a502efe7572c1de"
+checksum = "0fd20e4661c2cce65343319e6e8da256958f5af958cafc47c0d0af66a55dcd17"
 dependencies = [
  "anyhow",
  "cargo_toml",
@@ -4910,9 +4910,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-codegen"
-version = "2.1.0"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c266a247f14d63f40c6282c2653a8bac5cc3d482ca562a003a88513653ea817a"
+checksum = "458258b19032450ccf975840116ecf013e539eadbb74420bd890e8c56ab2b1a4"
 dependencies = [
  "base64 0.22.1",
  "brotli",
@@ -4937,9 +4937,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-macros"
-version = "2.1.0"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f47a1cf94b3bd6c4dc37dce1a43fc96120ff29a91757f0ab3cf713c7ad846e7c"
+checksum = "d402813d3b9c773a0fa58697c457c771f10e735498fdcb7b343264d18e5a601f"
 dependencies = [
  "heck 0.5.0",
  "proc-macro2",
@@ -4951,9 +4951,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin"
-version = "2.1.0"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9972871fcbddf16618f70412d965d4d845cd4b76d03fff168709961ef71e5cdf"
+checksum = "a4190775d6ff73fe66d9af44c012739a2659720efd9c0e1e56a918678038699d"
 dependencies = [
  "anyhow",
  "glob",
@@ -4968,9 +4968,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-deep-link"
-version = "2.2.0"
+version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35d51ffd286073414d26353bcfc9e83e3cd63f96fa7f7a912f92f2118e5de5a6"
+checksum = "dba4412f30eaff6f5d210e20383c2d6835593977402092e95b72497a4f8632fa"
 dependencies = [
  "dunce",
  "rust-ini",
@@ -4982,8 +4982,8 @@ dependencies = [
  "thiserror 2.0.12",
  "tracing",
  "url",
- "windows-registry 0.3.0",
- "windows-result 0.2.0",
+ "windows-registry 0.5.1",
+ "windows-result",
 ]
 
 [[package]]
@@ -5082,9 +5082,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-single-instance"
-version = "2.2.2"
+version = "2.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25bbc73eed15bba8ad290a52614f2711280df4bf575b36ce78f64367074b90b7"
+checksum = "1320af4d866a7fb5f5721d299d14d0dd9e4e6bc0359ff3e263124a2bf6814efa"
 dependencies = [
  "serde",
  "serde_json",
@@ -5098,9 +5098,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-updater"
-version = "2.6.1"
+version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a31bfcfb4a8318008d2108ccfba439d8263cf48867baabf372cb0e9f24771896"
+checksum = "d82da763248e635d60ee4aed56c862290e523acc838d83097171f9a544708387"
 dependencies = [
  "base64 0.22.1",
  "dirs",
@@ -5130,9 +5130,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-runtime"
-version = "2.5.0"
+version = "2.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e9c7bce5153f1ca7bc45eba37349b31ba50e975e28edc8b5766c5ec02b0b63a"
+checksum = "00ada7ac2f9276f09b8c3afffd3215fd5d9bff23c22df8a7c70e7ef67cacd532"
 dependencies = [
  "cookie",
  "dpi",
@@ -5150,9 +5150,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-runtime-wry"
-version = "2.5.0"
+version = "2.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "087188020fd6facb8578fe9b38e81fa0fe5fb85744c73da51a299f94a530a1e3"
+checksum = "cf2e5842c57e154af43a20a49c7efee0ce2578c20b4c2bdf266852b422d2e421"
 dependencies = [
  "gtk",
  "http",
@@ -5177,9 +5177,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-utils"
-version = "2.3.0"
+version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82dcced4014e59af9790cc22f5d271df3be09ecd6728ec68861642553c8d01b7"
+checksum = "1f037e66c7638cc0a2213f61566932b9a06882b8346486579c90e4b019bac447"
 dependencies = [
  "anyhow",
  "brotli",
@@ -6097,7 +6097,7 @@ dependencies = [
  "windows-implement",
  "windows-interface",
  "windows-link",
- "windows-result 0.3.2",
+ "windows-result",
  "windows-strings 0.3.1",
 ]
 
@@ -6151,33 +6151,24 @@ dependencies = [
 
 [[package]]
 name = "windows-registry"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bafa604f2104cf5ae2cc2db1dee84b7e6a5d11b05f737b60def0ffdc398cbc0a"
-dependencies = [
- "windows-result 0.2.0",
- "windows-strings 0.2.0",
- "windows-targets 0.52.6",
-]
-
-[[package]]
-name = "windows-registry"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4286ad90ddb45071efd1a66dfa43eb02dd0dfbae1545ad6cc3c51cf34d7e8ba3"
 dependencies = [
- "windows-result 0.3.2",
+ "windows-result",
  "windows-strings 0.3.1",
  "windows-targets 0.53.0",
 ]
 
 [[package]]
-name = "windows-result"
-version = "0.2.0"
+name = "windows-registry"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d1043d8214f791817bab27572aaa8af63732e11bf84aa21a45a78d6c317ae0e"
+checksum = "ad1da3e436dc7653dfdf3da67332e22bff09bb0e28b0239e1624499c7830842e"
 dependencies = [
- "windows-targets 0.52.6",
+ "windows-link",
+ "windows-result",
+ "windows-strings 0.4.0",
 ]
 
 [[package]]
@@ -6202,18 +6193,18 @@ dependencies = [
 
 [[package]]
 name = "windows-strings"
-version = "0.2.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "978d65aedf914c664c510d9de43c8fd85ca745eaff1ed53edf409b479e441663"
+checksum = "87fa48cc5d406560701792be122a10132491cff9d0aeb23583cc2dcafc847319"
 dependencies = [
- "windows-targets 0.52.6",
+ "windows-link",
 ]
 
 [[package]]
 name = "windows-strings"
-version = "0.3.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87fa48cc5d406560701792be122a10132491cff9d0aeb23583cc2dcafc847319"
+checksum = "7a2ba9642430ee452d5a7aa78d72907ebe8cfda358e8cb7918a2050581322f97"
 dependencies = [
  "windows-link",
 ]
