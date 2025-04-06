@@ -6,6 +6,7 @@ import ComponentBox from "./ComponentBox";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import { useTheme } from "@emotion/react";
+import QaEngineerSvg from "./Illustrations/QaEngineerSvg";
 
 function ErrorBoundaryFallback() {
     const autoFixLocations = sessionStorage.getItem('autoFixTried');
@@ -49,6 +50,10 @@ function ErrorBoundaryFallback() {
                 mt: 2,
                 gap: 2,
             }}
+            innerSx={{
+                maxHeight: '100%',
+                overflowY: 'auto',
+            }}
         >
             <ComponentBox
                 title={"A critical error occurred"}
@@ -89,10 +94,10 @@ function ErrorBoundaryFallback() {
                         <Typography variant='body1' component={'span'}>
                             <a href="https://discord.exalt-account-manager.eu/" target="_blank" rel="noopener noreferrer">
                                 <span
-                                    style={{ 
-                                        color: theme.palette.primary.main, 
-                                        textDecoration: 'underline', 
-                                        paddingRight: '0.3rem' 
+                                    style={{
+                                        color: theme.palette.primary.main,
+                                        textDecoration: 'underline',
+                                        paddingRight: '0.3rem'
                                     }}
                                 >
                                     Join our Discord server
@@ -108,6 +113,26 @@ function ErrorBoundaryFallback() {
                     </li>
                 </ul>
             </ComponentBox>
+            <Box
+                sx={{
+                    width: '100%',
+                    maxWidth: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <Box
+                    sx={{
+                        width: '100%',
+                        maxWidth: '400px',
+                        height: '100%',
+                    }}
+                >
+                    <QaEngineerSvg h={'100%'} w={'100%'} />
+                </Box>
+            </Box>
         </Box>
     );
 }
