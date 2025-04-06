@@ -27,7 +27,7 @@ function ChangelogEntry({ title, listOfChanges }) {
                     !listOfChanges ? null :
                         listOfChanges.length > 1 && typeof listOfChanges !== 'string' ?
                             listOfChanges.map((change, index) => (
-                                <Typography key={index} variant="body2">
+                                <Typography component={'div'} key={index} variant="body2">
                                     • {change}
                                 </Typography>
                             ))
