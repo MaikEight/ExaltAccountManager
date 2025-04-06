@@ -239,9 +239,19 @@ pub fn get_latest_char_list_for_each_account(
         .filter(|x| allowed_emails.contains(x))
         .collect();
 
+    // Sort emails in the same order as allowed_emails
+    let email_order: std::collections::HashMap<_, _> = allowed_emails
+        .iter()
+        .enumerate()
+        .map(|(index, email)| (email, index))
+        .collect();
+
+    let mut sorted_emails = emails.clone();
+    sorted_emails.sort_by_key(|email| email_order.get(email).cloned().unwrap_or(usize::MAX));
+
     // Get the latest entry for each email
     let mut entries = Vec::new();
-    for mail in emails {
+    for mail in sorted_emails {
         let entry = char_list_entries::table
             .filter(char_list_entries::email.eq(&mail))
             .order(char_list_entries::timestamp.desc())
@@ -381,6 +391,7 @@ pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::re
 
     let result = eam_accounts::table
         .filter(eam_accounts::isDeleted.eq(false))
+        .order((eam_accounts::orderId.asc(), eam_accounts::id.asc()))
         .load::<EamAccount>(&mut conn);
 
     match &result {
@@ -398,6 +409,7 @@ pub fn get_all_eam_account_emails(pool: &DbPool) -> Result<Vec<String>, diesel::
     let result = eam_accounts::table
         .select(eam_accounts::email)
         .filter(eam_accounts::isDeleted.eq(false))
+        .order((eam_accounts::orderId.asc(), eam_accounts::id.asc()))
         .load::<String>(&mut conn);
 
     match &result {
