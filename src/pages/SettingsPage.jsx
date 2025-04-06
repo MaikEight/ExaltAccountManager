@@ -29,6 +29,7 @@ import useApplySettingsToHeaderName from '../hooks/useApplySettingsToHeaderName'
 import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
 import { fetch } from '@tauri-apps/plugin-http';
 import { EAM_PRIVACY_GATE_API } from 'eam-commons-js/constants';
+import ServerSvg from '../components/Illustrations/ServerSvg';
 
 function SettingsPage() {
     const userSettings = useUserSettings();
@@ -317,23 +318,37 @@ function SettingsPage() {
             <ComponentBox
                 title="Default Server"
                 icon={<DnsOutlinedIcon />}
+                innerSx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 2,
+                    justifyContent: 'space-between',
+                }}
             >
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Choose which server should be used by default when starting the game.
-                </Typography>
-                {
-                    (serverList && serverList.length > 0) ? null :
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            To add servers to this list, please add an account and click on "Refresh data".
-                        </Typography>
-                }
-                <ServerListSelect
-                    serversToAdd={[{ Name: 'Last server', DNS: 'LAST' },]}
-                    selectedServer={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
-                    onChange={(server) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: server } }) }}
-                    defaultValue={'Last server'}
-                />
-
+                <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Choose which server should be used by default when starting the game.
+                    </Typography>
+                    {
+                        (serverList && serverList.length > 0) ? null :
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                To add servers to this list, please add an account and click on "Refresh data".
+                            </Typography>
+                    }
+                    <ServerListSelect
+                        serversToAdd={[{ Name: 'Last server', DNS: 'LAST' },]}
+                        selectedServer={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
+                        onChange={(server) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: server } }) }}
+                        defaultValue={'Last server'}
+                    />
+                </Box>
+                <Box
+                    sx={{
+                        height: '75px',
+                    }}
+                >
+                    <ServerSvg w={'100%'} h={'100%'} />
+                </Box>
             </ComponentBox>
 
             {/* Vault Peeker */}
@@ -429,6 +444,8 @@ function SettingsPage() {
                     flexDirection: 'column',
                     gap: 1.5,
                 }}
+                isCollapseable={true}
+                defaultCollapsed={true}
             >
                 <Box
                     sx={{
