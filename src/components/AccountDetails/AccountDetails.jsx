@@ -167,7 +167,8 @@ function AccountDetails({ acc, onClose }) {
                     /* 
                         1. close button - Account details
                         2. table with account details
-                        3. buttons: play, edit, delete          
+                        3. buttons: play, edit, delete    
+                        4. comment input field      
                     */
                 }
                 {/* 1. */}
@@ -202,129 +203,124 @@ function AccountDetails({ acc, onClose }) {
                         display: 'flex',
                         flexDirection: 'column',
                         overflow: 'auto',
+                        pr: 2,
+                        pl: 2,
+                        mb: 2,
                     }}
                 >
                     {/* 2. */}
                     <Box
                         sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
                             width: '100%',
                             height: '100%',
-                            pr: 2,
-                            pl: 2,
-                            pb: 2,
+                            alignItems: 'center',
                         }}
                     >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '100%',
-                            }}
-                        >
-                            <ComponentBox
-                                title={
-                                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                        <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
-                                            Details
-                                        </Typography>
-                                        <Box sx={{ position: 'absolute', right: 0, marginRight: '12px' }} >
-                                            <Zoom direction="left" in={isEditMode} mountOnEnter unmountOnExit>
-                                                <Tooltip title="Save account">
-                                                    <IconButton
-                                                        sx={{ color: theme.palette.text.primary }}
-                                                        size="small"
-                                                        onClick={() => {
-                                                            console.log("save account", account);
-                                                            if (newDecryptedPassword !== decryptedPassword) {
-                                                                invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
-                                                                    const newAcc = ({ ...account, password: res });
-                                                                    updateAccount(newAcc);
-                                                                });
-                                                            } else {
-                                                                updateAccount(account);
-                                                            }
-                                                            setIsEditMode(!isEditMode);
-                                                            showSnackbar("Account saved", 'success');
-                                                        }}
-                                                    >
-                                                        <SaveOutlinedIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Zoom>
-                                            <Tooltip title={isEditMode ? "Cancel" : "Edit account"}>
+                        <ComponentBox
+                            title={
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+                                        Details
+                                    </Typography>
+                                    <Box sx={{ position: 'absolute', right: 0, marginRight: '12px' }} >
+                                        <Zoom direction="left" in={isEditMode} mountOnEnter unmountOnExit>
+                                            <Tooltip title="Save account">
                                                 <IconButton
                                                     sx={{ color: theme.palette.text.primary }}
                                                     size="small"
                                                     onClick={() => {
-                                                        if (isEditMode) {
-                                                            setAccount(accountOrg);
+                                                        console.log("save account", account);
+                                                        if (newDecryptedPassword !== decryptedPassword) {
+                                                            invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
+                                                                const newAcc = ({ ...account, password: res });
+                                                                updateAccount(newAcc);
+                                                            });
+                                                        } else {
+                                                            updateAccount(account);
                                                         }
                                                         setIsEditMode(!isEditMode);
+                                                        showSnackbar("Account saved", 'success');
                                                     }}
                                                 >
-                                                    {isEditMode ? <CloseIcon /> : <EditOutlinedIcon />}
+                                                    <SaveOutlinedIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                        </Box>
+                                        </Zoom>
+                                        <Tooltip title={isEditMode ? "Cancel" : "Edit account"}>
+                                            <IconButton
+                                                sx={{ color: theme.palette.text.primary }}
+                                                size="small"
+                                                onClick={() => {
+                                                    if (isEditMode) {
+                                                        setAccount(accountOrg);
+                                                    }
+                                                    setIsEditMode(!isEditMode);
+                                                }}
+                                            >
+                                                {isEditMode ? <CloseIcon /> : <EditOutlinedIcon />}
+                                            </IconButton>
+                                        </Tooltip>
                                     </Box>
-                                }
-                                icon={<ArticleOutlinedIcon />}
-                                sx={{
-                                    width: '100%',
-                                    transition: 'height 0.5s',
-                                }}
-                            >
-                                <TableContainer component={Box} sx={{ borderRadius: 0 }}>
-                                    <Table
-                                        sx={{
-                                            '& tbody tr:last-child td, & tbody tr:last-child th': {
-                                                borderBottom: 'none',
-                                            },
-                                        }}
-                                    >
-                                        <TableHead>
-                                            <TableRow>
-                                                <PaddedTableCell sx={{ width: '125px' }}>Attribute</PaddedTableCell>
-                                                <PaddedTableCell>Value</PaddedTableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            <GroupRow
-                                                key='group'
-                                                editMode={isEditMode}
-                                                group={group}
-                                                onChange={(value) => handleAccountEdit({ ...account, group: value })}
-                                            />
-                                            <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={account.name && account.name.length > 0} />
-                                            {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
-                                            {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={newDecryptedPassword} onChange={(value) => setNewDecryptedPassword(value)} />}
-                                            {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
-                                            <ServerTableRow
-                                                key='server'
-                                                keyValue={"Server"}
-                                                value={account.serverName}
-                                                onChange={(value) => handleAccountEdit({ ...account, serverName: value })}
-                                                showSaveButton={accountOrg?.serverName !== account?.serverName}
-                                                onSave={() => {
-                                                    const newAcc = ({ ...accountOrg, serverName: account.serverName });
-                                                    updateAccount(newAcc, false);
-                                                }}
-                                            />
-                                            <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
-                                                value={account.performDailyLogin ? account.performDailyLogin : false}
-                                                onChange={(event) => {
-                                                    const newAcc = ({ ...accountOrg, performDailyLogin: event.target.checked });
-                                                    updateAccount(newAcc, false);
-                                                }}
-                                            />
-                                            {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </ComponentBox>
-                        </Box>
+                                </Box>
+                            }
+                            icon={<ArticleOutlinedIcon />}
+                            sx={{
+                                width: '100%',
+                                transition: 'height 0.5s',
+                                mb: 0,                                
+                            }}
+                        >
+                            <TableContainer component={Box} sx={{ borderRadius: 0 }}>
+                                <Table
+                                    sx={{
+                                        '& tbody tr:last-child td, & tbody tr:last-child th': {
+                                            borderBottom: 'none',
+                                        },
+                                    }}
+                                >
+                                    <TableHead>
+                                        <TableRow>
+                                            <PaddedTableCell sx={{ width: '125px' }}>Attribute</PaddedTableCell>
+                                            <PaddedTableCell>Value</PaddedTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <GroupRow
+                                            key='group'
+                                            editMode={isEditMode}
+                                            group={group}
+                                            onChange={(value) => handleAccountEdit({ ...account, group: value })}
+                                        />
+                                        <TextTableRow key='name' keyValue={"Accountname"} value={account.name} editMode={isEditMode} onChange={(value) => handleAccountEdit({ ...account, name: value })} allowCopy={account.name && account.name.length > 0} />
+                                        {!account.isSteam ? <TextTableRow key='email' keyValue={"Email"} value={account.email} allowCopy={true} /> : <SteamworksRow guid={account.email} />}
+                                        {isEditMode && <TextTableRow key='password' keyValue={"Password"} editMode={isEditMode} isPassword={true} value={newDecryptedPassword} onChange={(value) => setNewDecryptedPassword(value)} />}
+                                        {!isEditMode && <TextTableRow key='lastLogin' keyValue={"Last login"} value={formatTime(account.lastLogin)} />}
+                                        <ServerTableRow
+                                            key='server'
+                                            keyValue={"Server"}
+                                            value={account.serverName}
+                                            onChange={(value) => handleAccountEdit({ ...account, serverName: value })}
+                                            showSaveButton={accountOrg?.serverName !== account?.serverName}
+                                            onSave={() => {
+                                                const newAcc = ({ ...accountOrg, serverName: account.serverName });
+                                                updateAccount(newAcc, false);
+                                            }}
+                                        />
+                                        <DailyLoginCheckBoxTableRow key='dailyLogin' keyValue={"Daily login"}
+                                            value={account.performDailyLogin ? account.performDailyLogin : false}
+                                            onChange={(event) => {
+                                                const newAcc = ({ ...accountOrg, performDailyLogin: event.target.checked });
+                                                updateAccount(newAcc, false);
+                                            }}
+                                        />
+                                        {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </ComponentBox>
 
                         {/* 3. */}
                         <Grid2 container spacing={2}>
@@ -431,37 +427,43 @@ function AccountDetails({ acc, onClose }) {
                                         </ComponentBox>
                                 }
                             </Grid2>
-                            <Grid2 size={12}>
-                                <Input
-                                    id="comment"
-                                    name="comment"
-                                    placeholder="Comment..."
-                                    type="text"
-                                    sx={{
-                                        borderRadius: `${theme.shape.borderRadius}px`,
-                                        p: 1.2,
-                                        backgroundColor: theme.palette.background.paper,
-                                    }}
-                                    value={account.comment ?? ''}
-                                    onChange={(event) => handleAccountEdit({ ...account, comment: event.target.value })}
-                                    endAdornment={
-                                        <IconButton
-                                            disabled={account?.comment === accountOrg?.comment}
-                                            onClick={() => {
-                                                updateAccount({ ...accountOrg, comment: account.comment });
-                                                showSnackbar("Comment saved", 'success');
-                                            }}
-                                        >
-                                            <SaveOutlinedIcon />
-                                        </IconButton>
-                                    }
-                                    fullWidth
-                                    multiline
-                                    minRows={3}
-                                    disableUnderline
-                                />
-                            </Grid2>
                         </Grid2>
+                        <Box
+                            sx={{
+                                width: '100%',
+                                display: 'flex',
+                                flexGrow: 1,
+                            }}
+                        >
+                            <Input
+                                id="comment"
+                                name="comment"
+                                placeholder="Comment..."
+                                type="text"
+                                sx={{
+                                    borderRadius: `${theme.shape.borderRadius}px`,
+                                    p: 1.2,
+                                    backgroundColor: theme.palette.background.paper,
+                                }}
+                                value={account.comment ?? ''}
+                                onChange={(event) => handleAccountEdit({ ...account, comment: event.target.value })}
+                                endAdornment={
+                                    <IconButton
+                                        disabled={account?.comment === accountOrg?.comment}
+                                        onClick={() => {
+                                            updateAccount({ ...accountOrg, comment: account.comment });
+                                            showSnackbar("Comment saved", 'success');
+                                        }}
+                                    >
+                                        <SaveOutlinedIcon />
+                                    </IconButton>
+                                }
+                                fullWidth
+                                multiline
+                                minRows={1}
+                                disableUnderline
+                            />
+                        </Box>
                     </Box>
                 </Box>
             </Drawer>
