@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
-export const APP_VERSION = '4.2.2';
+export const APP_VERSION = '4.2.3b';
+export const APP_VERSION_RELEASE_DATE = '15.04.2025';
 export const IS_PRE_RELEASE = true;
 
 export function isUpdateAvailable(latestVersion) {
@@ -56,3 +57,5 @@ export function UPDATE_URLS(index, values) {
 export const AUTH0_CLIENT_ID = 'o1W1coVQMV9qrIg4G2SmZJbz1G5vRCpZ';
 export const AUTH0_DOMAIN = 'https://login.exaltaccountmanager.com';
 export const STRIPE_CUSTOMER_PORTAL_URL = 'https://billing.stripe.com/p/login/test_dR63erdeEeUo5nGcMM';
+
+export const DISCORD_APPLICATION_ID = '1069308775854526506';
