@@ -1,5 +1,4 @@
-import { Table, Box, Checkbox, Drawer, FormControlLabel, IconButton, Step, StepLabel, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography, Collapse } from "@mui/material";
-import Stepper from '@mui/material/Stepper';
+import { Table, Box, Checkbox, Drawer, FormControlLabel, IconButton, Step, StepLabel, Stepper, TableBody, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography, Collapse } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from "@emotion/react";
@@ -535,40 +534,72 @@ function AddNewAccount({ isOpen, onClose }) {
 
                 {
                     !showRegisterForm &&
-                    <Box sx={{ mt: 2, pl: 1, pr: 1, }}>
-                        <Stepper activeStep={activeStep} alternativeLabel sx={{ width: '100%' }}>
-                            {steps.map((label, index) => {
-                                const stepProps = {};
-                                const labelProps = {};
-                                if (isStepOptional(index)) {
-                                    labelProps.optional = (
-                                        <Typography variant="caption">Optional</Typography>
+                    <Box
+                        sx={{
+                            mt: 2,
+                            pl: 1,
+                            pr: 1,
+                            width: '100%'
+                        }}
+                    >
+                        <Stepper
+                            id="stepper"
+                            activeStep={activeStep}
+                            alternativeLabel
+                        >
+                            {
+                                steps.map((label, index) => {
+                                    const stepProps = {};
+                                    const labelProps = {};
+                                    if (isStepOptional(index)) {
+                                        labelProps.optional = (
+                                            <Typography
+                                                variant="caption"
+                                            >
+                                                Optional
+                                            </Typography>
+                                        );
+                                    }
+
+                                    stepProps.completed = activeStep > index;
+
+                                    return (
+                                        <Step
+                                            key={label}
+                                            {...stepProps}
+                                        >
+                                            <StepLabel
+                                                icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]}
+                                                {...labelProps}
+                                                sx={{
+                                                    ...(activeStep === index ? { color: color.color } : {})
+                                                }}
+                                            >
+                                                {label}
+                                            </StepLabel>
+                                        </Step>
                                     );
-                                }
-
-                                stepProps.completed = activeStep > index;
-
-                                return (
-                                    <Step key={label} {...stepProps}>
-                                        <StepLabel icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]} {...labelProps} sx={{ ...(activeStep === index ? { color: color.color } : {}) }}>{label}</StepLabel>
-                                    </Step>
-                                );
-                            })}
+                                })
+                            }
                         </Stepper>
                     </Box>
                 }
-                <Box sx={{ mt: 2, overflowX: 'auto' }}>
+                <Box sx={{ overflowX: 'auto' }}>
                     {
                         showRegisterForm ?
-                            <RegisterAccount
-                                open={showRegisterForm}
-                                onClose={(closeAll) => {
-                                    setShowRegisterForm(false);
-                                    if (closeAll) {
-                                        onClose();
-                                    }
-                                }}
-                            />
+                            <Box
+                                sx={{ pt: 2 }}
+                            >
+                                <RegisterAccount
+                                    open={showRegisterForm}
+                                    onClose={(closeAll) => {
+                                        setShowRegisterForm(false);
+                                        if (closeAll) {
+                                            onClose();
+                                        }
+                                    }}
+                                />
+                            </Box>
                             :
                             getStepContent()
                     }
