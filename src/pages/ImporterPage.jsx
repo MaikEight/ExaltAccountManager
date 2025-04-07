@@ -573,6 +573,7 @@ function ImporterPage() {
                                 sx={{
                                     background: theme.palette.background.default,
                                     m: 1,
+                                    my: 1.5,
                                     p: 1,
                                 }}
                                 innerSx={{
@@ -634,6 +635,7 @@ function ImporterPage() {
                                 sx={{
                                     background: theme.palette.background.default,
                                     m: 1,
+                                    my: 1.5,
                                     p: 1,
                                 }}
                                 innerSx={{
@@ -673,6 +675,7 @@ function ImporterPage() {
                                 sx={{
                                     background: theme.palette.background.default,
                                     m: 1,
+                                    my: 1.5,
                                     p: 1,
                                 }}
                                 innerSx={{
@@ -782,6 +785,7 @@ function ImporterPage() {
                                 sx={{
                                     background: theme.palette.background.default,
                                     m: 1,
+                                    my: 1.5,
                                     p: 1,
                                 }}
                                 innerSx={{
@@ -840,6 +844,7 @@ function ImporterPage() {
                                 sx={{
                                     background: theme.palette.background.default,
                                     m: 1,
+                                    mt: 1.5,
                                     p: 1,
                                 }}
                                 innerSx={{
@@ -924,6 +929,11 @@ function ImporterPage() {
                                                                             <Input
                                                                                 id={"data-field-list-label-" + index}
                                                                                 disableUnderline
+                                                                                sx={{
+                                                                                    backgroundColor: theme.palette.background.backdrop,
+                                                                                    borderRadius: `${theme.shape.borderRadius}px`,
+                                                                                    height: '39px'
+                                                                                }}
                                                                             />
                                                                         }
                                                                         renderValue={(selected) => {
