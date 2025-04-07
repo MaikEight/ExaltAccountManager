@@ -13,7 +13,6 @@ export default defineConfig(async () => ({
     include: [
       '@mui/material/Tooltip',
       '@emotion/styled',
-      '@mui/material/Grid2',
       '@mui/material',
       'styled-components'
     ],
