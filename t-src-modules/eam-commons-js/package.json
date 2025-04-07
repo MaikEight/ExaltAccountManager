@@ -17,10 +17,10 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.4.10",
-    "@mui/material": "^6.4.10",
+    "@mui/icons-material": "^7.0.1",
+    "@mui/material": "^7.0.1",
     "@mui/styled-engine-sc": "^7.0.1",
-    "@tauri-apps/api": "^2.4.0",
+    "@tauri-apps/api": "^2.4.1",
     "axios": "^1.8.4",
     "babel-loader": "10.0.0",
     "buffer": "^6.0.3",
