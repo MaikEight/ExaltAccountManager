@@ -1,4 +1,5 @@
-import { alpha, createTheme, darken, lighten } from "@mui/material";
+import { alpha, darken, lighten } from "@mui/material";
+import { createTheme } from '@mui/material/styles';
 import Zoom from '@mui/material/Zoom';
 
 export const lightTheme = createTheme({
