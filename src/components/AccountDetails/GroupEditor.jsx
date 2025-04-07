@@ -1,11 +1,10 @@
-import { Box, Chip, Slider, TextField, Typography } from "@mui/material";
+import { Box, Chip, Slider, TextField, Typography, Grid } from "@mui/material";
 import { useColorList, GroupUI, useGroups } from "eam-commons-js";
 import React, { useEffect, useState } from "react";
 import * as Icons from '@mui/icons-material';
 import { useTheme } from "@emotion/react";
 import { FixedSizeGrid as FixedGrid } from 'react-window';
 import StyledButton from "../StyledButton";
-import Grid2 from '@mui/material/Grid2';
 
 const allIcons = Object.keys(Icons).map((key) => key.includes('Outlined') ? key : null).filter((key) => key !== null);
 const MAX_ICON_PADDING = 30;
@@ -180,8 +179,8 @@ function GroupEditor({ g, onSave, onCancel }) {
                 min={0}
                 max={MAX_ICON_PADDING}
             />
-            <Grid2 container spacing={1}>
-                <Grid2 size={8}>
+            <Grid container spacing={1}>
+                <Grid size={8}>
                     <StyledButton
                         fullWidth
                         disabled={!isGroupNameValid()}
@@ -190,8 +189,8 @@ function GroupEditor({ g, onSave, onCancel }) {
                     >
                         Save
                     </StyledButton>
-                </Grid2>
-                <Grid2 size={4}>
+                </Grid>
+                <Grid size={4}>
                     <StyledButton
                         color="secondary"
                         fullWidth
@@ -200,8 +199,8 @@ function GroupEditor({ g, onSave, onCancel }) {
                     >
                         Cancel
                     </StyledButton>
-                </Grid2>
-            </Grid2>
+                </Grid>
+            </Grid>
         </Box>
     );
 }

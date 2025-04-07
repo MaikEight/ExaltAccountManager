@@ -1,5 +1,4 @@
-import { Box, Drawer, IconButton, Input, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom } from "@mui/material";
-import { Grid2 } from "@mui/material";
+import { Box, Drawer, IconButton, Input, Table, TableBody, TableContainer, TableHead, TableRow, Tooltip, Typography, Zoom, Grid } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import ComponentBox from "../ComponentBox";
@@ -323,8 +322,8 @@ function AccountDetails({ acc, onClose }) {
                         </ComponentBox>
 
                         {/* 3. */}
-                        <Grid2 container spacing={2}>
-                            <Grid2 size={12}>
+                        <Grid container spacing={2}>
+                            <Grid size={12}>
                                 <Tooltip
                                     title={account.state === 'Registered' ?
                                         (
@@ -358,8 +357,8 @@ function AccountDetails({ acc, onClose }) {
                                         </StyledButton>
                                     </span>
                                 </Tooltip>
-                            </Grid2>
-                            <Grid2 size={6}>
+                            </Grid>
+                            <Grid size={6}>
                                 <StyledButton
                                     disabled={isLoading}
                                     fullWidth={true}
@@ -376,8 +375,8 @@ function AccountDetails({ acc, onClose }) {
                                 >
                                     refresh data
                                 </StyledButton>
-                            </Grid2>
-                            <Grid2 size={6}>
+                            </Grid>
+                            <Grid size={6}>
                                 {
                                     !isDeleteMode ?
                                         <StyledButton fullWidth={true} startIcon={<DeleteOutlineOutlinedIcon />} color="secondary" sx={{
@@ -426,8 +425,8 @@ function AccountDetails({ acc, onClose }) {
                                             </Box>
                                         </ComponentBox>
                                 }
-                            </Grid2>
-                        </Grid2>
+                            </Grid>
+                        </Grid>
                         <Box
                             sx={{
                                 width: '100%',
