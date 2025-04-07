@@ -23,7 +23,6 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
             <FormControl
                 variant="standard"
                 sx={{
-                    m: 1,
                     minWidth: '175px',
                     borderRadius: `${theme.shape.borderRadius}px`,
                     overflow: 'hidden',
@@ -39,7 +38,9 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
                             id="server-list-label"
                             disableUnderline
                             sx={{
+                                backgroundColor: theme.palette.background.backdrop,
                                 borderRadius: `${theme.shape.borderRadius}px`,
+                                height: '39px'
                             }}
                         />
                     }
@@ -78,7 +79,7 @@ function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor
                             color: theme.palette.text.primary,
                             width: '34px',
                             height: '34px',
-                            mb: 1,
+                            my: 'auto',
                         }}
                         onClick={() => setShowGroupEditor(true)}
                     >

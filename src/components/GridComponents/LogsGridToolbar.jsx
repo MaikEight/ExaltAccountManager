@@ -19,7 +19,14 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
     const logTypes = ['AuditLog', 'ErrorLog'];
 
     return (
-        <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+            }}
+        >
             <GridToolbarContainer
                 sx={{
                     display: "flex",
@@ -46,16 +53,17 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                 }}
             >
                 <Box
+                    id="select-logtype-container"
                     sx={{
                         mr: 0.5,
                         display: 'flex',
                         flexDirection: 'row',
+                        height: '100%',
                         maxHeight: 49,
                         overflow: 'hidden',
                     }}
                 >
-                    <FormControl sx={{ width: 120 }}>
-                        {/* <InputLabel id="logtype-label">Logtype</InputLabel> */}
+                    <FormControl sx={{ width: 120, minHeight: '100%' }}>
                         <Select
                             id="select-logtype"
                             value={selectedLogtype}
@@ -64,6 +72,11 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                                 <Input
                                     id="select-logtype"
                                     disableUnderline
+                                    sx={{
+                                        backgroundColor: theme.palette.background.backdrop,
+                                        borderRadius: `${theme.shape.borderRadius}px`,
+                                        height: '100%'
+                                    }}
                                 />
                             }
                             renderValue={(selected) => (

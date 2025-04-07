@@ -27,7 +27,7 @@ function ServerListSelect({ serversToAdd, selectedServer, onChange, defaultValue
 
     return (
         <FormControl>
-            <Select                
+            <Select
                 id="server-list-label"
                 value={selected ?? _defaultValue}
                 onChange={(event) => {
@@ -38,6 +38,11 @@ function ServerListSelect({ serversToAdd, selectedServer, onChange, defaultValue
                     <Input
                         id="server-list-label"
                         disableUnderline
+                        sx={{
+                            backgroundColor: theme.palette.background.backdrop,
+                            borderRadius: `${theme.shape.borderRadius}px`,
+                            height: '39px'
+                        }}
                     />
                 }
                 renderValue={(selected) => (
