@@ -112,6 +112,11 @@ function TierFilter() {
                             <Input
                                 id="select-tier-direction-input"
                                 disableUnderline
+                                sx={{
+                                    backgroundColor: theme.palette.background.backdrop,
+                                    borderRadius: `${theme.shape.borderRadius}px`,
+                                    height: '39px'
+                                }}
                             />
                         }
                         renderValue={(selected) => (
@@ -176,6 +181,11 @@ function TierFilter() {
                             <Input
                                 id="select-tier-value-input"
                                 disableUnderline
+                                sx={{
+                                    backgroundColor: theme.palette.background.backdrop,
+                                    borderRadius: `${theme.shape.borderRadius}px`,
+                                    height: '39px'
+                                }}
                             />
                         }
                         renderValue={(selected) => (

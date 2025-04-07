@@ -45,6 +45,11 @@ function FeedPowerFilter() {
                         <Input
                             id="select-fp-value-input"
                             disableUnderline
+                            sx={{
+                                backgroundColor: theme => theme.palette.background.backdrop,
+                                borderRadius: theme => `${theme.shape.borderRadius}px`,
+                                height: '39px'
+                            }}
                         />
                     }
                     renderValue={(selected) => (

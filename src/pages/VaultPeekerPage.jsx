@@ -10,7 +10,6 @@ function VaultPeekerPage() {
 
     return (
         <VaultPeekerContextProvider>
-
             {
                 window.portraitReady &&
                 <ItemCanvasContextProvider>
