@@ -11,14 +11,26 @@
     "shortDescription": "Exalt Account Manager is a powerful toolset designed to streamline multi-account management for Realm of the Mad God.",
     "targets": "all",
     "homepage": "https://exaltaccountmanager.com/",
+    "licenseFile": "windows/LICENSE",
     "windows": {
       "allowDowngrades": false,
-      "certificateThumbprint": "b082652dc70f2ab8338976148c895d3d77db928e",
+      "certificateThumbprint": "ecf39b21a5f9241e6da019ea686d82b07c3302d8",
       "digestAlgorithm": "sha256",
       "timestampUrl": "http://time.certum.pl",
       "webviewInstallMode": {
         "silent": true,
         "type": "downloadBootstrapper"
+      },
+      "wix": {
+        "bannerPath": "wix/images/banner.bmp",
+        "dialogImagePath": "wix/images/dialog.bmp"
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "headerImage": "windows/nsis/images/header.bmp",
+        "sidebarImage": "windows/nsis/images/sidebar.bmp",
+        "installerIcon": "icons/icon.ico",
+        "template": "windows/nsis/template/installer.nsi"
       }
     },
     "icon": [
@@ -44,9 +56,12 @@
       ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYwNzFDMEM1NzVFODhDQjIKUldTeWpPaDF4Y0J4OERhL1NsQ1FEVmRkcW9jcWpjUGl2TGQ2d3hlVWxaWjQ1V0sxTmlqOGhGbGIK"
     },
-    "deep-link": {      
+    "deep-link": {
       "desktop": {
-        "schemes": ["eam", "exalt-account-manager"]
+        "schemes": [
+          "eam",
+          "exalt-account-manager"
+        ]
       }
     }
   },
