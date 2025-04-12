@@ -1,5 +1,6 @@
 import { textiles, skinsheets } from '../assets/sheets';
 import { skins, textures } from '../assets/constants';
+import { CACHE_PREFIX } from '../constants';
 
 // single component
 function p_comp(s, x, y, i) {
@@ -96,14 +97,14 @@ function load_sheets() {
         const src = textiles[key];
         return load_img(src, key, +key)
             .then(img => {
-                sprites[key] = extract_sprites(img, +key);             
+                sprites[key] = extract_sprites(img, +key);
             })
             .catch(e => {
                 console.warn(`Failed to load textile ${key} from ${src}`, e);
             });
     });
 
-    return Promise.all([...skinsheetPromises, ...textilePromises]);    
+    return Promise.all([...skinsheetPromises, ...textilePromises]);
 }
 
 const fs = {};
@@ -152,7 +153,27 @@ function makeTexPattern(tex, ratio) {
 }
 
 // Function to generate sprite based on skin, textures, etc.
-function portrait(type, skin, tex1Id, tex2Id, adjust) {
+function portrait(type, skin, tex1Id, tex2Id, adjust) {    
+    const cacheKey = `${CACHE_PREFIX}portrait:${skin}-${tex1Id}-${tex2Id}-${adjust}`;
+    const cachedImageString = localStorage.getItem(cacheKey);
+    const chachedObject = JSON.parse(cachedImageString);
+
+    if (chachedObject) {
+        const cachedTime = chachedObject.time;
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - cachedTime;
+        const maxCacheDuration = 1000 * 60 * 60 * 24 * 3; // 3 days
+        if (timeDiff > maxCacheDuration) {
+            localStorage.removeItem(cacheKey);
+            cachedObject.image = null;
+        }
+
+        const cachedImage = chachedObject.image;
+        if (cachedImage) {
+            return cachedImage;
+        }
+    }
+
     if (!ready) {
         console.error('Sprites are not ready yet.');
         return '';
@@ -170,7 +191,7 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
             console.error('Default skin not found.');
             return '';
         }
-    }   
+    }
 
     const tex1 = textures[tex1Id] ? textures[tex1Id][0] : null;
     const tex2 = textures[tex2Id] ? textures[tex2Id][2] : null;
@@ -197,7 +218,7 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
         const x = xi * ratio;
         const w = ratio;
         for (let yi = 0; yi < size; yi++) {
-            if (p_comp(spr, xi, yi, 3) < 2) continue; 
+            if (p_comp(spr, xi, yi, 3) < 2) continue;
             const y = yi * ratio;
             const h = ratio;
 
@@ -233,6 +254,14 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
 
     ctx.restore();
     const imageDataURL = st.toDataURL();
+
+    // Cache the generated image in localStorage    
+    const imageObject = {
+        time: new Date().getTime(),
+        image: imageDataURL
+    };
+    localStorage.setItem(cacheKey, JSON.stringify(imageObject));
+
     return imageDataURL;
 }
 
@@ -242,7 +271,7 @@ const preload = load_sheets();
 // Wait for preload to finish
 preload.then(() => {
     ready = true;
-    window.portraitReady = true;    
+    window.portraitReady = true;
 }).catch((error) => {
     console.error('Failed to load sheets:', error);
 });
