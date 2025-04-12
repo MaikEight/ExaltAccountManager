@@ -1,4 +1,4 @@
-import { Box, Collapse, IconButton, Tooltip, Typography } from "@mui/material";
+import { Avatar, AvatarGroup, Box, Collapse, IconButton, Skeleton, Tooltip, Typography } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 import Character from "../Realm/Character";
 import ItemCanvas from "../Realm/ItemCanvas";
@@ -11,11 +11,13 @@ import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import useAccounts from "../../hooks/useAccounts";
 import useSnack from "../../hooks/useSnack";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import { portrait } from "../../utils/portraitUtils";
 
 function AccountView({ account }) {
     const [accountItemIds, setAccountItemIds] = useState([]);
     const [filteredAccountItemIds, setfilteredAccountItemIds] = useState([]);
     const [isRefreshingAccount, setIsRefreshingAccount] = useState(false);
+    const [characterPortraits, setCharacterPortraits] = useState([-1, -1, -1, -1]);
 
     const { totalItems, filter, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
     const { refreshData } = useAccounts();
@@ -39,6 +41,30 @@ function AccountView({ account }) {
             const ids = [...new Set(itemIds)];
             setAccountItemIds(ids);
             setfilteredAccountItemIds(ids);
+
+            const generatePortraits = async () => {
+                const chars = [];
+                //max 4 characters
+                for (let i = 0; i < account.character.length && i < 4; i++) {
+                    const char = account.character[i];
+                    chars.push({
+                        type: char.class,
+                        skin: char.texture,
+                        tex1: char.tex1,
+                        tex2: char.tex2,
+                        adjust: false,
+                    });
+                }
+                
+                const portraits = await Promise.all(chars.map((char) => portrait(char.type, char.skin, char.tex1, char.tex2, char.adjust)));                
+                if (portraits.length < 4) {
+                    for (let i = portraits.length; i < 4; i++) {
+                        portraits.push(null);
+                    }
+                }
+                setCharacterPortraits(portraits);
+            }
+            generatePortraits();
         }
     }, [account]);
 
@@ -81,18 +107,92 @@ function AccountView({ account }) {
                         {account.name ? account.name : account.email}
                     </Typography>
                 </Box>
-                <Tooltip title="Refresh account">
-                    <IconButton
-                        disabled={isRefreshingAccount}
-                        size="small"
-                        onClick={refreshAccountData}
-                    >
-                        <RefreshOutlinedIcon />
-                    </IconButton>
-                </Tooltip>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 34,
+                    }}
+                >
+                    {
+                        account && account.character && account.character.length > 0 &&
+                            account.character.length === 1 ?
+                            characterPortraits?.[0] && characterPortraits[0] !== -1 ?
+                                <Avatar
+                                    src={characterPortraits?.[0] ?? null}
+                                    sx={{ width: 34, height: 34 }}
+                                    variant="square"
+                                />
+                                :
+                                <Skeleton variant="rounded" width={34} height={34} />
+                            :
+                            <AvatarGroup
+                                total={account.character.length}
+                                max={5}
+                                spacing="medium"
+                                renderSurplus={(surplus) => (
+                                    <Avatar
+                                        key="surplus-avatar"
+                                        sx={{
+                                            backgroundColor: (theme) => theme.palette.background.default,
+                                            pl: 0.35,
+                                        }}
+                                        variant="circular"
+                                    >
+                                        <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                                            +{surplus}
+                                        </Typography>
+                                    </Avatar>
+                                )}
+                                sx={{
+                                    height: 34,
+                                    '& .MuiAvatarGroup-avatar': {
+                                        width: 34,
+                                        height: 34,
+                                        backgroundColor: (theme) => theme.palette.background.paper,
+                                        border: 'none',
+                                    },
+                                }}
+                            >
+                                {characterPortraits.map((portrait, index) => {
+                                    if (portrait === -1) {
+                                        return (
+                                            <Box key={`skeleton-${index}`}>
+                                                <Skeleton variant="rounded" width={34} height={34} />
+                                            </Box>
+                                        );
+                                    }
+                                    if (portrait) {
+                                        return (
+                                            <Avatar
+                                                key={`avatar-${index}`}
+                                                alt={`Character ${index + 1}`}
+                                                src={portrait}
+                                                sx={{ width: 34, height: 34 }}
+                                                variant="square"
+                                            />
+                                        );
+                                    }
+                                    return null;
+                                })}
+                            </AvatarGroup>
+                    }
+                    <Tooltip title="Refresh account">
+                        <IconButton
+                            disabled={isRefreshingAccount}
+                            size="small"
+                            onClick={refreshAccountData}
+                        >
+                            <RefreshOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
             </Box>
         );
-    }, [account, isRefreshingAccount]);
+    }, [account, isRefreshingAccount, characterPortraits]);
 
     if (!account || !filteredAccountItemIds || filteredAccountItemIds.length === 0) {
         return null;
