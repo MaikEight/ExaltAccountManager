@@ -4,6 +4,8 @@ export const APP_VERSION = '4.2.3b';
 export const APP_VERSION_RELEASE_DATE = '15.04.2025';
 export const IS_PRE_RELEASE = true;
 
+export const CACHE_PREFIX = '!cache-';
+
 export function isUpdateAvailable(latestVersion) {
     if (!latestVersion) return false;
 
