@@ -5,6 +5,7 @@ import { drawItem } from "../../utils/realmItemDrawUtils";
 import { Box } from "@mui/material";
 import useItemCanvas from "../../hooks/useItemCanvas";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
+import { CACHE_PREFIX } from "../../constants";
 
 function EquipmentCanvas({ canvasIdentifier, character }) {
     const [itemData, setItemData] = useState([null, null, null, null]);
@@ -35,7 +36,32 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
             const slot = slotMapValues[i];
             const itemId = character.equipment[i];
             const item = items[itemId];
+            const cacheKey = `${CACHE_PREFIX}single-item:renders.png-${itemId}`
             if (itemId && itemId !== -1) {
+                const chacheValue = localStorage.getItem(cacheKey);
+                if (chacheValue) {
+                    const cachedObject = JSON.parse(chacheValue);
+                    const cachedTime = cachedObject.time;
+                    const currentTime = new Date().getTime();
+                    const timeDiff = currentTime - cachedTime;
+                    const maxCacheDuration = 1000 * 60 * 60 * 24 * 7; // 7 days
+
+                    if (timeDiff < maxCacheDuration) {
+                        setItemData((prev) => {
+                            const newState = [...prev];
+                            newState[i] = {
+                                itemId: itemId,
+                                img: cachedObject.image,
+                                hidden: false,
+                            };
+                            return newState;
+                        })
+                        continue;
+                    }
+
+                    localStorage.removeItem(cacheKey);                    
+                }
+
                 drawItem(
                     "renders.png",
                     item,
@@ -49,6 +75,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                             };
                             return newState;
                         })
+                        localStorage.setItem(cacheKey, JSON.stringify({ image: imageUrl, time: new Date().getTime() }));
                     }
                 );
                 continue;
@@ -83,6 +110,29 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         for (let i = 0; i < 4; i++) {
             const slot = slotMapValues[i];
             const itemId = character.equipment[i];
+            const cacheKey = `${CACHE_PREFIX}single-item:renders.png-${itemId}`
+            const chacheValue = localStorage.getItem(cacheKey);
+            if (chacheValue) {
+                const cachedObject = JSON.parse(chacheValue);
+                const cachedTime = cachedObject.time;
+                const currentTime = new Date().getTime();
+                const timeDiff = currentTime - cachedTime;
+                const maxCacheDuration = 1000 * 60 * 60 * 24 * 7; // 7 days
+
+                if (timeDiff < maxCacheDuration) {
+                    setSlotMapData((prev) => {
+                        const newState = [...prev];
+                        newState[i] = {
+                            itemId: itemId,
+                            img: cachedObject.image,
+                        };
+                        return newState;
+                    })
+                    continue;
+                }
+
+                localStorage.removeItem(cacheKey);                    
+            }
 
             const slotItem = [
                 itemId,
