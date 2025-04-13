@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import itemsSlotTypeMap from "../../assets/slotmap";
 import items, { classes } from "../../assets/constants";
-import { drawItem } from "../../utils/realmItemDrawUtils";
+import { drawItem, drawItemAsync } from "../../utils/realmItemDrawUtils";
 import { Box } from "@mui/material";
 import useItemCanvas from "../../hooks/useItemCanvas";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
@@ -30,54 +30,52 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         }
         
         setFilteredItemIds(eqItemIds);
-        addItemFilterCallback(canvasIdentifier, (itemIds) => { setFilteredItemIds(itemIds); }, eqItemIds);
+        addItemFilterCallback(canvasIdentifier, (itemIds) => { setFilteredItemIds(itemIds); }, eqItemIds);        
 
+        const promises = [];
+        const promiseItems = [];
+        for (let i = 0; i < 4; i++) {
+            const slot = slotMapValues[i];
+            const itemId = character.equipment[i];           
+
+            const slotItem = [
+                itemId,
+                null,
+                null,
+                slot.sheet[0],
+                slot.sheet[1],
+            ];
+
+            promises.push(drawItemAsync(
+                "realm/itemsilhouettes_25p.png",
+                slotItem,
+                5
+            ));
+            promiseItems.push(itemId);
+        }
+        Promise.all(promises).then((images) => {
+            const result = images.map((image, index) => {
+                return {
+                    itemId: promiseItems[index],
+                    img: image,
+                };
+            });
+            setSlotMapData(result);
+        });
+
+        const itemPromises = [];
+        const itemPromisesIds = [];
         for (let i = 0; i < 4; i++) {
             const slot = slotMapValues[i];
             const itemId = character.equipment[i];
-            const item = items[itemId];
-            const cacheKey = `${CACHE_PREFIX}single-item:renders.png-${itemId}`
-            if (itemId && itemId !== -1) {
-                const chacheValue = localStorage.getItem(cacheKey);
-                if (chacheValue) {
-                    const cachedObject = JSON.parse(chacheValue);
-                    const cachedTime = cachedObject.time;
-                    const currentTime = new Date().getTime();
-                    const timeDiff = currentTime - cachedTime;
-                    const maxCacheDuration = 1000 * 60 * 60 * 24 * 7; // 7 days
-
-                    if (timeDiff < maxCacheDuration) {
-                        setItemData((prev) => {
-                            const newState = [...prev];
-                            newState[i] = {
-                                itemId: itemId,
-                                img: cachedObject.image,
-                                hidden: false,
-                            };
-                            return newState;
-                        })
-                        continue;
-                    }
-
-                    localStorage.removeItem(cacheKey);                    
-                }
-
-                drawItem(
+            const item = items[itemId];         
+            if (itemId && itemId !== -1) {            
+                itemPromises.push(drawItemAsync(
                     "renders.png",
                     item,
-                    (imageUrl) => {
-                        setItemData((prev) => {
-                            const newState = [...prev];
-                            newState[i] = {
-                                itemId: itemId,
-                                img: imageUrl,
-                                hidden: false,
-                            };
-                            return newState;
-                        })
-                        localStorage.setItem(cacheKey, JSON.stringify({ image: imageUrl, time: new Date().getTime() }));
-                    }
-                );
+                    5
+                ));
+                itemPromisesIds.push(itemId);
                 continue;
             }
 
@@ -89,75 +87,22 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                 slot.sheet[1],
             ];
 
-            drawItem(
+            itemPromises.push(drawItemAsync(
                 "realm/itemsilhouettes_25p.png",
                 slotItem,
-                (imageUrl) => {
-                    setItemData((prev) => {
-                        const newState = [...prev];
-                        newState[i] = {
-                            itemId: itemId,
-                            img: imageUrl,
-                            hidden: false,
-                        };
-                        return newState;
-                    })
-                },
                 5
-            );
+            ));
+            itemPromisesIds.push(itemId);
         }
-
-        for (let i = 0; i < 4; i++) {
-            const slot = slotMapValues[i];
-            const itemId = character.equipment[i];
-            const cacheKey = `${CACHE_PREFIX}single-item:renders.png-${itemId}`
-            const chacheValue = localStorage.getItem(cacheKey);
-            if (chacheValue) {
-                const cachedObject = JSON.parse(chacheValue);
-                const cachedTime = cachedObject.time;
-                const currentTime = new Date().getTime();
-                const timeDiff = currentTime - cachedTime;
-                const maxCacheDuration = 1000 * 60 * 60 * 24 * 7; // 7 days
-
-                if (timeDiff < maxCacheDuration) {
-                    setSlotMapData((prev) => {
-                        const newState = [...prev];
-                        newState[i] = {
-                            itemId: itemId,
-                            img: cachedObject.image,
-                        };
-                        return newState;
-                    })
-                    continue;
-                }
-
-                localStorage.removeItem(cacheKey);                    
-            }
-
-            const slotItem = [
-                itemId,
-                null,
-                null,
-                slot.sheet[0],
-                slot.sheet[1],
-            ];
-
-            drawItem(
-                "realm/itemsilhouettes_25p.png",
-                slotItem,
-                (imageUrl) => {
-                    setSlotMapData((prev) => {
-                        const newState = [...prev];
-                        newState[i] = {
-                            itemId: itemId,
-                            img: imageUrl,
-                        };
-                        return newState;
-                    })
-                },
-                5
-            );
-        }
+        Promise.all(itemPromises).then((images) => {
+            const result = images.map((image, index) => {
+                return {
+                    itemId: itemPromisesIds[index],
+                    img: image,
+                };
+            });
+            setItemData(result);
+        });
 
         return () => {
             removeItemFilterCallback(canvasIdentifier);
