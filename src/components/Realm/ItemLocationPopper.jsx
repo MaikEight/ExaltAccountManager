@@ -117,7 +117,7 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                     borderRadius: `${theme.shape.borderRadius}px`,
                                 }}
                             >
-                                <SingleItemCanvas item={item} />
+                                <SingleItemCanvas item={item} doTransition/>
                             </Box>
                         }
                         {getTierText()}
