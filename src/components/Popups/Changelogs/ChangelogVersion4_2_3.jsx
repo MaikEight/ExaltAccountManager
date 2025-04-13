@@ -28,6 +28,15 @@ function ChangelogVersion4_2_3() {
                 ]}
             />
             <ChangelogEntry
+                title={'Vault Peeker'}
+                listOfChanges={[
+                    "Added a live characters group overview in the Account title.",
+                    "Added a transition effect to the Item Viewer Popup.",
+                    "Improved caching of character portraits and item images.",
+                    "Improved the overal loading speed.",
+                ]}
+            />
+            <ChangelogEntry
                 title={'Miscellaneous'}
                 listOfChanges={[
                     "Added new illustrations at some places. Thanks to undraw.co. ✨",
@@ -65,11 +74,7 @@ function ChangelogVersion4_2_3() {
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
                                 <li>Tadus-Pro</li>
-                            </ul>
-                        </Typography>
-                        <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
-                            <ul>                                
-                                <li>rengarbage</li>
+                                <li>StickyHandJoe</li>
                                 <li>and many more...</li>
                             </ul>
                         </Typography>
