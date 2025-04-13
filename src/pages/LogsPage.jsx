@@ -5,6 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
 import { useTheme } from "styled-components";
 import LogsGridToolbar from "../components/GridComponents/LogsGridToolbar";
+import LogsNoRowsOverlay from "../components/GridComponents/LogsNoRowsOverlay";
 
 function LogsPage() {
     const [currentLogMode, setCurrentLogMode] = useState('AuditLog'); // 'AuditLog' or 'ErrorLog'
@@ -120,10 +121,12 @@ function LogsPage() {
                         pagination: CustomPagination,
                         toolbar: LogsGridToolbar,
                         loadingOverlay: LinearProgress,
+                        noRowsOverlay: LogsNoRowsOverlay,
                     }}
                     slotProps={{
                         toolbar: { onSearchChanged: (search) => setSearch(search), selectedLogtype: currentLogMode, setSelectedLogtype: setCurrentLogMode },
-                        pagination: { labelRowsPerPage: "Logs per page:" }
+                        pagination: { labelRowsPerPage: "Logs per page:" },
+                        noRowsOverlay: { text: `No ${currentLogMode === 'AuditLog' ? 'Audit' : 'Error'} Logs found` },
                     }}
                 />
             </Paper>
