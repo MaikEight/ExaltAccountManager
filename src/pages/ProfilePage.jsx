@@ -11,9 +11,11 @@ import EamPlusComparisonTable from "../components/EamPlusComparisonTable";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { STRIPE_CUSTOMER_PORTAL_URL } from "../constants";
 import ProfilePlanChip from './../components/ProfilePlanChip';
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 
 function ProfilePage() {
-    const { isAuthenticated } = useUserLogin();    
+    const { isAuthenticated } = useUserLogin();
 
     return (
         <Box
@@ -33,7 +35,39 @@ function ProfilePage() {
                     <NotLoggedInBox />
 
             }
-            <EamPlusComparisonTable />
+            <ComponentBox
+                title="Nothing to see here just yet"
+                icon={<EngineeringIcon />}
+                sx={{ mb: 0 }}
+                innerSx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    gap: 1,
+                }}
+            >
+                <Typography variant="body1">
+                    If you choose to login, you will be able to get verified in the Discord server.
+                </Typography>
+                <Typography variant="body2">
+                    The verification process should be automatic, but in case it does not work, please use the <code>/verify</code> command in the server to get verified.
+                </Typography>
+                <Typography variant="body1">
+                    There is also a hidden role, can you find it? 😉
+                </Typography>
+            </ComponentBox>
+            <ComponentBox
+                title="Thank you for your testing!"
+                icon={<AutoAwesomeOutlinedIcon />}
+            >
+                <Typography variant="body1">
+                    Thank you for testing EAM features!
+                </Typography>
+                <Typography variant="body1">
+                We are working hard to make them available to everyone.
+                </Typography>
+            </ComponentBox>
+            {/* <EamPlusComparisonTable /> */}
         </Box>
     );
 }
@@ -129,7 +163,7 @@ function UserProfileBox() {
                                 variant="h6"
                             >
                                 {user.name}
-                                <ProfilePlanChip />
+                                {/* <ProfilePlanChip /> */}
                             </Typography>
                             <Typography variant="body2">
                                 {user.email}
