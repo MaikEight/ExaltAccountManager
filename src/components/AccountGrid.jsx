@@ -14,7 +14,7 @@ import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName"
 import NoRowsOverlay from "./GridComponents/NoRowsOverlay";
 
 function AccountGrid({ setShowAddNewAccount }) {
-    const { accounts, selectedAccount, setSelectedAccount, updateAccount } = useAccounts();
+    const { accounts, selectedAccount, setSelectedAccount, updateAccount, isLoading } = useAccounts();
     const [shownAccounts, setShownAccounts] = useState(accounts);
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
@@ -117,6 +117,7 @@ function AccountGrid({ setShowAddNewAccount }) {
                 onPaginationModelChange={setPaginationModel}
                 checkboxSelection={false}
                 hideFooterSelectedRowCount
+                loading={isLoading}
                 slots={{
                     pagination: CustomPagination,
                     toolbar: CustomToolbar,
