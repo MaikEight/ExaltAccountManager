@@ -128,6 +128,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                             title='Report details'
                             icon={<ArticleOutlinedIcon />}
                             isCollapseable
+                            sx={{ mt: 0 }}
                         >
                             <TableContainer component={Box} sx={{ borderRadius: 0 }}>
                                 <Table
