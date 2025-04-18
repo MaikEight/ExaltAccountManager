@@ -1,6 +1,6 @@
 import { Box, Collapse, LinearProgress, Paper, Typography, Tooltip as MUITooltip, alpha, IconButton } from "@mui/material";
 import { invoke } from "@tauri-apps/api/core";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import StyledButton from "../components/StyledButton";
 import { Chart, BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
@@ -22,8 +22,8 @@ import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFil
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
-import { useMemo } from "react";
 import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
+import LogsNoRowsOverlay from './../components/GridComponents/LogsNoRowsOverlay';
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -37,7 +37,7 @@ function DailyLoginsPage() {
     });
     const [isInstallingTask, setIsInstallingTask] = useState(false);
     const [allDailyLoginReports, setAllDailyLoginReports] = useState([]);
-    const [isLoadingReports, setIsLoadingReports] = useState(false);
+    const [isLoadingReports, setIsLoadingReports] = useState(true);
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
     const [slideoutOpen, setSlideoutOpen] = useState(false);
     const [selectedReport, setSelectedReport] = useState(null);
@@ -436,7 +436,6 @@ function DailyLoginsPage() {
 
                             },
                         }}
-                        loading={isLoadingReports}
                         rows={allDailyLoginReports}
                         getRowId={(row) => row.id}
                         columns={columns}
@@ -469,14 +468,17 @@ function DailyLoginsPage() {
                         onPaginationModelChange={setPaginationModel}
                         checkboxSelection={false}
                         hideFooterSelectedRowCount
+                        loading={isLoadingReports}
                         slots={{
                             pagination: CustomPagination,
                             toolbar: DailyLoginsGridToolbar,
                             loadingOverlay: LinearProgress,
+                            noRowsOverlay: LogsNoRowsOverlay
                         }}
                         slotProps={{
                             toolbar: { onRefresh: getAllReportData },
-                            pagination: { labelRowsPerPage: "Runs per page:" }
+                            pagination: { labelRowsPerPage: "Runs per page:" },
+                            noRowsOverlay: { text: 'No daily login reports found' }
                         }}
                     />
                 </Paper>
