@@ -7,7 +7,7 @@ function ChangelogVersion4_2_2() {
     return (
         <ChangelogPopupBase
             version="4.2.2 Pre"
-            title="Comments, Muledump export support, Bug Fixes and Improvements!"
+            title="Vault Peeker improvements and bug fixes"
             releaseDate={"23.09.2024"}
             icon={<BugReportOutlinedIcon />}
             width={'950px'}
@@ -22,7 +22,7 @@ function ChangelogVersion4_2_2() {
             <ChangelogEntry
                 title={'Daily Logins'}
                 listOfChanges={[
-                    'Fixed the columns "🕛 End Time" and "⏱️ Duration" to behave correctly while the Daily Login taks is running.',
+                    'Fixed the columns "🕛 End Time" and "⏱️ Duration" to behave correctly while the Daily Login task is running.',
                 ]}
             />
             <ChangelogEntry
