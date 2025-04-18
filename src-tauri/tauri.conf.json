@@ -80,7 +80,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; img-src 'self' example.com"
+      "csp": null
     }
   }
 }
