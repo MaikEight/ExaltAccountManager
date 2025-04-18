@@ -17,10 +17,12 @@ function AccountsContextProvider({ children }) {
     const hwid = useHWID();
     const { saveServerList } = useServerList();
     const { showSnackbar } = useSnack();
+    const [isLoading, setIsLoading] = useState(false);
 
     const getAccountByEmail = (email) => accounts.find((acc) => acc.email === email);
 
     const loadAccounts = async () => {
+        setIsLoading(true);
         try {
             const response = await invoke('get_all_eam_accounts');
             const accounts = response.map((acc) => {
@@ -39,6 +41,9 @@ function AccountsContextProvider({ children }) {
         } catch (error) {
             console.error('Error loading accounts:', error);
             return [];
+        }
+        finally {
+            setIsLoading(false);
         }
     }
 
@@ -282,7 +287,8 @@ function AccountsContextProvider({ children }) {
     const value = {
         accounts,
         selectedAccount,
-
+        isLoading,
+        
         setSelectedAccount,
 
         getAccountByEmail: getAccountByEmail,
