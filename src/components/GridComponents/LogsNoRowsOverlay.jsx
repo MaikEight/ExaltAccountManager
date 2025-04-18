@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import NoAccountsSvg from "../Illustrations/NoAccountsSvg";
 
-function LogsNoRowsOverlay({ text }) {
+function LogsNoRowsOverlay({ text }) {    
+
     return (
         <Box
             sx={{
