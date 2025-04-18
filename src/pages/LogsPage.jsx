@@ -14,6 +14,8 @@ function LogsPage() {
     const [currentColumns, setCurrentColumns] = useState([]);
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
+    const [isLoading, setIsLoading] = useState(true);
+
     const theme = useTheme();
 
     const auditLogColumns = [
@@ -47,6 +49,8 @@ function LogsPage() {
     }, [currentLog, search]);
 
     useEffect(() => {
+        setIsLoading(true);
+
         setCurrentLog([]);
         setCurrentColumns([]);
         switch (currentLogMode) {
@@ -67,6 +71,9 @@ function LogsPage() {
                     })
                     .catch((err) => {
                         console.error('getAuditLog', err);
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
                     });
                 break;
             case 'ErrorLog':
@@ -85,9 +92,13 @@ function LogsPage() {
                     })
                     .catch((err) => {
                         console.error('getErrorLog', err);
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
                     });
                 break;
             default:
+                setIsLoading(false);
                 break;
         }
     }, [currentLogMode]);
@@ -117,6 +128,7 @@ function LogsPage() {
                     onPaginationModelChange={setPaginationModel}
                     checkboxSelection={false}
                     hideFooterSelectedRowCount
+                    loading={isLoading}
                     slots={{
                         pagination: CustomPagination,
                         toolbar: LogsGridToolbar,
