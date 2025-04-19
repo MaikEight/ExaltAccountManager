@@ -4,11 +4,11 @@ import { Box, Typography } from "@mui/material";
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
-function GitHubStars({style}) {
+function GitHubStars({ style }) {
     const [stars, setStars] = useState(undefined);
 
     useEffect(() => {
-        if(sessionStorage.getItem('githubStars')) {
+        if (sessionStorage.getItem('githubStars')) {
             setStars(sessionStorage.getItem('githubStars'));
             return;
         }
@@ -18,10 +18,6 @@ function GitHubStars({style}) {
                 setStars(stars);
             });
     }, []);
-
-    if (stars === undefined) {
-        return null;
-    }
 
     return (
         <a href="https://github.com/MaikEight/ExaltAccountManager" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit', ...style }}>
@@ -43,10 +39,15 @@ function GitHubStars({style}) {
                         gap: 0.5,
                     }}
                 >
-                    <StarBorderOutlinedIcon sx={{mt: -0.125}}/>
-                    <Typography>
-                        {stars} Stars
-                    </Typography>
+                    {
+                        stars &&
+                        <>
+                            <StarBorderOutlinedIcon sx={{ mt: -0.125 }} />
+                            <Typography>
+                                {stars} Stars
+                            </Typography>
+                        </>
+                    }
                 </Box>
             </Box>
         </a>
