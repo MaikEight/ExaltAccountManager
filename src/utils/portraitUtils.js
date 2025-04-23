@@ -156,10 +156,10 @@ function makeTexPattern(tex, ratio) {
 function portrait(type, skin, tex1Id, tex2Id, adjust) {    
     const cacheKey = `${CACHE_PREFIX}portrait:${skin}-${tex1Id}-${tex2Id}-${adjust}`;
     const cachedImageString = localStorage.getItem(cacheKey);
-    const chachedObject = JSON.parse(cachedImageString);
+    const cachedObject = cachedImageString ? JSON.parse(cachedImageString) : null;
 
-    if (chachedObject) {
-        const cachedTime = chachedObject.time;
+    if (cachedObject) {
+        const cachedTime = cachedObject.time;
         const currentTime = new Date().getTime();
         const timeDiff = currentTime - cachedTime;
         const maxCacheDuration = 1000 * 60 * 60 * 24 * 3; // 3 days
@@ -168,7 +168,7 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
             cachedObject.image = null;
         }
 
-        const cachedImage = chachedObject.image;
+        const cachedImage = cachedObject.image;
         if (cachedImage) {
             return cachedImage;
         }
