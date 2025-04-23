@@ -9,13 +9,16 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { useUserLogin, getProfileImage } from "eam-commons-js";
 import EamPlusComparisonTable from "../components/EamPlusComparisonTable";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
-import { STRIPE_CUSTOMER_PORTAL_URL } from "../constants";
+import { CACHE_PREFIX, STRIPE_CUSTOMER_PORTAL_URL } from "../constants";
 import ProfilePlanChip from './../components/ProfilePlanChip';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
     const { isAuthenticated } = useUserLogin();
+    const navigate = useNavigate();
+    const theme = useTheme();
 
     return (
         <Box
@@ -61,10 +64,36 @@ function ProfilePage() {
                 icon={<AutoAwesomeOutlinedIcon />}
             >
                 <Typography variant="body1">
-                    Thank you for testing EAM features!
+                    Thank you for testing the new EAM features!
                 </Typography>
                 <Typography variant="body1">
-                We are working hard to make them available to everyone.
+                    We are working hard to polish them.
+                </Typography>
+                <Typography variant="body1">
+                    If you have any feedback, please let us know via the
+                    <span
+                        style={{
+                            cursor: 'pointer',
+                            textDecoration: 'underline',
+                            color: theme.palette.mode === 'dark' ? '#9E9EFF' : '#0000EE',
+                            paddingLeft: '0.25rem',
+                            paddingRight: '0.25rem'
+                        }}
+                        onClick={() => navigate("/feedback")}
+                    >
+                        Feedback page
+                    </span>
+                    or write us directly in the
+                    <a
+                        style={{
+                            paddingLeft: '0.25rem',
+                        }}
+                        href="https://discord.exalt-account-manager.eu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        discord
+                    </a>.
                 </Typography>
             </ComponentBox>
             {/* <EamPlusComparisonTable /> */}
@@ -86,15 +115,40 @@ function UserProfileBox() {
         }
 
         const fetchImageData = async () => {
-            const storeImage = sessionStorage.getItem('profileImage');
-            if (storeImage !== null) {
-                setProfileImage(storeImage);
+            const cacheKey = `${CACHE_PREFIX}profileImage`;
+            const storeImageString = localStorage.getItem(cacheKey);
+            if (storeImageString !== null) {
+                const storageImageData = JSON.parse(storeImageString);
+
+                if (storageImageData !== null && storageImageData.time) {
+                    const cachedTime = storageImageData.time;
+                    const currentTime = new Date().getTime();
+                    const timeDiff = currentTime - cachedTime;
+                    const maxCacheDuration = 1000 * 60 * 60 * 24 * 3; // 3 days
+                    if (timeDiff < maxCacheDuration) {
+                        setProfileImage(storageImageData.image);
+                        return;
+                    }
+
+                    localStorage.removeItem(cacheKey);
+                }
+            }
+            const imageData = await getProfileImage(user.picture)
+                .catch((error) => {
+                    console.error('Error fetching image data:', error);
+                    return null;
+                });
+
+            if (imageData === null) {
                 return;
             }
-
-            const imageData = await getProfileImage(user.picture);
             setProfileImage(`data:image/jpeg;base64,${imageData}`);
-            sessionStorage.setItem('profileImage', `data:image/jpeg;base64,${imageData}`);
+
+            const imageObject = {
+                image: `data:image/jpeg;base64,${imageData}`,
+                time: new Date().getTime(),
+            };
+            localStorage.setItem(cacheKey, JSON.stringify(imageObject));
         }
         fetchImageData();
     }, [user]);
