@@ -14,7 +14,7 @@
     "licenseFile": "windows/LICENSE",
     "windows": {
       "allowDowngrades": false,
-      "certificateThumbprint": "ecf39b21a5f9241e6da019ea686d82b07c3302d8",
+      "certificateThumbprint": "902a87c85afbc0c5eb692d2e921ff8dabbee5625",
       "digestAlgorithm": "sha256",
       "timestampUrl": "http://time.certum.pl",
       "webviewInstallMode": {
