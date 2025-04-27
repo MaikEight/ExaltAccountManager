@@ -1,5 +1,5 @@
-import { Box, Chip, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Box, Chip, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
 import ItemCanvas from "./ItemCanvas";
@@ -8,6 +8,8 @@ import EquipmentCanvas from "./EquipmentCanvas";
 import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import { useColorList } from 'eam-commons-js';
+import PaddedTableCell from "../AccountDetails/PaddedTableCell";
+import { pcStatsDescriptionEnum } from "../../utils/pcStatsParser";
 
 function emptyItemOverride(darkMode) {
     return {
@@ -208,24 +210,7 @@ function Character({ charIdentifier, character }) {
                         alignItems: 'end',
                     }}
                 >
-                    <Tooltip title="Fame">
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 0.5,
-                            }}
-                        >
-
-                            {
-                                character.fame >= 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
-                                <img src="/realm/fame.png" alt="Fame" height={20} />
-                            }
-                            <Typography variant="body1">{character.fame}</Typography>
-                        </Box>
-                    </Tooltip>
+                    <FameAndFameBonusPopover character={character}/>
                     <Tooltip title="Level">
                         <Typography variant="h6" color={character.level === 20 ? theme.palette.warning.main : theme.palette.text.primary}>lvl {character.level}</Typography>
                     </Tooltip>
@@ -267,6 +252,97 @@ function Character({ charIdentifier, character }) {
 }
 
 export default Character;
+
+
+function FameAndFameBonusPopover({ character }) {
+    if (!character)
+        return null;
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    }
+    const handleClose = () => {
+        setAnchorEl(null);
+      };
+    console.log(character.processed_pc_stats);
+    const theme = useTheme();
+    const open = Boolean(anchorEl);
+    const tunnelRat = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.SPIDER_DENS,
+    pcStatsDescriptionEnum.SNAKE_PITS, pcStatsDescriptionEnum.UNDEAD_LAIRS, pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS,
+    pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.ORYXS_CHAMBER,
+    pcStatsDescriptionEnum.WINE_CELLAR];
+
+    // todo: decide useMemo and its dependencies
+    const FameAndFameBonusPopover = 
+    <Tooltip title="Fame">
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 0.5,
+                ":hover": {
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)'
+                }
+            }}
+            onClick={handleClick}
+        >
+                {
+                    character.fame >= 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
+                    <img src="/realm/fame.png" alt="Fame" height={20} />
+                }
+                <Typography variant="body1">{character.fame}</Typography>
+        <Popover
+        id={character.char_id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+        }}>
+            <Box sx={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
+                <TableContainer>
+                    <Table>
+                    <TableHead>
+                        <TableRow>
+                            <PaddedTableCell sx={{ textAlign: 'start', borderBottom: 'none', py: 0 }}>
+                                <Typography variant="h6" fontWeight={600}>
+                                    Dungeon Bonuses
+                                </Typography>
+                            </PaddedTableCell>
+                            <PaddedTableCell sx={{ textAlign: 'center', borderBottom: 'none', py: 0 }}>
+                            </PaddedTableCell>
+                        </TableRow>
+                    </TableHead>
+                        <TableRow>
+                            {
+                            <Typography variant="h7" fontWeight={300}>
+                                Tunnel Rat
+                            </Typography>
+                            }
+                        </TableRow>
+                        <TableRow>
+                            {
+                                tunnelRat.map((value) => <TableCell>{value}</TableCell>)
+                            }
+                        </TableRow>
+                        <TableRow>
+                            {
+                                tunnelRat.map((value) => <TableCell>{character.processed_pc_stats.get(value) >= 1 ? "Completed" : "Missing"}</TableCell>)
+                            }
+                        </TableRow>
+                    </Table>
+                </TableContainer>
+            </Box>
+        </Popover>
+        </Box>
+    </Tooltip>
+    return FameAndFameBonusPopover;
+}
 
 function CharacterStats({ character, charClass }) {
     const theme = useTheme();
