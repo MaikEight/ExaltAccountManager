@@ -33,7 +33,7 @@ function ChangelogVersion4_2_3() {
                     "Added a live characters group overview in the Account title.",
                     "Added a transition effect to the Item Viewer Popup.",
                     "Improved caching of character portraits and item images.",
-                    "Improved the overal loading speed.",
+                    "Improved the overall loading speed.",
                 ]}
             />
             <ChangelogEntry
