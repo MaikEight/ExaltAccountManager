@@ -15,7 +15,7 @@ function ChangelogVersion4_2_2() {
             <ChangelogEntry
                 title={'Vault Peeker'}
                 listOfChanges={[
-                    "Added support for hidding vault types.",
+                    "Added support for hiding vault types.",
                     "Updated the items and pictures.",
                 ]}
             />
