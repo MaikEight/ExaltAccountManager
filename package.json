@@ -16,8 +16,8 @@
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
     "@mui/styled-engine-sc": "^7.0.2",
-    "@mui/x-data-grid": "^7.29.0",
-    "@mui/x-date-pickers": "^7.29.0",
+    "@mui/x-data-grid": "^7.29.1",
+    "@mui/x-date-pickers": "^7.29.1",
     "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-deep-link": "^2.2.1",
     "@tauri-apps/plugin-dialog": "^2.2.1",
@@ -44,6 +44,7 @@
     "react-window": "^1.8.11",
     "stream-browserify": "^3.0.0",
     "styled-components": "^6.1.17",
+    "tauri-plugin-drpc": "^1.0.3",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
