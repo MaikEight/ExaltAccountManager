@@ -16,6 +16,7 @@ import Confetti from "react-confetti";
 import DeveloperSvg from "../components/Illustrations/DeveloperSvg";
 import useStartupPopups from "../hooks/useStartupPopups";
 import FeaturedPlayListOutlinedIcon from '@mui/icons-material/FeaturedPlayListOutlined';
+import useDiscordRichPresence from './../hooks/useDiscordRichPresence';
 
 function AboutPage() {
     const [showLlama, setShowLlama] = useState(false);
@@ -27,6 +28,7 @@ function AboutPage() {
     const { showPopup } = usePopups();
     const { user, idToken } = useUserLogin();
     const { changelogPopups } = useStartupPopups();
+    const { setState, resetState } = useDiscordRichPresence();
 
     useEffect(() => {
         const handleResize = () => {
@@ -44,6 +46,10 @@ function AboutPage() {
         const timeout = setTimeout(() => {
             setShowLlama(false);
         }, 5000);
+
+        if (showLlama) {
+            setState("Llama is dancing! 🦙");
+        }
 
         if (showLlama &&
             user &&
@@ -116,9 +122,15 @@ function AboutPage() {
                             <StyledButton
                                 startIcon={<FeaturedPlayListOutlinedIcon />}
                                 onClick={() => {
-                                    const lastChangelog = changelogPopups?.[changelogPopups.length - 1];                                    
+                                    const lastChangelog = changelogPopups?.[changelogPopups.length - 1];
                                     if (lastChangelog) {
-                                        showPopup(lastChangelog);
+                                        setState("Viewing the changelog 📜");
+                                        showPopup({
+                                            ...lastChangelog,
+                                            onClose: () => {
+                                                resetState();
+                                            },
+                                        });
                                     }
                                 }}
                             >
@@ -207,7 +219,15 @@ function AboutPage() {
                         Special thanks to every Framework, Library, Resource and Person that made this project possible.
                     </Typography>
                     <StyledButton
-                        onClick={() => { showPopup({ content: <CreditsPopup /> }) }}
+                        onClick={() => { 
+                            setState("Viewing the credits 👥");
+                            showPopup({ 
+                                content: <CreditsPopup />,
+                                onClose: () => { 
+                                    resetState();
+                                },
+                             });
+                        }}
                     >
                         Show Credits & Thanks
                     </StyledButton>
