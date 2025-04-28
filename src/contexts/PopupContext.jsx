@@ -15,6 +15,9 @@ function PopupContextProvider({ children }) {
     };
 
     const closePopup = () => {
+        if (popupData?.onClose) {
+            popupData.onClose();
+        }
         setPopupData(null);
     };
 
