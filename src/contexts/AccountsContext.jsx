@@ -11,13 +11,14 @@ import useSnack from "../hooks/useSnack";
 const AccountsContext = createContext();
 
 function AccountsContextProvider({ children }) {
-    const [accounts, setAccounts] = useState([]);
-    const [selectedAccount, setSelectedAccount] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
     const hwid = useHWID();
     const { saveServerList } = useServerList();
     const { showSnackbar } = useSnack();
+    
     const [isLoading, setIsLoading] = useState(false);
+    const [accounts, setAccounts] = useState([]);
+    const [selectedAccount, setSelectedAccount] = useState(null);
 
     const getAccountByEmail = (email) => accounts.find((acc) => acc.email === email);
 
