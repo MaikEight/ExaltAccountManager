@@ -94,7 +94,7 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                 </Box>
             }
             <Collapse in={!isCollapsed} sx={{ width: '100%' }}>
-                <Box sx={innerSx}>
+                <Box sx={innerSx ? { ...innerSx} : { }}>
                     {children}
                 </Box>
             </Collapse>
