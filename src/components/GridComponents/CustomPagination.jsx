@@ -1,9 +1,9 @@
+import React, { forwardRef } from 'react';
 import { Pagination, TablePagination } from "@mui/material";
 import { gridPageCountSelector, gridPageSelector, gridPageSizeSelector, gridRowCountSelector, useGridApiContext, useGridSelector } from "@mui/x-data-grid";
 
-function CustomPagination({ rowsPerPageOptions, labelRowsPerPage}) {
+const CustomPagination = forwardRef(function CustomPagination({ rowsPerPageOptions, labelRowsPerPage }, ref) {
     const gridApiContext = useGridApiContext();
-
     const page = useGridSelector(gridApiContext, gridPageSelector);
     const rowCount = useGridSelector(gridApiContext, gridRowCountSelector);
     const pageCount = useGridSelector(gridApiContext, gridPageCountSelector);
@@ -19,7 +19,9 @@ function CustomPagination({ rowsPerPageOptions, labelRowsPerPage}) {
     };
 
     return (
-        <TablePagination className="pagination-container"
+        <TablePagination
+            ref={ref}
+            className="pagination-container"
             style={{ flex: '1 0 auto' }}
             component="div"
             count={rowCount}
@@ -31,17 +33,18 @@ function CustomPagination({ rowsPerPageOptions, labelRowsPerPage}) {
             labelDisplayedRows={() => { return ''; }}
             labelRowsPerPage={labelRowsPerPage}
             ActionsComponent={() => (
-                <Pagination className="pagination-pages"
+                <Pagination
+                    className="pagination-pages"
                     style={{ flex: '1 0 auto', paddingLeft: '1rem' }}
                     color="primary"
                     shape="rounded"
                     page={page + 1}
                     count={pageCount}
-                    onChange={(event, page) => handleChangePage(event, page - 1)}                    
+                    onChange={(event, newPage) => handleChangePage(event, newPage - 1)}
                 />
             )}
         />
     );
-}
+});
 
-export {CustomPagination};
+export { CustomPagination };
