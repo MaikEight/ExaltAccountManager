@@ -24,6 +24,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
 import LogsNoRowsOverlay from './../components/GridComponents/LogsNoRowsOverlay';
+import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -88,57 +89,71 @@ function DailyLoginsPage() {
     const getAllReportData = async () => {
         setIsLoadingReports(true);
         let tasksDone = [false, false]
-        invoke('get_daily_login_reports_of_last_days', { amountOfDays: 7 })
-            .then((res) => {
-                setDailyLoginReportsOfLastWeek(res);
-                tasksDone[0] = true;
-            })
-            .catch((err) => {
-                console.error(err);
-                tasksDone[0] = true;
-            });
-
-        invoke('get_all_daily_login_reports')
-            .then((res) => {
-                const reports = res.map((report) => {
-                    return {
-                        ...report,
-                        startTime: new Date(report.startTime),
-                        endTime: new Date(report.endTime),
-                    };
+        try {
+            invoke('get_daily_login_reports_of_last_days', { amountOfDays: 7 })
+                .then((res) => {
+                    setDailyLoginReportsOfLastWeek(res);
+                    tasksDone[0] = true;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    tasksDone[0] = true;
                 });
-                setAllDailyLoginReports(reports);
-                tasksDone[1] = true;
-            })
-            .catch((err) => {
-                console.error(err);
-                tasksDone[1] = true;
-            });
 
-        while (!tasksDone.every((task) => task)) {
-            await new Promise((resolve) => setTimeout(resolve, 25));
+            invoke('get_all_daily_login_reports')
+                .then((res) => {
+                    const reports = res.map((report) => {
+                        return {
+                            ...report,
+                            startTime: new Date(report.startTime),
+                            endTime: new Date(report.endTime),
+                        };
+                    });
+                    setAllDailyLoginReports(reports);
+                    tasksDone[1] = true;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    tasksDone[1] = true;
+                });
+
+            while (!tasksDone.every((task) => task)) {
+                await new Promise((resolve) => setTimeout(resolve, 50));
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoadingReports(false);
+        }
+    };
+
+    const checkIfTaskInstalled = async (force = false) => {
+        if (!force
+            && sessionStorage.getItem('dailyLoginTaskCheckDone') === 'true'
+            && sessionStorage.getItem('dailyLoginTaskV1CheckDone') === 'true') {
+            return;
         }
 
-        setIsLoadingReports(false);
-    };
+        invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
+            .then((res) => {
+                setIsTaskInstalled(!!res);
+                localStorage.setItem('dailyLoginTaskInstalled', res ? 'true' : 'false');
+                sessionStorage.setItem('dailyLoginTaskCheckDone', 'true');
+            });
+
+        invoke('check_for_installed_eam_daily_login_task', { checkForV1: true })
+            .then((res) => {
+                setIsTaskV1Installed(!!res);
+                localStorage.setItem('dailyLoginTaskV1Installed', res ? 'true' : 'false');
+                sessionStorage.setItem('dailyLoginTaskV1CheckDone', 'true');
+            });
+    }
 
     useEffect(() => {
         const timeout = setTimeout(async () => {
-            await getAllReportData();
-
-            invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
-                .then((res) => {
-                    setIsTaskInstalled(!!res);
-                    localStorage.setItem('dailyLoginTaskInstalled', res ? 'true' : 'false');
-                });
-
-            invoke('check_for_installed_eam_daily_login_task', { checkForV1: true })
-                .then((res) => {
-                    setIsTaskV1Installed(!!res);
-                    localStorage.setItem('dailyLoginTaskV1Installed', res ? 'true' : 'false');
-                });
-
-        }, 10);
+            getAllReportData();
+            checkIfTaskInstalled();
+        }, 100);
 
         return () => {
             clearTimeout(timeout);
@@ -318,6 +333,7 @@ function DailyLoginsPage() {
         <Paper
             sx={{
                 // width: 'calc(100% - 32px)',
+                position: 'relative',
                 width: '100%',
                 borderRadius: `${theme.shape.borderRadius}px`,
                 backgroundColor: theme => theme.palette.mode === 'dark' ? theme.palette.error.dark : theme.palette.error.main,
@@ -329,6 +345,21 @@ function DailyLoginsPage() {
                 pb: 1,
             }}
         >
+            <MUITooltip title="Check if task is installed">
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        top: 5,
+                        right: 5,
+                    }}
+                    size="small"
+                    onClick={() => {
+                        checkIfTaskInstalled(true);
+                    }}
+                >
+                    <RefreshOutlinedIcon />
+                </IconButton>
+            </MUITooltip>
             <Typography variant="h6">
                 The daily login task is not installed
             </Typography>
@@ -390,7 +421,7 @@ function DailyLoginsPage() {
                 overflow: 'auto',
             }}
         >
-            <Collapse in={!isTaskInstalled} sx={!isTaskInstalled ? { p: 2 } : { pl: 2, pr: 2 }}>
+            <Collapse in={!isTaskInstalled} sx={!isTaskInstalled ? { pt: 2, px: 2 } : { px: 2 }}>
                 {
                     taskNotInstalledWarningBanner
                 }
