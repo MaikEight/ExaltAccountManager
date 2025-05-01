@@ -8,13 +8,13 @@ function SteamworksRow({ guid, innerSx, ...rest }) {
     const theme = useTheme();
     return (
         <TableRow {...rest}>
-            <PaddedTableCell sx={innerSx}>
+            <PaddedTableCell sx={innerSx ? { ...innerSx} : { }}>
 
                 <Typography variant="body2" fontWeight={300} component="span">
                     Steam ID
                 </Typography>
             </PaddedTableCell>
-            <PaddedTableCell sx={innerSx} align="left">
+            <PaddedTableCell sx={innerSx ? { ...innerSx} : { }} align="left">
                 <Tooltip title="Open Steam profile">
                     <a
                         href={`https://steamcommunity.com/profiles/${steamId}`}

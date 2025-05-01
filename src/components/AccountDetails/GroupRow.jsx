@@ -23,7 +23,7 @@ function GroupRow({ group, editMode, onChange, innerSx, ...rest }) {
     if (showGroupEditor) {
         return (
             <TableRow {...rest}>
-                <TableCell colSpan={2} sx={innerSx}>
+                <TableCell colSpan={2} sx={innerSx ? { ...innerSx} : { }}>
                     <GroupEditor
                         onSave={(g) => {
                             saveGroup(g);
@@ -40,12 +40,12 @@ function GroupRow({ group, editMode, onChange, innerSx, ...rest }) {
 
     return (
         <TableRow {...rest}>
-            <PaddedTableCell sx={innerSx}>
+            <PaddedTableCell sx={innerSx ? { ...innerSx} : { }}>
                 <Typography variant="body2" fontWeight={300} component="span">
                     Group
                 </Typography>
             </PaddedTableCell>
-            <PaddedTableCell sx={innerSx} align="left">
+            <PaddedTableCell sx={innerSx ? { ...innerSx} : { }} align="left">
                 {
                     !editMode ?
                         selectedGroup ? <GroupUI group={selectedGroup} /> : null
