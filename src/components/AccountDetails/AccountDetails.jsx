@@ -32,6 +32,7 @@ function AccountDetails({ acc, onClose }) {
     const [isDeleteMode, setIsDeleteMode] = useState(false);
     const [updateInProgress, setUpdateInProgress] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingRefresh, setIsLoadingRefresh] = useState(false);
     const [decryptedPassword, setDecryptedPassword] = useState("");
     const [newDecryptedPassword, setNewDecryptedPassword] = useState("");
     const [gameExePath, setGameExePath] = useState("");
@@ -343,7 +344,7 @@ function AccountDetails({ acc, onClose }) {
                                 >
                                     <span>
                                         <StyledButton
-                                            disabled={isLoading || updateInProgress || account.state === 'Registered'}
+                                            disabled={isLoading || isLoadingRefresh || updateInProgress || account.state === 'Registered'}
                                             fullWidth={true}
                                             sx={{ height: 55 }}
                                             onClick={async () => {
@@ -351,6 +352,7 @@ function AccountDetails({ acc, onClose }) {
                                                 await startGame();
                                                 setIsLoading(false);
                                             }}
+                                            loading={isLoading}
                                         >
                                             <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
                                             start game
@@ -360,18 +362,19 @@ function AccountDetails({ acc, onClose }) {
                             </Grid>
                             <Grid size={6}>
                                 <StyledButton
-                                    disabled={isLoading}
+                                    disabled={isLoading || isLoadingRefresh}
                                     fullWidth={true}
                                     startIcon={<RefreshOutlinedIcon />}
                                     color={account.state === 'Registered' ? "primary" : "secondary"}
                                     onClick={async () => {
-                                        setIsLoading(true);
+                                        setIsLoadingRefresh(true);
                                         const response = await refreshData(account.email);
                                         if (response) {
                                             showSnackbar("Refreshing finished");
                                         }
-                                        setIsLoading(false);
+                                        setIsLoadingRefresh(false);
                                     }}
+                                    loading={isLoadingRefresh}
                                 >
                                     refresh data
                                 </StyledButton>
