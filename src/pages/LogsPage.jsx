@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getAuditLog, getErrorLog, formatTime } from "eam-commons-js";
 import { DataGrid } from "@mui/x-data-grid";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
-import { useTheme } from "styled-components";
+import { useTheme } from "@mui/material/styles";
 import LogsGridToolbar from "../components/GridComponents/LogsGridToolbar";
 import LogsNoRowsOverlay from "../components/GridComponents/LogsNoRowsOverlay";
 

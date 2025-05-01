@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import DiscordLogo from '../DiscordLogo.jsx';
 import DiscordLogoFull from '../DiscordLogoFull.jsx';
-import { useTheme } from "styled-components";
+import { useTheme } from "@mui/material/styles";
 import GradientBorderButton from "./ButtonParts/GradientBorderButton.jsx";
 import GradientBorderButtonInner from "./ButtonParts/GradientBorderButtonInner.jsx";
 
