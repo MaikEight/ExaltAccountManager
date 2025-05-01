@@ -60,7 +60,7 @@ function SettingsPage() {
         return [
             { field: 'orderId', headerName: applySettingsToHeaderName('🆔 Order ID') },
             { field: 'group', headerName: applySettingsToHeaderName('👥 Group') },
-            { field: 'name', headerName: applySettingsToHeaderName('🧑‍💼 Accountname') },
+            { field: 'name', headerName: applySettingsToHeaderName('🗣️ Accountname') },
             { field: 'email', headerName: applySettingsToHeaderName('📧 Email') },
             { field: 'lastLogin', headerName: applySettingsToHeaderName('⏰ Last Login') },
             { field: 'serverName', headerName: applySettingsToHeaderName('🌐 Server') },
@@ -684,14 +684,17 @@ function SettingsPage() {
                                     sx={{
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        gap: 2,
+                                        gap: 0,
                                         backgroundColor: theme => theme.palette.background.default,
                                         borderRadius: `${theme.shape.borderRadius - 2}px`,
-                                        p: 1.5
+                                        p: 1.25
                                     }}
                                 >
-                                    <Typography sx={{ px: 1 }}>
-                                        Are you sure you want to delete all your data? This action cannot be undone.
+                                    <Typography variant='subtitle1' sx={{ px: 1 }}>
+                                        Are you sure you want to delete all your data?
+                                    </Typography>
+                                    <Typography variant='body2' sx={{ mx: 'auto', mb: 1.5 }}>
+                                       This action cannot be undone.
                                     </Typography>
                                     <StyledButton
                                         disabled={analyticsRequestLoading || dataDeletionRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
