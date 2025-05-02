@@ -99,7 +99,7 @@ const pcStatsIndexToStatDescription = {
     100: 'Stat Potions consumed',
 };
 
-/* NOTE: This Enum MUST match the above pcStatsIndexToStatDescription variable.**/
+/* NOTE: This Enum MUST match BOTH the above pcStatsIndexToStatDescription variable, and the names of the dungeons in public/realm/dungeons.**/
 export const pcStatsDescriptionEnum = {
     SHOTS_FIRED: "Shots fired",
     HITS: "Hits",

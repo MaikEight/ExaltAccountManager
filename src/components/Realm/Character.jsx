@@ -1,4 +1,4 @@
-import { Box, Chip, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, Chip, Icon, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
@@ -10,6 +10,7 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 import { useColorList } from 'eam-commons-js';
 import PaddedTableCell from "../AccountDetails/PaddedTableCell";
 import { pcStatsDescriptionEnum } from "../../utils/pcStatsParser";
+import { green } from "@mui/material/colors";
 
 function emptyItemOverride(darkMode) {
     return {
@@ -325,14 +326,19 @@ function FameAndFameBonusPopover({ character }) {
                             </Typography>
                             }
                         </TableRow>
-                        <TableRow>
+                        <TableRow key={`tunnelRatImages-${character.char_id}`}>
                             {
-                                tunnelRat.map((value) => <TableCell>{value}</TableCell>)
+                                tunnelRat.map((value) => 
+                                <TableCell>
+                                    <Tooltip title={`${value}`}>
+                                                        <img src={`realm/dungeons/${value}.png`} alt={{value}} style={{ padding: '0', maxWidth: 48, maxHeight: 48 }} />
+                                    </Tooltip>
+                                </TableCell>)
                             }
                         </TableRow>
-                        <TableRow>
+                        <TableRow key={`tunnelRat-${character.char_id}`}>
                             {
-                                tunnelRat.map((value) => <TableCell>{character.processed_pc_stats.get(value) >= 1 ? "Completed" : "Missing"}</TableCell>)
+                                tunnelRat.map((value) => <TableCell>{character.processed_pc_stats.get(value) >= 1 ?  "Completed" : "Missing"}</TableCell>)
                             }
                         </TableRow>
                     </Table>
