@@ -51,11 +51,11 @@ export function formatAccountDataFromCharListDataset(charListDataset) {
         },
     }
 
-    const extracedVault = extractItemIdsFromValueString(charListDataset.account.vault);
-    const extractedGifts = extractItemIdsFromValueString(charListDataset.account.gifts);
-    const extractedMaterialStorage = extractItemIdsFromValueString(charListDataset.account.material_storage);
-    const extractedTemporaryGifts = extractItemIdsFromValueString(charListDataset.account.temporary_gifts);
-    const extractedPotions = extractItemIdsFromValueString(charListDataset.account.potions);
+    const extracedVault = extractItemIdsFromValueString(charListDataset.account.vault, true, false);
+    const extractedGifts = extractItemIdsFromValueString(charListDataset.account.gifts, true, false);
+    const extractedMaterialStorage = extractItemIdsFromValueString(charListDataset.account.material_storage, true, false);
+    const extractedTemporaryGifts = extractItemIdsFromValueString(charListDataset.account.temporary_gifts, true, false);
+    const extractedPotions = extractItemIdsFromValueString(charListDataset.account.potions, true, false);
 
     extracedVault.forEach((itemId) => {
         account.vault.itemIds.push(itemId);
@@ -166,6 +166,13 @@ export function extractRealmItemsFromCharListDatasets(charListDatasets) {
     });
 
     realmItems.itemIds = Array.from(new Set(realmItems.itemIds));
+    if(realmItems.itemIds.includes(-1)) { 
+        // Remove -1 from the itemIds array and add it to the end of the array
+        // This is to ensure that -1 is always at the end of the array
+        realmItems.itemIds = realmItems.itemIds.filter((itemId) => itemId !== -1).concat([-1]);
+    }
+            
+    console.log("realmItems", realmItems);
     return realmItems;
 }
 
@@ -186,15 +193,15 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
     const email = charListDataset.email;
     if (charListDataset.account) {
         // Extract items from account        
-        const vaultItems = extractItemIdsFromValueString(charListDataset.account.vault);
-        const giftsItems = extractItemIdsFromValueString(charListDataset.account.gifts);
-        const materialStorageItems = extractItemIdsFromValueString(charListDataset.account.material_storage);
-        const temporaryGiftsItems = extractItemIdsFromValueString(charListDataset.account.temporary_gifts);
-        const potionsItems = extractItemIdsFromValueString(charListDataset.account.potions);
-        
+        const vaultItems = extractItemIdsFromValueString(charListDataset.account.vault, true, false);
+        const giftsItems = extractItemIdsFromValueString(charListDataset.account.gifts, true, false);
+        const materialStorageItems = extractItemIdsFromValueString(charListDataset.account.material_storage, true, false);
+        const temporaryGiftsItems = extractItemIdsFromValueString(charListDataset.account.temporary_gifts, true, false);
+        const potionsItems = extractItemIdsFromValueString(charListDataset.account.potions, true, false);
+
         const characterItems = [];
         charListDataset.character.forEach((character) => {
-            characterItems.push(extractItemIdsFromValueString(character.equipment));
+            characterItems.push(extractItemIdsFromValueString(character.equipment, true, false));
         });
 
         const allItems = new Set([...vaultItems, ...giftsItems, ...materialStorageItems, ...temporaryGiftsItems, ...potionsItems, ...characterItems.flat()]);
@@ -381,6 +388,16 @@ function extractItemIdsFromValueString(valueString, removeTrackingId = true, rem
 
     if (removeEmptyValues) {
         vaultItems = vaultItems.filter((itemId) => itemId !== '-1');
+    } else {
+        // Sort the items so that -1 is at the end of the array
+        vaultItems = vaultItems.sort((a, b) => {
+            if (a === '-1' && b !== '-1') {
+                return 1;
+            } else if (a !== '-1' && b === '-1') {
+                return -1;
+            }
+            return 0;
+        });
     }
 
     return vaultItems.map((itemId) => !itemId.includes('#') ? parseInt(itemId, 10) : itemId);
