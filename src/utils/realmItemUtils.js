@@ -171,8 +171,7 @@ export function extractRealmItemsFromCharListDatasets(charListDatasets) {
         // This is to ensure that -1 is always at the end of the array
         realmItems.itemIds = realmItems.itemIds.filter((itemId) => itemId !== -1).concat([-1]);
     }
-            
-    console.log("realmItems", realmItems);
+    
     return realmItems;
 }
 
