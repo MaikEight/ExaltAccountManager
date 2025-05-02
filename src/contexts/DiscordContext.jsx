@@ -41,7 +41,7 @@ function DiscordContextProvider({ children }) {
         if (state) activity.setState(state);
         if (details) activity.setDetails(details);
 
-        await setActivity(activity);
+        await setActivity(activity).catch(console.error);
     }
 
     const getDefaultStateForPath = (path) => {
@@ -116,7 +116,13 @@ function DiscordContextProvider({ children }) {
 
     useEffect(() => {
         const startup = async () => {
-            await start(DISCORD_APPLICATION_ID);
+            try {
+                await start(DISCORD_APPLICATION_ID);
+                resetState(location.pathname);
+            }
+            catch (e) {
+                console.error("Error starting Discord RPC:", e);
+            }
         }
         startup();
     }, []);
