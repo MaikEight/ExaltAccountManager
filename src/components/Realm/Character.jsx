@@ -331,11 +331,11 @@ function FameAndFameBonusPopover({ character }) {
                         </TableRow>
                     </TableHead>
                         <TableRow>
-                            {
-                            <Typography variant="h6" fontWeight={300}>
-                                Tunnel Rat
-                            </Typography>
-                            }
+                            <TableCell colSpan={tunnelRat.length}>
+                                <Typography variant="h6" fontWeight={300}>
+                                    Tunnel Rat
+                                </Typography>
+                            </TableCell>
                         </TableRow>
                         <TableRow key={`tunnelRatImages-${character.char_id}`}>
                             {
