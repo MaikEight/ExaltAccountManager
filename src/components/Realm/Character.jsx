@@ -1,4 +1,4 @@
-import { Box, Chip, Icon, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, Chip, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
@@ -10,6 +10,8 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 import { useColorList } from 'eam-commons-js';
 import PaddedTableCell from "../AccountDetails/PaddedTableCell";
 import { pcStatsDescriptionEnum } from "../../utils/pcStatsParser";
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 import { green } from "@mui/material/colors";
 
 function emptyItemOverride(darkMode) {
@@ -275,6 +277,15 @@ function FameAndFameBonusPopover({ character }) {
     pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.ORYXS_CHAMBER,
     pcStatsDescriptionEnum.WINE_CELLAR];
 
+    const explosiveJourney = [pcStatsDescriptionEnum.DAVY_JONES_LOCKERS, pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.CANDYLAND_HUNTING_GROUNDS, pcStatsDescriptionEnum.HAUNTED_CEMETERIES,
+    pcStatsDescriptionEnum.CAVE_OF_A_THOUSAND_TREASURES, pcStatsDescriptionEnum.LAIR_OF_DRACONIS, pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS,
+    pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.THE_SHATTERS, pcStatsDescriptionEnum.LAIR_OF_SHAITAN, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE,
+    pcStatsDescriptionEnum.ICE_CAVES]
+
+    const dungeonMap = new Map();
+    dungeonMap.set("Tunnel Rat", tunnelRat);
+    dungeonMap.set("Explosive Journey", explosiveJourney);
+
     // todo: decide useMemo and its dependencies
     const FameAndFameBonusPopover = 
     <Tooltip title="Fame">
@@ -310,8 +321,8 @@ function FameAndFameBonusPopover({ character }) {
                     <Table>
                     <TableHead>
                         <TableRow>
-                            <PaddedTableCell sx={{ textAlign: 'start', borderBottom: 'none', py: 0 }}>
-                                <Typography variant="h6" fontWeight={600}>
+                            <PaddedTableCell sx={{ textAlign: 'start', borderBottom: 'none', py: 0 }} colSpan={3}>
+                                <Typography variant="h5" fontWeight={600}>
                                     Dungeon Bonuses
                                 </Typography>
                             </PaddedTableCell>
@@ -321,7 +332,7 @@ function FameAndFameBonusPopover({ character }) {
                     </TableHead>
                         <TableRow>
                             {
-                            <Typography variant="h7" fontWeight={300}>
+                            <Typography variant="h6" fontWeight={300}>
                                 Tunnel Rat
                             </Typography>
                             }
@@ -338,7 +349,7 @@ function FameAndFameBonusPopover({ character }) {
                         </TableRow>
                         <TableRow key={`tunnelRat-${character.char_id}`}>
                             {
-                                tunnelRat.map((value) => <TableCell>{character.processed_pc_stats.get(value) >= 1 ?  "Completed" : "Missing"}</TableCell>)
+                                tunnelRat.map((value) => <TableCell>{character.processed_pc_stats.get(value) >= 1 ?  <Tooltip title = "Completed"><CheckIcon></CheckIcon></Tooltip> : <Tooltip title = "Not completed"><ClearIcon></ClearIcon></Tooltip>}</TableCell>)
                             }
                         </TableRow>
                     </Table>
