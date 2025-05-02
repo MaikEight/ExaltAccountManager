@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Box, Collapse, IconButton, Skeleton, Tooltip, Typography, useTheme } from "@mui/material";
+import { Avatar, AvatarGroup, Box, Collapse, IconButton, Paper, Skeleton, Tooltip, Typography, useTheme } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 import Character from "../Realm/Character";
 import ItemCanvas from "../Realm/ItemCanvas";
@@ -321,11 +321,11 @@ function AccountView({ account }) {
                     {/* Vault */}
                     <StorageView vaultName={"vault"} canvasIdentifier={account.email + "_Vault"} title={<StorageViewTitle title="Vault" image="realm/vault_portal.png" sx={{ gap: 0.5 }} />} itemIds={account.account.vault.itemIds} totals={totalItems?.totals} overrideTotals={overrideTotals.vault} />
                     {/* Gift Chest */}
-                    <StorageView vaultName={"gift_chest"} canvasIdentifier={account.email + "_Gift"} title={<StorageViewTitle title="Gift Chest" image="realm/gift_chest.png" />} itemIds={account.account.gifts.itemIds} totals={totalItems?.totals} overrideTotals={overrideTotals.gifts} />
+                    <StorageView vaultName={"gift_chest"} canvasIdentifier={account.email + "_Gift"} title={<StorageViewTitle title="Gift Chest" image="realm/gift_chest.png" />} itemIds={account.account.gifts.itemIds} totals={totalItems?.totals} overrideTotals={{ ...overrideTotals.gifts, hideUsed: true }} />
                     {/* Trade Chest */}
                     <StorageView vaultName={"trade_chest"} canvasIdentifier={account.email + "_Trade"} title={<StorageViewTitle title="Material Storage" image="realm/material_storage.png" />} itemIds={account.account.material_storage.itemIds} totals={totalItems?.totals} overrideTotals={overrideTotals.material_storage} />
                     {/* Temporary Gifts */}
-                    <StorageView vaultName={"temp_chest"} canvasIdentifier={account.email + "_Temp"} title={<StorageViewTitle title="Seasonal Spoils" image="realm/seasonal_spoils_chest.png" />} itemIds={account.account.temporary_gifts.itemIds} totals={totalItems?.totals} overrideTotals={overrideTotals.temporary_gifts} />
+                    <StorageView vaultName={"temp_chest"} canvasIdentifier={account.email + "_Temp"} title={<StorageViewTitle title="Seasonal Spoils" image="realm/seasonal_spoils_chest.png" />} itemIds={account.account.temporary_gifts.itemIds} totals={totalItems?.totals} overrideTotals={{ ...overrideTotals.temporary_gifts, hideUsed: true }} />
                     {/* Potion Storage */}
                     <StorageView vaultName={"potion_chest"} canvasIdentifier={account.email + "_Potion"} title={<StorageViewTitle title="Potion Storage" image="realm/potion_storage_small.png" />} itemIds={account.account.potions.itemIds} totals={totalItems?.totals} overrideTotals={overrideTotals.potions} />
                 </Box>
@@ -410,8 +410,36 @@ function StorageView({ vaultName, canvasIdentifier, title, itemIds, totals, over
                     {
                         overrideTotals?.space &&
                         <Tooltip
+                            slots={{
+                                tooltip: Paper,
+                            }}
+                            slotProps={{
+                                tooltip: {
+                                    sx: {
+                                        p: 0.25,
+                                        borderRadius: `${theme.shape.borderRadius}px`,
+                                        backgroundColor: theme.palette.background.paperLight,
+                                        height: 'fit-content',
+                                        width: 'fit-content',
+                                    },
+                                }
+                            }}
                             title={
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, alignItems: 'center' }}>
+                                <Box
+                                    sx={{
+                                        m: 0,
+                                        p: 1,
+                                        px: 1.5,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: 0.5,
+                                        alignItems: 'center',
+                                        backgroundColor: theme.palette.background.default,
+                                        borderRadius: `${theme.shape.borderRadius - 2}px`,
+                                        height: '100%',
+                                        width: '100%',
+                                    }}
+                                >
                                     <Typography variant="body1">
                                         Storage Space
                                     </Typography>
@@ -428,7 +456,12 @@ function StorageView({ vaultName, canvasIdentifier, title, itemIds, totals, over
                             }
                         >
                             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                                {overrideTotals?.space?.used} / {overrideTotals?.space?.total}
+                                {
+                                    overrideTotals?.hideUsed ?
+                                        `${overrideTotals?.space?.total}`
+                                        :
+                                        `${overrideTotals?.space?.used} / ${overrideTotals?.space?.total}`
+                                }
                             </Typography>
                         </Tooltip>
                     }
