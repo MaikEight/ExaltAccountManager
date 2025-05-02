@@ -394,9 +394,6 @@ function StorageView({ vaultName, canvasIdentifier, title, itemIds, totals, over
                 }}
                 onClick={() => {
                     toggleStorage();
-                    console.log("itemIds", filteredItemIds);
-                    console.log("totals", totals);
-                    console.log("overrideTotals", overrideTotals);
                 }}
             >
                 <Box
