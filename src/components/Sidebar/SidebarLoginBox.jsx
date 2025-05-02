@@ -123,6 +123,15 @@ function SidebarLoginBox() {
                                 background: theme.palette.background.default,
                             }
                         }),
+
+                        ...(!isAuthenticated && !selected && {
+                            '@keyframes fadeInOut': {
+                                '0%': { opacity: 0.95 },
+                                '50%': { opacity: 1 },
+                                '100%': { opacity: 0.95 },
+                            },
+                            animation: 'fadeInOut 5s infinite',
+                        }),
                     }}
                 >
                     {
