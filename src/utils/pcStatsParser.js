@@ -277,6 +277,7 @@ const shortpcstats = {
  */
 export function parsePcStats(pcStats) {
     // Credits to Tadus for logic to read pcStats and knowing the order that each stat appears in.
+    // TODO: Missing spectral penitentiary
     function readInt32BE(str, idx) {
         var r = 0;
         for (var i = 0; i < 4; i++) {
