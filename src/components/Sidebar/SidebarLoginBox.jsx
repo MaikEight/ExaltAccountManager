@@ -48,6 +48,8 @@ function SidebarLoginBox() {
     useEffect(() => {
         const fetchImageData = async () => {
             if (!user) {
+                setGreetingText(null);
+                setProfileImage(null);
                 return;
             }
 
@@ -62,6 +64,7 @@ function SidebarLoginBox() {
             sessionStorage.setItem('profileImage', `data:image/jpeg;base64,${imageData}`);
         }
         fetchImageData();
+
         if (sessionStorage.getItem('greetingText')) {
             setGreetingText(sessionStorage.getItem('greetingText'));
         } else {
@@ -97,11 +100,15 @@ function SidebarLoginBox() {
                     }),
                 }}
                 onClick={
-                    !greetingText ?
+                    (isAuthenticated &&
+                        user &&
+                        greetingText)
+                        ?
+                        null
+                        :
                         () => {
                             navigate('/profile');
                         }
-                        : null
                 }
             >
                 <GradientBorderButtonInner
@@ -123,7 +130,6 @@ function SidebarLoginBox() {
                             user &&
                             greetingText
                             ?
-
                             <Box
                                 sx={{
                                     display: 'flex',
