@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import useItemCanvas from '../../hooks/useItemCanvas';
 import useVaultPeeker from '../../hooks/useVaultPeeker';
 
-const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filteredTotals = {}, override = {}, filter = [], saveCanvas }) => {
+const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filteredTotals = {}, override = {}, overrideTotals = null, filter = [], saveCanvas }) => {
     const canvasRef = useRef(null);
     const baseCanvasRef = useRef(null);
     const itemPositionsRef = useRef([]);
@@ -189,7 +189,8 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
                 // Store the position and ID of the item
                 itemPositionsRef.current.push({ uniqueId: `${id}-${index}`, id, x, y, width: itemBoxSize, height: itemBoxSize, name: it[0] });
 
-                if (override.fillNumbers !== false && totals[id]?.amount > (override.minTotal || 1)) {
+                const totalAmount = (Boolean(overrideTotals) ? overrideTotals[id]?.amount : totals[id]?.amount) || 0;
+                if (override.fillNumbers !== false && totalAmount > (override.minTotal || 1)) {
                     baseCt.save();
                     baseCt.fillStyle = 'white';
                     baseCt.strokeStyle = 'black';
@@ -197,7 +198,7 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
                     baseCt.shadowBlur = 3;
                     baseCt.font = '16px Roboto, bold';
                     baseCt.textAlign = 'right';
-                    const text = (totals[id].amount !== filteredTotals[id]?.amount && filteredTotals[id]?.amount !== undefined) ? `${filteredTotals[id].amount} (${totals[id]?.amount})` : `${totals[id].amount}`;
+                    const text = (totalAmount !== filteredTotals[id]?.amount && filteredTotals[id]?.amount !== undefined) ? `${filteredTotals[id].amount} (${totalAmount})` : `${totalAmount}`;
                     baseCt.strokeText(text, itemBoxSize - 3, itemBoxSize - 5);
                     baseCt.fillText(text, itemBoxSize - 3, itemBoxSize - 5);
                     baseCt.restore();
@@ -280,7 +281,12 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
                 x <= position.x + position.width &&
                 y >= position.y &&
                 y <= position.y + position.height
-            ) {
+            ) {                
+                if(position.id === -1) {
+                    // Skip the item if it has id -1
+                    return;
+                }
+
                 const offset = 3;
                 // Initialize popperY considering the space above the item
                 let popperY;
@@ -300,7 +306,8 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
                 } else {
                     // Position to the left of the item if clicked on the right half
                     popperX = position.x + rect.left - offset;
-                }
+                } 
+                
                 setPopperPosition({ top: popperY, left: popperX, isLeftHalf: isLeftHalf });
                 setSelectedItem({
                     itemId: position.id,

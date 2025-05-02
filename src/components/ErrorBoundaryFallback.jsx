@@ -50,10 +50,6 @@ function ErrorBoundaryFallback() {
                 mt: 2,
                 gap: 2,
             }}
-            innerSx={{
-                maxHeight: '100%',
-                overflowY: 'auto',
-            }}
         >
             <ComponentBox
                 title={"A critical error occurred"}

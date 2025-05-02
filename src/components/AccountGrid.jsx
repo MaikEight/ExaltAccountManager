@@ -46,7 +46,7 @@ function AccountGrid({ setShowAddNewAccount }) {
         return [
             { field: 'orderId', headerName: applySettingsToHeaderName('🆔 Order ID'), width: hideEmojis ? 75 : 95 },
             { field: 'group', headerName: applySettingsToHeaderName('👥 Group'), width: hideEmojis ? 65 : 80, renderCell: (params) => getGroupUI(params) },
-            { field: 'name', headerName: applySettingsToHeaderName('🧑‍💼 Accountname'), minWidth: 135, width: 230, flex: 0.25 },
+            { field: 'name', headerName: applySettingsToHeaderName('🗣️ Accountname'), minWidth: 135, width: 230, flex: 0.25 },
             { field: 'email', headerName: applySettingsToHeaderName('📧 Email'), minWidth: 150, flex: 0.35, renderCell: (params) => { return (params.value && params.row.isSteam) ? <SteamworksMailColumn params={params} /> : params.value } },
             { field: 'lastLogin', headerName: applySettingsToHeaderName('⏰ Last Login'), minWidth: 115, flex: 0.125, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
             { field: 'serverName', headerName: applySettingsToHeaderName('🌐 Server'), width: 125, renderCell: (params) => <ServerChip params={params} /> },

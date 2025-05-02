@@ -1,5 +1,5 @@
 
-import { Box, Checkbox, FormControlLabel, FormGroup, Paper, Popover, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, Popover, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -30,6 +30,8 @@ import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
 import { fetch } from '@tauri-apps/plugin-http';
 import { EAM_PRIVACY_GATE_API } from 'eam-commons-js/constants';
 import ServerSvg from '../components/Illustrations/ServerSvg';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
 function SettingsPage() {
     const userSettings = useUserSettings();
@@ -47,6 +49,10 @@ function SettingsPage() {
     const [openVaultPeekerAccountsPoppover, setOpenVaultPeekerAccountsPoppover] = useState(false);
     const [analyticsSettings, setAnalyticsSettings] = useState(null);
     const [analyticsRequestLoading, setAnalyticsRequestLoading] = useState(false);
+    const [dataDeletionRequestLoading, setDataDeletionRequestLoading] = useState(false);
+    const [anchorElDeletion, setAnchorElDeletion] = useState(null);
+    const openDeletionPopup = Boolean(anchorElDeletion);
+    const idDeletionPopup = open ? 'data-deletion-popover' : undefined;
 
     const { applySettingsToHeaderName } = useApplySettingsToHeaderName();
 
@@ -54,7 +60,7 @@ function SettingsPage() {
         return [
             { field: 'orderId', headerName: applySettingsToHeaderName('🆔 Order ID') },
             { field: 'group', headerName: applySettingsToHeaderName('👥 Group') },
-            { field: 'name', headerName: applySettingsToHeaderName('🧑‍💼 Accountname') },
+            { field: 'name', headerName: applySettingsToHeaderName('🗣️ Accountname') },
             { field: 'email', headerName: applySettingsToHeaderName('📧 Email') },
             { field: 'lastLogin', headerName: applySettingsToHeaderName('⏰ Last Login') },
             { field: 'serverName', headerName: applySettingsToHeaderName('🌐 Server') },
@@ -139,6 +145,51 @@ function SettingsPage() {
 
         return settings.general.theme === 'dark';
     };
+
+    const deleteAllUserData = async () => {
+        setDataDeletionRequestLoading(true);
+
+        const headers = {
+            "eam-application-id": "ExaltAccountManager",
+        };
+
+        if (isAuthenticated) {
+            headers.Authorization = `Bearer ${idToken}`;
+        }
+
+        const requestOptions = {
+            method: "DELETE",
+            headers: headers
+        };
+
+        try {
+            const hwid = localStorage.getItem("apiHwidHash");
+            const sessionId = sessionStorage.getItem("sessionId");
+            if (!hwid || !sessionId) {
+                console.error("No HWID or Session ID found");
+                showSnackbar("No HWID or Session ID found, can't request your data.", "error");
+                setDataDeletionRequestLoading(false);
+                return;
+            }
+            const url = `${EAM_PRIVACY_GATE_API}/user-data-request?clientIdHash=${hwid}&sessionId=${sessionId}`;
+            const response = await fetch(url, requestOptions);
+
+            if (!response.ok) {
+                console.error("Error deleting data:", response.statusText);
+                showSnackbar("Error deleting your data, please try again later.", "error");
+                setDataDeletionRequestLoading(false);
+                return;
+            }
+
+            showSnackbar("Your data has been deleted.", "success");
+        } catch (error) {
+            console.error(error);
+            showSnackbar("Error requesting your data, please try again later.", "error");
+        }
+        finally {
+            setDataDeletionRequestLoading(false);
+        }
+    }
 
     return (
         <Box sx={{ width: '100%', overflow: 'auto' }}>
@@ -446,7 +497,7 @@ function SettingsPage() {
                 }}
                 isCollapseable={true}
                 defaultCollapsed={true}
-                isLoading={analyticsRequestLoading}
+                isLoading={analyticsRequestLoading || dataDeletionRequestLoading}
             >
                 <Box
                     sx={{
@@ -525,19 +576,23 @@ function SettingsPage() {
                         }}
                     >
                         <StyledButton
-                            disabled={analyticsRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
+                            disabled={analyticsRequestLoading || dataDeletionRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
                             color="secondary"
                             startIcon={<VisibilityOutlinedIcon />}
                             onClick={async () => {
                                 setAnalyticsRequestLoading(true);
 
-                                const myHeaders = {
-                                    "Authorization": `Bearer ${idToken}`
+                                const headers = {
+                                    "eam-application-id": "ExaltAccountManager",
                                 };
+
+                                if (isAuthenticated) {
+                                    headers.Authorization = `Bearer ${idToken}`;
+                                }
 
                                 const requestOptions = {
                                     method: "GET",
-                                    headers: isAuthenticated ? myHeaders : {}
+                                    headers: headers
                                 };
 
                                 try {
@@ -584,14 +639,74 @@ function SettingsPage() {
                                     setAnalyticsRequestLoading(false);
                                 }
                             }}
+                            loading={analyticsRequestLoading}
+                        >
+                            Request your data
+                        </StyledButton>
+                        <StyledButton
+                            disabled={analyticsRequestLoading || dataDeletionRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
+                            color="secondary"
+                            startIcon={<DeleteOutlineOutlinedIcon />}
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: theme => theme.palette.error.main,
+                                    color: theme => theme.palette.error.contrastText,
+                                },
+                            }}
+                            onClick={(event) => setAnchorElDeletion(event.currentTarget)}
+                            loading={dataDeletionRequestLoading}
                         >
                             {
-                                !analyticsRequestLoading ?
-                                    "Request your data"
+                                !dataDeletionRequestLoading ?
+                                    "Delete all your data"
                                     :
                                     "Loading please wait..."
                             }
                         </StyledButton>
+                        <Popover
+                            id={idDeletionPopup}
+                            open={openDeletionPopup}
+                            anchorEl={anchorElDeletion}
+                            onClose={() => setAnchorElDeletion(null)}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                        >
+                            <Paper
+                                sx={{
+                                    p: 0.25,
+                                    backgroundColor: theme => theme.palette.background.paper,
+                                    borderRadius: `${theme.shape.borderRadius}px`,
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: 0,
+                                        backgroundColor: theme => theme.palette.background.default,
+                                        borderRadius: `${theme.shape.borderRadius - 2}px`,
+                                        p: 1.25
+                                    }}
+                                >
+                                    <Typography variant='subtitle1' sx={{ px: 1 }}>
+                                        Are you sure you want to delete all your data?
+                                    </Typography>
+                                    <Typography variant='body2' sx={{ mx: 'auto', mb: 1.5 }}>
+                                       This action cannot be undone.
+                                    </Typography>
+                                    <StyledButton
+                                        disabled={analyticsRequestLoading || dataDeletionRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
+                                        color="error"
+                                        startIcon={<DeleteForeverOutlinedIcon />}
+                                        onClick={deleteAllUserData}
+                                    >
+                                        Delete all your data
+                                    </StyledButton>
+                                </Box>
+                            </Paper>
+                        </Popover>
                     </Box>
                     <Typography variant="body2" color="text.secondary" >
                         If you want, you can choose to send only anonymized data or opt-out of the analytics that are collect entirely.

@@ -87,6 +87,15 @@ function TotalsView() {
                 totals={totalItems?.totals ? totalItems.totals : {}}
                 filteredTotalItems={filteredTotalItems}
                 saveCanvas={saveCanvas}
+                overrideItemImages={
+                    {
+                        '-1': {
+                            imgSrc: theme.palette.mode === "dark" ? 'realm/itemSlot.png' : 'realm/itemSlot_light.png',
+                            size: 50,
+                            padding: 0,
+                        }
+                    }
+                }
             />
             <img
                 src={theme.palette.mode === 'dark' ? '/logo/logo_inner_big.png' : '/logo/logo_inner_big_dark.png'}
