@@ -196,6 +196,7 @@ export const pcStatsDescriptionEnum = {
     ADVANCED_NEST: "Advanced Nest",
     THE_TAVERN: "The Tavern",
     QUEEN_BUNNY_CHAMBER: "Queen Bunny Chamber",
+    SPECTRAL_PENITENTIARY: "Spectral Penitentiary", // Note: Currently not parsed out of pcStats. We do not know the position of this stat.
     STAT_POTIONS_CONSUMED: "Stat Potions consumed",
 }
 
