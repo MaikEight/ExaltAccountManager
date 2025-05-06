@@ -256,7 +256,6 @@ function Character({ charIdentifier, character }) {
 
 export default Character;
 
-
 function FameAndFameBonusPopover({ character }) {
     if (!character)
         return null;
@@ -272,6 +271,7 @@ function FameAndFameBonusPopover({ character }) {
     console.log(character.processed_pc_stats);
     const theme = useTheme();
     const open = Boolean(anchorEl);
+
     const tunnelRat = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.SPIDER_DENS,
     pcStatsDescriptionEnum.SNAKE_PITS, pcStatsDescriptionEnum.UNDEAD_LAIRS, pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS,
     pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.ORYXS_CHAMBER,
@@ -304,10 +304,51 @@ function FameAndFameBonusPopover({ character }) {
     const epicBattles = [pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS, pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.SECLUDED_THICKET];
 
     const farOut = [pcStatsDescriptionEnum.MALOGIA, pcStatsDescriptionEnum.UNTARIS, pcStatsDescriptionEnum.FORAX, pcStatsDescriptionEnum.KATALUND];
+
+    const heroOfTheNexus = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FOREST_MAZES, pcStatsDescriptionEnum.SPIDER_DENS, pcStatsDescriptionEnum.SNAKE_PITS,
+    pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.THE_HIVE, pcStatsDescriptionEnum.ANCIENT_RUINS, pcStatsDescriptionEnum.MAGIC_WOODS,
+    pcStatsDescriptionEnum.SPRITE_WORLDS, pcStatsDescriptionEnum.CANDYLAND_HUNTING_GROUNDS, pcStatsDescriptionEnum.CAVE_OF_A_THOUSAND_TREASURES, pcStatsDescriptionEnum.UNDEAD_LAIRS,
+    pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE, pcStatsDescriptionEnum.TOXIC_SEWERS,
+    pcStatsDescriptionEnum.CURSED_LIBRARY, pcStatsDescriptionEnum.HAUNTED_CEMETERIES, pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.PARASITE_CHAMBERS, pcStatsDescriptionEnum.DAVY_JONES_LOCKERS,
+    pcStatsDescriptionEnum.MOUNTAIN_TEMPLE, pcStatsDescriptionEnum.THE_THIRD_DIMENSION, pcStatsDescriptionEnum.LAIR_OF_DRACONIS, pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS,
+    pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.ICE_CAVES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.FUNGAL_CAVERN,
+    pcStatsDescriptionEnum.CRYSTAL_CAVERN, pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.THE_SHATTERS, pcStatsDescriptionEnum.LOST_HALLS, pcStatsDescriptionEnum.CULTIST_HIDEOUT,
+    pcStatsDescriptionEnum.THE_VOID, pcStatsDescriptionEnum.SULFUROUS_WETLANDS, pcStatsDescriptionEnum.KOGBOLD_STEAMWORKS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.LAIR_OF_SHAITAN,
+    pcStatsDescriptionEnum.PUPPET_MASTERS_ENCORE, pcStatsDescriptionEnum.CNIDARIAN_REEF, pcStatsDescriptionEnum.SECLUDED_THICKET, pcStatsDescriptionEnum.HIGH_TECH_TERROR, pcStatsDescriptionEnum.ORYXS_CHAMBER, pcStatsDescriptionEnum.WINE_CELLAR,
+    pcStatsDescriptionEnum.ORYXS_SANCTUARY, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
+
+    const seasonsBeatins = [pcStatsDescriptionEnum.BELLADONNAS_GARDEN, pcStatsDescriptionEnum.ICE_TOMB, pcStatsDescriptionEnum.MAD_GOD_MAYHEMS, pcStatsDescriptionEnum.BATTLE_FOR_THE_NEXUS,
+    pcStatsDescriptionEnum.SANTA_WORKSHOP, pcStatsDescriptionEnum.THE_MACHINE, pcStatsDescriptionEnum.MALOGIA, pcStatsDescriptionEnum.UNTARIS, pcStatsDescriptionEnum.FORAX,
+    pcStatsDescriptionEnum.KATALUND, pcStatsDescriptionEnum.RAINBOW_ROAD, pcStatsDescriptionEnum.BEACHZONE];
+
+    const realmOfTheMadGod = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FOREST_MAZES, pcStatsDescriptionEnum.SPIDER_DENS, pcStatsDescriptionEnum.SNAKE_PITS,
+    pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.THE_HIVE, pcStatsDescriptionEnum.ANCIENT_RUINS, pcStatsDescriptionEnum.MAGIC_WOODS,
+    pcStatsDescriptionEnum.SPRITE_WORLDS, pcStatsDescriptionEnum.CANDYLAND_HUNTING_GROUNDS, pcStatsDescriptionEnum.CAVE_OF_A_THOUSAND_TREASURES, pcStatsDescriptionEnum.UNDEAD_LAIRS,
+    pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE, pcStatsDescriptionEnum.TOXIC_SEWERS,
+    pcStatsDescriptionEnum.CURSED_LIBRARY, pcStatsDescriptionEnum.HAUNTED_CEMETERIES, pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.PARASITE_CHAMBERS, pcStatsDescriptionEnum.DAVY_JONES_LOCKERS,
+    pcStatsDescriptionEnum.MOUNTAIN_TEMPLE, pcStatsDescriptionEnum.THE_THIRD_DIMENSION, pcStatsDescriptionEnum.LAIR_OF_DRACONIS, pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS,
+    pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.ICE_CAVES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.FUNGAL_CAVERN,
+    pcStatsDescriptionEnum.CRYSTAL_CAVERN, pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.THE_SHATTERS, pcStatsDescriptionEnum.LOST_HALLS, pcStatsDescriptionEnum.CULTIST_HIDEOUT,
+    pcStatsDescriptionEnum.THE_VOID, pcStatsDescriptionEnum.SULFUROUS_WETLANDS, pcStatsDescriptionEnum.KOGBOLD_STEAMWORKS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.LAIR_OF_SHAITAN,
+    pcStatsDescriptionEnum.PUPPET_MASTERS_ENCORE, pcStatsDescriptionEnum.CNIDARIAN_REEF, pcStatsDescriptionEnum.SECLUDED_THICKET, pcStatsDescriptionEnum.HIGH_TECH_TERROR, pcStatsDescriptionEnum.ORYXS_CHAMBER, pcStatsDescriptionEnum.WINE_CELLAR,
+    pcStatsDescriptionEnum.ORYXS_SANCTUARY, pcStatsDescriptionEnum.BELLADONNAS_GARDEN, pcStatsDescriptionEnum.ICE_TOMB, pcStatsDescriptionEnum.MAD_GOD_MAYHEMS, pcStatsDescriptionEnum.BATTLE_FOR_THE_NEXUS,
+    pcStatsDescriptionEnum.SANTA_WORKSHOP, pcStatsDescriptionEnum.THE_MACHINE, pcStatsDescriptionEnum.MALOGIA, pcStatsDescriptionEnum.UNTARIS, pcStatsDescriptionEnum.FORAX,
+    pcStatsDescriptionEnum.KATALUND, pcStatsDescriptionEnum.RAINBOW_ROAD, pcStatsDescriptionEnum.BEACHZONE, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
     
     const dungeonBonuses = {"Tunnel Rat": tunnelRat, "Explosive Journey": explosiveJourney, "Travel of the Decade": travelOfTheDecade, "First Steps": firstSteps,
     "King of the Mountains": kingOfTheMountains, "Conquerer of the Realm": conquererOfTheRealm, "Enemy of the Court": enemyOfTheCourt,
-    "Epic Battles": epicBattles, "Far Out": farOut};
+    "Epic Battles": epicBattles, "Far Out": farOut, "Hero of the Nexus": heroOfTheNexus, "Season's Beatins": seasonsBeatins, "Realm of the Mad God": realmOfTheMadGod};
+
+    const MAX_DUNGEONS_PER_ROW = 13;
+    
+    const determineNumRows = (arr) => {
+        const length = arr.length / MAX_DUNGEONS_PER_ROW;
+        const result = [];
+        for (let i = 0; i < length; i++) {
+            result.push(i);
+        }
+        return result;
+    }
     // todo: decide useMemo and its dependencies
     const FameAndFameBonusPopover = 
     <Tooltip title="">
@@ -363,28 +404,36 @@ function FameAndFameBonusPopover({ character }) {
                                             </Typography>
                                         </TableCell>
                                     </TableRow>
-                                    <TableRow key={`${dungeonBonusName}-Images-${character.char_id}`}>
-                                        {
-                                            dungeonBonuses[dungeonBonusName].map((dungeonName) => {
-                                                return (
-                                                    <TableCell>
-                                                        <Tooltip title={`${dungeonName}`}>
-                                                                <img src={`realm/dungeons/${dungeonName}.png`} alt={{dungeonName}} style={{ padding: '0', maxWidth: 48, maxHeight: 48 }} />
-                                                        </Tooltip>
-                                                    </TableCell>
-                                                );
-                                            })
-                                        }
-                                    </TableRow>
-                                    <TableRow key={`${dungeonBonusName}-${character.char_id}`}>
-                                        {
-                                            dungeonBonuses[dungeonBonusName].map((dungeonName) => {
-                                                return (
-                                                    <TableCell>{dungeonName === pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY ? <Tooltip title = "Unknown"><QuestionMarkIcon></QuestionMarkIcon></Tooltip> : character.processed_pc_stats.get(dungeonName) >= 1 ?  <Tooltip title = "Completed"><CheckIcon></CheckIcon></Tooltip> : <Tooltip title = "Not completed"><ClearIcon></ClearIcon></Tooltip>}</TableCell>
-                                                );
-                                            })
-                                        }
-                                    </TableRow>
+                                    {
+                                        determineNumRows(dungeonBonuses[dungeonBonusName]).map((value) => {
+                                            return (
+                                                <TableBody>
+                                                    <TableRow key={`${dungeonBonusName}-Images-${value}-${character.char_id}`}>
+                                                    {
+                                                        dungeonBonuses[dungeonBonusName].slice(value * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (value + 1)).map((dungeonName) => {
+                                                            return (
+                                                                <TableCell>
+                                                                    <Tooltip title={`${dungeonName}`}>
+                                                                            <img src={`realm/dungeons/${dungeonName}.png`} alt={{dungeonName}} style={{ padding: '0', maxWidth: 48, maxHeight: 48 }} />
+                                                                    </Tooltip>
+                                                                </TableCell>
+                                                            );
+                                                        })
+                                                    }
+                                                    </TableRow>
+                                                    <TableRow key={`${dungeonBonusName}-${value}-${character.char_id}`}>
+                                                    {
+                                                        dungeonBonuses[dungeonBonusName].slice(value * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (value + 1)).map((dungeonName) => {
+                                                            return (
+                                                                <TableCell>{dungeonName === pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY ? <Tooltip title = "Unknown"><QuestionMarkIcon></QuestionMarkIcon></Tooltip> : character.processed_pc_stats.get(dungeonName) >= 1 ?  <Tooltip title = "Completed"><CheckIcon></CheckIcon></Tooltip> : <Tooltip title = "Not completed"><ClearIcon></ClearIcon></Tooltip>}</TableCell>
+                                                            );
+                                                        })
+                                                    }
+                                                    </TableRow>
+                                                </TableBody>
+                                            )
+                                        })
+                                    }
                                 </TableBody>
                             );
                         })
