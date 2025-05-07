@@ -339,7 +339,7 @@ function FameAndFameBonusPopover({ character }) {
     "King of the Mountains": kingOfTheMountains, "Conquerer of the Realm": conquererOfTheRealm, "Enemy of the Court": enemyOfTheCourt,
     "Epic Battles": epicBattles, "Far Out": farOut, "Hero of the Nexus": heroOfTheNexus, "Season's Beatins": seasonsBeatins, "Realm of the Mad God": realmOfTheMadGod};
 
-    const MAX_DUNGEONS_PER_ROW = 13;
+    const MAX_DUNGEONS_PER_ROW = 10;
     
     const determineNumRows = (arr) => {
         const length = arr.length / MAX_DUNGEONS_PER_ROW;
@@ -405,12 +405,12 @@ function FameAndFameBonusPopover({ character }) {
                                         </TableCell>
                                     </TableRow>
                                     {
-                                        determineNumRows(dungeonBonuses[dungeonBonusName]).map((value) => {
+                                        determineNumRows(dungeonBonuses[dungeonBonusName]).map((rowNumber) => {
                                             return (
                                                 <TableBody>
-                                                    <TableRow key={`${dungeonBonusName}-Images-${value}-${character.char_id}`}>
+                                                    <TableRow key={`${dungeonBonusName}-Images-${rowNumber}-${character.char_id}`}>
                                                     {
-                                                        dungeonBonuses[dungeonBonusName].slice(value * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (value + 1)).map((dungeonName) => {
+                                                        dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
                                                             return (
                                                                 <TableCell>
                                                                     <Tooltip title={`${dungeonName}`}>
@@ -421,9 +421,9 @@ function FameAndFameBonusPopover({ character }) {
                                                         })
                                                     }
                                                     </TableRow>
-                                                    <TableRow key={`${dungeonBonusName}-${value}-${character.char_id}`}>
+                                                    <TableRow key={`${dungeonBonusName}-${rowNumber}-${character.char_id}`}>
                                                     {
-                                                        dungeonBonuses[dungeonBonusName].slice(value * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (value + 1)).map((dungeonName) => {
+                                                        dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
                                                             return (
                                                                 <TableCell>{dungeonName === pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY ? <Tooltip title = "Unknown"><QuestionMarkIcon></QuestionMarkIcon></Tooltip> : character.processed_pc_stats.get(dungeonName) >= 1 ?  <Tooltip title = "Completed"><CheckIcon></CheckIcon></Tooltip> : <Tooltip title = "Not completed"><ClearIcon></ClearIcon></Tooltip>}</TableCell>
                                                             );
