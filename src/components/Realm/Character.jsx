@@ -349,7 +349,7 @@ function FameAndFameBonusPopover({ character }) {
         }
         return result;
     }
-    // todo: decide useMemo and its dependencies
+
     const FameAndFameBonusPopover = 
     <Tooltip title="">
         <Box
