@@ -53,6 +53,11 @@ EAM is a project with the following components:
     
     **Enjoy coding 🥳** 
 
+## Recommendations
+
+- We use [GitMojis](https://gitmoji.dev/) for commit messages, if you don't wish to do so, that's fine but expect your commits to be squashed upon merge.
+- If possible use a GPG-Key to sign your commits.
+
 ## Bonus
 
 - Press **F12** when EAM is focused to open the Developer console.
