@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import itemsSlotTypeMap from "../../assets/slotmap";
 import items, { classes } from "../../assets/constants";
-import { drawItem, drawItemAsync } from "../../utils/realmItemDrawUtils";
+import { drawItemAsync } from "../../utils/realmItemDrawUtils";
 import { Box } from "@mui/material";
-import useItemCanvas from "../../hooks/useItemCanvas";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
-import { CACHE_PREFIX } from "../../constants";
+import useVaultPeekerPopper from "../../hooks/useVaultPeekerPopper";
 
 function EquipmentCanvas({ canvasIdentifier, character }) {
     const [itemData, setItemData] = useState([null, null, null, null]);
     const [slotMapData, setSlotMapData] = useState([null, null, null, null]);
     const [filteredItemIds, setFilteredItemIds] = useState([-1, -1, -1, -1]);
-    const [hoveredId, setHoveredId] = useState(-1);
-    const { hoveredConvasId, setHoveredConvasId } = useItemCanvas();
-    const { selectedItem, setPopperPosition, setSelectedItem, totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const [hoveredId, setHoveredId] = useState(-1);    
+    const { selectedItem, setSelectedItem, totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
+    const { setPopperPosition } = useVaultPeekerPopper();
+    
     const itemRef1 = useRef(null);
     const itemRef2 = useRef(null);
     const itemRef3 = useRef(null);
@@ -107,13 +107,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         return () => {
             removeItemFilterCallback(canvasIdentifier);
         };
-    }, [character]);
-
-    useEffect(() => {
-        if (hoveredConvasId !== canvasIdentifier) {
-            setHoveredId(-1);
-        }
-    }, [hoveredConvasId, canvasIdentifier]);
+    }, [character]);   
 
     useEffect(() => {
         const data = itemData.map((data) => {
@@ -152,7 +146,6 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                                 ...((hoveredId === index || (selectedItem?.itemId === data?.itemId && selectedItem?.uniqueId === uniqueId)) && { backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)' }),
                             }}
                             onMouseEnter={() => {
-                                setHoveredConvasId(canvasIdentifier);
                                 setHoveredId(index);
                             }}
                             onMouseLeave={() => setHoveredId(-1)}
