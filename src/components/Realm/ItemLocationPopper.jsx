@@ -6,14 +6,16 @@ import { useNavigate } from "react-router-dom";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import useAccounts from './../../hooks/useAccounts';
 import SingleItemCanvas from "./SingleItemCanvas";
+import useVaultPeeker from "../../hooks/useVaultPeeker";
 
-function ItemLocationPopper({ open, position, selectedItem, onClose }) {
+function ItemLocationPopper({ open, position, onClose }) {
     const [item, setItem] = useState(null);
     const [totals, setTotals] = useState(null);
     const theme = useTheme();
     const navigate = useNavigate();
     const { getAccountByEmail } = useAccounts();
     const [accounts, setAccounts] = useState([]);
+    const { selectedItem } = useVaultPeeker();
 
     useEffect(() => {
         if (!selectedItem) {
