@@ -1,7 +1,9 @@
 import { createContext, useEffect, useState } from "react";
 import useTasks from "../hooks/useTasks";
-import { checkForUpdates, updateGame, useHWID, useUserLogin, xmlToJson, storeCharList, useGroups, GroupUI } from 'eam-commons-js';
+import { checkForUpdates, updateGame, useHWID, useUserLogin, xmlToJson, storeCharList, useGroups, GroupUI, getRequestState } from 'eam-commons-js';
 import { invoke } from "@tauri-apps/api/core";
+
+const IS_DEBUG_MODE = true;
 
 const WorkerContext = createContext();
 
@@ -24,7 +26,7 @@ function WorkerContextProvider({ children }) {
     const [performingLogins, setPerformingLogins] = useState(false);
 
     const getGroup = (name) => {
-        if(!name) {
+        if (!name) {
             return null;
         }
         const eamGroup = groups.find(g => g.name === name);
@@ -46,9 +48,16 @@ function WorkerContextProvider({ children }) {
                 case 'IDLE':
                     break;
                 case 'UPDATE_GAME':
+                    if (IS_DEBUG_MODE) {
+                        console.log("Skipping update check in debug mode");
+                        setCurrentStep(2);
+                    }
                     await performGameUpdate();
                     break;
                 case 'LOGINS':
+                    if (IS_DEBUG_MODE) {
+                        console.log("Performing logins");
+                    }
                     await performLogins();
                     break;
                 default:
@@ -60,7 +69,12 @@ function WorkerContextProvider({ children }) {
     }, [currentStep]);
 
     useEffect(() => {
-        setCurrentStep(1);
+        if (IS_DEBUG_MODE) {
+            console.warn('DEBUG MODE ENABLED!');
+            console.warn('DEBUG MODE ENABLED!');
+            console.warn('DEBUG MODE ENABLED!');
+            console.warn('DEBUG MODE ENABLED!');
+        }        
 
         const fetchAccountsToPerformDailyLoginFor = async (report) => {
             if (!report || !report.emailsToProcess) {
@@ -89,12 +103,20 @@ function WorkerContextProvider({ children }) {
         const fetchData = async () => {
             const report = await getDailyLoginsReport();
             const _ = await fetchAccountsToPerformDailyLoginFor(report);
+            
+            if(IS_DEBUG_MODE) {
+                setCurrentStep(2);
+                return;
+            }
+
+            setCurrentStep(1);
         };
 
         fetchData();
     }, []);
 
     const startNextStep = () => {
+        console.log('Starting next step...', currentStep, STEPS[currentStep]);
         if (currentStep === STEPS.length) {
             return; // No more steps, we are done.
         }
@@ -108,8 +130,7 @@ function WorkerContextProvider({ children }) {
             type: 'Update check',
             startTime: new Date(),
         });
-        const updateNeeded = await checkForUpdates(true);
-        console.log('updateNeeded', updateNeeded);
+        const updateNeeded = IS_DEBUG_MODE ? false : await checkForUpdates(true);
         if (updateNeeded) {
             updateTask({
                 type: 'Update game',
@@ -117,7 +138,6 @@ function WorkerContextProvider({ children }) {
             });
             await updateGame();
         }
-        console.log('Update done');
 
         startNextStep();
     };
@@ -129,8 +149,10 @@ function WorkerContextProvider({ children }) {
         setPerformingLogins(true);
 
         console.log('Performing logins...');
+
         let accounts = accountsToPerformDailyLoginFor;
         let isPlus = isPlusUser;
+        
         while (accounts.length > 0) {
             accounts = accountsToPerformDailyLoginFor;
             if (accounts.length === 0) {
@@ -140,7 +162,9 @@ function WorkerContextProvider({ children }) {
             const account = accounts.shift();
             console.log('Processing account:', account.email);
             const result = await performLogin(account, isPlus);
-            isPlus = Boolean(result?.usedPlus);
+            if (result && !result.error) {
+                isPlus = Boolean(result?.usedPlus);
+            }
 
             if (isPlus) {
                 updateTask({
@@ -165,7 +189,7 @@ function WorkerContextProvider({ children }) {
                 return updatedAccountsDone;
             });
         }
-
+        console.log('All logins done!');
         setPerformingLogins(false);
     };
 
@@ -179,7 +203,7 @@ function WorkerContextProvider({ children }) {
             startTime: new Date(),
         });
         await new Promise((resolve) => setTimeout(resolve, 5_000));
-        return { usedPlus: true }; //HERE FOR TESTING
+        // return { usedPlus: true }; //HERE FOR TESTING
 
         // Webrequest account/verify
         // Webrequest char/list
@@ -188,24 +212,48 @@ function WorkerContextProvider({ children }) {
         // Wait 90 seconds
         // Terminate game
         // Return, so the next login can start
-
-        const result = await invoke('perform_daily_login', { idToken: idToken, email: account.email, hwid: hwid })
-            .catch(console.error);
-        console.log('result', result);
-        if (result?.charListxml) {
-            // Store charListxml in database
-            const charList = xmlToJson(result.charListXml);
-            await storeCharList(charList, account.email);
+        const _hwid = hwid !== null ? hwid : await invoke('get_device_unique_identifier').catch(console.error);
+        console.log('hwid', _hwid);
+        if(!_hwid) {
+            console.error('Failed to get hwid');
         }
-        if (result && !result.usedPlus) {
-            updateTask({
-                type: 'Login',
-                headline: `Login: ${account.email}`,
-                subheadline: 'Starting the game...',
-                startTime: new Date(),
-                endTime: new Date(Date.now() + 90_000),
-            });
-            await invoke('perform_daily_login_game_run', { email: account.email, accessToken: result.accessToken })
+        const result = _hwid ? 
+        await invoke('perform_daily_login', { idToken: idToken, email: account.email, hwid: _hwid })
+            .catch((e) => {
+                console.error('Error performing daily login:', e);
+                return { error: e };
+            })
+            : 
+            { error: 'Failed to get hwid' };
+        console.log('result', result);
+
+        if (result) {
+            if (result?.charListxml && !result.error) {
+                // Store charListxml in database
+                const charList = xmlToJson(result.charListXml);
+                await storeCharList(charList, account.email);
+                console.log("Stored charList");
+            }
+
+            const requestStatus = getRequestState(result.error ? result.error : result?.charListxml);
+            const acc = await invoke('get_eam_account_by_email', { accountEmail: account.email }).catch(console.error);
+            console.log("acc", acc);
+            if (acc) {
+                acc.state = requestStatus;
+                await invoke('insert_or_update_eam_account', { eamAccount: acc }).catch(console.error);
+            }
+
+            if (!result.error && !result.usedPlus) {
+                updateTask({
+                    type: 'Login',
+                    headline: `Login: ${account.email}`,
+                    subheadline: 'Starting the game...',
+                    startTime: new Date(),
+                    endTime: new Date(Date.now() + 90_000),
+                });
+                console.log("perform_daily_login_game_run Args: ", { email: account.email, accessToken: result.access_token });
+                await invoke('perform_daily_login_game_run', { email: account.email, accessToken: result.access_token }) 
+            }
         }
         return result;
     };
