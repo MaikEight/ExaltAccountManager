@@ -3,12 +3,14 @@ import useVaultPeeker from "../../hooks/useVaultPeeker";
 import ComponentBox from "../ComponentBox";
 import ItemCanvas from "../Realm/ItemCanvas";
 import items from "../../assets/constants";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import VaultPeekerLogo from "../VaultPeekerLogo";
 import useItemCanvas from "../../hooks/useItemCanvas";
 import useUserSettings from "../../hooks/useUserSettings";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import { generateItemCanvasImage } from "../../utils/itemCanvasUtils";
+import { use } from "react";
 
 function TotalsView() {
     const [filteredItems, setFilteredItems] = useState([]);
@@ -53,10 +55,10 @@ function TotalsView() {
                         </Typography>
                         <Tooltip title="Export totals as image">
                             <IconButton
-                                onClick={(event) => { 
+                                onClick={(event) => {
                                     event.stopPropagation();
-                                    setSaveCanvas((prev) => prev + 1); 
-                                }}                                
+                                    setSaveCanvas((prev) => prev + 1);
+                                }}
                             >
                                 <FileUploadOutlinedIcon />
                             </IconButton>
