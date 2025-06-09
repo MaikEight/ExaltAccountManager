@@ -1,12 +1,12 @@
 [package]
 name = "eam_commons"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wmi = "0.17.1"
+wmi = "0.17.2"
 sha1 = "0.10.6"
 base64 = "0.22.1"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
@@ -17,16 +17,16 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 lazy_static = "1.5.0"
 libsqlite3-sys = { version = "0.33.0", features = ["bundled"] }
-uuid = { version = "1.16.0", features = ["v4"] }
-chrono = { version = "0.4.40", features = ["serde"] }
+uuid = { version = "1.17.0", features = ["v4"] }
+chrono = { version = "0.4.41", features = ["serde"] }
 windows-service = "0.8.0"
 dirs = "6.0.0"
 md5 = "0.7.0"
-reqwest = { version = "0.12.15", features = ["blocking", "json"] }
+reqwest = { version = "0.12.19", features = ["blocking", "json"] }
 futures = "0.3.31"
-flate2 = "1.1.1"
-tokio = { version = "1.44.2", features = ["full"] }
+flate2 = "1.1.2"
+tokio = { version = "1.45.1", features = ["full"] }
 roxmltree = "0.20.0"
-zip = "2.6.1"
-thiserror = "1.0.69"
+zip = "4.0.0"
+thiserror = "2.0.12"
 log = "0.4"
