@@ -2,17 +2,17 @@ import { Box } from "@mui/material";
 import { VaultPeekerContextProvider } from "../contexts/VaultPeekerContext";
 import TotalsView from "../components/VaultPeeker/TotalsView";
 import AccountsView from "../components/VaultPeeker/AccountsView";
-import { ItemCanvasContextProvider } from "../contexts/ItemCanvasContext";
 import ItemFilterBox from "../components/VaultPeeker/ItemFilterBox";
 import InverseBorderRadiusSpacer from "../components/InverseBorderRadiusSpacer";
+import { VaultPeekerPopperProvider } from "../contexts/VaultPeekerPopperContext";
 
 function VaultPeekerPage() {
-
     return (
         <VaultPeekerContextProvider>
-            {
-                window.portraitReady &&
-                <ItemCanvasContextProvider>
+            <VaultPeekerPopperProvider>
+                {
+                    window.portraitReady &&
+                    // <ItemCanvasContextProvider>
                     <Box
                         sx={{
                             width: '100%',
@@ -59,8 +59,9 @@ function VaultPeekerPage() {
                             </Box>
                         </Box>
                     </Box>
-                </ItemCanvasContextProvider>
-            }
+                    // </ItemCanvasContextProvider>
+                }
+            </VaultPeekerPopperProvider>
         </VaultPeekerContextProvider>
     );
 }
