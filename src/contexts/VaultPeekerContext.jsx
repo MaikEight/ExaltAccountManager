@@ -1,10 +1,11 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useAccounts from "../hooks/useAccounts";
 import { invoke } from "@tauri-apps/api/core";
 import { extractRealmItemsFromCharListDatasets, formatAccountDataFromCharListDatasets } from "../utils/realmItemUtils";
 import ItemLocationPopper from "../components/Realm/ItemLocationPopper";
 import items from "../assets/constants";
 import { useGroups } from 'eam-commons-js';
+import VaultPeekerPopperContext from "./VaultPeekerPopperContext";
 
 const VaultPeekerContext = createContext();
 
@@ -91,7 +92,6 @@ const defaultFilter = {
 
 function VaultPeekerContextProvider({ children }) {
     const [selectedItem, setSelectedItem] = useState(null);
-    const [popperPosition, setPopperPosition] = useState(null);
     const [totalItems, setTotalItems] = useState([]);
     const [filteredTotalItems, setFilteredTotalItems] = useState([]);
     const [accountsData, setAccountsData] = useState([]);
@@ -101,7 +101,7 @@ function VaultPeekerContextProvider({ children }) {
     const { groups } = useGroups();
     const { accounts, getAccountByEmail } = useAccounts();
 
-    const refreshItemData = async () => {
+    const refreshItemData = useCallback(async () => {
         const res = await invoke('get_latest_char_list_dataset_for_each_account');
         const items = extractRealmItemsFromCharListDatasets(res);
         setTotalItems(items);
@@ -116,13 +116,13 @@ function VaultPeekerContextProvider({ children }) {
                     ...acc,
                     name: eamAcc?.name,
                     group: group,
-                }
+                };
             });
         }
         setAccountsData(accs);
-    };
+    }, [getAccountByEmail, groups]);
 
-    const applyFilter = (itemIds) => {
+    const applyFilter = useCallback((itemIds) => {
         let filteredItemIds = itemIds;
 
         // TEXT SEARCH FILTER
@@ -301,11 +301,40 @@ function VaultPeekerContextProvider({ children }) {
         }
 
         return filteredItemIds;
-    };
+    }, [filter, accountsData]);
+
+    const addItemFilterCallback = useCallback((id, callback, items) => {
+        setFilterItemsCallbacks((prev) => ({
+            ...prev,
+            [id]: { callback, items },
+        }));
+    }, []);
+
+    const removeItemFilterCallback = useCallback((id) => {
+        setFilterItemsCallbacks((prev) => {
+            const newCallbacks = { ...prev };
+            delete newCallbacks[id];
+            return newCallbacks;
+        });
+    }, []);
+
+    const changeFilter = useCallback((filterType, value) => {
+        setFilter((prev) => ({
+            ...prev,
+            [filterType]: value,
+        }));
+    }, []);
+
+    const resetFilterType = useCallback((filterType) => {
+        setFilter((prev) => ({
+            ...prev,
+            [filterType]: defaultFilter[filterType],
+        }));
+    }, []);
 
     useEffect(() => {
         refreshItemData();
-    }, [accounts]);
+    }, [accounts, refreshItemData]);
 
     useEffect(() => {
         Object.keys(filterItemsCallbacks).forEach((id) => {
@@ -314,79 +343,45 @@ function VaultPeekerContextProvider({ children }) {
                 callback(applyFilter(items));
             }
         });
-    }, [filter, totalItems]);
+    }, [filter, totalItems, applyFilter, filterItemsCallbacks]);
 
-    const addItemFilterCallback = (id, callback, items) => {
-        setFilterItemsCallbacks((prev) => {
-            return {
-                ...prev,
-                [id]: { callback: callback, items: items },
-            };
-        });
-    };
-
-    const removeItemFilterCallback = (id) => {
-        setFilterItemsCallbacks((prev) => {
-            const newCallbacks = { ...prev };
-            delete newCallbacks[id];
-            return newCallbacks;
-        });
-    };
-
-    const changeFilter = (filterType, value) => {
-        setFilter((prev) => {
-            return {
-                ...prev,
-                [filterType]: value,
-            };
-        });
-    };
-
-    const resetFilterType = (filterType) => {
-        setFilter((prev) => {
-            return {
-                ...prev,
-                [filterType]: defaultFilter[filterType],
-            };
-        });
-    };
-
-    const contextValue = {
+    const contextValue = useMemo(() => ({
         totalItems,
         filteredTotalItems,
         accountsData,
         getAccountByEmail,
-        popperPosition,
         filter,
 
-        setPopperPosition,
         selectedItem,
         setSelectedItem,
+        
         changeFilter,
         resetFilterType,
-
         addItemFilterCallback,
         removeItemFilterCallback,
 
         feedPowerFilterOptions,
         slotMapFilter,
-    };
+    }), [
+        totalItems,
+        filteredTotalItems,
+        accountsData,
+        getAccountByEmail,
+        filter,
+        selectedItem,
+        changeFilter,
+        resetFilterType,
+        addItemFilterCallback,
+        removeItemFilterCallback,
+    ]);    
 
     return (
         <VaultPeekerContext.Provider value={contextValue}>
-            {children}
-            <ItemLocationPopper
-                open={Boolean(selectedItem)}
-                position={popperPosition}
-                selectedItem={selectedItem}
-                onClose={() => {
-                    setSelectedItem(null);
-                    setPopperPosition(null);
-                }}
-            />
+                {children}                
         </VaultPeekerContext.Provider>
     );
 }
+
 
 export default VaultPeekerContext;
 export { VaultPeekerContextProvider };
