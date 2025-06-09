@@ -83,7 +83,7 @@ diesel::table! {
         char_class -> Nullable<Integer>,
         seasonal -> Nullable<Bool>,
         level -> Nullable<Integer>,
-        exp -> Nullable<Integer>,
+        exp -> Nullable<BigInt>,
         current_fame -> Nullable<Integer>,
         equipment -> Nullable<Text>,
         equip_qs -> Nullable<Text>,
