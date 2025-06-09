@@ -79,9 +79,9 @@
 
 Exalt Account Manager (EAM) is an efficient toolset designed to streamline multiple account management for the popular online game "Realm of the Mad God" (ROTMG). EAM enhances the original game launcher with a user-friendly interface and a wide array of features.
 
-Developed by a passionate ROTMG enthusiast, EAM offers a seamless multi-account experience, enabling quick Exalt launches, Auto Daily Login for chosen accounts, and secure account data storage using Windows Data Protection API. With EAM, you can import accounts from various formats, create login tokens, and leverage Captcha-solving support.
+Developed by a passionate ROTMG enthusiast, EAM offers a seamless multi-account experience, enabling quick Exalt launches, Auto Daily Login for chosen accounts, and secure account data storage using Windows Data Protection API.
 
-EAM also includes quality-of-life improvements such as a GUI log, visual statistics, Vault Peek feature, and Ping Checker. Built-in Help and Troubleshooting ensure that support and resources are readily available. The developer, Maik8, is always ready to assist via Discord or email.
+EAM also includes quality-of-life improvements such as visual statistics, Vault Peek and more. Built-in Help and Troubleshooting ensure that support and resources are readily available. The developer, Maik8, is always ready to assist via Discord or email.
 
 As EAM continues to evolve, your feedback and suggestions are invaluable. Join the active community of ROTMG players and EAM users to shape the future of the project. Elevate your ROTMG gaming experience with the power and convenience of Exalt Account Manager today!
 
@@ -139,7 +139,7 @@ Purchases:
 - The domain exalt-account-manager.eu.
 - The domain ExaltAccountManager.com.
 - A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
-- 2x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
+- 3x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
 - Webhosting for the [website](https://ExaltAccountManager.com).
 
 <b>Any help is greatly appreciated</b> 🍻
@@ -151,7 +151,6 @@ Purchases:
     alt="Ko-Fi"
   />
 </a>
-
 <a href="https://www.buymeacoffee.com/Maik8">
   <img
     height='48'
