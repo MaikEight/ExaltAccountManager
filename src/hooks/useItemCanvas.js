@@ -1,8 +1,25 @@
-import { useContext } from "react";
-import ItemCanvasContext from "../contexts/ItemCanvasContext";
+import { useState } from "react";
+
 
 function useItemCanvas() {
-    return useContext(ItemCanvasContext);
+    const [hoveredConvasDataState, setHoveredConvasDataState] = useState(null);
+
+    const setHoveredConvasData = (data) => {
+        if (!data && hoveredConvasDataState) {
+            hoveredConvasDataState.callback?.();
+            setHoveredConvasDataState(null);
+            return;
+        }
+
+        if (data?.canvasId === hoveredConvasDataState?.canvasId) {
+            return;
+        }
+
+        hoveredConvasDataState?.callback?.();
+        setHoveredConvasDataState(data);
+    };
+
+    return { setHoveredConvasData };
 }
 
 export default useItemCanvas;
