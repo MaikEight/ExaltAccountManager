@@ -1,5 +1,5 @@
-import { Box, Chip, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Box, Chip, Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
 import ItemCanvas from "./ItemCanvas";
@@ -8,6 +8,11 @@ import EquipmentCanvas from "./EquipmentCanvas";
 import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import { useColorList } from 'eam-commons-js';
+import PaddedTableCell from "../AccountDetails/PaddedTableCell";
+import { pcStatsDescriptionEnum } from "../../utils/pcStatsParser";
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 function emptyItemOverride(darkMode) {
     return {
@@ -208,24 +213,7 @@ function Character({ charIdentifier, character }) {
                         alignItems: 'end',
                     }}
                 >
-                    <Tooltip title="Fame">
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 0.5,
-                            }}
-                        >
-
-                            {
-                                character.fame >= 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
-                                <img src="/realm/fame.png" alt="Fame" height={20} />
-                            }
-                            <Typography variant="body1">{character.fame}</Typography>
-                        </Box>
-                    </Tooltip>
+                    <FameAndFameBonusPopover character={character}/>
                     <Tooltip title="Level">
                         <Typography variant="h6" color={character.level === 20 ? theme.palette.warning.main : theme.palette.text.primary}>lvl {character.level}</Typography>
                     </Tooltip>
@@ -267,6 +255,197 @@ function Character({ charIdentifier, character }) {
 }
 
 export default Character;
+
+function FameAndFameBonusPopover({ character }) {
+    if (!character)
+        return null;
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    }
+    const handleClose = () => {
+        setAnchorEl(null);
+      };
+    console.log(character.processed_pc_stats);
+    const theme = useTheme();
+    const open = Boolean(anchorEl);
+
+    const tunnelRat = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.SPIDER_DENS,
+    pcStatsDescriptionEnum.SNAKE_PITS, pcStatsDescriptionEnum.UNDEAD_LAIRS, pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS,
+    pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.ORYXS_CHAMBER,
+    pcStatsDescriptionEnum.WINE_CELLAR];
+
+    const explosiveJourney = [pcStatsDescriptionEnum.DAVY_JONES_LOCKERS, pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.CANDYLAND_HUNTING_GROUNDS, pcStatsDescriptionEnum.HAUNTED_CEMETERIES,
+    pcStatsDescriptionEnum.CAVE_OF_A_THOUSAND_TREASURES, pcStatsDescriptionEnum.LAIR_OF_DRACONIS, pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS,
+    pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.THE_SHATTERS, pcStatsDescriptionEnum.LAIR_OF_SHAITAN, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE,
+    pcStatsDescriptionEnum.ICE_CAVES]
+
+    const travelOfTheDecade = [pcStatsDescriptionEnum.PUPPET_MASTERS_ENCORE, pcStatsDescriptionEnum.THE_HIVE, pcStatsDescriptionEnum.TOXIC_SEWERS, pcStatsDescriptionEnum.MOUNTAIN_TEMPLE,
+    pcStatsDescriptionEnum.THE_THIRD_DIMENSION, pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.LOST_HALLS, pcStatsDescriptionEnum.CULTIST_HIDEOUT, pcStatsDescriptionEnum.THE_VOID,
+    pcStatsDescriptionEnum.CNIDARIAN_REEF, pcStatsDescriptionEnum.PARASITE_CHAMBERS, pcStatsDescriptionEnum.MAGIC_WOODS, pcStatsDescriptionEnum.SECLUDED_THICKET, pcStatsDescriptionEnum.CURSED_LIBRARY,
+    pcStatsDescriptionEnum.ORYXS_SANCTUARY, pcStatsDescriptionEnum.ANCIENT_RUINS, pcStatsDescriptionEnum.HIGH_TECH_TERROR, pcStatsDescriptionEnum.SULFUROUS_WETLANDS, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
+
+    const firstSteps = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FOREST_MAZES, pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.SPIDER_DENS,
+    pcStatsDescriptionEnum.THE_HIVE];
+
+    const kingOfTheMountains = [pcStatsDescriptionEnum.SNAKE_PITS, pcStatsDescriptionEnum.SPRITE_WORLDS, pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.TOXIC_SEWERS, 
+    pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.MAGIC_WOODS, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE, pcStatsDescriptionEnum.HAUNTED_CEMETERIES, pcStatsDescriptionEnum.CURSED_LIBRARY,
+    pcStatsDescriptionEnum.ANCIENT_RUINS, pcStatsDescriptionEnum.SULFUROUS_WETLANDS, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
+
+    const conquererOfTheRealm = [pcStatsDescriptionEnum.DAVY_JONES_LOCKERS, pcStatsDescriptionEnum.ICE_CAVES, pcStatsDescriptionEnum.LAIR_OF_DRACONIS, pcStatsDescriptionEnum.MOUNTAIN_TEMPLE,
+    pcStatsDescriptionEnum.THE_THIRD_DIMENSION, pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.THE_SHATTERS,
+    pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.FUNGAL_CAVERN, pcStatsDescriptionEnum.CRYSTAL_CAVERN, pcStatsDescriptionEnum.LOST_HALLS, pcStatsDescriptionEnum.KOGBOLD_STEAMWORKS];
+
+    const enemyOfTheCourt = [pcStatsDescriptionEnum.LAIR_OF_SHAITAN, pcStatsDescriptionEnum.PUPPET_MASTERS_ENCORE, pcStatsDescriptionEnum.CNIDARIAN_REEF, pcStatsDescriptionEnum.SECLUDED_THICKET,
+    pcStatsDescriptionEnum.HIGH_TECH_TERROR];
+
+    const epicBattles = [pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS, pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.SECLUDED_THICKET];
+
+    const farOut = [pcStatsDescriptionEnum.MALOGIA, pcStatsDescriptionEnum.UNTARIS, pcStatsDescriptionEnum.FORAX, pcStatsDescriptionEnum.KATALUND];
+
+    const heroOfTheNexus = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FOREST_MAZES, pcStatsDescriptionEnum.SPIDER_DENS, pcStatsDescriptionEnum.SNAKE_PITS,
+    pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.THE_HIVE, pcStatsDescriptionEnum.ANCIENT_RUINS, pcStatsDescriptionEnum.MAGIC_WOODS,
+    pcStatsDescriptionEnum.SPRITE_WORLDS, pcStatsDescriptionEnum.CANDYLAND_HUNTING_GROUNDS, pcStatsDescriptionEnum.CAVE_OF_A_THOUSAND_TREASURES, pcStatsDescriptionEnum.UNDEAD_LAIRS,
+    pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE, pcStatsDescriptionEnum.TOXIC_SEWERS,
+    pcStatsDescriptionEnum.CURSED_LIBRARY, pcStatsDescriptionEnum.HAUNTED_CEMETERIES, pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.PARASITE_CHAMBERS, pcStatsDescriptionEnum.DAVY_JONES_LOCKERS,
+    pcStatsDescriptionEnum.MOUNTAIN_TEMPLE, pcStatsDescriptionEnum.THE_THIRD_DIMENSION, pcStatsDescriptionEnum.LAIR_OF_DRACONIS, pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS,
+    pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.ICE_CAVES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.FUNGAL_CAVERN,
+    pcStatsDescriptionEnum.CRYSTAL_CAVERN, pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.THE_SHATTERS, pcStatsDescriptionEnum.LOST_HALLS, pcStatsDescriptionEnum.CULTIST_HIDEOUT,
+    pcStatsDescriptionEnum.THE_VOID, pcStatsDescriptionEnum.SULFUROUS_WETLANDS, pcStatsDescriptionEnum.KOGBOLD_STEAMWORKS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.LAIR_OF_SHAITAN,
+    pcStatsDescriptionEnum.PUPPET_MASTERS_ENCORE, pcStatsDescriptionEnum.CNIDARIAN_REEF, pcStatsDescriptionEnum.SECLUDED_THICKET, pcStatsDescriptionEnum.HIGH_TECH_TERROR, pcStatsDescriptionEnum.ORYXS_CHAMBER, pcStatsDescriptionEnum.WINE_CELLAR,
+    pcStatsDescriptionEnum.ORYXS_SANCTUARY, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
+
+    const seasonsBeatins = [pcStatsDescriptionEnum.BELLADONNAS_GARDEN, pcStatsDescriptionEnum.ICE_TOMB, pcStatsDescriptionEnum.MAD_GOD_MAYHEMS, pcStatsDescriptionEnum.BATTLE_FOR_THE_NEXUS,
+    pcStatsDescriptionEnum.SANTA_WORKSHOP, pcStatsDescriptionEnum.THE_MACHINE, pcStatsDescriptionEnum.MALOGIA, pcStatsDescriptionEnum.UNTARIS, pcStatsDescriptionEnum.FORAX,
+    pcStatsDescriptionEnum.KATALUND, pcStatsDescriptionEnum.RAINBOW_ROAD, pcStatsDescriptionEnum.BEACHZONE];
+
+    const realmOfTheMadGod = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FOREST_MAZES, pcStatsDescriptionEnum.SPIDER_DENS, pcStatsDescriptionEnum.SNAKE_PITS,
+    pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.THE_HIVE, pcStatsDescriptionEnum.ANCIENT_RUINS, pcStatsDescriptionEnum.MAGIC_WOODS,
+    pcStatsDescriptionEnum.SPRITE_WORLDS, pcStatsDescriptionEnum.CANDYLAND_HUNTING_GROUNDS, pcStatsDescriptionEnum.CAVE_OF_A_THOUSAND_TREASURES, pcStatsDescriptionEnum.UNDEAD_LAIRS,
+    pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE, pcStatsDescriptionEnum.TOXIC_SEWERS,
+    pcStatsDescriptionEnum.CURSED_LIBRARY, pcStatsDescriptionEnum.HAUNTED_CEMETERIES, pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.PARASITE_CHAMBERS, pcStatsDescriptionEnum.DAVY_JONES_LOCKERS,
+    pcStatsDescriptionEnum.MOUNTAIN_TEMPLE, pcStatsDescriptionEnum.THE_THIRD_DIMENSION, pcStatsDescriptionEnum.LAIR_OF_DRACONIS, pcStatsDescriptionEnum.DEADWATER_DOCKS, pcStatsDescriptionEnum.WOODLAND_LABYRINTHS,
+    pcStatsDescriptionEnum.THE_CRAWLING_DEPTHS, pcStatsDescriptionEnum.OCEAN_TRENCHES, pcStatsDescriptionEnum.ICE_CAVES, pcStatsDescriptionEnum.TOMB_OF_THE_ANCIENTS, pcStatsDescriptionEnum.FUNGAL_CAVERN,
+    pcStatsDescriptionEnum.CRYSTAL_CAVERN, pcStatsDescriptionEnum.THE_NEST, pcStatsDescriptionEnum.THE_SHATTERS, pcStatsDescriptionEnum.LOST_HALLS, pcStatsDescriptionEnum.CULTIST_HIDEOUT,
+    pcStatsDescriptionEnum.THE_VOID, pcStatsDescriptionEnum.SULFUROUS_WETLANDS, pcStatsDescriptionEnum.KOGBOLD_STEAMWORKS, pcStatsDescriptionEnum.ORYXS_CASTLE, pcStatsDescriptionEnum.LAIR_OF_SHAITAN,
+    pcStatsDescriptionEnum.PUPPET_MASTERS_ENCORE, pcStatsDescriptionEnum.CNIDARIAN_REEF, pcStatsDescriptionEnum.SECLUDED_THICKET, pcStatsDescriptionEnum.HIGH_TECH_TERROR, pcStatsDescriptionEnum.ORYXS_CHAMBER, pcStatsDescriptionEnum.WINE_CELLAR,
+    pcStatsDescriptionEnum.ORYXS_SANCTUARY, pcStatsDescriptionEnum.BELLADONNAS_GARDEN, pcStatsDescriptionEnum.ICE_TOMB, pcStatsDescriptionEnum.MAD_GOD_MAYHEMS, pcStatsDescriptionEnum.BATTLE_FOR_THE_NEXUS,
+    pcStatsDescriptionEnum.SANTA_WORKSHOP, pcStatsDescriptionEnum.THE_MACHINE, pcStatsDescriptionEnum.MALOGIA, pcStatsDescriptionEnum.UNTARIS, pcStatsDescriptionEnum.FORAX,
+    pcStatsDescriptionEnum.KATALUND, pcStatsDescriptionEnum.RAINBOW_ROAD, pcStatsDescriptionEnum.BEACHZONE, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
+    
+    const dungeonBonuses = {"Tunnel Rat": tunnelRat, "Explosive Journey": explosiveJourney, "Travel of the Decade": travelOfTheDecade, "First Steps": firstSteps,
+    "King of the Mountains": kingOfTheMountains, "Conquerer of the Realm": conquererOfTheRealm, "Enemy of the Court": enemyOfTheCourt,
+    "Epic Battles": epicBattles, "Far Out": farOut, "Hero of the Nexus": heroOfTheNexus, "Season's Beatins": seasonsBeatins, "Realm of the Mad God": realmOfTheMadGod};
+
+    const MAX_DUNGEONS_PER_ROW = 10;
+    
+    const determineNumRows = (arr) => {
+        const length = arr.length / MAX_DUNGEONS_PER_ROW;
+        const result = [];
+        for (let i = 0; i < length; i++) {
+            result.push(i);
+        }
+        return result;
+    }
+
+    const FameAndFameBonusPopover = 
+    <Tooltip title="">
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 0.5,
+                ":hover": {
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)'
+                }
+            }}
+            onClick={handleClick}
+        >
+                {
+                    character.fame >= 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
+                    <img src="/realm/fame.png" alt="Fame" height={20} />
+                }
+                <Typography variant="body1">{character.fame}</Typography>
+        <Popover
+        id={character.char_id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+        }}>
+            <Box sx={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
+                <TableContainer>
+                    <Table>
+                    <TableHead>
+                        <TableRow>
+                            <PaddedTableCell sx={{ textAlign: 'start', borderBottom: 'none', py: 0 }} colSpan={3}>
+                                <Typography variant="h5" fontWeight={600}>
+                                    Dungeon Bonuses
+                                </Typography>
+                            </PaddedTableCell>
+                            <PaddedTableCell sx={{ textAlign: 'center', borderBottom: 'none', py: 0 }}>
+                            </PaddedTableCell>
+                        </TableRow>
+                    </TableHead>
+                    {
+                        Object.keys(dungeonBonuses).map((dungeonBonusName) => {
+                            return (
+                                <TableBody>
+                                    <TableRow key={`${dungeonBonusName}-Header-${character.char_id}`}>
+                                        <TableCell colSpan={dungeonBonuses[dungeonBonusName].length}>
+                                            <Typography color={dungeonBonuses[dungeonBonusName].every((dungeonName) => {return character.processed_pc_stats.get(dungeonName) >= 1}) ? theme.palette.warning.main : theme.palette.text.primary} variant="h6" fontWeight={300}>
+                                                {dungeonBonusName}
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                    {
+                                        determineNumRows(dungeonBonuses[dungeonBonusName]).map((rowNumber) => {
+                                            return (
+                                                <TableBody>
+                                                    <TableRow key={`${dungeonBonusName}-Images-${rowNumber}-${character.char_id}`}>
+                                                    {
+                                                        dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
+                                                            return (
+                                                                <TableCell>
+                                                                    <Tooltip title={`${dungeonName}`}>
+                                                                            <img src={`realm/dungeons/${dungeonName}.png`} alt={{dungeonName}} style={{ padding: '0', maxWidth: 48, maxHeight: 48 }} />
+                                                                    </Tooltip>
+                                                                </TableCell>
+                                                            );
+                                                        })
+                                                    }
+                                                    </TableRow>
+                                                    <TableRow key={`${dungeonBonusName}-${rowNumber}-${character.char_id}`}>
+                                                    {
+                                                        dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
+                                                            return (
+                                                                <TableCell>{dungeonName === pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY ? <Tooltip title = "Unknown"><QuestionMarkIcon></QuestionMarkIcon></Tooltip> : character.processed_pc_stats.get(dungeonName) >= 1 ?  <Tooltip title = "Completed"><CheckIcon></CheckIcon></Tooltip> : <Tooltip title = "Not completed"><ClearIcon></ClearIcon></Tooltip>}</TableCell>
+                                                            );
+                                                        })
+                                                    }
+                                                    </TableRow>
+                                                </TableBody>
+                                            )
+                                        })
+                                    }
+                                </TableBody>
+                            );
+                        })
+                    }
+                    </Table>
+                </TableContainer>
+            </Box>
+        </Popover>
+        </Box>
+    </Tooltip>
+    return FameAndFameBonusPopover;
+}
 
 function CharacterStats({ character, charClass }) {
     const theme = useTheme();
