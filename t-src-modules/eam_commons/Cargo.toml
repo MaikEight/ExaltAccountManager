@@ -1,6 +1,8 @@
 [package]
 name = "eam_commons"
 version = "0.1.6"
+homepage = "https://exaltaccountmanager.com"
+publish = false
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -10,9 +12,9 @@ wmi = "0.17.2"
 sha1 = "0.10.6"
 base64 = "0.22.1"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
-diesel = { version = "2.2.10", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel = { version = "2.2.11", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.2.0"
-diesel_derives = "2.2.5"
+diesel_derives = "2.2.6"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 lazy_static = "1.5.0"
@@ -22,11 +24,11 @@ chrono = { version = "0.4.41", features = ["serde"] }
 windows-service = "0.8.0"
 dirs = "6.0.0"
 md5 = "0.7.0"
-reqwest = { version = "0.12.19", features = ["blocking", "json"] }
+reqwest = { version = "0.12.20", features = ["blocking", "json"] }
 futures = "0.3.31"
 flate2 = "1.1.2"
 tokio = { version = "1.45.1", features = ["full"] }
 roxmltree = "0.20.0"
-zip = "4.0.0"
+zip = "4.1.0"
 thiserror = "2.0.12"
 log = "0.4"
