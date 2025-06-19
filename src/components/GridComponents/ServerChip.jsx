@@ -11,6 +11,7 @@ function ServerChip({ params, sx }) {
                 ...sx
             }}
             clickable={false}
+            onClick={() => null} // No action on click, just to prevent errors
             label={serverName}
             size="small"
         />
