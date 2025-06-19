@@ -14,6 +14,7 @@ pub mod diesel_functions;
 pub use diesel_functions::*;
 
 pub mod rotmg_updater;
+pub mod limiter;
 
 #[cfg(target_os = "windows")]
 pub mod windows_specifics;
