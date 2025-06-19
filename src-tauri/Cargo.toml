@@ -1,6 +1,6 @@
 [package]
 name = "exalt-account-manager"
-version = "4.2.3"
+version = "4.2.5"
 description = "Exalt Account Manager is a powerful toolset designed to streamline multi-account management for Realm of the Mad God."
 homepage = "https://exaltaccountmanager.com"
 authors = ["MaikEight"]
@@ -35,8 +35,8 @@ tokio = "1.45.1"
 futures = "0.3.31"
 flate2 = "1.1.2"
 walkdir = "2.5.0"
-reqwest = { version = "0.12.19", features = ["blocking"] }
-zip = "4.0.0"
+reqwest = { version = "0.12.20", features = ["blocking"] }
+zip = "4.1.0"
 mpsc = "0.2.6"
 anyhow = "1.0"
 curl = "0.4"
@@ -46,9 +46,9 @@ winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securit
 num-bigint = "0.4.6"
 num-traits = "0.2.19"
 hex = "0.4.3"
-diesel = { version = "2.2.10", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel = { version = "2.2.11", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.2.0"
-diesel_derives = "2.2.5"
+diesel_derives = "2.2.6"
 lazy_static = "1.5.0"
 uuid = "1.17.0"
 base64 = "0.22.1"
@@ -68,4 +68,4 @@ eam_commons = { path = "../t-src-modules/eam_commons" }
 custom-protocol = ["tauri/custom-protocol"]
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.7.1"
+tauri-plugin-updater = "2.8.1"
