@@ -63,6 +63,8 @@ function requestStateToMessage(requestState) {
             return "Error";
         case "Success":
             return "Success";
+        case "RateLimitExceeded": //This is a EAM Rate limit error
+            return "Rate limit exceeded"; 
         default:
             return "Unknown Error";
     }
