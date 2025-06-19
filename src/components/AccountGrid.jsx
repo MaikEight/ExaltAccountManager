@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { LinearProgress, Paper } from "@mui/material";
+import { Box, LinearProgress, Paper } from "@mui/material";
 import { DataGrid, } from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from "react";
 import { CustomPagination } from "./GridComponents/CustomPagination";
@@ -15,11 +15,15 @@ import NoRowsOverlay from "./GridComponents/NoRowsOverlay";
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount, isLoading } = useAccounts();
+    const theme = useTheme();
+    const { groups } = useGroups();
+    const settings = useUserSettings();
+    const { applySettingsToHeaderName, hideEmojis } = useApplySettingsToHeaderName();
+
     const [shownAccounts, setShownAccounts] = useState(accounts);
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
 
-    const settings = useUserSettings();
     useEffect(() => {
         setShownAccounts(getSearchedAccounts());
     }, [accounts]);
@@ -28,8 +32,7 @@ function AccountGrid({ setShowAddNewAccount }) {
         setShownAccounts(getSearchedAccounts());
     }, [search]);
 
-    const theme = useTheme();
-    const { groups } = useGroups();
+
 
     const getGroupUI = (params) => {
         if (!params.value) return null;
@@ -38,10 +41,17 @@ function AccountGrid({ setShowAddNewAccount }) {
 
         if (!group) return null;
 
-        return <GroupUI group={group} />;
+        return (
+            <Box
+                sx={{
+                    mx: 'auto',
+                }}
+            >
+                <GroupUI group={group} />
+            </Box>
+        );
     };
 
-    const { applySettingsToHeaderName, hideEmojis } = useApplySettingsToHeaderName();
     const columns = useMemo(() => {
         return [
             { field: 'orderId', headerName: applySettingsToHeaderName('🆔 Order ID'), width: hideEmojis ? 75 : 95 },
@@ -55,7 +65,7 @@ function AccountGrid({ setShowAddNewAccount }) {
             { field: 'state', headerName: applySettingsToHeaderName('📊 Last State'), width: 110 },
             { field: 'comment', headerName: applySettingsToHeaderName('💬 Comment'), minWidth: hideEmojis ? 100 : 105, flex: 0.125, renderCell: (params) => (<div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{params.value}</div>) },
         ]
-    }, [settings]);
+    }, [settings, groups]);
 
     const handleDailyLoginCheckboxChange = async (event, params) => {
         const acc = accounts.find((account) => account.id === params.id);
