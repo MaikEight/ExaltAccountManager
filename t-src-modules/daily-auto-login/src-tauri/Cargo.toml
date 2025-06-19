@@ -15,7 +15,7 @@ tauri-build = { version = "2.2.0", features = [] }
 
 
 [dependencies]
-tauri = { version = "2.5.0", features = ["devtools", "macos-private-api"] }
+tauri = { version = "2.5.1", features = ["devtools", "macos-private-api"] }
 tauri-plugin = "2"
 tauri-plugin-deep-link = "2"
 tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
@@ -30,34 +30,34 @@ async-std = "1.13"
 window-vibrancy = "0.6.0"
 dirs = "6.0.0"
 md5 = "0.7.0"
-tokio = "1.44.2"
+tokio = "1.45.1"
 futures = "0.3.31"
-flate2 = "1.1.1"
+flate2 = "1.1.2"
 walkdir = "2.5.0"
-reqwest = { version = "0.12.15", features = ["blocking"] }
-zip = "2.6.1"
-mpsc = "0.2.5"
+reqwest = { version = "0.12.20", features = ["blocking"] }
+zip = "4.1.0"
+mpsc = "0.2.6"
 anyhow = "1.0"
 curl = "0.4"
-wmi = "0.16.0"
+wmi = "0.17.2"
 sha1 = "0.10.6"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "winbase"] }
 num-bigint = "0.4.6"
 num-traits = "0.2.19"
 hex = "0.4.3"
-diesel = { version = "2.2.8", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel = { version = "2.2.11", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.2.0"
-diesel_derives = "2.2.4"
+diesel_derives = "2.2.6"
 lazy_static = "1.5.0"
-uuid = "1.16.0"
+uuid = "1.17.0"
 base64 = "0.22.1"
-h2 = "0.4.9"
-mio = "1.0.3"
-libsqlite3-sys = { version = "0.31.0", features = ["bundled"] }
+h2 = "0.4.10"
+mio = "1.0.4"
+libsqlite3-sys = { version = "0.33.0", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12.2"
 open = "5.3.2"
-chrono = { version = "0.4.40", features = ["serde"] }
+chrono = { version = "0.4.41", features = ["serde"] }
 eam_commons = { path = "../../eam_commons" }
 eam_plus_lib = { path = "../../../../eam_plus_lib" }
 
