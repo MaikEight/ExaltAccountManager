@@ -199,6 +199,15 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    ApiRequests (id) {
+        id -> Nullable<Integer>,
+        api_name -> Text,
+        timestamp -> BigInt,
+        result -> Text,
+    }
+}
+
 diesel::joinable!(Account -> Char_list_entries (entry_id));
 diesel::joinable!(Class_stats -> Account (entry_id));
 diesel::joinable!(AuditLog -> EamAccount (accountEmail));
