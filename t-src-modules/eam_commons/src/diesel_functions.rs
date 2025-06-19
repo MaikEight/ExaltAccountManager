@@ -2,6 +2,7 @@ use crate::diesel_setup::DbPool;
 use crate::models::Account;
 use crate::models::Character;
 use crate::models::ClassStats;
+use crate::models::{ApiRequest, CallResult, NewApiRequest};
 use crate::models::{AuditLog, NewAuditLog};
 use crate::models::{CharListDataset, CharListEntries, NewCharListEntries};
 use crate::models::{
@@ -14,6 +15,7 @@ use crate::models::{ErrorLog, NewErrorLog};
 use crate::models::{NewAccount, NewCharacter, NewClassStats};
 use crate::models::{NewUserData, UpdateUserData, UserData};
 use crate::schema::Account as account;
+use crate::schema::ApiRequests as api_requests;
 use crate::schema::AuditLog as audit_logs;
 use crate::schema::AuditLog::dsl::*;
 use crate::schema::Char_list_entries as char_list_entries;
@@ -644,4 +646,43 @@ pub fn delete_error_logs_older_than_days(
             .execute(&mut conn)?;
 
     Ok(num_deleted)
+}
+
+// ###############################
+// #         ApiRequests         #
+// ###############################
+
+pub fn insert_api_request(
+    pool: &DbPool,
+    api_name: &str,
+    result: CallResult,
+) -> Result<usize, diesel::result::Error> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    let request = ApiRequest {
+        id: None,
+        api_name: api_name.to_string(),
+        timestamp: Utc::now().timestamp_millis(),
+        result: result.to_string(),
+    };
+    let insetable = NewApiRequest::from(request);
+
+    insert_into(api_requests::table)
+        .values(&insetable)
+        .execute(&mut conn)
+}
+
+pub fn get_recent_requests(pool: &DbPool, api: &str, since_ts: i64) -> Vec<ApiRequest> {
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    println!(
+        "Fetching recent requests for API: {} since {}",
+        api, since_ts
+    );
+
+    api_requests::table
+        .filter(api_requests::api_name.eq(api))
+        .filter(api_requests::timestamp.ge(since_ts))
+        .filter(api_requests::result.ne(CallResult::RateLimited.to_string()))
+        .load::<ApiRequest>(&mut conn)
+        .unwrap()
 }
