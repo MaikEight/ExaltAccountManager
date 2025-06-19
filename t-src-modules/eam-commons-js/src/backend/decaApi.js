@@ -32,7 +32,7 @@ async function postAccountVerify(account, clientId, decryptNeeded = true) {
     } catch (error) {
         console.error(`Error: ${error}`);
         logToErrorLog('postAccountVerify', error);
-        return null;
+        return error;
     }
 }
 
@@ -56,7 +56,7 @@ async function postCharList(accessToken) {
     } catch (error) {
         console.error(`Error: ${error}`);
         logToErrorLog('postCharList', error);
-        return null;
+        return error;
     }
 }
 
