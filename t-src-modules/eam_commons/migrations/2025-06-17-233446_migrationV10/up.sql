@@ -1,0 +1,6 @@
+CREATE TABLE ApiRequests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    api_name TEXT NOT NULL,
+    timestamp BIGINT NOT NULL,
+    result TEXT NOT NULL
+);
