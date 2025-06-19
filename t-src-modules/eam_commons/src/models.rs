@@ -1120,3 +1120,51 @@ impl From<DailyLoginReportEntries> for UpdateDailyLoginReportEntries {
         }
     }
 }
+
+// #######################
+// #     ApiRequests     #
+// #######################
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum CallResult {
+    Success,
+    Failed,
+    RateLimited,
+}
+
+impl ToString for CallResult {
+    fn to_string(&self) -> String {
+        match self {
+            CallResult::Success => "Success".to_string(),
+            CallResult::Failed => "Failed".to_string(),
+            CallResult::RateLimited => "RateLimited".to_string(),
+        }
+    }
+}
+
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct ApiRequest {
+    pub id: Option<i32>,
+    pub api_name: String, 
+    pub timestamp: i64, 
+    pub result: String,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::ApiRequests)]
+pub struct NewApiRequest {
+    pub id: Option<i32>,
+    pub api_name: String,
+    pub timestamp: i64, 
+    pub result: String,
+}
+
+impl From<ApiRequest> for NewApiRequest {
+    fn from(api_request: ApiRequest) -> Self {
+        NewApiRequest {
+            id: api_request.id,
+            api_name: api_request.api_name,
+            timestamp: api_request.timestamp,
+            result: api_request.result,
+        }
+    }
+}
