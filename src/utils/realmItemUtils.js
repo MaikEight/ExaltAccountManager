@@ -109,9 +109,6 @@ export function formatCharacterDataFromCharListDataset(character) {
         return null;
     }
     const pcStatsParsed = parsePcStats(character.pc_stats);
-    if (character.char_id === 206) {
-        console.log(pcStatsParsed);
-    }
 
     return {
         char_id: character.char_id,
