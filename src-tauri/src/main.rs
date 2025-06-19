@@ -6,7 +6,10 @@ extern crate dirs;
 use diesel::r2d2::ConnectionManager;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
+use eam_commons::limiter::manager::RateLimiterManager;
+use eam_commons::limiter::setup_global_api_limiter;
 use eam_commons::models;
+use eam_commons::models::CallResult;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::DailyLoginReports;
 use eam_commons::models::{AuditLog, ErrorLog};
@@ -42,6 +45,17 @@ use zip::read::ZipArchive;
 
 lazy_static! {
     static ref POOL: Arc<Mutex<Option<DbPool>>> = Arc::new(Mutex::new(None));
+    static ref GLOBAL_API_LIMITER: Arc<Mutex<eam_commons::limiter::RateLimiterManager>> =
+        Arc::new(Mutex::new(RateLimiterManager {
+            cooldown_seconds: 315,
+            sub_limiters: HashMap::new(),
+            cooldown_until: None,
+            last_cooldown_end: None,
+            limited_endpoints: vec![
+                ("account/verify".to_string(), "account/verify".to_string()),
+                ("char/list".to_string(), "char/list".to_string())
+            ]
+        }));
 }
 
 //IMPORTANT: The file is not checked in to the repository
@@ -70,7 +84,7 @@ fn main() {
         log_file,
     )])
     .unwrap();
-    
+
     //Print the Startup ASCII art
     info!("  _______     ___    .___  ___.");
     info!(" |   ____|   /   \\   |   \\/   |");
@@ -95,14 +109,31 @@ fn main() {
 
     // Handle a poisoned Mutex
     match POOL.lock() {
-        Ok(mut guard) => *guard = Some(pool),
+        Ok(mut guard) => *guard = Some(pool.clone()),
         Err(poisoned) => {
             error!("Mutex was poisoned. Recovering...");
             let mut guard = poisoned.into_inner();
-            *guard = Some(pool);
+            *guard = Some(pool.clone());
         }
     }
 
+    // Setup the api-rate limiter
+    info!("Setting up the global API rate limiter...");
+
+    let pool_arc = Arc::new(POOL.clone().lock().unwrap().clone().unwrap());
+    let manager = setup_global_api_limiter(pool_arc);
+    match GLOBAL_API_LIMITER.lock() {
+        Ok(mut guard) => *guard = manager,
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let mut guard = poisoned.into_inner();
+            *guard = manager;
+        }
+    }
+
+    info!("Global API rate limiter setup complete");
+
+    info!("Starting Tauri application...");
     //Run the tauri application
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
@@ -577,8 +608,28 @@ async fn send_post_request_with_form_url_encoded_data(
     url: String,
     data: HashMap<String, String>,
 ) -> Result<String, String> {
-    info!("Sending post request with form url encoded data...");
+    println!("Sending post request with form url encoded data...");
+    // First: get the limiter key before awaiting anything
+    let limiter_key_opt = {
+        let manager = GLOBAL_API_LIMITER.lock().unwrap();
+        manager.get_limiter_key_from_url(&url)
+    };
 
+    if let Some(ref key) = limiter_key_opt {
+        let manager = GLOBAL_API_LIMITER.lock().unwrap();
+        println!("Checking rate limit for key: {}", key);
+        if !manager.can_call(key) {
+            println!("Rate limit exceeded for {}", key);
+            manager
+                .sub_limiters
+                .get(key)
+                .unwrap()
+                .record(CallResult::RateLimited);
+            return Err(format!("Error: Rate limit exceeded for {}", key));
+        }
+    }
+
+    // Send request AFTER dropping any manager locks
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("deflate, gzip"));
     headers.insert(
@@ -587,16 +638,51 @@ async fn send_post_request_with_form_url_encoded_data(
     );
 
     let client = reqwest::Client::new();
-    let res = client
-        .post(&url)
-        .headers(headers)
-        .form(&data)
-        .send()
-        .await
-        .map_err(|e| e.to_string())?;
+    let result = client.post(&url).headers(headers).form(&data).send().await;
 
-    let body = res.text().await.map_err(|e| e.to_string())?;
-    Ok(body)
+    // Check result and re-acquire lock if needed
+    match result {
+        Ok(res) => {
+            let body = res.text().await.map_err(|e| e.to_string())?;
+            println!("Response body: {}", body);
+            if let Some(ref key) = limiter_key_opt {
+                let mut manager = GLOBAL_API_LIMITER.lock().unwrap();
+
+                if RateLimiterManager::is_rate_limited_response(&body) {
+                    manager
+                        .sub_limiters
+                        .get(key)
+                        .unwrap()
+                        .record(CallResult::RateLimited);
+                    manager.trigger_cooldown();
+                    println!("RotMG API rate limit hit: global cooldown triggered.");
+                    return Err("RotMG API rate limit hit: global cooldown triggered.".into());
+                } else {
+                    println!("RotMG API call successful, recording success.");
+                    manager
+                        .sub_limiters
+                        .get(key)
+                        .unwrap()
+                        .record(CallResult::Success);
+                }
+            }
+
+            Ok(body)
+        }
+        Err(e) => {
+            if let Some(ref key) = limiter_key_opt {
+                println!("Error occurred: {}", e);
+                let manager = GLOBAL_API_LIMITER.lock().unwrap();
+                manager
+                    .sub_limiters
+                    .get(key)
+                    .unwrap()
+                    .record(CallResult::Failed);
+            }
+            println!("Failed to send post request: {}", e);
+            Err(e.to_string())
+        }
+    }
 }
 
 #[tauri::command]
