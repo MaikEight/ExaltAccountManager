@@ -15,7 +15,7 @@ function AccountsContextProvider({ children }) {
     const hwid = useHWID();
     const { saveServerList } = useServerList();
     const { showSnackbar } = useSnack();
-    
+
     const [isLoading, setIsLoading] = useState(false);
     const [accounts, setAccounts] = useState([]);
     const [selectedAccount, setSelectedAccount] = useState(null);
@@ -119,12 +119,30 @@ function AccountsContextProvider({ children }) {
             const response = await postAccountVerify(acc, hwid)
                 .catch((err) => {
                     logToErrorLog('sendAccountVerify', `Error sending account/verify request: ${err}`, email);
+                    console.error('Error sending account/verify request:', err);
+
+                    if (err && typeof err === "string" && err.includes('Rate limit exceeded')) {
+                        return { error: true, data: { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' } };
+                    }
+
                     return null;
                 });
 
-            const requestState = getRequestState(response);            
+            if (!response) {
+                return { success: false, message: 'Failed to verify account' };
+            }
+
+            if (typeof response === "string" && response.includes('Error: Rate limit exceeded')) {
+                return { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' };
+            }
+
+            if (response.error) {
+                return response.data || { success: false, message: 'Failed to verify account', requestState: response.requestState || 'Error' };
+            }
+
+            const requestState = getRequestState(response);
             const newAcc = ({ ...acc, state: requestState });
-            if (updateLastLogin 
+            if (updateLastLogin
                 && requestState === 'Success') {
                 newAcc.lastLogin = new Date();
             }
@@ -163,8 +181,27 @@ function AccountsContextProvider({ children }) {
             const response = await postCharList(accessToken)
                 .catch((err) => {
                     logToErrorLog('sendCharList', `Error sending char/list request: ${err}`, email);
+                    console.error('Error sending char/list request:', err);
+
+                    if (err && typeof err === "string" && err.includes('Rate limit exceeded')) {
+                        return { error: true, data: { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' } };
+                    }
+
                     return null;
                 });
+
+
+            if (!response) {
+                return { success: false, message: 'Failed to get character list', requestState: requestState };
+            }
+
+            if (typeof response === "string" && response.includes('Error: Rate limit exceeded')) {
+                return { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' };
+            }
+
+            if (response.error) {
+                return response.data || { success: false, message: 'Failed to get character list', requestState: response.requestState || requestState };
+            }
 
             requestState = getRequestState(response);
             const newAcc = ({ ...acc, state: requestState });
@@ -289,7 +326,7 @@ function AccountsContextProvider({ children }) {
         accounts,
         selectedAccount,
         isLoading,
-        
+
         setSelectedAccount,
 
         getAccountByEmail: getAccountByEmail,
