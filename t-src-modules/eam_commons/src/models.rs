@@ -1168,3 +1168,10 @@ impl From<ApiRequest> for NewApiRequest {
         }
     }
 }
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct GameAccessToken {
+    access_token: String,
+    access_token_timestamp: String,
+    access_token_expiration: String,
+}
