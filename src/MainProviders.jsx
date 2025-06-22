@@ -56,6 +56,10 @@ function MainProviders() {
                         error: StyledMaterialDesignContent,
                     }}
                     action={CloseAction}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
                 >
                     <MainRouterRoutes />
                 </SnackbarProvider>
