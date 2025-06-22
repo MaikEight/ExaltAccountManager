@@ -39,14 +39,26 @@ use diesel::ExpressionMethods;
 use diesel::RunQueryDsl;
 use log::{error, info};
 use uuid::Uuid;
+use std::thread;
+use std::time::Duration;
+use function_name::named;
+
+
+macro_rules! log_fn {
+    () => {
+        log::info!("→ {} @ line {}", function_name!(), line!());
+    };
+}
 
 //########################
 //#       UserData       #
 //########################
+#[named]
 pub fn insert_or_update_user_data(
     pool: &DbPool,
     data: UserData,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let insertable = NewUserData::from(data.clone());
@@ -61,23 +73,29 @@ pub fn insert_or_update_user_data(
         .execute(&mut conn)
 }
 
+#[named]
 pub fn get_user_data_by_key(
     pool: &DbPool,
     data_key: String,
 ) -> Result<UserData, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     user_data::table.find(data_key).first(&mut conn)
 }
 
+#[named]
 pub fn get_all_user_data(pool: &DbPool) -> Result<Vec<UserData>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     user_data::table.load::<UserData>(&mut conn)
 }
 
+#[named]
 pub fn delete_user_data_by_key(
     pool: &DbPool,
     data_key: String,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     diesel::delete(user_data::table.find(data_key)).execute(&mut conn)
 }
@@ -86,19 +104,23 @@ pub fn delete_user_data_by_key(
 //#   DailyLoginReports   #
 //#########################
 
+#[named]
 pub fn get_all_daily_login_reports(
     pool: &DbPool,
 ) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     daily_login_reports::table
         .order(daily_login_reports::startTime.desc())
         .load::<DailyLoginReports>(&mut conn)
 }
 
+#[named]
 pub fn get_daily_login_reports_of_last_days(
     pool: &DbPool,
     days: i64,
 ) -> Result<Vec<DailyLoginReports>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     let days_ago = chrono::Utc::now().naive_utc()
         - chrono::Duration::try_days(days).expect("Invalid number of days");
@@ -111,25 +133,31 @@ pub fn get_daily_login_reports_of_last_days(
         .load::<DailyLoginReports>(&mut conn)
 }
 
+#[named]
 pub fn get_daily_login_report_by_id(
     pool: &DbPool,
     report_id: String,
 ) -> Result<DailyLoginReports, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     daily_login_reports::table.find(report_id).first(&mut conn)
 }
 
+#[named]
 pub fn get_latest_daily_login(pool: &DbPool) -> Result<DailyLoginReports, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     daily_login_reports::table
         .order(daily_login_reports::startTime.desc())
         .first(&mut conn)
 }
 
+#[named]
 pub fn insert_or_update_daily_login_report(
     pool: &DbPool,
     report: DailyLoginReports,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let insertable = NewDailyLoginReports::from(report.clone());
@@ -147,17 +175,21 @@ pub fn insert_or_update_daily_login_report(
 // #  DailyLoginReportEntries  #
 // #############################
 
+#[named]
 pub fn get_all_daily_login_report_entries(
     pool: &DbPool,
 ) -> Result<Vec<DailyLoginReportEntries>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     daily_login_report_entries::table.load::<DailyLoginReportEntries>(&mut conn)
 }
 
+#[named]
 pub fn get_daily_login_report_entry_by_id(
     pool: &DbPool,
     report_entry_id: Option<i32>,
 ) -> Result<DailyLoginReportEntries, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     report_entry_id
         .map(|report_entry_id| {
@@ -172,20 +204,24 @@ pub fn get_daily_login_report_entry_by_id(
         .unwrap_or(Err(diesel::result::Error::NotFound))
 }
 
+#[named]
 pub fn get_daily_login_report_entries_by_report_id(
     pool: &DbPool,
     report_id: String,
 ) -> Result<Vec<DailyLoginReportEntries>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     daily_login_report_entries::table
         .filter(daily_login_report_entries::reportId.eq(report_id))
         .load::<DailyLoginReportEntries>(&mut conn)
 }
 
+#[named]
 pub fn insert_or_update_daily_login_report_entry(
     pool: &DbPool,
     entry: DailyLoginReportEntries,
 ) -> Result<i32, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let insertable = NewDailyLoginReportEntries::from(entry.clone());
@@ -216,15 +252,19 @@ pub fn insert_or_update_daily_login_report_entry(
 //#       CharList       #
 //########################
 
+#[named]
 pub fn get_all_char_list(pool: &DbPool) -> Result<Vec<CharListEntries>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     char_list_entries::table.load::<CharListEntries>(&mut conn)
 }
 
+#[named]
 pub fn get_latest_char_list_for_each_account(
     pool: &DbPool,
 ) -> Result<Vec<CharListEntries>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     // Get all emails (distinct) from the char_list_entries table
@@ -268,9 +308,11 @@ pub fn get_latest_char_list_for_each_account(
 //#    CharListDataset   #
 //########################
 
+#[named]
 pub fn get_latest_char_list_dataset_for_each_account(
     pool: &DbPool,
 ) -> Result<Vec<CharListDataset>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let char_list_entries = get_latest_char_list_for_each_account(pool)?;
@@ -304,10 +346,12 @@ pub fn get_latest_char_list_dataset_for_each_account(
     Ok(datasets)
 }
 
+#[named]
 pub fn insert_char_list_dataset(
     pool: &DbPool,
     dataset: CharListDataset,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     let mut entry = CharListEntries::from(dataset.clone());
     let entry_uuid = Uuid::new_v4().to_string();
@@ -362,9 +406,11 @@ pub fn insert_char_list_dataset(
 //#      EamAccount      #
 //########################
 
+#[named]
 pub fn get_all_eam_accounts_for_daily_login(
     pool: &DbPool,
 ) -> Result<Vec<EamAccount>, diesel::result::Error> {
+    log_fn!();
     info!("Getting all EAM accounts for daily login...");
 
     let mut conn = pool.get().expect("Failed to get connection from pool.");
@@ -384,7 +430,9 @@ pub fn get_all_eam_accounts_for_daily_login(
     result
 }
 
+#[named]
 pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::result::Error> {
+    log_fn!();
     info!("Getting all EAM accounts...");
 
     let mut conn = pool.get().expect("Failed to get connection from pool.");
@@ -404,7 +452,9 @@ pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::re
     result
 }
 
+#[named]
 pub fn get_all_eam_account_emails(pool: &DbPool) -> Result<Vec<String>, diesel::result::Error> {
+    log_fn!();
     info!("Getting all EAM account emails...");
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     info!("Got connection from pool. Loading emails...");
@@ -422,10 +472,12 @@ pub fn get_all_eam_account_emails(pool: &DbPool) -> Result<Vec<String>, diesel::
     result
 }
 
+#[named]
 pub fn get_eam_account_by_email(
     pool: &DbPool,
     account_email: String,
 ) -> Result<EamAccount, diesel::result::Error> {
+    log_fn!();
     info!("Getting EAM account by email: {}", account_email);
 
     let mut conn = pool.get().expect("Failed to get connection from pool.");
@@ -435,10 +487,12 @@ pub fn get_eam_account_by_email(
         .first(&mut conn)
 }
 
+#[named]
 pub fn insert_or_update_eam_account(
     pool: &DbPool,
     eam_account: EamAccount,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     // Get the max id and increment it by 1
@@ -502,10 +556,12 @@ pub fn insert_or_update_eam_account(
     Ok(new_row_inserted as usize)
 }
 
+#[named]
 pub fn delete_eam_account(
     pool: &DbPool,
     account_email: String,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     insert_audit_log(
@@ -538,15 +594,19 @@ pub fn delete_eam_account(
 //#       EamGroup       #
 //########################
 
+#[named]
 pub fn get_all_eam_groups(pool: &DbPool) -> Result<Vec<EamGroup>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     EamGroup.load::<EamGroup>(&mut conn)
 }
 
+#[named]
 pub fn insert_or_update_eam_group(
     pool: &DbPool,
     eam_group: EamGroup,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let insertable: NewEamGroup = NewEamGroup::from(eam_group.clone());
@@ -560,7 +620,9 @@ pub fn insert_or_update_eam_group(
         .execute(&mut conn)
 }
 
+#[named]
 pub fn delete_eam_group(pool: &DbPool, group_id: i32) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     diesel::delete(eam_groups::table.find(group_id)).execute(&mut conn)
 }
@@ -569,22 +631,28 @@ pub fn delete_eam_group(pool: &DbPool, group_id: i32) -> Result<usize, diesel::r
 // #         AuditLog         #
 // ############################
 
+#[named]
 pub fn get_all_audit_logs(pool: &DbPool) -> Result<Vec<AuditLog>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     audit_logs::table.load::<AuditLog>(&mut conn)
 }
 
+#[named]
 pub fn get_audit_log_for_account(
     pool: &DbPool,
     account_email: String,
 ) -> Result<Vec<AuditLog>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     audit_logs::table
         .filter(accountEmail.eq(account_email))
         .load::<AuditLog>(&mut conn)
 }
 
+#[named]
 pub fn insert_audit_log(pool: &DbPool, log: AuditLog) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let mut insertable: NewAuditLog = NewAuditLog::from(log);
@@ -599,7 +667,9 @@ pub fn insert_audit_log(pool: &DbPool, log: AuditLog) -> Result<usize, diesel::r
 // #         ErrorLog         #
 // ############################
 
+#[named]
 pub fn get_all_error_logs(pool: &DbPool) -> Result<Vec<ErrorLog>, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     let logs = error_logs::table.load::<ErrorLog>(&mut conn)?;
 
@@ -621,7 +691,9 @@ pub fn get_all_error_logs(pool: &DbPool) -> Result<Vec<ErrorLog>, diesel::result
     Ok(converted_logs)
 }
 
+#[named]
 pub fn insert_error_log(pool: &DbPool, log: ErrorLog) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let mut insertable: NewErrorLog = NewErrorLog::from(log);
@@ -632,10 +704,12 @@ pub fn insert_error_log(pool: &DbPool, log: ErrorLog) -> Result<usize, diesel::r
         .execute(&mut conn)
 }
 
+#[named]
 pub fn delete_error_logs_older_than_days(
     pool: &DbPool,
     days: i64,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
 
     let target_date = chrono::Utc::now().naive_utc()
@@ -652,11 +726,13 @@ pub fn delete_error_logs_older_than_days(
 // #         ApiRequests         #
 // ###############################
 
+#[named]
 pub fn insert_api_request(
     pool: &DbPool,
     api_name: &str,
     result: CallResult,
 ) -> Result<usize, diesel::result::Error> {
+    log_fn!();
     let mut conn = pool.get().expect("Failed to get connection from pool.");
     let request = ApiRequest {
         id: None,
@@ -671,18 +747,29 @@ pub fn insert_api_request(
         .execute(&mut conn)
 }
 
+//Note: This function does not log it's useage, as it is called frequently and is not a user action.
 pub fn get_recent_requests(pool: &DbPool, api: &str, since_ts: i64) -> Vec<ApiRequest> {
-    let mut conn = pool.get().expect("Failed to get connection from pool.");
+    let mut retries = 5;
 
-    println!(
-        "Fetching recent requests for API: {} since {}",
-        api, since_ts
-    );
+    while retries > 0 {
+        let mut conn = pool.get().expect("Failed to get connection from pool.");
 
-    api_requests::table
-        .filter(api_requests::api_name.eq(api))
-        .filter(api_requests::timestamp.ge(since_ts))
-        .filter(api_requests::result.ne(CallResult::RateLimited.to_string()))
-        .load::<ApiRequest>(&mut conn)
-        .unwrap()
+        let result = api_requests::table
+            .filter(api_requests::api_name.eq(api))
+            .filter(api_requests::timestamp.ge(since_ts))
+            .filter(api_requests::result.ne(CallResult::RateLimited.to_string()))
+            .load::<ApiRequest>(&mut conn);
+
+        match result {
+            Ok(data) => return data,
+            Err(DatabaseError(_, err_msg)) if err_msg.message().contains("locked") => {
+                retries -= 1;
+                thread::sleep(Duration::from_millis(50));
+            }
+            Err(e) => panic!("Unexpected DB error: {:?}", e),
+        }
+    }
+
+    log::error!("Database locked after 5 retries for API {}. At: diesel_functions::get_recent_requests", api );
+    return vec![];
 }
