@@ -31,6 +31,8 @@ async function onStartUp() {
     writeStartupLogoToConsole();
     addConsoleLogListener();
 
+    invoke('add_api_limit_event_listener').catch(console.error);
+
     //Check for EAM update
     performCheckForUpdates();
     getLatestEamVersion()
