@@ -37,12 +37,11 @@ use diesel::result::Error::DatabaseError;
 use diesel::sql_types::{Nullable, Text};
 use diesel::ExpressionMethods;
 use diesel::RunQueryDsl;
+use function_name::named;
 use log::{error, info};
-use uuid::Uuid;
 use std::thread;
 use std::time::Duration;
-use function_name::named;
-
+use uuid::Uuid;
 
 macro_rules! log_fn {
     () => {
@@ -431,6 +430,42 @@ pub fn get_all_eam_accounts_for_daily_login(
 }
 
 #[named]
+pub fn get_next_eam_account_for_background_sync(
+    pool: &DbPool,
+) -> Result<Option<EamAccount>, diesel::result::Error> {
+    log_fn!();
+    info!("Getting next EAM account for background sync...");
+
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    info!("Got connection from pool. Loading accounts...");
+
+    let max_time = chrono::Utc::now().naive_utc() - chrono::Duration::hours(12);
+
+    let result =
+        eam_accounts::table
+            .filter(eam_accounts::isDeleted.eq(false))
+            .filter(eam_accounts::lastRefresh.is_null().or(
+                eam_accounts::lastRefresh.lt(max_time.format("%Y-%m-%d %H:%M:%S%.f").to_string()),
+            ))
+            .order((
+                eam_accounts::lastRefresh.asc(),
+                eam_accounts::orderId.asc(),
+                eam_accounts::id.asc(),
+            ))
+            .first::<EamAccount>(&mut conn)
+            .optional();
+
+    match &result {
+        Ok(Some(account)) => info!("Loaded account: {}", account.email),
+        Ok(None) => info!("No accounts found for background sync."),
+        Err(e) => error!("Failed to load accounts: {}", e),
+    }
+
+    result
+}
+
+#[named]
 pub fn get_all_eam_accounts(pool: &DbPool) -> Result<Vec<EamAccount>, diesel::result::Error> {
     log_fn!();
     info!("Getting all EAM accounts...");
@@ -770,6 +805,9 @@ pub fn get_recent_requests(pool: &DbPool, api: &str, since_ts: i64) -> Vec<ApiRe
         }
     }
 
-    log::error!("Database locked after 5 retries for API {}. At: diesel_functions::get_recent_requests", api );
+    log::error!(
+        "Database locked after 5 retries for API {}. At: diesel_functions::get_recent_requests",
+        api
+    );
     return vec![];
 }
