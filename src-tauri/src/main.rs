@@ -36,11 +36,13 @@ use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex, MutexGuard};
+use std::sync::atomic::AtomicU64;
 use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 use tauri::http::HeaderName;
 use tauri::Error;
+use tauri::{AppHandle, Emitter};
 use zip::read::ZipArchive;
 
 lazy_static! {
@@ -53,9 +55,21 @@ lazy_static! {
             last_cooldown_end: None,
             limited_endpoints: vec![
                 ("account/verify".to_string(), "account/verify".to_string()),
-                ("char/list".to_string(), "char/list".to_string())
-            ]
+                ("char/list".to_string(), "char/list".to_string()),
+                (
+                    "account/register".to_string(),
+                    "account/register".to_string(),
+                )
+            ],            
+
+            cooldown_id: Arc::new(AtomicU64::new(0)),
+            cooldown_listeners: Vec::new(),
+            cooldown_reset_listeners: Arc::new(Mutex::new(Vec::new())),
+
+            api_remaining_changed_listeners: Arc::new(Mutex::new(vec![])), 
+            last_known_remaining: HashMap::new(),
         }));
+    static ref HAS_REGISTERED_API_LIMIT_EVENT_LISTENER: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
 }
 
 //IMPORTANT: The file is not checked in to the repository
@@ -122,6 +136,7 @@ fn main() {
 
     let pool_arc = Arc::new(POOL.clone().lock().unwrap().clone().unwrap());
     let manager = setup_global_api_limiter(pool_arc);
+
     match GLOBAL_API_LIMITER.lock() {
         Ok(mut guard) => *guard = manager,
         Err(poisoned) => {
@@ -146,8 +161,9 @@ fn main() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .plugin(tauri_plugin_drpc::init())
+        .plugin(tauri_plugin_drpc::init())        
         .invoke_handler(tauri::generate_handler![
+            add_api_limit_event_listener,
             open_url,
             get_save_file_path,
             combine_paths,
@@ -207,6 +223,57 @@ fn main() {
         ])
         .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+async fn add_api_limit_event_listener(app: AppHandle) {
+    let mut already_registered = HAS_REGISTERED_API_LIMIT_EVENT_LISTENER
+        .lock()
+        .unwrap_or_else(|e| {
+            error!("Mutex was poisoned. Recovering...");
+            e.into_inner()
+        });
+
+    if *already_registered {
+        info!("API limit event listener already registered, skipping...");
+        return;
+    }
+
+    *already_registered = true;
+    info!("Adding API limit event listener...");
+
+    let app = Arc::new(app);
+    let app_cooldown = Arc::clone(&app);
+    let app_reset = Arc::clone(&app);
+    let app_remaining = Arc::clone(&app);
+
+    let mut manager = GLOBAL_API_LIMITER.lock().unwrap();
+
+    manager.register_cooldown_listener(move || {
+        info!("API cooldown triggered, notifying app...");
+        if let Err(e) = app_cooldown.emit("api-cooldown", true) {
+            error!("Failed to emit cooldown event: {}", e);
+        }
+    });
+
+    manager.register_cooldown_reset_listener(move || {
+        info!("API cooldown reset, notifying app...");
+        if let Err(e) = app_reset.emit("api-cooldown", false) {
+            error!("Failed to emit cooldown reset event: {}", e);
+        }
+    });
+
+    manager.register_remaining_changed_listener(move |api, remaining, limit| {
+        if remaining == 0 {
+            info!("API limit reached for {}, notifying app...", api);
+        } else {
+            info!("API limit remaining for {}: {} / {}", api, remaining, limit);
+        }
+
+        if let Err(e) = app_remaining.emit("api-remaining-changed", (api.to_string(), remaining, limit)) {
+            error!("Failed to emit remaining-changed event: {}", e);
+        }
+    });
 }
 
 #[tauri::command]
@@ -608,7 +675,7 @@ async fn send_post_request_with_form_url_encoded_data(
     url: String,
     data: HashMap<String, String>,
 ) -> Result<String, String> {
-    println!("Sending post request with form url encoded data...");
+    info!("Sending post request with form url encoded data...");
     // First: get the limiter key before awaiting anything
     let limiter_key_opt = {
         let manager = GLOBAL_API_LIMITER.lock().unwrap();
@@ -616,15 +683,10 @@ async fn send_post_request_with_form_url_encoded_data(
     };
 
     if let Some(ref key) = limiter_key_opt {
-        let manager = GLOBAL_API_LIMITER.lock().unwrap();
-        println!("Checking rate limit for key: {}", key);
+        let mut manager = GLOBAL_API_LIMITER.lock().unwrap();        
         if !manager.can_call(key) {
-            println!("Rate limit exceeded for {}", key);
-            manager
-                .sub_limiters
-                .get(key)
-                .unwrap()
-                .record(CallResult::RateLimited);
+            info!("Rate limit exceeded for {}", key);
+            manager.record_api_use(key, CallResult::RateLimited);
             return Err(format!("Error: Rate limit exceeded for {}", key));
         }
     }
@@ -644,42 +706,26 @@ async fn send_post_request_with_form_url_encoded_data(
     match result {
         Ok(res) => {
             let body = res.text().await.map_err(|e| e.to_string())?;
-            println!("Response body: {}", body);
             if let Some(ref key) = limiter_key_opt {
                 let mut manager = GLOBAL_API_LIMITER.lock().unwrap();
 
                 if RateLimiterManager::is_rate_limited_response(&body) {
-                    manager
-                        .sub_limiters
-                        .get(key)
-                        .unwrap()
-                        .record(CallResult::RateLimited);
+                    manager.record_api_use(key, CallResult::RateLimited);
                     manager.trigger_cooldown();
-                    println!("RotMG API rate limit hit: global cooldown triggered.");
+                    info!("RotMG API rate limit hit: global cooldown triggered.");
                     return Err("RotMG API rate limit hit: global cooldown triggered.".into());
-                } else {
-                    println!("RotMG API call successful, recording success.");
-                    manager
-                        .sub_limiters
-                        .get(key)
-                        .unwrap()
-                        .record(CallResult::Success);
                 }
+                manager.record_api_use(key, CallResult::Success);
             }
 
             Ok(body)
         }
         Err(e) => {
             if let Some(ref key) = limiter_key_opt {
-                println!("Error occurred: {}", e);
-                let manager = GLOBAL_API_LIMITER.lock().unwrap();
-                manager
-                    .sub_limiters
-                    .get(key)
-                    .unwrap()
-                    .record(CallResult::Failed);
+                let mut manager = GLOBAL_API_LIMITER.lock().unwrap();
+                manager.record_api_use(key, CallResult::Failed);
             }
-            println!("Failed to send post request: {}", e);
+            error!("Failed to send post request: {}", e);
             Err(e.to_string())
         }
     }
@@ -687,7 +733,7 @@ async fn send_post_request_with_form_url_encoded_data(
 
 #[tauri::command]
 async fn send_post_request_with_json_body(url: String, data: String) -> Result<String, String> {
-    info!("Sending post request with json body...");
+    info!("Sending post request with json body to: {}", &url);
 
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
