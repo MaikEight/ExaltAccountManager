@@ -39,8 +39,8 @@
 </a>
 <a href="https://tauri.app" style="display: inline">
   <img
-    src="https://img.shields.io/badge/Tauri-1.8.0-violet.svg?style=flat&logo=Tauri&color=512BD4"
-    alt="Tauri version 1.8.0" />
+    src="https://img.shields.io/badge/Tauri-2.5.1-violet.svg?style=flat&logo=Tauri&color=512BD4"
+    alt="Tauri version 2.5.1" />
 </a>
 <a href="https://good-labs.github.io/greater-good-affirmation" style="display: inline">
 <img
