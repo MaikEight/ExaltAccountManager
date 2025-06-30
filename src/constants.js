@@ -4,6 +4,7 @@ export const APP_VERSION = '4.2.5';
 export const APP_VERSION_RELEASE_DATE = '21.06.2025';
 export const IS_PRE_RELEASE = false;
 
+export const MASCOT_NAME = 'Okta';
 
 export const CACHE_PREFIX = '!cache-';
 
