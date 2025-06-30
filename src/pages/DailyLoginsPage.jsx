@@ -345,6 +345,38 @@ function DailyLoginsPage() {
                 pb: 1,
             }}
         >
+            <Box
+                sx={{
+                    position: 'absolute',
+                    left: 14,
+                    top: 5,
+                    bottom: 5,
+                    objectFit: 'contain',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <img
+                    src='/mascot/Info/notification_very_low_res.png'
+                    alt='Notification Icon'
+                    style={{
+                        height: '80px',
+                    }}
+                />
+                <img
+                    src="/mascot/floor.png"
+                    alt="Floor of the mascot"
+                    style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: -5,
+                        width: '100%',
+                        height: 'auto',
+                        zIndex: 1,
+                    }}
+                />
+            </Box>
             <MUITooltip title="Check if task is installed">
                 <IconButton
                     sx={{
