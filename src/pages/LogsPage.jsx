@@ -1,11 +1,12 @@
 import { Box, LinearProgress, Paper } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAuditLog, getErrorLog, formatTime } from "eam-commons-js";
 import { DataGrid } from "@mui/x-data-grid";
 import { CustomPagination } from "../components/GridComponents/CustomPagination";
 import { useTheme } from "@mui/material/styles";
 import LogsGridToolbar from "../components/GridComponents/LogsGridToolbar";
 import LogsNoRowsOverlay from "../components/GridComponents/LogsNoRowsOverlay";
+import { MASCOT_NAME } from "../constants";
 
 function LogsPage() {
     const [currentLogMode, setCurrentLogMode] = useState('AuditLog'); // 'AuditLog' or 'ErrorLog'
@@ -15,6 +16,30 @@ function LogsPage() {
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
     const [isLoading, setIsLoading] = useState(true);
+    const [noLogsText, setNoLogsText] = useState('');
+
+    const noLogsFoundTexts = useMemo(() => [
+        `${MASCOT_NAME} flipped through every page of the ${currentLogMode}... still nothing.`,
+        `The ${currentLogMode} is emptier than ${MASCOT_NAME}'s snack drawer.`,
+        `${MASCOT_NAME} triple-checked the ${currentLogMode} — not even a suspicious comma.`,
+        `Even with a magnifying glass, ${MASCOT_NAME} couldn't find anything in the ${currentLogMode}.`,
+        `No entries. ${MASCOT_NAME} is starting to question the existence of this ${currentLogMode}.`,
+        `${MASCOT_NAME} searched the ${currentLogMode} and only found echoes.`,
+        `The ${currentLogMode} is so quiet, ${MASCOT_NAME} took a nap waiting for results.`,
+        `All clear! Not a single thing in the ${currentLogMode} to report.`,
+        `Either the ${currentLogMode} is spotless, or ${MASCOT_NAME} missed something (unlikely).`,
+        `${MASCOT_NAME} stared at the ${currentLogMode} for a long time. Nothing stared back.`,
+        `If this ${currentLogMode} were a book, it’d be blank. ${MASCOT_NAME} checked.`,
+        `The ${currentLogMode} is suspiciously clean. ${MASCOT_NAME} is impressed… maybe too impressed.`,
+        `After an exhaustive scan, ${MASCOT_NAME} reports: zero findings in the ${currentLogMode}.`,
+        `${MASCOT_NAME} even asked the logs nicely. Still, ${currentLogMode} gave nothing.`,
+        `${MASCOT_NAME} brought popcorn for drama in the ${currentLogMode}. Sadly, no show today.`,
+        `No chaos found in the ${currentLogMode}. ${MASCOT_NAME} is both relieved and bored.`,
+        `${MASCOT_NAME}'s detective hat is on, but the ${currentLogMode} is playing hard to get.`,
+        `The ${currentLogMode} is as empty as ${MASCOT_NAME}'s inbox on weekends.`,
+        `Not even a typo in sight. ${currentLogMode} is squeaky clean.`,
+        `${MASCOT_NAME} checked. Rechecked. Even did a backflip. Still no ${currentLogMode} entries.`
+    ], [currentLogMode]);
 
     const theme = useTheme();
 
@@ -45,7 +70,13 @@ function LogsPage() {
     };
 
     useEffect(() => {
-        setCurrentShownLog(getSearchedLogs());
+        const searchedLogs = getSearchedLogs();
+
+        if (searchedLogs.length === 0 && currentShownLog.length > 0) {
+            setNoLogsText(noLogsFoundTexts[Math.floor(Math.random() * noLogsFoundTexts.length)]);
+        }
+
+        setCurrentShownLog(searchedLogs);
     }, [currentLog, search]);
 
     useEffect(() => {
@@ -138,7 +169,7 @@ function LogsPage() {
                     slotProps={{
                         toolbar: { onSearchChanged: (search) => setSearch(search), selectedLogtype: currentLogMode, setSelectedLogtype: setCurrentLogMode },
                         pagination: { labelRowsPerPage: "Logs per page:" },
-                        noRowsOverlay: { text: `No ${currentLogMode === 'AuditLog' ? 'Audit' : 'Error'} Logs found` },
+                        noRowsOverlay: { text: noLogsText },
                     }}
                 />
             </Paper>
