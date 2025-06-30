@@ -395,10 +395,50 @@ function SettingsPage() {
                 </Box>
                 <Box
                     sx={{
+                        position: 'relative',
                         height: '75px',
+                        width: '135px',
                     }}
                 >
-                    <ServerSvg w={'100%'} h={'100%'} />
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            height: '75px',
+                            zIndex: 1,
+                        }}
+                    >
+                        <ServerSvg w={'100%'} h={'100%'} />
+                    </Box>
+                    {/* <Box
+                        sx={{
+                            position: 'absolute',
+                            top: -45,
+                            right: 16,
+                            zIndex: 2,
+                        }}
+                    >
+                        <img
+                            src="/mascot/concept_mascot.png"
+                            alt="EAM Mascot"
+                            height={70}
+                        />
+                    </Box> */}
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: 7,
+                            left: 2,
+                            zIndex: 0,
+                        }}
+                    >
+                        <img
+                            src="/mascot/concept_mascot.png"
+                            alt="EAM Mascot"
+                            height={70}
+                        />
+                    </Box>
                 </Box>
             </ComponentBox>
 
@@ -683,27 +723,40 @@ function SettingsPage() {
                                 <Box
                                     sx={{
                                         display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: 0,
+                                        flexDirection: 'row',
+                                        gap: 1.5,
                                         backgroundColor: theme => theme.palette.background.default,
                                         borderRadius: `${theme.shape.borderRadius - 2}px`,
                                         p: 1.25
                                     }}
                                 >
-                                    <Typography variant='subtitle1' sx={{ px: 1 }}>
-                                        Are you sure you want to delete all your data?
-                                    </Typography>
-                                    <Typography variant='body2' sx={{ mx: 'auto', mb: 1.5 }}>
-                                       This action cannot be undone.
-                                    </Typography>
-                                    <StyledButton
-                                        disabled={analyticsRequestLoading || dataDeletionRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
-                                        color="error"
-                                        startIcon={<DeleteForeverOutlinedIcon />}
-                                        onClick={deleteAllUserData}
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: 0,
+                                        }}
                                     >
-                                        Delete all your data
-                                    </StyledButton>
+                                        <Typography variant='subtitle1' sx={{ px: 1 }}>
+                                            Are you sure you want to delete all your data?
+                                        </Typography>
+                                        <Typography variant='body2' sx={{ mx: 'auto', mb: 1.5 }}>
+                                            This action cannot be undone.
+                                        </Typography>
+                                        <StyledButton
+                                            disabled={analyticsRequestLoading || dataDeletionRequestLoading || analyticsSettings?.optOut || analyticsSettings?.sendAnonymizedData}
+                                            color="error"
+                                            startIcon={<DeleteForeverOutlinedIcon />}
+                                            onClick={deleteAllUserData}
+                                        >
+                                            Delete all your data
+                                        </StyledButton>
+                                    </Box>
+                                        <img
+                                            src="/mascot/Error/error_mascot_only_small_low_res.png"
+                                            alt="EAM Mascot"
+                                            height='100px'
+                                        />
                                 </Box>
                             </Paper>
                         </Popover>
