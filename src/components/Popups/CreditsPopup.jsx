@@ -20,13 +20,30 @@ function CreditsPopup() {
                 }}
                 innerSx={{
                     display: 'flex',
-                    flexDirection: 'column',
+                    flexDirection: 'row',
                     gap: 1.25,
+                    justifyContent: 'space-between',
                 }}
             >
-                <CreditEntry title={'Tauri'} url={'https://tauri.app/'} image={'tauri.svg'} />
-                <CreditEntry title={'React'} url={'https://react.dev/'} image={'react.svg'} />
-                <CreditEntry title={'Material UI'} url={'https://mui.com/'} image={'mui.svg'} />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 1.25,
+                    }}
+                >
+                    <CreditEntry title={'Tauri'} url={'https://tauri.app/'} image={'tauri.svg'} />
+                    <CreditEntry title={'React'} url={'https://react.dev/'} image={'react.svg'} />
+                    <CreditEntry title={'Material UI'} url={'https://mui.com/'} image={'mui.svg'} />
+                </Box>
+                <img
+                    src='/mascot/mascot_low_res.png'
+                    alt='Mascot'
+                    height={85}
+                    style={{
+                        marginRight: '16px',
+                    }}
+                />
             </ComponentBox>
             <ComponentBox
                 title={'Resources & People'}
@@ -41,11 +58,11 @@ function CreditsPopup() {
                     width: 'fit-content',
                 }}
             >
-                <CreditEntry title={'Muledump'} url={'https://github.com/jakcodex/muledump'} image={'muledump.png'} text={"Thank you for the great project, it helped a lot."}/>
-                <CreditEntry title={'Muledump (Tadus Fork)'} url={'https://github.com/TadusPro/muledump'} image={'muledump.png'} text={"Thanks for providing this fork."}/>
-                <CreditEntry title={'Muledump-Asset-Compiler'} url={'https://github.com/jakcodex/muledump-asset-compiler'} image={'muledump-asset-compiler.png'} text={"Thanks for the nice assets!"}/>
+                <CreditEntry title={'Muledump'} url={'https://github.com/jakcodex/muledump'} image={'muledump.png'} text={"Thank you for the great project, it helped a lot."} />
+                <CreditEntry title={'Muledump (Tadus Fork)'} url={'https://github.com/TadusPro/muledump'} image={'muledump.png'} text={"Thanks for providing this fork."} />
+                <CreditEntry title={'Muledump-Asset-Compiler'} url={'https://github.com/jakcodex/muledump-asset-compiler'} image={'muledump-asset-compiler.png'} text={"Thanks for the nice assets!"} />
                 <CreditEntry title={'unDraw'} url={'https://undraw.co/'} image={'unDraw.svg'} text={'Thanks for providing the nice illustrations free of charge.'} />
-                <Typography component={"div"} variant="body1" color="textSecondary" sx={{mt: 1}}>
+                <Typography component={"div"} variant="body1" color="textSecondary" sx={{ mt: 1 }}>
                     A Special <b>THANKS</b> goes to these legends
                 </Typography>
 
