@@ -116,7 +116,7 @@ function ErrorBoundaryFallback() {
                     height: '100%',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center',
+                    alignItems: 'start',
                 }}
             >
                 <Box
@@ -124,9 +124,45 @@ function ErrorBoundaryFallback() {
                         width: '100%',
                         maxWidth: '400px',
                         height: '100%',
+                        position: 'relative',
                     }}
                 >
-                    <QaEngineerSvg h={'100%'} w={'100%'} />
+                    <img
+                        src="/mascot/floor.png"
+                        alt="Floor of the mascot"
+                        style={{
+                            position: 'absolute',
+                            bottom: 60,
+                            left: -40,
+                            width: '100%',
+                            height: 'auto',
+                            zIndex: 1,
+                        }}
+                    />
+                    <img
+                        src="/mascot/floor.png"
+                        alt="Floor of the mascot"
+                        style={{
+                            position: 'absolute',
+                            bottom: 15,
+                            left: 85,
+                            width: '100%',
+                            height: 'auto',
+                            zIndex: 1,
+                        }}
+                    />
+                    <img
+                        src="/mascot/Error/error_low_res.png"
+                        alt="Okta the mascot"
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: 'auto',
+                            zIndex: 2,
+                        }}
+                    />
                 </Box>
             </Box>
         </Box>
