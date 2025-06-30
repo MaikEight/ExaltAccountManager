@@ -32,8 +32,6 @@ function AccountGrid({ setShowAddNewAccount }) {
         setShownAccounts(getSearchedAccounts());
     }, [search]);
 
-
-
     const getGroupUI = (params) => {
         if (!params.value) return null;
 
