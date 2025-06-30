@@ -1,7 +1,9 @@
 import { Box, Typography } from "@mui/material";
-import NoAccountsSvg from "../Illustrations/NoAccountsSvg";
+import { useRef } from "react";
 
-function LogsNoRowsOverlay({ text }) {    
+function LogsNoRowsOverlay({ text }) {
+
+    const imageRef = useRef(Math.random() < 0.5 ? '/mascot/Search/no_accounts_1_small_very_low_res.png' : '/mascot/Search/no_accounts_2_very_low_res.png');
 
     return (
         <Box
@@ -20,7 +22,16 @@ function LogsNoRowsOverlay({ text }) {
                     maxWidth: 'calc(min(30%, 300px))',
                 }}
             >
-                <NoAccountsSvg w={'100%'} h={'100%'} />
+                <img
+                    src={imageRef?.current ? imageRef.current : "/mascot/Search/no_accounts_1_small_very_low_res.png"}
+                    alt="No accounts found"
+                    style={{
+                        width: '100%',
+                        height: 'auto',
+                        maxHeight: '100%',
+                    }}
+
+                />
             </Box>
             <Typography variant="h6">
                 {text}
