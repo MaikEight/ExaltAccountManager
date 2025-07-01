@@ -1,9 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import { useRef } from "react";
 
-function LogsNoRowsOverlay({ text }) {
+function LogsNoRowsOverlay({ text, isHidden }) {
 
     const imageRef = useRef(Math.random() < 0.5 ? '/mascot/Search/no_accounts_1_small_very_low_res.png' : '/mascot/Search/no_accounts_2_very_low_res.png');
+
+    if (isHidden) {
+        return null;
+    }
 
     return (
         <Box
