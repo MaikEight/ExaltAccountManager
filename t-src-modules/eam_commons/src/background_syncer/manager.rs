@@ -99,7 +99,7 @@ impl BackgroundSyncManager {
 
             let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
             let can_call = limiter.can_call("account/verify") && limiter.can_call("char/list");
-            drop(limiter); // release lock early before sleeping
+            drop(limiter); // release lock before sleeping
 
             if !can_call {
                 info!("[BGRSYNC] API limiter active, waiting...");
@@ -123,12 +123,18 @@ impl BackgroundSyncManager {
                 hwid.clone(),
                 &self.event_hub,
             );
-
+            
             match &result {
                 SyncResult::Success => {
                     info!("[BGRSYNC] Account {} synced successfully", email);
                     if let Some(dataset) = dataset_opt {
-                        // TODO: emit dataset to frontend or store in DB
+                        BackgroundSyncEvent::emit(
+                            &self.event_hub,
+                            BackgroundSyncEvent::AccountCharListSync(
+                                email.clone(),
+                                dataset.to_string(),
+                            ),
+                        );
                     }
                 }
                 SyncResult::Failure(reason) => {
@@ -136,9 +142,15 @@ impl BackgroundSyncManager {
                 }
             }
 
-            //TODO: handle result and emit events
+            // Wait for cooldown, to allow the FE to process the CharList Sync event
+            thread::sleep(Duration::from_secs(1));
 
-            thread::sleep(Duration::from_secs(2));
+            BackgroundSyncEvent::emit(
+                &self.event_hub,
+                BackgroundSyncEvent::AccountFinished(email.clone(), result.to_string()),
+            );
+             
+            thread::sleep(Duration::from_secs(1));
         }
     }
 
