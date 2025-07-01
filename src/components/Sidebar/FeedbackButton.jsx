@@ -37,6 +37,9 @@ function FeedbackButton({ smallSize, action }) {
             >
                 <GradientBorderButtonInner
                     selected={selected}
+                    sx={{
+                        height: '36px'
+                    }}
                 >
                     <Box
                         sx={{
