@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Chip, Tooltip, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Chip, Paper, Popover, Tooltip, Typography } from "@mui/material";
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import CloseIcon from '@mui/icons-material/Close';
@@ -8,10 +8,12 @@ import { listen } from '@tauri-apps/api/event';
 import { useEffect, useState } from "react";
 import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
+import { MASCOT_NAME } from "../../constants";
 
 function CustomToolbar(props) {
     const theme = useTheme();
-    const [hasGlobalApiCooldown, setHasGlobalApiCooldown] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [hasGlobalApiCooldown, setHasGlobalApiCooldown] = useState(true);
     const [apiRemainingLimits, setApiRemainingLimits] = useState(new Map([
         ['account/verify', 30],
         ['char/list', 5],
@@ -32,7 +34,7 @@ function CustomToolbar(props) {
                     remaining: event.payload[1],
                     limit: event.payload[2],
                 };
-                
+
                 setApiRemainingLimits((prev) => {
                     const newLimits = new Map(prev);
                     newLimits.set(data.api, data.remaining);
@@ -48,6 +50,16 @@ function CustomToolbar(props) {
             unlistenApiRemainingLimits?.();
         }
     }, []);
+
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     const getEmptyApiLimitChip = () => {
         const hasEmptyLimit = Array.from(apiRemainingLimits.values()).some(limit => limit <= 0);
@@ -89,6 +101,7 @@ function CustomToolbar(props) {
                     color={"warning"}
                     icon={<FlagCircleOutlinedIcon sx={{ pl: '2px' }} />}
                     onClick={() => null}
+                    clickable={false}
                 />
             </Tooltip>
         );
@@ -115,22 +128,103 @@ function CustomToolbar(props) {
                 {getEmptyApiLimitChip()}
                 {
                     hasGlobalApiCooldown &&
-                    <Tooltip
-                        title={"The API is on cooldown, please wait a moment."}
-                        component="span"
-                        sx={{
-                            zIndex: 1001,
-                        }}
-                    >
-                        <Chip
-                            variant="outlined"
-                            label={"API Cooldown"}
-                            size="small"
-                            color={"error"}
-                            icon={<VpnLockOutlinedIcon sx={{ pl: '2px' }} />}
-                            onClick={() => null}
-                        />
-                    </Tooltip>
+                    <>
+                        <Box
+                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                            onMouseEnter={handlePopoverOpen}
+                            onMouseLeave={handlePopoverClose}
+                        >
+                            <Chip
+                                variant="outlined"
+                                label={"API Cooldown"}
+                                size="small"
+                                color={"error"}
+                                icon={<VpnLockOutlinedIcon sx={{ pl: '2px' }} />}
+                                onClick={() => null}
+                                sx={{
+                                    '&:hover': {
+                                        cursor: 'default',
+                                    },
+                                }}
+                            />
+                        </Box>
+                        <Popover
+                            id="mouse-over-popover"
+                            sx={{ pointerEvents: 'none' }}
+                            open={open}
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            onClose={handlePopoverClose}
+                            disableRestoreFocus
+                        >
+                            <Paper
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    p: 0.25,
+                                    borderRadius: `${theme.shape.borderRadius}px`,
+                                    overflow: 'hidden',
+                                    height: 'fit-content',
+                                    width: 'fit-content',
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        backgroundColor: theme.palette.background.default,
+                                        borderRadius: `${theme.shape.borderRadius - 2}px`,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        p: 1,
+                                        px: 1.5,
+                                        gap: 0.75,
+                                        height: 'fit-content',
+                                        width: 'fit-content',
+                                    }}
+                                >
+                                    <Typography variant="body1">
+                                        Global API Cooldown is active
+                                    </Typography>
+                                    <Box
+                                        sx={{
+                                            position: 'relative',
+                                        }}
+                                    >
+                                        <img
+                                            src="mascot/Error/error_network_very_low_res.png"
+                                            alt="Okta encountered a network error"
+                                            style={{
+                                                py: 'auto',
+                                            }}
+                                        />
+                                        <img 
+                                            src="mascot/floor.png"
+                                            alt="Floor"
+                                            style={{
+                                                position: 'absolute',
+                                                bottom: 0,
+                                                left: 0,
+                                                width: '100%',
+                                                height: 'auto',
+                                            }}
+                                        />
+                                    </Box>
+                                    <Typography variant="body2">
+                                        {`Oops! Too many requests. ${MASCOT_NAME} is patiently untangling things.`}
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        </Popover>
+                    </>
                 }
             </Box>
             <ButtonGroup
