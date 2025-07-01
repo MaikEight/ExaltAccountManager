@@ -1,6 +1,5 @@
 use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
-
 use chrono::{DateTime, Utc};
 use log::warn;
 
@@ -11,6 +10,7 @@ pub enum BackgroundSyncEvent {
     AccountStarted(String),
     AccountProgress(String, AccountProgressState),
     AccountFinished(String, String),
+    AccountCharListSync(String, String),
     DailyLoginDone,
     DailyLoginProgress {
         done: usize,
@@ -21,7 +21,7 @@ pub enum BackgroundSyncEvent {
     },
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum AccountProgressState {
     FetchingAccount,
     FetchingCharList,
