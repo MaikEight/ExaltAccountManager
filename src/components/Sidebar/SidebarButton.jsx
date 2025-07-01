@@ -1,7 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 
-function SidebarButton({ menu, selected }) {
+function SidebarButton({ menu, selected, hasNotification }) {
     const theme = useTheme();
 
     return (
@@ -11,6 +11,7 @@ function SidebarButton({ menu, selected }) {
             <ListItemButton
                 onClick={() => menu.action?.(menu.navigate)}
                 sx={{
+                    position: 'relative',
                     borderRadius: "0 30px 30px 0",
                     transition: theme.transitions.create(['color', 'background-color', 'background-image', 'box-shadow']),
                     ...(!selected ?
@@ -35,6 +36,20 @@ function SidebarButton({ menu, selected }) {
                     {menu.icon}
                 </ListItemIcon>
                 <ListItemText primary={menu.name} sx={{color: !selected ? theme.palette.text.primary : theme.palette.mode === 'light' ? theme.palette.background.default : theme.palette.text.primary}} />
+                {
+                    hasNotification &&
+                    <img
+                        src="mascot/Info/notification_simple_very_low_res.png"
+                        alt="Notification by Okta"
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            right: '10px',
+                            transform: 'translateY(-50%)',
+                            height: '36px',
+                        }}
+                    />
+                }
             </ListItemButton>
         </ListItem>
     );
