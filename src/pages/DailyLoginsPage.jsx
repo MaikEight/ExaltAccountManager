@@ -71,6 +71,13 @@ function DailyLoginsPage() {
                 field: 'duration', headerName: applySettingsToHeaderName('⏱️ Duration'), width: 120, flex: 0.1, renderCell: (params) => {
                     const { startTime, endTime } = params.row;
                     if (endTime && new Date(endTime).getTime() === 0) {
+
+                        const startTimeDate = new Date(startTime);
+                        
+                        if (startTimeDate.getTime() < Date.now() - 24 * 60 * 60 * 1000) {
+                            return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>Failed</div>;
+                        }                        
+
                         return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>In Progress...</div>;
                     }
                     if (startTime && endTime) {
