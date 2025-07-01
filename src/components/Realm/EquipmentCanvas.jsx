@@ -28,15 +28,15 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         while (eqItemIds.length < 4) {
             eqItemIds.push(-1);
         }
-        
+
         setFilteredItemIds(eqItemIds);
-        addItemFilterCallback(canvasIdentifier, (itemIds) => { setFilteredItemIds(itemIds); }, eqItemIds);        
+        addItemFilterCallback(canvasIdentifier, (itemIds) => { setFilteredItemIds(itemIds); }, eqItemIds);
 
         const promises = [];
         const promiseItems = [];
         for (let i = 0; i < 4; i++) {
             const slot = slotMapValues[i];
-            const itemId = character.equipment[i];           
+            const itemId = character.equipment[i];
 
             const slotItem = [
                 itemId,
@@ -68,8 +68,8 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
         for (let i = 0; i < 4; i++) {
             const slot = slotMapValues[i];
             const itemId = character.equipment[i];
-            const item = items[itemId];         
-            if (itemId && itemId !== -1) {            
+            const item = items[itemId];
+            if (itemId && itemId !== -1 && item) {
                 itemPromises.push(drawItemAsync(
                     "renders.png",
                     item,
@@ -117,7 +117,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
 
     useEffect(() => {
         const data = itemData.map((data) => {
-            if(!data) return null;
+            if (!data) return null;
             return {
                 itemId: data.itemId,
                 img: data.img,
@@ -157,7 +157,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                             }}
                             onMouseLeave={() => setHoveredId(-1)}
                             onClick={() => {
-                                if(!data || data.hidden) return;
+                                if (!data || data.hidden) return;
                                 const imgRef = index === 0 ? itemRef1.current : index === 1 ? itemRef2.current : index === 2 ? itemRef3.current : itemRef4.current;
                                 if (!imgRef) return;
                                 const rect = imgRef.getBoundingClientRect();
@@ -171,10 +171,10 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                         >
                             {
                                 data && !data.hidden ?
-                                <img src={data.img} width={50} height={50} alt="Equipment Image" />
-                                :
-                                slotMapData && slotMapData[index] &&
-                                <img src={slotMapData[index].img} width={50} height={50} alt="Equipment Image" />
+                                    <img src={data.img} width={50} height={50} alt="Equipment Image" />
+                                    :
+                                    slotMapData && slotMapData[index] &&
+                                    <img src={slotMapData[index].img} width={50} height={50} alt="Equipment Image" />
                             }
                         </Box>
                     );
