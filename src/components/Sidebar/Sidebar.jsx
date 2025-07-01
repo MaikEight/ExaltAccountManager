@@ -91,6 +91,7 @@ function Sidebar({ children }) {
             ),
             action: handleNavigate,
             navigate: '/utilities',
+            hasNotification: isGameUpdateAvailable,
             showInFooter: false
         },
         {
@@ -175,6 +176,7 @@ function Sidebar({ children }) {
                                             key={index + menu.name}
                                             menu={menu}
                                             selected={menu.navigate === location.pathname || menu.additionalPaths?.includes(location.pathname)}
+                                            hasNotification={menu.hasNotification}
                                         />
                                 ))
                             }
