@@ -32,6 +32,7 @@ import { EAM_PRIVACY_GATE_API } from 'eam-commons-js/constants';
 import ServerSvg from '../components/Illustrations/ServerSvg';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import { MASCOT_NAME } from '../constants';
 
 function SettingsPage() {
     const userSettings = useUserSettings();
@@ -51,6 +52,7 @@ function SettingsPage() {
     const [analyticsRequestLoading, setAnalyticsRequestLoading] = useState(false);
     const [dataDeletionRequestLoading, setDataDeletionRequestLoading] = useState(false);
     const [anchorElDeletion, setAnchorElDeletion] = useState(null);
+    const [mascotImage, setMascotImage] = useState('/mascot/Error/error_mascot_only_small_low_res.png');
     const openDeletionPopup = Boolean(anchorElDeletion);
     const idDeletionPopup = open ? 'data-deletion-popover' : undefined;
 
@@ -70,6 +72,22 @@ function SettingsPage() {
             { field: 'comment', headerName: applySettingsToHeaderName('💬 Comment') },
         ]
     }, [settings]);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setMascotImage(prev => {
+                if (prev?.includes('2')) {
+                    return '/mascot/Error/error_mascot_only_small_low_res.png';
+                }
+
+                return '/mascot/Error/error_mascot_only_2_small_low_res.png';
+            });
+        }, 750);
+
+        return () => {
+            clearInterval(intervalId);
+        }
+    }, []);
 
     const setTheSettings = async () => {
         const s = userSettings.get;
@@ -752,11 +770,18 @@ function SettingsPage() {
                                             Delete all your data
                                         </StyledButton>
                                     </Box>
+                                    <Tooltip
+                                        title={`${MASCOT_NAME} fears he will forget you if you delete your data, so he will be sad if you do this. But he understands if you want to do it. 😭`}
+                                    >
                                         <img
-                                            src="/mascot/Error/error_mascot_only_small_low_res.png"
+                                            src={mascotImage ? mascotImage : "/mascot/Error/error_mascot_only_2_small_low_res.png"}
                                             alt="EAM Mascot"
                                             height='100px'
+                                            style={{
+                                                marginRight: '4px',
+                                            }}
                                         />
+                                    </Tooltip>
                                 </Box>
                             </Paper>
                         </Popover>
