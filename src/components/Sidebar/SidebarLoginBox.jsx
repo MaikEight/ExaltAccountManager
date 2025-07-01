@@ -114,6 +114,7 @@ function SidebarLoginBox() {
                 <GradientBorderButtonInner
                     selected={!greetingText && selected}
                     sx={{
+                        height: 'fit-content',
                         transition: theme.transitions.create('background-color'),
 
                         ...(isAuthenticated && user && greetingText && {
