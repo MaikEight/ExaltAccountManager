@@ -16,7 +16,7 @@ function LogsPage() {
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
     const [isLoading, setIsLoading] = useState(true);
-    const [noLogsText, setNoLogsText] = useState('');
+    const [noLogsText, setNoLogsText] = useState(null);
 
     const noLogsFoundTexts = useMemo(() => [
         `${MASCOT_NAME} flipped through every page of the ${currentLogMode}... still nothing.`,
@@ -74,6 +74,8 @@ function LogsPage() {
 
         if (searchedLogs.length === 0 && currentShownLog.length > 0) {
             setNoLogsText(noLogsFoundTexts[Math.floor(Math.random() * noLogsFoundTexts.length)]);
+        } else if (searchedLogs.length > 0 && noLogsText) {
+            setNoLogsText(null);
         }
 
         setCurrentShownLog(searchedLogs);
@@ -169,7 +171,7 @@ function LogsPage() {
                     slotProps={{
                         toolbar: { onSearchChanged: (search) => setSearch(search), selectedLogtype: currentLogMode, setSelectedLogtype: setCurrentLogMode },
                         pagination: { labelRowsPerPage: "Logs per page:" },
-                        noRowsOverlay: { text: noLogsText },
+                        noRowsOverlay: { text: noLogsText, isHidden: (!noLogsText || noLogsText?.length === 0) },
                     }}
                 />
             </Paper>
