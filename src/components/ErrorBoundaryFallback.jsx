@@ -152,7 +152,7 @@ function ErrorBoundaryFallback() {
                         }}
                     />
                     <img
-                        src="/mascot/Error/error_low_res.png"
+                        src="/mascot/Error/error_2_low_res.png"
                         alt="Okta the mascot"
                         style={{
                             position: 'absolute',
