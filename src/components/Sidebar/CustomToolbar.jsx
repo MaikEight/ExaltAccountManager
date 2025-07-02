@@ -13,7 +13,7 @@ import { MASCOT_NAME } from "../../constants";
 function CustomToolbar(props) {
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
-    const [hasGlobalApiCooldown, setHasGlobalApiCooldown] = useState(true);
+    const [hasGlobalApiCooldown, setHasGlobalApiCooldown] = useState(false);
     const [apiRemainingLimits, setApiRemainingLimits] = useState(new Map([
         ['account/verify', 30],
         ['char/list', 5],
