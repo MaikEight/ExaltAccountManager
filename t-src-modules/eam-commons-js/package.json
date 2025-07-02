@@ -16,11 +16,11 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^7.1.1",
-    "@mui/material": "^7.1.1",
-    "@mui/styled-engine-sc": "^7.1.1",
-    "@tauri-apps/api": "^2.5.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.2.0",
+    "@mui/material": "^7.2.0",
+    "@mui/styled-engine-sc": "^7.2.0",
+    "@tauri-apps/api": "^2.6.0",
     "axios": "^1.10.0",
     "babel-loader": "10.0.0",
     "buffer": "^6.0.3",
@@ -35,9 +35,9 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.5.0",
-    "@vitejs/plugin-react": "^4.5.2",
+    "@tauri-apps/cli": "^2.6.2",
+    "@vitejs/plugin-react": "^4.6.0",
     "esbuild": "^0.25.5",
-    "vite": "^6.3.5"
+    "vite": "^7.0.0"
   }
 }
