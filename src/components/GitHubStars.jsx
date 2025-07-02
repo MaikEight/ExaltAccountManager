@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { getGitHubStars } from "../backend/gitHubApi";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 function GitHubStars({ style }) {
     const [stars, setStars] = useState(undefined);
+    const theme = useTheme();
 
     useEffect(() => {
         if (sessionStorage.getItem('githubStars')) {
@@ -29,9 +30,12 @@ function GitHubStars({ style }) {
                     alignItems: "center",
                     justifyContent: "center",
                     width: 110,
+                    '&:hover': {
+                        color: '#e3b341',
+                    }
                 }}
             >
-                <GitHubIcon fontSize='large' />
+                <GitHubIcon fontSize='large' sx={{ color: theme.palette.text.primary }} />
                 <Box
                     sx={{
                         display: "flex",
