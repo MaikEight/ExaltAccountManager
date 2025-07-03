@@ -28,7 +28,19 @@ async function postAccountVerify(account, clientId, decryptNeeded = true) {
 
     try {
         const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
-        return xmlToJson(response);
+        const jsonResponse = xmlToJson(response);
+
+        if (sessionStorage.getItem('flag:debug') === 'true') {
+            console.log('postAccountVerify response', jsonResponse);
+        }
+
+        if (sessionStorage.getItem('flag:copy:account/verify') === 'true') {
+            navigator.clipboard.writeText(JSON.stringify(jsonResponse, null, 2))
+                .then(() => console.log('postAccountVerify response copied to clipboard'))
+                .catch(err => console.error('Failed to copy postAccountVerify response: ', err));
+        }
+
+        return jsonResponse || null;
     } catch (error) {
         console.error(`Error: ${error}`);
         logToErrorLog('postAccountVerify', error);
@@ -52,7 +64,19 @@ async function postCharList(accessToken) {
 
     try {
         const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
-        return xmlToJson(response);
+        const jsonResponse = xmlToJson(response);
+
+        if (sessionStorage.getItem('flag:debug') === 'true') {
+            console.log('postCharList response', jsonResponse);
+        }
+
+        if (sessionStorage.getItem('flag:copy:char/list') === 'true') {
+            navigator.clipboard.writeText(JSON.stringify(jsonResponse, null, 2))
+                .then(() => console.log('postCharList response copied to clipboard'))
+                .catch(err => console.error('Failed to copy postCharList response: ', err));
+        }
+
+        return jsonResponse || null;
     } catch (error) {
         console.error(`Error: ${error}`);
         logToErrorLog('postCharList', error);
@@ -79,12 +103,24 @@ async function postRegisterAccount(account) {
     }
 
     try {
-        return await invoke('send_post_request_with_form_url_encoded_data', { url, data })
+        const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data })
             .catch(error => {
                 console.error(`Error: ${error}`);
                 logToErrorLog('postRegisterAccount', error);
                 return 'EAM API error';
             });
+
+        if (sessionStorage.getItem('flag:debug') === 'true') {
+            console.log('postRegisterAccount response', response);
+        }
+
+        if (sessionStorage.getItem('flag:copy:account/register') === 'true') {
+            navigator.clipboard.writeText(JSON.stringify(response, null, 2))
+                .then(() => console.log('postRegisterAccount response copied to clipboard'))
+                .catch(err => console.error('Failed to copy postRegisterAccount response: ', err));
+        }
+
+        return response || null;
     } catch (error) {
         console.error(`Error: ${error}`);
         logToErrorLog('postCharList', error);
@@ -109,6 +145,16 @@ async function getAppInit() {
         }
 
         const appSettings = xmlToJson(await response.data);
+
+        if (sessionStorage.getItem('flag:debug') === 'true') {
+            console.log('getAppInit response', appSettings);
+        }
+
+        if (sessionStorage.getItem('flag:copy:app-init') === 'true') {
+            navigator.clipboard.writeText(JSON.stringify(appSettings, null, 2))
+                .then(() => console.log('getAppInit response copied to clipboard'))
+                .catch(err => console.error('Failed to copy getAppInit response: ', err));
+        }
 
         sessionStorage.setItem('buildHash', appSettings.BuildHash);
         sessionStorage.setItem('buildCDN', appSettings.BuildCDN ? appSettings.BuildCDN.replace('build-release/', '') : 'https://rotmg-build.decagames.com/');
@@ -140,7 +186,19 @@ async function getGameFileList(buildHash) {
                 method: 'GET',
             });
 
-        return response.data.files;
+        const files = response.data.files;
+
+        if( sessionStorage.getItem('flag:debug') === 'true') {
+            console.log('getGameFileList response', files);
+        }
+
+        if (sessionStorage.getItem('flag:copy:game-file-list') === 'true') {
+            navigator.clipboard.writeText(JSON.stringify(files, null, 2))
+                .then(() => console.log('getGameFileList response copied to clipboard'))
+                .catch(err => console.error('Failed to copy getGameFileList response: ', err));
+        }
+
+        return files;
     } catch (error) {
         console.log(error);
         logToErrorLog('getGameFileList', error);
