@@ -520,7 +520,7 @@ function ImporterPage() {
                             }}
                         >
                             <Typography variant="body1">
-                                To import accounts please Drag & Drop a file here or choose file by clicking the button below.
+                                To import accounts please Drag & Drop a file here or choose a file by clicking the button below.
                             </Typography>
                             <StyledButton
                                 startIcon={<SearchOutlinedIcon />}
@@ -849,24 +849,42 @@ function ImporterPage() {
                                 }}
                                 innerSx={{
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'start',
+                                    flexDirection: 'row',
+                                    alignItems: 'space-between',
                                     p: 1
                                 }}
                             >
-                                <Typography variant="body2">
-                                    The accounts.js file is the export file of Muledump.
-                                </Typography>
-                                <Typography component={'span'} variant="body2">
-                                    If you want to export your accounts from Muledump, simply follow these steps.
-                                    <ol>
-                                        <li>Open Muledump</li>
-                                        <li>Click on Setup (Top-right Menu)</li>
-                                        <li>Click on Accounts</li>
-                                        <li>Click on Export Accounts.js (Bottom-Right)</li>
-                                        <li>Drag & Drop the Accounts.js file here</li>
-                                    </ol>
-                                </Typography>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'start',
+                                    }}
+                                >
+                                    <Typography variant="body2">
+                                        The accounts.js file is the export file of Muledump.
+                                    </Typography>
+                                    <Typography component={'span'} variant="body2">
+                                        If you want to export your accounts from Muledump, simply follow these steps.
+                                        <ol>
+                                            <li>Open Muledump</li>
+                                            <li>Click on Setup (Top-right Menu)</li>
+                                            <li>Click on Accounts</li>
+                                            <li>Click on Export Accounts.js (Bottom-Right)</li>
+                                            <li>Drag & Drop the Accounts.js file here</li>
+                                        </ol>
+                                    </Typography>
+                                </Box>
+                                <img 
+                                    src='/mascot/okta_low_res.png'
+                                    alt='EAM Mascot'
+                                    height={150}
+                                    style={{
+                                        marginLeft: 'auto',
+                                        marginTop: 'auto',
+                                        marginRight: '16px'
+                                    }}
+                                />
                             </ComponentBox>
                         </ComponentBox>
                     </Box>
