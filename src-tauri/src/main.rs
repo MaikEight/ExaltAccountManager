@@ -4,6 +4,7 @@
 extern crate dirs;
 
 use diesel::r2d2::ConnectionManager;
+use eam_commons::background_syncer::BackgroundSyncManager;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
 use eam_commons::limiter::manager::RateLimiterManager;
@@ -36,7 +37,7 @@ use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex, MutexGuard};
-use std::sync::atomic::AtomicU64;
+use std::sync::atomic::{AtomicU64, AtomicBool, Ordering};
 use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
@@ -70,6 +71,9 @@ lazy_static! {
             last_known_remaining: HashMap::new(),
         }));
     static ref HAS_REGISTERED_API_LIMIT_EVENT_LISTENER: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+    static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);
+    static ref BACKGROUND_SYNC_MANAGER: Arc<Mutex<Option<BackgroundSyncManager>>> =
+        Arc::new(Mutex::new(None));
 }
 
 //IMPORTANT: The file is not checked in to the repository
@@ -164,6 +168,9 @@ fn main() {
         .plugin(tauri_plugin_drpc::init())        
         .invoke_handler(tauri::generate_handler![
             add_api_limit_event_listener,
+            create_background_sync_manager,
+            start_background_sync_manager,
+            stop_background_sync_manager,
             open_url,
             get_save_file_path,
             combine_paths,
@@ -275,6 +282,82 @@ async fn add_api_limit_event_listener(app: AppHandle) {
         }
     });
 }
+
+#[tauri::command]
+async fn create_background_sync_manager(
+    app: AppHandle,
+) -> Result<(), Error> {
+    if HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER.swap(true, Ordering::SeqCst) {
+        info!("Background sync event listener already registered, skipping...");
+        return Ok(());
+    }
+
+    info!("Creating background sync manager...");
+
+    let pool = POOL.lock().unwrap().clone();
+    if pool.is_none() {
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Database pool not initialized",
+        )));
+    }
+
+    let pool = Arc::new(pool.unwrap());
+    let api_limiter = Arc::clone(&GLOBAL_API_LIMITER);
+
+    let manager = BackgroundSyncManager::new(pool, api_limiter).await;
+    *BACKGROUND_SYNC_MANAGER.lock().unwrap() = Some(manager.clone());
+
+    manager.get_event_hub().register_listener(move |event| {        
+
+        if matches!(event, eam_commons::background_syncer::events::BackgroundSyncEvent::AccountCharListSync { .. }) {
+            info!("Background sync AccountCharListSync event received");
+        } else {
+            info!("Background sync event: {:?}", event);
+        }
+
+        // Emit the event to the frontend
+        if let Err(e) = app.emit("background-sync-event", event) {
+            error!("Failed to emit background sync event: {}", e);
+        }
+    });
+
+    info!("Background sync manager created successfully");
+    Ok(())
+}
+
+#[tauri::command]
+async fn start_background_sync_manager() -> Result<(), String> {
+    info!("Starting background sync manager...");
+
+    let manager_opt = BACKGROUND_SYNC_MANAGER.lock().unwrap().clone();
+
+    if let Some(manager) = manager_opt {
+        manager.start();
+        info!("Background sync manager started successfully");
+        Ok(())
+    } else {
+        Err("Background sync manager not initialized".into())
+    }
+}
+
+#[tauri::command]
+fn stop_background_sync_manager() -> Result<(), Error> {
+    info!("Stopping background sync manager...");
+
+    let mut manager = BACKGROUND_SYNC_MANAGER.lock().unwrap();
+    if let Some(ref mut m) = *manager {
+        m.stop();
+        info!("Background sync manager stopped successfully");
+        Ok(())
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Background sync manager not initialized",
+        )))
+    }
+}
+
 
 #[tauri::command]
 async fn open_url(url: String) -> Result<(), Error> {
