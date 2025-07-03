@@ -329,7 +329,7 @@ export function parsePcStats(pcStats) {
             }
         }
         else {
-            console.error("Failed to properly read PCStats. Found hex (0x" + r.toString(16).padStart(2, '0') + ") at the begining of a number. Number was expected to be between 0x00 and 0x3F or between 0x80 and 0xBF. The rest of the PCString read will be corrupted.");
+            console.error("Failed to properly read PCStats. Found hex (0x" + r.toString(16).padStart(2, '0') + ") at the begining of a number. Number was expected to be between 0x00 and 0x3F or between 0x80 and 0xBF. The rest of the PCString read will be corrupted.", pcStats);
             return r;
         }
     }
