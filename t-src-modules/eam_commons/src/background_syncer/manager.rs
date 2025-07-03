@@ -1,6 +1,11 @@
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
-use std::thread;
 use std::time::Duration;
+use uuid::Uuid;
+use log::{debug, error, info};
 
 use crate::background_syncer::events::*;
 use crate::background_syncer::process_account::process_account;
@@ -8,21 +13,24 @@ use crate::background_syncer::types::*;
 use crate::background_syncer::utils::get_save_file_path;
 use crate::diesel_functions::get_next_eam_account_for_background_sync;
 use crate::diesel_setup::DbPool;
-use create::hwid::get_device_unique_identifier;
+use crate::hwid::get_device_unique_identifier;
+use crate::limiter::manager::RateLimiterManager;
 
 #[derive(Clone)]
 pub struct BackgroundSyncManager {
     pub pool: Arc<DbPool>,
     pub event_hub: BackgroundSyncEventHub,
+    pub api_limiter: Arc<Mutex<RateLimiterManager>>,
 
     hwid: String,
     current_mode: Arc<Mutex<SyncMode>>,
     config: Arc<Mutex<BackgroundSyncConfig>>,
     should_stop: Arc<Mutex<bool>>,
+    is_running: Arc<AtomicBool>,
 }
 
 impl BackgroundSyncManager {
-    pub async fn new(pool: Arc<DbPool>, event_hub: BackgroundSyncEventHub) -> Self {
+    pub async fn new(pool: Arc<DbPool>, api_limiter: Arc<Mutex<RateLimiterManager>>) -> Self {
         let mut hwid_file_path = PathBuf::from(get_save_file_path());
         hwid_file_path.push("EAM.HWID");
         let hwid;
@@ -38,7 +46,8 @@ impl BackgroundSyncManager {
 
         Self {
             pool,
-            event_hub,
+            event_hub: BackgroundSyncEventHub::new(),
+            api_limiter,
             hwid,
             current_mode: Arc::new(Mutex::new(SyncMode::Default)),
             config: Arc::new(Mutex::new(BackgroundSyncConfig {
@@ -46,7 +55,12 @@ impl BackgroundSyncManager {
                 speed: SyncSpeed::Normal,
             })),
             should_stop: Arc::new(Mutex::new(false)),
+            is_running: Arc::new(AtomicBool::new(false)),
         }
+    }
+
+    pub fn get_event_hub(&self) -> BackgroundSyncEventHub {
+        self.event_hub.clone()
     }
 
     pub fn switch_mode(&self, mode: SyncMode) {
@@ -61,16 +75,33 @@ impl BackgroundSyncManager {
     pub fn stop(&self) {
         let mut flag = self.should_stop.lock().unwrap();
         *flag = true;
+        self.is_running.store(true, Ordering::SeqCst);
+        info!("[BGRSYNC] Stopping background sync manager...");
+
+        self.event_hub.emit(BackgroundSyncEvent::ModeChanged("Stopped".to_string()));
     }
 
     pub fn start(&self) {
+        if self.is_running.load(Ordering::SeqCst) {
+            log::warn!(
+                "[BGRSYNC] Attempted to start background sync manager but it's already running."
+            );
+            return;
+        }
+        info!("[BGRSYNC] Starting background sync manager...");
+
+        self.is_running.store(true, Ordering::SeqCst);
         let manager = self.clone();
-        thread::spawn(move || {
-            manager.run_loop();
+        self.event_hub
+                .emit(BackgroundSyncEvent::ModeChanged("Started".to_string()));
+
+        tokio::spawn(async move {            
+            manager.run_loop().await;
+            manager.is_running.store(false, Ordering::SeqCst);
         });
     }
 
-    fn run_loop(&self) {
+    async fn run_loop(&self) {
         loop {
             if *self.should_stop.lock().unwrap() {
                 break;
@@ -78,15 +109,15 @@ impl BackgroundSyncManager {
 
             let mode = self.current_mode.lock().unwrap().clone();
             match mode {
-                SyncMode::Default => self.run_default_mode(),
-                SyncMode::DailyLogin => self.run_daily_login_mode(),
+                SyncMode::Default => self.run_default_mode().await,
+                SyncMode::DailyLogin => self.run_daily_login_mode().await,
             }
 
-            thread::sleep(Duration::from_secs(1));
+            tokio::time::sleep(Duration::from_secs(1)).await;
         }
     }
 
-    fn run_default_mode(&self) {
+    async fn run_default_mode(&self) {
         let config = self.config.lock().unwrap().clone();
         if !config.enabled {
             return;
@@ -97,64 +128,69 @@ impl BackgroundSyncManager {
                 return;
             }
 
-            let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
-            let can_call = limiter.can_call("account/verify") && limiter.can_call("char/list");
-            drop(limiter); // release lock before sleeping
+            let can_call = {
+                let limiter = self.api_limiter.lock().unwrap();
+
+                match (
+                    limiter.api_limits("account/verify"),
+                    limiter.api_limits("char/list"),
+                ) {
+                    (Some((limit_v, remain_v)), Some((limit_c, remain_c))) => {
+                        limit_v == remain_v && limit_c == remain_c
+                    }
+                    _ => false,
+                }
+            };
 
             if !can_call {
-                info!("[BGRSYNC] API limiter active, waiting...");
-                thread::sleep(Duration::from_secs(10));
+                debug!("[BGRSYNC] API limiter active, waiting...");
+                tokio::time::sleep(Duration::from_secs(10)).await;
                 continue;
             }
+            info!("[BGRSYNC] API limiter is clear, proceeding with account sync.");
 
             let account = match get_next_eam_account_for_background_sync(&self.pool) {
                 Ok(Some(acc)) => acc,
                 Ok(None) => return,
                 Err(e) => {
-                    log::error!("Failed to get next account: {}", e);
+                    error!("Failed to get next account: {}", e);
                     return;
                 }
             };
+
             info!("[BGRSYNC] Processing account: {}", account.email);
 
             let (result, dataset_opt) = process_account(
                 Arc::clone(&self.pool),
-                account,
-                hwid.clone(),
+                account.clone(),
+                self.hwid.clone(),
                 &self.event_hub,
-            );
-            
-            match &result {
-                SyncResult::Success => {
-                    info!("[BGRSYNC] Account {} synced successfully", email);
-                    if let Some(dataset) = dataset_opt {
-                        BackgroundSyncEvent::emit(
-                            &self.event_hub,
-                            BackgroundSyncEvent::AccountCharListSync(
-                                email.clone(),
-                                dataset.to_string(),
-                            ),
-                        );
-                    }
-                }
-                SyncResult::Failure(reason) => {
-                    warn!("[BGRSYNC] Account {} failed: {}", email, reason);
+                Arc::clone(&self.api_limiter),
+            )
+            .await;
+
+            if let SyncResult::Success = result {
+                if let Some(dataset) = dataset_opt {
+                    let uuid = Uuid::new_v4();
+                    self.event_hub
+                        .emit(BackgroundSyncEvent::AccountCharListSync {
+                                id: uuid,
+                                email: account.email.clone(),
+                                dataset: dataset.to_string(),
+                        });
                 }
             }
 
-            // Wait for cooldown, to allow the FE to process the CharList Sync event
-            thread::sleep(Duration::from_secs(1));
+            self.event_hub.emit(BackgroundSyncEvent::AccountFinished(
+                account.email.clone(),
+                format!("{:?}", result),
+            ));
 
-            BackgroundSyncEvent::emit(
-                &self.event_hub,
-                BackgroundSyncEvent::AccountFinished(email.clone(), result.to_string()),
-            );
-             
-            thread::sleep(Duration::from_secs(1));
+            tokio::time::sleep(Duration::from_secs(1)).await;
         }
     }
 
-    fn run_daily_login_mode(&self) {
+    async fn run_daily_login_mode(&self) {
         // TODO: implement
     }
 }
