@@ -52,7 +52,7 @@ function SettingsPage() {
     const [analyticsRequestLoading, setAnalyticsRequestLoading] = useState(false);
     const [dataDeletionRequestLoading, setDataDeletionRequestLoading] = useState(false);
     const [anchorElDeletion, setAnchorElDeletion] = useState(null);
-    const [mascotImage, setMascotImage] = useState('/mascot/Error/error_mascot_only_small_low_res.png');
+    const [mascotImage, setMascotImage] = useState('/mascot/Error/error_mascot_only_very_small_low_res.png');
     const openDeletionPopup = Boolean(anchorElDeletion);
     const idDeletionPopup = open ? 'data-deletion-popover' : undefined;
 
@@ -77,10 +77,10 @@ function SettingsPage() {
         const intervalId = setInterval(() => {
             setMascotImage(prev => {
                 if (prev?.includes('2')) {
-                    return '/mascot/Error/error_mascot_only_small_low_res.png';
+                    return '/mascot/Error/error_mascot_only_very_small_low_res.png';
                 }
 
-                return '/mascot/Error/error_mascot_only_2_small_low_res.png';
+                return '/mascot/Error/error_mascot_only_2_small_very_low_res.png';
             });
         }, 750);
 
@@ -429,20 +429,6 @@ function SettingsPage() {
                     >
                         <ServerSvg w={'100%'} h={'100%'} />
                     </Box>
-                    {/* <Box
-                        sx={{
-                            position: 'absolute',
-                            top: -45,
-                            right: 16,
-                            zIndex: 2,
-                        }}
-                    >
-                        <img
-                            src="/mascot/concept_mascot.png"
-                            alt="EAM Mascot"
-                            height={70}
-                        />
-                    </Box> */}
                     <Box
                         sx={{
                             position: 'absolute',
@@ -452,8 +438,8 @@ function SettingsPage() {
                         }}
                     >
                         <img
-                            src="/mascot/concept_mascot.png"
-                            alt="EAM Mascot"
+                            src="/mascot/okta_low_res.png"
+                            alt="Okta, the mascot"
                             height={70}
                         />
                     </Box>
@@ -774,7 +760,7 @@ function SettingsPage() {
                                         title={`${MASCOT_NAME} fears he will forget you if you delete your data, so he will be sad if you do this. But he understands if you want to do it. 😭`}
                                     >
                                         <img
-                                            src={mascotImage ? mascotImage : "/mascot/Error/error_mascot_only_2_small_low_res.png"}
+                                            src={mascotImage ? mascotImage : "/mascot/Error/error_mascot_only_2_small_very_low_res.png"}
                                             alt="EAM Mascot"
                                             height='100px'
                                             style={{
