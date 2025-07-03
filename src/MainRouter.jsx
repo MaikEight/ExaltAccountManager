@@ -22,6 +22,7 @@ import DeepLinkingComponent from './components/DeepLinkingComponent';
 import ProfilePage from './pages/ProfilePage';
 import PaymentSuccessful from './pages/PaymentSuccessful';
 import { DiscordContextProvider } from './contexts/DiscordContext';
+import DebugFlagsPage from './pages/DebugFlagsPage';
 
 function MainRouter() {
     const theme = useTheme();
@@ -67,6 +68,8 @@ function MainRouter() {
                                                     <Route path='/feedback' element={<FeedbackPage />}></Route>
                                                     <Route path='/importer' element={<ImporterPage />}></Route>
                                                     <Route path='/payment/successful' element={<PaymentSuccessful />}></Route>
+                                                    <Route path='/flags' element={<DebugFlagsPage />}></Route>
+                                                    <Route path='/debug' element={<DebugFlagsPage />}></Route>
                                                     <Route path='*' element={<AccountsPage />}></Route>
                                                 </Routes>
                                             </DiscordContextProvider>
