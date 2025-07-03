@@ -319,23 +319,53 @@ pub fn get_latest_char_list_dataset_for_each_account(
     let mut datasets = Vec::new();
 
     for entry in char_list_entries {
-        let account = account::table
+        let account = match account::table
             .filter(account::entry_id.eq(&entry.id))
             .first::<Account>(&mut conn)
-            .expect("Failed to get account");
+        {
+            Ok(acc) => acc,
+            Err(diesel::result::Error::NotFound) => {
+                log::warn!(
+                    "[DatasetBuilder] Skipping entry {:?}: Account not found",
+                    entry.id
+                );
+                continue;
+            }
+            Err(e) => return Err(e),
+        };
 
-        let class_stats = class_stats::table
+        let class_stats = match class_stats::table
             .filter(class_stats::entry_id.eq(entry.id.clone()))
             .load::<ClassStats>(&mut conn)
-            .expect("Failed to get class_stats");
+        {
+            Ok(stats) => stats,
+            Err(e) => {
+                log::warn!(
+                    "[DatasetBuilder] Skipping entry {:?}: Failed to load class_stats: {:?}",
+                    entry.id,
+                    e
+                );
+                continue;
+            }
+        };
 
-        let character = character::table
-            .filter(character::entry_id.eq(entry.id))
+        let character = match character::table
+            .filter(character::entry_id.eq(entry.clone().id))
             .load::<Character>(&mut conn)
-            .expect("Failed to get character");
+        {
+            Ok(chars) => chars,
+            Err(e) => {
+                log::warn!(
+                    "[DatasetBuilder] Skipping entry {:?}: Failed to load characters: {:?}",
+                    entry.id,
+                    e
+                );
+                continue;
+            }
+        };
 
         datasets.push(CharListDataset {
-            email: entry.email.unwrap(),
+            email: entry.email.unwrap_or_else(|| "<unknown>".into()),
             account,
             class_stats,
             character,
@@ -448,10 +478,7 @@ pub fn get_next_eam_account_for_background_sync(
             .filter(eam_accounts::lastRefresh.is_null().or(
                 eam_accounts::lastRefresh.lt(max_time.format("%Y-%m-%d %H:%M:%S%.f").to_string()),
             ))
-            .filter(eam_accounts::state.ne_all(&[
-                "WrongPassword",
-                "AccountSuspended"
-            ]))
+            .filter(eam_accounts::state.ne_all(&["WrongPassword", "AccountSuspended"]))
             .order((
                 eam_accounts::lastRefresh.asc(),
                 eam_accounts::orderId.asc(),
