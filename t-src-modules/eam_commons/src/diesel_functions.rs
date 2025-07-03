@@ -448,6 +448,10 @@ pub fn get_next_eam_account_for_background_sync(
             .filter(eam_accounts::lastRefresh.is_null().or(
                 eam_accounts::lastRefresh.lt(max_time.format("%Y-%m-%d %H:%M:%S%.f").to_string()),
             ))
+            .filter(eam_accounts::state.ne_all(&[
+                "WrongPassword",
+                "AccountSuspended"
+            ]))
             .order((
                 eam_accounts::lastRefresh.asc(),
                 eam_accounts::orderId.asc(),
