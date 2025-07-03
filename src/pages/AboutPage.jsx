@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import ComponentBox from './../components/ComponentBox';
 import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
@@ -17,18 +17,21 @@ import DeveloperSvg from "../components/Illustrations/DeveloperSvg";
 import useStartupPopups from "../hooks/useStartupPopups";
 import FeaturedPlayListOutlinedIcon from '@mui/icons-material/FeaturedPlayListOutlined';
 import useDiscordRichPresence from './../hooks/useDiscordRichPresence';
+import { useNavigate } from "react-router-dom";
 
 function AboutPage() {
-    const [showLlama, setShowLlama] = useState(false);
-    const [windowSize, setWindowSize] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight,
-    });
     const theme = useTheme();
     const { showPopup } = usePopups();
     const { user, idToken } = useUserLogin();
     const { changelogPopups } = useStartupPopups();
     const { setState, resetState } = useDiscordRichPresence();
+    const navigate = useNavigate();
+
+    const [showLlama, setShowLlama] = useState(false);
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
 
     useEffect(() => {
         const handleResize = () => {
@@ -137,17 +140,25 @@ function AboutPage() {
                                 View Changelog
                             </StyledButton>
                         </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexGrow: 1,
-                                maxHeight: '78px',
-                                mr: 0.5,
-                                justifyContent: 'flex-end',
-                            }}
+                        <Tooltip
+                            title={"Click to open the debug flags page"}
                         >
-                            <DeveloperSvg h='100%' />
-                        </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexGrow: 1,
+                                    maxHeight: '78px',
+                                    mr: 0.5,
+                                    justifyContent: 'flex-end',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => {
+                                    navigate('/flags');
+                                }}
+                            >
+                                <DeveloperSvg h='100%' />
+                            </Box>
+                        </Tooltip>
                     </Box>
                 </ComponentBox>
                 <ComponentBox
@@ -219,14 +230,14 @@ function AboutPage() {
                         Special thanks to every Framework, Library, Resource and Person that made this project possible.
                     </Typography>
                     <StyledButton
-                        onClick={() => { 
+                        onClick={() => {
                             setState("Viewing the credits 👥");
-                            showPopup({ 
+                            showPopup({
                                 content: <CreditsPopup />,
-                                onClose: () => { 
+                                onClose: () => {
                                     resetState();
                                 },
-                             });
+                            });
                         }}
                     >
                         Show Credits & Thanks
