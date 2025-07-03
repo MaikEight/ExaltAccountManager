@@ -18,6 +18,17 @@ async function getProfileImage(imageUrl) {
 
     const imageData = await response.arrayBuffer();
     const base64String = arrayBufferToBase64(imageData);
+
+    if (sessionStorage.getItem('flag:debug') === 'true') {
+        console.log('getProfileImage response', base64String);
+    }
+
+    if (sessionStorage.getItem('flag:copy:profile-image') === 'true') {
+        navigator.clipboard.writeText(base64String)
+            .then(() => console.log('getProfileImage response copied to clipboard'))
+            .catch(err => console.error('Failed to copy getProfileImage response: ', err));
+    }
+
     return base64String;
 }
 
