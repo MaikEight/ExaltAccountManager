@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import { MASCOT_NAME } from "../../constants";
+import BackgroundSyncComponent from "../BackgroundSyncComponent";
 
 function CustomToolbar(props) {
     const theme = useTheme();
@@ -111,159 +112,177 @@ function CustomToolbar(props) {
         <Box
             sx={{
                 display: "flex",
-                justifyContent: "end",
+                justifyContent: "space-between",
                 height: 30,
-                ...props.sx
+                ...props.sx                
             }}
         >
-            {/* STATUS CHIPS */}
             <Box
                 sx={{
                     display: "flex",
                     alignItems: "center",
-                    mr: 1,
-                    gap: 1,
+                    ml: '226px',
                 }}
             >
-                {getEmptyApiLimitChip()}
-                {
-                    hasGlobalApiCooldown &&
-                    <>
-                        <Box
-                            aria-owns={open ? 'mouse-over-popover' : undefined}
-                            onMouseEnter={handlePopoverOpen}
-                            onMouseLeave={handlePopoverClose}
-                        >
-                            <Chip
-                                variant="outlined"
-                                label={"API Cooldown"}
-                                size="small"
-                                color={"error"}
-                                icon={<VpnLockOutlinedIcon sx={{ pl: '2px' }} />}
-                                onClick={() => null}
-                                sx={{
-                                    '&:hover': {
-                                        cursor: 'default',
-                                    },
-                                }}
-                            />
-                        </Box>
-                        <Popover
-                            id="mouse-over-popover"
-                            sx={{ pointerEvents: 'none' }}
-                            open={open}
-                            anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            onClose={handlePopoverClose}
-                            disableRestoreFocus
-                        >
-                            <Paper
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    p: 0.25,
-                                    borderRadius: `${theme.shape.borderRadius}px`,
-                                    overflow: 'hidden',
-                                    height: 'fit-content',
-                                    width: 'fit-content',
-                                }}
+                <BackgroundSyncComponent />
+            </Box>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "end",
+                    height: 30,
+                    ...props.sx
+                }}
+            >
+                {/* STATUS CHIPS */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        mr: 1,
+                        gap: 1,
+                    }}
+                >
+                    {getEmptyApiLimitChip()}
+                    {
+                        hasGlobalApiCooldown &&
+                        <>
+                            <Box
+                                aria-owns={open ? 'mouse-over-popover' : undefined}
+                                onMouseEnter={handlePopoverOpen}
+                                onMouseLeave={handlePopoverClose}
                             >
-                                <Box
+                                <Chip
+                                    variant="outlined"
+                                    label={"API Cooldown"}
+                                    size="small"
+                                    color={"error"}
+                                    icon={<VpnLockOutlinedIcon sx={{ pl: '2px' }} />}
+                                    onClick={() => null}
                                     sx={{
-                                        backgroundColor: theme.palette.background.default,
-                                        borderRadius: `${theme.shape.borderRadius - 2}px`,
+                                        '&:hover': {
+                                            cursor: 'default',
+                                        },
+                                    }}
+                                />
+                            </Box>
+                            <Popover
+                                id="mouse-over-popover"
+                                sx={{ pointerEvents: 'none' }}
+                                open={open}
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                onClose={handlePopoverClose}
+                                disableRestoreFocus
+                            >
+                                <Paper
+                                    sx={{
                                         display: 'flex',
-                                        flexDirection: 'column',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        p: 1,
-                                        px: 1.5,
-                                        gap: 0.75,
+                                        justifyContent: 'center',
+                                        p: 0.25,
+                                        borderRadius: `${theme.shape.borderRadius}px`,
+                                        overflow: 'hidden',
                                         height: 'fit-content',
                                         width: 'fit-content',
                                     }}
                                 >
-                                    <Typography variant="body1">
-                                        Global API Cooldown is active
-                                    </Typography>
                                     <Box
                                         sx={{
-                                            position: 'relative',
+                                            backgroundColor: theme.palette.background.default,
+                                            borderRadius: `${theme.shape.borderRadius - 2}px`,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            p: 1,
+                                            px: 1.5,
+                                            gap: 0.75,
+                                            height: 'fit-content',
+                                            width: 'fit-content',
                                         }}
                                     >
-                                        <img
-                                            src="mascot/Error/error_network_very_low_res.png"
-                                            alt="Okta encountered a network error"
-                                            style={{
-                                                py: 'auto',
+                                        <Typography variant="body1">
+                                            Global API Cooldown is active
+                                        </Typography>
+                                        <Box
+                                            sx={{
+                                                position: 'relative',
                                             }}
-                                        />
-                                        <img 
-                                            src="mascot/floor.png"
-                                            alt="Floor"
-                                            style={{
-                                                position: 'absolute',
-                                                bottom: 0,
-                                                left: 0,
-                                                width: '100%',
-                                                height: 'auto',
-                                            }}
-                                        />
+                                        >
+                                            <img
+                                                src="mascot/Error/error_network_very_low_res.png"
+                                                alt="Okta encountered a network error"
+                                                style={{
+                                                    py: 'auto',
+                                                }}
+                                            />
+                                            <img
+                                                src="mascot/floor.png"
+                                                alt="Floor"
+                                                style={{
+                                                    position: 'absolute',
+                                                    bottom: 0,
+                                                    left: 0,
+                                                    width: '100%',
+                                                    height: 'auto',
+                                                }}
+                                            />
+                                        </Box>
+                                        <Typography variant="body2">
+                                            {`Oops! Too many requests. ${MASCOT_NAME} is patiently untangling things.`}
+                                        </Typography>
                                     </Box>
-                                    <Typography variant="body2">
-                                        {`Oops! Too many requests. ${MASCOT_NAME} is patiently untangling things.`}
-                                    </Typography>
-                                </Box>
-                            </Paper>
-                        </Popover>
-                    </>
-                }
+                                </Paper>
+                            </Popover>
+                        </>
+                    }
+                </Box>
+                <ButtonGroup
+                    disableElevation
+                    variant="text"
+                    size="small"
+                    aria-label="Toolbar buttons"
+                    sx={{
+                        mt: 0.25,
+                        mr: 0.375,
+                        height: 25,
+                    }}
+                >
+                    <Button
+                        onClick={async () => await getCurrentWindow().minimize()}
+                        sx={{
+                            color: theme.palette.text.primary,
+                        }}
+                    >
+                        <MinimizeIcon />
+                    </Button>
+                    <Button
+                        onClick={async () => await getCurrentWindow().toggleMaximize()}
+                        sx={{
+                            color: theme.palette.text.primary
+                        }}
+                    >
+                        <CropSquareIcon />
+                    </Button>
+                    <Button
+                        onClick={async () => await getCurrentWindow().close()}
+                        sx={{
+                            color: theme.palette.text.primary,
+                            borderRadius: `0px ${theme.shape.borderRadius - 2}px ${theme.shape.borderRadius - 2}px 0px`,
+                        }}
+                    >
+                        <CloseIcon />
+                    </Button>
+                </ButtonGroup>
             </Box>
-            <ButtonGroup
-                disableElevation
-                variant="text"
-                size="small"
-                aria-label="Toolbar buttons"
-                sx={{
-                    mt: 0.25,
-                    mr: 0.375,
-                    height: 25,
-                }}
-            >
-                <Button
-                    onClick={async () => await getCurrentWindow().minimize()}
-                    sx={{
-                        color: theme.palette.text.primary,
-                    }}
-                >
-                    <MinimizeIcon />
-                </Button>
-                <Button
-                    onClick={async () => await getCurrentWindow().toggleMaximize()}
-                    sx={{
-                        color: theme.palette.text.primary
-                    }}
-                >
-                    <CropSquareIcon />
-                </Button>
-                <Button
-                    onClick={async () => await getCurrentWindow().close()}
-                    sx={{
-                        color: theme.palette.text.primary,
-                        borderRadius: `0px ${theme.shape.borderRadius - 2}px ${theme.shape.borderRadius - 2}px 0px`,
-                    }}
-                >
-                    <CloseIcon />
-                </Button>
-            </ButtonGroup>
         </Box>
     );
 }
