@@ -133,6 +133,9 @@ function AccountDetails({ acc, onClose }) {
             { applicationPath: gameExePath, startParameters: args }
         );
 
+        const acc = {...account, lastLogin: new Date() };
+        await updateAccount(acc, false);
+
         const charList = await sendCharList(account.email, token.AccessToken);
         if (charList === null || !charList.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
