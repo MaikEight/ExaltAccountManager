@@ -1,16 +1,22 @@
-use std::sync::{Arc, Mutex};
-use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use log::warn;
+use serde::{Deserialize, Serialize};
+use std::panic::AssertUnwindSafe;
+use std::sync::{Arc, Mutex};
+use uuid::Uuid;
 
 /// Represents granular sync events emitted by the background syncer.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum BackgroundSyncEvent {
     ModeChanged(String),
     AccountStarted(String),
     AccountProgress(String, AccountProgressState),
     AccountFinished(String, String),
-    AccountCharListSync(String, String),
+    AccountCharListSync {
+        id: Uuid,
+        email: String,
+        dataset: String,
+    },
     DailyLoginDone,
     DailyLoginProgress {
         done: usize,
@@ -60,9 +66,9 @@ impl BackgroundSyncEventHub {
     pub fn emit(&self, event: BackgroundSyncEvent) {
         let listeners = self.listeners.lock().unwrap();
         for listener in listeners.iter() {
-            let result = std::panic::catch_unwind(|| {
+            let result = std::panic::catch_unwind(AssertUnwindSafe(|| {
                 listener(event.clone());
-            });
+            }));
 
             if result.is_err() {
                 warn!("A background sync event listener panicked.");
