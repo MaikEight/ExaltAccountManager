@@ -121,6 +121,15 @@ impl RateLimiterManager {
         false
     }
 
+    pub fn api_limits(&self, api: &str) -> Option<(usize, usize)> {
+        let reset_ts = self
+            .last_cooldown_end
+            .filter(|end| *end <= Utc::now())
+            .map(|dt| dt.timestamp_millis());
+
+        self.sub_limiters.get(api).map(|limiter| (limiter.limit, limiter.remaining(reset_ts)))
+    }
+
     pub fn register(&mut self, limiter: ApiLimiter) {
         self.sub_limiters.insert(limiter.api_name.clone(), limiter);
     }
