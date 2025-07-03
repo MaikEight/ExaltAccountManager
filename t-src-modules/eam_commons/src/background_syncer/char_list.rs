@@ -1,32 +1,32 @@
 use std::collections::HashMap;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
-use crate::api_limiter::{CallResult, GLOBAL_API_LIMITER};
-use crate::diesel_setup::DbPool;
-use crate::models::ApiRequestStatus;
-use crate::networking_utils::send_post_request_with_form_url_encoded_data;
-use crate::types::GameAccessToken;
+use crate::background_syncer::types::{ApiLimiterBlocked, GameAccessToken};
+use crate::background_syncer::utils::send_post_request_with_form_url_encoded_data;
+use crate::limiter::manager::RateLimiterManager;
+use crate::models::CallResult;
 
-use quick_xml::Document;
+const BASE_URL: &str = "https://www.realmofthemadgod.com";
 
 /// Attempts to send a /char/list request using a given access token.
 ///
-/// Returns `Ok(Some(response))` on success,
-/// `Ok(None)` if a rate limit was hit (i.e., retry possible),
-/// or `Err(reason)` if the request failed for another reason.
+/// Returns:
+/// - `Ok(response)` on success
+/// - `Err(ApiLimiterBlocked::RateLimitHit)` if the API returned a rate limit error
+/// - `Err(ApiLimiterBlocked::CooldownActive)` if local cooldown is active
+/// - `Err(ApiLimiterBlocked::RequestFailed)` for other failures
 pub async fn send_char_list_request(
     access_token: GameAccessToken,
-    account_email: String,
-    pool: Arc<DbPool>,
-) -> ApiRequestStatus<String> {
-    let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
-    if !limiter.can_call("char/list") {
-        return ApiRequestStatus::RateLimited;
+    global_api_limiter: Arc<Mutex<RateLimiterManager>>,
+) -> Result<String, ApiLimiterBlocked> {
+    {
+        let mut limiter = global_api_limiter.lock().unwrap();
+        if !limiter.can_call("char/list") {
+            return Err(ApiLimiterBlocked::CooldownActive);
+        }
     }
 
-    drop(limiter); // release lock early before async ops
-
-    let url = format!("{}/char/list", crate::constants::BASE_URL);
+    let url = format!("{}/char/list", BASE_URL);
     let mut data = HashMap::new();
     data.insert("do_login".to_string(), "true".to_string());
     data.insert("accessToken".to_string(), access_token.access_token.clone());
@@ -36,23 +36,18 @@ pub async fn send_char_list_request(
     data.insert("muleDump".to_string(), "true".to_string());
     data.insert("__source".to_string(), "ExaltAccountManager".to_string());
 
-    let response = match send_post_request_with_form_url_encoded_data(url, data).await {
-        Ok(response) => response,
-        Err(e) => {
-            let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
-            limiter.record_api_use("char/list", CallResult::Failed);
-            return ApiRequestStatus::Failed(e);
-        }
-    };
+    let response = send_post_request_with_form_url_encoded_data(url, data)
+        .await
+        .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
 
     if response.contains("Internal error, please wait 5 minutes to try again!") {
-        let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
+        let mut limiter = global_api_limiter.lock().unwrap();
         limiter.record_api_use("char/list", CallResult::RateLimited);
         limiter.trigger_cooldown();
-        return ApiRequestStatus::RateLimited;
+        return Err(ApiLimiterBlocked::RateLimitHit);
     }
 
-    let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
+    let mut limiter = global_api_limiter.lock().unwrap();
     limiter.record_api_use("char/list", CallResult::Success);
-    ApiRequestStatus::Success(response)
+    Ok(response)
 }
