@@ -204,7 +204,7 @@ function AccountsContextProvider({ children }) {
             }
 
             requestState = getRequestState(response);
-            const newAcc = ({ ...acc, state: requestState });
+            const newAcc = ({ ...acc, state: requestState, lastRefresh: new Date() });
             await updateAccount(newAcc);
 
             if (!response || response.Error) {
