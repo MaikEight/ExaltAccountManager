@@ -34,12 +34,25 @@ pub enum SyncProgressState {
     Failed,
 }
 
+impl ToString for SyncProgressState {
+    fn to_string(&self) -> String {
+        match self {
+            SyncProgressState::Verifying => "Verifying".to_string(),
+            SyncProgressState::FetchingCharList => "FetchingCharList".to_string(),
+            SyncProgressState::Processing => "Processing".to_string(),
+            SyncProgressState::Finished => "Finished".to_string(),
+            SyncProgressState::Skipped => "Skipped".to_string(),
+            SyncProgressState::Failed => "Failed".to_string(),
+        }
+    }
+}
+
 /// Result of syncing an account
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SyncResult {
     Success,
     Skipped,
-    Failed,
+    Failed(String),
     RateLimited,
     Cancelled,
 }
@@ -68,9 +81,19 @@ pub enum ApiLimiterBlocked {
     RequestFailed,
 }
 
+impl ToString for ApiLimiterBlocked {
+    fn to_string(&self) -> String {
+        match self {
+            ApiLimiterBlocked::CooldownActive => "Cooldown active".to_string(),
+            ApiLimiterBlocked::RateLimitHit => "Rate limit hit".to_string(),
+            ApiLimiterBlocked::RequestFailed => "Request failed".to_string(),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 pub struct GameAccessToken {
-    access_token: String,
-    access_token_timestamp: String,
-    access_token_expiration: String,
+    pub access_token: String,
+    pub access_token_timestamp: String,
+    pub access_token_expiration: String,
 }
