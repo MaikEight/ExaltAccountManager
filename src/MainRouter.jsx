@@ -26,7 +26,7 @@ import DebugFlagsPage from './pages/DebugFlagsPage';
 
 function MainRouter() {
     const theme = useTheme();
-    
+
     return (
         <Box
             sx={{
@@ -41,11 +41,11 @@ function MainRouter() {
                     future={{
                         "v7_startTransition": true,
                         "v7_relativeSplatPath": true,
-                    }}                    
+                    }}
                 >
-                    <Sidebar id="sidebar">
-                        <ServerContextProvider>
-                            <AccountsContextProvider>
+                    <ServerContextProvider>
+                        <AccountsContextProvider>
+                            <Sidebar id="sidebar">
                                 <GroupsContextProvider>
                                     <PopupContextProvider>
                                         <ErrorBoundary
@@ -76,9 +76,9 @@ function MainRouter() {
                                         </ErrorBoundary>
                                     </PopupContextProvider>
                                 </GroupsContextProvider>
-                            </AccountsContextProvider>
-                        </ServerContextProvider>
-                    </Sidebar>
+                            </Sidebar>
+                        </AccountsContextProvider>
+                    </ServerContextProvider>
                 </Router>
             </ErrorBoundary>
         </Box>
