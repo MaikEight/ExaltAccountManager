@@ -1,110 +1,132 @@
 use std::collections::HashMap;
-use std::sync::Arc;
-use std::thread;
-use std::time::Duration;
+use std::sync::{Arc, Mutex};
 
-use crate::background_syncer::types::GameAccessToken;
+use crate::background_syncer::types::{ApiLimiterBlocked, GameAccessToken};
+use crate::background_syncer::utils::send_post_request_with_form_url_encoded_data;
 use crate::diesel_functions::get_eam_account_by_email;
 use crate::diesel_setup::DbPool;
 use crate::encryption_utils;
-use crate::limiter::manager::GLOBAL_API_LIMITER;
+use crate::limiter::manager::RateLimiterManager;
 use crate::models::CallResult;
-use crate::background_syncer::utils::send_post_request_with_form_url_encoded_data;
 
-use chrono::Utc;
-use scraper::Html;
-use std::pin::Pin;
-use std::future::Future;
+use roxmltree::Document;
 
 const BASE_URL: &str = "https://www.realmofthemadgod.com";
 
-pub fn send_account_verify_request(
+pub async fn send_account_verify_request(
     pool: Arc<DbPool>,
     account_email: String,
     hwid: String,
-) -> Pin<Box<dyn Future<Output = Result<Option<GameAccessToken>, ApiLimiterBlocked>> + Send>> {
-    let pool = Arc::clone(&pool);
-
-    Box::pin(async move {
-        let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
+    global_api_limiter: Arc<Mutex<RateLimiterManager>>,
+) -> Result<Option<GameAccessToken>, ApiLimiterBlocked> {
+    // Step 1: Check if the API can be called
+    {
+        let mut limiter = global_api_limiter.lock().unwrap();
         if !limiter.can_call("account/verify") {
             return Err(ApiLimiterBlocked::CooldownActive);
         }
+    }
 
-        drop(limiter); // release lock early before async ops
+    // Step 2: Get account from DB
+    let acc = get_eam_account_by_email(&pool, account_email.clone())
+        .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
 
-        let acc = get_eam_account_by_email(&pool, account_email.clone()).ok_or(ApiLimiterBlocked::RequestFailed)?;
-        let pw = encryption_utils::decrypt_data(&acc.password).ok_or(ApiLimiterBlocked::RequestFailed)?;
+    let pw = encryption_utils::decrypt_data(&acc.password)
+        .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
 
-        let mut data = HashMap::new();
-        data.insert("guid".to_string(), account_email.clone());
+    // Step 3: Build request payload
+    let mut data = HashMap::new();
+    data.insert("guid".to_string(), account_email.clone());
 
+    if acc.isSteam {
+        data.insert(
+            "steamid".to_string(),
+            acc.steamId
+                .clone()
+                .ok_or(ApiLimiterBlocked::RequestFailed)?,
+        );
+        data.insert("secret".to_string(), pw);
+    } else {
+        data.insert("password".to_string(), pw);
+    }
+
+    data.insert("clientToken".to_string(), hwid);
+    data.insert(
+        "game_net".to_string(),
+        if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string(),
+    );
+    data.insert(
+        "play_platform".to_string(),
+        if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string(),
+    );
+    data.insert(
+        "game_net_user_id".to_string(),
         if acc.isSteam {
-            data.insert("steamid".to_string(), acc.steamId.clone().ok_or(ApiLimiterBlocked::RequestFailed)?);
-            data.insert("secret".to_string(), pw);
+            acc.steamId.ok_or(ApiLimiterBlocked::RequestFailed)?
         } else {
-            data.insert("password".to_string(), pw);
+            "".to_string()
+        },
+    );
+
+    // Step 4: Send request
+    let url = format!("{}/account/verify", BASE_URL);
+    let response = send_post_request_with_form_url_encoded_data(url, data)
+        .await
+        .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
+
+    // Step 5: Parse response
+    let token = get_access_token(&response);
+    let mut limiter = global_api_limiter.lock().unwrap();
+
+    match token {
+        Some(t) => {
+            limiter.record_api_use("account/verify", CallResult::Success);
+            Ok(Some(t))
         }
-
-        data.insert("clientToken".to_string(), hwid.clone());
-        data.insert(
-            "game_net".to_string(),
-            if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string(),
-        );
-        data.insert(
-            "play_platform".to_string(),
-            if acc.isSteam { "Unity_steam" } else { "Unity" }.to_string(),
-        );
-        data.insert(
-            "game_net_user_id".to_string(),
-            if acc.isSteam {
-                acc.steamId.ok_or(ApiLimiterBlocked::RequestFailed)?
-            } else {
-                "".to_string()
-            },
-        );
-
-        let url = format!("{}/account/verify", BASE_URL);
-        let response = send_post_request_with_form_url_encoded_data(url, data)
-            .await
-            .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
-
-        let doc = Html::parse_document(&response);
-
-        // Check for rate limit error
-        if doc.root_element().text().any(|t| t.contains("wait 5 minutes")) {
-            let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
-            limiter.record_api_use("account/verify", CallResult::RateLimited);
-            limiter.trigger_cooldown();
-            return Err(ApiLimiterBlocked::RateLimitHit);
-        }
-
-        // Parse token
-        let mut token = GameAccessToken {
-            access_token: String::new(),
-            access_token_timestamp: String::new(),
-            access_token_expiration: String::new(),
-        };
-
-        for node in doc.root_element().descendants() {
-            if let Some(el) = node.value().as_element() {
-                let text = node.text().collect::<String>();
-                match el.name() {
-                    "AccessToken" => token.access_token = text,
-                    "AccessTokenTimestamp" => token.access_token_timestamp = text,
-                    "AccessTokenExpiration" => token.access_token_expiration = text,
-                    _ => {}
+        None => {
+            // check for rate limit error in response
+            let doc = Document::parse(&response).unwrap();
+            for node in doc.descendants() {
+                if node.has_tag_name("Error") {
+                    let error_message = node.text().unwrap_or("").to_string();
+                    if error_message == "Internal error, please wait 5 minutes to try again!" {
+                        limiter.record_api_use("account/verify", CallResult::RateLimited);
+                        limiter.trigger_cooldown();
+                        return Err(ApiLimiterBlocked::RateLimitHit);
+                    }
                 }
             }
-        }
 
-        let mut limiter = GLOBAL_API_LIMITER.lock().unwrap();
-        if token.access_token.is_empty() {
             limiter.record_api_use("account/verify", CallResult::Failed);
             Ok(None)
-        } else {
-            limiter.record_api_use("account/verify", CallResult::Success);
-            Ok(Some(token))
         }
-    })
+    }
+}
+
+fn get_access_token(xml: &str) -> Option<GameAccessToken> {
+    let doc = Document::parse(xml).ok()?;
+    let mut access_token = GameAccessToken {
+        access_token: "".to_string(),
+        access_token_timestamp: "".to_string(),
+        access_token_expiration: "".to_string(),
+    };
+
+    for node in doc.descendants() {
+        if node.has_tag_name("AccessToken") {
+            access_token.access_token = node.text()?.to_string();
+        } else if node.has_tag_name("AccessTokenTimestamp") {
+            access_token.access_token_timestamp = node.text()?.to_string();
+        } else if node.has_tag_name("AccessTokenExpiration") {
+            access_token.access_token_expiration = node.text()?.to_string();
+        }
+    }
+
+    if access_token.access_token.is_empty()
+        || access_token.access_token_timestamp.is_empty()
+        || access_token.access_token_expiration.is_empty()
+    {
+        None
+    } else {
+        Some(access_token)
+    }
 }
