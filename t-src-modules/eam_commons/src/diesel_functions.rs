@@ -471,21 +471,37 @@ pub fn get_next_eam_account_for_background_sync(
     info!("Got connection from pool. Loading accounts...");
 
     let max_time = chrono::Utc::now().naive_utc() - chrono::Duration::hours(12);
-
-    let result =
-        eam_accounts::table
-            .filter(eam_accounts::isDeleted.eq(false))
-            .filter(eam_accounts::lastRefresh.is_null().or(
-                eam_accounts::lastRefresh.lt(max_time.format("%Y-%m-%d %H:%M:%S%.f").to_string()),
-            ))
-            .filter(eam_accounts::state.ne_all(&["WrongPassword", "AccountSuspended"]))
-            .order((
-                eam_accounts::lastRefresh.asc(),
-                eam_accounts::orderId.asc(),
-                eam_accounts::id.asc(),
-            ))
-            .first::<EamAccount>(&mut conn)
-            .optional();
+    /*
+        -- SQLite
+        SELECT id, orderId, name, email, state, lastRefresh, `group`, isDeleted
+        FROM EamAccount
+        WHERE (lastRefresh IS NULL OR lastRefresh < datetime('now', '-12 hour'))
+        AND (state IS NULL OR state NOT IN ('WrongPassword', 'AccountSuspended'))
+        AND isDeleted = 0
+        ORDER BY CASE WHEN lastRefresh IS NULL THEN 0 ELSE 1 END, lastRefresh ASC, orderId ASC, id ASC
+        LIMIT 1;
+    */
+    let result = eam_accounts::table
+        .filter(eam_accounts::isDeleted.eq(false))
+        .filter(
+            eam_accounts::lastRefresh
+                .is_null()
+                .or(eam_accounts::lastRefresh
+                    .lt(max_time.format("%Y-%m-%d %H:%M:%S%.f").to_string())),
+        )
+        .filter(
+            eam_accounts::state
+                .is_null()
+                .or(eam_accounts::state.ne_all(&["WrongPassword", "AccountSuspended"])),
+        )
+        .order((
+            sql::<diesel::sql_types::Integer>("CASE WHEN lastRefresh IS NULL THEN 0 ELSE 1 END"),
+            eam_accounts::lastRefresh.asc(),
+            eam_accounts::orderId.asc(),
+            eam_accounts::id.asc(),
+        ))
+        .first::<EamAccount>(&mut conn)
+        .optional();
 
     match &result {
         Ok(Some(account)) => info!("Loaded account: {}", account.email),
