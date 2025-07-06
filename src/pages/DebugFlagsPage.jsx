@@ -120,7 +120,7 @@ function DebugFlagsPage() {
                             To view the debug logs, open the developer console by pressing <strong>F12</strong>.
                         </Typography>
                         <img
-                            src="mascot/Error/error_mascot_only_2_small_low_res.png"
+                            src="mascot/Error/error_mascot_only_2_small_very_low_res.png"
                             alt="Debug Mascot"
                             style={{
                                 position: 'absolute',
