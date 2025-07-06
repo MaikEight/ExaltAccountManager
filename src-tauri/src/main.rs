@@ -4,7 +4,7 @@
 extern crate dirs;
 
 use diesel::r2d2::ConnectionManager;
-use eam_commons::background_syncer::BackgroundSyncManager;
+use eam_background_sync::BackgroundSyncManager;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
 use eam_commons::limiter::manager::RateLimiterManager;
@@ -310,7 +310,7 @@ async fn create_background_sync_manager(
 
     manager.get_event_hub().register_listener(move |event| {        
 
-        if matches!(event, eam_commons::background_syncer::events::BackgroundSyncEvent::AccountCharListSync { .. }) {
+        if matches!(event, eam_background_sync::events::BackgroundSyncEvent::AccountCharListSync { .. }) {
             info!("Background sync AccountCharListSync event received");
         } else {
             info!("Background sync event: {:?}", event);
