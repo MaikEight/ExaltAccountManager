@@ -61,6 +61,7 @@ winreg = "0.55.0"
 open = "5.3.2"
 
 eam_commons = { path = "../t-src-modules/eam_commons" }
+eam_background_sync = { path = "../t-src-modules/eam_background_sync" }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
