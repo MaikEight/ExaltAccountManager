@@ -1,0 +1,25 @@
+[package]
+name = "eam_background_sync"
+version = "0.0.1"
+homepage = "https://exaltaccountmanager.com"
+publish = false
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.17.0", features = ["serde", "v4"] }
+chrono = { version = "0.4.41", features = ["serde"] }
+dirs = "6.0.0"
+reqwest = { version = "0.12.20", features = ["blocking", "json"] }
+tokio = { version = "1.45.1", features = ["full"] }
+roxmltree = "0.20.0"
+log = "0.4"
+base64 = "0.22.1"
+
+# Local libs
+eam_commons = { path = "../eam_commons" }
+# THIS IS NOT PUBLIC
+eam_plus_lib = { path = "../../../eam_plus_lib" }
