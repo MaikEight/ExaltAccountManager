@@ -815,13 +815,21 @@ async fn send_post_request_with_form_url_encoded_data(
 }
 
 #[tauri::command]
-async fn send_post_request_with_json_body(url: String, data: String) -> Result<String, String> {
+async fn send_post_request_with_json_body(url: String, data: String, headers_opt: Option<HashMap<String, String>>) -> Result<String, String> {
     info!("Sending post request with json body to: {}", &url);
 
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
     headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+    
+    if let Some(custom_headers) = headers_opt {
+        custom_headers.into_iter().for_each(|(key, value)| {
+            let header_name = HeaderName::from_str(&key).unwrap();
+            let header_value = HeaderValue::from_str(&value).unwrap();
+            headers.append(header_name, header_value);
+        });
+    }
 
     let client = reqwest::Client::new();
     let res = client
