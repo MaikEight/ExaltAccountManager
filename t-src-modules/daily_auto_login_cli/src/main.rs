@@ -14,7 +14,7 @@ use eam_commons::diesel_functions;
 use eam_commons::get_latest_daily_login;
 use eam_commons::get_user_data_by_key;
 use eam_commons::insert_or_update_daily_login_report;
-use eam_commons::insert_or_update_daily_login_report_entry;
+use eam_commons::insert_or_update_daily_login_report_entry; 
 use eam_commons::models::{DailyLoginReports, DailyLoginReportEntries};
 use eam_commons::models::EamAccount;
 use eam_commons::rotmg_updater::UpdaterError;
