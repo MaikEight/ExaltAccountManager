@@ -33,4 +33,5 @@ export const AUTH0_DOMAIN = 'login.exaltaccountmanager.com';
 export const AUTH0_REDIRECT_URL = 'eam:profile/callback';
 
 export const EAM_USERS_API = 'https://user.api.exaltaccountmanager.com';
+export const EAM_SUBSCRIPTIONS_API = 'https://subscriptions.api.exaltaccountmanager.com';
 export const EAM_PRIVACY_GATE_API = 'https://privacy-gate.api.exaltaccountmanager.com';
