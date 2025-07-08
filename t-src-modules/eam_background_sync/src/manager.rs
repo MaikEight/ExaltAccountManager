@@ -519,7 +519,7 @@ impl BackgroundSyncManager {
             }
         }
 
-        println!("Finished daily login.");
+        info!("[BGRSYNC][DL] Finished daily login. {} accounts failed.", daily_login_report.amountOfAccountsFailed);
         log_to_audit_log(
             &self.pool,
             "Finished daily login. ".to_owned()
