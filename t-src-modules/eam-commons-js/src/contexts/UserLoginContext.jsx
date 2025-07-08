@@ -186,8 +186,12 @@ function UserLoginProvider({ children }) {
             }
 
             const userInfoResponse = JSON.parse(userInfoResponseStr);
+            const enhancedUser = enhanceUserData(userInfoResponse);
+            if (sessionStorage.getItem('flag:debug') === 'true') {
+                console.log('userInfoResponse', userInfoResponse, 'enhancedUser', enhancedUser);                
+            }
 
-            setUser(enhanceUserData(userInfoResponse));
+            setUser(enhancedUser);
         } catch (error) {
             console.error("Failed to fetch user profile:", error);
             return;
@@ -198,7 +202,7 @@ function UserLoginProvider({ children }) {
     };
 
     const enhanceUserData = (_user) => {
-        if(!_user) {
+        if (!_user) {
             return null;
         }
 
