@@ -8,6 +8,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use uuid::Uuid;
 
+use crate::daily_login;
 use crate::events::*;
 use crate::process_account::process_account;
 use crate::types::*;
@@ -158,6 +159,7 @@ impl BackgroundSyncManager {
                 tokio::time::sleep(Duration::from_secs(10)).await;
                 continue;
             }
+
             info!("[BGRSYNC] API limiter is clear, proceeding with account sync.");
 
             let account = match get_next_eam_account_for_background_sync(&self.pool) {
@@ -208,7 +210,7 @@ impl BackgroundSyncManager {
     /// Runs the daily login mode, which processes accounts for daily login rewards.
     /// FOR NON-PLUS USERS: The Game files need to be up-to-date for this to work.
     async fn run_daily_login_mode(&self, do_force_run: bool) {
-        info!("[BGRSYNC] Running daily login mode...");
+        info!("[BGRSYNC][DL] Running daily login mode...");
 
         //SETUP
         //Check if daily login did already run today and if so, if it finished
@@ -235,7 +237,7 @@ impl BackgroundSyncManager {
                         == daily_login_report.amountOfAccounts
                     {
                         if !force_run {
-                            println!("Todays daily login did already run successfully, exiting.");
+                            info!("[BGRSYNC][DL] Todays daily login did already run successfully, exiting.");
                             log_to_audit_log(
                                 &self.pool,
                                 "Todays daily login did already run successfully, exiting."
@@ -245,7 +247,7 @@ impl BackgroundSyncManager {
                             return;
                         }
 
-                        println!("Forcing daily login to run again.");
+                        info!("[BGRSYNC][DL] Forcing daily login to run again.");
                         log_to_audit_log(
                             &self.pool,
                             "Forcing daily login to run again.".to_string(),
@@ -253,11 +255,11 @@ impl BackgroundSyncManager {
                         );
                         is_force_run = true;
                     } else if daily_login_report.emailsToProcess != None {
-                        println!("Last daily login did not finish processing all accounts, continuing...");
+                        info!("[BGRSYNC][DL] Last daily login did not finish processing all accounts, continuing...");
                         log_to_audit_log(&self.pool, "Last daily login did not finish processing all accounts, continuing...".to_string(), None);
                     } else {
                         if !force_run {
-                            println!("Last daily login did finish, exiting.");
+                            info!("[BGRSYNC][DL] Last daily login did finish, exiting.");
                             log_to_audit_log(
                                 &self.pool,
                                 "Last daily login did finish, exiting.".to_string(),
@@ -266,7 +268,7 @@ impl BackgroundSyncManager {
                             return;
                         }
 
-                        println!("Forcing daily login to run again.");
+                        info!("[BGRSYNC][DL] Forcing daily login to run again.");
                         log_to_audit_log(
                             &self.pool,
                             "Forcing daily login to run again.".to_string(),
@@ -275,7 +277,7 @@ impl BackgroundSyncManager {
                         is_force_run = true;
                     }
                 } else {
-                    println!("Last daily login did not finish, continuing...");
+                    info!("[BGRSYNC][DL] Last daily login did not finish, continuing...");
                     log_to_audit_log(
                         &self.pool,
                         "Last daily login did not finish, continuing...".to_string(),
@@ -337,7 +339,7 @@ impl BackgroundSyncManager {
             }
 
             if accounts_to_perform_daily_login_with.len() == 0 {
-                println!("No accounts to perform daily login with.");
+                info!("[BGRSYNC][DL] No accounts to perform daily login with, exiting.");
                 log_to_audit_log(
                     &self.pool,
                     "No accounts to perform daily login with, exiting.".to_string(),
@@ -359,7 +361,7 @@ impl BackgroundSyncManager {
             let _ = insert_or_update_daily_login_report(&self.pool, daily_login_report.clone());
         } else {
             if accounts_to_perform_daily_login_with.len() == 0 {
-                println!("No accounts to perform daily login with.");
+                info!("[BGRSYNC][DL] No accounts to perform daily login with, exiting.");
                 log_to_audit_log(
                     &self.pool,
                     "No accounts to perform daily login with, exiting.".to_string(),
@@ -394,7 +396,7 @@ impl BackgroundSyncManager {
             .dataValue;
 
         if game_exe_path.is_empty() {
-            println!("No game.exe path file found, exiting.");
+            error!("[BGRSYNC][DL] No game.exe file found, exiting.");
             log_to_audit_log(
                 &self.pool,
                 "No game.exe file found, exiting.".to_string(),
@@ -409,6 +411,28 @@ impl BackgroundSyncManager {
             .collect::<Vec<String>>();
 
         //END OF SETUP
+
+        let mut can_call = false;
+
+        while (!can_call) {
+            let limiter = self.api_limiter.lock().unwrap();
+            match (
+                limiter.api_limits("account/verify"),
+                limiter.api_limits("char/list"),
+            ) {
+                (Some((limit_v, remain_v)), Some((limit_c, remain_c))) => {
+                    can_call = limit_v == remain_v && limit_c == remain_c;
+                }
+                _ => {
+                    can_call = false;
+                }
+            }
+
+            if !can_call {
+                info!("[BGRSYNC][DL] API limiter active, waiting...");
+                tokio::time::sleep(Duration::from_secs(10)).await;
+            }
+        }
 
         for account in accounts_to_perform_daily_login_with {
             let start_time = Some(Utc::now().to_rfc3339());
@@ -425,7 +449,7 @@ impl BackgroundSyncManager {
             let entry_id_res = insert_or_update_daily_login_report_entry(&self.pool, report_entry);
             let entry_id = entry_id_res.unwrap();
 
-            let login_result = perform_daily_login_for_account(
+            let login_result = daily_login::perform_daily_login_for_account(
                 &self.pool,
                 account.clone(),
                 start_time.clone(),
@@ -433,13 +457,14 @@ impl BackgroundSyncManager {
                 daily_login_report.id.clone(),
                 self.hwid.clone(),
                 game_exe_path.clone(),
+                Arc::clone(&self.api_limiter),
             )
             .await;
 
             match login_result {
                 Ok(_) => {
-                    println!(
-                        "Successfully performed daily login with account: {}",
+                    info!(
+                        "[BGRSYNC][DL] Successfully performed daily login with account: {}",
                         account.email
                     );
                     log_to_audit_log(
@@ -460,7 +485,10 @@ impl BackgroundSyncManager {
                         insert_or_update_daily_login_report(&self.pool, daily_login_report.clone());
                 }
                 Err(e) => {
-                    println!("Error while performing daily login: {}", e);
+                    error!(
+                        "[BGRSYNC][DL] Error while performing daily login: {}",
+                        e
+                    );
                     log_to_audit_log(
                         &self.pool,
                         ("Error while performing daily login: ".to_owned() + &e.to_string())
@@ -503,5 +531,5 @@ impl BackgroundSyncManager {
         daily_login_report.endTime = Some(Utc::now().to_rfc3339());
         daily_login_report.emailsToProcess = None;
         let _ = insert_or_update_daily_login_report(&self.pool, daily_login_report);
-    }
+    }    
 }
