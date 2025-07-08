@@ -59,7 +59,7 @@ async function startSession(amountOfAccounts, clientIdHash, clientVersion) {
         AmountOfAccounts: amountOfAccounts,
     });
 
-    const response = await invoke('send_post_request_with_json_body', { url, data })
+    const response = await invoke('send_post_request_with_json_body', { url, data, headersOpt: null })
         .catch(error => { logToErrorLog('startSession', error); });
 
     return response ? JSON.parse(response) : "";
