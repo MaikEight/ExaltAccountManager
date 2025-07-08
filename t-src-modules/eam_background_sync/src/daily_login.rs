@@ -1,14 +1,17 @@
 use crate::account_verify;
+use crate::char_list::send_char_list_request;
+use crate::events::{AccountProgressState, BackgroundSyncEvent, BackgroundSyncEventHub};
 use crate::types::GameAccessToken;
 use crate::utils::log_to_audit_log;
 
-use log::{error, info};
 use base64::prelude::*;
 use chrono::Utc;
+use log::{error, info};
 use std::io::ErrorKind;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
+use uuid::Uuid;
 
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::insert_or_update_daily_login_report_entry;
@@ -26,6 +29,7 @@ pub async fn perform_daily_login_for_account(
     daily_login_report_id: String,
     hwid: String,
     game_exe_path: String,
+    event_hub: &BackgroundSyncEventHub,
     global_api_limiter: Arc<Mutex<RateLimiterManager>>,
 ) -> Result<bool, Box<dyn std::error::Error>> {
     info!(
@@ -37,6 +41,11 @@ pub async fn perform_daily_login_for_account(
         ("Performing daily login with account: ".to_owned() + &account.email).to_string(),
         Some(account.email.clone()),
     );
+
+    event_hub.emit(BackgroundSyncEvent::AccountProgress(
+        account.email.clone(),
+        AccountProgressState::FetchingAccount,
+    ));
 
     let pool_arc = Arc::new(pool.clone());
     // let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool_arc, account.email.clone(), hwid.clone()).await;
@@ -51,7 +60,10 @@ pub async fn perform_daily_login_for_account(
     let access_token_opt: Option<GameAccessToken> = match acc_verify_result {
         Ok(token) => token,
         Err(e) => {
-            error!("[BGRSYNC][DL] Error during account verification: {}", e.to_string());
+            error!(
+                "[BGRSYNC][DL] Error during account verification: {}",
+                e.to_string()
+            );
             log_to_audit_log(
                 pool,
                 ("Error during account verification: ".to_owned() + &e.to_string()).to_string(),
@@ -95,9 +107,9 @@ pub async fn perform_daily_login_for_account(
     let args = format!(
         "data:{{platform:Deca,guid:{},token:{},tokenTimestamp:{},tokenExpiration:{},env:4,serverName:{}}}",
         BASE64_STANDARD.encode(&account.email.clone()),
-        BASE64_STANDARD.encode(access_token.access_token),
-        BASE64_STANDARD.encode(access_token.access_token_timestamp),
-        BASE64_STANDARD.encode(access_token.access_token_expiration),
+        BASE64_STANDARD.encode(access_token.clone().access_token),
+        BASE64_STANDARD.encode(access_token.clone().access_token_timestamp),
+        BASE64_STANDARD.encode(access_token.clone().access_token_expiration),
         "".to_string()
     );
 
@@ -109,6 +121,46 @@ pub async fn perform_daily_login_for_account(
         .expect("Failed to start the game.");
 
     info!("[BGRSYNC][DL] Game started, waiting for login...");
+
+    event_hub.emit(BackgroundSyncEvent::AccountProgress(
+        account.email.clone(),
+        AccountProgressState::FetchingCharList,
+    ));
+
+    let char_list_result =
+        send_char_list_request(access_token, Arc::clone(&global_api_limiter)).await;
+    let char_list_response = match char_list_result {
+        Ok(response) => response,
+        Err(err) => {
+            error!(
+                "[BGRSYNC][DL] Error during char list request: {}",
+                err.to_string()
+            );
+            log_to_audit_log(
+                pool,
+                ("Error during char list request: ".to_owned() + &err.to_string()).to_string(),
+                Some(account.email.clone()),
+            );
+            //We can't exit (return) here because the game is still running and we need to close it properly after wait for the game to login
+            "".to_string()
+        }
+    };
+
+    if !char_list_response.is_empty() {
+        event_hub.emit(BackgroundSyncEvent::AccountProgress(
+            account.email.clone(),
+            AccountProgressState::SyncingCharList,
+        ));
+
+        let uuid = Uuid::new_v4();
+        event_hub
+            .emit(BackgroundSyncEvent::AccountCharListSync {
+                id: uuid,
+                email: account.email.clone(),
+                dataset: char_list_response.to_string(),
+            });
+    }
+
     //Wait for the game to automatically login
     tokio::time::sleep(Duration::from_secs(GAME_START_TIMEOUT)).await;
 
@@ -119,6 +171,7 @@ pub async fn perform_daily_login_for_account(
         "[BGRSYNC][DL] Game closed, daily login completed for account: {}",
         account.email.clone()
     );
+    
     let report_entry = DailyLoginReportEntries {
         id: Some(entry_id),
         reportId: Some(daily_login_report_id.clone()),
