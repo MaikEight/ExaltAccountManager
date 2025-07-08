@@ -9,6 +9,10 @@ export {
 } from './backend/eamPaymentsApi.js';
 
 export {
+    postPlusToken
+} from './backend/eamSubscriptionsApi.js';
+
+export {
     postAccountVerify,
     postCharList,
     postRegisterAccount,
