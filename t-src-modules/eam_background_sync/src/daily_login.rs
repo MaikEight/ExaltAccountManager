@@ -1,7 +1,8 @@
-use crate::utils::log_to_audit_log;
 use crate::account_verify;
 use crate::types::GameAccessToken;
+use crate::utils::log_to_audit_log;
 
+use log::{error, info};
 use base64::prelude::*;
 use chrono::Utc;
 use std::io::ErrorKind;
@@ -10,10 +11,10 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use eam_commons::diesel_setup::DbPool;
+use eam_commons::insert_or_update_daily_login_report_entry;
+use eam_commons::limiter::manager::RateLimiterManager;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::EamAccount;
-use eam_commons::insert_or_update_daily_login_report_entry; 
-use eam_commons::limiter::manager::RateLimiterManager;
 
 const GAME_START_TIMEOUT: u64 = 90;
 
@@ -25,10 +26,10 @@ pub async fn perform_daily_login_for_account(
     daily_login_report_id: String,
     hwid: String,
     game_exe_path: String,
-    global_api_limiter: Arc<Mutex<RateLimiterManager>>
+    global_api_limiter: Arc<Mutex<RateLimiterManager>>,
 ) -> Result<bool, Box<dyn std::error::Error>> {
-    println!(
-        "Performing daily login with account: {}",
+    info!(
+        "[BGRSYNC][DL] Performing daily login with account: {}",
         account.email.clone()
     );
     log_to_audit_log(
@@ -44,12 +45,13 @@ pub async fn perform_daily_login_for_account(
         account.email.clone(),
         hwid.clone(),
         global_api_limiter.clone(),
-    ).await;
-    
+    )
+    .await;
+
     let access_token_opt: Option<GameAccessToken> = match acc_verify_result {
         Ok(token) => token,
         Err(e) => {
-            println!("Error during account verification: {:?}", e);
+            error!("[BGRSYNC][DL] Error during account verification: {}", e.to_string());
             log_to_audit_log(
                 pool,
                 ("Error during account verification: ".to_owned() + &e.to_string()).to_string(),
@@ -63,7 +65,10 @@ pub async fn perform_daily_login_for_account(
     };
 
     if access_token_opt.is_none() {
-        println!("Failed to get access token for account: {}", account.email);
+        error!(
+            "[BGRSYNC][DL] Failed to get access token for account: {}",
+            account.email.clone()
+        );
         log_to_audit_log(
             pool,
             ("Failed to get access token for account: ".to_owned() + &account.email).to_string(),
@@ -103,12 +108,17 @@ pub async fn perform_daily_login_for_account(
         .spawn()
         .expect("Failed to start the game.");
 
+    info!("[BGRSYNC][DL] Game started, waiting for login...");
     //Wait for the game to automatically login
     tokio::time::sleep(Duration::from_secs(GAME_START_TIMEOUT)).await;
 
     //Close the game
     child.kill().expect("Failed to close the game.");
 
+    info!(
+        "[BGRSYNC][DL] Game closed, daily login completed for account: {}",
+        account.email.clone()
+    );
     let report_entry = DailyLoginReportEntries {
         id: Some(entry_id),
         reportId: Some(daily_login_report_id.clone()),
