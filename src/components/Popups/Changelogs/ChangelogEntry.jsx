@@ -12,7 +12,7 @@ function ChangelogEntry({ title, listOfChanges }) {
                 gap: 0.5
             }}
         >
-            <Typography variant="h6">
+            <Typography variant="h6" component="h2">
                 {title}
             </Typography>
             <Box
