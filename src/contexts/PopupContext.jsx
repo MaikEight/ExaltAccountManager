@@ -49,7 +49,7 @@ function PopupContextProvider({ children }) {
         <PopupContext.Provider value={value}>
             {children}
             <Modal
-                open={!!popupData}
+                open={Boolean(popupData)}
                 onClose={handleCloseModal}
                 disableAutoFocus
             >
@@ -64,7 +64,7 @@ function PopupContextProvider({ children }) {
                         transform: 'translate(-50%, -50%)',
                     }}
                 >
-                    {!!popupData && popupData.content}
+                    {Boolean(popupData) && popupData.content}
                 </Box>
             </Modal>
         </PopupContext.Provider>
