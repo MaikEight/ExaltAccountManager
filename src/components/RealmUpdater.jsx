@@ -10,6 +10,7 @@ import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
 import { checkForUpdates, updateGame } from 'eam-commons-js';
 import useSnack from '../hooks/useSnack';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { getCurrentWindow } from '@tauri-apps/api/window'
 
 function RealmUpdater() {
     const settings = useUserSettings();
@@ -18,6 +19,11 @@ function RealmUpdater() {
     const [lastUpdateCheck, setLastUpdateCheck] = useState('never');
 
     const { showSnackbar } = useSnack();
+
+    const updateProgressbar = async (show) => await getCurrentWindow().setProgressBar({
+        status: show ? 'indeterminate' : 'none',
+        value: show ? 50 : 0,
+    });
 
     useEffect(() => {
         const checkSessionStorage = () => {
@@ -60,7 +66,7 @@ function RealmUpdater() {
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    m: 0,                    
+                    m: 0,
                 }}
                 innerSx={{
                     display: "flex",
@@ -136,15 +142,18 @@ function RealmUpdater() {
                         fullWidth
                         onClick={async () => {
                             setIsLoading(true);
+                            updateProgressbar(true);
                             try {
                                 await updateGame(await settings.getByKeyAndSubKey('game', 'exePath'));
                             } catch (error) {
                                 console.error('Failed to update the game', error);
-                                setIsLoading(false);
                                 showSnackbar('Failed to update the game', 'error');
+                            } finally {
+                                setIsLoading(false);
+                                updateProgressbar(false);
                             }
-                        }}   
-                        startIcon={<SystemUpdateAltOutlinedIcon />}                     
+                        }}
+                        startIcon={<SystemUpdateAltOutlinedIcon />}
                     >
                         update game
                     </StyledButton>
@@ -155,14 +164,16 @@ function RealmUpdater() {
                     color={updateRequired ? 'secondary' : 'primary'}
                     onClick={async () => {
                         setIsLoading(true);
+                        updateProgressbar(true);
                         try {
                             const updateNeeded = await checkForUpdates(true);
                             setUpdateRequired(updateNeeded);
-                            setIsLoading(false);
                         } catch (error) {
                             console.error('Failed to check for updates', error);
-                            setIsLoading(false);
                             showSnackbar('Failed to check for game updates', 'error');
+                        } finally {
+                            setIsLoading(false);
+                            updateProgressbar(false);
                         }
                     }}
                     startIcon={<SearchOutlinedIcon />}
