@@ -19,6 +19,7 @@
     "@mui/x-data-grid": "^7.29.7",
     "@mui/x-date-pickers": "^7.29.4",
     "@tauri-apps/api": "^2.6.0",
+    "@tauri-apps/plugin-autostart": "^2.5.0",
     "@tauri-apps/plugin-deep-link": "^2.4.0",
     "@tauri-apps/plugin-dialog": "^2.3.0",
     "@tauri-apps/plugin-fs": "^2.4.0",
@@ -50,7 +51,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "^2.6.2",
     "@vitejs/plugin-react": "^4.6.0",
-    "esbuild": "^0.25.5",
-    "vite": "^7.0.0"
+    "esbuild": "^0.25.6",
+    "vite": "^7.0.3"
   }
 }
