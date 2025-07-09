@@ -37,8 +37,8 @@ function CreditsPopup() {
                     <CreditEntry title={'Material UI'} url={'https://mui.com/'} image={'mui.svg'} />
                 </Box>
                 <img
-                    src='/mascot/mascot_low_res.png'
-                    alt='Mascot'
+                    src='/mascot/okta_low_res.png'
+                    alt='Okta, the mascot'
                     height={85}
                     style={{
                         marginRight: '16px',
