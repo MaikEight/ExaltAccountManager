@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createContext } from "react";
 import { AUTH0_REDIRECT_URL, AUTH0_DOMAIN, AUTH0_CLIENT_ID, EAM_USERS_API } from "../../constants";
 import { invoke } from '@tauri-apps/api/core';
+import { postPlusToken } from "../backend/eamSubscriptionsApi";
 
 const UserLoginContext = createContext();
 
@@ -188,7 +189,25 @@ function UserLoginProvider({ children }) {
             const userInfoResponse = JSON.parse(userInfoResponseStr);
             const enhancedUser = enhanceUserData(userInfoResponse);
             if (sessionStorage.getItem('flag:debug') === 'true') {
-                console.log('userInfoResponse', userInfoResponse, 'enhancedUser', enhancedUser);                
+                console.log('userInfoResponse', userInfoResponse, 'enhancedUser', enhancedUser);
+            }
+
+            if (enhancedUser && enhancedUser.isPlusUser) {
+                const hwid = await invoke('get_device_unique_identifier');
+                const plusSignature = await postPlusToken(id_token, hwid);
+
+                if (plusSignature) {
+                    const jwt = plusSignature.signature;
+                    if (jwt) {
+                        await invoke('insert_or_update_user_data', {
+                            userData: {
+                                dataKey: 'jwtSignature',
+                                dataValue: jwt
+                            }
+                        });
+                        sessionStorage.setItem('jwtSignature', jwt);
+                    }
+                }
             }
 
             setUser(enhancedUser);
