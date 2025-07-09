@@ -37,6 +37,7 @@ const getGameExePath = async () => {
 const defaultSettings = {
     general: {
         theme: "dark",
+        minimizeToTray: true,
     },
     accounts: {
         columnsHidden: {
