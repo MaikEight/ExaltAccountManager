@@ -33,6 +33,8 @@ import ServerSvg from '../components/Illustrations/ServerSvg';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { MASCOT_NAME } from '../constants';
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined';
+import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart'
 
 function SettingsPage() {
     const userSettings = useUserSettings();
@@ -44,6 +46,8 @@ function SettingsPage() {
 
     const openVaultPeekerButtonRef = useRef(null);
 
+    const [isAutostartEnabled, setIsAutostartEnabled] = useState(false);
+    const [isUpdateingAutostart, setIsUpdatingAutostart] = useState(false);
     const [initialSettings, setInitialSettings] = useState(true);
     const [settings, setSettings] = useState({});
     const [gameExePath, setGameExePath] = useState("");
@@ -73,6 +77,33 @@ function SettingsPage() {
         ]
     }, [settings]);
 
+    const updateAutostartStatus = async () => {
+        const enabled = await isEnabled();
+        setIsAutostartEnabled(enabled);
+    }
+
+    const handleAutostartToggle = async () => {
+        setIsUpdatingAutostart(true);
+        try {
+
+            if (await isEnabled()) {
+                await disable();
+                setIsAutostartEnabled(false);
+                showSnackbar("Autostart disabled", "secondary");
+            } else {
+                await enable();
+                setIsAutostartEnabled(true);
+                showSnackbar("Autostart enabled", "success");
+            }
+        } catch (error) {
+            console.error("Error toggling autostart:", error);
+            showSnackbar("Error toggling autostart, please try again later.", "error");
+        } finally {
+            setIsUpdatingAutostart(false);
+            updateAutostartStatus();
+        }
+    }
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             setMascotImage(prev => {
@@ -83,6 +114,7 @@ function SettingsPage() {
                 return '/mascot/Error/error_mascot_only_2_small_very_low_res.png';
             });
         }, 750);
+        updateAutostartStatus();
 
         return () => {
             clearInterval(intervalId);
@@ -515,6 +547,62 @@ function SettingsPage() {
                             />
                         </Paper>
                     </Popover>
+                </Box>
+            </ComponentBox>
+
+            {/* Autostart */}
+            <ComponentBox
+                title="Autostart & Close behavior"
+                icon={<PlayCircleOutlineOutlinedIcon />}
+            >
+                <Typography variant="body2" color="text.secondary">
+                    Choose if the application should start automatically when you start your computer.
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    This allows EAM to refresh your accounts in the background and always be up to date.
+                </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
+
+                    <FormControlLabel
+                        sx={{ gap: 0.5 }}
+                        control={
+                            <Tooltip
+                                title={"Minimizing the application to the tray on close will allow you to keep the application running in the background without having it open in the taskbar. This allows EAM to refresh your accounts in the background and always be up to date."}
+                            >
+                                <Switch
+                                    checked={settings?.general?.minimizeToTray || false}
+                                    onChange={() => {
+                                        const newSettings = { ...settings };
+                                        if (!newSettings.general) newSettings.general = {};
+                                        newSettings.general.minimizeToTray = !newSettings.general.minimizeToTray;
+                                        setSettings(newSettings);
+                                    }}
+                                />
+                            </Tooltip>
+                        }
+                        label={'Minimize to tray on close'}
+                    />
+
+                    <FormControlLabel
+                        sx={{ gap: 0.5 }}
+                        control={
+                            <Tooltip
+                                title={isAutostartEnabled ? "Disable autostart" : "Enable autostart"}
+                            >
+                                <Switch
+                                    disabled={isUpdateingAutostart}
+                                    checked={isAutostartEnabled}
+                                    onChange={handleAutostartToggle}
+                                />
+                            </Tooltip>
+                        }
+                        label={'Autostart'}
+                    />
                 </Box>
             </ComponentBox>
 
