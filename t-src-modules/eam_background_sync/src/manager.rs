@@ -14,7 +14,7 @@ use crate::process_account::process_account;
 use crate::types::*;
 use crate::utils::{get_save_file_path, log_to_audit_log};
 use eam_commons::diesel_functions::{
-    get_all_eam_accounts_for_daily_login, get_next_eam_account_for_background_sync,
+    self, get_all_eam_accounts_for_daily_login, get_next_eam_account_for_background_sync
 };
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::get_eam_account_by_email;
@@ -24,7 +24,7 @@ use eam_commons::hwid::get_device_unique_identifier;
 use eam_commons::insert_or_update_daily_login_report;
 use eam_commons::insert_or_update_daily_login_report_entry;
 use eam_commons::limiter::manager::RateLimiterManager;
-use eam_commons::models::{DailyLoginReportEntries, DailyLoginReports};
+use eam_commons::models::{DailyLoginReportEntries, DailyLoginReports, UserData};
 use eam_plus_lib::user_status_utils;
 
 #[derive(Clone)]
@@ -56,9 +56,17 @@ impl BackgroundSyncManager {
             hwid = lines.next().unwrap().unwrap();
         }
 
-        
+        let jwt = diesel_functions::get_user_data_by_key(&pool, "jwtSignature".to_string())
+            .unwrap_or_else(|_| {
+                error!("Failed to get jwtSignature from user data, using dummy value.");
+                UserData {
+                    dataKey: "jwtSignature".to_string(),
+                    dataValue: "dummy_id_token".to_string(),
+                }
+            });
+
         let is_plus_user = user_status_utils::is_plus_user(
-            "dummy_id_token",
+            &jwt.dataValue,
             &pool,
         ).await;
 
