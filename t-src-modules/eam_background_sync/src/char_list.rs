@@ -28,7 +28,6 @@ pub async fn send_char_list_request(
 
     let url = format!("{}/char/list", BASE_URL);
     let mut data = HashMap::new();
-    data.insert("do_login".to_string(), "true".to_string());
     data.insert("accessToken".to_string(), access_token.access_token.clone());
     data.insert("game_net".to_string(), "Unity".to_string());
     data.insert("play_platform".to_string(), "Unity".to_string());
