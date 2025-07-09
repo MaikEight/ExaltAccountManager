@@ -35,9 +35,9 @@ use std::io::{ErrorKind, Read, Write};
 use std::path::Path;
 use std::path::PathBuf;
 use std::str::FromStr;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex, MutexGuard};
-use std::sync::atomic::{AtomicU64, AtomicBool, Ordering};
 use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
@@ -61,16 +61,17 @@ lazy_static! {
                     "account/register".to_string(),
                     "account/register".to_string(),
                 )
-            ],            
+            ],
 
             cooldown_id: Arc::new(AtomicU64::new(0)),
             cooldown_listeners: Vec::new(),
             cooldown_reset_listeners: Arc::new(Mutex::new(Vec::new())),
 
-            api_remaining_changed_listeners: Arc::new(Mutex::new(vec![])), 
+            api_remaining_changed_listeners: Arc::new(Mutex::new(vec![])),
             last_known_remaining: HashMap::new(),
         }));
-    static ref HAS_REGISTERED_API_LIMIT_EVENT_LISTENER: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+    static ref HAS_REGISTERED_API_LIMIT_EVENT_LISTENER: Arc<Mutex<bool>> =
+        Arc::new(Mutex::new(false));
     static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);
     static ref BACKGROUND_SYNC_MANAGER: Arc<Mutex<Option<BackgroundSyncManager>>> =
         Arc::new(Mutex::new(None));
@@ -155,6 +156,10 @@ fn main() {
     info!("Starting Tauri application...");
     //Run the tauri application
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::Builder::new()
+            .args(["--autostart"])
+            .app_name("Exalt Account Manager")
+            .build())
         .plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
             println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
         }))
@@ -165,7 +170,7 @@ fn main() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .plugin(tauri_plugin_drpc::init())        
+        .plugin(tauri_plugin_drpc::init())
         .invoke_handler(tauri::generate_handler![
             add_api_limit_event_listener,
             create_background_sync_manager,
@@ -277,16 +282,16 @@ async fn add_api_limit_event_listener(app: AppHandle) {
             info!("API limit remaining for {}: {} / {}", api, remaining, limit);
         }
 
-        if let Err(e) = app_remaining.emit("api-remaining-changed", (api.to_string(), remaining, limit)) {
+        if let Err(e) =
+            app_remaining.emit("api-remaining-changed", (api.to_string(), remaining, limit))
+        {
             error!("Failed to emit remaining-changed event: {}", e);
         }
     });
 }
 
 #[tauri::command]
-async fn create_background_sync_manager(
-    app: AppHandle,
-) -> Result<(), Error> {
+async fn create_background_sync_manager(app: AppHandle) -> Result<(), Error> {
     if HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER.swap(true, Ordering::SeqCst) {
         info!("Background sync event listener already registered, skipping...");
         return Ok(());
@@ -308,9 +313,11 @@ async fn create_background_sync_manager(
     let manager = BackgroundSyncManager::new(pool, api_limiter).await;
     *BACKGROUND_SYNC_MANAGER.lock().unwrap() = Some(manager.clone());
 
-    manager.get_event_hub().register_listener(move |event| {        
-
-        if matches!(event, eam_background_sync::events::BackgroundSyncEvent::AccountCharListSync { .. }) {
+    manager.get_event_hub().register_listener(move |event| {
+        if matches!(
+            event,
+            eam_background_sync::events::BackgroundSyncEvent::AccountCharListSync { .. }
+        ) {
             info!("Background sync AccountCharListSync event received");
         } else {
             info!("Background sync event: {:?}", event);
@@ -357,7 +364,6 @@ fn stop_background_sync_manager() -> Result<(), Error> {
         )))
     }
 }
-
 
 #[tauri::command]
 async fn open_url(url: String) -> Result<(), Error> {
@@ -766,7 +772,7 @@ async fn send_post_request_with_form_url_encoded_data(
     };
 
     if let Some(ref key) = limiter_key_opt {
-        let mut manager = GLOBAL_API_LIMITER.lock().unwrap();        
+        let mut manager = GLOBAL_API_LIMITER.lock().unwrap();
         if !manager.can_call(key) {
             info!("Rate limit exceeded for {}", key);
             manager.record_api_use(key, CallResult::RateLimited);
@@ -815,14 +821,18 @@ async fn send_post_request_with_form_url_encoded_data(
 }
 
 #[tauri::command]
-async fn send_post_request_with_json_body(url: String, data: String, headers_opt: Option<HashMap<String, String>>) -> Result<String, String> {
+async fn send_post_request_with_json_body(
+    url: String,
+    data: String,
+    headers_opt: Option<HashMap<String, String>>,
+) -> Result<String, String> {
     info!("Sending post request with json body to: {}", &url);
 
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
     headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
-    
+
     if let Some(custom_headers) = headers_opt {
         custom_headers.into_iter().for_each(|(key, value)| {
             let header_name = HeaderName::from_str(&key).unwrap();
