@@ -23,6 +23,7 @@
         "**"
       ]
     },
+    "core:app:allow-default-window-icon",
     "core:window:allow-maximize",
     "core:window:allow-toggle-maximize",
     "core:window:allow-unmaximize",
@@ -33,6 +34,9 @@
     "core:window:allow-close",
     "core:window:allow-set-min-size",
     "core:window:allow-start-dragging",
+    "core:window:allow-set-progress-bar",
+    "core:window:allow-set-focus",
+    "core:window:allow-set-title",
     "shell:allow-open",
     "dialog:allow-open",
     "dialog:allow-save",

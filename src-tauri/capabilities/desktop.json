@@ -16,7 +16,12 @@
     "dialog:default",
     "core:event:default",
     "deep-link:default",
-    "drpc:allow-is-running", 
-    "drpc:default"
+    "drpc:allow-is-running",
+    "drpc:default",
+    "autostart:default",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled",
+    "autostart:default"
   ]
 }
