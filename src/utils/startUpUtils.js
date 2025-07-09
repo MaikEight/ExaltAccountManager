@@ -6,6 +6,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { check  } from '@tauri-apps/plugin-updater';
 import { logToErrorLog, checkForUpdates } from "eam-commons-js";
 import { relaunch } from '@tauri-apps/plugin-process';
+import addSystemTray from "./addSystemTrayMenu";
 
 const appWindow = getCurrentWebviewWindow()
 
@@ -32,7 +33,8 @@ async function onStartUp() {
     addConsoleLogListener();
 
     invoke('add_api_limit_event_listener').catch(console.error);
-
+    addSystemTray();
+    
     //Check for EAM update
     performCheckForUpdates();
     getLatestEamVersion()
