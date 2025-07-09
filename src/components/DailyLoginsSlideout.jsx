@@ -164,7 +164,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                             icon={<CancelOutlinedIcon />}
                             isCollapseable
                         >
-                            <DailyLoginsLoginData logins={reportData.failed} />
+                            <DailyLoginsLoginData logins={reportData.failed} mascot={'/mascot/Error/error_2_low_res.png'}/>
                         </ComponentBox>
                     }
                     {
@@ -185,13 +185,14 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
 
 export default DailyLoginsSlideout;
 
-function DailyLoginsLoginData({ logins }) {
+function DailyLoginsLoginData({ logins, mascot }) {
     const theme = useTheme();
     const navigate = useNavigate();
 
     return (
         <Box
             sx={{
+                position: 'relative',
                 width: '100%',
                 overflowX: 'hidden',
             }}
@@ -199,6 +200,19 @@ function DailyLoginsLoginData({ logins }) {
             <Typography variant="body2" sx={{ p: 1 }}>
                 Click on a row to view the account details
             </Typography>
+            {
+                mascot &&
+                <img
+                    src={mascot}
+                    alt="Okta Mascot"
+                    style={{
+                        position: 'absolute',
+                        top: -6,
+                        right: 6,
+                        height: '56px',
+                    }}
+                />
+            }
             <TableContainer component={Box} sx={{ borderRadius: 0, maxWidth: '100%', overflow: 'hidden' }}>
                 <Table
                     sx={{
