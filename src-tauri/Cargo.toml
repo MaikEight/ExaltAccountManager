@@ -12,10 +12,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.2.0", features = [] }
+tauri-build = { version = "2.3.0", features = [] }
 
 [dependencies]
-tauri = { version = "2.5.1", features = ["devtools", "macos-private-api"] }
+tauri = { version = "2.6.2", features = ["devtools", "macos-private-api", "tray-icon"] }
 tauri-plugin = "2"
 tauri-plugin-deep-link = "2"
 tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
@@ -24,19 +24,20 @@ tauri-plugin-shell = "2"
 tauri-plugin-http = "2"
 tauri-plugin-process = "2"
 tauri-plugin-dialog = "2"
+tauri-plugin-autostart = "2"
 tauri-plugin-drpc = "0.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 async-std = "1.13"
 window-vibrancy = "0.6.0"
 dirs = "6.0.0"
-md5 = "0.7.0"
-tokio = "1.45.1"
+md5 = "0.8.0"
+tokio = "1.46.1"
 futures = "0.3.31"
 flate2 = "1.1.2"
 walkdir = "2.5.0"
-reqwest = { version = "0.12.20", features = ["blocking"] }
-zip = "4.1.0"
+reqwest = { version = "0.12.22", features = ["blocking"] }
+zip = "4.2.0"
 mpsc = "0.2.6"
 anyhow = "1.0"
 curl = "0.4"
@@ -52,7 +53,7 @@ diesel_derives = "2.2.6"
 lazy_static = "1.5.0"
 uuid = "1.17.0"
 base64 = "0.22.1"
-h2 = "0.4.10"
+h2 = "0.4.11"
 mio = "1.0.4"
 libsqlite3-sys = { version = "0.33.0", features = ["bundled"] }
 log = "0.4"
@@ -69,4 +70,4 @@ eam_background_sync = { path = "../t-src-modules/eam_background_sync" }
 custom-protocol = ["tauri/custom-protocol"]
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.8.1"
+tauri-plugin-updater = "2.9.0"
