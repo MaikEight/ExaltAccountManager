@@ -10,9 +10,12 @@ import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import { MASCOT_NAME } from "../../constants";
 import BackgroundSyncComponent from "../BackgroundSyncComponent";
+import useUserSettings from "../../hooks/useUserSettings";
 
 function CustomToolbar(props) {
     const theme = useTheme();
+    const { getByKeyAndSubKey } = useUserSettings();
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [hasGlobalApiCooldown, setHasGlobalApiCooldown] = useState(false);
     const [apiRemainingLimits, setApiRemainingLimits] = useState(new Map([
@@ -20,6 +23,8 @@ function CustomToolbar(props) {
         ['char/list', 5],
         ['account/register', 5],
     ]));
+
+    const minimizeToTray = getByKeyAndSubKey('general', 'minimizeToTray');
 
     useEffect(() => {
         let unlistenGlobalApiCooldown;
@@ -114,7 +119,7 @@ function CustomToolbar(props) {
                 display: "flex",
                 justifyContent: "space-between",
                 height: 30,
-                ...props.sx                
+                ...props.sx
             }}
         >
             <Box
@@ -260,6 +265,7 @@ function CustomToolbar(props) {
                         onClick={async () => await getCurrentWindow().minimize()}
                         sx={{
                             color: theme.palette.text.primary,
+                            borderRadius: `${theme.shape.borderRadius - 4}px 0px 0px ${theme.shape.borderRadius - 4}px`,
                         }}
                     >
                         <MinimizeIcon />
@@ -273,10 +279,17 @@ function CustomToolbar(props) {
                         <CropSquareIcon />
                     </Button>
                     <Button
-                        onClick={async () => await getCurrentWindow().close()}
+                        onClick={async () => {
+                            if (minimizeToTray) {
+                                await getCurrentWindow().hide();
+                                return;
+                            }
+
+                            await getCurrentWindow().close();
+                        }}
                         sx={{
                             color: theme.palette.text.primary,
-                            borderRadius: `0px ${theme.shape.borderRadius - 2}px ${theme.shape.borderRadius - 2}px 0px`,
+                            borderRadius: `0px ${theme.shape.borderRadius - 4}px ${theme.shape.borderRadius - 4}px 0px`,
                         }}
                     >
                         <CloseIcon />
