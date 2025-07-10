@@ -2,6 +2,7 @@ import { onOpenUrl } from '@tauri-apps/plugin-deep-link';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserLogin } from 'eam-commons-js';
+import navigationService from '../utils/navigationService';
 
 const deepLinkingPaths = new Map([
     ['accounts', '/accounts'],
@@ -67,8 +68,11 @@ function DeepLinkingComponent() {
     }
 
     useEffect(() => {
+        // Initialize the navigation service with the navigate function
+        navigationService.setNavigate(navigate);
+        
         performDeepLinking();
-    }, []);
+    }, [navigate]);
 
     return (
         <></>
