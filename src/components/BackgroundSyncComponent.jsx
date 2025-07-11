@@ -9,7 +9,7 @@ import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
 function BackgroundSyncComponent() {
     const processedCharListSyncEventIds = useRef([]);
     const emailToAccountNameMap = useRef({});
-    const { getAccountByEmail, updateAccount } = useAccounts();
+    const { getAccountByEmail, updateAccount, accounts } = useAccounts();
 
     const [uiState, setUiState] = useState({
         email: '',
@@ -18,7 +18,6 @@ function BackgroundSyncComponent() {
     });
 
     const processBackgroundSyncEvent = async (event) => {
-
         if (event.payload.AccountCharListSync) {
             const e = event.payload.AccountCharListSync;
             if (!processedCharListSyncEventIds.current.includes(e.id)) {
@@ -28,11 +27,40 @@ function BackgroundSyncComponent() {
 
                 const state = getRequestState(charList);
                 const acc = getAccountByEmail(e.email);
+
+                if (state === 'AccountSuspended' || state === 'WrongPassword') {
+                    console.warn('Account suspended or wrong password for email:', e.email, 'with state:', state, acc);
+
+                    setUiState({
+                        email: e.email,
+                        state: state,
+                        updatedAt: new Date(),
+                    });
+
+                    if (Boolean(acc)) {
+                        console.log('Updating account state for email:', e.email, 'with state:', state);
+                        acc.state = state;
+                        await updateAccount(acc);
+                    }
+                    return;
+                }
+
                 if (Boolean(state) && Boolean(acc)) {
                     acc.state = state;
                     acc.lastRefresh = new Date();
                     await updateAccount(acc);
                 } else {
+                    console.log('AccountCharListSync Debug:', {
+                        eventEmail: e.email,
+                        emailType: typeof e.email,
+                        emailLength: e.email?.length,
+                        state: state,
+                        foundAccount: Boolean(acc),
+                        accountEmail: acc?.email,
+                        totalAccountsAvailable: accounts?.length || 0,
+                        availableEmails: accounts?.map(a => a.email) || [],
+                        emailToAccountMapSize: Object.keys(emailToAccountNameMap.current).length
+                    });
                     console.warn('Account not found or state is undefined for email:', e.email, 'with state:', state, acc);
                 }
 
@@ -46,6 +74,7 @@ function BackgroundSyncComponent() {
         if (event.payload.AccountStarted) {
             const e = event.payload.AccountStarted;
             const acc = getAccountByEmail(e);
+
             if (acc) {
                 emailToAccountNameMap.current[e] = acc.name;
                 setUiState({
@@ -55,7 +84,17 @@ function BackgroundSyncComponent() {
                 });
                 return;
             }
-            
+
+            console.log('AccountStarted Debug:', {
+                eventEmail: e,
+                emailType: typeof e,
+                emailLength: e?.length,
+                foundAccount: Boolean(acc),
+                accountEmail: acc?.email,
+                totalAccountsAvailable: accounts?.length || 0,
+                availableEmails: accounts?.map(a => a.email) || [],
+                emailToAccountMapSize: Object.keys(emailToAccountNameMap.current).length
+            });
             console.warn('Account not found for email:', e);
             return;
         }
@@ -85,6 +124,7 @@ function BackgroundSyncComponent() {
     }
 
     useEffect(() => {
+        console.log('BackgroundSyncComponent mounted with accounts:', accounts?.length || -1);
         let eventListener;
 
         const registerEventListener = async () => {
@@ -93,21 +133,13 @@ function BackgroundSyncComponent() {
             });
         }
 
-        const createAndStartBackgroundSyncManager = async () => {
-            try {
-                await invoke('create_background_sync_manager');
-                await invoke('start_background_sync_manager');
-            } catch (error) {
-                console.error('Failed to create background sync manager:', error);
-            }
-        }
         registerEventListener();
-        createAndStartBackgroundSyncManager();
 
         return () => {
+            console.log('Cleaning up background sync event listener', accounts?.length || -1);
             eventListener?.();
         }
-    }, []);
+    }, [accounts, getAccountByEmail, updateAccount]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -121,6 +153,18 @@ function BackgroundSyncComponent() {
             clearTimeout(timeoutId);
         };
     }, [uiState]);
+
+    useEffect(() => {
+        const createAndStartBackgroundSyncManager = async () => {
+            try {
+                await invoke('create_background_sync_manager');
+                await invoke('start_background_sync_manager');
+            } catch (error) {
+                console.error('Failed to create background sync manager:', error);
+            }
+        }
+        createAndStartBackgroundSyncManager();
+    }, []);
 
     return <>
         {
