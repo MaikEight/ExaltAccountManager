@@ -9,17 +9,23 @@ use chrono::Utc;
 use log::{error, info};
 use std::io::ErrorKind;
 use std::process::Command;
+use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use uuid::Uuid;
 
+use eam_commons::diesel_functions;
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::insert_or_update_daily_login_report_entry;
 use eam_commons::limiter::manager::RateLimiterManager;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::EamAccount;
+use eam_commons::models::UserData;
+use eam_plus_lib::daily_login::daily_login::{DailyLoginError, DailyLoginResult};
+use eam_plus_lib::user_status_utils;
 
 const GAME_START_TIMEOUT: u64 = 90;
+const PLUS_USER_TIMEOUT: u64 = 60;
 
 pub async fn perform_daily_login_for_account(
     pool: &DbPool,
@@ -31,6 +37,7 @@ pub async fn perform_daily_login_for_account(
     game_exe_path: String,
     event_hub: &BackgroundSyncEventHub,
     global_api_limiter: Arc<Mutex<RateLimiterManager>>,
+    is_plus_user: Arc<AtomicBool>,
 ) -> Result<bool, Box<dyn std::error::Error>> {
     info!(
         "[BGRSYNC][DL] Performing daily login with account: {}",
@@ -41,6 +48,82 @@ pub async fn perform_daily_login_for_account(
         ("Performing daily login with account: ".to_owned() + &account.email).to_string(),
         Some(account.email.clone()),
     );
+
+    if is_plus_user.load(std::sync::atomic::Ordering::Relaxed) {
+        let account_email = account.email.clone();
+        let result = perform_daily_login_for_plus_user(
+            pool,
+            account,
+            hwid,
+            global_api_limiter
+        )
+        .await;
+
+        let success;
+        match result {
+            Ok(daily_login_report) => {
+                if daily_login_report.success {
+                    if !daily_login_report.char_list.is_empty() {
+                        event_hub.emit(BackgroundSyncEvent::AccountProgress(
+                            account_email.clone(),
+                            AccountProgressState::SyncingCharList,
+                        ));
+
+                        let uuid = Uuid::new_v4();
+                        event_hub.emit(BackgroundSyncEvent::AccountCharListSync {
+                            id: uuid,
+                            email: account_email.clone(),
+                            dataset: daily_login_report.char_list.to_string(),
+                        });
+                    }
+                }
+
+                let report_entry = DailyLoginReportEntries {
+                    id: Some(entry_id),
+                    reportId: Some(daily_login_report_id.clone()),
+                    startTime: start_time.clone(),
+                    endTime: Some(Utc::now().to_rfc3339()),
+                    accountEmail: Some(account_email.clone()),
+                    status: if daily_login_report.success {
+                        "Succeeded".to_string()
+                    } else {
+                        "Failed".to_string()
+                    },
+                    errorMessage: None,
+                };
+                let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
+                success = daily_login_report.success;
+            }
+            Err(e) => {
+                let report_entry = DailyLoginReportEntries {
+                    id: Some(entry_id),
+                    reportId: Some(daily_login_report_id.clone()),
+                    startTime: start_time.clone(),
+                    endTime: Some(Utc::now().to_rfc3339()),
+                    accountEmail: Some(account_email.clone()),
+                    status: "Failed".to_string(),
+                    errorMessage: Some(e.to_string()),
+                };
+                let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
+
+                return Err(Box::new(e));
+            }
+        }
+
+        event_hub.emit(BackgroundSyncEvent::AccountProgress(
+            account_email.clone(),
+            AccountProgressState::WaitingForCooldown,
+        ));
+
+        tokio::time::sleep(Duration::from_secs(PLUS_USER_TIMEOUT)).await;
+
+        event_hub.emit(BackgroundSyncEvent::AccountProgress(
+            account_email.clone(),
+            AccountProgressState::Done,
+        ));
+
+        return Ok(success);
+    }
 
     event_hub.emit(BackgroundSyncEvent::AccountProgress(
         account.email.clone(),
@@ -153,12 +236,11 @@ pub async fn perform_daily_login_for_account(
         ));
 
         let uuid = Uuid::new_v4();
-        event_hub
-            .emit(BackgroundSyncEvent::AccountCharListSync {
-                id: uuid,
-                email: account.email.clone(),
-                dataset: char_list_response.to_string(),
-            });
+        event_hub.emit(BackgroundSyncEvent::AccountCharListSync {
+            id: uuid,
+            email: account.email.clone(),
+            dataset: char_list_response.to_string(),
+        });
     }
 
     //Wait for the game to automatically login
@@ -171,7 +253,7 @@ pub async fn perform_daily_login_for_account(
         "[BGRSYNC][DL] Game closed, daily login completed for account: {}",
         account.email.clone()
     );
-    
+
     let report_entry = DailyLoginReportEntries {
         id: Some(entry_id),
         reportId: Some(daily_login_report_id.clone()),
@@ -184,4 +266,78 @@ pub async fn perform_daily_login_for_account(
     let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
 
     Ok(true)
+}
+
+async fn perform_daily_login_for_plus_user(
+    pool: &DbPool,
+    account: EamAccount,
+    hwid: String,
+    global_api_limiter: Arc<Mutex<RateLimiterManager>>,
+) -> Result<DailyLoginResult, DailyLoginError> {
+    let jwt = diesel_functions::get_user_data_by_key(&pool, "jwtSignature".to_string())
+        .unwrap_or_else(|_| {
+            error!("Failed to get jwtSignature from user data, using dummy value.");
+            UserData {
+                dataKey: "jwtSignature".to_string(),
+                dataValue: "dummy_id_token".to_string(),
+            }
+        });
+
+    // If the token is not found or invalid, we continue with the daily login for non plus users
+    if jwt.dataValue.is_empty() || jwt.dataValue == "dummy_id_token" {
+        error!("No valid JWT token found for Plus user, skipping daily login.");
+        return Err(DailyLoginError::FailedToGetAccessToken(
+            "No valid JWT token found for Plus user.".to_string(),
+        ));
+    }
+
+    let is_plus_user = user_status_utils::is_plus_user(&jwt.dataValue, &pool).await;
+    if !is_plus_user {
+        error!(
+            "[BGRSYNC][DL] User is not a Plus user, skipping daily login for account: {}",
+            account.email.clone()
+        );
+        return Err(DailyLoginError::NotAPlusUserError(
+            "Failed jwt validation.".to_string(),
+        ));
+    }
+
+    let result: Result<DailyLoginResult, DailyLoginError> =
+        eam_plus_lib::daily_login::daily_login::perform_daily_login(
+            jwt.dataValue.clone(),
+            account.email.clone(),
+            hwid,
+            pool,
+            global_api_limiter
+        )
+        .await;
+
+    match result {
+        Ok(daily_login_report) => {
+            info!(
+                "[BGRSYNC][DL] Daily login completed for Plus user: {}",
+                account.email.clone()
+            );
+            log_to_audit_log(
+                pool,
+                ("Daily login completed for Plus user: ".to_owned() + &account.email).to_string(),
+                Some(account.email.clone()),
+            );
+
+            Ok(daily_login_report)
+        }
+        Err(e) => {
+            error!(
+                "[BGRSYNC][DL] Error during daily login for Plus user: {}",
+                e.to_string()
+            );
+            log_to_audit_log(
+                pool,
+                ("Error during daily login for Plus user: ".to_owned() + &e.to_string())
+                    .to_string(),
+                Some(account.email.clone()),
+            );
+            Err(e)
+        }
+    }
 }
