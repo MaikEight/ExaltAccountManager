@@ -14,7 +14,7 @@ use crate::process_account::process_account;
 use crate::types::*;
 use crate::utils::{get_save_file_path, log_to_audit_log};
 use eam_commons::diesel_functions::{
-    self, get_all_eam_accounts_for_daily_login, get_next_eam_account_for_background_sync
+    self, get_all_eam_accounts_for_daily_login, get_next_eam_account_for_background_sync,
 };
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::get_eam_account_by_email;
@@ -65,10 +65,7 @@ impl BackgroundSyncManager {
                 }
             });
 
-        let is_plus_user = user_status_utils::is_plus_user(
-            &jwt.dataValue,
-            &pool,
-        ).await;
+        let is_plus_user = user_status_utils::is_plus_user(&jwt.dataValue, &pool).await;
 
         Self {
             pool,
@@ -367,9 +364,8 @@ impl BackgroundSyncManager {
                 daily_login_report.emailsToProcess = None;
 
                 let _ = insert_or_update_daily_login_report(&self.pool, daily_login_report);
-                
-                self.event_hub
-                    .emit(BackgroundSyncEvent::DailyLoginDone);
+
+                self.event_hub.emit(BackgroundSyncEvent::DailyLoginDone);
                 return;
             }
 
@@ -458,29 +454,28 @@ impl BackgroundSyncManager {
 
         let mut can_call = false;
 
-        while !can_call {
-            {
-                let limiter = self.api_limiter.lock().unwrap();
-                match (
-                    limiter.api_limits("account/verify"),
-                    limiter.api_limits("char/list"),
-                ) {
-                    (Some((limit_v, remain_v)), Some((limit_c, remain_c))) => {
-                        can_call = limit_v == remain_v && limit_c == remain_c;
-                    }
-                    _ => {
-                        can_call = false;
+        for account in accounts_to_perform_daily_login_with {
+            while !can_call {
+                {
+                    let limiter = self.api_limiter.lock().unwrap();
+                    match (
+                        limiter.api_limits("account/verify"),
+                        limiter.api_limits("char/list"),
+                    ) {
+                        (Some((_limit_v, remain_v)), Some((_limit_c, remain_c))) => {
+                            can_call = remain_v >= 2 && remain_c >= 2;
+                        }
+                        _ => {
+                            can_call = false;
+                        }
                     }
                 }
-            }
 
-            if !can_call {
-                info!("[BGRSYNC][DL] API limiter active, waiting...");
-                tokio::time::sleep(Duration::from_secs(10)).await;
+                if !can_call {
+                    info!("[BGRSYNC][DL] API limiter active, waiting...");
+                    tokio::time::sleep(Duration::from_secs(10)).await;
+                }
             }
-        }
-
-        for account in accounts_to_perform_daily_login_with {
             let start_time = Some(Utc::now().to_rfc3339());
             let account_email = account.email.clone();
             let report_entry = DailyLoginReportEntries {
@@ -508,11 +503,12 @@ impl BackgroundSyncManager {
                 game_exe_path.clone(),
                 &self.event_hub,
                 Arc::clone(&self.api_limiter),
+                self.is_plus_user.clone(),
             )
             .await;
 
             match login_result {
-                Ok(_) => {
+                Ok(success) => {
                     info!(
                         "[BGRSYNC][DL] Successfully performed daily login with account: {}",
                         account.email
@@ -536,16 +532,21 @@ impl BackgroundSyncManager {
 
                     self.event_hub.emit(BackgroundSyncEvent::AccountFinished(
                         account.email.clone(),
-                        "Success".to_string(),
+                        if success {
+                            "Succeeded".to_string()
+                        } else {
+                            "Failed".to_string()
+                        },
                     ));
 
-                    self.event_hub.emit(BackgroundSyncEvent::DailyLoginProgress {
-                        done: daily_login_report.amountOfAccountsProcessed as usize,
-                        left: emails_vec.len(),
-                        left_emails: emails_vec.clone(),
-                        failed_emails: Vec::new(),
-                        estimated_time: self.get_estimated_time(emails_vec.len()),
-                    });
+                    self.event_hub
+                        .emit(BackgroundSyncEvent::DailyLoginProgress {
+                            done: daily_login_report.amountOfAccountsProcessed as usize,
+                            left: emails_vec.len(),
+                            left_emails: emails_vec.clone(),
+                            failed_emails: Vec::new(),
+                            estimated_time: self.get_estimated_time(emails_vec.len()),
+                        });
                 }
                 Err(e) => {
                     error!("[BGRSYNC][DL] Error while performing daily login: {}", e);
@@ -599,7 +600,29 @@ impl BackgroundSyncManager {
         self.event_hub.emit(BackgroundSyncEvent::DailyLoginDone);
     }
 
+    /// Calculates the estimated time for the daily login based on the number of accounts left.
+    /// For Plus users, it assumes 62 seconds per account, otherwise 92 seconds.
+    /// The time per account is based on the average time it takes to process an account.
+    /// 2 seconds for the web request
+    /// 90 seconds for the game to start and process the daily login
+    /// 60 seconds to wait for the API cooldown
+    /// # Arguments:
+    /// * `left` - The number of accounts left to process.
+    /// # Returns: A DateTime<Utc> representing the estimated completion time.
+    /// # Example:
+    /// ```rust
+    /// let estimated_time = manager.get_estimated_time(5);
+    /// ```
+    /// Returns the estimated time for processing 5 accounts.
+    ///
     fn get_estimated_time(&self, left: usize) -> DateTime<Utc> {
+        if left == 0 {
+            return Utc::now();
+        }
+
+        if self.is_plus_user.load(Ordering::SeqCst) {
+            return Utc::now() + Duration::from_secs(62 * left as u64);
+        }
         Utc::now() + Duration::from_secs(92 * left as u64)
     }
 }
