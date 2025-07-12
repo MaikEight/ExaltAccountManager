@@ -167,8 +167,10 @@ function DebugFlagsPage() {
                                                 onChange={(event) => {
                                                     if (event.target.checked) {
                                                         sessionStorage.setItem(flag.flagKey, 'true');
+                                                        console.log(`🟢 Flag ${flag.flagKey.replace("flag:", "")} enabled`);
                                                     } else {
                                                         sessionStorage.removeItem(flag.flagKey);
+                                                        console.log(`🔵 Flag ${flag.flagKey.replace("flag:", "")} disabled`);
                                                     }
 
                                                     setActiveFlags(prev => {
