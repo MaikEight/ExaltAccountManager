@@ -1,5 +1,5 @@
 use crate::events::{AccountProgressState, BackgroundSyncEvent, BackgroundSyncEventHub};
-use crate::types::{SyncResult};
+use crate::types::{SyncResult, ApiLimiterBlocked};
 use crate::account_verify::send_account_verify_request;
 use crate::char_list::send_char_list_request;
 use eam_commons::diesel_setup::DbPool;
@@ -52,7 +52,17 @@ pub async fn process_account(
             );
         }
         Err(err) => {
-            return (SyncResult::Failed(format!("Verify error: {}", err.to_string())), None);
+            match err {
+                ApiLimiterBlocked::CooldownActive => {
+                    return (SyncResult::RateLimited, None);
+                }
+                ApiLimiterBlocked::RateLimitHit => {
+                    return (SyncResult::RateLimited, None);
+                }
+                ApiLimiterBlocked::RequestFailed(msg) => {
+                    return (SyncResult::Failed(msg.clone()), msg.into());
+                }
+            }
         }
     };
 
