@@ -76,6 +76,18 @@ async function onStartUp() {
     if (res > 0) {
         console.log(`Deleted ${res} old error logs`);
     }
+    
+    logAllEnabledDebugFlags();
+}
+
+function logAllEnabledDebugFlags() {
+    const debugFlags = Object.keys(sessionStorage).filter(key => key.startsWith("flag:"));
+    if (debugFlags.length > 0) {
+        console.log("🟢 Enabled Debug Flags");
+        debugFlags.forEach(flag => {
+            console.log(`🔹 ${flag.replace("flag:", "")}`);
+        });
+    }
 }
 
 function writeStartupLogoToConsole() {
