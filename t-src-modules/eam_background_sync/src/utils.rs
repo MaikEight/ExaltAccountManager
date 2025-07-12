@@ -41,7 +41,7 @@ pub fn get_save_file_path() -> String {
 pub fn log_to_audit_log(pool: &DbPool, message: String, account_email: Option<String>) {
     let log = AuditLog {
         id: None,
-        sender: "daily_auto_login".to_string(),
+        sender: "BGRSYNC".to_string(),
         message: message,
         accountEmail: account_email,
         time: "".to_string(),
