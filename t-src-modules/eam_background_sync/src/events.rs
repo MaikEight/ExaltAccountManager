@@ -12,6 +12,7 @@ pub enum BackgroundSyncEvent {
     AccountStarted(String),
     AccountProgress(String, AccountProgressState),
     AccountFinished(String, String),
+    AccountFailed(String, String),
     AccountCharListSync {
         id: Uuid,
         email: String,
