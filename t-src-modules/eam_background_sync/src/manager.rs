@@ -58,14 +58,18 @@ impl BackgroundSyncManager {
 
         let jwt = diesel_functions::get_user_data_by_key(&pool, "jwtSignature".to_string())
             .unwrap_or_else(|_| {
-                error!("Failed to get jwtSignature from user data, using dummy value.");
+                info!("[BGRSYNC] No JWT signature found.");
                 UserData {
                     dataKey: "jwtSignature".to_string(),
-                    dataValue: "dummy_id_token".to_string(),
+                    dataValue: "".to_string(),
                 }
             });
 
-        let is_plus_user = user_status_utils::is_plus_user(&jwt.dataValue, &pool).await;
+        let is_plus_user = if &jwt.dataValue.is_empty() {
+            return false;
+        } else {
+            return user_status_utils::is_plus_user(&jwt.dataValue, &pool).await;
+        };
 
         Self {
             pool,
@@ -117,8 +121,6 @@ impl BackgroundSyncManager {
 
         self.is_running.store(true, Ordering::SeqCst);
         let manager = self.clone();
-        self.event_hub
-            .emit(BackgroundSyncEvent::ModeChanged("Started".to_string()));
 
         tokio::spawn(async move {
             manager.run_loop().await;
@@ -178,8 +180,8 @@ impl BackgroundSyncManager {
             let account = match get_next_eam_account_for_background_sync(&self.pool) {
                 Ok(Some(acc)) => acc,
                 Ok(None) => {
-                    info!("[BGRSYNC] No more accounts to process, waiting 30 seconds.");
-                    tokio::time::sleep(Duration::from_secs(30)).await;
+                    info!("[BGRSYNC] No more accounts to process, waiting 5 minutes.");
+                    tokio::time::sleep(Duration::from_secs(300)).await;
                     continue;
                 }
                 Err(e) => {
@@ -199,15 +201,47 @@ impl BackgroundSyncManager {
             )
             .await;
 
-            if let SyncResult::Success = result {
-                if let Some(dataset) = dataset_opt {
-                    let uuid = Uuid::new_v4();
-                    self.event_hub
-                        .emit(BackgroundSyncEvent::AccountCharListSync {
-                            id: uuid,
-                            email: account.email.clone(),
-                            dataset: dataset.to_string(),
-                        });
+            match result.clone() {
+                SyncResult::Success => {
+                    info!(
+                        "[BGRSYNC] Successfully processed account: {}",
+                        account.email
+                    );
+                    if let Some(dataset) = dataset_opt {
+                        let uuid = Uuid::new_v4();
+                        self.event_hub
+                            .emit(BackgroundSyncEvent::AccountCharListSync {
+                                id: uuid,
+                                email: account.email.clone(),
+                                dataset: dataset.to_string(),
+                            });
+                    }
+                }
+                SyncResult::RateLimited => {
+                    info!("[BGRSYNC] Rate limit hit for account: {}", account.email);
+                    self.event_hub.emit(BackgroundSyncEvent::AccountFailed(
+                        account.email.clone(),
+                        "Rate limited".to_string(),
+                    ));
+                }
+                SyncResult::Failed(msg) => {
+                    error!(
+                        "[BGRSYNC] Failed to process account {}: {}",
+                        account.email, msg
+                    );
+                    self.event_hub.emit(BackgroundSyncEvent::AccountFailed(
+                        account.email.clone(),
+                        msg,
+                    ));
+                }
+                SyncResult::Skipped => {
+                    info!("[BGRSYNC] Skipped account: {}", account.email);
+                }
+                SyncResult::Cancelled => {
+                    info!(
+                        "[BGRSYNC] Processing cancelled for account: {}",
+                        account.email
+                    );
                 }
             }
 
