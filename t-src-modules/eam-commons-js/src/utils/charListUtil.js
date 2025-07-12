@@ -65,6 +65,8 @@ function requestStateToMessage(requestState) {
             return "Success";
         case "RateLimitExceeded": //This is a EAM Rate limit error
             return "Rate limit exceeded"; 
+        case "BGSyncError": //This is a background sync error
+            return "Background sync error";
         default:
             return "Unknown Error";
     }
