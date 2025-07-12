@@ -492,7 +492,7 @@ pub fn get_next_eam_account_for_background_sync(
         .filter(
             eam_accounts::state
                 .is_null()
-                .or(eam_accounts::state.ne_all(&["WrongPassword", "AccountSuspended"])),
+                .or(eam_accounts::state.ne_all(&["WrongPassword", "AccountSuspended", "BGSyncError"])),
         )
         .order((
             sql::<diesel::sql_types::Integer>("CASE WHEN lastRefresh IS NULL THEN 0 ELSE 1 END"),
@@ -857,4 +857,22 @@ pub fn get_recent_requests(pool: &DbPool, api: &str, since_ts: i64) -> Vec<ApiRe
         api
     );
     return vec![];
+}
+
+#[named]
+pub fn delete_api_requests_older_than_days(
+    pool: &DbPool,
+    days: i64,
+) -> Result<usize, diesel::result::Error> {
+    log_fn!();
+    let mut conn = pool.get().expect("Failed to get connection from pool.");
+
+    let target_date = chrono::Utc::now()
+        - chrono::Duration::try_days(days as i64).expect("Failed to create duration");
+    let target_timestamp_millis = target_date.timestamp_millis();
+    let num_deleted =
+        diesel::delete(api_requests::table.filter(api_requests::timestamp.lt(target_timestamp_millis)))
+            .execute(&mut conn)?;
+
+    Ok(num_deleted)
 }
