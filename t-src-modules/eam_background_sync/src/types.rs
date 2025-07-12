@@ -78,7 +78,7 @@ impl BackgroundSyncConfig {
 pub enum ApiLimiterBlocked {
     CooldownActive,
     RateLimitHit,
-    RequestFailed,
+    RequestFailed(String),
 }
 
 impl ToString for ApiLimiterBlocked {
@@ -86,7 +86,9 @@ impl ToString for ApiLimiterBlocked {
         match self {
             ApiLimiterBlocked::CooldownActive => "Cooldown active".to_string(),
             ApiLimiterBlocked::RateLimitHit => "Rate limit hit".to_string(),
-            ApiLimiterBlocked::RequestFailed => "Request failed".to_string(),
+            ApiLimiterBlocked::RequestFailed(msg) => {
+                format!("Request failed: {}", msg)
+            }
         }
     }
 }
