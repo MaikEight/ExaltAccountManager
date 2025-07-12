@@ -21,7 +21,26 @@ function AccountsContextProvider({ children }) {
     const [selectedAccount, setSelectedAccount] = useState(null);
 
     const getAccountByEmail = (email) => accounts.find((acc) => acc.email === email);
+    const loadAccountByEmail = async (email, forceReload = false) => {
+        if (!email) return null;
+        if (!forceReload){
+            const acc = getAccountByEmail(email);
+            if (acc) {
+                return acc;
+            }
+        }
 
+        const acc = await invoke('get_eam_account_by_email', { accountEmail: email })
+            .catch((err) => {
+                console.error('Error loading account by email:', err, email);
+                return null;
+            });
+
+        if (!acc) return null;
+
+        return enhanceAccountData(acc);
+    }
+    
     const loadAccounts = async () => {
         setIsLoading(true);
         try {
@@ -330,6 +349,7 @@ function AccountsContextProvider({ children }) {
         setSelectedAccount,
 
         getAccountByEmail: getAccountByEmail,
+        loadAccountByEmail,
         updateAccount,
         reloadAccounts: loadAccounts,
         deleteAccount,
