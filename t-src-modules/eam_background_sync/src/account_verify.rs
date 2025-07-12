@@ -3,11 +3,11 @@ use std::sync::{Arc, Mutex};
 
 use crate::types::{ApiLimiterBlocked, GameAccessToken};
 use crate::utils::send_post_request_with_form_url_encoded_data;
-use eam_commons::models::CallResult;
 use eam_commons::diesel_functions::get_eam_account_by_email;
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::encryption_utils;
 use eam_commons::limiter::manager::RateLimiterManager;
+use eam_commons::models::CallResult;
 
 use roxmltree::Document;
 
@@ -28,11 +28,12 @@ pub async fn send_account_verify_request(
     }
 
     // Step 2: Get account from DB
-    let acc = get_eam_account_by_email(&pool, account_email.clone())
-        .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
+    let acc = get_eam_account_by_email(&pool, account_email.clone()).map_err(|_| {
+        ApiLimiterBlocked::RequestFailed("Failed to get_eam_account_by_email".to_string())
+    })?;
 
     let pw = encryption_utils::decrypt_data(&acc.password)
-        .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
+        .map_err(|_| ApiLimiterBlocked::RequestFailed("Failed to decrypt_data".to_string()))?;
 
     // Step 3: Build request payload
     let mut data = HashMap::new();
@@ -41,9 +42,9 @@ pub async fn send_account_verify_request(
     if acc.isSteam {
         data.insert(
             "steamid".to_string(),
-            acc.steamId
-                .clone()
-                .ok_or(ApiLimiterBlocked::RequestFailed)?,
+            acc.steamId.clone().ok_or(ApiLimiterBlocked::RequestFailed(
+                "Failed to clone acc_steamId".to_string(),
+            ))?,
         );
         data.insert("secret".to_string(), pw);
     } else {
@@ -62,7 +63,9 @@ pub async fn send_account_verify_request(
     data.insert(
         "game_net_user_id".to_string(),
         if acc.isSteam {
-            acc.steamId.ok_or(ApiLimiterBlocked::RequestFailed)?
+            acc.steamId.ok_or(ApiLimiterBlocked::RequestFailed(
+                "Failed to clone isSteam".to_string(),
+            ))?
         } else {
             "".to_string()
         },
@@ -72,7 +75,11 @@ pub async fn send_account_verify_request(
     let url = format!("{}/account/verify", BASE_URL);
     let response = send_post_request_with_form_url_encoded_data(url, data)
         .await
-        .map_err(|_| ApiLimiterBlocked::RequestFailed)?;
+        .map_err(|_| {
+            ApiLimiterBlocked::RequestFailed(
+                "Failed to send_post_request_with_form_url_encoded_data".to_string(),
+            )
+        })?;
 
     // Step 5: Parse response
     let token = get_access_token(&response);
@@ -94,11 +101,17 @@ pub async fn send_account_verify_request(
                         limiter.trigger_cooldown();
                         return Err(ApiLimiterBlocked::RateLimitHit);
                     }
+                    Err(ApiLimiterBlocked::RequestFailed(response.clone())).map_err(|e| {
+                        limiter.record_api_use("account/verify", CallResult::Failed);
+                        e
+                    })?;
                 }
             }
 
             limiter.record_api_use("account/verify", CallResult::Failed);
-            Ok(None)
+            Err(ApiLimiterBlocked::RequestFailed(
+                response.clone()
+            ))
         }
     }
 }
