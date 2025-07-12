@@ -1,12 +1,20 @@
+use crate::diesel_functions::delete_api_requests_older_than_days;
 use crate::limiter::api_limiter::ApiLimiter;
 use crate::limiter::manager::RateLimiterManager;
 use crate::DbPool;
 
+use log::{error, info};
 use std::collections::HashMap;
 use std::sync::atomic::AtomicU64;
 use std::sync::{Arc, Mutex};
 
 pub fn setup(pool: Arc<DbPool>) -> RateLimiterManager {
+    let res = delete_api_requests_older_than_days(&pool, 3);
+    match res {
+        Ok(amount) => info!("Deleted {} old API requests from database.", amount),
+        Err(e) => error!("Failed to clear old API requests: {}", e),
+    }
+
     let mut sub_limiters = HashMap::new();
 
     let account_verify = ApiLimiter {
