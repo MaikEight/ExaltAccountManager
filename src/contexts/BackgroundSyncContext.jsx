@@ -444,7 +444,6 @@ function BackgroundSyncProvider({ children }) {
     }, [uiState]);
 
     useEffect(() => {
-        //DISABLED FOR NOW
         const createAndStartBackgroundSyncManager = async () => {
             try {
                 await invoke('create_background_sync_manager');
@@ -486,7 +485,7 @@ function BackgroundSyncProvider({ children }) {
                 console.error('Failed to create background sync manager:', error);
             }
         }
-        //createAndStartBackgroundSyncManager();
+        createAndStartBackgroundSyncManager();
     }, []);
 
     const contextValue = {
