@@ -64,10 +64,11 @@ pub async fn perform_daily_login_for_account(
             Ok(daily_login_report) => {
                 if daily_login_report.success {
                     if !daily_login_report.char_list.is_empty() {
-                        event_hub.emit(BackgroundSyncEvent::AccountProgress(
-                            account_email.clone(),
-                            AccountProgressState::SyncingCharList,
-                        ));
+                        event_hub.emit(BackgroundSyncEvent::AccountProgress {
+                            id: Uuid::new_v4(),
+                            email: account_email.clone(),
+                            state: AccountProgressState::SyncingCharList,
+                        });
 
                         let uuid = Uuid::new_v4();
                         event_hub.emit(BackgroundSyncEvent::AccountCharListSync {
@@ -110,25 +111,28 @@ pub async fn perform_daily_login_for_account(
             }
         }
 
-        event_hub.emit(BackgroundSyncEvent::AccountProgress(
-            account_email.clone(),
-            AccountProgressState::WaitingForCooldown,
-        ));
+        event_hub.emit(BackgroundSyncEvent::AccountProgress {
+            id: Uuid::new_v4(),
+            email: account_email.clone(),
+            state: AccountProgressState::WaitingForCooldown,
+        });
 
         tokio::time::sleep(Duration::from_secs(PLUS_USER_TIMEOUT)).await;
 
-        event_hub.emit(BackgroundSyncEvent::AccountProgress(
-            account_email.clone(),
-            AccountProgressState::Done,
-        ));
+        event_hub.emit(BackgroundSyncEvent::AccountProgress {
+            id: Uuid::new_v4(),
+            email: account_email.clone(),
+            state: AccountProgressState::Done,
+        });
 
         return Ok(success);
     }
 
-    event_hub.emit(BackgroundSyncEvent::AccountProgress(
-        account.email.clone(),
-        AccountProgressState::FetchingAccount,
-    ));
+    event_hub.emit(BackgroundSyncEvent::AccountProgress {
+        id: Uuid::new_v4(),
+        email: account.email.clone(),
+        state: AccountProgressState::FetchingAccount,
+    });
 
     let pool_arc = Arc::new(pool.clone());
     // let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool_arc, account.email.clone(), hwid.clone()).await;
@@ -205,10 +209,11 @@ pub async fn perform_daily_login_for_account(
 
     info!("[BGRSYNC][DL] Game started, waiting for login...");
 
-    event_hub.emit(BackgroundSyncEvent::AccountProgress(
-        account.email.clone(),
-        AccountProgressState::FetchingCharList,
-    ));
+    event_hub.emit(BackgroundSyncEvent::AccountProgress {
+        id: Uuid::new_v4(),
+        email: account.email.clone(),
+        state: AccountProgressState::FetchingCharList,
+    });
 
     let char_list_result =
         send_char_list_request(access_token, Arc::clone(&global_api_limiter)).await;
@@ -230,10 +235,11 @@ pub async fn perform_daily_login_for_account(
     };
 
     if !char_list_response.is_empty() {
-        event_hub.emit(BackgroundSyncEvent::AccountProgress(
-            account.email.clone(),
-            AccountProgressState::SyncingCharList,
-        ));
+        event_hub.emit(BackgroundSyncEvent::AccountProgress {
+            id: Uuid::new_v4(),
+            email: account.email.clone(),
+            state: AccountProgressState::SyncingCharList,
+        });
 
         let uuid = Uuid::new_v4();
         event_hub.emit(BackgroundSyncEvent::AccountCharListSync {
