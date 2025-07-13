@@ -4,6 +4,7 @@ use std::time::Duration;
 /// Sync operation mode
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SyncMode {
+    Stopped,
     Default,
     DailyLogin,
 }
