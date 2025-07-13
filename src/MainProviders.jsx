@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import MainRouterRoutes from "./MainRouter";
 
 const getSnackbarStyles = (theme) => ({
+    borderRadius: theme.shape.borderRadius,
     '&.notistack-MuiContent-default': {
         backgroundColor: theme.palette.secondary.full,
     },
@@ -18,6 +19,16 @@ const getSnackbarStyles = (theme) => ({
     },
     '&.notistack-MuiContent-error': {
         backgroundColor: (theme.palette.mode === 'dark' ? theme.palette.error.dark : theme.palette.error.main),
+    },
+    '&.notistack-MuiContent-message': {
+        display: 'flex',
+        width: 'fit-content',
+        height: 'fit-content',
+        gap: '8px',
+        padding: '8px 16px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: (theme.palette.mode === 'dark' ? theme.palette.secondary.full : theme.palette.secondary.main),
     },
 });
 
@@ -54,6 +65,7 @@ function MainProviders() {
                         default: StyledMaterialDesignContent,
                         success: StyledMaterialDesignContent,
                         error: StyledMaterialDesignContent,
+                        message: StyledMaterialDesignContent,
                     }}
                     action={CloseAction}
                     anchorOrigin={{
