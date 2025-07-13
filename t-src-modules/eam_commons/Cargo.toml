@@ -14,22 +14,22 @@ base64 = "0.22.1"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
 diesel = { version = "2.2.11", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.2.0"
-diesel_derives = "2.2.6"
+diesel_derives = "2.2.7"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 lazy_static = "1.5.0"
 libsqlite3-sys = { version = "0.33.0", features = ["bundled"] }
-uuid = { version = "1.17.0", features = ["serde", "v4"] }
-chrono = { version = "0.4.41", features = ["serde"] }
-windows-service = "0.8.0"
-dirs = "6.0.0"
-md5 = "0.7.0"
-reqwest = { version = "0.12.20", features = ["blocking", "json"] }
+uuid = { version = "1.17", features = ["serde", "v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+windows-service = "0.8"
+dirs = "6.0"
+md5 = "0.8"
+reqwest = { version = "0.12", features = ["blocking", "json"] }
 futures = "0.3.31"
 flate2 = "1.1.2"
-tokio = { version = "1.45.1", features = ["full"] }
+tokio = { version = "1.46", features = ["full"] }
 roxmltree = "0.20.0"
-zip = "4.1.0"
-thiserror = "2.0.12"
+zip = "4.3"
+thiserror = "2.0"
 log = "0.4"
-function_name = "0.3.0"
+function_name = "0.3"
