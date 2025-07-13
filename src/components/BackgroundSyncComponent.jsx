@@ -124,11 +124,9 @@ function BackgroundSyncComponent() {
 
     const open = Boolean(anchorEl);
     const isShown = useMemo(() => {
-        const r = (syncMode !== SyncMode.Stopped
+        return (syncMode !== SyncMode.Stopped
             && Boolean(accountName)
             && Boolean(uiState.state));
-        console.log('isShown', r);
-        return r;
     }, [syncMode, accountName, uiState]);
 
     const popoverContent = useMemo(() => {
@@ -209,7 +207,6 @@ function BackgroundSyncComponent() {
             ? ((dailyLoginProgressData.done / (dailyLoginProgressData.done + dailyLoginProgressData.left)) * 100)
             : 0;
         console.log('Daily Login Progress Data:', dailyLoginProgressData);
-        console.log('Progress Value:', progressValue);
 
         //Daily Login Progress
         if (syncMode === SyncMode.DailyLogin) {
