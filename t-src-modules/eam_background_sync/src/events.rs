@@ -8,18 +8,39 @@ use uuid::Uuid;
 /// Represents granular sync events emitted by the background syncer.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum BackgroundSyncEvent {
-    ModeChanged(String),
-    AccountStarted(String),
-    AccountProgress(String, AccountProgressState),
-    AccountFinished(String, String),
-    AccountFailed(String, String),
+    ModeChanged {
+        id: Uuid,
+        mode: String,
+    },
+    AccountStarted {
+        id: Uuid,
+        email: String,
+    },
+    AccountProgress {
+        id: Uuid,
+        email: String,
+        state: AccountProgressState,
+    },
+    AccountFinished {
+        id: Uuid,
+        email: String,
+        result: String,
+    },
+    AccountFailed {
+        id: Uuid,
+        email: String,
+        error: String,
+    },
     AccountCharListSync {
         id: Uuid,
         email: String,
         dataset: String,
     },
-    DailyLoginDone,
+    DailyLoginDone {
+        id: Uuid,
+    },
     DailyLoginProgress {
+        id: Uuid,
         done: usize,
         left: usize,
         left_emails: Vec<String>,
