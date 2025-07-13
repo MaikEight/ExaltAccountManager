@@ -10,14 +10,14 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-uuid = { version = "1.17.0", features = ["serde", "v4"] }
-chrono = { version = "0.4.41", features = ["serde"] }
-dirs = "6.0.0"
-reqwest = { version = "0.12.20", features = ["blocking", "json"] }
-tokio = { version = "1.45.1", features = ["full"] }
-roxmltree = "0.20.0"
+uuid = { version = "1.17", features = ["serde", "v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+dirs = "6.0"
+reqwest = { version = "0.12", features = ["blocking", "json"] }
+tokio = { version = "1.46", features = ["full"] }
+roxmltree = "0.20"
 log = "0.4"
-base64 = "0.22.1"
+base64 = "0.22"
 
 # Local libs
 eam_commons = { path = "../eam_commons" }
