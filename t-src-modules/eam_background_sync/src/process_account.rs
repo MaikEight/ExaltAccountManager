@@ -7,6 +7,7 @@ use eam_commons::limiter::manager::RateLimiterManager;
 use eam_commons::models::EamAccount;
 
 use std::sync::{Arc, Mutex};
+use uuid::Uuid;
 
 /// Processes an account in the background syncer.
 ///
@@ -26,13 +27,17 @@ pub async fn process_account(
     let email = account.email.clone();
 
     // Step 1: Fire AccountStarted
-    event_hub.emit(BackgroundSyncEvent::AccountStarted(email.clone()));
+    event_hub.emit(BackgroundSyncEvent::AccountStarted {
+        id: Uuid::new_v4(),
+        email: email.clone(),
+    });
 
     // Step 2: Fire AccountProgress → FetchingAccount
-    event_hub.emit(BackgroundSyncEvent::AccountProgress(
-        email.clone(),
-        AccountProgressState::FetchingAccount,
-    ));
+    event_hub.emit(BackgroundSyncEvent::AccountProgress {
+        id: Uuid::new_v4(),
+        email: email.clone(),
+        state: AccountProgressState::FetchingAccount,
+    });
 
     // Step 3: Perform account/verify
     let verify_result = send_account_verify_request(
@@ -67,10 +72,11 @@ pub async fn process_account(
     };
 
     // Step 4: Fire AccountProgress → FetchingCharList
-    event_hub.emit(BackgroundSyncEvent::AccountProgress(
-        email.clone(),
-        AccountProgressState::FetchingCharList,
-    ));
+    event_hub.emit(BackgroundSyncEvent::AccountProgress {
+        id: Uuid::new_v4(),
+        email: email.clone(),
+        state: AccountProgressState::FetchingCharList,
+    });
 
     // Step 5: Perform char/list
     let char_list_result = send_char_list_request(
@@ -87,10 +93,11 @@ pub async fn process_account(
     };
 
     // Step 6: Fire AccountProgress → SyncingCharList
-    event_hub.emit(BackgroundSyncEvent::AccountProgress(
-        email.clone(),
-        AccountProgressState::SyncingCharList,
-    ));
+    event_hub.emit(BackgroundSyncEvent::AccountProgress {
+        id: Uuid::new_v4(),
+        email: email.clone(),
+        state: AccountProgressState::SyncingCharList,
+    });
 
     (SyncResult::Success, Some(char_list_response))
 }
