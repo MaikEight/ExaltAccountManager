@@ -5,6 +5,7 @@ extern crate dirs;
 
 use diesel::r2d2::ConnectionManager;
 use eam_background_sync::BackgroundSyncManager;
+use eam_background_sync::types::SyncMode;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
 use eam_commons::limiter::manager::RateLimiterManager;
@@ -19,6 +20,7 @@ use eam_commons::rotmg_updater::UpdaterError;
 use eam_commons::setup_database;
 use eam_commons::DbPool;
 
+use chrono::{DateTime, Utc};
 use diesel::r2d2::Pool;
 use diesel::SqliteConnection;
 use lazy_static::lazy_static;
@@ -172,10 +174,13 @@ fn main() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_drpc::init())
         .invoke_handler(tauri::generate_handler![
-            add_api_limit_event_listener,
-            create_background_sync_manager,
+            add_api_limit_event_listener, // API Limiter
+            create_background_sync_manager, // BackgroundSyncManager
             start_background_sync_manager,
             stop_background_sync_manager,
+            is_background_sync_manager_running,
+            get_current_background_sync_mode,
+            change_background_sync_mode,
             open_url,
             get_save_file_path,
             combine_paths,
@@ -186,7 +191,7 @@ fn main() {
             create_folder,
             check_for_game_update,
             perform_game_update,
-            send_get_request,
+            send_get_request, // HTTP Requests
             send_post_request,
             send_post_request_with_form_url_encoded_data,
             send_post_request_with_json_body,
@@ -220,6 +225,7 @@ fn main() {
             get_user_data_by_key,
             insert_or_update_user_data,
             delete_user_data_by_key,
+            needs_to_do_daily_login, //DAILY LOGIN
             get_all_daily_login_reports, //DAILY LOGIN REPORTS
             get_daily_login_reports_of_last_days,
             get_daily_login_report_by_id,
@@ -236,6 +242,10 @@ fn main() {
         .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
 }
+
+//###################
+//#   API Limiter   #
+//###################
 
 #[tauri::command]
 async fn add_api_limit_event_listener(app: AppHandle) {
@@ -289,6 +299,10 @@ async fn add_api_limit_event_listener(app: AppHandle) {
         }
     });
 }
+
+//#############################
+//#   BackgroundSyncManager   #
+//#############################
 
 #[tauri::command]
 async fn create_background_sync_manager(app: AppHandle) -> Result<(), Error> {
@@ -356,6 +370,45 @@ fn stop_background_sync_manager() -> Result<(), Error> {
     if let Some(ref mut m) = *manager {
         m.stop();
         info!("Background sync manager stopped successfully");
+        Ok(())
+    } else {
+        Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Background sync manager not initialized",
+        )))
+    }
+}
+
+#[tauri::command]
+fn is_background_sync_manager_running() -> bool {
+    info!("Checking if background sync manager is running...");
+    let manager = BACKGROUND_SYNC_MANAGER.lock().unwrap();
+    if let Some(ref m) = *manager {
+        m.is_running()
+    } else {
+        false
+    }
+}
+
+#[tauri::command]
+fn get_current_background_sync_mode() -> SyncMode {
+    info!("Getting current background sync mode...");
+    let manager = BACKGROUND_SYNC_MANAGER.lock().unwrap();
+    if let Some(ref m) = *manager {
+        m.get_current_mode()
+    } else {
+        SyncMode::Stopped
+    }
+}
+
+#[tauri::command]
+fn change_background_sync_mode(mode: SyncMode) -> Result<(), Error> {
+    info!("Changing background sync mode to {:?}", mode);
+
+    let mut manager = BACKGROUND_SYNC_MANAGER.lock().unwrap();
+    if let Some(ref mut m) = *manager {
+        m.switch_mode(mode);
+        info!("Background sync mode changed successfully");
         Ok(())
     } else {
         Err(tauri::Error::from(std::io::Error::new(
@@ -700,6 +753,10 @@ fn quick_hash(secret: &str) -> String {
         format!("{:x}", big_int)
     }
 }
+
+//#####################
+//#   HTTP Requests   #
+//#####################
 
 #[tauri::command]
 async fn send_get_request(
@@ -1314,6 +1371,65 @@ fn delete_user_data_by_key_impl(
     if let Some(ref pool) = *pool {
         return diesel_functions::delete_user_data_by_key(pool, key)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+//##################
+//#   DailyLogin   #
+//##################
+
+#[tauri::command]
+async fn needs_to_do_daily_login() -> Result<bool, tauri::Error> {
+    info!("Checking if daily login is needed...");
+
+    match POOL.lock() {
+        Ok(pool) => needs_to_do_daily_login_impl(pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return needs_to_do_daily_login_impl(pool);
+        }
+    }
+}
+
+fn needs_to_do_daily_login_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<bool, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        let daily_login_report_ret = diesel_functions::get_latest_daily_login(pool);
+
+        if daily_login_report_ret.is_ok() {
+            let daily_login_report = daily_login_report_ret.unwrap();
+
+            let daily_login_report_time = daily_login_report.startTime.clone().unwrap();
+            let daily_login_report_time =
+                DateTime::parse_from_rfc3339(&daily_login_report_time).unwrap();
+            let daily_login_report_time = daily_login_report_time.with_timezone(&Utc);
+
+            if daily_login_report_time.date_naive() == Utc::now().date_naive() {
+                if daily_login_report.hasFinished {
+                    if daily_login_report.amountOfAccountsProcessed
+                        == daily_login_report.amountOfAccounts
+                    {
+                        return Ok(false); // Daily login already done today
+                    }
+
+                    if daily_login_report.emailsToProcess != None {
+                        return Ok(true);
+                    }
+                }
+
+                return Ok(true);
+            }
+        }
+
+        return Ok(true); // No daily login report found, so daily login is needed
     }
 
     error!("Database pool not initialized");
