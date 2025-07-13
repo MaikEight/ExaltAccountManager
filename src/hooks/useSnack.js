@@ -3,8 +3,8 @@ import { useSnackbar } from "notistack";
 function useSnack() {
     const snackbar = useSnackbar();
 
-    const showSnackbar = (message, variant = 'default') => {
-        snackbar.enqueueSnackbar(message, { variant: variant, persist: false });
+    const showSnackbar = (message, variant = 'default', persist = false) => {
+        snackbar.enqueueSnackbar(message, { variant: variant, persist: persist });
     };
 
     return { showSnackbar };
