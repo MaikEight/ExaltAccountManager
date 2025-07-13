@@ -125,15 +125,6 @@ function CustomToolbar(props) {
             <Box
                 sx={{
                     display: "flex",
-                    alignItems: "center",
-                    ml: '226px',
-                }}
-            >
-                <BackgroundSyncComponent />
-            </Box>
-            <Box
-                sx={{
-                    display: "flex",
                     justifyContent: "end",
                     height: 30,
                     ...props.sx
