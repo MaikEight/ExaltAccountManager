@@ -19,8 +19,8 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
-    "@mui/styled-engine-sc": "^7.2.0",
     "@tauri-apps/api": "^2.6.0",
+    "@tauri-apps/plugin-http": "^2.5.0",
     "axios": "^1.10.0",
     "babel-loader": "10.0.0",
     "buffer": "^6.0.3",
@@ -31,7 +31,6 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "stream-browserify": "^3.0.0",
-    "styled-components": "^6.1.19",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
