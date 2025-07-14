@@ -89,7 +89,7 @@ function SettingsPage() {
             if (await isEnabled()) {
                 await disable();
                 setIsAutostartEnabled(false);
-                showSnackbar("Autostart disabled", "secondary");
+                showSnackbar("Autostart disabled", "message");
             } else {
                 await enable();
                 setIsAutostartEnabled(true);
