@@ -410,17 +410,68 @@ function BackgroundSyncProvider({ children }) {
 
     useEffect(() => {
         let eventListener;
+        let dailyLoginEventListener;
 
         const registerEventListener = async () => {
             eventListener = await listen('background-sync-event', (event) => {
                 processBackgroundSyncEvent(event);
             });
+
+            dailyLoginEventListener = await listen('start-daily-login-process', async (event) => {
+                console.log('Received start-daily-login-process event:', event);
+                const e = event.payload.StartDailyLoginData;
+
+                if (!checkAndAddEventId('start-daily-login-process', e.id)) {
+                    return;
+                }
+
+                if (syncMode === SyncMode.DailyLogin) { // Already in daily login mode, ignore the event
+                    return;
+                }
+
+                // Start the daily login process
+                const isRunning = await invoke('is_background_sync_manager_running').catch((error) => {
+                    console.error('Error checking if background sync manager is running:', error);
+                    return true; // Assume true if there's an error
+                });
+
+                const currentMode = await invoke('get_current_background_sync_mode').catch((error) => {
+                    console.error('Error getting current background sync mode:', error);
+                    return SyncMode.Default; // Default to Default if there's an error just to be safe
+                });
+
+                if (isRunning) {
+                    if (currentMode === SyncMode.DailyLogin) {
+                        // The manager is running as expected.
+                        return;
+                    }
+                    await invoke('stop_background_sync_manager');
+                }
+
+                await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin });
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                await invoke('start_background_sync_manager');
+            });
         }
 
-        registerEventListener();        
+        registerEventListener();
 
         return () => {
-            eventListener?.();
+            try {
+                if (eventListener) {
+                    eventListener();
+                }
+            } catch (error) {
+                console.error('Error cleaning up event listeners:', error);
+            }
+
+            try {
+                if (dailyLoginEventListener) {
+                    dailyLoginEventListener();
+                }
+            } catch (error) {
+                console.error('Error cleaning up daily login event listener:', error);
+            }
         }
     }, [accounts, loadAccountByEmail, updateAccount]);
 
@@ -452,13 +503,11 @@ function BackgroundSyncProvider({ children }) {
                     console.error('Error checking daily login needs:', error)
                     return false;
                 });
-                console.log('Needs to do daily login:', needsDailyLogin);
 
                 const isRunning = await invoke('is_background_sync_manager_running').catch((error) => {
                     console.error('Error checking if background sync manager is running:', error);
                     return true; // Assume true if there's an error
                 });
-                console.log('Is background sync manager running:', isRunning);
 
                 if (needsDailyLogin) {
                     const currentMode = await invoke('get_current_background_sync_mode').catch((error) => {
@@ -475,17 +524,29 @@ function BackgroundSyncProvider({ children }) {
                         await invoke('stop_background_sync_manager');
                     }
                     await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin });
+                    await new Promise(resolve => setTimeout(resolve, 3000));
                     await invoke('start_background_sync_manager');
                     return;
                 }
 
                 await invoke('change_background_sync_mode', { mode: SyncMode.Default });
+                await new Promise(resolve => setTimeout(resolve, 3000));
                 await invoke('start_background_sync_manager');
             } catch (error) {
                 console.error('Failed to create background sync manager:', error);
             }
         }
+        const startPeriodicDailyLoginCheck = async () => {
+            try {
+                await invoke('start_periodic_daily_login_check').catch((error) => {
+                    console.error('Error starting periodic daily login check:', error)
+                });
+            } catch (error) {
+                console.error('Failed to start periodic daily login check:', error);
+            }
+        }
         createAndStartBackgroundSyncManager();
+        startPeriodicDailyLoginCheck();
     }, []);
 
     const contextValue = {
