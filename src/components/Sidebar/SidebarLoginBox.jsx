@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import GradientBorderButton from './ButtonParts/GradientBorderButton';
 import GradientBorderButtonInner from './ButtonParts/GradientBorderButtonInner';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useTheme } from 'styled-components';
 import StyledButton from '../StyledButton';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useUserLogin, getProfileImage } from "eam-commons-js";
+import { useTheme } from '@mui/material/styles';
 
 const GREETING_TEXTS = [
     'Hello, ',
