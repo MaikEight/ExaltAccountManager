@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import { styled } from '@mui/material/styles';
 
-const GradientBorderButtonInner = styled('div').withConfig({
-    shouldForwardProp: (prop) => prop !== 'sx'
+const GradientBorderButtonInner = styled('div', {
+    shouldForwardProp: (prop) => prop !== 'sx' && prop !== 'selected',
 })(({ theme, selected, sx }) => ({
     height: '36px',
     display: 'flex',
