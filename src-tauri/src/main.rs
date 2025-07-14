@@ -4,8 +4,8 @@
 extern crate dirs;
 
 use diesel::r2d2::ConnectionManager;
-use eam_background_sync::BackgroundSyncManager;
 use eam_background_sync::types::SyncMode;
+use eam_background_sync::BackgroundSyncManager;
 use eam_commons::diesel_functions;
 use eam_commons::encryption_utils;
 use eam_commons::limiter::manager::RateLimiterManager;
@@ -46,6 +46,7 @@ use std::time::{Duration, Instant};
 use tauri::http::HeaderName;
 use tauri::Error;
 use tauri::{AppHandle, Emitter};
+use tokio::time::interval;
 use zip::read::ZipArchive;
 
 lazy_static! {
@@ -74,9 +75,10 @@ lazy_static! {
         }));
     static ref HAS_REGISTERED_API_LIMIT_EVENT_LISTENER: Arc<Mutex<bool>> =
         Arc::new(Mutex::new(false));
-    static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);
+    static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);    
     static ref BACKGROUND_SYNC_MANAGER: Arc<Mutex<Option<BackgroundSyncManager>>> =
         Arc::new(Mutex::new(None));
+    static ref HAS_STARTED_PERIODIC_DAILY_LOGIN_CHECK: AtomicBool = AtomicBool::new(false);
 }
 
 //IMPORTANT: The file is not checked in to the repository
@@ -226,6 +228,7 @@ fn main() {
             insert_or_update_user_data,
             delete_user_data_by_key,
             needs_to_do_daily_login, //DAILY LOGIN
+            start_periodic_daily_login_check,
             get_all_daily_login_reports, //DAILY LOGIN REPORTS
             get_daily_login_reports_of_last_days,
             get_daily_login_report_by_id,
@@ -1437,6 +1440,69 @@ fn needs_to_do_daily_login_impl(
         ErrorKind::Other,
         "Pool is not initialized",
     )))
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+struct StartDailyLoginData {
+    id: uuid::Uuid,
+    timestamp: String,
+}
+
+#[tauri::command]
+async fn start_periodic_daily_login_check(app: AppHandle) {
+    if HAS_STARTED_PERIODIC_DAILY_LOGIN_CHECK.load(Ordering::SeqCst) {
+        info!("Periodic daily login check already started, skipping...");
+        return;
+    }
+    HAS_STARTED_PERIODIC_DAILY_LOGIN_CHECK.store(true, Ordering::SeqCst);
+
+    info!("Starting periodic daily login check...");
+
+    // Spawn the periodic check in a separate tokio task
+    tokio::spawn(async move {
+        let mut interval = interval(Duration::from_secs(15 * 60)); // 15 minutes
+
+        loop {
+            interval.tick().await;
+
+            info!("Checking if daily login is needed...");
+
+            let needs_to_do_daily_login_res;
+
+            match POOL.lock() {
+                Ok(pool) => {
+                    needs_to_do_daily_login_res = needs_to_do_daily_login_impl(pool);
+                }
+                Err(poisoned) => {
+                    error!("Mutex was poisoned. Recovering...");
+                    let pool = poisoned.into_inner();
+                    needs_to_do_daily_login_res = needs_to_do_daily_login_impl(pool);
+                }
+            }
+
+            if needs_to_do_daily_login_res.is_err() {
+                error!(
+                    "Failed to check if daily login is needed: {}",
+                    needs_to_do_daily_login_res.unwrap_err()
+                );
+                continue;
+            }
+
+            if needs_to_do_daily_login_res.unwrap() {
+                info!("Daily login is needed, starting daily login process...");
+                app.emit(
+                    "start-daily-login-process",
+                    StartDailyLoginData {
+                        id: uuid::Uuid::new_v4(),
+                        timestamp: Utc::now().to_rfc3339(),
+                    },
+                )
+                .unwrap_or_else(|e| {
+                    error!("Failed to emit start-daily-login-process event: {}", e);
+                });
+            }
+        }
+    });
 }
 
 //#########################
