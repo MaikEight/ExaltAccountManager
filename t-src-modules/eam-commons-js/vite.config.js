@@ -17,7 +17,6 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'ReactDOM',
           '@mui/material': 'MaterialUI',
-          'styled-components': 'styled',
         },
       },
     },
@@ -25,7 +24,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@mui/material': resolve(__dirname, 'node_modules/@mui/material'),
-      'styled-components': resolve(__dirname, 'node_modules/styled-components'),
     },
   },
   optimizeDeps: {
