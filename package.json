@@ -44,7 +44,6 @@
     "react-virtuoso": "^4.13.0",
     "react-window": "^1.8.11",
     "stream-browserify": "^3.0.0",
-    "styled-components": "^6.1.19",
     "tauri-plugin-drpc": "^1.0.3",
     "xml-js": "^1.6.11"
   },
