@@ -1,6 +1,5 @@
 import { CssBaseline } from "@mui/material";
-import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
-import styled, { ThemeProvider as StyledThemeProvider } from "styled-components";
+import { ThemeProvider as MuiThemeProvider, styled } from "@mui/material/styles";
 import { ColorContext } from "eam-commons-js";
 import { useContext } from "react";
 import { MaterialDesignContent, SnackbarProvider, useSnackbar } from "notistack";
@@ -54,7 +53,6 @@ function MainProviders() {
     const theme = colorContext.theme;
 
     return (
-        <StyledThemeProvider theme={theme}>
             <MuiThemeProvider theme={theme}>
                 <CssBaseline enableColorScheme />
                 <SnackbarProvider
@@ -76,7 +74,6 @@ function MainProviders() {
                     <MainRouterRoutes />
                 </SnackbarProvider>
             </MuiThemeProvider>
-        </StyledThemeProvider >
     );
 }
 
