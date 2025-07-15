@@ -7,7 +7,7 @@ import SettingsPage from "./pages/SettingsPage";
 import { ServerContextProvider } from "./contexts/ServerContext";
 import AboutPage from "./pages/AboutPage";
 import { AccountsContextProvider } from "./contexts/AccountsContext";
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import { PopupContextProvider } from './contexts/PopupContext';
 import FeedbackPage from './pages/FeedbackPage';
