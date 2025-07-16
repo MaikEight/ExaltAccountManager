@@ -1,7 +1,10 @@
 import { useTheme } from "@emotion/react";
-import { Box, Chip, FormControl, Input, MenuItem, Select } from "@mui/material";
-import { GridToolbarColumnsButton, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
+import { Badge, Box, Button, Chip, FormControl, Input, MenuItem, Select, Tooltip } from "@mui/material";
+import { ColumnsPanelTrigger, FilterPanelTrigger, ToolbarButton } from "@mui/x-data-grid";
 import Searchbar from "./Searchbar";
+import { Toolbar } from "@mui/x-data-grid";
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -16,33 +19,81 @@ const MenuProps = {
 
 function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged }) {
     const theme = useTheme();
+
     const logTypes = ['AuditLog', 'ErrorLog'];
 
     return (
-        <Box
+        <Toolbar
             sx={{
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
             }}
         >
-            <GridToolbarContainer
+            <Box
                 sx={{
                     display: "flex",
                     justifyContent: "start",
+                    alignItems: "center",
                     minHeight: 49,
-                    backgroundColor: theme.palette.background.paper,
-                    borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                     pt: 0.5,
                     pb: 0.5,
-                    pl: 1,
-                    pr: 1,
                 }}
             >
-                <GridToolbarColumnsButton />
-                <GridToolbarFilterButton />
-            </GridToolbarContainer>
+                <Tooltip title="Columns">
+                    <ColumnsPanelTrigger
+                        render={
+                            <ToolbarButton
+                                render={
+                                    <Button
+                                        aria-label="Columns"
+                                        size="small"
+                                        variant="text"
+                                        startIcon={<ViewColumnIcon />}
+                                        sx={{
+                                            width: 'fit-content',
+                                            height: 'fit-content',
+                                            px: 1,
+                                        }}
+                                    >
+                                        Columns
+                                    </Button>
+                                }
+                            />
+                        }
+                    />
+                </Tooltip>
+                <Tooltip title="Filters">
+                    <FilterPanelTrigger
+                        render={(props, state) => (
+                            <ToolbarButton
+                                {...props}
+                                render={
+                                    <Badge badgeContent={state.filterCount} color="primary" variant="dot">
+                                        <Button
+                                            aria-label="Filters"
+                                            size="small"
+                                            variant="text"
+                                            startIcon={<FilterListIcon />}
+                                            component={'div'}
+                                            sx={{
+                                                width: 'fit-content',
+                                                height: 'fit-content',
+                                                px: 1,
+                                            }}
+                                        >
+                                            Filters
+                                        </Button>
+                                    </Badge>
+                                }
+                            />
+                        )}
+                    />
+                </Tooltip>
+            </Box>
 
             <Box
                 sx={{
@@ -55,7 +106,6 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                 <Box
                     id="select-logtype-container"
                     sx={{
-                        mr: 0.5,
                         display: 'flex',
                         flexDirection: 'row',
                         height: '100%',
@@ -113,7 +163,7 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                     <Searchbar onSearchChanged={onSearchChanged} />
                 </Box>
             </Box>
-        </Box>
+        </Toolbar>
     );
 }
 
