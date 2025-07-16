@@ -73,10 +73,10 @@ function DailyLoginsPage() {
                     if (endTime && new Date(endTime).getTime() === 0) {
 
                         const startTimeDate = new Date(startTime);
-                        
+
                         if (startTimeDate.getTime() < Date.now() - 24 * 60 * 60 * 1000) {
                             return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>Failed</div>;
-                        }                        
+                        }
 
                         return <div style={{ textAlign: 'start', paddingLeft: '23px', width: '100%' }}>In Progress...</div>;
                     }
@@ -513,13 +513,14 @@ function DailyLoginsPage() {
                         onCellClick={handleCellClick}
                         rowSelection
                         rowHeight={42}
-                        onRowSelectionModelChange={(ids) => {
-                            const selectedId = ids[0];
+                        onRowSelectionModelChange={(model) => {
+                            const ids = model?.ids;
+                            const selectedId = ids?.keys()?.next()?.value;
+
                             const selected = allDailyLoginReports.find((report) => report.id === selectedId);
                             if (selected && selected !== selectedReport) {
 
                                 if (timeoutFunction) {
-                                    console.log('clearing timeout');
                                     clearTimeout(timeoutFunction);
                                     setTimeoutFunction(null);
                                 }
@@ -533,12 +534,16 @@ function DailyLoginsPage() {
                                 setTimeoutFunction(null);
                             }, 300));
                         }}
-                        rowSelectionModel={selectedReport ? [selectedReport.id] : []}
+                        rowSelectionModel={{
+                            type: 'include',
+                            ids: new Set(selectedReport ? [selectedReport.id] : []),
+                        }}
                         paginationModel={paginationModel}
                         onPaginationModelChange={setPaginationModel}
                         checkboxSelection={false}
                         hideFooterSelectedRowCount
                         loading={isLoadingReports}
+                        showToolbar={true}
                         slots={{
                             pagination: CustomPagination,
                             toolbar: DailyLoginsGridToolbar,
@@ -548,7 +553,10 @@ function DailyLoginsPage() {
                         slotProps={{
                             toolbar: { onRefresh: getAllReportData },
                             pagination: { labelRowsPerPage: "Runs per page:" },
-                            noRowsOverlay: { text: 'No daily login reports found' }
+                            noRowsOverlay: { text: 'No daily login reports found' },
+                            basePopper: {
+                                placement: 'bottom-start',
+                            },
                         }}
                     />
                 </Paper>
