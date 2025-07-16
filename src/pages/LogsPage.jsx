@@ -162,6 +162,7 @@ function LogsPage() {
                     checkboxSelection={false}
                     hideFooterSelectedRowCount
                     loading={isLoading}
+                    showToolbar={true}
                     slots={{
                         pagination: CustomPagination,
                         toolbar: LogsGridToolbar,
@@ -172,7 +173,11 @@ function LogsPage() {
                         toolbar: { onSearchChanged: (search) => setSearch(search), selectedLogtype: currentLogMode, setSelectedLogtype: setCurrentLogMode },
                         pagination: { labelRowsPerPage: "Logs per page:" },
                         noRowsOverlay: { text: noLogsText, isHidden: (!noLogsText || noLogsText?.length === 0) },
+                        basePopper: {
+                            placement: 'bottom-start',
+                        },
                     }}
+
                 />
             </Paper>
         </Box>
