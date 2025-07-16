@@ -38,6 +38,7 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ImportExportOutlinedIcon from '@mui/icons-material/ImportExportOutlined';
 import * as dialog from "@tauri-apps/plugin-dialog"
 import AddAccountSvg from "../components/Illustrations/AddAccountSvg";
+import { MASCOT_NAME } from "../constants";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -875,7 +876,7 @@ function ImporterPage() {
                                         </ol>
                                     </Typography>
                                 </Box>
-                                <img 
+                                <img
                                     src='/mascot/okta_low_res.png'
                                     alt='EAM Mascot'
                                     height={150}
@@ -1380,73 +1381,90 @@ function ImporterPage() {
                                     icon={<DoneAllIcon />}
                                     innerSx={{
                                         display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'center',
-                                        gap: 3,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
                                     }}
                                 >
-                                    <Box>
-                                        <Typography variant="body1" fontWeight={'bold'}>
-                                            All set and done 😎
-                                        </Typography>
-                                        <Typography variant="body1">
-                                            {accountsImported - accountsFailed.length} accounts have been imported successfully.
-                                        </Typography>
-                                        {
-                                            accountsFailed.length > 0 &&
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    mt: 1
-                                                }}
-                                            >
-                                                <Typography variant="body1" fontWeight={'bold'} color="error">
-                                                    Failed to import {accountsFailed.length} accounts.
-                                                </Typography>
-
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            gap: 3,
+                                        }}
+                                    >
+                                        <Box>
+                                            <Typography variant="body1" fontWeight={'bold'}>
+                                                All set and done 😎
+                                            </Typography>
+                                            <Typography variant="body1">
+                                                {accountsImported - accountsFailed.length} accounts have been imported successfully.
+                                            </Typography>
+                                            {
+                                                accountsFailed.length > 0 &&
                                                 <Box
                                                     sx={{
                                                         display: 'flex',
                                                         flexDirection: 'column',
-                                                        gap: 1,
+                                                        mt: 1
                                                     }}
                                                 >
-                                                    <Typography variant="body1">
-                                                        Failed Accounts:
+                                                    <Typography variant="body1" fontWeight={'bold'} color="error">
+                                                        Failed to import {accountsFailed.length} accounts.
                                                     </Typography>
-                                                    {
-                                                        accountsFailed.map((acc, index) => {
-                                                            return (
-                                                                <Box
-                                                                    key={index}
-                                                                    sx={{
-                                                                        display: 'flex',
-                                                                        flexDirection: 'row',
-                                                                        gap: 1,
-                                                                        userSelect: 'text',
-                                                                    }}
-                                                                >
-                                                                    <Typography variant="body1">
-                                                                        {acc.email}
-                                                                    </Typography>
-                                                                </Box>
-                                                            );
-                                                        })
-                                                    }
+
+                                                    <Box
+                                                        sx={{
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            gap: 1,
+                                                        }}
+                                                    >
+                                                        <Typography variant="body1">
+                                                            Failed Accounts:
+                                                        </Typography>
+                                                        {
+                                                            accountsFailed.map((acc, index) => {
+                                                                return (
+                                                                    <Box
+                                                                        key={index}
+                                                                        sx={{
+                                                                            display: 'flex',
+                                                                            flexDirection: 'row',
+                                                                            gap: 1,
+                                                                            userSelect: 'text',
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant="body1">
+                                                                            {acc.email}
+                                                                        </Typography>
+                                                                    </Box>
+                                                                );
+                                                            })
+                                                        }
+                                                    </Box>
                                                 </Box>
-                                            </Box>
-                                        }
+                                            }
+                                        </Box>
+                                        <StyledButton
+                                            sx={{ display: 'flex', alignSelf: 'start' }}
+                                            startIcon={<GroupOutlinedIcon />}
+                                            onClick={() => {
+                                                navigate('/');
+                                            }}
+                                        >
+                                            View Accounts
+                                        </StyledButton>
                                     </Box>
-                                    <StyledButton
-                                        sx={{ display: 'flex', alignSelf: 'start' }}
-                                        startIcon={<GroupOutlinedIcon />}
-                                        onClick={() => {
-                                            navigate('/');
+                                    <img
+                                        src="/mascot/Happy/cheer_very_low_res.png"
+                                        alt={`${MASCOT_NAME} cheering 🎉`}
+                                        height={120}
+                                        style={{
+                                            marginLeft: '40px',
+                                            marginRight: 'auto',
                                         }}
-                                    >
-                                        View Accounts
-                                    </StyledButton>
+                                    />
                                 </ComponentBox>
                         }
                     </Box>
