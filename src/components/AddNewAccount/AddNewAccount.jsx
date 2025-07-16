@@ -531,78 +531,100 @@ function AddNewAccount({ isOpen, onClose }) {
                         {showRegisterForm ? 'Register new Account' : 'Add new account'}
                     </Typography>
                 </Box>
-
                 {
                     !showRegisterForm &&
                     <Box
                         sx={{
-                            mt: 2,
-                            pl: 1,
-                            pr: 1,
-                            width: '100%'
+                            backgroundColor: theme.palette.background.paperLight,
                         }}
                     >
-                        <Stepper
-                            id="stepper"
-                            activeStep={activeStep}
-                            alternativeLabel
+                        <Box
+                            sx={{
+                                pt: 2,
+                                pl: 1,
+                                pr: 1,
+                                width: '100%',
+                                backgroundColor: theme.palette.background.default,
+                                borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+                            }}
                         >
-                            {
-                                steps.map((label, index) => {
-                                    const stepProps = {};
-                                    const labelProps = {};
-                                    if (isStepOptional(index)) {
-                                        labelProps.optional = (
-                                            <Typography
-                                                variant="caption"
+                            <Stepper
+                                id="stepper"
+                                activeStep={activeStep}
+                                alternativeLabel
+                            >
+                                {
+                                    steps.map((label, index) => {
+                                        const stepProps = {};
+                                        const labelProps = {};
+                                        if (isStepOptional(index)) {
+                                            labelProps.optional = (
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    Optional
+                                                </Typography>
+                                            );
+                                        }
+
+                                        stepProps.completed = activeStep > index;
+
+                                        return (
+                                            <Step
+                                                key={label}
+                                                {...stepProps}
                                             >
-                                                Optional
-                                            </Typography>
+                                                <StepLabel
+                                                    icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]}
+                                                    {...labelProps}
+                                                    sx={{
+                                                        ...(activeStep === index ? { color: color.color } : {})
+                                                    }}
+                                                >
+                                                    {label}
+                                                </StepLabel>
+                                            </Step>
                                         );
-                                    }
-
-                                    stepProps.completed = activeStep > index;
-
-                                    return (
-                                        <Step
-                                            key={label}
-                                            {...stepProps}
-                                        >
-                                            <StepLabel
-                                                icon={stepProps.completed ? <DoneOutlinedIcon /> : icons[index]}
-                                                {...labelProps}
-                                                sx={{
-                                                    ...(activeStep === index ? { color: color.color } : {})
-                                                }}
-                                            >
-                                                {label}
-                                            </StepLabel>
-                                        </Step>
-                                    );
-                                })
-                            }
-                        </Stepper>
+                                    })
+                                }
+                            </Stepper>
+                        </Box>
                     </Box>
                 }
-                <Box sx={{ overflowX: 'auto' }}>
-                    {
-                        showRegisterForm ?
-                            <Box
-                                sx={{ pt: 2 }}
-                            >
-                                <RegisterAccount
-                                    open={showRegisterForm}
-                                    onClose={(closeAll) => {
-                                        setShowRegisterForm(false);
-                                        if (closeAll) {
-                                            onClose();
-                                        }
+                <Box
+                    sx={{
+                        overflowX: 'auto',
+                        backgroundColor: showRegisterForm ? theme.palette.background.paperLight : theme.palette.background.default,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+                            backgroundColor: theme.palette.background.default,
+                        }}
+                    >
+                        {
+                            showRegisterForm ?
+                                <Box
+                                    sx={{
+                                        pt: 2,
+                                        borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                                     }}
-                                />
-                            </Box>
-                            :
-                            getStepContent()
-                    }
+                                >
+                                    <RegisterAccount
+                                        open={showRegisterForm}
+                                        onClose={(closeAll) => {
+                                            setShowRegisterForm(false);
+                                            if (closeAll) {
+                                                onClose();
+                                            }
+                                        }}
+                                    />
+                                </Box>
+                                :
+                                getStepContent()
+                        }
+                    </Box>
                 </Box>
             </Drawer>
         </Box>

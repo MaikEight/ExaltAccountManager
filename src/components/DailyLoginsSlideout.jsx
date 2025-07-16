@@ -78,7 +78,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
                         width: 500,
-                        backgroundColor: theme.palette.background.default,
+                        backgroundColor: theme.palette.background.paperLight,
                         borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
@@ -115,11 +115,13 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                         Daily login report
                     </Typography>
                 </Box>
-
+             
                 <Box
                     sx={{
-                        mt: 2,
+                        pt: 2,
                         overflow: 'auto',
+                        backgroundColor: theme.palette.background.default,
+                        borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                     }}
                 >
                     {
@@ -178,6 +180,13 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                         </ComponentBox>
                     }
                 </Box>
+                <Box 
+                    sx={{
+                        flex: '1 0 auto',
+                        height: '0px',
+                        backgroundColor: theme.palette.background.default,
+                    }}
+                />
             </Drawer>
         </Box>
     );

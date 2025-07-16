@@ -155,7 +155,8 @@ function AccountDetails({ acc, onClose }) {
                     width: 500,
                     '& .MuiDrawer-paper': {
                         width: 500,
-                        backgroundColor: theme.palette.background.default,
+                        backgroundColor: 'red',
+                        backgroundColor: theme.palette.background.paperLight,
                         borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
                     },
@@ -208,7 +209,9 @@ function AccountDetails({ acc, onClose }) {
                         overflow: 'auto',
                         pr: 2,
                         pl: 2,
-                        mb: 2,
+                        pb: 2,
+                        backgroundColor: theme.palette.background.default,
+                        borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                     }}
                 >
                     {/* 2. */}
