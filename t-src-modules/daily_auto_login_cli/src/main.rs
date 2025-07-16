@@ -626,8 +626,7 @@ fn send_char_list_request(access_token: GameAccessToken, account_email: String, 
     }
 
     let _ = log_to_audit_log(&pool, "Sending char/list request.".to_string(), Some(account_email.clone()));
-    let response = send_post_request_with_form_url_encoded_data(url, data).await.unwrap();    
-        //TODO: Extract the char list from the response and save it to the database
+    let response = send_post_request_with_form_url_encoded_data(url, data).await.unwrap();
         let token = get_access_token(&response);
         if token.is_none() {
             //Check if the API Limit has been reached
