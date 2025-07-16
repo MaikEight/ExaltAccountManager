@@ -111,8 +111,10 @@ function AccountGrid({ setShowAddNewAccount }) {
                 rowSelection
                 getEstimatedRowHeight={() => 41}
                 onCellClick={handleCellClick}
-                onRowSelectionModelChange={(ids) => {
-                    const selectedId = ids[0];
+                onRowSelectionModelChange={(model) => {
+                    const ids = model?.ids;
+                    const selectedId = ids?.keys()?.next()?.value;
+
                     const selected = accounts.find((account) => account.id === selectedId);
                     if (selected && selected !== selectedAccount) {
                         setSelectedAccount(selected);
@@ -120,12 +122,16 @@ function AccountGrid({ setShowAddNewAccount }) {
                     }
                     setSelectedAccount(null);
                 }}
-                rowSelectionModel={selectedAccount ? [selectedAccount.id] : []}
+                rowSelectionModel={{
+                    type: 'include',
+                    ids: new Set(selectedAccount ? [selectedAccount.id] : []),
+                }}
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
                 checkboxSelection={false}
                 hideFooterSelectedRowCount
                 loading={isLoading}
+                showToolbar={true}
                 slots={{
                     pagination: CustomPagination,
                     toolbar: CustomToolbar,
@@ -136,6 +142,9 @@ function AccountGrid({ setShowAddNewAccount }) {
                     toolbar: { onSearchChanged: (search) => setSearch(search), onAddNew: () => setShowAddNewAccount(true) },
                     pagination: { labelRowsPerPage: "Accounts per page:" },
                     noRowsOverlay: { onAddNew: () => setShowAddNewAccount(true) },
+                    basePopper: {
+                        placement: 'bottom-start',
+                    },
                 }}
             />
         </Paper>
