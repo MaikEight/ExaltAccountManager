@@ -368,7 +368,7 @@ function StorageView({ vaultName, canvasIdentifier, title, itemIds, totals, over
             return;
         }
 
-        settings.setByKeyAndSubKey('vaultPeeker', 'accountView', { ...accSettings, hiddenVaults: [...accSettings?.hiddenVaults ?? null, vaultName].filter((v) => v !== null) });
+        settings.setByKeyAndSubKey('vaultPeeker', 'accountView', { ...accSettings, hiddenVaults: [...(accSettings?.hiddenVaults ?? null), vaultName].filter((v) => v !== null) });
     };
 
     if (!filteredItemIds || filteredItemIds.length === 0) return null;
