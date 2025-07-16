@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import { MASCOT_NAME } from "../../constants";
-import BackgroundSyncComponent from "../BackgroundSyncComponent";
 import useUserSettings from "../../hooks/useUserSettings";
 
 function CustomToolbar(props) {
@@ -184,7 +183,7 @@ function CustomToolbar(props) {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         p: 0.25,
-                                        borderRadius: `${theme.shape.borderRadius}px`,
+                                        borderRadius: `${(theme?.shape?.borderRadius || 9)}px`,
                                         overflow: 'hidden',
                                         height: 'fit-content',
                                         width: 'fit-content',
@@ -192,8 +191,8 @@ function CustomToolbar(props) {
                                 >
                                     <Box
                                         sx={{
-                                            backgroundColor: theme.palette.background.default,
-                                            borderRadius: `${theme.shape.borderRadius - 2}px`,
+                                            backgroundColor: theme?.palette?.background?.default || '#28243D',
+                                            borderRadius: `${(theme?.shape?.borderRadius || 9) - 2}px`,
                                             display: 'flex',
                                             flexDirection: 'column',
                                             alignItems: 'center',
@@ -255,8 +254,8 @@ function CustomToolbar(props) {
                     <Button
                         onClick={async () => await getCurrentWindow().minimize()}
                         sx={{
-                            color: theme.palette.text.primary,
-                            borderRadius: `${theme.shape.borderRadius - 4}px 0px 0px ${theme.shape.borderRadius - 4}px`,
+                            color: theme?.palette?.text?.primary || '#E7E3FCDE',
+                            borderRadius: `${(theme?.shape?.borderRadius || 9) - 4}px 0px 0px ${(theme?.shape?.borderRadius || 9) - 4}px`,
                         }}
                     >
                         <MinimizeIcon />
@@ -264,7 +263,7 @@ function CustomToolbar(props) {
                     <Button
                         onClick={async () => await getCurrentWindow().toggleMaximize()}
                         sx={{
-                            color: theme.palette.text.primary
+                            color: theme?.palette?.text?.primary || '#E7E3FCDE'
                         }}
                     >
                         <CropSquareIcon />
@@ -279,8 +278,8 @@ function CustomToolbar(props) {
                             await getCurrentWindow().close();
                         }}
                         sx={{
-                            color: theme.palette.text.primary,
-                            borderRadius: `0px ${theme.shape.borderRadius - 4}px ${theme.shape.borderRadius - 4}px 0px`,
+                            color: theme?.palette?.text?.primary || '#E7E3FCDE',
+                            borderRadius: `0px ${(theme?.shape?.borderRadius || 9) - 4}px ${(theme?.shape?.borderRadius || 9) - 4}px 0px`,
                         }}
                     >
                         <CloseIcon />
