@@ -1,6 +1,7 @@
 import { alpha, darken, lighten } from "@mui/material";
 import { createTheme } from '@mui/material/styles';
 import Zoom from '@mui/material/Zoom';
+import { datagridStyle } from "./datagridStyle";
 
 export const lightTheme = createTheme({
     palette: {
@@ -34,6 +35,7 @@ export const lightTheme = createTheme({
             paperLight: '#F9FAFC',
             backdrop: 'rgba(244, 245, 250, 0.75)',
         },
+        ...datagridStyle("light"),
     },
     shape: {
         borderRadius: 9,
