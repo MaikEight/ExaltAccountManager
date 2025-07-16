@@ -14,13 +14,13 @@ export default defineConfig(async () => ({
       '@mui/material/Tooltip',
       '@emotion/styled',
       '@mui/material',
+      '@mui/x-data-grid',
     ],
     exclude: ['eam-commons-js'],
   },
   resolve: {
     alias: {
       'stream': 'stream-browserify',
-      '@mui/material': resolve(__dirname, 'node_modules/@mui/material'),
     }
   },
   // 2. tauri expects a fixed port, fail if that port is not available
