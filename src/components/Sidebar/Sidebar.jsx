@@ -19,6 +19,7 @@ import SidebarLoginBox from "./SidebarLoginBox";
 
 function Sidebar({ children }) {
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
+    const [isOlddailyLoginTaskInstalled, setIsOlddailyLoginTaskInstalled] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const { showSnackbar } = useSnack();
     const navigate = useNavigate();
@@ -34,6 +35,8 @@ function Sidebar({ children }) {
                 return;
             }
             setIsGameUpdateAvailable(false);
+            const oldTaskInstalled = localStorage.getItem('dailyLoginOldTaskInstalled') === 'true';
+            setIsOlddailyLoginTaskInstalled(oldTaskInstalled);
         }, 1000);
 
         return () => {
@@ -77,9 +80,14 @@ function Sidebar({ children }) {
         },
         {
             name: 'Daily Logins',
-            icon: <CalendarMonthOutlinedIcon />,
+            icon: (
+                <Badge badgeContent='' overlap="circular" color="error" variant="dot" invisible={!isOlddailyLoginTaskInstalled}>
+                    <CalendarMonthOutlinedIcon />
+                </Badge>
+            ),
             action: handleNavigate,
             navigate: '/dailyLogins',
+            hasNotification: isOlddailyLoginTaskInstalled,
             showInFooter: false
         },
         {
