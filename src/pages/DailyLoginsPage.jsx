@@ -30,7 +30,7 @@ Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Too
 
 function DailyLoginsPage() {
     const [isTaskInstalled, setIsTaskInstalled] = useState(localStorage.getItem('dailyLoginTaskInstalled') === 'true');
-    const [isTaskV1Installed, setIsTaskV1Installed] = useState(localStorage.getItem('dailyLoginTaskV1Installed') === 'true');
+    const [isOldTaskInstalled, setIsOldTaskInstalled] = useState(localStorage.getItem('dailyLoginOldTaskInstalled') === 'true');
     const [dailyLoginReportsOfLastWeek, setDailyLoginReportsOfLastWeek] = useState([]);
     const [dailyLoginReportsOfLastWeekDataSets, setDailyLoginReportsOfLastWeekDataSets] = useState({
         successfulLogins: [],
@@ -59,7 +59,7 @@ function DailyLoginsPage() {
             { field: 'hasFinished', headerName: applySettingsToHeaderName('🏁 Finished'), width: 100, renderCell: (params) => <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}> {params.value ? <CheckCircleOutlinedIcon style={{ color: theme.palette.success.main }} /> : <CancelOutlinedIcon style={{ color: theme.palette.error.main }} />} </div> },
             { field: 'startTime', headerName: applySettingsToHeaderName('🕛 Start Time'), width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => <div key={params.row.id} style={{ textAlign: 'center' }}> <MUITooltip title={`UTC: ${formatTime(convertUtcDatetoLocalDate(params.value))}`}>{<span>{formatTime(params.value)}</span>}</MUITooltip> </div> },
             {
-                field: 'endTime', headerName: applySettingsToHeaderName('🕛 End Time'), width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => {
+                field: 'endTime', headerName: applySettingsToHeaderName('🕑 End Time'), width: 165, flex: 0.1, type: 'dateTime', renderCell: (params) => {
                     const endTime = params.value;
                     if (endTime && new Date(endTime).getTime() === 0) {
                         return null;
@@ -141,17 +141,17 @@ function DailyLoginsPage() {
             return;
         }
 
-        invoke('check_for_installed_eam_daily_login_task', { checkForV1: false })
+        invoke('check_for_installed_eam_daily_login_task', { checkForOldVersions: false })
             .then((res) => {
                 setIsTaskInstalled(!!res);
                 localStorage.setItem('dailyLoginTaskInstalled', res ? 'true' : 'false');
                 sessionStorage.setItem('dailyLoginTaskCheckDone', 'true');
             });
 
-        invoke('check_for_installed_eam_daily_login_task', { checkForV1: true })
+        invoke('check_for_installed_eam_daily_login_task', { checkForOldVersions: true })
             .then((res) => {
-                setIsTaskV1Installed(!!res);
-                localStorage.setItem('dailyLoginTaskV1Installed', res ? 'true' : 'false');
+                setIsOldTaskInstalled(!!res);
+                localStorage.setItem('dailyLoginOldTaskInstalled', res ? 'true' : 'false');
                 sessionStorage.setItem('dailyLoginTaskV1CheckDone', 'true');
             });
     }
@@ -292,12 +292,12 @@ function DailyLoginsPage() {
     const installTask = async () => {
         setIsInstallingTask(true);
 
-        const _isTaskV1Installed = await invoke('check_for_installed_eam_daily_login_task', { checkForV1: true });
-        setIsTaskV1Installed(_isTaskV1Installed);
-        localStorage.setItem('dailyLoginTaskV1Installed', _isTaskV1Installed ? 'true' : 'false');
+        const _isOldTaskInstalled = await invoke('check_for_installed_eam_daily_login_task', { checkForOldVersions: true });
+        setIsOldTaskInstalled(_isOldTaskInstalled);
+        localStorage.setItem('dailyLoginOldTaskInstalled', _isOldTaskInstalled ? 'true' : 'false');
 
-        if (_isTaskV1Installed) {
-            const uninstalledSuccessfull = await invoke('uninstall_eam_daily_login_task', { uninstallV1: true })
+        if (_isOldTaskInstalled) {
+            const uninstalledSuccessfull = await invoke('uninstall_eam_daily_login_task', { uninstallOldVersions: true })
                 .catch((err) => {
                     console.error(err);
                     return false;
@@ -309,8 +309,8 @@ function DailyLoginsPage() {
                 return;
             }
 
-            localStorage.removeItem('dailyLoginTaskV1Installed');
-            setIsTaskV1Installed(false);
+            localStorage.removeItem('dailyLoginOldTaskInstalled');
+            setIsOldTaskInstalled(false);
         }
 
         const installedSuccessfull = await invoke('install_eam_daily_login_task')
@@ -364,25 +364,33 @@ function DailyLoginsPage() {
                     alignItems: 'center',
                 }}
             >
-                <img
-                    src='/mascot/Info/notification_very_low_res.png'
-                    alt='Notification Icon'
-                    style={{
-                        height: '80px',
+                <Box
+                    sx={{
+                        position: 'relative',
                     }}
-                />
-                <img
-                    src="/mascot/floor.png"
-                    alt="Floor of the mascot"
-                    style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: -5,
-                        width: '100%',
-                        height: 'auto',
-                        zIndex: 1,
-                    }}
-                />
+                >
+                    <img
+                        src='/mascot/Info/notification_very_low_res.png'
+                        alt='Notification Icon'
+                        style={{
+                            position: 'relative',
+                            height: '80px',
+                            zIndex: 2,
+                        }}
+                    />
+                    <img
+                        src="/mascot/floor.png"
+                        alt="Floor of the mascot"
+                        style={{
+                            position: 'absolute',
+                            bottom: -2,
+                            left: -5,
+                            width: '100%',
+                            height: 'auto',
+                            zIndex: 1,
+                        }}
+                    />
+                </Box>
             </Box>
             <MUITooltip title="Check if task is installed">
                 <IconButton
@@ -406,7 +414,7 @@ function DailyLoginsPage() {
                 Without the task, the daily login feature will not work.
             </Typography>
             {
-                isTaskV1Installed && (
+                isOldTaskInstalled && (
                     <Box
                         sx={{
                             display: 'flex',
@@ -430,10 +438,10 @@ function DailyLoginsPage() {
                             }}
                         >
                             <Typography variant="body2">
-                                An old version of the task is installed and will be removed during installation.
+                                An <strong>older version</strong> of the task <strong>is installed</strong> and will be <strong>removed</strong> during installation.
                             </Typography>
                             <Typography variant="body2">
-                                This means that only accounts from this EAM v4 will be used for the daily login.
+                                It is <strong>recommended</strong> to install the new task now.
                             </Typography>
                         </Box>
                         <WarningAmberOutlinedIcon />
@@ -611,7 +619,7 @@ function DailyLoginsPage() {
                         disabled={isInstallingTask || !isTaskInstalled}
                         color="error"
                         onClick={() => {
-                            invoke('uninstall_eam_daily_login_task', { uninstallV1: false })
+                            invoke('uninstall_eam_daily_login_task', { uninstallOldVersions: false })
                                 .then(() => {
                                     setIsTaskInstalled(false);
                                     localStorage.removeItem('dailyLoginTaskInstalled');
