@@ -155,7 +155,6 @@ function AccountDetails({ acc, onClose }) {
                     width: 500,
                     '& .MuiDrawer-paper': {
                         width: 500,
-                        backgroundColor: 'red',
                         backgroundColor: theme.palette.background.paperLight,
                         borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
                         overflow: 'hidden',
