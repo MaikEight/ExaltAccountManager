@@ -206,7 +206,11 @@ function BackgroundSyncComponent() {
             && dailyLoginProgressData.left !== null
             ? ((dailyLoginProgressData.done / (dailyLoginProgressData.done + dailyLoginProgressData.left)) * 100)
             : 0;
-        console.log('Daily Login Progress Data:', dailyLoginProgressData);
+
+        if (sessionStorage.getItem('flag:debug')) {
+            console.log('Daily Login Progress Data:', dailyLoginProgressData);
+            console.log('Progress Value:', progressValue);
+        }
 
         //Daily Login Progress
         if (syncMode === SyncMode.DailyLogin) {
@@ -296,7 +300,7 @@ function BackgroundSyncComponent() {
                                 }}
                             >
                                 <Typography variant="caption">
-                                    {dailyLoginProgressData.done}
+                                    {dailyLoginProgressData?.done}
                                 </Typography>
                                 <LinearProgress
                                     variant="determinate"
@@ -308,13 +312,13 @@ function BackgroundSyncComponent() {
                                     }}
                                 />
                                 <Typography variant="caption">
-                                    {dailyLoginProgressData.done + dailyLoginProgressData.left}
+                                    {dailyLoginProgressData?.done + dailyLoginProgressData?.left}
                                 </Typography>
                             </Box>
                             <Typography variant="caption">
                                 {
-                                    `Estimated finish time: ${dailyLoginProgressData.estimatedTime ?
-                                        dailyLoginProgressData.estimatedTime?.toLocaleTimeString([], {
+                                    `Estimated finish time: ${dailyLoginProgressData?.estimatedTime ?
+                                        dailyLoginProgressData?.estimatedTime?.toLocaleTimeString([], {
                                             hour: '2-digit',
                                             minute: '2-digit'
                                         }) : 'N/A'}`
@@ -331,8 +335,8 @@ function BackgroundSyncComponent() {
                             }}
                         >
                             {
-                                dailyLoginProgressData.leftAccountNames &&
-                                dailyLoginProgressData.leftAccountNames.length > 0 &&
+                                dailyLoginProgressData?.leftAccountNames &&
+                                dailyLoginProgressData?.leftAccountNames.length > 0 &&
                                 <Box
                                     sx={{
                                         display: 'flex',
@@ -354,28 +358,37 @@ function BackgroundSyncComponent() {
                                         }}
                                     >
                                         {
-                                            dailyLoginProgressData.leftAccountNames.map((name, index) => (
-                                                <Typography
-                                                    key={name + index}
-                                                    variant="caption"
-                                                    sx={{
-                                                        textOverflow: 'ellipsis',
-                                                        overflow: 'hidden',
-                                                        whiteSpace: 'nowrap',
-                                                    }}
-                                                >
-                                                    {name}
-                                                </Typography>
-                                            ))
+                                            dailyLoginProgressData?.leftAccountNames.map(async (name, index) => {
+                                                if (!name || name === '') {
+                                                    const n = getAccountByEmail(dailyLoginProgressData?.leftEmails[index]);
+                                                    if (n && n.name) {
+                                                        name = n.name || dailyLoginProgressData?.leftEmails[index];
+                                                    }
+                                                }
+
+                                                return (
+                                                    <Typography
+                                                        key={name + index}
+                                                        variant="caption"
+                                                        sx={{
+                                                            textOverflow: 'ellipsis',
+                                                            overflow: 'hidden',
+                                                            whiteSpace: 'nowrap',
+                                                        }}
+                                                    >
+                                                        {name}
+                                                    </Typography>
+                                                )
+                                            })
                                         }
                                     </Box>
                                 </Box>
                             }
                             {
-                                dailyLoginProgressData.leftAccountNames &&
-                                dailyLoginProgressData.leftAccountNames.length > 0 &&
-                                dailyLoginProgressData.failedAccountNames &&
-                                dailyLoginProgressData.failedAccountNames.length > 0 &&
+                                dailyLoginProgressData?.leftAccountNames &&
+                                dailyLoginProgressData?.leftAccountNames.length > 0 &&
+                                dailyLoginProgressData?.failedAccountNames &&
+                                dailyLoginProgressData?.failedAccountNames.length > 0 &&
                                 <Divider
                                     flexItem
                                     variant="middle"
@@ -383,8 +396,8 @@ function BackgroundSyncComponent() {
                                 />
                             }
                             {
-                                dailyLoginProgressData.failedAccountNames &&
-                                dailyLoginProgressData.failedAccountNames.length > 0 &&
+                                dailyLoginProgressData?.failedAccountNames &&
+                                dailyLoginProgressData?.failedAccountNames.length > 0 &&
                                 <Box
                                     sx={{
                                         display: 'flex',
@@ -402,25 +415,34 @@ function BackgroundSyncComponent() {
                                             flexDirection: 'column',
                                             alignItems: 'start',
                                             gap: 0,
-                                            ...(dailyLoginProgressData.leftAccountNames &&
-                                                dailyLoginProgressData.leftAccountNames.length > 0
+                                            ...(dailyLoginProgressData?.leftAccountNames &&
+                                                dailyLoginProgressData?.leftAccountNames.length > 0
                                                 ? { pr: 0.5 } : { pl: 0.5 }),
                                         }}
                                     >
                                         {
-                                            dailyLoginProgressData.failedAccountNames.map((name, index) => (
-                                                <Typography
-                                                    key={name + index}
-                                                    variant="caption"
-                                                    sx={{
-                                                        textOverflow: 'ellipsis',
-                                                        overflow: 'hidden',
-                                                        whiteSpace: 'nowrap',
-                                                    }}
-                                                >
-                                                    {name}
-                                                </Typography>
-                                            ))
+                                            dailyLoginProgressData?.failedAccountNames.map((name, index) => {
+                                                if (!name || name === '') {
+                                                    const n = getAccountByEmail(dailyLoginProgressData?.failedEmails[index]);
+                                                    if (n && n.name) {
+                                                        name = n.name || dailyLoginProgressData?.failedEmails[index];
+                                                    }
+                                                }
+
+                                                return (
+                                                    <Typography
+                                                        key={name + index}
+                                                        variant="caption"
+                                                        sx={{
+                                                            textOverflow: 'ellipsis',
+                                                            overflow: 'hidden',
+                                                            whiteSpace: 'nowrap',
+                                                        }}
+                                                    >
+                                                        {name}
+                                                    </Typography>
+                                                )
+                                            })
                                         }
                                     </Box>
                                 </Box>
