@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserLogin } from 'eam-commons-js';
 import navigationService from '../utils/navigationService';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 const deepLinkingPaths = new Map([
     ['accounts', '/accounts'],
@@ -63,11 +64,28 @@ function DeepLinkingComponent() {
             if (deepLinkingPaths.has(urlData)) {
                 navigate(deepLinkingPaths.get(urlData) + url.search);
                 console.log(deepLinkingPaths.get(urlData));
+                return;
+            }
+
+            if (url.pathname === 'start-daily-login-task') {
+                 getCurrentWindow().hide();
+                 return;
             }
         });
     }
 
     useEffect(() => {
+        if(navigate) {
+            // Perform deep linking when the component mounts
+            performDeepLinking();
+        }
+    }, []);
+
+    useEffect(() => {
+        if(!navigate) {
+            return;
+        }
+
         // Initialize the navigation service with the navigate function
         navigationService.setNavigate(navigate);
         
