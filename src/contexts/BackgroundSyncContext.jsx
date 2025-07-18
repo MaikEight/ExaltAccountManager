@@ -7,6 +7,7 @@ import BackgroundSyncComponent from "../components/BackgroundSyncComponent";
 import { Box, Typography } from "@mui/material";
 import { MASCOT_NAME } from "../constants";
 import useSnack from "../hooks/useSnack";
+import { validatePlusToken, checkForUpdates, updateGame } from 'eam-commons-js';
 
 const dailyLoginCompletedMessages = [
     `Mission complete! ${MASCOT_NAME} handled your daily login like a pro.`,
@@ -408,7 +409,35 @@ function BackgroundSyncProvider({ children }) {
         return;
     }
 
+    const checkIfUserIsPlusUser = async () => {
+        let jwtSignature = null;
+        const sessionJwtToken = sessionStorage.getItem('jwtSignature');
+        if (sessionJwtToken) {
+            jwtSignature = sessionJwtToken;
+        }
+        if (!jwtSignature) {
+            const jwtDataValue = await invoke('get_user_data_by_key', { key: 'jwtSignature' }).catch((error) => { return null; });
+            if (jwtDataValue && jwtDataValue.dataValue) {
+                jwtSignature = jwtDataValue.dataValue;
+            }
+        }
+
+        if (!jwtSignature) {
+            return false;
+        }
+
+        const deviceId = await invoke('get_device_unique_identifier');
+        const response = await validatePlusToken(jwtSignature, deviceId).catch((error) => {
+            console.error('Error validating Plus token:', error);
+            return null;
+        });
+ 
+        return Boolean(response && response.isValidToken && response.isSubscribed);
+    }
+
     useEffect(() => {
+        const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+
         let eventListener;
         let dailyLoginEventListener;
 
@@ -418,8 +447,10 @@ function BackgroundSyncProvider({ children }) {
             });
 
             dailyLoginEventListener = await listen('start-daily-login-process', async (event) => {
-                console.log('Received start-daily-login-process event:', event);
-                const e = event.payload.StartDailyLoginData;
+                if (debugFlag) {
+                    console.log('Received start-daily-login-process event:', event);
+                }
+                const e = event.payload;
 
                 if (!checkAndAddEventId('start-daily-login-process', e.id)) {
                     return;
@@ -496,6 +527,7 @@ function BackgroundSyncProvider({ children }) {
 
     useEffect(() => {
         const createAndStartBackgroundSyncManager = async () => {
+            const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
             try {
                 await invoke('create_background_sync_manager');
 
@@ -514,7 +546,37 @@ function BackgroundSyncProvider({ children }) {
                         console.error('Error getting current background sync mode:', error);
                         return SyncMode.Default; // Default to Default if there's an error just to be safe
                     });
-                    console.log('Current background sync mode:', currentMode);
+
+                    // Check the EAM Plus status
+                    const isPlusUser = await checkIfUserIsPlusUser().catch((error) => {
+                        console.error('Error checking if user is Plus user:', error);
+                        return false; // Assume it's not a Plus user if there's an error
+                    });
+
+                    if (!isPlusUser) {
+                        //Non-Plus users need to update the game for the daily login to work
+                        if (debugFlag) {
+                            console.info('Non-Plus user detected, stopping background sync manager for daily login.');
+                        }
+
+                        if (isRunning) {
+                            await invoke('stop_background_sync_manager');
+                        }
+
+                        let updateNeeded = await checkForUpdates(false)
+                        if (updateNeeded === null) {
+                            const storedState = localStorage.getItem('updateNeeded');
+                            updateNeeded = storedState === 'true';
+                        }
+
+                        if (updateNeeded) {
+                            if (debugFlag) {
+                                console.info('Update needed for daily login, performing game update...');
+                            }
+                            await updateGame();
+                            console.log('Game update completed, starting background sync manager for daily login.');
+                        }
+                    }
 
                     if (isRunning) {
                         if (currentMode === SyncMode.DailyLogin) {
@@ -523,6 +585,7 @@ function BackgroundSyncProvider({ children }) {
                         }
                         await invoke('stop_background_sync_manager');
                     }
+
                     await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin });
                     await new Promise(resolve => setTimeout(resolve, 3000));
                     await invoke('start_background_sync_manager');
@@ -555,7 +618,7 @@ function BackgroundSyncProvider({ children }) {
         uiState,
         setUiState,
         dailyLoginProgressData,
-        emailToAccountNameMap
+        emailToAccountNameMap: emailToAccountNameMap?.current || {}
     };
 
     return (
