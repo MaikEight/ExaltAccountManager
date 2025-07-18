@@ -9,10 +9,11 @@ import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import { useColorList } from 'eam-commons-js';
 import PaddedTableCell from "../AccountDetails/PaddedTableCell";
-import { pcStatsDescriptionEnum } from "../../utils/pcStatsParser";
+import { parsePcStats, pcStatsDescriptionEnum } from "../../utils/pcStatsParser";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import { Fragment } from "react";
 
 function emptyItemOverride(darkMode) {
     return {
@@ -25,15 +26,25 @@ function emptyItemOverride(darkMode) {
 }
 
 function Character({ charIdentifier, character }) {
-    const [charClass, setCharClass] = useState([]);
-    const [charItems, setCharItems] = useState([]);
-    const [backpackItems, setBackpackItems] = useState([]);
-    const [xof8, setXof8] = useState(0);
-
     const { filter, totalItems, addItemFilterCallback, removeItemFilterCallback } = useVaultPeeker();
     const seasonalChipColor = useColorList(1);
     const crucibleChipColor = useColorList(3);
     const theme = useTheme();
+
+    const [charClass, setCharClass] = useState([]);
+    const [charItems, setCharItems] = useState([]);
+    const [backpackItems, setBackpackItems] = useState([]);
+    const [xof8, setXof8] = useState(0);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
 
     useEffect(() => {
         if (!character.class) {
@@ -213,7 +224,32 @@ function Character({ charIdentifier, character }) {
                         alignItems: 'end',
                     }}
                 >
-                    <FameAndFameBonusPopover character={character}/>
+                    <Tooltip title="View Dungeon Bonuses | ALPHA (Click to open)">
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 0.5,
+                                ":hover": {
+                                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)'
+                                }
+                            }}
+                            onClick={handleClick}
+                        >
+                            {
+                                character.fame >= 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
+                                <img src="/realm/fame.png" alt="Fame" height={20} />
+                            }
+                            <Typography variant="body1">{character.fame}</Typography>
+                        </Box>
+                    </Tooltip>
+                    <FameAndFameBonusPopover
+                        character={character}
+                        anchorEl={anchorEl}
+                        handleClose={handleClose}
+                    />
                     <Tooltip title="Level">
                         <Typography variant="h6" color={character.level === 20 ? theme.palette.warning.main : theme.palette.text.primary}>lvl {character.level}</Typography>
                     </Tooltip>
@@ -256,21 +292,27 @@ function Character({ charIdentifier, character }) {
 
 export default Character;
 
-function FameAndFameBonusPopover({ character }) {
-    if (!character)
-        return null;
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    }
-    const handleClose = () => {
-        setAnchorEl(null);
-      };
-    console.log(character.processed_pc_stats);
+function FameAndFameBonusPopover({ character, anchorEl, handleClose }) {
     const theme = useTheme();
+
     const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        if (!character.processed_pc_stats && open) {
+            try {
+                const pcStatsParsed = parsePcStats(character.raw_pc_stats);
+                character.processed_pc_stats = pcStatsParsed;
+            } catch (error) {
+                console.error('Error parsing PC stats:', error);
+                character.processed_pc_stats = new Map();
+            }
+        }
+    }, [character, anchorEl]);
+
+    if (!character) {
+        return null;
+    }
+    // console.log(character.processed_pc_stats);
 
     const tunnelRat = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.SPIDER_DENS,
     pcStatsDescriptionEnum.SNAKE_PITS, pcStatsDescriptionEnum.UNDEAD_LAIRS, pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.MANOR_OF_THE_IMMORTALS,
@@ -290,7 +332,7 @@ function FameAndFameBonusPopover({ character }) {
     const firstSteps = [pcStatsDescriptionEnum.PIRATE_CAVES, pcStatsDescriptionEnum.FOREST_MAZES, pcStatsDescriptionEnum.FORBIDDEN_JUNGLES, pcStatsDescriptionEnum.SPIDER_DENS,
     pcStatsDescriptionEnum.THE_HIVE];
 
-    const kingOfTheMountains = [pcStatsDescriptionEnum.SNAKE_PITS, pcStatsDescriptionEnum.SPRITE_WORLDS, pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.TOXIC_SEWERS, 
+    const kingOfTheMountains = [pcStatsDescriptionEnum.SNAKE_PITS, pcStatsDescriptionEnum.SPRITE_WORLDS, pcStatsDescriptionEnum.ABYSS_OF_DEMONS, pcStatsDescriptionEnum.TOXIC_SEWERS,
     pcStatsDescriptionEnum.MAD_LABS, pcStatsDescriptionEnum.MAGIC_WOODS, pcStatsDescriptionEnum.PUPPET_MASTERS_THEATRE, pcStatsDescriptionEnum.HAUNTED_CEMETERIES, pcStatsDescriptionEnum.CURSED_LIBRARY,
     pcStatsDescriptionEnum.ANCIENT_RUINS, pcStatsDescriptionEnum.SULFUROUS_WETLANDS, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
 
@@ -334,13 +376,15 @@ function FameAndFameBonusPopover({ character }) {
     pcStatsDescriptionEnum.ORYXS_SANCTUARY, pcStatsDescriptionEnum.BELLADONNAS_GARDEN, pcStatsDescriptionEnum.ICE_TOMB, pcStatsDescriptionEnum.MAD_GOD_MAYHEMS, pcStatsDescriptionEnum.BATTLE_FOR_THE_NEXUS,
     pcStatsDescriptionEnum.SANTA_WORKSHOP, pcStatsDescriptionEnum.THE_MACHINE, pcStatsDescriptionEnum.MALOGIA, pcStatsDescriptionEnum.UNTARIS, pcStatsDescriptionEnum.FORAX,
     pcStatsDescriptionEnum.KATALUND, pcStatsDescriptionEnum.RAINBOW_ROAD, pcStatsDescriptionEnum.BEACHZONE, pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY];
-    
-    const dungeonBonuses = {"Tunnel Rat": tunnelRat, "Explosive Journey": explosiveJourney, "Travel of the Decade": travelOfTheDecade, "First Steps": firstSteps,
-    "King of the Mountains": kingOfTheMountains, "Conquerer of the Realm": conquererOfTheRealm, "Enemy of the Court": enemyOfTheCourt,
-    "Epic Battles": epicBattles, "Far Out": farOut, "Hero of the Nexus": heroOfTheNexus, "Season's Beatins": seasonsBeatins, "Realm of the Mad God": realmOfTheMadGod};
+
+    const dungeonBonuses = {
+        "Tunnel Rat": tunnelRat, "Explosive Journey": explosiveJourney, "Travel of the Decade": travelOfTheDecade, "First Steps": firstSteps,
+        "King of the Mountains": kingOfTheMountains, "Conquerer of the Realm": conquererOfTheRealm, "Enemy of the Court": enemyOfTheCourt,
+        "Epic Battles": epicBattles, "Far Out": farOut, "Hero of the Nexus": heroOfTheNexus, "Season's Beatins": seasonsBeatins, "Realm of the Mad God": realmOfTheMadGod
+    };
 
     const MAX_DUNGEONS_PER_ROW = 10;
-    
+
     const determineNumRows = (arr) => {
         const length = arr.length / MAX_DUNGEONS_PER_ROW;
         const result = [];
@@ -350,101 +394,87 @@ function FameAndFameBonusPopover({ character }) {
         return result;
     }
 
-    const FameAndFameBonusPopover = 
-    <Tooltip title="">
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 0.5,
-                ":hover": {
-                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)'
-                }
-            }}
-            onClick={handleClick}
-        >
-                {
-                    character.fame >= 0 && character.fame < 100_000 && //100k breaks the layout, so the fame icon is not displayed
-                    <img src="/realm/fame.png" alt="Fame" height={20} />
-                }
-                <Typography variant="body1">{character.fame}</Typography>
+    return (
         <Popover
-        id={character.char_id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-        }}>
+            id={character.char_id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+            }}
+        >
             <Box sx={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
                 <TableContainer>
                     <Table>
-                    <TableHead>
-                        <TableRow>
-                            <PaddedTableCell sx={{ textAlign: 'start', borderBottom: 'none', py: 0 }} colSpan={3}>
-                                <Typography variant="h5" fontWeight={600}>
-                                    Dungeon Bonuses
-                                </Typography>
-                            </PaddedTableCell>
-                            <PaddedTableCell sx={{ textAlign: 'center', borderBottom: 'none', py: 0 }}>
-                            </PaddedTableCell>
-                        </TableRow>
-                    </TableHead>
-                    {
-                        Object.keys(dungeonBonuses).map((dungeonBonusName) => {
-                            return (
-                                <TableBody>
-                                    <TableRow key={`${dungeonBonusName}-Header-${character.char_id}`}>
-                                        <TableCell colSpan={dungeonBonuses[dungeonBonusName].length}>
-                                            <Typography color={dungeonBonuses[dungeonBonusName].every((dungeonName) => {return character.processed_pc_stats.get(dungeonName) >= 1}) ? theme.palette.warning.main : theme.palette.text.primary} variant="h6" fontWeight={300}>
-                                                {dungeonBonusName}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                    {
-                                        determineNumRows(dungeonBonuses[dungeonBonusName]).map((rowNumber) => {
-                                            return (
-                                                <TableBody>
-                                                    <TableRow key={`${dungeonBonusName}-Images-${rowNumber}-${character.char_id}`}>
-                                                    {
-                                                        dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
-                                                            return (
-                                                                <TableCell>
-                                                                    <Tooltip title={`${dungeonName}`}>
-                                                                            <img src={`realm/dungeons/${dungeonName}.png`} alt={{dungeonName}} style={{ padding: '0', maxWidth: 48, maxHeight: 48 }} />
-                                                                    </Tooltip>
-                                                                </TableCell>
-                                                            );
-                                                        })
-                                                    }
-                                                    </TableRow>
-                                                    <TableRow key={`${dungeonBonusName}-${rowNumber}-${character.char_id}`}>
-                                                    {
-                                                        dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
-                                                            return (
-                                                                <TableCell>{dungeonName === pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY ? <Tooltip title = "Unknown"><QuestionMarkIcon></QuestionMarkIcon></Tooltip> : character.processed_pc_stats.get(dungeonName) >= 1 ?  <Tooltip title = "Completed"><CheckIcon></CheckIcon></Tooltip> : <Tooltip title = "Not completed"><ClearIcon></ClearIcon></Tooltip>}</TableCell>
-                                                            );
-                                                        })
-                                                    }
-                                                    </TableRow>
-                                                </TableBody>
-                                            )
-                                        })
-                                    }
-                                </TableBody>
-                            );
-                        })
-                    }
+                        <TableHead>
+                            <TableRow>
+                                <PaddedTableCell sx={{ textAlign: 'start', borderBottom: 'none', py: 0 }} colSpan={3}>
+                                    <Typography variant="h5" fontWeight={600}>
+                                        Dungeon Bonuses
+                                    </Typography>
+                                </PaddedTableCell>
+                                <PaddedTableCell sx={{ textAlign: 'center', borderBottom: 'none', py: 0 }}>
+                                </PaddedTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                Object.keys(dungeonBonuses).map((dungeonBonusName) => {
+                                    const rand = crypto.randomUUID();
+                                    return (
+                                        <Fragment key={`Main-${rand}`}>
+                                            <TableRow key={`${dungeonBonusName}-Header-${character.char_id}-${rand}`}>
+                                                <TableCell colSpan={dungeonBonuses[dungeonBonusName].length}>
+                                                    <Typography color={dungeonBonuses[dungeonBonusName].every((dungeonName) => { return character.processed_pc_stats?.get(dungeonName) >= 1 }) ? theme.palette.warning.main : theme.palette.text.primary} variant="h6" fontWeight={300}>
+                                                        {dungeonBonusName}
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                            {
+                                                determineNumRows(dungeonBonuses[dungeonBonusName]).map((rowNumber) => {
+                                                    const rand2 = crypto.randomUUID();
+                                                    return (
+                                                        <>
+                                                            <TableRow key={`${dungeonBonusName}-Images-${rowNumber}-${character.char_id}-${rand}-${rand2}`}>
+                                                                {
+                                                                    dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
+                                                                        const rand3 = crypto.randomUUID();
+                                                                        return (
+                                                                            <TableCell key={`${rand}-${rand2}-${rand3}`}>
+                                                                                <Tooltip title={`${dungeonName}`}>
+                                                                                    <img src={`realm/dungeons/${dungeonName}.png`} alt={{ dungeonName }} style={{ padding: '0', maxWidth: 48, maxHeight: 48 }} />
+                                                                                </Tooltip>
+                                                                            </TableCell>
+                                                                        );
+                                                                    })
+                                                                }
+                                                            </TableRow>
+                                                            <TableRow key={`${dungeonBonusName}-${rowNumber}-${character.char_id}-${rand}-${rand2}`}>
+                                                                {
+                                                                    dungeonBonuses[dungeonBonusName].slice(rowNumber * MAX_DUNGEONS_PER_ROW, MAX_DUNGEONS_PER_ROW * (rowNumber + 1)).map((dungeonName) => {
+                                                                        const rand4 = crypto.randomUUID();
+                                                                        return (
+                                                                            <TableCell key={`${rand}-${rand2}-${rand4}`}>{dungeonName === pcStatsDescriptionEnum.SPECTRAL_PENITENTIARY ? <Tooltip title="Unknown"><QuestionMarkIcon></QuestionMarkIcon></Tooltip> : character.processed_pc_stats?.get(dungeonName) >= 1 ? <Tooltip title="Completed"><CheckIcon></CheckIcon></Tooltip> : <Tooltip title="Not completed"><ClearIcon></ClearIcon></Tooltip>}</TableCell>
+                                                                        );
+                                                                    })
+                                                                }
+                                                            </TableRow>
+                                                        </>
+                                                    )
+                                                })
+                                            }
+                                        </Fragment>
+                                    );
+                                })
+                            }
+                        </TableBody>
                     </Table>
                 </TableContainer>
             </Box>
         </Popover>
-        </Box>
-    </Tooltip>
-    return FameAndFameBonusPopover;
+    );
 }
 
 function CharacterStats({ character, charClass }) {
@@ -476,8 +506,8 @@ function CharacterStats({ character, charClass }) {
                     <Table>
                         <TableBody>
                             {
-                                stats.map((stat) => (
-                                    <TableRow key={stat.leftId}>
+                                stats.map((stat, index) => (
+                                    <TableRow key={index + '-' + stat.leftId}>
                                         <TableCell sx={{ borderBottom: 'none', m: 0, px: 0.5, py: 0.125 }}>{stat.leftName}</TableCell>
                                         <TableCell sx={{ borderBottom: 'none', m: 0, px: 0.5, py: 0.125, color: getColor(stat.leftValue, charClass[3]?.[stat.leftId]) }}>{stat.leftValue}</TableCell>
                                         <TableCell sx={{ borderBottom: 'none', m: 0, pl: 1, pr: 1, py: 0.125 }}>{stat.rightName}</TableCell>
