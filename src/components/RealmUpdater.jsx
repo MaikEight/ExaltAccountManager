@@ -144,7 +144,7 @@ function RealmUpdater() {
                             setIsLoading(true);
                             updateProgressbar(true);
                             try {
-                                await updateGame(await settings.getByKeyAndSubKey('game', 'exePath'));
+                                await updateGame();
                             } catch (error) {
                                 console.error('Failed to update the game', error);
                                 showSnackbar('Failed to update the game', 'error');
