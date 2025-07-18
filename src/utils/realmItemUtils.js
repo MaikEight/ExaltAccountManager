@@ -1,5 +1,4 @@
 import items from "../assets/constants";
-import { parsePcStats } from "./pcStatsParser";
 
 export function getItemById(itemId) {
     return items[itemId];
@@ -108,7 +107,7 @@ export function formatCharacterDataFromCharListDataset(character) {
     if (character.char_id === undefined) {
         return null;
     }
-    const pcStatsParsed = parsePcStats(character.pc_stats);
+    
 
     return {
         char_id: character.char_id,
@@ -134,8 +133,7 @@ export function formatCharacterDataFromCharListDataset(character) {
         tex2: character.tex2,
         texture: character.texture,
         crucibleActive: character.crucible_active,
-        raw_pc_stats: character.pc_stats, // probably unnecessary but this is an array of all the statValues.
-        processed_pc_stats: pcStatsParsed, // See parsePcStats for more information.
+        raw_pc_stats: character.pc_stats,
     };
 }
 
