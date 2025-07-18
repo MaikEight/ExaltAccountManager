@@ -9,7 +9,8 @@ export {
 } from './backend/eamPaymentsApi.js';
 
 export {
-    postPlusToken
+    postPlusToken,
+    validatePlusToken
 } from './backend/eamSubscriptionsApi.js';
 
 export {
