@@ -24,7 +24,7 @@ use chrono::{DateTime, Utc};
 use diesel::r2d2::Pool;
 use diesel::SqliteConnection;
 use lazy_static::lazy_static;
-use log::{error, info};
+use log::{error, info, warn};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
 use serde_json::Value;
 use simplelog::*;
@@ -85,10 +85,6 @@ lazy_static! {
 #[cfg(target_os = "windows")]
 const EAM_SAVE_FILE_CONVERTER: &'static [u8] =
     include_bytes!("../IncludedBinaries/EAM_Save_File_Converter.exe");
-
-const EAM_DAILY_AUTO_LOGIN: &'static [u8] =
-    include_bytes!("../IncludedBinaries/EAM_Daily_Auto_Login.exe");
-const EAM_DAILY_AUTO_LOGIN_HASH: &'static str = "8da7094f31996c0a1f08aee856039e16";
 
 fn main() {
     println!("Starting Exalt Account Manager...");
@@ -194,6 +190,7 @@ fn main() {
             check_for_game_update,
             perform_game_update,
             send_get_request, // HTTP Requests
+            send_get_request_with_json_body,
             send_post_request,
             send_post_request_with_form_url_encoded_data,
             send_post_request_with_json_body,
@@ -790,6 +787,36 @@ async fn send_get_request(
 }
 
 #[tauri::command]
+async fn send_get_request_with_json_body(
+    url: String,
+    data: String,
+    custom_headers: HashMap<String, String>,
+) -> Result<String, String> {
+    info!("Sending get request with json body...");
+
+    let mut headers = HeaderMap::new();
+    custom_headers.into_iter().for_each(|(key, value)| {
+        let header_name = HeaderName::from_str(&key).unwrap();
+        let header_value = HeaderValue::from_str(&value).unwrap();
+        headers.append(header_name, header_value);
+    });
+
+    headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
+
+    let client = reqwest::Client::new();
+    let res = client
+        .get(&url)
+        .headers(headers)        
+        .body(data)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let body = res.text().await.map_err(|e| e.to_string())?;
+    Ok(body)
+}
+
+#[tauri::command]
 async fn send_post_request(
     url: String,
     custom_headers: HashMap<String, String>,
@@ -1139,24 +1166,16 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
     info!("Installing EAM daily login task...");
 
     if std::env::consts::OS != "windows" {
-        info!("This function is only available on Windows");
+        warn!("This function is only available on Windows");
         return Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
             "This function is only available on Windows",
         )));
     }
 
-    let save_file_path = get_save_file_path();
-
-    let embedded_file_path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
-    let mut file = File::create(embedded_file_path.clone())
-        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
-    file.write_all(EAM_DAILY_AUTO_LOGIN)
-        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
-    drop(file);
-
     let result = eam_commons::windows_specifics::install_eam_daily_login_task(
-        &embedded_file_path.to_str().unwrap().to_string(),
+        "explorer.exe",
+        Some("eam:start-daily-login-task"),
     );
 
     match result {
@@ -1172,13 +1191,13 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
 }
 
 #[tauri::command]
-fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, String> {
+fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
         info!("This function is only available on Windows");
         return Err("This function is only available on Windows".to_string());
     }
 
-    let result = eam_commons::windows_specifics::uninstall_eam_daily_login_task(uninstall_v1);
+    let result = eam_commons::windows_specifics::uninstall_eam_daily_login_task(uninstall_old_versions);
 
     match result {
         Ok(_) => Ok(true),
@@ -1193,46 +1212,17 @@ fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, String> {
 }
 
 #[tauri::command]
-fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, String> {
+fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
         info!("This function is only available on Windows");
         return Ok(false);
     }
 
     let result =
-        eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(check_for_v1);
+        eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(check_for_old_versions);
 
     match result {
-        Ok(result) => {
-            if check_for_v1 {
-                Ok(result)
-            } else {
-                //Check if the installed version is the same as the embedded version
-                let save_file_path = get_save_file_path();
-                let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
-
-                if !path.exists() {
-                    info!("EAM_Daily_Auto_Login.exe does not exist, creating it");
-                    fs::write(path.clone(), EAM_DAILY_AUTO_LOGIN).map_err(|e| e.to_string())?;
-                    return Ok(result);
-                }
-
-                let mut file = fs::File::open(path.clone()).map_err(|e| e.to_string())?;
-
-                let mut buffer = Vec::new();
-                file.read_to_end(&mut buffer).map_err(|e| e.to_string())?;
-                drop(file);
-                let hash = md5::compute(&buffer);
-                let hash_string = format!("{:x}", hash);
-
-                if hash_string != EAM_DAILY_AUTO_LOGIN_HASH {
-                    info!("Hashes do not match, updating the installed version");
-                    fs::write(path.clone(), EAM_DAILY_AUTO_LOGIN).map_err(|e| e.to_string())?;
-                }
-
-                Ok(result)
-            }
-        }
+        Ok(result) =>  Ok(result),
         Err(e) => Err(e.to_string()),
     }
 }
