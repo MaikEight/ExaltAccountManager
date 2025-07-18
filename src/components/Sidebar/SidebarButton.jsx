@@ -44,9 +44,9 @@ function SidebarButton({ menu, selected, hasNotification }) {
                         style={{
                             position: 'absolute',
                             top: '50%',
-                            right: '10px',
+                            right: '8px',
                             transform: 'translateY(-50%)',
-                            height: '36px',
+                            height: '32px',
                         }}
                     />
                 }
