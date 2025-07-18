@@ -1,5 +1,6 @@
 extern crate dirs;
 
+use log::info;
 use md5;
 use std::fs;
 use std::fs::File;
@@ -24,14 +25,14 @@ const CREATE_NO_WINDOW: u32 = 0x08000000;
 #[cfg(target_os = "windows")]
 const EAM_TASK_TOOLS: &'static [u8] =
     include_bytes!("../../EAM_Task_Installer/EAM_Task_Installer/bin/Release/EAM_Task_Tools.exe");
-const EAM_TASK_TOOLS_HASH: &'static str = "f837ed769e432f7f1d0f49bdf4d30f05";
+const EAM_TASK_TOOLS_HASH: &'static str = "3761a4a4969b87c62262c064ce0e36a5";
 
 #[cfg(target_os = "windows")]
-pub fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bool, Error> {
+pub fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, Error> {
     let path = ensure_eam_task_tools()?;
 
-    let check_arg = match check_for_v1 {
-        true => "checkV1",
+    let check_arg = match check_for_old_versions {
+        true => "checkForOldVersions",
         false => "check",
     };
 
@@ -58,12 +59,14 @@ pub fn check_for_installed_eam_daily_login_task(check_for_v1: bool) -> Result<bo
 }
 
 #[cfg(target_os = "windows")]
-pub fn install_eam_daily_login_task(exe_path: &str) -> Result<bool, Error> {
+pub fn install_eam_daily_login_task(exe_path: &str, args: Option<&str>) -> Result<bool, Error> {
     let path = ensure_eam_task_tools()?;
 
     let output = std::process::Command::new(path)
         .arg("install")
         .arg(exe_path)
+        .arg(args.unwrap_or(""))        
+        .arg(if args.is_some() { "ignoreFileCheck" } else {""})
         .creation_flags(CREATE_NO_WINDOW)
         .output()?;
 
@@ -99,11 +102,11 @@ pub fn install_eam_daily_login_task(exe_path: &str) -> Result<bool, Error> {
 }
 
 #[cfg(target_os = "windows")]
-pub fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, Error> {
+pub fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, Error> {
     let path = ensure_eam_task_tools()?;
 
-    let uninstall_arg = match uninstall_v1 {
-        true => "uninstallV1",
+    let uninstall_arg = match uninstall_old_versions {
+        true => "uninstallOldVersions",
         false => "uninstall",
     };
 
@@ -113,7 +116,7 @@ pub fn uninstall_eam_daily_login_task(uninstall_v1: bool) -> Result<bool, Error>
         .output()?;
 
     if output.status.success() {
-        let res = check_for_installed_eam_daily_login_task(uninstall_v1);
+        let res = check_for_installed_eam_daily_login_task(uninstall_old_versions);
         if res.is_ok() && res.unwrap() {
             let stdout = String::from_utf8_lossy(&output.stdout);
             Err(Error::new(
@@ -166,8 +169,10 @@ fn ensure_eam_task_tools() -> Result<String, Error> {
         let hash_string = format!("{:x}", hash);
 
         if hash_string != EAM_TASK_TOOLS_HASH {
-            println!("Hashes are different, overwriting EAM_Task_Tools.exe");
+            info!("Hashes are different, overwriting EAM_Task_Tools.exe.");
+            info!("Expected: {}, Found: {}", EAM_TASK_TOOLS_HASH, hash_string);
             fs::write(path.clone(), EAM_TASK_TOOLS)?;
+            info!("EAM_Task_Tools.exe has been overwritten.");
         }
     }
 
