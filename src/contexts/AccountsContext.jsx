@@ -23,7 +23,7 @@ function AccountsContextProvider({ children }) {
     const getAccountByEmail = (email) => accounts.find((acc) => acc.email === email);
     const loadAccountByEmail = async (email, forceReload = false) => {
         if (!email) return null;
-        if (!forceReload){
+        if (!forceReload) {
             const acc = getAccountByEmail(email);
             if (acc) {
                 return acc;
@@ -33,14 +33,31 @@ function AccountsContextProvider({ children }) {
         const acc = await invoke('get_eam_account_by_email', { accountEmail: email })
             .catch((err) => {
                 console.error('Error loading account by email:', err, email);
+
+                if (err && err === 'database is locked') {
+                    return { error: true, waitAndRetry: true, message: 'Database is locked, please try again later.' };
+                }
+
                 return null;
             });
 
         if (!acc) return null;
+        if(acc.error && acc.waitAndRetry) {
+            console.warn('Database is locked, retrying after a short delay...');
+            await new Promise(resolve => setTimeout(resolve, 150));
+            const retryAcc = await invoke('get_eam_account_by_email', { accountEmail: email })
+                .catch((err) => {
+                    console.error('Error loading account by email on retry:', err, email);
+                    return null;
+                });
+
+            if (!retryAcc) return null;
+            return enhanceAccountData(retryAcc);
+        }
 
         return enhanceAccountData(acc);
     }
-    
+
     const loadAccounts = async () => {
         setIsLoading(true);
         try {
