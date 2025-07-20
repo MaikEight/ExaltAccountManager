@@ -50,7 +50,10 @@
           "url": "https://*/"
         },
         {
-          "url": "https://api.exalt-account-manager.eu/*"
+          "url": "https://*.exalt-account-manager.eu/*"
+        },
+        {
+          "url": "https://*.api.exaltaccountmanager.com/*"
         },
         {
           "url": "http://localhost*/"
