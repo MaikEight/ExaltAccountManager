@@ -44,6 +44,10 @@ export {
 } from './utils/timeUtils';
 
 export {
+    readFileUTF8
+} from './utils/readFileUtil';
+
+export {
     UserLoginProvider,
     UserLoginContext
 } from './contexts/UserLoginContext';
