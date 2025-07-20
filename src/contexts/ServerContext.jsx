@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { SERVER_LIST_FILE_PATH } from "../constants";
-import { readFileUTF8 } from "../utils/readFileUtil";
+import { readFileUTF8 } from "eam-commons-js";
 import { writeFileUTF8 } from "../utils/writeFileUtil";
 
 const ServerContext = createContext();
