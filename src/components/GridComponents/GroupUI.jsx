@@ -1,6 +1,6 @@
 import { Box, Tooltip } from "@mui/material";
 import * as Icons from "@mui/icons-material";
-import { useColorList } from "../hooks/useColorList";
+import { useColorList } from "eam-commons-js";
 
 function GroupUI({ group, onClick, innerSx }) {
     if (!group) return null;
