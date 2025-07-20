@@ -1,9 +1,10 @@
 import { logToErrorLog } from "./loggingUtils";
+import { exists, readFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 
 async function readFileUTF8(filePath, parseAsJSON = false) {
     try {        
-        if (window.__TAURI__.fs.exists(filePath)) {
-            const bytes = await window.__TAURI__.fs.readFile(filePath);
+        if (await exists(filePath, { dir: BaseDirectory.AppData })) {
+            const bytes = await readFile(filePath, { dir: BaseDirectory.AppData });
             const stringContent = new TextDecoder().decode(bytes);
             return parseAsJSON ? JSON.parse(stringContent) : stringContent;
         }
