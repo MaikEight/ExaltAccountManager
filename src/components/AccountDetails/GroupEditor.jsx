@@ -1,10 +1,11 @@
 import { Box, Chip, Slider, TextField, Typography, Grid } from "@mui/material";
-import { useColorList, GroupUI, useGroups } from "eam-commons-js";
+import { useColorList, useGroups } from "eam-commons-js";
 import React, { useEffect, useState } from "react";
 import * as Icons from '@mui/icons-material';
 import { useTheme } from "@emotion/react";
 import { FixedSizeGrid as FixedGrid } from 'react-window';
 import StyledButton from "../StyledButton";
+import { GroupUI } from "../GridComponents/GroupUI";
 
 const allIcons = Object.keys(Icons).map((key) => key.includes('Outlined') ? key : null).filter((key) => key !== null);
 const MAX_ICON_PADDING = 30;
