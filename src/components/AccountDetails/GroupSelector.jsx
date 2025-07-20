@@ -2,7 +2,8 @@ import { Box, FormControl, IconButton, Input, MenuItem, Select, Tooltip } from "
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
-import { GroupUI, useGroups } from "eam-commons-js";
+import { useGroups } from "eam-commons-js";
+import { GroupUI } from "../GridComponents/GroupUI";
 
 function GroupSelector({ selected, onChange, showGroupEditor, setShowGroupEditor, sx }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
