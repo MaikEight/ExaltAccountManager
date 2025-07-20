@@ -83,8 +83,19 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, overflow: 'hidden' } }}
-                SlideProps={{ container: containerRef.current }}
+                slotProps={{
+                    paper: {
+                        elevation: 0, 
+                        square: false, 
+                        sx: { 
+                            borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, 
+                            overflow: 'hidden' 
+                        }
+                    },
+                    transition: {
+                        container: containerRef.current
+                    }
+                }}
                 variant="persistent"
                 anchor="right"
                 open={isOpen}
@@ -115,7 +126,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                         Daily login report
                     </Typography>
                 </Box>
-             
+
                 <Box
                     sx={{
                         pt: 2,
@@ -166,7 +177,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                             icon={<CancelOutlinedIcon />}
                             isCollapseable
                         >
-                            <DailyLoginsLoginData logins={reportData.failed} mascot={'/mascot/Error/error_2_low_res.png'}/>
+                            <DailyLoginsLoginData logins={reportData.failed} mascot={'/mascot/Error/error_2_low_res.png'} />
                         </ComponentBox>
                     }
                     {
@@ -180,7 +191,7 @@ function DailyLoginsSlideout({ isOpen, report, onClose }) {
                         </ComponentBox>
                     }
                 </Box>
-                <Box 
+                <Box
                     sx={{
                         flex: '1 0 auto',
                         height: '0px',

@@ -133,7 +133,7 @@ function AccountDetails({ acc, onClose }) {
             { applicationPath: gameExePath, startParameters: args }
         );
 
-        const acc = {...account, lastLogin: new Date() };
+        const acc = { ...account, lastLogin: new Date() };
         await updateAccount(acc, false);
 
         const charList = await sendCharList(account.email, token.AccessToken);
@@ -160,8 +160,18 @@ function AccountDetails({ acc, onClose }) {
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: { overflow: 'hidden' } }}
-                SlideProps={{ container: containerRef.current }}
+                slotProps={{
+                    paper: {
+                        elevation: 0,
+                        square: false,
+                        sx: {
+                            overflow: 'hidden'
+                        }
+                    },
+                    transition: {
+                        container: containerRef.current
+                    }
+                }}
                 variant="persistent"
                 anchor="right"
                 open={isOpen}
@@ -275,7 +285,7 @@ function AccountDetails({ acc, onClose }) {
                             sx={{
                                 width: '100%',
                                 transition: 'height 0.5s',
-                                mb: 0,                                
+                                mb: 0,
                             }}
                         >
                             <TableContainer component={Box} sx={{ borderRadius: 0 }}>

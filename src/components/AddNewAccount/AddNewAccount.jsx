@@ -499,8 +499,17 @@ function AddNewAccount({ isOpen, onClose }) {
                         overflow: 'hidden',
                     },
                 }}
-                PaperProps={{ elevation: 0, square: false, sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, overflow: 'hidden' } }}
-                SlideProps={{ container: containerRef.current }}
+                slotProps={{
+                    paper: {
+                        elevation: 0, 
+                        square: false, 
+                        sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, 
+                        overflow: 'hidden' },
+                    },
+                    transition: {
+                        container: containerRef.current
+                    }
+                }}
                 variant="persistent"
                 anchor="right"
                 open={isOpen}
