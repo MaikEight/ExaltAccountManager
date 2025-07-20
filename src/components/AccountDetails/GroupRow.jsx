@@ -1,9 +1,10 @@
 import { TableCell, TableRow, Typography } from "@mui/material"
 import PaddedTableCell from "./PaddedTableCell"
-import { GroupUI, useGroups } from "eam-commons-js"
 import GroupSelector from "./GroupSelector";
 import { useEffect, useState } from "react";
 import GroupEditor from "./GroupEditor";
+import { GroupUI } from "../GridComponents/GroupUI";
+import { useGroups } from "eam-commons-js";
 
 function GroupRow({ group, editMode, onChange, innerSx, ...rest }) {
     const [showGroupEditor, setShowGroupEditor] = useState(false);
