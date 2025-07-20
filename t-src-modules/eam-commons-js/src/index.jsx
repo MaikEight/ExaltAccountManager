@@ -92,7 +92,3 @@ export {
 export {
     useUserLogin
 } from './hooks/useUserLogin';
-
-export {
-    GroupUI
-} from './components/GroupUI';
