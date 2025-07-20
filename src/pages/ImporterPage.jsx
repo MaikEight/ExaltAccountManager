@@ -20,7 +20,7 @@ import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import useSnack from './../hooks/useSnack';
-import { readFileUTF8 } from "../utils/readFileUtil";
+import { readFileUTF8 } from "eam-commons-js";
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import PaddedTableCell from "../components/AccountDetails/PaddedTableCell";
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
