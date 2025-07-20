@@ -5,13 +5,14 @@ import { useEffect, useMemo, useState } from "react";
 import { CustomPagination } from "./GridComponents/CustomPagination";
 import ServerChip from "./GridComponents/ServerChip";
 import DailyLoginCheckbox from "./GridComponents/DailyLoginCheckbox";
-import { formatTime, GroupUI, useGroups } from "eam-commons-js";
+import { formatTime, useGroups } from "eam-commons-js";
 import CustomToolbar from "./GridComponents/CustomToolbar";
 import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";
 import SteamworksMailColumn from "./GridComponents/SteamworksMailColumn";
 import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
 import NoRowsOverlay from "./GridComponents/NoRowsOverlay";
+import { GroupUI } from "./GridComponents/GroupUI";
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount, isLoading } = useAccounts();
