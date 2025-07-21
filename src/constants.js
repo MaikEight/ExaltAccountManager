@@ -67,7 +67,6 @@ export const DISCORD_APPLICATION_ID = '1069308775854526506';
 
 export const MASCOT_NAME = 'Okta';
 
-
 export const DAILY_LOGIN_COMPLETED_MESSAGES = [
     `Mission complete! ${MASCOT_NAME} handled your daily login like a pro.`,
     `All done! ${MASCOT_NAME} just finished your daily login adventure.`,
