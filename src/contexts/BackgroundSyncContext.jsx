@@ -9,8 +9,6 @@ import { DAILY_LOGIN_COMPLETED_MESSAGES } from "../constants";
 import useSnack from "../hooks/useSnack";
 import { validatePlusToken, checkForUpdates, updateGame } from 'eam-commons-js';
 
-
-
 const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * DAILY_LOGIN_COMPLETED_MESSAGES.length);
     return DAILY_LOGIN_COMPLETED_MESSAGES[randomIndex];
@@ -39,15 +37,25 @@ function BackgroundSyncProvider({ children }) {
     const [dailyLoginProgressData, setDailyLoginProgressData] = useState(null);
 
     const checkAndAddEventId = (eventName, id, debugFlag = false) => {
+        const MAX_EVENT_IDS = 1280;
+        const BATCH_SIZE = 200;
+
         if (!processedEventIds.current[eventName]) {
             processedEventIds.current[eventName] = [];
         }
-
+        
         if (!processedEventIds.current[eventName].includes(id)) {
             processedEventIds.current[eventName].push(id);
+            
+            // prune oldest IDs to prevent unbounded memory growth
+            const ids = processedEventIds.current[eventName];
+            if (ids.length > MAX_EVENT_IDS) {
+                ids.splice(0, BATCH_SIZE);
+                processedEventIds.current[eventName] = ids;
+            }
 
             if (debugFlag) {
-                console.log('Processing background sync event:', event);
+                console.log('Processing background sync event:', eventName, 'with ID:', id);
             }
 
             return true;
@@ -59,67 +67,85 @@ function BackgroundSyncProvider({ children }) {
     const processBackgroundSyncEvent = async (event) => {
         const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
 
+        if (!event || !event.payload) {
+            console.warn('Received invalid background sync event:', event);
+            return;
+        }
+
         if (event.payload.AccountCharListSync) {
             const e = event.payload.AccountCharListSync;
             if (!checkAndAddEventId('AccountCharListSync', e.id, debugFlag)) {
                 return;
             }
 
-            const charList = xmlToJson(e.dataset);
+            try {
+                const charList = xmlToJson(e.dataset);
 
-            const state = getRequestState(charList) || "BGSyncError";
-            const acc = await loadAccountByEmail(e.email);
+                const state = getRequestState(charList) || "BGSyncError";
+                const acc = await loadAccountByEmail(e.email);
 
-            if (state === 'AccountSuspended' || state === 'WrongPassword') {
-                if (debugFlag) {
-                    console.warn('Account suspended or wrong password for email:', e.email, 'with state:', state, acc);
-                }
-
-                setUiState({
-                    email: e.email,
-                    state: state,
-                    updatedAt: new Date(),
-                });
-
-                if (Boolean(acc)) {
+                if (state === 'AccountSuspended' || state === 'WrongPassword') {
                     if (debugFlag) {
-                        console.log('Updating account state for email:', e.email, 'with state:', state);
+                        console.warn('Account suspended or wrong password for email:', e.email, 'with state:', state, acc);
                     }
 
-                    acc.state = state;
-                    await updateAccount(acc);
+                    setUiState({
+                        email: e.email,
+                        state: state,
+                        updatedAt: new Date(),
+                    });
+
+                    if (Boolean(acc)) {
+                        if (debugFlag) {
+                            console.log('Updating account state for email:', e.email, 'with state:', state);
+                        }
+
+                        acc.state = state;
+                        await updateAccount(acc);
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (Boolean(state) && Boolean(acc)) {
-                acc.state = state;
-                acc.lastRefresh = new Date();
-                await updateAccount(acc);
-            } else if (debugFlag) {
-                console.log('AccountCharListSync Debug:', {
-                    eventEmail: e.email,
-                    emailType: typeof e.email,
-                    emailLength: e.email?.length,
-                    state: state,
-                    foundAccount: Boolean(acc),
-                    accountEmail: acc?.email,
-                    totalAccountsAvailable: accounts?.length || 0,
-                    availableEmails: accounts?.map(a => a.email) || [],
-                    emailToAccountMapSize: Object.keys(emailToAccountNameMap.current).length
-                });
-                console.warn('Account not found or state is undefined for email:', e.email, 'with state:', state, acc);
-            }
+                if (Boolean(state) && Boolean(acc)) {
+                    acc.state = state;
+                    acc.lastRefresh = new Date();
+                    await updateAccount(acc);
+                } else if (debugFlag) {
+                    console.log('AccountCharListSync Debug:', {
+                        eventEmail: e.email,
+                        emailType: typeof e.email,
+                        emailLength: e.email?.length,
+                        state: state,
+                        foundAccount: Boolean(acc),
+                        accountEmail: acc?.email,
+                        totalAccountsAvailable: accounts?.length || 0,
+                        availableEmails: accounts?.map(a => a.email) || [],
+                        emailToAccountMapSize: Object.keys(emailToAccountNameMap.current).length
+                    });
+                    console.warn('Account not found or state is undefined for email:', e.email, 'with state:', state, acc);
+                }
 
-            await storeCharList(charList, e.email);
-            if (debugFlag) {
-                console.log('Stored char list for email:', e.email, charList);
+                await storeCharList(charList, e.email);
+                if (debugFlag) {
+                    console.log('Stored char list for email:', e.email, charList);
+                }
+            } catch (error) {
+                console.error('Error processing AccountCharListSync event:', error);
+                if (debugFlag) {
+                    console.error('Event data:', event);
+                }
             }
             return;
         }
 
         if (event.payload.AccountStarted) {
             const e = event.payload.AccountStarted;
+
+            if (!e || !e.id || !e.email) {
+                console.warn('Received AccountStarted event without payload:', event);
+                return;
+            };
+
 
             if (!checkAndAddEventId('AccountStarted', e.id, debugFlag)) {
                 return;
@@ -155,6 +181,11 @@ function BackgroundSyncProvider({ children }) {
 
         if (event.payload.AccountProgress) {
             const e = event.payload.AccountProgress;
+
+            if (!e || !e.id || !e.email) {
+                console.warn('Received AccountProgress event with missing data:', event);
+                return;
+            }
 
             if (!checkAndAddEventId('AccountProgress', e.id, debugFlag)) {
                 return;
@@ -194,6 +225,12 @@ function BackgroundSyncProvider({ children }) {
 
         if (event.payload.AccountFinished) {
             const e = event.payload.AccountFinished;
+
+            if (!e || !e.id || !e.email) {
+                console.warn('Received AccountFinished event with missing data:', event);
+                return;
+            }
+
             if (!checkAndAddEventId('AccountFinished', e.id, debugFlag)) {
                 return;
             }
@@ -225,55 +262,51 @@ function BackgroundSyncProvider({ children }) {
                 return;
             }
 
-            // if (e.state.startsWith("Failed")) {
-            //     //example e.state = "Failed("<Error>WebChangePasswordDialog.passwordError</Error>")"
-            //     const errorXml = e.state.substring(e.state.indexOf('(') + 1, e.state.lastIndexOf(')'));
-            //     const errorJson = xmlToJson(errorXml);
-            //     state = getRequestState(errorJson);
-            // } else if (e.state.startsWith("Success")) {
-            //     state = "Success";
-            // } else {
-            //     state = "BGSyncError";
-            // }
-
             if (debugFlag) {
                 console.warn('Processing AccountFailed event:', e);
             }
 
-            const errorXml = e.error;
-            const errorJson = xmlToJson(errorXml);
-            let acc = await loadAccountByEmail(e.email);
-            let state = getRequestState(errorJson);
-            if (!state || state === 'Success') {
-                state = "BGSyncError";
-            }
+            try {
+                const errorXml = e.error;
+                const errorJson = xmlToJson(errorXml);
+                let acc = await loadAccountByEmail(e.email);
+                let state = getRequestState(errorJson);
+                if (!state || state === 'Success') {
+                    state = "BGSyncError";
+                }
 
-            if (debugFlag) {
-                console.warn('AccountFailed Debug:', {
-                    eventEmail: e.email,
-                    emailType: typeof e.email,
-                    emailLength: e.email?.length,
-                    state: state,
-                    foundAccount: Boolean(acc),
-                    account: acc,
-                    totalAccountsAvailable: accounts?.length || 0,
-                    availableEmails: accounts?.map(a => a.email) || [],
-                    emailToAccountMapSize: Object.keys(emailToAccountNameMap.current).length
+                if (debugFlag) {
+                    console.warn('AccountFailed Debug:', {
+                        eventEmail: e.email,
+                        emailType: typeof e.email,
+                        emailLength: e.email?.length,
+                        state: state,
+                        foundAccount: Boolean(acc),
+                        account: acc,
+                        totalAccountsAvailable: accounts?.length || 0,
+                        availableEmails: accounts?.map(a => a.email) || [],
+                        emailToAccountMapSize: Object.keys(emailToAccountNameMap.current).length
+                    });
+                    console.warn('Account failed for email:', e.email, 'with state:', state, acc);
+                }
+
+                if (acc) {
+                    emailToAccountNameMap.current[e.email] = acc.name;
+                    acc.state = state;
+                    await updateAccount(acc);
+                }
+
+                setUiState({
+                    email: e.email,
+                    state: "Failed",
+                    updatedAt: new Date(),
                 });
-                console.warn('Account failed for email:', e.email, 'with state:', state, acc);
+            } catch (error) {
+                console.error('Error processing AccountFailed event:', error);
+                if (debugFlag) {
+                    console.error('Event data:', event);
+                }
             }
-
-            if (acc) {
-                emailToAccountNameMap.current[e.email] = acc.name;
-                acc.state = state;
-                await updateAccount(acc);
-            }
-
-            setUiState({
-                email: e.email,
-                state: "Failed",
-                updatedAt: new Date(),
-            });
             return;
         }
 
@@ -281,23 +314,41 @@ function BackgroundSyncProvider({ children }) {
 
         if (event.payload.DailyLoginProgress) {
             const e = event.payload.DailyLoginProgress;
+
+            if (!e || !e.id || !e.left_emails || !e.failed_emails || !e.done || !e.left || !e.estimated_time) {
+                console.warn('Received DailyLoginProgress event with missing data:', event);
+                return;
+            }
+
             if (!checkAndAddEventId('DailyLoginProgress', e.id, debugFlag)) {
                 return;
             }
 
-            const getAccNameByEmail = (email) => {
-                if (emailToAccountNameMap.current[email]) {
-                    return emailToAccountNameMap.current[email];
+            const getAccNameByEmail = async (email) => {
+                if (!email) {
+                    return "";
                 }
-                const acc = loadAccountByEmail(email);
-                if (acc && acc.name) {
-                    emailToAccountNameMap.current[email] = acc.name;
+
+                try {
+                    if (emailToAccountNameMap.current[email]) {
+                        return emailToAccountNameMap.current[email];
+                    }
+                    const acc = await loadAccountByEmail(email);
+                    if (acc && acc.name) {
+                        emailToAccountNameMap.current[email] = acc.name;
+                    }
+                    return acc ? acc.name : email;
+                } catch (error) {
+                    console.error('Error getting account name by email:', email, error);
+                    return email; // Fallback to email if there's an error
                 }
-                return acc ? acc.name : email;
             }
 
-            const accNames = e.left_emails.map(email => getAccNameByEmail(email));
-            const failedAccNames = e.failed_emails.map(email => getAccNameByEmail(email));
+            const accNamesPromises = e.left_emails?.map(email => getAccNameByEmail(email)) || [];
+            const failedAccNamesPromises = e.failed_emails?.map(email => getAccNameByEmail(email)) || [];
+
+            const accNames = await Promise.all(accNamesPromises);
+            const failedAccNames = await Promise.all(failedAccNamesPromises);
 
             setDailyLoginProgressData({
                 done: e.done,
@@ -313,6 +364,11 @@ function BackgroundSyncProvider({ children }) {
 
         if (event.payload.DailyLoginDone) {
             const e = event.payload.DailyLoginDone;
+
+            if (!e || !e.id) {
+                console.warn('Received DailyLoginDone event with missing data:', event);
+                return;
+            }
 
             if (!checkAndAddEventId('DailyLoginDone', e.id, debugFlag)) {
                 return;
@@ -359,6 +415,11 @@ function BackgroundSyncProvider({ children }) {
         if (event.payload.ModeChanged) {
             const e = event.payload.ModeChanged;
 
+            if (!e || !e.id || !e.mode) {
+                console.warn('Received ModeChanged event with missing data:', event);
+                return;
+            }
+
             if (!checkAndAddEventId('ModeChanged', e.id, debugFlag)) {
                 return;
             }
@@ -377,7 +438,9 @@ function BackgroundSyncProvider({ children }) {
                 case 'DailyLogin':
                     setSyncMode(SyncMode.DailyLogin);
                     break;
-
+                default:
+                    console.warn('Unknown sync mode received:', e.mode);
+                    break;
             }
 
             return;
@@ -406,7 +469,16 @@ function BackgroundSyncProvider({ children }) {
             return false;
         }
 
-        const deviceId = await invoke('get_device_unique_identifier');
+        const deviceId = await invoke('get_device_unique_identifier').catch((error) => {
+            console.error('Error getting device unique identifier:', error);
+            const apiHwidHash = localStorage.getItem('apiHwidHash');
+            if (apiHwidHash) {
+                console.warn('Fallback: Using stored API HWID hash for Plus token validation:', apiHwidHash);
+                return apiHwidHash;
+            }
+            console.error('No device ID available for Plus token validation');
+            return '';
+        });
         const response = await validatePlusToken(jwtSignature, deviceId).catch((error) => {
             console.error('Error validating Plus token:', error);
             return null;
@@ -423,46 +495,54 @@ function BackgroundSyncProvider({ children }) {
 
         const registerEventListener = async () => {
             try {
-                eventListener = await listen('background-sync-event', (event) => {
-                    processBackgroundSyncEvent(event);
+                eventListener = await listen('background-sync-event', async (event) => {
+                    try {
+                        await processBackgroundSyncEvent(event);
+                    } catch (error) {
+                        console.error('Error processing background sync event:', error);
+                    }
                 });
 
                 dailyLoginEventListener = await listen('start-daily-login-process', async (event) => {
-                    if (debugFlag) {
-                        console.log('Received start-daily-login-process event:', event);
-                    }
-                    const e = event.payload;
+                    try {
+                        if (debugFlag) {
+                            console.log('Received start-daily-login-process event:', event);
+                        }
+                        const e = event.payload;
 
-                    if (!checkAndAddEventId('start-daily-login-process', e.id)) {
-                        return;
-                    }
-
-                    if (syncMode === SyncMode.DailyLogin) { // Already in daily login mode, ignore the event
-                        return;
-                    }
-
-                    // Start the daily login process
-                    const isRunning = await invoke('is_background_sync_manager_running').catch((error) => {
-                        console.error('Error checking if background sync manager is running:', error);
-                        return true; // Assume true if there's an error
-                    });
-
-                    const currentMode = await invoke('get_current_background_sync_mode').catch((error) => {
-                        console.error('Error getting current background sync mode:', error);
-                        return SyncMode.Default; // Default to Default if there's an error just to be safe
-                    });
-
-                    if (isRunning) {
-                        if (currentMode === SyncMode.DailyLogin) {
-                            // The manager is running as expected.
+                        if (!checkAndAddEventId('start-daily-login-process', e.id)) {
                             return;
                         }
-                        await invoke('stop_background_sync_manager');
-                    }
 
-                    await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin });
-                    await new Promise(resolve => setTimeout(resolve, 3000));
-                    await invoke('start_background_sync_manager');
+                        if (syncMode === SyncMode.DailyLogin) { // Already in daily login mode, ignore the event
+                            return;
+                        }
+
+                        // Start the daily login process
+                        const isRunning = await invoke('is_background_sync_manager_running').catch((error) => {
+                            console.error('Error checking if background sync manager is running:', error);
+                            return true; // Assume true if there's an error
+                        });
+
+                        const currentMode = await invoke('get_current_background_sync_mode').catch((error) => {
+                            console.error('Error getting current background sync mode:', error);
+                            return SyncMode.Default; // Default to Default if there's an error just to be safe
+                        });
+
+                        if (isRunning) {
+                            if (currentMode === SyncMode.DailyLogin) {
+                                // The manager is running as expected.
+                                return;
+                            }
+                            await invoke('stop_background_sync_manager').catch(console.error);
+                        }
+
+                        await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin }).catch(console.error);
+                        await new Promise(resolve => setTimeout(resolve, 3000));
+                        await invoke('start_background_sync_manager').catch(console.error);
+                    } catch (error) {
+                        console.error('Error processing start-daily-login-process event:', error);
+                    }
                 });
             } catch (error) {
                 console.error('Error registering background sync event listener:', error);
@@ -488,32 +568,31 @@ function BackgroundSyncProvider({ children }) {
                 console.error('Error cleaning up daily login event listener:', error);
             }
         }
-    }, [accounts, loadAccountByEmail, updateAccount]);
+    }, [accounts, loadAccountByEmail, updateAccount, syncMode ]);
 
     useEffect(() => {
-        let timeoutId;
         if (syncMode === SyncMode.Default || syncMode === SyncMode.Stopped) {
-            timeoutId = setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 setUiState({
                     email: '',
                     state: '',
                     updatedAt: null,
                 });
             }, uiState.state === 'Waiting' ? 315_000 : 7_500); // Clear state after 7.5 seconds or 5 minutes if waiting
-        }
 
-        return () => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-        };
+            return () => {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+            };
+        }
     }, [uiState]);
 
     useEffect(() => {
         const createAndStartBackgroundSyncManager = async () => {
-            const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
             try {
-                await invoke('create_background_sync_manager');
+                const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+                await invoke('create_background_sync_manager').catch(console.error);
 
                 const needsDailyLogin = await invoke('needs_to_do_daily_login').catch((error) => {
                     console.error('Error checking daily login needs:', error)
@@ -544,7 +623,7 @@ function BackgroundSyncProvider({ children }) {
                         }
 
                         if (isRunning) {
-                            await invoke('stop_background_sync_manager');
+                            await invoke('stop_background_sync_manager').catch(console.error);
                         }
 
                         let updateNeeded = await checkForUpdates(false)
@@ -567,22 +646,23 @@ function BackgroundSyncProvider({ children }) {
                             // The manager is running as expected.
                             return;
                         }
-                        await invoke('stop_background_sync_manager');
+                        await invoke('stop_background_sync_manager').catch(console.error);
                     }
 
-                    await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin });
+                    await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin }).catch(console.error);
                     await new Promise(resolve => setTimeout(resolve, 3000));
-                    await invoke('start_background_sync_manager');
+                    await invoke('start_background_sync_manager').catch(console.error);
                     return;
                 }
 
-                await invoke('change_background_sync_mode', { mode: SyncMode.Default });
+                await invoke('change_background_sync_mode', { mode: SyncMode.Default }).catch(console.error);
                 await new Promise(resolve => setTimeout(resolve, 3000));
-                await invoke('start_background_sync_manager');
+                await invoke('start_background_sync_manager').catch(console.error);
             } catch (error) {
                 console.error('Failed to create background sync manager:', error);
             }
         }
+
         const startPeriodicDailyLoginCheck = async () => {
             try {
                 await invoke('start_periodic_daily_login_check').catch((error) => {
@@ -592,6 +672,7 @@ function BackgroundSyncProvider({ children }) {
                 console.error('Failed to start periodic daily login check:', error);
             }
         }
+
         createAndStartBackgroundSyncManager();
         startPeriodicDailyLoginCheck();
     }, []);
