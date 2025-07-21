@@ -22,33 +22,32 @@ function BackgroundSyncComponent() {
     });
 
     useEffect(() => {
-        let timeoutId = null;
         if (!uiState.updatedAt) {
-            timeoutId = setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 setOwnUiState(uiState);
             }, 300);
-        } else {
-            setOwnUiState(uiState);
-        }
-        return () => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
+            return () => {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
             }
         }
+
+        setOwnUiState(uiState);
     }, [uiState]);
 
     const getIconToDisplay = (bigSize = false) => {
         const sx = { fontSize: bigSize ? '24px' : '16px' };
         if (syncMode === SyncMode.Stopped) {
-            return <PauseIcon sx={sx} />;
+            return (<PauseIcon sx={sx} />);
         }
 
         if (Date.now() > ownUiState.updatedAt + (1000 * 5)) {
-            return <QueryBuilderOutlinedIcon sx={sx} />;
+            return (<QueryBuilderOutlinedIcon sx={sx} />);
         }
 
         if (!ownUiState.state) {
-            return <QueryBuilderOutlinedIcon sx={sx} />;
+            return (<QueryBuilderOutlinedIcon sx={sx} />);
         }
 
         if (['Started',
@@ -56,30 +55,32 @@ function BackgroundSyncComponent() {
             'Processing...',
             'Processing....'
         ].includes(ownUiState.state)) {
-            return <SyncOutlinedIcon
-                sx={{
-                    ...sx,
-                    animation: 'spin 2s linear infinite',
-                    '@keyframes spin': {
-                        '0%': { transform: 'rotate(360deg)' },
-                        '100%': { transform: 'rotate(0deg)' },
-                    },
-                }}
-            />;
+            return (
+                <SyncOutlinedIcon
+                    sx={{
+                        ...sx,
+                        animation: 'spin 2s linear infinite',
+                        '@keyframes spin': {
+                            '0%': { transform: 'rotate(360deg)' },
+                            '100%': { transform: 'rotate(0deg)' },
+                        },
+                    }}
+                />
+            );
         }
 
         if (['Waiting'].includes(uiState.state)) {
-            return <QueryBuilderOutlinedIcon sx={sx} />;
+            return (<QueryBuilderOutlinedIcon sx={sx} />);
         }
 
         if (ownUiState.state === 'Success') {
-            return <PublishedWithChangesOutlinedIcon sx={sx} />;
+            return (<PublishedWithChangesOutlinedIcon sx={sx} />);
         }
 
         // Failed, BGSyncError, WrongPassword,
         // TooManyRequests, Captcha, AccountSuspended
         // AccountInUse, Error, RateLimitExceeded, BGSyncError
-        return <PriorityHighOutlinedIcon sx={sx} />;
+        return (<PriorityHighOutlinedIcon sx={sx} />);
     }
 
     const getStateToDisplay = () => {
