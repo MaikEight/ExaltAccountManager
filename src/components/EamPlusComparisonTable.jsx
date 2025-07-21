@@ -1,4 +1,4 @@
-import { Box, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip } from "@mui/material";
+import { Box, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Collapse } from "@mui/material";
 import ComponentBox from "./ComponentBox";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import PaddedTableCell from './AccountDetails/PaddedTableCell';
@@ -12,6 +12,7 @@ import StyledButton from "./StyledButton";
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
 import { useColorList, getEamPlusPrices, useUserLogin } from 'eam-commons-js';
+import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 
 function EamPlusComparisonTable() {
     const { user } = useUserLogin();
@@ -23,6 +24,7 @@ function EamPlusComparisonTable() {
     const trueIcon = <CheckCircleOutlineOutlinedIcon color="success" />;
     const falseIcon = <CancelOutlinedIcon color="error" />;
     const infinityIcon = <AllInclusiveIcon color="success" />;
+    const workInProgressIcon = <EngineeringOutlinedIcon color="primary" />;
     const chipColor = useColorList(0);
 
     useEffect(() => {
@@ -83,7 +85,7 @@ function EamPlusComparisonTable() {
                                     Price
                                 </Typography>
                             </PaddedTableCell>
-                            <PaddedTableCell sx={{ textAlign: 'center', borderBottom: 'none', py: 0 }}>
+                            <PaddedTableCell sx={{ textAlign: 'start', borderBottom: 'none', py: 0 }}>
                             </PaddedTableCell>
                         </TableRow>
                     </TableHead>
@@ -291,14 +293,14 @@ function EamPlusComparisonTable() {
                                 attribute="Custom timing settings"
                                 defaultValue={falseIcon}
                                 signedInValue={falseIcon}
-                                eamPlusValue={trueIcon}
+                                eamPlusValue={workInProgressIcon}
                             />
                             <ComparisonTableCategoryRow category="Miscellaneous" />
                             <ComparisonTableRow
                                 attribute="Settings Sync"
                                 defaultValue={falseIcon}
-                                signedInValue={trueIcon}
-                                eamPlusValue={trueIcon}
+                                signedInValue={workInProgressIcon}
+                                eamPlusValue={workInProgressIcon}
                             />
                             <ComparisonTableRow
                                 attribute="Discord Role"
@@ -390,7 +392,8 @@ function PriceTableRow({ plan, price, priceData, onClick, sx }) {
             <PaddedTableCell
                 sx={{
                     py: 0,
-                    width: '0px',
+                    minWidth: '0px',
+                    width: 'fit-content',
                     borderRadius: theme => `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`
                 }}
             >
@@ -404,8 +407,11 @@ function PriceTableRow({ plan, price, priceData, onClick, sx }) {
                                 startIcon={<AddShoppingCartOutlinedIcon />}
                                 type="submit"
                                 id="checkout-button"
+                                sx={{
+                                    width: "fit-content",
+                                }}
                             >
-                                Checkout
+                                Choose Plan
                             </StyledButton>
                         </form>
                         :
