@@ -12,6 +12,7 @@ function UserLoginProvider({ children }) {
     const [idToken, setIdToken] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [refreshUserAfterDelay, setRefreshUserAfterDelay] = useState(0);
+    const [isPlusUser, setIsPlusUser] = useState(false);
 
     const refreshAuthToken = async (storedRefreshToken) => {
         setIsLoading(true);
@@ -150,6 +151,8 @@ function UserLoginProvider({ children }) {
             return;
         }
 
+        const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+
         setIsLoading(true);
 
         id_token = id_token || idToken;
@@ -188,7 +191,7 @@ function UserLoginProvider({ children }) {
 
             const userInfoResponse = JSON.parse(userInfoResponseStr);
             const enhancedUser = enhanceUserData(userInfoResponse);
-            if (sessionStorage.getItem('flag:debug') === 'true') {
+            if (debugFlag) {
                 console.log('userInfoResponse', userInfoResponse, 'enhancedUser', enhancedUser);
             }
 
@@ -206,6 +209,14 @@ function UserLoginProvider({ children }) {
                             }
                         });
                         sessionStorage.setItem('jwtSignature', jwt);
+                    }
+
+                    if (plusSignature.roles.includes('plus')) {
+                        if(debugFlag) {
+                            console.log('➕ User is a Plus user:', plusSignature);
+                        }
+
+                        setIsPlusUser(true);
                     }
                 }
             }
@@ -277,7 +288,8 @@ function UserLoginProvider({ children }) {
         idToken: idToken,
         isAuthenticated: Boolean(user),
         isLoading: isLoading,
-
+        isPlusUser: isPlusUser,
+        
         login: login,
         logout: logout,
         refreshAuthToken: refreshAuthToken,
