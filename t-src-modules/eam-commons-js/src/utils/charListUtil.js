@@ -23,6 +23,10 @@ async function storeCharList(charList, email) {
 }
 
 function getRequestState(charList) {
+    if (!charList) {
+        console.warn('charList is undefined or null');
+        return "Error";
+    }
     const hasErrors = charList?.Error !== undefined;
 
     if (hasErrors) {
