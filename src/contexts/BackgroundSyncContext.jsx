@@ -5,35 +5,15 @@ import { getRequestState, storeCharList, xmlToJson } from "eam-commons-js";
 import useAccounts from "../hooks/useAccounts";
 import BackgroundSyncComponent from "../components/BackgroundSyncComponent";
 import { Box, Typography } from "@mui/material";
-import { MASCOT_NAME } from "../constants";
+import { DAILY_LOGIN_COMPLETED_MESSAGES } from "../constants";
 import useSnack from "../hooks/useSnack";
 import { validatePlusToken, checkForUpdates, updateGame } from 'eam-commons-js';
 
-const dailyLoginCompletedMessages = [
-    `Mission complete! ${MASCOT_NAME} handled your daily login like a pro.`,
-    `All done! ${MASCOT_NAME} just finished your daily login adventure.`,
-    `${MASCOT_NAME} checked in for you — smooth, fast, and flawless.`,
-    `${MASCOT_NAME} has completed the daily login. Time to reap the rewards!`,
-    `Daily login? Handled. ${MASCOT_NAME} was faster than a Realm boss wipe.`,
-    `${MASCOT_NAME} did the daily grind so you don't have to. All done!`,
-    `The login ritual is complete. ${MASCOT_NAME} bows dramatically.`,
-    `${MASCOT_NAME} snuck in, logged you in, and snuck back out. Mission accomplished.`,
 
-    `${MASCOT_NAME} has successfully completed the daily login. Smooth as always.`,
-    `Daily login done! ${MASCOT_NAME} handled it behind the scenes.`,
-    `${MASCOT_NAME} logged in quietly and efficiently. Mission complete.`,
-    `All set! ${MASCOT_NAME} performed the daily login like a true professional.`,
-    `${MASCOT_NAME} checked in for the day. Everything's ready.`,
-    `The daily login is finished. ${MASCOT_NAME} didn't even trip over any wires!`,
-    `${MASCOT_NAME} just wrapped up the daily login routine.`,
-    `Done and dusted. ${MASCOT_NAME} took care of the login for you.`,
-    `${MASCOT_NAME} handled the daily login while you were doing more important things.`,
-    `Routine login complete. ${MASCOT_NAME} was very sneaky about it.`,
-];
 
 const getRandomMessage = () => {
-    const randomIndex = Math.floor(Math.random() * dailyLoginCompletedMessages.length);
-    return dailyLoginCompletedMessages[randomIndex];
+    const randomIndex = Math.floor(Math.random() * DAILY_LOGIN_COMPLETED_MESSAGES.length);
+    return DAILY_LOGIN_COMPLETED_MESSAGES[randomIndex];
 };
 
 const BackgroundSyncContext = createContext();
@@ -431,7 +411,7 @@ function BackgroundSyncProvider({ children }) {
             console.error('Error validating Plus token:', error);
             return null;
         });
- 
+
         return Boolean(response && response.isValidToken && response.isSubscribed);
     }
 
@@ -442,47 +422,51 @@ function BackgroundSyncProvider({ children }) {
         let dailyLoginEventListener;
 
         const registerEventListener = async () => {
-            eventListener = await listen('background-sync-event', (event) => {
-                processBackgroundSyncEvent(event);
-            });
-
-            dailyLoginEventListener = await listen('start-daily-login-process', async (event) => {
-                if (debugFlag) {
-                    console.log('Received start-daily-login-process event:', event);
-                }
-                const e = event.payload;
-
-                if (!checkAndAddEventId('start-daily-login-process', e.id)) {
-                    return;
-                }
-
-                if (syncMode === SyncMode.DailyLogin) { // Already in daily login mode, ignore the event
-                    return;
-                }
-
-                // Start the daily login process
-                const isRunning = await invoke('is_background_sync_manager_running').catch((error) => {
-                    console.error('Error checking if background sync manager is running:', error);
-                    return true; // Assume true if there's an error
+            try {
+                eventListener = await listen('background-sync-event', (event) => {
+                    processBackgroundSyncEvent(event);
                 });
 
-                const currentMode = await invoke('get_current_background_sync_mode').catch((error) => {
-                    console.error('Error getting current background sync mode:', error);
-                    return SyncMode.Default; // Default to Default if there's an error just to be safe
-                });
+                dailyLoginEventListener = await listen('start-daily-login-process', async (event) => {
+                    if (debugFlag) {
+                        console.log('Received start-daily-login-process event:', event);
+                    }
+                    const e = event.payload;
 
-                if (isRunning) {
-                    if (currentMode === SyncMode.DailyLogin) {
-                        // The manager is running as expected.
+                    if (!checkAndAddEventId('start-daily-login-process', e.id)) {
                         return;
                     }
-                    await invoke('stop_background_sync_manager');
-                }
 
-                await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin });
-                await new Promise(resolve => setTimeout(resolve, 3000));
-                await invoke('start_background_sync_manager');
-            });
+                    if (syncMode === SyncMode.DailyLogin) { // Already in daily login mode, ignore the event
+                        return;
+                    }
+
+                    // Start the daily login process
+                    const isRunning = await invoke('is_background_sync_manager_running').catch((error) => {
+                        console.error('Error checking if background sync manager is running:', error);
+                        return true; // Assume true if there's an error
+                    });
+
+                    const currentMode = await invoke('get_current_background_sync_mode').catch((error) => {
+                        console.error('Error getting current background sync mode:', error);
+                        return SyncMode.Default; // Default to Default if there's an error just to be safe
+                    });
+
+                    if (isRunning) {
+                        if (currentMode === SyncMode.DailyLogin) {
+                            // The manager is running as expected.
+                            return;
+                        }
+                        await invoke('stop_background_sync_manager');
+                    }
+
+                    await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin });
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    await invoke('start_background_sync_manager');
+                });
+            } catch (error) {
+                console.error('Error registering background sync event listener:', error);
+            }
         }
 
         registerEventListener();
