@@ -23,12 +23,14 @@ function PaddedTableCell({ children, sx, isEditMode, isPassword, onChange, allow
                                 hiddenLabel
                                 variant="standard"
                                 size="small"
-                                InputProps={{
-                                    style: {
-                                        fontSize: '0.875rem',
-                                        fontWeight: 300,
-                                        fontFamily: 'Roboto',
-                                        padding: 0,
+                                slotProps={{
+                                    input: {
+                                        style: {
+                                            fontSize: '0.875rem',
+                                            fontWeight: 300,
+                                            fontFamily: 'Roboto',
+                                            padding: 0,
+                                        },
                                     },
                                 }}
                                 value={children.props.children}
