@@ -72,6 +72,9 @@ async function validatePlusToken(jwt, deviceId) {
     }
 
     try {
+        if (debugFlag) {
+            console.log('Plus token validation response:', response);
+        }
         const data = JSON.parse(response);
 
         if (debugFlag) {
