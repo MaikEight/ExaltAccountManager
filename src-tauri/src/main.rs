@@ -26,6 +26,7 @@ use diesel::SqliteConnection;
 use lazy_static::lazy_static;
 use log::{error, info, warn};
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE, USER_AGENT};
+use reqwest::Method;
 use serde_json::Value;
 use simplelog::*;
 use std::collections::HashMap;
@@ -802,11 +803,13 @@ async fn send_get_request_with_json_body(
     });
 
     headers.insert(USER_AGENT, HeaderValue::from_static("ExaltAccountManager"));
+    // Ensure JSON body is recognized
+    headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
 
     let client = reqwest::Client::new();
     let res = client
-        .get(&url)
-        .headers(headers)        
+        .request(Method::GET, &url)
+        .headers(headers)
         .body(data)
         .send()
         .await
