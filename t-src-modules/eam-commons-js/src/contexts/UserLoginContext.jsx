@@ -5,6 +5,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { postPlusToken } from "../backend/eamSubscriptionsApi";
 
 const UserLoginContext = createContext();
+const SUBSCRIPTIONS = ['Default', 'Plus'];
 
 function UserLoginProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -12,7 +13,6 @@ function UserLoginProvider({ children }) {
     const [idToken, setIdToken] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [refreshUserAfterDelay, setRefreshUserAfterDelay] = useState(0);
-    const [isPlusUser, setIsPlusUser] = useState(false);
 
     const refreshAuthToken = async (storedRefreshToken) => {
         setIsLoading(true);
@@ -197,7 +197,9 @@ function UserLoginProvider({ children }) {
 
             if (enhancedUser && enhancedUser.isPlusUser) {
                 const hwid = await invoke('get_device_unique_identifier');
-                const plusSignature = await postPlusToken(id_token, hwid);
+                const plusSignature = await postPlusToken(id_token, hwid);                
+
+                let isPlus = true;
 
                 if (plusSignature) {
                     const jwt = plusSignature.signature;
@@ -211,14 +213,12 @@ function UserLoginProvider({ children }) {
                         sessionStorage.setItem('jwtSignature', jwt);
                     }
 
-                    if (plusSignature.roles.includes('plus')) {
-                        if(debugFlag) {
-                            console.log('➕ User is a Plus user:', plusSignature);
-                        }
-
-                        setIsPlusUser(true);
+                    if (!plusSignature.roles.includes('Plus')) {
+                        isPlus = false;
                     }
                 }
+
+                enhancedUser.isPlusUser = isPlus;
             }
 
             setUser(enhancedUser);
@@ -288,8 +288,8 @@ function UserLoginProvider({ children }) {
         idToken: idToken,
         isAuthenticated: Boolean(user),
         isLoading: isLoading,
-        isPlusUser: isPlusUser,
-        
+        isPlusUser: user?.isPlusUser || false,
+
         login: login,
         logout: logout,
         refreshAuthToken: refreshAuthToken,
