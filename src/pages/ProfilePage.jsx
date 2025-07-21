@@ -38,65 +38,8 @@ function ProfilePage() {
                     <NotLoggedInBox />
 
             }
-            <ComponentBox
-                title="Nothing to see here just yet"
-                icon={<EngineeringIcon />}
-                sx={{ mb: 0 }}
-                innerSx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    gap: 1,
-                }}
-            >
-                <Typography variant="body1">
-                    If you choose to login, you will be able to get verified in the Discord server.
-                </Typography>
-                <Typography variant="body2">
-                    The verification process should be automatic, but in case it does not work, please use the <code>/verify</code> command in the server to get verified.
-                </Typography>
-                <Typography variant="body1">
-                    There is also a hidden role, can you find it? 😉
-                </Typography>
-            </ComponentBox>
-            <ComponentBox
-                title="Thank you for your testing!"
-                icon={<AutoAwesomeOutlinedIcon />}
-            >
-                <Typography variant="body1">
-                    Thank you for testing the new EAM features!
-                </Typography>
-                <Typography variant="body1">
-                    We are working hard to polish them.
-                </Typography>
-                <Typography variant="body1">
-                    If you have any feedback, please let us know via the
-                    <span
-                        style={{
-                            cursor: 'pointer',
-                            textDecoration: 'underline',
-                            color: theme.palette.mode === 'dark' ? '#9E9EFF' : '#0000EE',
-                            paddingLeft: '0.25rem',
-                            paddingRight: '0.25rem'
-                        }}
-                        onClick={() => navigate("/feedback")}
-                    >
-                        Feedback page
-                    </span>
-                    or write us directly in the
-                    <a
-                        style={{
-                            paddingLeft: '0.25rem',
-                        }}
-                        href="https://discord.exalt-account-manager.eu"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        discord
-                    </a>.
-                </Typography>
-            </ComponentBox>
-            {/* <EamPlusComparisonTable /> */}
+            
+            <EamPlusComparisonTable />
         </Box>
     );
 }
@@ -217,12 +160,11 @@ function UserProfileBox() {
                                 variant="h6"
                             >
                                 {user.name}
-                                {/* <ProfilePlanChip /> */}
+                                <ProfilePlanChip />
                             </Typography>
                             <Typography variant="body2">
                                 {user.email}
                             </Typography>
-
                         </Box>
                         <Box
                             sx={{
@@ -234,7 +176,6 @@ function UserProfileBox() {
                             }}
                         >
                             {
-                                user.isPlusUser &&
                                 <a href={`${STRIPE_CUSTOMER_PORTAL_URL}?prefilled_email=${user.email}`} target="_blank" rel="noreferrer">
                                     <StyledButton
                                         startIcon={<ManageAccountsOutlinedIcon />}
