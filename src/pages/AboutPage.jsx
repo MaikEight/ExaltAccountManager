@@ -48,7 +48,7 @@ function AboutPage() {
     useEffect(() => {
         const timeout = setTimeout(() => {
             setShowLlama(false);
-        }, 5000);
+        }, 7_500);
 
         if (showLlama) {
             setState("Llama is dancing! 🦙");
@@ -69,10 +69,13 @@ function AboutPage() {
     return (
         <Box sx={{ width: '100%', overflow: 'auto' }}>
             {
-                showLlama &&
                 <Confetti
                     width={windowSize.width}
                     height={windowSize.height}
+                    style={{
+                        opacity: showLlama ? 1 : 0,
+                        transition: 'opacity 1s ease-in-out',
+                    }}
                 />
             }
             <ComponentBox
