@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createContext } from "react";
 import { AUTH0_REDIRECT_URL, AUTH0_DOMAIN, AUTH0_CLIENT_ID, EAM_USERS_API } from "../../constants";
 import { invoke } from '@tauri-apps/api/core';
-import { postPlusToken } from "../backend/eamSubscriptionsApi";
+import { checkForPaidSubscription, postPlusToken } from "../backend/eamSubscriptionsApi";
 
 const UserLoginContext = createContext();
 const SUBSCRIPTIONS = ['Default', 'Plus'];
@@ -191,15 +191,19 @@ function UserLoginProvider({ children }) {
 
             const userInfoResponse = JSON.parse(userInfoResponseStr);
             const enhancedUser = enhanceUserData(userInfoResponse);
+            
             if (debugFlag) {
                 console.log('userInfoResponse', userInfoResponse, 'enhancedUser', enhancedUser);
             }
 
             if (enhancedUser && enhancedUser.isPlusUser) {
                 const hwid = await invoke('get_device_unique_identifier');
-                const plusSignature = await postPlusToken(id_token, hwid);                
+                const plusSignature = await postPlusToken(id_token, hwid);
 
                 let isPlus = true;
+                if (debugFlag) {
+                    console.log("Plus signature:", plusSignature);
+                }
 
                 if (plusSignature) {
                     const jwt = plusSignature.signature;
@@ -213,9 +217,11 @@ function UserLoginProvider({ children }) {
                         sessionStorage.setItem('jwtSignature', jwt);
                     }
 
-                    if (!plusSignature.roles.includes('Plus')) {
+                    if (!plusSignature.roles || !plusSignature.roles.includes('plus')) {
                         isPlus = false;
                     }
+                } else {
+                    isPlus = false;
                 }
 
                 enhancedUser.isPlusUser = isPlus;
@@ -228,26 +234,75 @@ function UserLoginProvider({ children }) {
         } finally {
             setIsLoading(false);
         }
-
     };
 
-    const enhanceUserData = (_user) => {
-        if (!_user) {
+    const checkForPlusUserSubscription = async () => {
+        const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+        const _idToken = idToken || window.sessionStorage.getItem("id_token");
+        if (!_idToken) {
+            console.warn("No id_token found, cannot check for Plus user subscription.");
+            return false;
+        }
+
+        const updatePlusStatus = (hasValidSubscription) => {
+            const newUser = { ...user, isPlusUser: hasValidSubscription };
+            setUser(newUser);
+        };
+
+        const response = await checkForPaidSubscription(_idToken);
+        if (response) {
+            updatePlusStatus(response.hasValidSubscription);
+
+            if (!sessionStorage.getItem('jwtSignature')) {
+                const hwid = await invoke('get_device_unique_identifier');
+                const plusSignature = await postPlusToken(_idToken, hwid);
+
+                if (plusSignature && plusSignature.signature) {
+                    const jwt = plusSignature.signature;
+                    await invoke('insert_or_update_user_data', {
+                        userData: {
+                            dataKey: 'jwtSignature',
+                            dataValue: jwt
+                        }
+                    });
+                    sessionStorage.setItem('jwtSignature', jwt);
+                }
+            }
+
+            return response.hasValidSubscription;
+        }
+
+        if (debugFlag) {
+            console.warn("No valid subscription found for Plus user.");
+        }
+        updatePlusStatus(false);
+        return false;
+    }
+
+    const enhanceUserData = (inputUser) => {
+        if (!inputUser) {
             return null;
         }
 
-        const subStatus = _user.app_metadata?.subscriptionStatus;
-        const subEndDate = _user.app_metadata?.subscriptionEndDate ? new Date(_user.app_metadata?.subscriptionEndDate) : null;
-        const isPlusUser = subStatus === 'active'
-            || (subStatus === 'pending_cancellation'
+        const subStatus = inputUser.app_metadata?.subscriptionStatus;
+        const subEndDate = inputUser.app_metadata?.subscriptionEndDate ? new Date(inputUser.app_metadata?.subscriptionEndDate) : null;
+        const _isPlusUser = subStatus === 'active'
+            || ((subStatus === 'pending_cancellation' || subStatus === 'cancelled')
                 && subEndDate
                 && subEndDate > Date.now()
             );
-        _user.isPlusUser = isPlusUser;
-        _user.subName = isPlusUser ? 'Plus' : 'Default';
-        if (subEndDate) {
-            _user.subscriptionEndDate = subEndDate;
+        
+        let _user = { 
+            ...inputUser,
+            isPlusUser: _isPlusUser,
+            subName: _isPlusUser ? 'Plus' : 'Default',
+            subscriptionEndDate: subEndDate
+         };
+         
+        if (!subEndDate) {
+            delete _user.subscriptionEndDate;
         }
+        
         return _user;
     };
 
@@ -296,6 +351,7 @@ function UserLoginProvider({ children }) {
         handleAuthRedirect: handleAuthRedirect,
         refreshUserData: refreshUserData,
         refreshUserAfterDelay: () => setRefreshUserAfterDelay((prev) => prev + 1),
+        checkForPlusUserSubscription: checkForPlusUserSubscription
     };
 
     return (
