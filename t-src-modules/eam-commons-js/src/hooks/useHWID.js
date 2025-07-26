@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { HWID_FILE_PATH } from "../../constants";
-import { readFileUTF8 } from "eam-commons-js";
 import { invoke } from "@tauri-apps/api/core";
+import { readFileUTF8 } from '../utils/readFileUtil';
 
 function useHWID() {
     const [hwid, setHwid] = useState(null);
