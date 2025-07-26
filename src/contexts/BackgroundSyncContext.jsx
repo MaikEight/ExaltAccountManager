@@ -5,7 +5,7 @@ import { getRequestState, storeCharList, xmlToJson } from "eam-commons-js";
 import useAccounts from "../hooks/useAccounts";
 import BackgroundSyncComponent from "../components/BackgroundSyncComponent";
 import { Box, Typography } from "@mui/material";
-import { DAILY_LOGIN_COMPLETED_MESSAGES } from "../constants";
+import { DAILY_LOGIN_COMPLETED_MESSAGES, MASCOT_NAME } from "../constants";
 import useSnack from "../hooks/useSnack";
 import { validatePlusToken, checkForUpdates, updateGame } from 'eam-commons-js';
 
@@ -398,7 +398,7 @@ function BackgroundSyncProvider({ children }) {
                     >
                         <img
                             src="/mascot/Happy/cheer_very_low_res.png"
-                            alt="Okta the mascot"
+                            alt={`${MASCOT_NAME} is happy`}
                             style={{ width: '120px' }}
                         />
                         <Typography variant="body2">
