@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { Box, LinearProgress, Paper } from "@mui/material";
-import { DataGrid, } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from "react";
 import { CustomPagination } from "./GridComponents/CustomPagination";
 import ServerChip from "./GridComponents/ServerChip";
@@ -13,6 +13,8 @@ import SteamworksMailColumn from "./GridComponents/SteamworksMailColumn";
 import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
 import NoRowsOverlay from "./GridComponents/NoRowsOverlay";
 import { GroupUI } from "./GridComponents/GroupUI";
+import FloatingSelectedRowComponent from "./GridComponents/FloatingSelectedRowComponent";
+ 
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount, isLoading } = useAccounts();
@@ -20,10 +22,12 @@ function AccountGrid({ setShowAddNewAccount }) {
     const { groups } = useGroups();
     const settings = useUserSettings();
     const { applySettingsToHeaderName, hideEmojis } = useApplySettingsToHeaderName();
-
+    
     const [shownAccounts, setShownAccounts] = useState(accounts);
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
+    const [floatingPosition, setFloatingPosition] = useState(null);
+    const [performFloatingPositionUpdate, setPerformFloatingPositionUpdate] = useState(0);
 
     useEffect(() => {
         setShownAccounts(getSearchedAccounts());
@@ -32,6 +36,90 @@ function AccountGrid({ setShowAddNewAccount }) {
     useEffect(() => {
         setShownAccounts(getSearchedAccounts());
     }, [search]);
+
+    // Update floating position when selected account changes
+    useEffect(() => {
+        if (selectedAccount) {
+            updateFloatingPosition();
+
+            const dataGridElement = document.querySelector('.MuiDataGrid-virtualScroller');
+            const dataGridMainElement = document.querySelector('.MuiDataGrid-main');
+            const dataGridRootElement = document.querySelector('.MuiDataGrid-root');
+
+            const handleScrollStart = () => {
+                // Hide instantly when scrolling starts
+                setFloatingPosition(null);
+            };
+
+            const events = ['scroll', 'wheel', 'touchmove'];
+
+            // Add listeners to all relevant elements
+            [dataGridElement, dataGridMainElement, dataGridRootElement].forEach(element => {
+                if (element) {
+                    events.forEach(eventType => {
+                        element.addEventListener(eventType, handleScrollStart, { passive: true });
+                    });
+                }
+            });
+
+            // Also listen to window scroll
+            window.addEventListener('scroll', handleScrollStart, { passive: true });
+
+            return () => {
+                // Clean up event listeners
+                [dataGridElement, dataGridMainElement, dataGridRootElement].forEach(element => {
+                    if (element) {
+                        events.forEach(eventType => {
+                            element.removeEventListener(eventType, handleScrollStart);
+                        });
+                    }
+                });
+                window.removeEventListener('scroll', handleScrollStart);
+            };
+        } else {
+            setFloatingPosition(null);
+        }
+    }, [selectedAccount, paginationModel, performFloatingPositionUpdate]);
+
+    const updateFloatingPosition = () => {
+        if (!selectedAccount) return;
+
+        // Find the selected row element
+        const selectedRowElement = document.querySelector(`[data-id="${selectedAccount.id}"]`);
+        if (!selectedRowElement) {
+            // Row not visible, hide the floating component
+            setFloatingPosition(null);
+            return;
+        }
+
+        const rect = selectedRowElement.getBoundingClientRect();
+        const dataGridElement = selectedRowElement.closest('.MuiDataGrid-root');
+        const dataGridRect = dataGridElement?.getBoundingClientRect();
+
+        if (!dataGridRect) return;
+
+        // Check if the row is actually visible within the DataGrid viewport
+        const dataGridContent = selectedRowElement.closest('.MuiDataGrid-main');
+        const contentRect = dataGridContent?.getBoundingClientRect();
+
+        if (contentRect) {
+            // If row is outside the visible area, hide the component
+            if (rect.bottom < contentRect.top || rect.top > contentRect.bottom) {
+                setFloatingPosition(null);
+                return;
+            }
+        }
+
+        // Calculate position relative to the DataGrid container
+        const position = {
+            // Position above the row
+            top: rect.top - rect.height - dataGridRect.top + 8, // Add some padding
+            left: rect.left - dataGridRect.left,
+            theme: theme
+        };
+
+        setFloatingPosition(position);
+    };
 
     const getGroupUI = (params) => {
         if (!params.value) return null;
@@ -97,7 +185,7 @@ function AccountGrid({ setShowAddNewAccount }) {
     };
 
     return (
-        <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', background: theme.palette.background.paper, }}>
+        <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', background: theme.palette.background.paper, position: 'relative' }}>
             <DataGrid
                 initialState={{
                     columns: {
@@ -119,9 +207,11 @@ function AccountGrid({ setShowAddNewAccount }) {
                     const selected = accounts.find((account) => account.id === selectedId);
                     if (selected && selected !== selectedAccount) {
                         setSelectedAccount(selected);
+                        // Position update will be handled by useEffect
                         return;
                     }
                     setSelectedAccount(null);
+                    setFloatingPosition(null);
                 }}
                 rowSelectionModel={{
                     type: 'include',
@@ -146,6 +236,16 @@ function AccountGrid({ setShowAddNewAccount }) {
                     basePopper: {
                         placement: 'bottom-start',
                     },
+                }}
+            />
+
+            {/* Floating component positioned relative to selected row */}
+            <FloatingSelectedRowComponent
+                account={selectedAccount}
+                position={floatingPosition}
+                onAccountUpdated={async (value) => {
+                    await new Promise(resolve => setTimeout(resolve, 250));
+                    setPerformFloatingPositionUpdate(value);
                 }}
             />
         </Paper>
