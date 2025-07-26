@@ -1,4 +1,4 @@
-import { Box, Divider, LinearProgress, Paper, Popover, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Divider, LinearProgress, Popover, Typography, useTheme } from "@mui/material";
 import useBackgroundSync from './../hooks/useBackgroundSync';
 import { SyncMode } from './../contexts/BackgroundSyncContext';
 import QueryBuilderOutlinedIcon from '@mui/icons-material/QueryBuilderOutlined';
@@ -359,7 +359,7 @@ function BackgroundSyncComponent() {
                                         }}
                                     >
                                         {
-                                            dailyLoginProgressData?.leftAccountNames.map(async (name, index) => {
+                                            dailyLoginProgressData?.leftAccountNames.map((name, index) => {
                                                 if (!name || name === '') {
                                                     const n = getAccountByEmail(dailyLoginProgressData?.leftEmails[index]);
                                                     if (n && n.name) {
@@ -453,6 +453,20 @@ function BackgroundSyncComponent() {
                 </Box>
             );
         }
+
+        return (
+            <Box>
+                <Typography variant="body1">
+                    Background Sync
+                </Typography>
+                <Typography variant="body2">
+                    {`Sync mode: ${syncMode || 'Unknown'}`}
+                </Typography>
+                <Typography variant="body2">
+                    {`State: ${ownUiState?.state || 'Unknown'}`}
+                </Typography>
+            </Box>
+        );
     }, [ownUiState, syncMode, dailyLoginProgressData]);
 
     return (
