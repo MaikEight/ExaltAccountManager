@@ -1,5 +1,5 @@
 import hashString from 'hash-string';
-import { useColorList } from 'eam-commons-js';
+import { useColorList } from './useColorList';
 
 const useStringToColor = (inputString) => {
     const colorList = useColorList();
