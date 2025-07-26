@@ -9,7 +9,7 @@ import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutl
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
-import { useColorList, useGroups } from "eam-commons-js";
+import { useGroups } from "eam-commons-js";
 import StyledButton from "../components/StyledButton";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useTheme } from "@emotion/react";
@@ -40,6 +40,7 @@ import * as dialog from "@tauri-apps/plugin-dialog"
 import AddAccountSvg from "../components/Illustrations/AddAccountSvg";
 import { MASCOT_NAME } from "../constants";
 import { GroupUI } from "../components/GridComponents/GroupUI";
+import { useColorList } from "../hooks/useColorList";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
