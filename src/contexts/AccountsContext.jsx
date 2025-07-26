@@ -89,7 +89,7 @@ function AccountsContextProvider({ children }) {
         return enhanceAccountData(await invoke('get_eam_account_by_email', { accountEmail: acc.email }));
     }
 
-    const updateAccount = async (updatedAccount, encryptPassword = false) => {
+    const updateAccount = async (updatedAccount, encryptPassword = false, reloadAccounts = true) => {
         if (!updatedAccount) return updatedAccount;
 
         let token = null;
@@ -140,9 +140,19 @@ function AccountsContextProvider({ children }) {
             setSelectedAccount(updatedAccountToUse);
         }
 
-        loadAccounts();
+        if (reloadAccounts) {
+            loadAccounts();
+        }
 
         return true;
+    };
+
+    const updateAccounts = async (_accounts) => {
+        for (const acc of _accounts) {
+            await updateAccount(acc, false, false);
+            await new Promise(resolve => setTimeout(resolve, 50)); 
+        }
+        loadAccounts();
     };
 
     const sendAccountVerify = async (email, updateAccountInDatabase = true, updateLastLogin = false) => {
@@ -368,6 +378,7 @@ function AccountsContextProvider({ children }) {
         getAccountByEmail: getAccountByEmail,
         loadAccountByEmail,
         updateAccount,
+        updateAccounts,
         reloadAccounts: loadAccounts,
         deleteAccount,
         sendAccountVerify,
