@@ -7,13 +7,13 @@ import items from './../../assets/constants';
 import EquipmentCanvas from "./EquipmentCanvas";
 import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
-import { useColorList } from 'eam-commons-js';
 import PaddedTableCell from "../AccountDetails/PaddedTableCell";
 import { parsePcStats, pcStatsDescriptionEnum } from "../../utils/pcStatsParser";
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { Fragment } from "react";
+import { useColorList } from "../../hooks/useColorList";
 
 function emptyItemOverride(darkMode) {
     return {
