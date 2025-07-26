@@ -1,5 +1,5 @@
-import { logToErrorLog } from "eam-commons-js";
 import { writeFile as fsWriteFile } from '@tauri-apps/plugin-fs';
+import { logToErrorLog } from './loggingUtils';
 
 export async function writeFileUTF8(filePath, content, stringifyAsJSON = false) {
     try {
