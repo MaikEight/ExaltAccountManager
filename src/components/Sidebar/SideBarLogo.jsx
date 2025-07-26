@@ -19,7 +19,7 @@ function SideBarLogo() {
                 width: 200,
                 paddingLeft: 1.5,
                 gap: 0.5,
-                zIndex: 999999,
+                zIndex: 1000,
             }}
         >
             <img
@@ -30,6 +30,7 @@ function SideBarLogo() {
                     width: 64,
                     height: 64,
                     userSelect: "none",
+                    zIndex: 1000,
                 }}
                 draggable="false"
                 onContextMenu={handleContextMenu}
