@@ -11,8 +11,9 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import StyledButton from "./StyledButton";
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
-import { useColorList, getEamPlusPrices, useUserLogin } from 'eam-commons-js';
+import { getEamPlusPrices, useUserLogin } from 'eam-commons-js';
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
+import { useColorList } from "../hooks/useColorList";
 
 function EamPlusComparisonTable() {
     const { user } = useUserLogin();
