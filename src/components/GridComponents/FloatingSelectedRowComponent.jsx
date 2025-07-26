@@ -26,7 +26,6 @@ function FloatingSelectedRowComponent({ account, position, onAccountUpdated }) {
         const currentIndex = accounts.findIndex(acc => acc.id === account.id);
         const adjacentAcc = accounts[currentIndex + (isUp ? -1 : 1)];
         const newOrderId = adjacentAcc ? adjacentAcc.orderId : (isUp ? 0 : maxOrderId);
-        console.log(`Swapping accounts: ${account.name} (orderId: ${currentOrderId}) with ${adjacentAcc ? adjacentAcc.name : 'none'} (orderId: ${newOrderId})`);
 
         // Check if we need to handle duplicate orderIds (either same orderIds or duplicates at target position)
         const hasCurrentDuplicates = accounts.filter(acc => acc.orderId === currentOrderId).length > 1;
@@ -100,11 +99,8 @@ function FloatingSelectedRowComponent({ account, position, onAccountUpdated }) {
             accountsToUpdate.forEach((acc, index) => {
                 acc.orderId = startOrderId + index;
             });
-
-            console.log(`Updating accounts with new orderIds: ${accountsToUpdate.map(acc => `${acc.name}: ${acc.orderId}`).join(', ')}`);
             
             await updateAccounts(accountsToUpdate);
-            console.log(`Done updating accounts with new orderIds.`);
             
             onAccountUpdated?.(crypto.randomUUID());
             return;
