@@ -1,9 +1,38 @@
 import { Box, Divider, Paper, Typography, useTheme } from '@mui/material';
 import ChangelogEntry from './ChangelogEntry';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import Confetti from "react-confetti";
 
 function ChangelogVersion4_2_5() {
     const theme = useTheme();
+    const boxHeaderRef = useRef(null);
+
+    const [windowSize, setWindowSize] = useState({
+        width: 0,
+        height: 0,
+        visible: true,
+    });
+
+    useEffect(() => {
+        if (!boxHeaderRef.current) {
+            return;
+        }
+        setWindowSize({
+            width: boxHeaderRef.current?.offsetWidth || 0,
+            height: boxHeaderRef.current?.offsetHeight || 0,
+            visible: windowSize.visible,
+        });
+    }, [boxHeaderRef]);
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setWindowSize((prev) => ({
+                ...prev,
+                visible: false,                
+            }));
+        }, 7_500);
+        return () => clearTimeout(timeoutId);
+    }, []);
 
     const title = [
         "Exalt Account Manager v4.2.5",
@@ -25,6 +54,7 @@ function ChangelogVersion4_2_5() {
             }}
         >
             <Box
+                ref={boxHeaderRef}
                 sx={{
                     position: 'relative',
                     display: 'flex',
@@ -38,10 +68,24 @@ function ChangelogVersion4_2_5() {
                     py: 4,
                 }}
             >
+                {
+                    <Confetti
+                        width={windowSize?.width || 0}
+                        height={windowSize?.height || 0}
+                        style={{
+                            borderRadius: `${theme.shape.borderRadius * 2 - 1}px`,
+                            opacity: windowSize.visible ? 1 : 0,
+                            transition: 'opacity 1s ease-in-out',
+                        }}
+                    />
+                }
                 <img
                     src='/mascot/Happy/happy_eam_low_res.png'
                     alt='Okta holding the EAM Logo'
                     height='128px'
+                    style={{
+                        zIndex: 1001,
+                    }}
                 />
                 <img
                     src='/mascot/floor.png'
@@ -52,6 +96,7 @@ function ChangelogVersion4_2_5() {
                         bottom: 'calc(50% - 48px)',
                         left: '50%',
                         transform: 'translate(-50%, 50%)',
+                        zIndex: 1000,
                     }}
                 />
             </Box>
@@ -115,7 +160,7 @@ function ChangelogVersion4_2_5() {
                         (<Fragment key="Meet Okta #1">Okta is the new mascot of EAM, he is a cute little octopus who will <s>annoy</s> accompany you on your journey through EAM.</Fragment>)
                     ]}
                 />
-                
+
                 <ChangelogEntry
                     title={'Daily Login'}
                     listOfChanges={[
@@ -124,7 +169,7 @@ function ChangelogVersion4_2_5() {
                         (<Fragment key="Daily Login #3">⚠️ Please <b>check</b> if the Daily Login <b>task is installed (updated) correctly</b> by going to the Daily Login settings, if you see a <b>red box, please reinstall</b> the task.</Fragment>),
                     ]}
                 />
-                
+
                 <ChangelogEntry
                     title={'Background Sync'}
                     listOfChanges={[
@@ -133,7 +178,7 @@ function ChangelogVersion4_2_5() {
                         "To minimize the gameplay impact, the sync is only using a small amount of the available API-Limit and is disabled during the Daily Login.",
                     ]}
                 />
-                
+
                 <ChangelogEntry
                     title={'Vault Peeker'}
                     listOfChanges={[
@@ -145,17 +190,17 @@ function ChangelogVersion4_2_5() {
                         "Improved the overall loading speed.",
                     ]}
                 />
-                
+
                 <ChangelogEntry
                     title={'Accounts'}
                     listOfChanges={[
-                        "Added the ability to order accounts by Order ID. (Order ID can't be changed for now)",
+                        "Added the ability to order accounts in the DataGrid by selecting it and using the new up/down buttons.",
                         "Added emojis to the column headers.",
                         "Added a new Comments section to the Account Details view.",
                         "Comments can also be displayed in the Accounts List.",
                     ]}
                 />
-                
+
                 <ChangelogEntry
                     title={'Settings'}
                     listOfChanges={[
@@ -165,7 +210,7 @@ function ChangelogVersion4_2_5() {
                         "Improved the settings page.",
                     ]}
                 />
-                
+
                 <ChangelogEntry
                     title={'Miscellaneous'}
                     listOfChanges={[
@@ -184,7 +229,7 @@ function ChangelogVersion4_2_5() {
                         "Fixed an issue where the char/list conversion would fail if the account had no character and no classes unlocked.",
                     ]}
                 />
-                
+
                 <Box
                     sx={{
                         display: 'flex',
