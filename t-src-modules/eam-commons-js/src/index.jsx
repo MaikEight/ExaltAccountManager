@@ -10,7 +10,8 @@ export {
 
 export {
     postPlusToken,
-    validatePlusToken
+    validatePlusToken,
+    checkForPaidSubscription
 } from './backend/eamSubscriptionsApi.js';
 
 export {
@@ -48,6 +49,10 @@ export {
 } from './utils/readFileUtil';
 
 export {
+    writeFileUTF8
+} from './utils/writeFileUtil';
+
+export {
     UserLoginProvider,
     UserLoginContext
 } from './contexts/UserLoginContext';
@@ -80,10 +85,6 @@ export {
 export {
     lightTheme
 } from './themes/light';
-
-export {
-    useColorList
-} from './hooks/useColorList';
 
 export {
     useGroups
