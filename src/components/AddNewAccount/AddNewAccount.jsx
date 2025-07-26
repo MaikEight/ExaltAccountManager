@@ -9,7 +9,7 @@ import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import ComponentBox from "../ComponentBox";
 import StyledButton from "../StyledButton";
 import useHWID from "../../hooks/useHWID";
-import { postAccountVerify, postCharList, getRequestState, storeCharList, useColorList, useGroups } from 'eam-commons-js';
+import { postAccountVerify, postCharList, getRequestState, storeCharList, useGroups } from 'eam-commons-js';
 import GroupSelector from "../AccountDetails/GroupSelector";
 import GroupRow from "../AccountDetails/GroupRow";
 import TextTableRow from "../AccountDetails/TextTableRow";
@@ -25,6 +25,7 @@ import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import RegisterAccount from "./RegisterAccount";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import AddAccountSvg from "../Illustrations/AddAccountSvg";
+import { useColorList } from "../../hooks/useColorList";
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
