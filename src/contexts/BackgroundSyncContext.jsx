@@ -43,10 +43,10 @@ function BackgroundSyncProvider({ children }) {
         if (!processedEventIds.current[eventName]) {
             processedEventIds.current[eventName] = [];
         }
-        
+
         if (!processedEventIds.current[eventName].includes(id)) {
             processedEventIds.current[eventName].push(id);
-            
+
             // prune oldest IDs to prevent unbounded memory growth
             const ids = processedEventIds.current[eventName];
             if (ids.length > MAX_EVENT_IDS) {
@@ -316,7 +316,9 @@ function BackgroundSyncProvider({ children }) {
             const e = event.payload.DailyLoginProgress;
 
             if (!e || !e.id || !e.left_emails || !e.failed_emails || !e.done || !e.left || !e.estimated_time) {
-                console.warn('Received DailyLoginProgress event with missing data:', event);
+                if (debugFlag) {
+                    console.warn('Received DailyLoginProgress event with missing data:', event);
+                }
                 return;
             }
 
@@ -568,7 +570,7 @@ function BackgroundSyncProvider({ children }) {
                 console.error('Error cleaning up daily login event listener:', error);
             }
         }
-    }, [accounts, loadAccountByEmail, updateAccount, syncMode ]);
+    }, [accounts, loadAccountByEmail, updateAccount, syncMode]);
 
     useEffect(() => {
         if (syncMode === SyncMode.Default || syncMode === SyncMode.Stopped) {
