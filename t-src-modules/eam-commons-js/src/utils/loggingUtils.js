@@ -33,6 +33,7 @@ async function getAuditLogForAccount(accountEmail) {
 
 async function logToErrorLog(sender, message) {
     if (!sender || !message) return;
+    const debugFlag = localStorage.getItem('debugMode') === 'true';
 
     const logData = {
         id: null,
@@ -41,10 +42,13 @@ async function logToErrorLog(sender, message) {
         message: "" + message
     }
 
-    console.info(`Logging to error log: ${JSON.stringify(logData)}`);
+    if (debugFlag) {        
+        console.info(`Logging to error log: ${JSON.stringify(logData)}`);
+    }
+
     await invoke('log_to_error_log', { log: logData })
         .catch((err) => {
-            console.log('logToErrorLog', err);
+            console.error('logToErrorLog', err);
         });
 }
 
