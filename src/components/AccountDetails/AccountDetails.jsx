@@ -20,9 +20,10 @@ import useSnack from "../../hooks/useSnack";
 import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import useAccounts from "../../hooks/useAccounts";
-import { logToErrorLog, formatTime, useGroups } from "eam-commons-js";
+import { logToErrorLog, formatTime, useGroups, requestStateToMessage } from "eam-commons-js";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { invoke } from '@tauri-apps/api/core';
+import RequestStateChip from "../GridComponents/RequestStateChip";
 
 function AccountDetails({ acc, onClose }) {
     const [account, setAccount] = useState(null);
@@ -331,7 +332,7 @@ function AccountDetails({ acc, onClose }) {
                                                 updateAccount(newAcc, false);
                                             }}
                                         />
-                                        {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={account.state} innerSx={{ pb: 0 }} />}
+                                        {!isEditMode && <TextTableRow key='state' keyValue={"Last state"} value={<RequestStateChip state={account.state} useShortName={false} />} innerSx={{ pb: 0 }} />}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
