@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, LinearProgress, Paper } from "@mui/material";
+import { Box, LinearProgress, Paper, Chip } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from "react";
 import { CustomPagination } from "./GridComponents/CustomPagination";
@@ -14,7 +14,8 @@ import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName"
 import NoRowsOverlay from "./GridComponents/NoRowsOverlay";
 import { GroupUI } from "./GridComponents/GroupUI";
 import FloatingSelectedRowComponent from "./GridComponents/FloatingSelectedRowComponent";
- 
+import RequestStateChip from "./GridComponents/RequestStateChip";
+
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount, isLoading } = useAccounts();
@@ -22,7 +23,7 @@ function AccountGrid({ setShowAddNewAccount }) {
     const { groups } = useGroups();
     const settings = useUserSettings();
     const { applySettingsToHeaderName, hideEmojis } = useApplySettingsToHeaderName();
-    
+
     const [shownAccounts, setShownAccounts] = useState(accounts);
     const [search, setSearch] = useState('');
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
@@ -149,9 +150,9 @@ function AccountGrid({ setShowAddNewAccount }) {
             { field: 'serverName', headerName: applySettingsToHeaderName('🌐 Server'), width: 125, renderCell: (params) => <ServerChip params={params} /> },
             { field: 'lastRefresh', headerName: applySettingsToHeaderName('🔄 Refresh'), minWidth: 115, flex: 0.125, renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
             { field: 'performDailyLogin', headerName: applySettingsToHeaderName('📅 Daily Login'), width: hideEmojis ? 95 : 115, renderCell: (params) => <DailyLoginCheckbox params={params} onChange={(event) => handleDailyLoginCheckboxChange(event, params)} /> },
-            { field: 'state', headerName: applySettingsToHeaderName('📊 Last State'), width: 110 },
+            { field: 'state', headerName: applySettingsToHeaderName('📊 Last State'), width: 105, renderCell: (params) => <RequestStateChip state={params.value} /> },
             { field: 'comment', headerName: applySettingsToHeaderName('💬 Comment'), minWidth: hideEmojis ? 100 : 105, flex: 0.125, renderCell: (params) => (<div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{params.value}</div>) },
-        ]
+        ];
     }, [settings, groups]);
 
     const handleDailyLoginCheckboxChange = async (event, params) => {
