@@ -73,10 +73,16 @@ export {
 } from './contexts/GroupsContext';
 
 export {
-    storeCharList,
-    getRequestState,
-    requestStateToMessage
+    storeCharList
 } from './utils/charListUtil';
+
+export {
+    getRequestState,
+    requestStateToMessage,
+    requestStateToShortName,
+    requestStateToIcon,
+    requestStateToColor
+} from './utils/requestStateUtils';
 
 export {
     darkTheme
