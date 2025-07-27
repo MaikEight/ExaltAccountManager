@@ -22,60 +22,6 @@ async function storeCharList(charList, email) {
     return await invoke('insert_char_list_dataset', { dataset: dataset });
 }
 
-function getRequestState(charList) {
-    if (!charList) {
-        console.warn('charList is undefined or null');
-        return "Error";
-    }
-    const hasErrors = charList?.Error !== undefined;
-
-    if (hasErrors) {
-        console.info('charList has error', charList.Error);
-        const error = charList.Error?.toLowerCase();
-        
-        if (error.includes("passworderror")) {
-            return "WrongPassword";
-        } else if (error.includes("wait") || error.includes("try again later")) {
-            return "TooManyRequests";
-        } else if (error.includes("captchalock")) {
-            return "Captcha";
-        } else if (error.includes("suspended")) {
-            return "AccountSuspended";
-        } else if (error.includes("account in use")) {
-            return "AccountInUse";
-        } else {
-            return "Error";
-        }
-    }
-
-    return "Success";
-}
-
-function requestStateToMessage(requestState) {
-    switch (requestState) {
-        case "WrongPassword":
-            return "Wrong password";
-        case "TooManyRequests":
-            return "Too many requests. Try again later.";
-        case "Captcha":
-            return "Captcha lock";
-        case "AccountSuspended":
-            return "Account suspended";
-        case "AccountInUse":
-            return "Account in use";
-        case "Error":
-            return "Error";
-        case "Success":
-            return "Success";
-        case "RateLimitExceeded": //This is a EAM Rate limit error
-            return "Rate limit exceeded"; 
-        case "BGSyncError": //This is a background sync error
-            return "Background sync error";
-        default:
-            return "Unknown Error";
-    }
-}
-
 function charToAccountModel(account) {
     if (!account) return null;
     const formatChestData = (chest) => {
@@ -205,4 +151,4 @@ function charToCharModel(char) {
     };
 }
 
-export { storeCharList, getRequestState, requestStateToMessage };
+export { storeCharList };
