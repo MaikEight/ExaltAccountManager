@@ -346,6 +346,11 @@ Function CheckUninstallSuccess
   ${ElseIf} $0 = 1
     ; User cancelled NSIS uninstaller
     Abort
+  ${ElseIf} $0 = 1603
+  ${AndIf} $WixMode = 1
+    ; MSI installation failure - try with interactive mode
+    StrCpy $R9 2  ; Special code for retry
+    Goto check_uninstall_error
   ${Else}
     ; Other non-zero exit codes indicate failure
     StrCpy $R9 1
@@ -371,14 +376,40 @@ Function CheckUninstallSuccess
   ${EndIf}
 
   check_uninstall_error:
+  ${If} $R9 = 2
+    ; MSI error 1603 - offer to retry with interactive mode
+    MessageBox MB_ICONQUESTION|MB_YESNO "The previous WiX installation failed to uninstall silently (Error 1603).$\n$\nWould you like to try with the interactive uninstaller?$\n$\nClick Yes to try interactive mode, or No to cancel and uninstall manually." IDYES retry_interactive IDNO show_manual_error
+    
+    retry_interactive:
+      ; Try again with interactive mode
+      ReadRegStr $R1 HKLM "$WixUninstallKey" "UninstallString"
+      ; Use passive mode instead of quiet for better compatibility
+      StrCpy $R1 "$R1 /passive /norestart"
+      ExecWait '$R1' $0
+      
+      ; Check result again
+      ${If} $0 = 0
+        StrCpy $R9 0  ; Success
+      ${Else}
+        StrCpy $R9 1  ; Still failed
+        Goto show_manual_error
+      ${EndIf}
+      Goto check_uninstall_done
+    
+    show_manual_error:
+      StrCpy $R9 1  ; Mark as failed
+  ${EndIf}
+  
   ${If} $R9 = 1
     ; Show appropriate error message
     ${If} $WixMode = 1
-      MessageBox MB_ICONEXCLAMATION "Unable to uninstall the previous WiX-based installation. Error code: $0$\n$\nPlease try uninstalling manually from Windows Settings > Apps & features, then run this installer again."
+      MessageBox MB_ICONEXCLAMATION "Unable to uninstall the previous WiX-based installation. Error code: $0$\n$\nPlease try one of the following:$\n1. Uninstall manually from Windows Settings > Apps & features$\n2. Run the old installer and choose to uninstall$\n3. Restart your computer and try again$\n$\nThen run this installer again."
     ${Else}
       MessageBox MB_ICONEXCLAMATION "$(unableToUninstall)"
     ${EndIf}
   ${EndIf}
+  
+  check_uninstall_done:
 FunctionEnd
 
 Function PageReinstallUpdateSelection
@@ -438,10 +469,8 @@ Function PageLeaveReinstall
 
     ${If} $WixMode = 1
       ReadRegStr $R1 HKLM "$WixUninstallKey" "UninstallString"
-      ; Add quiet parameters for WiX uninstaller if in passive mode
-      ${If} $PassiveMode = 1
-        StrCpy $R1 "$R1 /quiet"
-      ${EndIf}
+      ; Use passive mode for better compatibility than quiet mode
+      StrCpy $R1 "$R1 /passive /norestart"
       ExecWait '$R1' $0
     ${Else}
       ReadRegStr $4 SHCTX "${MANUPRODUCTKEY}" ""
@@ -474,10 +503,8 @@ Function PageLeaveReinstall
 
     ${If} $WixMode = 1
       ReadRegStr $R1 HKLM "$WixUninstallKey" "UninstallString"
-      ; Add quiet parameters for WiX uninstaller if in passive mode
-      ${If} $PassiveMode = 1
-        StrCpy $R1 "$R1 /quiet"
-      ${EndIf}
+      ; Use passive mode for better compatibility than quiet mode
+      StrCpy $R1 "$R1 /passive /norestart"
       ExecWait '$R1' $0
     ${Else}
       ReadRegStr $4 SHCTX "${MANUPRODUCTKEY}" ""
@@ -620,7 +647,7 @@ Function .onInit
   ${If} $WixMode = 1
   ${AndIf} $PassiveMode = 1
     DetailPrint "Uninstalling previous WiX-based installation..."
-    StrCpy $R1 "$WixUninstallString /quiet"
+    StrCpy $R1 "$WixUninstallString /passive /norestart"
     ExecWait '$R1' $0
     ${If} $0 <> 0
     ${AndIf} $0 <> 1602  ; Allow user cancellation in WiX
