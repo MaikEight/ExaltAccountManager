@@ -67,6 +67,8 @@ Var UpdateMode
 Var NoShortcutMode
 Var WixMode
 Var OldMainBinaryName
+Var WixUninstallKey
+Var WixUninstallString
 
 Name "${PRODUCTNAME}"
 BrandingText "${COPYRIGHT}"
@@ -175,34 +177,38 @@ Function PageReinstall
   ; our ${PRODUCTNAME} and ${MANUFACTURER} but wasn't installed by our WiX installer,
   ; however, this should be fine since the user will have to confirm the uninstallation
   ; and they can chose to abort it if doesn't make sense.
-  StrCpy $0 0
-  wix_loop:
-    EnumRegKey $1 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" $0
-    StrCmp $1 "" wix_loop_done ; Exit loop if there is no more keys to loop on
-    IntOp $0 $0 + 1
-    ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1" "DisplayName"
-    ReadRegStr $R1 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1" "Publisher"
-    StrCmp "$R0$R1" "${PRODUCTNAME}${MANUFACTURER}" 0 wix_loop
-    ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1" "UninstallString"
-    ${StrCase} $R1 $R0 "L"
-    ${StrLoc} $R0 $R1 "msiexec" ">"
-    StrCmp $R0 0 0 wix_loop_done
-    StrCpy $WixMode 1
-    StrCpy $R6 "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1"
-    Goto compare_version
-  wix_loop_done:
+  
+  ; 1. Try to detect old WiX installation FIRST
+  Call DetectWixInstallation
 
-  ; Check if there is an existing installation, if not, abort the reinstall page
+  ; 2. Check for NSIS install
   ReadRegStr $R0 SHCTX "${UNINSTKEY}" ""
   ReadRegStr $R1 SHCTX "${UNINSTKEY}" "UninstallString"
-  ${IfThen} "$R0$R1" == "" ${|} Abort ${|}
+  
+  ; 3. Determine which installation to handle
+  ${If} $WixMode = 1
+  ${AndIf} "$R0$R1" != ""
+    ; Both WiX and NSIS installations exist
+    ; Prioritize WiX for removal since it's the old format
+    Goto check_version
+  ${ElseIf} $WixMode = 1
+    ; Only WiX installation exists
+    Goto check_version
+  ${ElseIf} "$R0$R1" != ""
+    ; Only NSIS installation exists
+    Goto check_version
+  ${Else}
+    ; No installation found
+    Abort
+  ${EndIf}
 
-  ; Compare this installar version with the existing installation
+  check_version:
+  ; Compare this installer version with the existing installation
   ; and modify the messages presented to the user accordingly
   compare_version:
   StrCpy $R4 "$(older)"
   ${If} $WixMode = 1
-    ReadRegStr $R0 HKLM "$R6" "DisplayVersion"
+    ReadRegStr $R0 HKLM "$WixUninstallKey" "DisplayVersion"
   ${Else}
     ReadRegStr $R0 SHCTX "${UNINSTKEY}" "DisplayVersion"
   ${EndIf}
@@ -277,6 +283,104 @@ Function PageReinstall
     nsDialogs::Show
   ${EndIf}
 FunctionEnd
+
+Function DetectWixInstallation
+  SetRegView 64
+  StrCpy $0 0
+  StrCpy $WixMode 0
+  
+  wix_loop:
+    EnumRegKey $1 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" $0
+    StrCmp $1 "" wix_loop_done
+    IntOp $0 $0 + 1
+
+    ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1" "DisplayName"
+    ReadRegStr $R1 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1" "Publisher"
+
+    ; Check if DisplayName matches our product name
+    StrCmp "$R0" "${PRODUCTNAME}" 0 check_old_name
+    Goto check_publisher
+    
+    check_old_name:
+    ; Check for old product names that might have been used
+    StrCmp "$R0" "Exalt Account Manager" 0 wix_loop
+    
+    check_publisher:
+    ; Check if publisher matches current or old publisher
+    ${If} "$R1" == "${MANUFACTURER}"
+      Goto try_extract_uninstall
+    ${ElseIf} "$R1" == "exalt-account-manager"
+      Goto try_extract_uninstall
+    ${ElseIf} "$R1" == "MaikEight"
+      Goto try_extract_uninstall
+    ${ElseIf} "$R1" == "Exalt Account Manager"
+      Goto try_extract_uninstall
+    ${Else}
+      Goto wix_loop
+    ${EndIf}
+
+  try_extract_uninstall:
+    ReadRegStr $R2 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1" "UninstallString"
+    ${If} $R2 != ""
+      StrCpy $WixMode 1
+      StrCpy $WixUninstallKey "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$1"
+      StrCpy $WixUninstallString $R2
+    ${EndIf}
+    Goto wix_loop_done
+
+  wix_loop_done:
+FunctionEnd
+
+Function CheckUninstallSuccess
+  ; $R9 = 0 for success, 1 for failure
+  StrCpy $R9 0
+  
+  ; Check exit code first
+  ${If} $0 = 0
+    ; Success code, but we still need to check if files exist to be sure
+    ; Continue to file existence check below
+  ${ElseIf} $0 = 1602
+  ${AndIf} $WixMode = 1
+    ; User cancelled WiX uninstaller
+    Abort
+  ${ElseIf} $0 = 1
+    ; User cancelled NSIS uninstaller
+    Abort
+  ${Else}
+    ; Other non-zero exit codes indicate failure
+    StrCpy $R9 1
+    Goto check_uninstall_error
+  ${EndIf}
+
+  ; Check if files still exist to verify uninstall success
+  ${If} $WixMode = 1
+    ; For WiX installations, check common installation paths
+    ${If} ${FileExists} "$PROGRAMFILES\${PRODUCTNAME}\${MAINBINARYNAME}.exe"
+    ${OrIf} ${FileExists} "$PROGRAMFILES64\${PRODUCTNAME}\${MAINBINARYNAME}.exe"
+    ${OrIf} ${FileExists} "$LOCALAPPDATA\Programs\${PRODUCTNAME}\${MAINBINARYNAME}.exe"
+    ${OrIf} ${FileExists} "$LOCALAPPDATA\${PRODUCTNAME}\${MAINBINARYNAME}.exe"
+      ; Files still exist, uninstall failed
+      StrCpy $R9 1
+    ${EndIf}
+  ${Else}
+    ; For NSIS installations, check the install directory
+    ${If} ${FileExists} "$INSTDIR\${MAINBINARYNAME}.exe"
+      ; Files still exist, uninstall failed
+      StrCpy $R9 1
+    ${EndIf}
+  ${EndIf}
+
+  check_uninstall_error:
+  ${If} $R9 = 1
+    ; Show appropriate error message
+    ${If} $WixMode = 1
+      MessageBox MB_ICONEXCLAMATION "Unable to uninstall the previous WiX-based installation. Error code: $0$\n$\nPlease try uninstalling manually from Windows Settings > Apps & features, then run this installer again."
+    ${Else}
+      MessageBox MB_ICONEXCLAMATION "$(unableToUninstall)"
+    ${EndIf}
+  ${EndIf}
+FunctionEnd
+
 Function PageReinstallUpdateSelection
   ${NSD_GetState} $R2 $R1
   ${If} $R1 == ${BST_CHECKED}
@@ -288,11 +392,6 @@ FunctionEnd
 Function PageLeaveReinstall
   ${NSD_GetState} $R2 $R1
 
-  ; If migrating from Wix, always uninstall
-  ${If} $WixMode = 1
-    Goto reinst_uninstall
-  ${EndIf}
-
   ; In update mode, always proceeds without uninstalling
   ${If} $UpdateMode = 1
     Goto reinst_done
@@ -302,11 +401,22 @@ Function PageLeaveReinstall
   ; $R1 holds the radio buttons state:
   ;   1 => first choice was selected
   ;   0 => second choice was selected
+  
+  ; Handle WiX installations - always uninstall first when user chooses to uninstall
+  ${If} $WixMode = 1
+    ${If} $R1 = 1              ; User chose to uninstall before installing
+      Goto reinst_uninstall
+    ${Else}                    ; User chose NOT to uninstall - just uninstall and exit
+      Goto reinst_uninstall_only
+    ${EndIf}
+  ${EndIf}
+
+  ; Handle NSIS installations
   ${If} $R0 = 0 ; Same version, proceed
     ${If} $R1 = 1              ; User chose to add/reinstall
       Goto reinst_done
     ${Else}                    ; User chose to uninstall
-      Goto reinst_uninstall
+      Goto reinst_uninstall_only
     ${EndIf}
   ${ElseIf} $R0 = 1 ; Upgrading
     ${If} $R1 = 1              ; User chose to uninstall
@@ -327,7 +437,11 @@ Function PageLeaveReinstall
     ClearErrors
 
     ${If} $WixMode = 1
-      ReadRegStr $R1 HKLM "$R6" "UninstallString"
+      ReadRegStr $R1 HKLM "$WixUninstallKey" "UninstallString"
+      ; Add quiet parameters for WiX uninstaller if in passive mode
+      ${If} $PassiveMode = 1
+        StrCpy $R1 "$R1 /quiet"
+      ${EndIf}
       ExecWait '$R1' $0
     ${Else}
       ReadRegStr $4 SHCTX "${MANUPRODUCTKEY}" ""
@@ -339,25 +453,50 @@ Function PageLeaveReinstall
     ${EndIf}
 
     BringToFront
-
     ${IfThen} ${Errors} ${|} StrCpy $0 2 ${|} ; ExecWait failed, set fake exit code
 
-    ${If} $0 <> 0
-    ${OrIf} ${FileExists} "$INSTDIR\${MAINBINARYNAME}.exe"
-      ; User cancelled wix uninstaller? return to select un/reinstall page
-      ${If} $WixMode = 1
-      ${AndIf} $0 = 1602
-        Abort
-      ${EndIf}
-
-      ; User cancelled NSIS uninstaller? return to select un/reinstall page
-      ${If} $0 = 1
-        Abort
-      ${EndIf}
-
-      ; Other erros? show generic error message and return to select un/reinstall page
-      MessageBox MB_ICONEXCLAMATION "$(unableToUninstall)"
+    ; Check if uninstall was successful
+    Call CheckUninstallSuccess
+    ${If} $R9 = 1  ; Uninstall failed
       Abort
+    ${Else}
+      ; Reset WiX mode after successful uninstall to prevent re-detection
+      ${If} $WixMode = 1
+        StrCpy $WixMode 0
+      ${EndIf}
+    ${EndIf}
+    
+    Goto reinst_done
+
+  reinst_uninstall_only:
+    HideWindow
+    ClearErrors
+
+    ${If} $WixMode = 1
+      ReadRegStr $R1 HKLM "$WixUninstallKey" "UninstallString"
+      ; Add quiet parameters for WiX uninstaller if in passive mode
+      ${If} $PassiveMode = 1
+        StrCpy $R1 "$R1 /quiet"
+      ${EndIf}
+      ExecWait '$R1' $0
+    ${Else}
+      ReadRegStr $4 SHCTX "${MANUPRODUCTKEY}" ""
+      ReadRegStr $R1 SHCTX "${UNINSTKEY}" "UninstallString"
+      ${IfThen} $PassiveMode = 1 ${|} StrCpy $R1 "$R1 /P" ${|} ; append /P
+      StrCpy $R1 "$R1 _?=$4" ; append uninstall directory
+      ExecWait '$R1' $0
+    ${EndIf}
+
+    BringToFront
+    ${IfThen} ${Errors} ${|} StrCpy $0 2 ${|} ; ExecWait failed, set fake exit code
+
+    ; Check if uninstall was successful
+    Call CheckUninstallSuccess
+    ${If} $R9 = 1  ; Uninstall failed
+      Abort
+    ${Else}
+      ; Uninstall successful, quit installer
+      Quit
     ${EndIf}
   reinst_done:
 FunctionEnd
@@ -475,8 +614,22 @@ Function .onInit
 
   !insertmacro SetContext
 
+  ; --- Detect WiX installation early ---
+  Call DetectWixInstallation
+
+  ${If} $WixMode = 1
+  ${AndIf} $PassiveMode = 1
+    DetailPrint "Uninstalling previous WiX-based installation..."
+    StrCpy $R1 "$WixUninstallString /quiet"
+    ExecWait '$R1' $0
+    ${If} $0 <> 0
+    ${AndIf} $0 <> 1602  ; Allow user cancellation in WiX
+      DetailPrint "Failed to uninstall previous WiX installation (exit code: $0)"
+      ; Don't abort here in passive mode, let user decide in the reinstall page
+    ${EndIf}
+  ${EndIf}
+
   ${If} $INSTDIR == "${PLACEHOLDER_INSTALL_DIR}"
-    ; Set default install location
     !if "${INSTALLMODE}" == "perMachine"
       ${If} ${RunningX64}
         !if "${ARCH}" == "x64"
@@ -490,19 +643,30 @@ Function .onInit
         StrCpy $INSTDIR "$PROGRAMFILES\${PRODUCTNAME}"
       ${EndIf}
     !else if "${INSTALLMODE}" == "currentUser"
-        ; Override to force installation into AppData\Local\YourAppName
         StrCpy $INSTDIR "$LOCALAPPDATA\ExaltAccountManager\v4\app"
     !endif
 
     Call RestorePreviousInstallLocation
   ${EndIf}
 
-
   !if "${INSTALLMODE}" == "both"
     !insertmacro MULTIUSER_INIT
   !endif
 FunctionEnd
 
+Section "Uninstall"
+  ${If} $UpdateMode != 1
+    Delete "$INSTDIR\${PRODUCTEXE}"
+    Delete "$INSTDIR\Uninstall.exe"
+    RMDir /r "$INSTDIR"
+    DeleteRegKey HKCU "Software\${MANUFACTURER}\${PRODUCTNAME}"
+    DeleteRegKey HKLM "Software\${MANUFACTURER}\${PRODUCTNAME}"
+    DeleteRegKey SHCTX "${UNINSTKEY}"
+    Delete "$SMPROGRAMS\${PRODUCTNAME}\*.*"
+    RMDir "$SMPROGRAMS\${PRODUCTNAME}"
+    Delete "$DESKTOP\${PRODUCTNAME}.lnk"
+  ${EndIf}
+SectionEnd
 
 Section EarlyChecks
   ; Abort silent installer if downgrades is disabled
