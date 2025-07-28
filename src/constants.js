@@ -58,13 +58,13 @@ export function UPDATE_URLS(index, values) {
 
 export const AUTH0_CLIENT_ID = 'o1W1coVQMV9qrIg4G2SmZJbz1G5vRCpZ';
 export const AUTH0_DOMAIN = 'https://login.exaltaccountmanager.com';
-export const STRIPE_CUSTOMER_PORTAL_URL = 'https://billing.stripe.com/p/login/test_dR63erdeEeUo5nGcMM';
+//export const STRIPE_CUSTOMER_PORTAL_URL = 'https://billing.stripe.com/p/login/test_dR63erdeEeUo5nGcMM'; //DEV MODE
+export const STRIPE_CUSTOMER_PORTAL_URL = 'https://billing.stripe.com/p/login/3csaEM7fH0M3eVqeUU';
 
 export const DISCORD_APPLICATION_ID = '1069308775854526506';
 
 
 // OKTA
-
 export const MASCOT_NAME = 'Okta';
 
 export const DAILY_LOGIN_COMPLETED_MESSAGES = [
