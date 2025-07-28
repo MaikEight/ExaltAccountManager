@@ -11,14 +11,10 @@ import EamPlusComparisonTable from "../components/EamPlusComparisonTable";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { CACHE_PREFIX, STRIPE_CUSTOMER_PORTAL_URL } from "../constants";
 import ProfilePlanChip from './../components/ProfilePlanChip';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
     const { isAuthenticated } = useUserLogin();
-    const navigate = useNavigate();
-    const theme = useTheme();
 
     return (
         <Box
