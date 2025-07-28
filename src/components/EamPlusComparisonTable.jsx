@@ -1,4 +1,4 @@
-import { Box, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Collapse } from "@mui/material";
+import { Box, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip } from "@mui/material";
 import ComponentBox from "./ComponentBox";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import PaddedTableCell from './AccountDetails/PaddedTableCell';
@@ -57,7 +57,9 @@ function EamPlusComparisonTable() {
     }, []);
 
     const checkout = (variant) => {
-        console.log('checkout', variant, user);
+        if (sessionStorage.getItem('flag:debug') === 'true') {
+            console.log('checkout', variant, user);
+        }
     };
 
     const pricesTable = () => {
