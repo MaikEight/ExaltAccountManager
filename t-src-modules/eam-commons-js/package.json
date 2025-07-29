@@ -28,8 +28,8 @@
     "hash-string": "^1.0.0",
     "lodash": "^4.17.21",
     "notistack": "^3.0.2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "stream-browserify": "^3.0.0",
     "xml-js": "^1.6.11"
   },
