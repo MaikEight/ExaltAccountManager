@@ -12,10 +12,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.3.0", features = [] }
+tauri-build = { version = "2.3.1", features = [] }
 
 [dependencies]
-tauri = { version = "2.6.2", features = ["devtools", "macos-private-api", "tray-icon"] }
+tauri = { version = "2.7.0", features = ["devtools", "macos-private-api", "tray-icon"] }
 tauri-plugin = "2"
 tauri-plugin-deep-link = "2"
 tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
@@ -32,7 +32,7 @@ async-std = "1.13"
 window-vibrancy = "0.6"
 dirs = "6.0"
 md5 = "0.8"
-tokio = "1.46"
+tokio = "1.47"
 futures = "0.3"
 flate2 = "1.1"
 walkdir = "2.5"
