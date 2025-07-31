@@ -46,7 +46,7 @@ use std::thread::sleep;
 use std::time::{Duration, Instant};
 use tauri::http::HeaderName;
 use tauri::Error;
-use tauri::{AppHandle, Emitter};
+use tauri::{AppHandle, Emitter, Manager};
 use tokio::time::interval;
 use zip::read::ZipArchive;
 
@@ -157,13 +157,13 @@ fn main() {
     info!("Starting Tauri application...");
     //Run the tauri application
     tauri::Builder::default()
-        .plugin(tauri_plugin_autostart::Builder::new()
-            .args(["--autostart"])
-            .app_name("Exalt Account Manager")
-            .build())
         .plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
             println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
         }))
+        .plugin(tauri_plugin_autostart::Builder::new()
+            .args(["--autostart"])
+            .app_name("Exalt Account Manager")
+            .build())        
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
@@ -238,8 +238,29 @@ fn main() {
             check_for_installed_eam_daily_login_task, //DAILY LOGIN TASK
             install_eam_daily_login_task,
             uninstall_eam_daily_login_task,
-            run_eam_daily_login_task_now
+            run_eam_daily_login_task_now,
+            get_current_deep_link, // Deep link helper
+            is_started_with_autostart // Autostart helper
         ])
+        .setup(|app| {
+            // Handle deep links when the app starts - register all configured schemes
+            #[cfg(any(windows, target_os = "linux"))]
+            {
+                use tauri_plugin_deep_link::DeepLinkExt;
+                app.deep_link().register_all()?;
+            }
+
+            // Check if the app was started via autostart and hide window if so
+            let args: Vec<String> = std::env::args().collect();
+            if args.contains(&"--autostart".to_string()) {
+                info!("Application started via autostart, hiding window...");
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.hide();
+                }
+            }
+
+            Ok(())
+        })
         .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
 }
@@ -2364,4 +2385,42 @@ fn delete_from_error_log_impl(
         ErrorKind::Other,
         "Pool is not initialized",
     )))
+}
+
+//########################
+//#      Deep Links      #
+//########################
+
+#[tauri::command]
+async fn get_current_deep_link(app: AppHandle) -> Result<Option<String>, tauri::Error> {
+    info!("Getting current deep link...");
+    
+    #[cfg(desktop)]
+    {
+        use tauri_plugin_deep_link::DeepLinkExt;
+        match app.deep_link().get_current() {
+            Ok(Some(urls)) => {
+                if urls.is_empty() {
+                    Ok(None)
+                } else {
+                    Ok(Some(urls[0].to_string()))
+                }
+            }
+            Ok(None) => Ok(None),
+            Err(e) => {
+                error!("Failed to get current deep link: {}", e);
+                Ok(None)
+            }
+        }
+    }
+    
+    #[cfg(not(desktop))]
+    Ok(None)
+}
+
+#[tauri::command]
+fn is_started_with_autostart() -> bool {
+    info!("Checking if started with autostart...");
+    let args: Vec<String> = std::env::args().collect();
+    args.contains(&"--autostart".to_string())
 }
