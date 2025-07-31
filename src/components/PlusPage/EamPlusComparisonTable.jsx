@@ -1,19 +1,19 @@
+import { useEffect, useState } from "react";
 import { Box, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip } from "@mui/material";
-import ComponentBox from "./ComponentBox";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import PaddedTableCell from './AccountDetails/PaddedTableCell';
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import { useEffect, useState } from "react";
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import StyledButton from "./StyledButton";
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
-import { getEamPlusPrices, useUserLogin } from 'eam-commons-js';
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
-import { useColorList } from "../hooks/useColorList";
+import { getEamPlusPrices, useUserLogin } from 'eam-commons-js';
+import { useColorList } from "../../hooks/useColorList";
+import ComponentBox from "../ComponentBox";
+import StyledButton from "../StyledButton";
+import PaddedTableCell from "../AccountDetails/PaddedTableCell";
 
 function EamPlusComparisonTable() {
     const { user } = useUserLogin();
