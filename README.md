@@ -39,8 +39,8 @@
 </a>
 <a href="https://tauri.app" style="display: inline">
   <img
-    src="https://img.shields.io/badge/Tauri-2.5.1-violet.svg?style=flat&logo=Tauri&color=512BD4"
-    alt="Tauri version 2.5.1" />
+    src="https://img.shields.io/badge/Tauri-2.7.0-violet.svg?style=flat&logo=Tauri&color=512BD4"
+    alt="Tauri version 2.7.0" />
 </a>
 <a href="https://good-labs.github.io/greater-good-affirmation" style="display: inline">
 <img
@@ -133,9 +133,10 @@ If you want to contribut to this project, please leave me a message in discord a
 
 Version-Tests and feedback are important aswell, if you have a minute to write me your thought about EAM and how it could be improved, please do.
 
-If you want, you can donate a buck or two, any money generated will be re-invested into this project.
+If you want, you can donate a buck or two, any money donated will be re-invested into this project.
 Purchases: 
 - The awesome, custom made application-logo.
+- Okta - the mascot; and all his variations.
 - The domain exalt-account-manager.eu.
 - The domain ExaltAccountManager.com.
 - A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
@@ -183,4 +184,4 @@ Purchases:
 
 A **big** thanks to [MUI](https://mui.com) for the wonderful React component library, and another **big** thanks to [Tauri](https://tauri.app) for the awesome application framework!
 
-And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the commits & markdown files. 
+And thanks to [gitmoji](https://gitmoji.dev) for all the emotes used in the commits & markdown files.
