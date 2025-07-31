@@ -7,11 +7,12 @@ import { useState, useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { useUserLogin, getProfileImage } from "eam-commons-js";
-import EamPlusComparisonTable from "../components/EamPlusComparisonTable";
+import EamPlusComparisonTable from "../components/PlusPage/EamPlusComparisonTable";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { CACHE_PREFIX, STRIPE_CUSTOMER_PORTAL_URL } from "../constants";
 import ProfilePlanChip from './../components/ProfilePlanChip';
 import { useNavigate } from "react-router-dom";
+import EamPlusFAQ from "../components/PlusPage/EamPlusFAQ";
 
 function ProfilePage() {
     const { isAuthenticated } = useUserLogin();
@@ -36,6 +37,7 @@ function ProfilePage() {
             }
             
             <EamPlusComparisonTable />
+            <EamPlusFAQ />
         </Box>
     );
 }
