@@ -188,6 +188,7 @@ function ChangelogVersion4_2_5() {
                         "The first fame bonus feature got added: Dungeon bonuses. [BETA]",
                         "Improved caching of character portraits and item images.",
                         "Improved the overall loading speed.",
+                        (<Fragment key="Vault Peeker #6">Updated the item images and item data. <b>Thanks to 059</b> for providing them!!!</Fragment>),
                     ]}
                 />
 
@@ -221,6 +222,7 @@ function ChangelogVersion4_2_5() {
                         "Added task tray support (new default) on closing the application.",
                         "Improved the changelog popup to be more readable and visually appealing going forward.",
                         "Improved the logging of database operations in the log file.",
+                        "Improved the updater to not require admin privileges anymore.",
                         "Fixed an issue where the Group UI was not displayed correctly in the Account Grid on first opening after start.",
                         "Fixed an issue where some equipment items where not drawn correctly.",
                         "Fixed an issue with the exp datatype for high-fame characters. Thanks @m.",
@@ -235,6 +237,7 @@ function ChangelogVersion4_2_5() {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        width: '100%',
                         gap: 2,
                         my: 1
                     }}
@@ -267,19 +270,19 @@ function ChangelogVersion4_2_5() {
                                             }}
                                         />
                                     </li>
-                                    <li>TheDangerScrew</li>
+                                    <li>059 - For providing updated item renders and constants.</li>
                                 </ul>
                             </Typography>
                             <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                                 <ul>
-
+                                    <li>TheDangerScrew</li>
                                     <li>Pro90</li>
                                     <li>n1k-o</li>
-                                    <li>m</li>
                                 </ul>
                             </Typography>
                             <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                                 <ul>
+                                    <li>m</li>
                                     <li>and many more...</li>
                                 </ul>
                             </Typography>
