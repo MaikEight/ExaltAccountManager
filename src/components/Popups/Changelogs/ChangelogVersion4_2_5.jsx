@@ -1,4 +1,4 @@
-import { Box, Divider, Paper, Typography, useTheme } from '@mui/material';
+import { Box, Paper, Typography, useTheme } from '@mui/material';
 import ChangelogEntry from './ChangelogEntry';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Confetti from "react-confetti";
@@ -166,6 +166,7 @@ function ChangelogVersion4_2_5() {
                     listOfChanges={[
                         "The Daily login feature has been integrated into the main EAM app.",
                         "It is now also possible to minimzize the app into the system tray and EAM will do so when starting for the Daily Login.",
+                        'Fixed the columns "🕛 End Time" and "⏱️ Duration" to behave correctly while the Daily Login task is running.',
                         (<Fragment key="Daily Login #3">⚠️ Please <b>check</b> if the Daily Login <b>task is installed (updated) correctly</b> by going to the Daily Login settings, if you see a <b>red box, please reinstall</b> the task.</Fragment>),
                     ]}
                 />
@@ -182,13 +183,14 @@ function ChangelogVersion4_2_5() {
                 <ChangelogEntry
                     title={'Vault Peeker'}
                     listOfChanges={[
-                        "Added a live characters group overview in the Account title.",
+                        "Added a characters group overview in the Account title.",
                         "Added a transition effect to the Item Viewer Popup.",
                         "Added support for hiding vault types.",
-                        "The first fame bonus feature got added: Dungeon bonuses. [BETA]",
+                        "Added the first fame bonus feature: Dungeon bonuses. [BETA]",
                         "Improved caching of character portraits and item images.",
                         "Improved the overall loading speed.",
                         (<Fragment key="Vault Peeker #6">Updated the item images and item data. <b>Thanks to 059</b> for providing them!!!</Fragment>),
+                        "Fixed an issue where filters were not getting re-applied after refreshing an account.",
                     ]}
                 />
 
@@ -199,15 +201,18 @@ function ChangelogVersion4_2_5() {
                         "Added emojis to the column headers.",
                         "Added a new Comments section to the Account Details view.",
                         "Comments can also be displayed in the Accounts List.",
+                        "Changed the exp datatype from int to bigint to support larger values. Thanks @m",
                     ]}
                 />
 
                 <ChangelogEntry
                     title={'Settings'}
                     listOfChanges={[
+                        "Added the new comments column to the settings (default columns).",
                         "Added the ability to hide emojis in the account grid.",
                         "Added a new 'Autostart & Close behavior' section.",
                         "Added a 'Privacy & Legal' section.",
+                        "Added the ability to request and delete your data in compliance with GDPR.",
                         "Improved the settings page.",
                     ]}
                 />
@@ -223,12 +228,16 @@ function ChangelogVersion4_2_5() {
                         "Improved the changelog popup to be more readable and visually appealing going forward.",
                         "Improved the logging of database operations in the log file.",
                         "Improved the updater to not require admin privileges anymore.",
+                        "Improved error message when refreshing of an account / logging in fails.",
                         "Fixed an issue where the Group UI was not displayed correctly in the Account Grid on first opening after start.",
                         "Fixed an issue where some equipment items where not drawn correctly.",
+                        "Fixed an issue where the server in the account details did not update correctly when switching accounts.",
                         "Fixed an issue with the exp datatype for high-fame characters. Thanks @m.",
                         "Fixed a bug where the Last Login value was not updated correctly or at all.",
+                        "Fixed the account name fetching not working.",
                         "Fixed the Thanks & Credits popup width.",
                         "Fixed an issue where the char/list conversion would fail if the account had no character and no classes unlocked.",
+                        "Fixed spelling mistakes.",
                     ]}
                 />
 
