@@ -329,7 +329,7 @@ function DebugFlagsPage() {
                                 width: '100%',
                                 flexGrow: 1,
                                 minHeight: 0,
-                                height: '400px',
+                                height: '450px',
                                 gap: 1.5,
                             }}
                         >
