@@ -88,7 +88,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 <br >
 <br >
 
-![Exalt Account Manager](https://i.imgur.com/l8yu0lc.png)
+![Exalt Account Manager](https://app-data.exaltaccountmanager.com/images/eam/v4_2_5/EAM_combi.png)
 
 <br >
 
