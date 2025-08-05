@@ -5,14 +5,15 @@ use crate::types::*;
 use crate::utils::{get_save_file_path, log_to_audit_log};
 
 use chrono::{DateTime, Utc};
-use log::{debug, error, info};
-use uuid::Uuid;
+use log::{debug, error, warn, info};
+use sha1::{Digest, Sha1};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
+use uuid::Uuid;
 
 use eam_commons::diesel_functions::{
     self, get_all_eam_accounts_for_daily_login, get_next_eam_account_for_background_sync,
@@ -53,12 +54,12 @@ impl BackgroundSyncManager {
                 Err(db_err) => {
                     retry_count += 1;
                     let retry_error_msg = db_err.to_string();
-                    
+
                     if retry_count >= max_retries {
                         error!("[BGRSYNC][DL] Failed to update daily login report after {} retries: {}", max_retries, retry_error_msg);
                         break;
                     }
-                    
+
                     let wait_time = Duration::from_millis(100 * (2_u64.pow(retry_count - 1)));
                     error!("[BGRSYNC][DL] Failed to update daily login report (attempt {}), retrying in {:?}: {}", retry_count, wait_time, retry_error_msg);
                     tokio::time::sleep(wait_time).await;
@@ -77,12 +78,12 @@ impl BackgroundSyncManager {
                 Err(db_err) => {
                     retry_count += 1;
                     let retry_error_msg = db_err.to_string();
-                    
+
                     if retry_count >= max_retries {
                         error!("[BGRSYNC][DL] Failed to update daily login report entry after {} retries: {}", max_retries, retry_error_msg);
                         break;
                     }
-                    
+
                     let wait_time = Duration::from_millis(100 * (2_u64.pow(retry_count - 1)));
                     error!("[BGRSYNC][DL] Failed to update daily login report entry (attempt {}), retrying in {:?}: {}", retry_count, wait_time, retry_error_msg);
                     tokio::time::sleep(wait_time).await;
@@ -116,14 +117,18 @@ impl BackgroundSyncManager {
                 );
 
                 //Save the daily_login_report
-                let index = emails_vec.iter().position(|x| *x == *account_email).unwrap();
+                let index = emails_vec
+                    .iter()
+                    .position(|x| *x == *account_email)
+                    .unwrap();
                 emails_vec.remove(index);
                 daily_login_report.emailsToProcess = Some(emails_vec.join(", "));
                 daily_login_report.amountOfAccountsProcessed += 1;
                 daily_login_report.amountOfAccountsSucceeded += 1;
-                
+
                 // Use helper function to avoid holding error across await
-                self.retry_daily_login_report_update(daily_login_report.clone()).await;
+                self.retry_daily_login_report_update(daily_login_report.clone())
+                    .await;
 
                 self.event_hub.emit(BackgroundSyncEvent::AccountFinished {
                     id: Uuid::new_v4(),
@@ -153,7 +158,8 @@ impl BackgroundSyncManager {
                     entry_id,
                     start_time,
                     account_email,
-                ).await;
+                )
+                .await;
             }
         }
     }
@@ -167,19 +173,22 @@ impl BackgroundSyncManager {
         start_time: Option<String>,
         account_email: &str,
     ) {
-        error!("[BGRSYNC][DL] Error while performing daily login: {}", error_message);
+        error!(
+            "[BGRSYNC][DL] Error while performing daily login: {}",
+            error_message
+        );
         log_to_audit_log(
             &self.pool,
-            ("Error while performing daily login: ".to_owned() + &error_message)
-                .to_string(),
+            ("Error while performing daily login: ".to_owned() + &error_message).to_string(),
             None,
         );
 
         daily_login_report.amountOfAccountsFailed += 1;
         daily_login_report.amountOfAccountsProcessed += 1;
-        
+
         // Use helper function to avoid holding error across await
-        self.retry_daily_login_report_update(daily_login_report.clone()).await;
+        self.retry_daily_login_report_update(daily_login_report.clone())
+            .await;
 
         let failed_entry = DailyLoginReportEntries {
             id: Some(entry_id),
@@ -189,29 +198,16 @@ impl BackgroundSyncManager {
             accountEmail: Some(account_email.to_string()),
             status: "Failed".to_string(),
             errorMessage: Some(
-                "Failed due to unkown reason.".to_string()
-                    + "Error thrown: "
-                    + &error_message,
+                "Failed due to unkown reason.".to_string() + "Error thrown: " + &error_message,
             ),
         };
-        
+
         // Use helper function to avoid holding error across await
         self.retry_daily_login_entry_update(failed_entry).await;
     }
 
     pub async fn new(pool: Arc<DbPool>, api_limiter: Arc<Mutex<RateLimiterManager>>) -> Self {
-        let mut hwid_file_path = PathBuf::from(get_save_file_path());
-        hwid_file_path.push("EAM.HWID");
-        let hwid;
-
-        if !Path::new(&hwid_file_path).exists() {
-            hwid = get_device_unique_identifier().await.unwrap();
-        } else {
-            let file = File::open(&hwid_file_path).unwrap();
-            let reader = BufReader::new(file);
-            let mut lines = reader.lines();
-            hwid = lines.next().unwrap().unwrap();
-        }
+        let hwid = Self::read_hwid().await;
 
         let jwt = diesel_functions::get_user_data_by_key(&pool, "jwtSignature".to_string())
             .unwrap_or_else(|_| {
@@ -241,6 +237,62 @@ impl BackgroundSyncManager {
             should_stop: Arc::new(Mutex::new(false)),
             is_running: Arc::new(AtomicBool::new(false)),
             is_plus_user: Arc::new(AtomicBool::new(is_plus_user)),
+        }
+    }
+
+    fn get_fallback_hash() -> String {
+        let mut hasher = Sha1::new();
+        let random_string = format!("{}{}", Uuid::new_v4(), "Fallback HWID");
+        hasher.update(random_string);
+        let result = hasher.finalize();
+        let hashed =format!("{:x}", result);
+        info!("Using fallback HWID: {}", hashed);
+        hashed
+    }
+
+    async fn read_hwid() -> String {
+        let mut hwid_file_path = PathBuf::from(get_save_file_path());
+        hwid_file_path.push("EAM.HWID");
+        
+        if Path::new(&hwid_file_path).exists() {
+            // Try to read from existing file with proper error handling
+            match File::open(&hwid_file_path) {
+                Ok(file) => {
+                    let reader = BufReader::new(file);
+                    match reader.lines().next() {
+                        Some(Ok(hwid)) => {
+                            if !hwid.trim().is_empty() {
+                                return hwid.trim().to_string();
+                            } else {
+                                warn!("HWID file exists but is empty, using fallback HWID.");
+                                return Self::get_fallback_hash();
+                            }
+                        }
+                        Some(Err(e)) => {
+                            error!("Failed to read HWID file: {}", e);
+                            return Self::get_fallback_hash();
+                        }
+                        None => {
+                            warn!("HWID file exists but is empty, using fallback HWID.");
+                            return Self::get_fallback_hash();
+                        }
+                    }
+                }
+                Err(e) => {
+                    error!("Failed to open HWID file: {}, using fallback HWID.", e);
+                    return Self::get_fallback_hash();
+                }
+            }
+        }
+        
+        // Generate new HWID (either file doesn't exist or reading failed)
+        let hwid = get_device_unique_identifier().await;
+        match hwid {
+            Ok(hwid) => hwid,
+            Err(e) => {
+                error!("Failed to get HWID: {}", e);
+                Self::get_fallback_hash()
+            }
         }
     }
 
@@ -716,14 +768,15 @@ impl BackgroundSyncManager {
                 let mut retry_count = 0;
                 let max_retries = 3;
                 loop {
-                    let result = insert_or_update_daily_login_report_entry(&self.pool, report_entry.clone());
+                    let result =
+                        insert_or_update_daily_login_report_entry(&self.pool, report_entry.clone());
                     match result {
                         Ok(id) => break id,
                         Err(e) => {
                             retry_count += 1;
                             let error_msg = e.to_string();
                             drop(e); // Explicitly drop the error
-                            
+
                             if retry_count >= max_retries {
                                 error!("[BGRSYNC][DL] Failed to insert daily login report entry for account {} after {} retries: {}", account_email, max_retries, error_msg);
                                 log_to_audit_log(
@@ -733,8 +786,9 @@ impl BackgroundSyncManager {
                                 );
                                 continue 'account_loop;
                             }
-                            
-                            let wait_time = Duration::from_millis(100 * (2_u64.pow(retry_count - 1)));
+
+                            let wait_time =
+                                Duration::from_millis(100 * (2_u64.pow(retry_count - 1)));
                             info!("[BGRSYNC][DL] Failed to insert daily login report entry for account {} (attempt {}), retrying in {:?}: {}", account_email, retry_count, wait_time, error_msg);
                             tokio::time::sleep(wait_time).await;
                         }
@@ -762,7 +816,7 @@ impl BackgroundSyncManager {
                     self.is_plus_user.clone(),
                 )
                 .await;
-                
+
                 // Convert immediately to avoid holding non-Send error type
                 match login_result {
                     Ok(success) => Ok(success),
@@ -778,7 +832,8 @@ impl BackgroundSyncManager {
                 entry_id,
                 start_time,
                 &account.email,
-            ).await;
+            )
+            .await;
         }
 
         info!(
