@@ -3,13 +3,42 @@ import { Box, Typography } from '@mui/material';
 import StyledButton from './StyledButton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DownloadingOutlinedIcon from '@mui/icons-material/DownloadingOutlined';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSnack from '../hooks/useSnack';
 import { invoke } from '@tauri-apps/api/core';
+import useHWID from '../hooks/useHWID';
 
-function HwidTool() {
+function HwidTool({ runHwidReader }) {
     const [isLoading, setIsLoading] = useState(false);
     const { showSnackbar } = useSnack();
+    const { readHwidFile } = useHWID();
+
+    useEffect(() => {
+        if (runHwidReader) {
+            doHwidReading();
+        }
+    }, [runHwidReader]);
+
+    const doHwidReading = () => {
+        setIsLoading(true);
+        invoke("download_and_run_hwid_tool")
+            .then((response) => {
+                if (response === true) {
+                    showSnackbar('HWID successfully read', 'success');
+                } else {
+                    showSnackbar('Failed to read HWID', 'error');
+                }
+            })
+            .catch((error) => {
+                setIsLoading(false);
+                console.error('Failed to read HWID', error);
+                showSnackbar('Failed to read HWID', 'error');
+            })
+            .finally(() => {
+                setIsLoading(false);
+                readHwidFile().catch(console.error);
+            });
+    }
 
     return (
         <Box
@@ -69,23 +98,7 @@ function HwidTool() {
                             startIcon={<DownloadingOutlinedIcon />}
                             color="primary"
                             disabled={isLoading}
-                            onClick={() => {
-                                setIsLoading(true);
-                                invoke("download_and_run_hwid_tool")
-                                    .then((response) => {
-                                        setIsLoading(false);
-                                        if (response === true) {
-                                            showSnackbar('HWID successfully read', 'success');
-                                        } else {
-                                            showSnackbar('Failed to read HWID', 'error');
-                                        }
-                                    })
-                                    .catch((error) => {
-                                        setIsLoading(false);
-                                        console.error('Failed to read HWID', error);
-                                        showSnackbar('Failed to read HWID', 'error');
-                                    });
-                            }}
+                            onClick={doHwidReading}
                         >
                             {!isLoading ? "Run HWID Reader" : "Doing magic..."}
                         </StyledButton>
