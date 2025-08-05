@@ -4,10 +4,14 @@ function useSnack() {
     const snackbar = useSnackbar();
 
     const showSnackbar = (message, variant = 'default', persist = false) => {
-        snackbar.enqueueSnackbar(message, { variant: variant, persist: persist });
+        return snackbar.enqueueSnackbar(message, { variant: variant, persist: persist });
     };
 
-    return { showSnackbar };
+    const closeSnackbar = (key) => {
+        snackbar.closeSnackbar(key);
+    };
+
+    return { showSnackbar, closeSnackbar };
 }
 
 export default useSnack;
