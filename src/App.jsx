@@ -8,7 +8,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 function App() {
     const [hasTriggeredStartup, setHasTriggeredStartup] = useState(false);
-    const hwid = useHWID();
+    const { hwid } = useHWID();
 
     useEffect(() => {
         onStartUp();
