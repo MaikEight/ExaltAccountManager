@@ -249,7 +249,11 @@ function DebugFlagsPage() {
                             }}
                         >
                             <StyledButton
-                                onClick={() => clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}drawItem`)}
+                                onClick={() => {
+                                    setWarningActive(false);
+                                    clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}drawItem`);
+                                    clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}single-item`);
+                                }}
                                 color="secondary"
                                 size="small"
                                 sx={{
@@ -259,7 +263,10 @@ function DebugFlagsPage() {
                                 Clear item images
                             </StyledButton>
                             <StyledButton
-                                onClick={() => clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}portrait`)}
+                                onClick={() => {
+                                    setWarningActive(false);
+                                    clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}portrait`)}
+                                }
                                 color="secondary"
                                 size="small"
                                 sx={{
@@ -269,14 +276,17 @@ function DebugFlagsPage() {
                                 Clear portrait images
                             </StyledButton>
                             <StyledButton
-                                onClick={() => clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}`)}
+                                onClick={() => {
+                                    setWarningActive(false);
+                                    clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}portrait`);
+                                }}
                                 color="warning"
                                 size="small"
                                 sx={{
                                     width: 'fit-content',
                                 }}
                             >
-                                Clear all cached items
+                                Evict cache
                             </StyledButton>
                             <Tooltip title="This will clear all localStorage and sessionStorage items, including your settings and preferences. Use with caution!">
                                 <StyledButton
