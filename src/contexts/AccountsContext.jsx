@@ -12,7 +12,7 @@ const AccountsContext = createContext();
 
 function AccountsContextProvider({ children }) {
     const [searchParams, setSearchParams] = useSearchParams();
-    const hwid = useHWID();
+    const { hwid } = useHWID();
     const { saveServerList } = useServerList();
     const { showSnackbar } = useSnack();
 
@@ -42,7 +42,7 @@ function AccountsContextProvider({ children }) {
             });
 
         if (!acc) return null;
-        if(acc.error && acc.waitAndRetry) {
+        if (acc.error && acc.waitAndRetry) {
             console.warn('Database is locked, retrying after a short delay...');
             await new Promise(resolve => setTimeout(resolve, 150));
             const retryAcc = await invoke('get_eam_account_by_email', { accountEmail: email })
@@ -150,7 +150,7 @@ function AccountsContextProvider({ children }) {
     const updateAccounts = async (_accounts) => {
         for (const acc of _accounts) {
             await updateAccount(acc, false, false);
-            await new Promise(resolve => setTimeout(resolve, 50)); 
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
         loadAccounts();
     };
