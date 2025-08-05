@@ -20,12 +20,24 @@ import useSnack from "../../hooks/useSnack";
 import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import useAccounts from "../../hooks/useAccounts";
-import { logToErrorLog, formatTime, useGroups, requestStateToMessage } from "eam-commons-js";
+import { logToErrorLog, formatTime, useGroups, readFileUTF8 } from "eam-commons-js";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { invoke } from '@tauri-apps/api/core';
 import RequestStateChip from "../GridComponents/RequestStateChip";
+import { HWID_FILE_PATH, MASCOT_NAME } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 function AccountDetails({ acc, onClose }) {
+    const { groups } = useGroups();
+
+    const { updateAccount, deleteAccount, sendAccountVerify, sendCharList, refreshData } = useAccounts();
+    const { showSnackbar, closeSnackbar } = useSnack();
+
+    const settings = useUserSettings();
+    const theme = useTheme();
+    const containerRef = useRef(null);
+    const navigate = useNavigate();
+
     const [account, setAccount] = useState(null);
     const [accountOrg, setAccountOrg] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -38,16 +50,7 @@ function AccountDetails({ acc, onClose }) {
     const [newDecryptedPassword, setNewDecryptedPassword] = useState("");
     const [gameExePath, setGameExePath] = useState("");
 
-    const { groups } = useGroups();
-
-    const { updateAccount, deleteAccount, sendAccountVerify, sendCharList, refreshData } = useAccounts();
-    const { showSnackbar } = useSnack();
-
     const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
-
-    const settings = useUserSettings();
-    const theme = useTheme();
-    const containerRef = useRef(null);
 
     useEffect(() => {
         const checkSessionStorage = () => {
@@ -108,6 +111,145 @@ function AccountDetails({ acc, onClose }) {
         return serverToJoin === "Last Server" ? "" : serverToJoin;
     };
 
+    const hasHwidFile = async () => {
+        const path = await HWID_FILE_PATH();
+        const _hwid = await readFileUTF8(path, false);
+        const hasHwidFile = _hwid !== null && _hwid !== undefined && _hwid !== '';
+        return hasHwidFile;
+    }
+
+    const showHwidWarning = () => {
+        let snackbarKey = null;
+        snackbarKey = showSnackbar(
+            (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 2,
+                    }}
+                >
+                    <img
+                        src="/mascot/Info/notification_simple_very_low_res.png"
+                        alt={`${MASCOT_NAME} notifies you`}
+                        style={{ width: '120px' }}
+                    />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                        }}
+                    >
+                        <Typography variant="body1">
+                            Got the <b>Token for different machine</b> Error?
+                        </Typography>
+                        <Typography variant="body2">
+                            Run the HWID-Reader to fix it.
+                        </Typography>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: 2,
+                        }}
+                    >
+                        <StyledButton
+                            variant="contained"
+                            size="small"
+                            onClick={() => {
+                                navigate('/utilities?runHwidReader=true');
+                                if (snackbarKey) {
+                                    closeSnackbar(snackbarKey);
+                                }
+                            }}
+                        >
+                            Run HWID-Reader
+                        </StyledButton>
+                        <StyledButton
+                            variant="outlined"
+                            color="warning"
+                            size="small"
+                            onClick={() => {
+                                const startGameHWIDWarningsStr = localStorage.getItem('startGameHWIDWarnings');
+                                if (startGameHWIDWarningsStr) {
+                                    const startGameHWIDWarnings = JSON.parse(startGameHWIDWarningsStr);
+                                    startGameHWIDWarnings.hide = true;
+                                    localStorage.setItem('startGameHWIDWarnings', JSON.stringify(startGameHWIDWarnings));
+                                }
+
+                                if (snackbarKey) {
+                                    closeSnackbar(snackbarKey);
+                                }
+                            }}
+                        >
+                            Dont show again
+                        </StyledButton>
+                    </Box>
+                </Box>
+            ),
+            'message',
+            true //persistent
+        );
+    };
+
+    const checkForHwidFile = async () => {
+        try {
+            const startGameHWIDWarningsStr = localStorage.getItem('startGameHWIDWarnings');
+            if (startGameHWIDWarningsStr) {
+                const startGameHWIDWarnings = JSON.parse(startGameHWIDWarningsStr);
+                console.log("startGameHWIDWarnings", startGameHWIDWarnings);
+
+                if (startGameHWIDWarnings
+                    && !startGameHWIDWarnings.hide
+                    && !startGameHWIDWarnings.hasHWIDFile
+                    && (startGameHWIDWarnings.amount <= 5 || startGameHWIDWarnings.lastCheck < new Date(Date.now() - 12 * 60 * 60 * 1000 /* 12 hours */))) {
+
+                    console.log("Checking for HWID file after game start...");
+                    startGameHWIDWarnings.amount = (startGameHWIDWarnings.amount || 0) + 1;
+                    startGameHWIDWarnings.lastCheck = new Date();
+
+                    if (await hasHwidFile()) {
+                        console.log("HWID file found after game start, updating localStorage.");
+                        startGameHWIDWarnings.hasHWIDFile = true;
+                        localStorage.setItem('startGameHWIDWarnings', JSON.stringify(startGameHWIDWarnings));
+                        return;
+                    }
+                    console.log("HWID file not found after game start, showing warning.");
+                    startGameHWIDWarnings.hasHWIDFile = false;
+                    localStorage.setItem('startGameHWIDWarnings', JSON.stringify(startGameHWIDWarnings));
+                    showHwidWarning();
+                }
+                return;
+            }
+
+            console.log("startGameHWIDWarningsStr not found or conditions not met, checking for HWID file...");
+            const _hasHwidFile = await hasHwidFile();
+            const startGameHWIDWarnings = {
+                amount: 1,
+                hide: false,
+                lastCheck: new Date(),
+                hasHWIDFile: _hasHwidFile,
+            }
+            localStorage.setItem('startGameHWIDWarnings', JSON.stringify(startGameHWIDWarnings));
+
+            if (_hasHwidFile) {
+                return;
+            }
+
+            showHwidWarning();
+        } catch (error) {
+            console.error("Error checking for HWID file after game start:", error);
+        }
+    };
+
     const startGame = async () => {
         if (!account) {
             return;
@@ -141,8 +283,9 @@ function AccountDetails({ acc, onClose }) {
         if (charList === null || !charList.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
             showSnackbar("Failed to refresh data", 'error');
-            return;
         }
+
+        checkForHwidFile();
     };
 
     if (!account) {
