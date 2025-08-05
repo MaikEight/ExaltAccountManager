@@ -6,24 +6,24 @@ import { invoke } from "@tauri-apps/api/core";
 function useHWID() {
     const [hwid, setHwid] = useState(null);
 
-    useEffect(() => {
-        const readHwidFile = async () => {
-            const path = await HWID_FILE_PATH();
-            const _hwid = await readFileUTF8(path, false);
-            if (_hwid === null || _hwid === undefined || _hwid === '') {
-                const id = await invoke('get_device_unique_identifier');
-                setHwid(id);
-                
-                return;
-            }
-            setHwid(_hwid);
-        };
+    const readHwidFile = async () => {
+        const path = await HWID_FILE_PATH();
+        const _hwid = await readFileUTF8(path, false);
+        if (_hwid === null || _hwid === undefined || _hwid === '') {
+            const id = await invoke('get_device_unique_identifier');
+            setHwid(id);
+            return;
+        }
+        
+        setHwid(_hwid);
+    };
 
+    useEffect(() => {
         readHwidFile()
             .catch(error => console.error(error));
     }, []);
 
-    return hwid;
+    return { hwid, readHwidFile };
 }
 
 export default useHWID;
