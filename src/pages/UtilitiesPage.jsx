@@ -1,8 +1,19 @@
 import { Box } from '@mui/material';
 import RealmUpdater from '../components/RealmUpdater';
 import HwidTool from '../components/HwidTool';
+import { useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 function UtilitiesPage() {
+    const [searchParams] = useSearchParams();
+    const [runHwidReader, setRunHwidReader] = useState(false);
+
+    useEffect(() => {        
+        const runHwidReader = searchParams.get('runHwidReader');
+        if (runHwidReader === 'true') {            
+            setRunHwidReader(true);
+        }
+    }, []);
 
     return (
         <Box
@@ -14,7 +25,7 @@ function UtilitiesPage() {
             }}
         >
             <RealmUpdater />
-            <HwidTool />
+            <HwidTool runHwidReader={runHwidReader} />
         </Box>
     );
 }
