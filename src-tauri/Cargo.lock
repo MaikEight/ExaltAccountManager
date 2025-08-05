@@ -1233,6 +1233,7 @@ dependencies = [
  "roxmltree",
  "serde",
  "serde_json",
+ "sha1",
  "tokio",
  "uuid 1.17.0",
 ]
