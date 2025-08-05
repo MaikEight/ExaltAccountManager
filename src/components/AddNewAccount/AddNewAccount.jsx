@@ -50,7 +50,7 @@ function AddNewAccount({ isOpen, onClose }) {
     const { groups } = useGroups();
 
     const theme = useTheme();
-    const hwid = useHWID();
+    const { hwid } = useHWID();
     const color = useColorList(0);
     const containerRef = useRef(null);
     const navigate = useNavigate();
@@ -502,10 +502,12 @@ function AddNewAccount({ isOpen, onClose }) {
                 }}
                 slotProps={{
                     paper: {
-                        elevation: 0, 
-                        square: false, 
-                        sx: { borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`, 
-                        overflow: 'hidden' },
+                        elevation: 0,
+                        square: false,
+                        sx: {
+                            borderRadius: `${theme.shape.borderRadius}px 10px 10px ${theme.shape.borderRadius}px`,
+                            overflow: 'hidden'
+                        },
                     },
                     transition: {
                         container: containerRef.current
