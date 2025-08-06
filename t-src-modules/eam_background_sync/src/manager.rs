@@ -155,6 +155,7 @@ impl BackgroundSyncManager {
                 self.handle_login_failure(
                     error_message,
                     daily_login_report,
+                    emails_vec,
                     entry_id,
                     start_time,
                     account_email,
@@ -169,6 +170,7 @@ impl BackgroundSyncManager {
         &self,
         error_message: String,
         daily_login_report: &mut DailyLoginReports,
+        emails_vec: &mut Vec<String>,
         entry_id: i32,
         start_time: Option<String>,
         account_email: &str,
@@ -183,6 +185,13 @@ impl BackgroundSyncManager {
             None,
         );
 
+        // Remove the failed account from emails_vec and update the report
+        let index = emails_vec
+            .iter()
+            .position(|x| *x == *account_email)
+            .unwrap();
+        emails_vec.remove(index);
+        daily_login_report.emailsToProcess = Some(emails_vec.join(", "));
         daily_login_report.amountOfAccountsFailed += 1;
         daily_login_report.amountOfAccountsProcessed += 1;
 
@@ -198,12 +207,29 @@ impl BackgroundSyncManager {
             accountEmail: Some(account_email.to_string()),
             status: "Failed".to_string(),
             errorMessage: Some(
-                "Failed due to unkown reason.".to_string() + "Error thrown: " + &error_message,
+                "Failed due to unknown reason.".to_string() + "Error thrown: " + &error_message,
             ),
         };
 
         // Use helper function to avoid holding error across await
         self.retry_daily_login_entry_update(failed_entry).await;
+
+        // Emit events for failed account
+        self.event_hub.emit(BackgroundSyncEvent::AccountFinished {
+            id: Uuid::new_v4(),
+            email: account_email.to_string(),
+            result: "Failed".to_string(),
+        });
+
+        self.event_hub
+            .emit(BackgroundSyncEvent::DailyLoginProgress {
+                id: Uuid::new_v4(),
+                done: daily_login_report.amountOfAccountsProcessed as usize,
+                left: emails_vec.len(),
+                left_emails: emails_vec.clone(),
+                failed_emails: Vec::new(), // You might want to track failed emails separately
+                estimated_time: self.get_estimated_time(emails_vec.len()),
+            });
     }
 
     pub async fn new(pool: Arc<DbPool>, api_limiter: Arc<Mutex<RateLimiterManager>>) -> Self {
@@ -728,9 +754,10 @@ impl BackgroundSyncManager {
 
         //END OF SETUP
 
-        let mut can_call = false;
+        let mut last_account_finish_time = std::time::Instant::now();
 
         'account_loop: for account in accounts_to_perform_daily_login_with {
+            let mut can_call = false;
             while !can_call {
                 {
                     let limiter = self.api_limiter.lock().unwrap();
@@ -834,6 +861,26 @@ impl BackgroundSyncManager {
                 &account.email,
             )
             .await;
+
+            // Ensure minimum 60 seconds between account completions
+            let elapsed_since_last = last_account_finish_time.elapsed();
+            let min_wait_time = Duration::from_secs(60);
+            
+            if elapsed_since_last < min_wait_time {
+                let remaining_wait = min_wait_time - elapsed_since_last;
+                info!("[BGRSYNC][DL] Waiting {} seconds before processing next account (ensuring 60s minimum interval)...", remaining_wait.as_secs());
+                
+                self.event_hub.emit(BackgroundSyncEvent::AccountProgress {
+                    id: Uuid::new_v4(),
+                    email: account.email.clone(),
+                    state: AccountProgressState::WaitingForCooldown,
+                });
+                
+                tokio::time::sleep(remaining_wait).await;
+            }
+            
+            // Update the last account finish time
+            last_account_finish_time = std::time::Instant::now();
         }
 
         info!(
