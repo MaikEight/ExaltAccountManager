@@ -1,11 +1,12 @@
 use crate::diesel_functions::get_user_data_by_key;
 use crate::diesel_setup::DbPool;
-use crate::models::UserData;
 use futures::stream::{self, StreamExt};
 use lazy_static::lazy_static;
+use log::info;
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_LENGTH, CONTENT_TYPE};
 use roxmltree::Document;
 use serde::Deserialize;
+use std::env;
 use std::fs;
 use std::fs::File;
 use std::io;
@@ -144,6 +145,36 @@ pub async fn get_game_file_list() -> Result<Vec<FileData>, UpdaterError> {
     Ok(files)
 }
 
+pub fn get_default_game_path() -> String {
+    info!("Getting default game path...");
+    let os = env::consts::OS;
+
+    match os {
+        "windows" => {
+            let user_profile = env::var("USERPROFILE").unwrap_or_else(|_| "C:\\Users\\Default".to_string());
+            format!("{}\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe", user_profile)
+        }
+        "macos" => {
+            let home_dir = env::var("HOME").unwrap_or_else(|_| "".into());
+            format!(
+                "{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app",
+                home_dir
+            )
+        }
+        _ => "".into(),
+    }
+}
+
+fn get_game_exe_path_with_fallback(pool: &DbPool) -> String {
+    match get_user_data_by_key(pool, "game_exe_path".to_string()) {
+        Ok(game_exe_path_data) => game_exe_path_data.dataValue,
+        Err(_) => {
+            info!("Failed to read game_exe_path from database, using default path");
+            get_default_game_path()
+        }
+    }
+}
+
 pub fn get_game_files_to_update(pool: &DbPool, force_recheck: bool) -> Result<Vec<FileData>, UpdaterError> {
     if force_recheck {
         clean_global_variables();
@@ -156,9 +187,7 @@ pub fn get_game_files_to_update(pool: &DbPool, force_recheck: bool) -> Result<Ve
         }
     }
 
-    let game_exe_path_data: UserData = get_user_data_by_key(pool, "game_exe_path".to_string())
-        .expect("Failed to read game_exe_path.");
-    let game_exe_path = game_exe_path_data.dataValue;
+    let game_exe_path = get_game_exe_path_with_fallback(pool);
     let files_res = tokio::runtime::Runtime::new()
         .unwrap()
         .block_on(get_game_file_list());
@@ -189,9 +218,7 @@ async fn perform_game_update_impl(
     pool: &DbPool,
     game_files_data: Vec<FileData>,
 ) -> Result<bool, String> {
-    let game_exe_path_data: UserData = get_user_data_by_key(pool, "game_exe_path".to_string())
-        .expect("Failed to read game_exe_path.");
-    let game_exe_path = game_exe_path_data.dataValue;
+    let game_exe_path = get_game_exe_path_with_fallback(pool);
 
     let game_root_path = get_game_root_path(game_exe_path);
 
