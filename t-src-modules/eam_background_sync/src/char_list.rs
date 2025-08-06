@@ -39,7 +39,7 @@ pub async fn send_char_list_request(
         .await
         .map_err(|_| ApiLimiterBlocked::RequestFailed("Failed to send_post_request_with_form_url_encoded_data".to_string()))?;
 
-    if response.contains("Internal error, please wait 5 minutes to try again!") {
+    if response.contains("please wait 5 minutes") {
         let mut limiter = global_api_limiter.lock().unwrap();
         limiter.record_api_use("char/list", CallResult::RateLimited);
         limiter.trigger_cooldown();
