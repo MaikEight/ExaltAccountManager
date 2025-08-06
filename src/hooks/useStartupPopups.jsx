@@ -11,6 +11,7 @@ import ChangelogVersion4_2_2 from "../components/Popups/Changelogs/ChangelogVers
 import ChangelogVersion4_2_3 from "../components/Popups/Changelogs/ChangelogVersion4_2_3";
 import ChangelogVersion4_2_4 from "../components/Popups/Changelogs/ChangelogVersion4_2_4";
 import ChangelogVersion4_2_5 from './../components/Popups/Changelogs/ChangelogVersion4_2_5';
+import ChangelogVersion4_2_6 from './../components/Popups/Changelogs/ChangelogVersion4_2_6';
 
 const isBetaVersion = false;
 
@@ -57,6 +58,11 @@ function useStartupPopups() {
             version: "4.2.5",
             preventClose: false,
             content: <ChangelogVersion4_2_5 />
+        },
+        {
+            version: "4.2.6",
+            preventClose: false,
+            content: <ChangelogVersion4_2_6 />
         },
     ];
 
