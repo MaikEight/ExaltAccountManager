@@ -135,32 +135,80 @@ pub async fn perform_daily_login_for_account(
     });
 
     let pool_arc = Arc::new(pool.clone());
-    // let access_token_opt: Option<GameAccessToken> = send_account_verify_request(pool_arc, account.email.clone(), hwid.clone()).await;
-    let acc_verify_result = account_verify::send_account_verify_request(
-        pool_arc,
-        account.email.clone(),
-        hwid.clone(),
-        global_api_limiter.clone(),
-    )
-    .await;
+    
+    // Handle rate limiting for account verification
+    let access_token_opt: Option<GameAccessToken> = loop {
+        // Check for global cooldown first
+        let is_global_cooldown = {
+            let limiter = global_api_limiter.lock().unwrap();
+            limiter.is_cooldown()
+        };
 
-    let access_token_opt: Option<GameAccessToken> = match acc_verify_result {
-        Ok(token) => token,
-        Err(e) => {
-            error!(
-                "[BGRSYNC][DL] Error during account verification: {}",
-                e.to_string()
-            );
-            log_to_audit_log(
-                pool,
-                ("Error during account verification: ".to_owned() + &e.to_string()).to_string(),
-                Some(account.email.clone()),
-            );
-            return Err(Box::new(std::io::Error::new(
-                ErrorKind::Other,
-                "Failed to verify account.",
-            )));
+        if is_global_cooldown {
+            let cooldown_until = {
+                let limiter = global_api_limiter.lock().unwrap();
+                limiter.cooldown_until
+            };
+            
+            if let Some(until) = cooldown_until {
+                let wait_duration = (until.timestamp() - chrono::Utc::now().timestamp()).max(0);
+                info!("[BGRSYNC][DL] Global API cooldown active, waiting {} seconds", wait_duration);
+                event_hub.emit(BackgroundSyncEvent::AccountProgress {
+                    id: Uuid::new_v4(),
+                    email: account.email.clone(),
+                    state: AccountProgressState::WaitingForCooldown,
+                });
+                tokio::time::sleep(Duration::from_secs(wait_duration as u64)).await;
+                continue;
+            }
         }
+
+        // Check for soft limit
+        let can_call = {
+            let mut limiter = global_api_limiter.lock().unwrap();
+            limiter.can_call("account/verify")
+        };
+
+        if !can_call {
+            info!("[BGRSYNC][DL] API soft limit reached for account/verify, waiting 10 seconds");
+            tokio::time::sleep(Duration::from_secs(10)).await;
+            continue;
+        }
+
+        // Attempt the actual request
+        let acc_verify_result = account_verify::send_account_verify_request(
+            pool_arc.clone(),
+            account.email.clone(),
+            hwid.clone(),
+            global_api_limiter.clone(),
+        )
+        .await;
+
+        break match acc_verify_result {
+            Ok(token) => token,
+            Err(e) => {
+                error!(
+                    "[BGRSYNC][DL] Error during account verification: {}",
+                    e.to_string()
+                );
+                log_to_audit_log(
+                    pool,
+                    ("Error during account verification: ".to_owned() + &e.to_string()).to_string(),
+                    Some(account.email.clone()),
+                );
+                
+                // Check if this was a rate limit error that we need to retry
+                if e.to_string().contains("RateLimitHit") {
+                    info!("[BGRSYNC][DL] Rate limit hit during account verification, retrying");
+                    continue;
+                }
+                
+                return Err(Box::new(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Failed to verify account.",
+                )));
+            }
+        };
     };
 
     if access_token_opt.is_none() {
@@ -215,23 +263,71 @@ pub async fn perform_daily_login_for_account(
         state: AccountProgressState::FetchingCharList,
     });
 
-    let char_list_result =
-        send_char_list_request(access_token, Arc::clone(&global_api_limiter)).await;
-    let char_list_response = match char_list_result {
-        Ok(response) => response,
-        Err(err) => {
-            error!(
-                "[BGRSYNC][DL] Error during char list request: {}",
-                err.to_string()
-            );
-            log_to_audit_log(
-                pool,
-                ("Error during char list request: ".to_owned() + &err.to_string()).to_string(),
-                Some(account.email.clone()),
-            );
-            //We can't exit (return) here because the game is still running and we need to close it properly after wait for the game to login
-            "".to_string()
+    // Handle rate limiting for char/list request
+    let char_list_response = loop {
+        // Check for global cooldown first
+        let is_global_cooldown = {
+            let limiter = global_api_limiter.lock().unwrap();
+            limiter.is_cooldown()
+        };
+
+        if is_global_cooldown {
+            let cooldown_until = {
+                let limiter = global_api_limiter.lock().unwrap();
+                limiter.cooldown_until
+            };
+            
+            if let Some(until) = cooldown_until {
+                let wait_duration = (until.timestamp() - chrono::Utc::now().timestamp()).max(0);
+                info!("[BGRSYNC][DL] Global API cooldown active, waiting {} seconds", wait_duration);
+                event_hub.emit(BackgroundSyncEvent::AccountProgress {
+                    id: Uuid::new_v4(),
+                    email: account.email.clone(),
+                    state: AccountProgressState::WaitingForCooldown,
+                });
+                tokio::time::sleep(Duration::from_secs(wait_duration as u64)).await;
+                continue;
+            }
         }
+
+        // Check for soft limit
+        let can_call = {
+            let mut limiter = global_api_limiter.lock().unwrap();
+            limiter.can_call("char/list")
+        };
+
+        if !can_call {
+            info!("[BGRSYNC][DL] API soft limit reached for char/list, waiting 10 seconds");
+            tokio::time::sleep(Duration::from_secs(10)).await;
+            continue;
+        }
+
+        // Attempt the actual request
+        let char_list_result = send_char_list_request(access_token.clone(), Arc::clone(&global_api_limiter)).await;
+        
+        break match char_list_result {
+            Ok(response) => response,
+            Err(err) => {
+                error!(
+                    "[BGRSYNC][DL] Error during char list request: {}",
+                    err.to_string()
+                );
+                log_to_audit_log(
+                    pool,
+                    ("Error during char list request: ".to_owned() + &err.to_string()).to_string(),
+                    Some(account.email.clone()),
+                );
+                
+                // Check if this was a rate limit error that we need to retry
+                if err.to_string().contains("RateLimitHit") {
+                    info!("[BGRSYNC][DL] Rate limit hit during char list request, retrying");
+                    continue;
+                }
+                
+                //We can't exit (return) here because the game is still running and we need to close it properly after wait for the game to login
+                "".to_string()
+            }
+        };
     };
 
     if !char_list_response.is_empty() {
