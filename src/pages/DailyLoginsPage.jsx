@@ -594,6 +594,7 @@ function DailyLoginsPage() {
                             Install Task Now
                         </StyledButton>
                     }
+                    {/* 
                     <StyledButton
                         disabled={isInstallingTask || !isTaskInstalled}
                         color="primary"
@@ -614,7 +615,8 @@ function DailyLoginsPage() {
                         startIcon={<PlayCircleFilledWhiteOutlinedIcon />}
                     >
                         Run Task now
-                    </StyledButton>
+                    </StyledButton> 
+                    */}
                     <StyledButton
                         disabled={isInstallingTask || !isTaskInstalled}
                         color="error"
