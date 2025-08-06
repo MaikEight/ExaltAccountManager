@@ -96,7 +96,7 @@ pub async fn send_account_verify_request(
             for node in doc.descendants() {
                 if node.has_tag_name("Error") {
                     let error_message = node.text().unwrap_or("").to_string();
-                    if error_message == "Internal error, please wait 5 minutes to try again!" {
+                    if error_message.contains("please wait 5 minutes") {
                         limiter.record_api_use("account/verify", CallResult::RateLimited);
                         limiter.trigger_cooldown();
                         return Err(ApiLimiterBlocked::RateLimitHit);
