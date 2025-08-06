@@ -1037,26 +1037,7 @@ async fn get_device_unique_identifier() -> Result<String, String> {
 
 #[tauri::command]
 fn get_default_game_path() -> String {
-    info!("Getting default game path...");
-    let os = env::consts::OS;
-
-    match os {
-        "windows" => {
-            let mut path = dirs::document_dir().unwrap();
-            path.push("RealmOfTheMadGod");
-            path.push("Production");
-
-            format!("{}\\RotMG Exalt.exe", path.to_str().unwrap())
-        }
-        "macos" => {
-            let home_dir = env::var("HOME").unwrap_or_else(|_| "".into());
-            format!(
-                "{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app",
-                home_dir
-            )
-        }
-        _ => "".into(),
-    }
+    eam_commons::rotmg_updater::get_default_game_path()
 }
 
 #[tauri::command]
