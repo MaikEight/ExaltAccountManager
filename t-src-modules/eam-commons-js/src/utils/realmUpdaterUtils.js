@@ -13,22 +13,34 @@ async function checkForUpdates(force) {
     if (debugFlag) {
         console.log('Checking for updates...');
     }
-    
-    const updateNeeded = await invoke('check_for_game_update', { force: Boolean(force) })
-        .catch((error) => {
-            logToErrorLog('checkForUpdates', error);
-            return false;
-        });
+    try {
+        const updateNeeded = await invoke('check_for_game_update', { force: Boolean(force) })
+            .catch((error) => {
+                logToErrorLog('checkForUpdates', error);
+                return false;
+            });
 
-    if (debugFlag) {
-        console.log('Update needed:', updateNeeded);
+        if (debugFlag) {
+            console.log('Update needed:', updateNeeded);
+        }
+
+        localStorage.setItem('updateNeeded', updateNeeded ? 'true' : 'false');
+        localStorage.setItem('lastUpdateCheck', getCurrentTime());
+        sessionStorage.setItem('updateCheckInProgress', 'false');
+
+
+        return updateNeeded;
+    } catch (error) {
+        logToErrorLog('checkForUpdates', error);
+        sessionStorage.setItem('updateCheckInProgress', 'false');
+        return false;
+    } finally {
+        if (debugFlag) {
+            console.log('Update check completed');
+        }
+
+        sessionStorage.setItem('updateCheckInProgress', 'false');
     }
-
-    localStorage.setItem('updateNeeded', updateNeeded ? 'true' : 'false');
-    localStorage.setItem('lastUpdateCheck', getCurrentTime());
-    sessionStorage.setItem('updateCheckInProgress', 'false');
-
-    return updateNeeded;
 }
 
 async function updateGame() {
@@ -39,13 +51,20 @@ async function updateGame() {
 
     sessionStorage.setItem('updateInProgress', 'true');
 
-    invoke('perform_game_update').then(() => {
-        localStorage.removeItem('updateNeeded');
-    }).catch((error) => {
+    try {
+        invoke('perform_game_update').then(() => {
+            localStorage.removeItem('updateNeeded');
+        }).catch((error) => {
+            logToErrorLog('updateGame', error);
+        }).finally(() => {
+            sessionStorage.setItem('updateInProgress', 'false');
+        });
+    } catch (error) {
         logToErrorLog('updateGame', error);
-    }).finally(() => {
         sessionStorage.setItem('updateInProgress', 'false');
-    });
+    } finally {
+        sessionStorage.setItem('updateInProgress', 'false');
+    }
 }
 
 export {
