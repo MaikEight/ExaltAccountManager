@@ -301,7 +301,7 @@ function BackgroundSyncComponent() {
                                 }}
                             >
                                 <Typography variant="caption">
-                                    {dailyLoginProgressData?.done}
+                                    {(dailyLoginProgressData?.done || 0)}
                                 </Typography>
                                 <LinearProgress
                                     variant="determinate"
@@ -313,7 +313,7 @@ function BackgroundSyncComponent() {
                                     }}
                                 />
                                 <Typography variant="caption">
-                                    {dailyLoginProgressData?.done + dailyLoginProgressData?.left}
+                                    {(dailyLoginProgressData?.done || 0) + (dailyLoginProgressData?.left || 0)}
                                 </Typography>
                             </Box>
                             <Typography variant="caption">
