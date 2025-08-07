@@ -151,7 +151,7 @@ pub async fn perform_daily_login_for_account(
             };
             
             if let Some(until) = cooldown_until {
-                let wait_duration = (until.timestamp() - chrono::Utc::now().timestamp()).max(0);
+                let wait_duration = (until.timestamp() - chrono::Utc::now().timestamp()).max(0) + 3; // Adding 3 seconds buffer to avoid immediate retry
                 info!("[BGRSYNC][DL] Global API cooldown active, waiting {} seconds", wait_duration);
                 event_hub.emit(BackgroundSyncEvent::AccountProgress {
                     id: Uuid::new_v4(),
