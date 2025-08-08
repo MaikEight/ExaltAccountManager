@@ -33,11 +33,11 @@ export const EAM_BASE_URL = 'https://api.exalt-account-manager.eu/';
 
 export const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 
-const updateBaseUrls = [
+const updateBaseUrls = Object.freeze([
     "https://www.realmofthemadgod.com/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv",
     "{0}/rotmg-exalt-win-64/checksum.json", //TODO: add Mac and Linux support
     "build-release/{0}/rotmg-exalt-win-64/{1}.gz" //TODO: add Mac and Linux support
-];
+]);
 
 export function UPDATE_URLS(index, values) {
     switch (index) {
@@ -67,7 +67,7 @@ export const DISCORD_APPLICATION_ID = '1069308775854526506';
 // OKTA
 export const MASCOT_NAME = 'Okta';
 
-export const DAILY_LOGIN_COMPLETED_MESSAGES = [
+export const DAILY_LOGIN_COMPLETED_MESSAGES = Object.freeze([
     `Mission complete! ${MASCOT_NAME} handled your daily login like a pro.`,
     `All done! ${MASCOT_NAME} just finished your daily login adventure.`,
     `${MASCOT_NAME} checked in for you — smooth, fast, and flawless.`,
@@ -87,7 +87,7 @@ export const DAILY_LOGIN_COMPLETED_MESSAGES = [
     `Done and dusted. ${MASCOT_NAME} took care of the login for you.`,
     `${MASCOT_NAME} handled the daily login while you were doing more important things.`,
     `Routine login complete. ${MASCOT_NAME} was very sneaky about it.`,
-];
+]);
 
 export const NO_LOGS_FOUND_MESSAGES = (currentLogMode) => [
     `${MASCOT_NAME} flipped through every page of the ${currentLogMode}... still nothing.`,
@@ -112,7 +112,7 @@ export const NO_LOGS_FOUND_MESSAGES = (currentLogMode) => [
     `${MASCOT_NAME} checked. Rechecked. Even did a backflip. Still no ${currentLogMode} entries.`
 ];
 
-export const NO_ACCOUNTS_FOUND_TEXTS = [
+export const NO_ACCOUNTS_FOUND_TEXTS = Object.freeze([
     `No accounts here... maybe ${MASCOT_NAME} took a wrong turn.`,
     `The search party led by ${MASCOT_NAME} came back empty-handed.`,
     `Well, this is awkward. ${MASCOT_NAME} found absolutely nothing.`,
@@ -134,9 +134,9 @@ export const NO_ACCOUNTS_FOUND_TEXTS = [
     `${MASCOT_NAME}'s account search is complete. Result: a majestic void.`,
     `${MASCOT_NAME} searched high and low, but found no accounts`,
     `${MASCOT_NAME} has lost its way`,
-];
+]);
 
-export const EAM_PLUS_PURCHASE_SUCCESS_MESSAGES = [
+export const EAM_PLUS_PURCHASE_SUCCESS_MESSAGES = Object.freeze([
     `${MASCOT_NAME} is doing a happy dance — welcome to EAM Plus! 🎉`,
     `You did it! ${MASCOT_NAME} just leveled up thanks to your EAM Plus support.`,
     `${MASCOT_NAME}'s circuits are buzzing with joy — EAM Plus activated!`,
@@ -147,4 +147,4 @@ export const EAM_PLUS_PURCHASE_SUCCESS_MESSAGES = [
     `${MASCOT_NAME} is honored to have you as a Plus member. Expect only mild mischief.`,
     `Plus mode: engaged. ${MASCOT_NAME} feels fancy now.✨`,
     `Thank you for supporting EAM! ${MASCOT_NAME} may cry digital tears of joy.`,
-];
+]);
