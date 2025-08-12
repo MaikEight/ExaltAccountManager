@@ -44,7 +44,7 @@
   },
   "productName": "Exalt Account Manager",
   "mainBinaryName": "Exalt Account Manager",
-  "version": "4.2.5",
+  "version": "4.2.6",
   "identifier": "eu.exalt-account-manager.app",
   "plugins": {
     "updater": {
