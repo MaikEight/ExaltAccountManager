@@ -81,6 +81,10 @@ async function onStartUp() {
 }
 
 function logAllEnabledDebugFlags() {
+    if (localStorage.getItem("flag:debug") === 'true') {
+        sessionStorage.setItem("flag:debug", "true");
+    }
+
     const debugFlags = Object.keys(sessionStorage).filter(key => key.startsWith("flag:"));
     if (debugFlags.length > 0) {
         console.log("🟢 Enabled Debug Flags");
