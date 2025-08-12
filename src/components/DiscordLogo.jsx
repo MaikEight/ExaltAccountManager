@@ -8,7 +8,7 @@ function DiscordLogo({ sx }) {
             sx={sx}
         >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36">
-                <g id="图层_2" data-name="图层 2">
+                <g id="Discord_2" data-name="Discord2">
                     <g id="Discord_Logos" data-name="Discord Logos">
                         <g id="Discord_Logo_-_Large_-_White" data-name="Discord Logo - Large - White">
                             <path fill={theme.palette.text.primary}
