@@ -13,9 +13,9 @@
     "@auth0/auth0-react": "^2.4.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.2.0",
-    "@mui/material": "^7.2.0",
-    "@mui/x-data-grid": "^8.9.2",
+    "@mui/icons-material": "^7.3.1",
+    "@mui/material": "^7.3.1",
+    "@mui/x-data-grid": "^8.10.0",
     "@mui/x-date-pickers": "^7.29.4",
     "@tauri-apps/api": "^2.7.0",
     "@tauri-apps/plugin-autostart": "^2.5.0",
@@ -38,7 +38,7 @@
     "react-confetti": "^6.4.0",
     "react-dom": "^19.1.1",
     "react-error-boundary": "^6.0.0",
-    "react-router-dom": "^7.7.1",
+    "react-router-dom": "^7.8.0",
     "react-transition-group": "^4.4.5",
     "react-virtuoso": "^4.13.0",
     "react-window": "^1.8.11",
@@ -48,9 +48,9 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.7.1",
-    "@vitejs/plugin-react": "^4.7.0",
+    "@vitejs/plugin-react": "^5.0.0",
     "basic-ftp": "^5.0.5",
     "esbuild": "^0.25.8",
-    "vite": "^7.0.6"
+    "vite": "^7.1.1"
   }
 }
