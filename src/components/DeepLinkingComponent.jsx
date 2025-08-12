@@ -6,6 +6,7 @@ import navigationService from '../utils/navigationService';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
+import useUserSettings from '../hooks/useUserSettings';
 
 const deepLinkingPaths = new Map([
     ['accounts', '/accounts'],
@@ -23,11 +24,12 @@ const deepLinkingPaths = new Map([
 function DeepLinkingComponent() {
     const navigate = useNavigate();
     const { handleAuthRedirect, isAuthenticated, refreshUserAfterDelay } = useUserLogin();
+    const { getByKeyAndSubKey } = useUserSettings();
 
     const handleDeepLinkUrl = (urlString) => {
         const url = new URL(urlString);
         console.log('Handling deep link:', urlString);
-        
+
         //Check if the URL is a callback URL
         if (url.pathname === 'profile/callback') {
             if (!isAuthenticated) {
@@ -71,8 +73,15 @@ function DeepLinkingComponent() {
         }
 
         if (url.pathname === 'start-daily-login-task') {
-             getCurrentWindow().hide();
-             return;
+            hideWindowOnDailyLoginStartup();
+            return;
+        }
+    };
+
+    const hideWindowOnDailyLoginStartup = async () => {
+        const disableAutoHideOnDailyLoginStartup = await getByKeyAndSubKey("dailyLogin", "disableAutoHideOnDailyLoginStartup");
+        if (!disableAutoHideOnDailyLoginStartup) {
+            await getCurrentWindow().hide();
         }
     };
 
@@ -98,13 +107,25 @@ function DeepLinkingComponent() {
         try {
             const isAutostart = await invoke('is_started_with_autostart');
             if (isAutostart) {
-                if(sessionStorage.getItem('flag:debug') === 'true') {
+                const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+                if (debugFlag) {
                     console.log('Application was started via autostart');
                 }
-                
-                const currentWindow = getCurrentWindow();
-                if (currentWindow.isVisible()) {
-                    currentWindow.hide();
+
+                const hideOnAutostart = await getByKeyAndSubKey("general", "hideOnAutostart");
+                if (hideOnAutostart) {
+                    if (debugFlag) {
+                        console.log('Auto-hide on auto-start is enabled');
+                    }
+                    const currentWindow = getCurrentWindow();
+                    if (currentWindow.isVisible()) {
+                        currentWindow.hide();
+                    }
+                    return;
+                }
+
+                if (debugFlag) {
+                    console.log('Auto-hide on auto-start is disabled');
                 }
             }
         } catch (error) {
@@ -113,16 +134,16 @@ function DeepLinkingComponent() {
     };
 
     useEffect(() => {
-        if(navigate) {
+        if (navigate) {
             // Check for startup deep link first
             checkForStartupDeepLink();
-            
+
             // Check if started with autostart
             checkIfStartedWithAutostart();
-            
+
             // Perform deep linking when the component mounts
             performDeepLinking();
-            
+
             // Listen for deep-link events from Rust backend (for app startup deep links)
             const unsubscribe = listen('deep-link', (event) => {
                 console.log('Deep link event received from backend:', event.payload);
@@ -137,13 +158,13 @@ function DeepLinkingComponent() {
     }, []);
 
     useEffect(() => {
-        if(!navigate) {
+        if (!navigate) {
             return;
         }
 
         // Initialize the navigation service with the navigate function
         navigationService.setNavigate(navigate);
-        
+
         performDeepLinking();
     }, [navigate]);
 
