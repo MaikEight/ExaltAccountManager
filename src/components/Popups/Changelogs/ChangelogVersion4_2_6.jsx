@@ -36,7 +36,7 @@ function ChangelogVersion4_2_6() {
 
     const title = [
         "Exalt Account Manager v4.2.6",
-        "Daily Login hotfix, Stabilizations, bug fixes and more improvements!",
+        "Daily Login hotfix, more Settings, bug fixes and improvements!",
     ];
 
     const oldTitle = [
@@ -160,10 +160,21 @@ function ChangelogVersion4_2_6() {
                 />
 
                 <ChangelogEntry
+                    title={'Settings'}
+                    listOfChanges={[
+                        "Added a setting to disable the Background Sync process.",
+                        "Added a setting to close EAM after the Daily Login finishes.",
+                        "Added a setting to disable the auto-hide on Daily Login startup.",
+                        "Added a setting to hide EAM when started via the autostart.",
+                        "Added a setting to disable the Discord Rich Presence.",
+                    ]}
+                />
+
+                <ChangelogEntry
                     title={'Miscellaneous'}
                     listOfChanges={[
                         "Stabilized every database operation by integrating a retry mechanism and enabling WAL mode.",
-                        "Fixed an issue where the game updater would not work correctly when no game exe path was specified in the settings yet.",
+                        "Fixed an issue where the game updater would not work correctly when no game exe path was specified in the settings just yet.",
                     ]}
                 />
 
