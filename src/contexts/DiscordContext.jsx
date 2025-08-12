@@ -3,11 +3,13 @@ import { start, setActivity } from "tauri-plugin-drpc";
 import { Activity, Assets, Button, Timestamps, ActivityType } from "tauri-plugin-drpc/activity";
 import { DISCORD_APPLICATION_ID } from "../constants";
 import { useLocation } from "react-router-dom";
+import useUserSettings from "../hooks/useUserSettings";
 
 const DiscordContext = createContext();
 
 function DiscordContextProvider({ children }) {
     const location = useLocation();
+    const { getByKeyAndSubKey } = useUserSettings();
 
     const [state, setState] = useState("EAM by Maik8");
     const [details, setDetails] = useState("The better rotmg-launcher! 💪");
@@ -117,6 +119,15 @@ function DiscordContextProvider({ children }) {
     useEffect(() => {
         const startup = async () => {
             try {
+                const discordRichPresenceEnabled = getByKeyAndSubKey("general", "discordRichPresenceEnabled");
+
+                if(!discordRichPresenceEnabled) {
+                    if(!sessionStorage.getItem("flag:debug")) {
+                        console.log("Discord Rich Presence is disabled in settings, skipping startup.");
+                    }
+                    return;
+                }
+
                 await start(DISCORD_APPLICATION_ID);
                 resetState(location.pathname);
             }
