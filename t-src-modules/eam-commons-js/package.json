@@ -17,8 +17,8 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.2.0",
-    "@mui/material": "^7.2.0",
+    "@mui/icons-material": "^7.3.1",
+    "@mui/material": "^7.3.1",
     "@tauri-apps/api": "^2.7.0",
     "@tauri-apps/plugin-http": "^2.5.1",
     "axios": "^1.11.0",
@@ -35,8 +35,8 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.7.1",
-    "@vitejs/plugin-react": "^4.7.0",
+    "@vitejs/plugin-react": "^5.0.0",
     "esbuild": "^0.25.8",
-    "vite": "^7.0.6"
+    "vite": "^7.1.1"
   }
 }
