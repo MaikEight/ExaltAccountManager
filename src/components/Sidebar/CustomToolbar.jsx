@@ -154,6 +154,7 @@ function CustomToolbar(props) {
                                     color={"error"}
                                     icon={<VpnLockOutlinedIcon sx={{ pl: '2px' }} />}
                                     onClick={() => null}
+                                    clickable={false}
                                     sx={{
                                         '&:hover': {
                                             cursor: 'default',
