@@ -8,6 +8,8 @@ import { Box, Typography } from "@mui/material";
 import { DAILY_LOGIN_COMPLETED_MESSAGES, MASCOT_NAME } from "../constants";
 import useSnack from "../hooks/useSnack";
 import { validatePlusToken, checkForUpdates, updateGame } from 'eam-commons-js';
+import useUserSettings from "../hooks/useUserSettings";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * DAILY_LOGIN_COMPLETED_MESSAGES.length);
@@ -25,8 +27,10 @@ const SyncMode = {
 function BackgroundSyncProvider({ children }) {
     const processedEventIds = useRef({});
     const emailToAccountNameMap = useRef({});
+
     const { loadAccountByEmail, updateAccount, accounts } = useAccounts();
     const { showSnackbar } = useSnack();
+    const { getByKeyAndSubKey } = useUserSettings();
 
     const [syncMode, setSyncMode] = useState(SyncMode.Stopped);
     const [uiState, setUiState] = useState({
@@ -411,6 +415,14 @@ function BackgroundSyncProvider({ children }) {
                 'message',
                 true //persistent
             );
+
+            const closeEamAfterDailyLogin = getByKeyAndSubKey('dailyLogin', 'closeAfterFinish');
+            if (closeEamAfterDailyLogin === true) {
+                setTimeout(async () => {
+                    await getCurrentWindow().close();
+                }, 5_000);
+            }
+
             return;
         }
 
