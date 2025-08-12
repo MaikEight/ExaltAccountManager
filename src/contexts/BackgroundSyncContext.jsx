@@ -604,8 +604,11 @@ function BackgroundSyncProvider({ children }) {
 
     useEffect(() => {
         const createAndStartBackgroundSyncManager = async () => {
+            const backgroundSyncEnabled = await getByKeyAndSubKey("backgroundSync", "enabled");
+            const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+
             try {
-                const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+
                 await invoke('create_background_sync_manager').catch(console.error);
 
                 const needsDailyLogin = await invoke('needs_to_do_daily_login').catch((error) => {
@@ -633,7 +636,7 @@ function BackgroundSyncProvider({ children }) {
                     if (!isPlusUser) {
                         //Non-Plus users need to update the game for the daily login to work
                         if (debugFlag) {
-                            console.info('Non-Plus user detected, stopping background sync manager for daily login.');
+                            console.info('Non-Plus user detected, stopping background sync manager for daily login to check for updates.');
                         }
 
                         if (isRunning) {
@@ -655,17 +658,26 @@ function BackgroundSyncProvider({ children }) {
                         }
                     }
 
-                    if (isRunning) {
+                    if (isRunning && isPlusUser) {
                         if (currentMode === SyncMode.DailyLogin) {
                             // The manager is running as expected.
                             return;
                         }
+
                         await invoke('stop_background_sync_manager').catch(console.error);
                     }
 
                     await invoke('change_background_sync_mode', { mode: SyncMode.DailyLogin }).catch(console.error);
                     await new Promise(resolve => setTimeout(resolve, 3000));
                     await invoke('start_background_sync_manager').catch(console.error);
+                    return;
+                }
+
+                if (!backgroundSyncEnabled) {
+                    if (debugFlag) {
+                        console.info('Background sync is disabled, stopping background sync manager.');
+                    }
+                    await invoke('stop_background_sync_manager').catch(console.error);
                     return;
                 }
 
