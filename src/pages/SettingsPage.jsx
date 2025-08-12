@@ -35,6 +35,9 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import { MASCOT_NAME } from '../constants';
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined';
 import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart'
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import SyncOutlinedIcon from '@mui/icons-material/SyncOutlined';
+import DiscordLogo from './../components/DiscordLogo';
 
 function SettingsPage() {
     const userSettings = useUserSettings();
@@ -51,6 +54,7 @@ function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
     const [settings, setSettings] = useState({});
     const [gameExePath, setGameExePath] = useState("");
+    const [disableAutoHideOnDailyLoginStartup, setDisableAutoHideOnDailyLoginStartup] = useState(null);
     const [openVaultPeekerAccountsPoppover, setOpenVaultPeekerAccountsPoppover] = useState(false);
     const [analyticsSettings, setAnalyticsSettings] = useState(null);
     const [analyticsRequestLoading, setAnalyticsRequestLoading] = useState(false);
@@ -124,8 +128,10 @@ function SettingsPage() {
     const setTheSettings = async () => {
         const s = userSettings.get;
         const _gameExePath = await userSettings.getByKeyAndSubKey('game', 'exePath');
+        const _disableAutoHideOnDailyLoginStartup = await userSettings.getByKeyAndSubKey('dailyLogin', 'disableAutoHideOnDailyLoginStartup');
         setSettings(s);
         setGameExePath(_gameExePath);
+        setDisableAutoHideOnDailyLoginStartup(_disableAutoHideOnDailyLoginStartup);
 
         // Set the analytics settings
         const analyticsSettingsUserData = await invoke('get_user_data_by_key', { key: 'analytics' })
@@ -177,6 +183,12 @@ function SettingsPage() {
 
         userSettings.setByKeyAndSubKey('game', 'exePath', gameExePath);
     }, [gameExePath]);
+
+    useEffect(() => {
+        if (disableAutoHideOnDailyLoginStartup === undefined || disableAutoHideOnDailyLoginStartup === "" || disableAutoHideOnDailyLoginStartup === null) return;
+
+        userSettings.setByKeyAndSubKey('dailyLogin', 'disableAutoHideOnDailyLoginStartup', disableAutoHideOnDailyLoginStartup);
+    }, [disableAutoHideOnDailyLoginStartup]);
 
     useEffect(() => {
         if (!analyticsSettings) {
@@ -550,6 +562,105 @@ function SettingsPage() {
                 </Box>
             </ComponentBox>
 
+            {/* Background Sync */}
+            <ComponentBox
+                title="Background Sync"
+                icon={<SyncOutlinedIcon />}
+            >
+                <Typography variant="body2" color="text.secondary">
+                    Enable or disable background synchronization for your accounts.
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Changing this setting will require you to restart the application for it to take effect.
+                </Typography>
+
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        mt: 1,
+                        ml: 1,
+                    }}
+                >
+                    <FormControlLabel
+                        sx={{ gap: 0.5 }}
+                        control={
+                            <Tooltip
+                                title={settings?.backgroundSync?.enabled ? "Disable background sync" : "Enable background sync"}
+                            >
+                                <Switch
+                                    size="small"
+                                    checked={settings?.backgroundSync?.enabled || false}
+                                    onChange={() => {
+                                        const newSettings = { ...settings };
+                                        if (!newSettings.backgroundSync) newSettings.backgroundSync = {};
+                                        newSettings.backgroundSync.enabled = !newSettings.backgroundSync.enabled;
+                                        setSettings(newSettings);
+                                    }}
+                                />
+                            </Tooltip>
+                        }
+                        label={'Enable Background Sync'}
+                    />
+                </Box>
+            </ComponentBox>
+
+            {/* Daily Login */}
+            <ComponentBox
+                title="Daily Login"
+                icon={<CalendarMonthOutlinedIcon />}
+            >
+                <Typography variant="body2" color="text.secondary">
+                    Choose if EAM should close automatically after the Daily Login finishes or if EAM should hide in the task tray during daily login.
+                </Typography>
+
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                        mt: 1,
+                        ml: 1,
+                    }}
+                >
+                    <FormControlLabel
+                        sx={{ gap: 0.5 }}
+                        control={
+                            <Tooltip
+                                title={settings?.dailyLogin?.closeAfterFinish ? "Disable auto-close" : "Enable auto-close"}
+                            >
+                                <Switch
+                                    size="small"
+                                    checked={settings?.dailyLogin?.closeAfterFinish || false}
+                                    onChange={() => {
+                                        const newSettings = { ...settings };
+                                        if (!newSettings.dailyLogin) newSettings.dailyLogin = {};
+                                        newSettings.dailyLogin.closeAfterFinish = !newSettings.dailyLogin.closeAfterFinish;
+                                        setSettings(newSettings);
+                                    }}
+                                />
+                            </Tooltip>
+                        }
+                        label={'Close EAM after the Daily Login finishes'}
+                    />
+                    <FormControlLabel
+                        sx={{ gap: 0.5 }}
+                        control={
+                            <Tooltip
+                                title={!disableAutoHideOnDailyLoginStartup ? "Disable auto-hide on startup" : "Enable auto-hide on startup"}
+                            >
+                                <Switch
+                                    size="small"
+                                    checked={!(disableAutoHideOnDailyLoginStartup || false)}
+                                    onChange={() => setDisableAutoHideOnDailyLoginStartup(prev => !prev)}
+                                />
+                            </Tooltip>
+                        }
+                        label={'Start EAM in the task tray (hidden) when starting via the Daily Login task'}
+                    />
+                </Box>
+            </ComponentBox>
+
             {/* Autostart */}
             <ComponentBox
                 title="Autostart & Close behavior"
@@ -558,16 +669,18 @@ function SettingsPage() {
                 <Typography variant="body2" color="text.secondary">
                     Choose if the application should start automatically when you start your computer.
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.secondary">
                     This allows EAM to refresh your accounts in the background and always be up to date.
                 </Typography>
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
+                        gap: 0.5,
+                        mt: 1,
+                        ml: 1,
                     }}
                 >
-
                     <FormControlLabel
                         sx={{ gap: 0.5 }}
                         control={
@@ -575,6 +688,7 @@ function SettingsPage() {
                                 title={"Minimizing the application to the tray on close will allow you to keep the application running in the background without having it open in the taskbar. This allows EAM to refresh your accounts in the background and always be up to date."}
                             >
                                 <Switch
+                                    size="small"
                                     checked={settings?.general?.minimizeToTray || false}
                                     onChange={() => {
                                         const newSettings = { ...settings };
@@ -588,20 +702,106 @@ function SettingsPage() {
                         label={'Minimize to tray on close'}
                     />
 
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: 2
+                        }}
+                    >
+                        <FormControlLabel
+                            sx={{ gap: 0.5 }}
+                            control={
+                                <Tooltip
+                                    title={isAutostartEnabled ? "Disable autostart" : "Enable autostart"}
+                                >
+                                    <Switch
+                                        size="small"
+                                        disabled={isUpdateingAutostart}
+                                        checked={isAutostartEnabled}
+                                        onChange={handleAutostartToggle}
+                                    />
+                                </Tooltip>
+                            }
+                            label={'Autostart'}
+                        />
+                        <Tooltip
+                            title={isAutostartEnabled ? settings?.general?.hideOnAutostart ? "Hide EAM on autostart" : "Show EAM on autostart" : "Only available with autostart enabled"}
+                        >
+                            <FormControlLabel
+                                sx={{ gap: 0.5 }}
+                                control={
+                                    <Switch
+                                        size="small"
+                                        disabled={isUpdateingAutostart || !isAutostartEnabled}
+                                        checked={settings?.general?.hideOnAutostart}
+                                        onChange={() => {
+                                            const newSettings = { ...settings };
+                                            if (!newSettings.general) newSettings.general = {};
+                                            newSettings.general.hideOnAutostart = !newSettings.general.hideOnAutostart;
+                                            setSettings(newSettings);
+                                        }}
+                                    />
+                                }
+                                label={'Hide EAM on autostart'}
+                            />
+                        </Tooltip>
+                    </Box>
+
+                </Box>
+            </ComponentBox>
+
+            {/* Discord Rich Presence */}
+            <ComponentBox
+                title="Discord Rich Presence"
+                icon={(
+                    <DiscordLogo
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 24,
+                            height: 24,
+                            mr: 0.25,
+                        }}
+                    />
+                )}
+                innerSx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <Typography variant="body2" color="text.secondary">
+                    Choose if you want to have the Discord Rich Presence enabled.
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Changing this setting will require you to restart the application for it to take effect.
+                </Typography>
+                <Box
+                    sx={{
+                        mt: 1,
+                        ml: 1,
+                    }}
+                >
                     <FormControlLabel
                         sx={{ gap: 0.5 }}
                         control={
                             <Tooltip
-                                title={isAutostartEnabled ? "Disable autostart" : "Enable autostart"}
+                                title={(settings?.general?.discordRichPresenceEnabled ?? true) ? "Disable Discord Rich Presence" : "Enable Discord Rich Presence"}
                             >
                                 <Switch
-                                    disabled={isUpdateingAutostart}
-                                    checked={isAutostartEnabled}
-                                    onChange={handleAutostartToggle}
+                                    size="small"
+                                    checked={settings?.general?.discordRichPresenceEnabled ?? true}
+                                    onChange={() => {
+                                        const newSettings = { ...settings };
+                                        if (!newSettings.general) newSettings.general = {};
+                                        newSettings.general.discordRichPresenceEnabled = !newSettings.general.discordRichPresenceEnabled;
+                                        setSettings(newSettings);
+                                    }}
                                 />
                             </Tooltip>
                         }
-                        label={'Autostart'}
+                        label={'Discord Rich Presence enabled'}
                     />
                 </Box>
             </ComponentBox>
@@ -611,13 +811,21 @@ function SettingsPage() {
                 title="Theme"
                 icon={<DarkModeOutlinedIcon />}
             >
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.secondary">
                     Choose which theme should be used... of course only dark mode is the correct choice.
                 </Typography>
-                <Tooltip title={isDarkMode() ? "Burn your eyes!" : "Come to the dark side, we have cookies!"}>
-                    <FormControlLabel sx={{ gap: 0.5 }} control={<Switch checked={isDarkMode()} onChange={() => colorContext.toggleColorMode()} />} label={'Darkmode'} />
-                </Tooltip>
+                <Box
+                    sx={{
+                        mt: 1,
+                        ml: 1,
+                    }}
+                >
+                    <Tooltip title={isDarkMode() ? "Burn your eyes!" : "Come to the dark side, we have cookies!"}>
+                        <FormControlLabel sx={{ gap: 0.5 }} control={<Switch size="small" checked={isDarkMode()} onChange={() => colorContext.toggleColorMode()} />} label={'Darkmode'} />
+                    </Tooltip>
+                </Box>
             </ComponentBox>
+
             {/* Privacy & Legal */}
             <ComponentBox
                 title="Privacy & Legal"
