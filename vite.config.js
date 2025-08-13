@@ -16,12 +16,22 @@ export default defineConfig(async () => ({
       '@mui/material',
       '@mui/x-data-grid',
     ],
-    exclude: ['eam-commons-js'],
   },
   resolve: {
     alias: {
       'stream': 'stream-browserify',
-    }
+      'react': resolve(__dirname, 'node_modules/react'),
+      'react-dom': resolve(__dirname, 'node_modules/react-dom'),
+    },
+    dedupe: ['react', 'react-dom'],
+  },
+  build: {
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {
