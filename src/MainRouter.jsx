@@ -23,7 +23,7 @@ import ProfilePage from './pages/ProfilePage';
 import PaymentSuccessful from './pages/PaymentSuccessful';
 import { DiscordContextProvider } from './contexts/DiscordContext';
 import DebugFlagsPage from './pages/DebugFlagsPage';
-import BackgroundSyncContext, { BackgroundSyncProvider } from './contexts/BackgroundSyncContext';
+import { BackgroundSyncProvider } from './contexts/BackgroundSyncContext';
 
 function MainRouter() {
     const theme = useTheme();
