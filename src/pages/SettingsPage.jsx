@@ -734,7 +734,7 @@ function SettingsPage() {
                                     <Switch
                                         size="small"
                                         disabled={isUpdateingAutostart || !isAutostartEnabled}
-                                        checked={settings?.general?.hideOnAutostart}
+                                        checked={settings?.general?.hideOnAutostart ?? false}
                                         onChange={() => {
                                             const newSettings = { ...settings };
                                             if (!newSettings.general) newSettings.general = {};
