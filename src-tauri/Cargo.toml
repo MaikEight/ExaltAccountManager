@@ -18,7 +18,7 @@ tauri-build = { version = "2.3.1", features = [] }
 tauri = { version = "2.7.0", features = ["devtools", "macos-private-api", "tray-icon"] }
 tauri-plugin = "2"
 tauri-plugin-deep-link = "2"
-tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
+tauri-plugin-single-instance = { version = "2.3.2", features = ["deep-link"] }
 tauri-plugin-fs = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-http = "2"
