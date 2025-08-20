@@ -864,12 +864,13 @@ impl BackgroundSyncManager {
 
             // Ensure minimum 60 seconds between account completions
             let elapsed_since_last = last_account_finish_time.elapsed();
-            let min_wait_time = Duration::from_secs(60);
-            
+            let minimum_wait_time_in_seconds = if self.is_plus_user.load(Ordering::SeqCst) { 60 } else { 90 };
+            let min_wait_time = Duration::from_secs(minimum_wait_time_in_seconds);
+
             if elapsed_since_last < min_wait_time {
                 let remaining_wait = min_wait_time - elapsed_since_last;
-                info!("[BGRSYNC][DL] Waiting {} seconds before processing next account (ensuring 60s minimum interval)...", remaining_wait.as_secs());
-                
+                info!("[BGRSYNC][DL] Waiting {} seconds before processing next account (ensuring {}s minimum interval)...", remaining_wait.as_secs(), minimum_wait_time_in_seconds);
+
                 self.event_hub.emit(BackgroundSyncEvent::AccountProgress {
                     id: Uuid::new_v4(),
                     email: account.email.clone(),
@@ -912,7 +913,7 @@ impl BackgroundSyncManager {
     }
 
     /// Calculates the estimated time for the daily login based on the number of accounts left.
-    /// For Plus users, it assumes 62 seconds per account, otherwise 92 seconds.
+    /// For Plus users, it assumes 80 seconds per account, otherwise 102 seconds.
     /// The time per account is based on the average time it takes to process an account.
     /// 2 seconds for the web request
     /// 90 seconds for the game to start and process the daily login
@@ -932,8 +933,8 @@ impl BackgroundSyncManager {
         }
 
         if self.is_plus_user.load(Ordering::SeqCst) {
-            return Utc::now() + Duration::from_secs(62 * left as u64);
+            return Utc::now() + Duration::from_secs(80 * left as u64);
         }
-        Utc::now() + Duration::from_secs(92 * left as u64)
+        Utc::now() + Duration::from_secs(102 * left as u64)
     }
 }
