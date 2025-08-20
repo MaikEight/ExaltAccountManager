@@ -157,8 +157,13 @@ fn main() {
     info!("Starting Tauri application...");
     //Run the tauri application
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
-            println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {            
+            info!("New app instance detected with args: {:?}", argv);
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_focus();
+                let _ = window.show();
+                let _ = window.unminimize();
+            }
         }))
         .plugin(tauri_plugin_autostart::Builder::new()
             .args(["--autostart"])
