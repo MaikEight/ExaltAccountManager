@@ -21,7 +21,13 @@ function ProfilePlanChip() {
     }
 
     return (
-        <>
+        <Box 
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5
+            }}
+        >
             <Chip
                 label={user.subName ?? 'Default User'}
                 color={isPlusUser ? 'primary' : 'default'}
@@ -105,7 +111,7 @@ function ProfilePlanChip() {
                     </Tooltip>
                 )
             }
-        </>
+        </Box>
     );
 }
 
