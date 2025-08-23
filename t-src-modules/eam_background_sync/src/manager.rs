@@ -864,7 +864,7 @@ impl BackgroundSyncManager {
 
             // Ensure minimum 60 seconds between account completions
             let elapsed_since_last = last_account_finish_time.elapsed();
-            let minimum_wait_time_in_seconds = if self.is_plus_user.load(Ordering::SeqCst) { 60 } else { 90 };
+            let minimum_wait_time_in_seconds = if self.is_plus_user.load(Ordering::SeqCst) { 60 } else { 100 };
             let min_wait_time = Duration::from_secs(minimum_wait_time_in_seconds);
 
             if elapsed_since_last < min_wait_time {
