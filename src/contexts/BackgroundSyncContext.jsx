@@ -16,6 +16,16 @@ const getRandomMessage = () => {
     return DAILY_LOGIN_COMPLETED_MESSAGES[randomIndex];
 };
 
+const happyMascotImages = [
+    '/mascot/Happy/cheer_very_low_res.png',
+    '/mascot/Happy/happy_very_low_res.png',
+];
+
+const getRandomHappyMascotImage = () => {
+    const randomIndex = Math.floor(Math.random() * happyMascotImages.length);
+    return happyMascotImages[randomIndex];
+};
+
 const BackgroundSyncContext = createContext();
 
 const SyncMode = {
@@ -403,7 +413,7 @@ function BackgroundSyncProvider({ children }) {
                         }}
                     >
                         <img
-                            src="/mascot/Happy/cheer_very_low_res.png"
+                            src={getRandomHappyMascotImage()}
                             alt={`${MASCOT_NAME} is happy`}
                             style={{ width: '120px' }}
                         />
