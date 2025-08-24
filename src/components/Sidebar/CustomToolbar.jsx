@@ -106,7 +106,6 @@ function CustomToolbar(props) {
                     color={"warning"}
                     icon={<FlagCircleOutlinedIcon sx={{ pl: '2px' }} />}
                     onClick={() => null}
-                    clickable={false}
                 />
             </Tooltip>
         );
@@ -154,7 +153,6 @@ function CustomToolbar(props) {
                                     color={"error"}
                                     icon={<VpnLockOutlinedIcon sx={{ pl: '2px' }} />}
                                     onClick={() => null}
-                                    clickable={false}
                                     sx={{
                                         '&:hover': {
                                             cursor: 'default',
@@ -232,9 +230,25 @@ function CustomToolbar(props) {
                                                 }}
                                             />
                                         </Box>
-                                        <Typography variant="body2">
-                                            {`Oops! Too many requests. ${MASCOT_NAME} is patiently untangling things.`}
-                                        </Typography>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            <Typography variant="body1">
+                                                {`Oops!`}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                {`Too many requests. ${MASCOT_NAME} is patiently untangling things.`}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                {`This will take just a few minutes`}
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                 </Paper>
                             </Popover>
