@@ -6,9 +6,12 @@ import { CustomPagination } from "../components/GridComponents/CustomPagination"
 import { useTheme } from "@mui/material/styles";
 import LogsGridToolbar from "../components/GridComponents/LogsGridToolbar";
 import LogsNoRowsOverlay from "../components/GridComponents/LogsNoRowsOverlay";
-import { MASCOT_NAME, NO_LOGS_FOUND_MESSAGES } from "../constants";
+import { NO_LOGS_FOUND_MESSAGES } from "../constants";
+import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
 
 function LogsPage() {
+    const { applySettingsToHeaderName } = useApplySettingsToHeaderName();
+
     const [currentLogMode, setCurrentLogMode] = useState('AuditLog'); // 'AuditLog' or 'ErrorLog'
     const [currentLog, setCurrentLog] = useState([]);
     const [currentShownLog, setCurrentShownLog] = useState([]);
@@ -25,18 +28,18 @@ function LogsPage() {
     const theme = useTheme();
 
     const auditLogColumns = [
-        { field: 'id', headerName: 'ID', width: 65 },
-        { field: 'time', headerName: 'Time', width: 150, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
-        { field: 'sender', headerName: 'Sender', width: 200 },
-        { field: 'message', headerName: 'Message', flex: 0.5 },
-        { field: 'accountEmail', headerName: 'Email', flex: 0.325 }
+        { field: 'id', headerName: applySettingsToHeaderName('🆔 ID'), width: 65 },
+        { field: 'time', headerName: applySettingsToHeaderName('🕑 Time'), width: 150, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
+        { field: 'sender', headerName: applySettingsToHeaderName('👤 Sender'), width: 200 },
+        { field: 'message', headerName: applySettingsToHeaderName('💬 Message'), flex: 0.5 },
+        { field: 'accountEmail', headerName: applySettingsToHeaderName('📧 Email'), flex: 0.325 }
     ];
 
     const errorLogColumns = [
-        { field: 'id', headerName: 'ID', width: 65 },
-        { field: 'time', headerName: 'Time', width: 150, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
-        { field: 'sender', headerName: 'Trigger', width: 200 },
-        { field: 'message', headerName: 'Message', minWidth: 115, flex: 0.5 },
+        { field: 'id', headerName: applySettingsToHeaderName('🆔 ID'), width: 65 },
+        { field: 'time', headerName: applySettingsToHeaderName('🕑 Time'), width: 150, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
+        { field: 'sender', headerName: applySettingsToHeaderName('👤 Trigger'), width: 200 },
+        { field: 'message', headerName: applySettingsToHeaderName('💬 Message'), minWidth: 115, flex: 0.5 },
     ];
 
     const getSearchedLogs = () => {
