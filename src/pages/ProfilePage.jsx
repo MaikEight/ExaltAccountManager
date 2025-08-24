@@ -11,7 +11,6 @@ import EamPlusComparisonTable from "../components/PlusPage/EamPlusComparisonTabl
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { CACHE_PREFIX, STRIPE_CUSTOMER_PORTAL_URL } from "../constants";
 import ProfilePlanChip from './../components/ProfilePlanChip';
-import { useNavigate } from "react-router-dom";
 import EamPlusFAQ from "../components/PlusPage/EamPlusFAQ";
 
 function ProfilePage() {
