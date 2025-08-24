@@ -190,8 +190,11 @@ function AccountGrid({ setShowAddNewAccount }) {
             <DataGrid
                 initialState={{
                     columns: {
-                        columnVisibilityModel: { orderId: false, ...settings.getByKeyAndSubKey('accounts', 'columnsHidden') },
+                        columnVisibilityModel: { ...settings.getByKeyAndSubKey('accounts', 'columnsHidden') },
                     },
+                }}
+                onColumnVisibilityModelChange={(model) => {
+                    settings.setByKeyAndSubKey('accounts', 'columnsHidden', model);
                 }}
                 rows={shownAccounts}
                 getRowId={(row) => row.id}
