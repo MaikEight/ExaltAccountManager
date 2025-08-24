@@ -9,6 +9,10 @@ function PopupContextProvider({ children }) {
     const [popupData, setPopupData] = useState(null);
     const { accounts } = useAccounts();
     const { performPopupCheck } = useStartupPopups();
+    const [startupPopupResult, setStartupPopupResult] = useState({
+        done: false,
+        hadPopup: false,
+    });
 
     const showPopup = (data) => {
         setPopupData(data);
@@ -22,7 +26,7 @@ function PopupContextProvider({ children }) {
     };
 
     const handleCloseModal = (event, reason) => {
-        if(popupData.preventClose && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
+        if (popupData.preventClose && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
             return;
         }
 
@@ -32,9 +36,17 @@ function PopupContextProvider({ children }) {
     useEffect(() => {
         const timeoutId = setTimeout(async () => {
             const popupData = await performPopupCheck();
+            const newStartupPopupResult = {
+                done: true,
+                hadPopup: false
+            };
+
             if (popupData) {
+                newStartupPopupResult.hadPopup = true;
                 showPopup(popupData);
             }
+
+            setStartupPopupResult(newStartupPopupResult);
         }, 500);
 
         return () => clearTimeout(timeoutId);
@@ -43,6 +55,7 @@ function PopupContextProvider({ children }) {
     const value = {
         showPopup,
         closePopup,
+        startupPopupResult
     }
 
     return (
@@ -52,16 +65,21 @@ function PopupContextProvider({ children }) {
                 open={Boolean(popupData)}
                 onClose={handleCloseModal}
                 disableAutoFocus
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    p: 2,
+                }}
             >
-                <Box 
+                <Box
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
+                        position: 'relative',
+                        maxHeight: 'calc(100vh - 32px)',
+                        maxWidth: 'calc(100vw - 32px)',
+                        outline: 'none',
+                        borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        overflow: 'auto',
                     }}
                 >
                     {Boolean(popupData) && popupData.content}
