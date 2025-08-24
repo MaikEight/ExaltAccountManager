@@ -3,7 +3,11 @@ import ComponentBox from "../ComponentBox";
 
 function PopupBase({ title, children }) {
     return (
-        <ComponentBox>
+        <ComponentBox
+            sx={{
+                m: 0,
+            }}
+        >
             <Box
                 sx={{
                     display: 'flex',
