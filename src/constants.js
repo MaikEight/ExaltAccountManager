@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
-export const APP_VERSION = '4.2.6';
-export const APP_VERSION_RELEASE_DATE = '13.08.2025';
+export const APP_VERSION = '4.2.7';
+export const APP_VERSION_RELEASE_DATE = '24.08.2025';
 export const IS_PRE_RELEASE = true;
 
 export const CACHE_PREFIX = '!cache-';
@@ -28,8 +28,8 @@ export const SERVER_LIST_FILE_PATH = async () => await invoke('combine_paths', {
 export const HWID_FILE_NAME = 'EAM.HWID';
 export const SERVER_LIST_FILE_NAME = 'serverList.json';
 
-// export const EAM_BASE_URL = 'http://localhost:5066/'; //For development purposes only
 export const EAM_BASE_URL = 'https://api.exalt-account-manager.eu/';
+export const EAM_NEWS_BASE_URL = 'https://news.api.exaltaccountmanager.com/';
 
 export const ROTMG_BASE_URL = 'https://www.realmofthemadgod.com';
 
