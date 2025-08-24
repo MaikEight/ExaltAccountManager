@@ -617,25 +617,28 @@ function DailyLoginsPage() {
                         Run Task now
                     </StyledButton> 
                     */}
-                    <StyledButton
-                        disabled={isInstallingTask || !isTaskInstalled}
-                        color="error"
-                        onClick={() => {
-                            invoke('uninstall_eam_daily_login_task', { uninstallOldVersions: false })
-                                .then(() => {
-                                    setIsTaskInstalled(false);
-                                    localStorage.removeItem('dailyLoginTaskInstalled');
-                                    showSnackbar('Task uninstalled successfully', 'success');
-                                })
-                                .catch((err) => {
-                                    console.error(err);
-                                    showSnackbar('Failed to uninstall the task, please try again later.', 'error');
-                                });
-                        }}
-                        startIcon={<DeleteOutlineOutlinedIcon />}
-                    >
-                        Uninstall Task
-                    </StyledButton>
+                    {
+                        isTaskInstalled &&
+                        <StyledButton
+                            disabled={isInstallingTask}
+                            color="error"
+                            onClick={() => {
+                                invoke('uninstall_eam_daily_login_task', { uninstallOldVersions: false })
+                                    .then(() => {
+                                        setIsTaskInstalled(false);
+                                        localStorage.removeItem('dailyLoginTaskInstalled');
+                                        showSnackbar('Task uninstalled successfully', 'success');
+                                    })
+                                    .catch((err) => {
+                                        console.error(err);
+                                        showSnackbar('Failed to uninstall the task, please try again later.', 'error');
+                                    });
+                            }}
+                            startIcon={<DeleteOutlineOutlinedIcon />}
+                        >
+                            Uninstall Task
+                        </StyledButton>
+                    }
                 </Box>
             </ComponentBox>
             <DailyLoginsSlideout isOpen={slideoutOpen} report={selectedReport} onClose={() => {
