@@ -24,6 +24,7 @@ import PaymentSuccessful from './pages/PaymentSuccessful';
 import { DiscordContextProvider } from './contexts/DiscordContext';
 import DebugFlagsPage from './pages/DebugFlagsPage';
 import { BackgroundSyncProvider } from './contexts/BackgroundSyncContext';
+import { NewsContextProvider } from './contexts/NewsContext';
 
 function MainRouter() {
     const theme = useTheme();
@@ -54,27 +55,29 @@ function MainRouter() {
                                                 fallback={<ErrorBoundaryFallback />}
                                                 onError={(error, stack) => console.warn('ErrorBoundary', error, stack)}
                                             >
-                                                <DiscordContextProvider>
-                                                    <DeepLinkingComponent />
-                                                    <Routes>
-                                                        <Route path='/' element={<AccountsPage />}></Route>
-                                                        <Route path='/error' element={<FatalErrorPage />}></Route>
-                                                        <Route path='/accounts' element={<AccountsPage />}></Route>
-                                                        <Route path='/vaultPeeker' element={<VaultPeekerPage />}></Route>
-                                                        <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
-                                                        <Route path='/utilities' element={<UtilitiesPage />}></Route>
-                                                        <Route path='/settings' element={<SettingsPage />}></Route>
-                                                        <Route path='/logs' element={<LogsPage />}></Route>
-                                                        <Route path='/profile' element={<ProfilePage />}></Route>
-                                                        <Route path='/about' element={<AboutPage />}></Route>
-                                                        <Route path='/feedback' element={<FeedbackPage />}></Route>
-                                                        <Route path='/importer' element={<ImporterPage />}></Route>
-                                                        <Route path='/payment/successful' element={<PaymentSuccessful />}></Route>
-                                                        <Route path='/flags' element={<DebugFlagsPage />}></Route>
-                                                        <Route path='/debug' element={<DebugFlagsPage />}></Route>
-                                                        <Route path='*' element={<AccountsPage />}></Route>
-                                                    </Routes>
-                                                </DiscordContextProvider>
+                                                <NewsContextProvider>
+                                                    <DiscordContextProvider>
+                                                        <DeepLinkingComponent />
+                                                        <Routes>
+                                                            <Route path='/' element={<AccountsPage />}></Route>
+                                                            <Route path='/error' element={<FatalErrorPage />}></Route>
+                                                            <Route path='/accounts' element={<AccountsPage />}></Route>
+                                                            <Route path='/vaultPeeker' element={<VaultPeekerPage />}></Route>
+                                                            <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
+                                                            <Route path='/utilities' element={<UtilitiesPage />}></Route>
+                                                            <Route path='/settings' element={<SettingsPage />}></Route>
+                                                            <Route path='/logs' element={<LogsPage />}></Route>
+                                                            <Route path='/profile' element={<ProfilePage />}></Route>
+                                                            <Route path='/about' element={<AboutPage />}></Route>
+                                                            <Route path='/feedback' element={<FeedbackPage />}></Route>
+                                                            <Route path='/importer' element={<ImporterPage />}></Route>
+                                                            <Route path='/payment/successful' element={<PaymentSuccessful />}></Route>
+                                                            <Route path='/flags' element={<DebugFlagsPage />}></Route>
+                                                            <Route path='/debug' element={<DebugFlagsPage />}></Route>
+                                                            <Route path='*' element={<AccountsPage />}></Route>
+                                                        </Routes>
+                                                    </DiscordContextProvider>
+                                                </NewsContextProvider>
                                             </ErrorBoundary>
                                         </PopupContextProvider>
                                     </GroupsContextProvider>
