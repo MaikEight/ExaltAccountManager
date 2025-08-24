@@ -61,6 +61,8 @@ function SettingsPage() {
     const [dataDeletionRequestLoading, setDataDeletionRequestLoading] = useState(false);
     const [anchorElDeletion, setAnchorElDeletion] = useState(null);
     const [mascotImage, setMascotImage] = useState('/mascot/Error/error_mascot_only_very_small_low_res.png');
+    const [previousOptOutState, setPreviousOptOutState] = useState(null);
+    const [showHappyMascot, setShowHappyMascot] = useState(false);
     const openDeletionPopup = Boolean(anchorElDeletion);
     const idDeletionPopup = open ? 'data-deletion-popover' : undefined;
 
@@ -200,6 +202,31 @@ function SettingsPage() {
         };
         updateAnalytics();
     }, [analyticsSettings]);
+
+    // Track when user opts back in to analytics after opting out
+    useEffect(() => {
+        if (!analyticsSettings || previousOptOutState === null) {
+            if (analyticsSettings) {
+                setPreviousOptOutState(analyticsSettings.optOut);
+            }
+            return;
+        }
+
+        // If user opts out, hide happy mascot immediately
+        if (analyticsSettings.optOut === true) {
+            setShowHappyMascot(false);
+        }
+        // If user was previously opted out and now opts back in
+        else if (previousOptOutState === true && analyticsSettings.optOut === false) {
+            setShowHappyMascot(true);
+            // Hide the happy mascot after 3 seconds
+            setTimeout(() => {
+                setShowHappyMascot(false);
+            }, 3000);
+        }
+
+        setPreviousOptOutState(analyticsSettings.optOut);
+    }, [analyticsSettings?.optOut]);
 
     const isDarkMode = () => {
         if (settings === undefined || settings.general === undefined || settings.general.theme === undefined)
@@ -1075,39 +1102,67 @@ function SettingsPage() {
                         analyticsSettings &&
                         <Box
                             sx={{
-                                mt: 1,
                                 display: 'flex',
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 gap: 1,
-                                px: 1.5
+                                position: 'relative',
                             }}
                         >
-                            <ColumnSwitch
-                                label="Send only fully anonymized data"
-                                checked={analyticsSettings.sendAnonymizedData}
-                                onChange={(event) => {
-                                    setAnalyticsSettings({
-                                        sendAnonymizedData: event.target.checked,
-                                        optOut: analyticsSettings.optOut,
-                                    });
+                            <Box
+                                sx={{
+                                    mt: 1,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    width: 'fit-content',
+                                    gap: 1,
+                                    px: 1.5
+                                }}
+                            >
+                                <ColumnSwitch
+                                    label="Send only fully anonymized data"
+                                    checked={analyticsSettings.sendAnonymizedData}
+                                    onChange={(event) => {
+                                        setAnalyticsSettings({
+                                            sendAnonymizedData: event.target.checked,
+                                            optOut: analyticsSettings.optOut,
+                                        });
 
-                                    if (event.target.checked) {
-                                        showSnackbar("You need to restart EAM in order for the changes to take effect.", "success");
-                                    }
+                                        if (event.target.checked) {
+                                            showSnackbar("You need to restart EAM in order for the changes to take effect.", "success");
+                                        }
+                                    }}
+                                />
+                                <ColumnSwitch
+                                    label="Opt-out of all analytics"
+                                    checked={analyticsSettings.optOut}
+                                    onChange={(event) => {
+                                        setAnalyticsSettings({
+                                            sendAnonymizedData: analyticsSettings.sendAnonymizedData,
+                                            optOut: event.target.checked,
+                                        });
+
+                                        if (event.target.checked) {
+                                            showSnackbar("You need to restart EAM in order for the changes to take effect.", "success");
+                                        }
+                                    }}
+                                />
+                            </Box>
+                            <img
+                                src="/mascot/Error/sad_low_res.png"
+                                alt={`${MASCOT_NAME} is sad`}
+                                style={{
+                                    maxHeight: '64px',
+                                    opacity: analyticsSettings.optOut ? 1 : 0,
+                                    transition: 'opacity 0.2s ease-in-out',
                                 }}
                             />
-                            <ColumnSwitch
-                                label="Opt-out of all analytics"
-                                checked={analyticsSettings.optOut}
-                                onChange={(event) => {
-                                    setAnalyticsSettings({
-                                        sendAnonymizedData: analyticsSettings.sendAnonymizedData,
-                                        optOut: event.target.checked,
-                                    });
-
-                                    if (event.target.checked) {
-                                        showSnackbar("You need to restart EAM in order for the changes to take effect.", "success");
-                                    }
+                            <img
+                                src="/mascot/Happy/happy_very_low_res.png"
+                                alt={`${MASCOT_NAME} is happy`}
+                                style={{
+                                    maxHeight: '64px',
+                                    opacity: showHappyMascot ? 1 : 0,
+                                    transition: 'opacity 0.2s ease-in-out',
                                 }}
                             />
                         </Box>
