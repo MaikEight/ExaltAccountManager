@@ -28,13 +28,31 @@ function CreditsPopup() {
                 <Box
                     sx={{
                         display: 'flex',
-                        flexDirection: 'column',
-                        gap: 1.25,
+                        flexDirection: 'row',
+                        gap: 2.5,
                     }}
                 >
-                    <CreditEntry title={'Tauri'} url={'https://tauri.app/'} image={'tauri.svg'} />
-                    <CreditEntry title={'React'} url={'https://react.dev/'} image={'react.svg'} />
-                    <CreditEntry title={'Material UI'} url={'https://mui.com/'} image={'mui.svg'} />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 1.25,
+                        }}
+                    >
+                        <CreditEntry title={'Tauri'} url={'https://tauri.app/'} image={'tauri.svg'} />
+                        <CreditEntry title={'React'} url={'https://react.dev/'} image={'react.svg'} />
+                        <CreditEntry title={'Material UI'} url={'https://mui.com/'} image={'mui.svg'} />
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 1.25,
+                        }}
+                    >
+                        <CreditEntry title={'Auth0'} url={'https://auth0.com/'} image={theme.palette.mode === 'dark' ? 'auth0_light.svg' : 'auth0.svg'} />
+                        <CreditEntry title={'Stripe'} url={'https://stripe.com/'} image={'stripe.jpeg'} />
+                    </Box>
                 </Box>
                 <img
                     src='/mascot/okta_low_res.png'
@@ -78,6 +96,10 @@ function CreditsPopup() {
 
                 <SpecialThanks>
                     Faynt for his active help with solving a render issue and contributions to muledump.
+                </SpecialThanks>
+
+                <SpecialThanks>
+                    059 for providing new game assets and support.
                 </SpecialThanks>
 
             </ComponentBox>
@@ -195,6 +217,7 @@ function CreditEntry({ title, image, url, text }) {
                                     style={{
                                         maxHeight: '24px',
                                         width: 'auto',
+                                        borderRadius: '4px',
                                     }}
                                 />
                             </Box>
