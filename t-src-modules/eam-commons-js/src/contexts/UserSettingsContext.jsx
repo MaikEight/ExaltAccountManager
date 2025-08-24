@@ -59,6 +59,7 @@ const defaultSettings = {
         columnsHidden: {
             state: false,
             comment: false,
+            orderId: false,
         },
         hideEmojis: false,
     },
