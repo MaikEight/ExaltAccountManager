@@ -1,10 +1,11 @@
-import { EAM_NEWS_BASE_URL } from "../constants";
+import { APP_VERSION, EAM_NEWS_BASE_URL } from "../constants";
 import { fetch } from "@tauri-apps/plugin-http";
 
 async function getLatestPopup(lastSeenPopupId) {
     const url = `${EAM_NEWS_BASE_URL}popups${lastSeenPopupId ? `?id=${lastSeenPopupId}` : ""}`;
     const headers = {
-        'eam-application-id': 'ExaltAccountManager'
+        'eam-application-id': 'ExaltAccountManager',
+        'eam-application-version': APP_VERSION || '0.0.0'
     };
 
     //Returns either the latest popup or 204 when no new popup is available
