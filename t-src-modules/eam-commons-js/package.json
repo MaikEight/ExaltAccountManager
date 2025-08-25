@@ -36,7 +36,7 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.8.1",
+    "@tauri-apps/cli": "^2.8.2",
     "@vitejs/plugin-react": "^5.0.1",
     "esbuild": "^0.25.9",
     "vite": "^7.1.3"
