@@ -68,7 +68,6 @@
     alt="Discord server" />
 </a>
 
-
 <br >
 
 <a href="https://exaltaccountmanager.com" style="display: inline">
@@ -98,7 +97,9 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 - View and manage all your items across your accounts
 - Securely store account data with Windows Data Protection API encrypted save-file
 - Rapid updater for both the game and EAM
-- Automatically fetch the Account name
+- Automatic Daily Login for your accounts
+- Background Synchronization of account data
+- Automatically fetch the Accountname
 - Create login-tokens at runtime
 - Steam account support
 
