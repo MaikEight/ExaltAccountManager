@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
 export const APP_VERSION = '4.2.7';
-export const APP_VERSION_RELEASE_DATE = '24.08.2025';
+export const APP_VERSION_RELEASE_DATE = '25.08.2025';
 export const IS_PRE_RELEASE = true;
 
 export const CACHE_PREFIX = '!cache-';
