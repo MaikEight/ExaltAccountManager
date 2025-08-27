@@ -17,6 +17,7 @@ pub struct CharListDataset {
     pub account : Account,
     pub class_stats : Vec<ClassStats>,
     pub character : Vec<Character>,
+    pub items: Vec<ParsedItem>,
 }
 
 // ############################
@@ -56,6 +57,28 @@ impl From<CharListEntries> for NewCharListEntries {
             timestamp: None,
         }
     }
+}
+
+// ############################
+// #          ParsedItem      #
+// ############################
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct ParsedItem {
+    pub entry_id: Option<String>,       // snapshot id (pass-through)
+    pub account_id: Option<String>,     // optional denorm
+
+    // Where this item lives in this snapshot:
+    pub storage_type_id: String,        // 'char:<id>' | 'vault' | 'mat_storage' | 'gifts' | 'temp_gifts' | 'potions'
+    pub container_index: Option<i32>,   // chars: 0=equip, 1=inventory, 2=bp1, 3=bp2...
+    pub slot_index: Option<i32>,        // 0-based within container
+    pub quantity: i32,                  // keep 1 for now
+
+    // The item itself:
+    pub item_id: i32,                   // numeric id; -1 allowed for empty slots
+    pub unique_id_raw: Option<String>,  // trailing "#..." if present
+    pub enchant_b64: Option<String>,    // from <ItemData>
+    pub enchant_json: Option<String>,   // None for now (decoder later)
 }
 
 // ############################
