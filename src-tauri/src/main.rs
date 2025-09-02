@@ -573,17 +573,24 @@ fn combine_paths(path1: String, path2: String) -> Result<String, Error> {
 fn start_application(
     application_path: String,
     start_parameters: String,
+    current_directory: Option<String>,
 ) -> Result<(), tauri::Error> {
     info!("Starting application...");
     match std::env::consts::OS {
         "windows" => {
             let mut cmd = std::process::Command::new(&application_path);
             cmd.arg(start_parameters);
+            if let Some(dir) = &current_directory {
+                cmd.current_dir(dir);
+            }
             let _child = cmd.spawn().expect("Failed to start process");
         }
         _ => {
             let mut cmd = std::process::Command::new(&application_path);
             cmd.arg(&start_parameters);
+            if let Some(dir) = &current_directory {
+                cmd.current_dir(dir);
+            }
             let _child = cmd.spawn().expect("Failed to start process");
         }
     };
@@ -1119,6 +1126,7 @@ async fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
     start_application(
         hwid_tool_path_str,
         format!("-batchmode {{{}}}", save_file_path),
+        None,
     )
     .map_err(|e| e.to_string())?;
 
