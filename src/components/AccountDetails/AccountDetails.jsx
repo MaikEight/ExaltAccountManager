@@ -270,10 +270,17 @@ function AccountDetails({ acc, onClose }) {
 
         showSnackbar("Starting the game...");
         const args = `data:{platform:Deca,guid:${btoa(account.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
-
+        
+        // Extract the directory from gameExePath by removing the filename
+        const currentDirectory = gameExePath ? gameExePath.substring(0, gameExePath.lastIndexOf('\\')) : "";
+        
         invoke(
             "start_application",
-            { applicationPath: gameExePath, startParameters: args }
+            { 
+                applicationPath: gameExePath, 
+                startParameters: args,
+                currentDirectory: currentDirectory,
+            }
         );
 
         const acc = { ...account, lastLogin: new Date() };
