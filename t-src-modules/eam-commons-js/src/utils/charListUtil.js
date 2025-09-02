@@ -17,6 +17,7 @@ async function storeCharList(charList, email) {
                 ? charList.Chars.Char.map(c => charToCharModel(c))
                 : [charToCharModel(charList.Chars.Char)]
             : [],
+        items: [],
     };
 
     return await invoke('insert_char_list_dataset', { dataset: dataset });
