@@ -248,10 +248,18 @@ pub async fn perform_daily_login_for_account(
         "".to_string()
     );
 
+    let game_dir = std::path::Path::new(&game_exe_path)
+        .parent()
+        .map(|p| p.to_path_buf())
+        .unwrap_or_else(|| {
+            dirs::document_dir().unwrap_or_else(|| std::path::PathBuf::from("."))
+        });
+
     //Start the game with the args
     let mut child = Command::new(game_exe_path.clone())
         .arg("-batchmode")
         .arg(args)
+        .current_dir(&game_dir)
         .spawn()
         .expect("Failed to start the game.");
 
