@@ -1,7 +1,10 @@
 use roxmltree::{Document, Node};
 use std::collections::HashMap;
+use base64::Engine;
+use base64::engine::general_purpose::STANDARD;
+use log::{error, info, warn, debug};
 
-use crate::models::{Account, CharListDataset, Character, ClassStats, ParsedItem};
+use crate::models::{Account, CharListDataset, Character, ClassStats, ParsedItem, PcStat};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public API
@@ -34,6 +37,9 @@ pub fn parse_char_list(
     // Characters
     let characters = build_characters(&doc)?;
 
+    // PcStats parsing
+    let pc_stats = build_pc_stats(&characters);
+
     // Unique maps for enchant resolution
     let mut uniq = UniqueResolver::from_doc(&doc)?;
 
@@ -51,6 +57,7 @@ pub fn parse_char_list(
         class_stats,
         character: characters,
         items,
+        pc_stats,
     })
 }
 
@@ -285,6 +292,110 @@ fn build_characters(doc: &Document) -> Result<Vec<Character>, ParseError> {
         });
     }
     Ok(out)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PCStats parsing
+// ─────────────────────────────────────────────────────────────────────────────
+
+fn build_pc_stats(chars: &Vec<Character>) -> Vec<PcStat> {
+    let mut out = Vec::new();
+
+    for char in chars {
+        if let Some(raw) = &char.pc_stats {
+            let mut stats = parse_pc_stats(raw);
+            for s in stats.iter_mut() {
+                s.entry_id = char.entry_id.clone();
+                s.char_id = char.char_id;
+            }
+            out.extend(stats);
+        }
+    }
+
+    out
+}
+
+pub fn parse_pc_stats(raw: &str) -> Vec<PcStat> {
+    let b = STANDARD.decode(raw.replace('-', "+").replace('_', "/")).unwrap_or_default();
+    let mut i;
+    const END_OF_UNKNOWN: usize = 4;
+    i = END_OF_UNKNOWN;
+    const END_OF_FLAGS: usize = 20;
+    let mut stats_count = 0;
+    let mut stats_flagged = Vec::new();
+    let mut total_flags_read = 0;
+    while i < END_OF_FLAGS {
+        let t = ((b[i] as u32) << 24)
+            | ((b[i + 1] as u32) << 16)
+            | ((b[i + 2] as u32) << 8)
+            | (b[i + 3] as u32);
+        i += 4;
+        total_flags_read += 8 * 4;
+        while stats_count < total_flags_read {
+            if t & (1 << (stats_count % (8 * 4))) != 0 {
+                stats_flagged.push(stats_count);
+            }
+            stats_count += 1;
+        }
+    }
+    fn read_next_stat(b: &Vec<u8>, i: &mut usize) -> u32 {
+        if *i >= b.len() {
+            return 0;
+        }
+        let mut r = b[*i] as u32;
+        *i += 1;
+        if r < 0x40 {
+            return r;
+        }
+        if r >= 0x80 && r <= 0xBF {
+            r = r % 0x40;
+            let mut bits_read = 6;
+            while *i < b.len() {
+                let f = b[*i] as u32;
+                *i += 1;
+                r += (f & 0x7F) << bits_read;
+                if (f & 0x80) == 0 {
+                    return r;
+                }
+                bits_read += 7;
+                if *i >= b.len() {
+                    error!("🔴 Failed to properly read PCStats. Reached the end of the string while trying to read a number the last number read in PCString will be corrupted.");
+                    return r;
+                }
+            }
+        } else {
+            error!("🔴 Failed to properly read PCStats. Found hex (0x{:02x}) at the beginning of a number. Number was expected to be between 0x00 and 0x3F or between 0x80 and 0xBF. The rest of the PCString read will be corrupted.", r);
+            return r;
+        }
+        r
+    }
+
+    let mut stats = Vec::new();
+
+    while i < b.len() {
+        stats.push(read_next_stat(&b, &mut i));
+    }
+
+    if stats_flagged.len() != stats.len() {
+        error!("🔴 The flag vector is not consistent with the number of values read from PCStats. There are a different number of flags set ({}) than values in PCStats ({}). The values read from PCStats may be corrupted.", stats_flagged.len(), stats.len());
+    }
+
+    let mut r = Vec::new();
+    for j in 0..stats_flagged.len() {
+        r.push(PcStat {
+            entry_id: None,
+            char_id: None,
+            stat_type: stats_flagged[j] as i32,
+            stat_value: stats.get(j).cloned().unwrap_or(0) as i32,
+        });
+    }
+
+    debug!("⚪ PCStats parsed into {} entries", r.len());
+    if r.len() == 0 {
+        error!("🔴 0 entries found. Input was: {}", raw);
+    }
+
+    r
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
