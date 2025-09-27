@@ -417,7 +417,8 @@ pub fn get_latest_char_list_dataset_for_each_account(
             account,
             class_stats,
             character,
-            items: Vec::new(),
+            items: Vec::new(), //TODO: Implement item parsing
+            pc_stats: Vec::new(), //TODO: Implement pc_stats parsing
         });
     }
 
