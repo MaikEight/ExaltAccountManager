@@ -18,6 +18,7 @@ pub struct CharListDataset {
     pub class_stats : Vec<ClassStats>,
     pub character : Vec<Character>,
     pub items: Vec<ParsedItem>,
+    pub pc_stats: Vec<PcStat>,
 }
 
 // ############################
@@ -332,6 +333,18 @@ impl NewClassStats {
             best_total_fame: class_stats.best_total_fame,
         }
     }
+}
+
+// ###########################
+// #         pc_stats        #
+// ###########################
+
+#[derive(Queryable, Serialize, Deserialize, Clone)]
+pub struct PcStat {
+    pub entry_id: Option<String>,
+    pub char_id: Option<i32>,
+    pub stat_type: i32,
+    pub stat_value: i32,
 }
 
 // ############################
