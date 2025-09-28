@@ -41,9 +41,7 @@ zip = "6"
 mpsc = "0.2.6"
 anyhow = "1.0"
 curl = "0.4"
-wmi = "0.17"
 sha1 = "0.10"
-winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "winbase"] }
 num-bigint = "0.4"
 num-traits = "0.2.19"
 hex = "0.4"
@@ -58,12 +56,16 @@ mio = "1.0.4"
 libsqlite3-sys = { version = "0.33.0", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12"
-winreg = "0.55.0"
 open = "5.3"
 chrono = { version = "0.4", features = ["serde"] }
 
 eam_commons = { path = "../t-src-modules/eam_commons" }
 eam_background_sync = { path = "../t-src-modules/eam_background_sync" }
+
+[target.'cfg(windows)'.dependencies]
+wmi = "0.17"
+winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "winbase"] }
+winreg = "0.55.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
