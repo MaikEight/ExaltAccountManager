@@ -19,9 +19,15 @@ use thiserror::Error;
 use tokio;
 use tokio::io::AsyncReadExt;
 
-const ROTMG_APP_INIT_URL: &str =
-    "https://www.realmofthemadgod.com/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv";
+#[cfg(target_os = "windows")]
+const ROTMG_APP_INIT_URL: &str = "https://www.realmofthemadgod.com/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv";
+#[cfg(target_os = "windows")]
 const ROTMG_FILE_LIST_URL: &str = "/rotmg-exalt-win-64/checksum.json";
+
+#[cfg(target_os = "macos")]
+const ROTMG_APP_INIT_URL: &str = "https://www.realmofthemadgod.com/app/init?platform=standaloneosxuniversal&key=9KnJFxtTvLu2frXv";
+#[cfg(target_os = "macos")]
+const ROTMG_FILE_LIST_URL: &str = "/rotmg-exalt-mac/checksum.json";
 
 lazy_static! {
     static ref APP_INIT_DATA: Arc<Mutex<AppInitData>> = Arc::new(Mutex::new(AppInitData {
