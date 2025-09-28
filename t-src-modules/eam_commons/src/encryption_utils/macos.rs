@@ -1,5 +1,5 @@
 use base64::{engine::general_purpose::STANDARD, Engine};
-use std::error::Error;
+use std::{error::Error, io};
 
 use aes_gcm::{
     aead::{Aead, OsRng, rand_core::RngCore},
@@ -7,13 +7,11 @@ use aes_gcm::{
 };
 use zeroize::Zeroize;
 
-// High-level, zero-prompt Keychain helpers.
 use security_framework::passwords::{get_generic_password, set_generic_password};
 
 const SERVICE: &str = "com.exaltaccountmanager.vault";
 const ACCOUNT: &str = "master-key";
 
-// Envelope format: [ 0x01 | 12-byte nonce | ciphertext||tag ]
 const V1_TAG: u8 = 0x01;
 const NONCE_LEN: usize = 12;
 
@@ -28,12 +26,8 @@ fn get_or_create_master_key() -> Result<[u8; 32], Box<dyn Error>> {
             Ok(key)
         }
         Err(_) => {
-            // First run on this Mac/user: generate and store a new key
             let mut key = [0u8; 32];
             OsRng.fill_bytes(&mut key);
-
-            // By default this writes to the per-user login keychain,
-            // no user presence requirement, no UI.
             set_generic_password(SERVICE, ACCOUNT, &key)?;
             Ok(key)
         }
@@ -44,20 +38,20 @@ pub fn encrypt_data(plaintext: &str) -> Result<String, Box<dyn Error>> {
     let mut key = get_or_create_master_key()?;
     let cipher = Aes256Gcm::new((&key).into());
 
-    // Random 96-bit nonce per message
     let mut nonce_bytes = [0u8; NONCE_LEN];
     OsRng.fill_bytes(&mut nonce_bytes);
     let nonce = Nonce::from_slice(&nonce_bytes);
 
-    let ct = cipher.encrypt(nonce, plaintext.as_bytes())?;
+    // Map aes_gcm::aead::Error -> io::Error so `?` can work with Box<dyn Error>
+    let ct = cipher
+        .encrypt(nonce, plaintext.as_bytes())
+        .map_err(|_| io::Error::new(io::ErrorKind::Other, "aes-gcm encrypt failed"))?;
 
-    // Build envelope: version + nonce + ciphertext||tag
     let mut out = Vec::with_capacity(1 + NONCE_LEN + ct.len());
     out.push(V1_TAG);
     out.extend_from_slice(&nonce_bytes);
     out.extend_from_slice(&ct);
 
-    // Zero sensitive copies
     key.zeroize();
     nonce_bytes.zeroize();
 
@@ -82,9 +76,11 @@ pub fn decrypt_data(data_b64: &str) -> Result<String, Box<dyn Error>> {
 
     let mut key = get_or_create_master_key()?;
     let cipher = Aes256Gcm::new((&key).into());
-    let pt = cipher.decrypt(nonce, ct)?;
 
-    // Zero sensitive buffers
+    let pt = cipher
+        .decrypt(nonce, ct)
+        .map_err(|_| io::Error::new(io::ErrorKind::Other, "aes-gcm decrypt failed"))?;
+
     key.zeroize();
     blob.zeroize();
 
