@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.8.4",
-    "@vitejs/plugin-react": "^5.0.3",
+    "@vitejs/plugin-react": "^5.0.4",
     "esbuild": "^0.25.10",
     "vite": "^7.1.7"
   }
