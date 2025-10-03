@@ -1,6 +1,6 @@
 [package]
 name = "eam_commons"
-version = "0.1.9"
+version = "0.1.10"
 homepage = "https://exaltaccountmanager.com"
 publish = false
 edition = "2021"
