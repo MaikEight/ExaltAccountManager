@@ -97,7 +97,7 @@ function AccountsContextProvider({ children }) {
 
         const getPassword = async () => {
             if (encryptPassword) {
-                const data = { data: updatedAccount?.password?.toString() };
+                const data = { email: updatedAccount?.email, data: updatedAccount?.password?.toString() };
                 if (!data.data) {
                     console.error('Error encrypting password: data is empty');
                     return -1;
