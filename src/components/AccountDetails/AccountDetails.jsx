@@ -400,7 +400,7 @@ function AccountDetails({ acc, onClose }) {
                                                     onClick={() => {
                                                         console.log("save account", account);
                                                         if (newDecryptedPassword !== decryptedPassword) {
-                                                            invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
+                                                            invoke("encrypt_string", { email: account.email, data: newDecryptedPassword }).then((res) => {
                                                                 const newAcc = ({ ...account, password: res });
                                                                 updateAccount(newAcc);
                                                             });
