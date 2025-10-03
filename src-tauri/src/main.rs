@@ -76,7 +76,7 @@ lazy_static! {
         }));
     static ref HAS_REGISTERED_API_LIMIT_EVENT_LISTENER: Arc<Mutex<bool>> =
         Arc::new(Mutex::new(false));
-    static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);    
+    static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);
     static ref BACKGROUND_SYNC_MANAGER: Arc<Mutex<Option<BackgroundSyncManager>>> =
         Arc::new(Mutex::new(None));
     static ref HAS_STARTED_PERIODIC_DAILY_LOGIN_CHECK: AtomicBool = AtomicBool::new(false);
@@ -173,7 +173,7 @@ fn main() {
     info!("Starting Tauri application...");
     //Run the tauri application
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {            
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             info!("New app instance detected with args: {:?}", argv);
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.set_focus();
@@ -181,10 +181,12 @@ fn main() {
                 let _ = window.unminimize();
             }
         }))
-        .plugin(tauri_plugin_autostart::Builder::new()
-            .args(["--autostart"])
-            .app_name("Exalt Account Manager")
-            .build())
+        .plugin(
+            tauri_plugin_autostart::Builder::new()
+                .args(["--autostart"])
+                .app_name("Exalt Account Manager")
+                .build(),
+        )
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
@@ -194,7 +196,7 @@ fn main() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_drpc::init())
         .invoke_handler(tauri::generate_handler![
-            add_api_limit_event_listener, // API Limiter
+            add_api_limit_event_listener,   // API Limiter
             create_background_sync_manager, // BackgroundSyncManager
             start_background_sync_manager,
             stop_background_sync_manager,
@@ -260,8 +262,8 @@ fn main() {
             install_eam_daily_login_task,
             uninstall_eam_daily_login_task,
             run_eam_daily_login_task_now,
-            get_current_deep_link, // Deep link helper
-            is_started_with_autostart // Autostart helper
+            get_current_deep_link,     // Deep link helper
+            is_started_with_autostart  // Autostart helper
         ])
         .setup(|app| {
             // Handle deep links when the app starts - register all configured schemes
@@ -1231,7 +1233,8 @@ fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, 
         return Err("This function is only available on Windows".to_string());
     }
 
-    let result = eam_commons::windows_specifics::uninstall_eam_daily_login_task(uninstall_old_versions);
+    let result =
+        eam_commons::windows_specifics::uninstall_eam_daily_login_task(uninstall_old_versions);
 
     match result {
         Ok(_) => Ok(true),
@@ -1252,11 +1255,12 @@ fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Res
         return Ok(false);
     }
 
-    let result =
-        eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(check_for_old_versions);
+    let result = eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(
+        check_for_old_versions,
+    );
 
     match result {
-        Ok(result) =>  Ok(result),
+        Ok(result) => Ok(result),
         Err(e) => Err(e.to_string()),
     }
 }
@@ -1917,6 +1921,10 @@ fn delete_eam_account_impl(
         };
         let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
 
+
+        let email_hash = hash_email(&account_email);
+        let _ = encryption_utils::delete_data(&email_hash);
+
         return diesel_functions::delete_eam_account(pool, account_email)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
@@ -1929,12 +1937,25 @@ fn delete_eam_account_impl(
 }
 
 #[tauri::command]
-fn encrypt_string(data: String) -> Result<String, tauri::Error> {
+fn encrypt_string(email: String, data: String) -> Result<String, tauri::Error> {
     info!("Encrypting string...");
 
-    let encrypted_data = encryption_utils::encrypt_data(&data)
+    let mut email = email;
+    if std::env::consts::OS != "windows" {
+        email = hash_email(&email);
+    }
+
+    let encrypted_data = encryption_utils::encrypt_data(&email, &data)
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     Ok(encrypted_data)
+}
+
+fn hash_email(email: &str) -> String {
+    use sha1::{Digest, Sha1};
+    let mut hasher = Sha1::new();
+    hasher.update(email.as_bytes());
+    let email_hash = hasher.finalize();
+    format!("{:x}", email_hash)
 }
 
 #[tauri::command]
@@ -2404,7 +2425,7 @@ fn delete_from_error_log_impl(
 #[tauri::command]
 async fn get_current_deep_link(app: AppHandle) -> Result<Option<String>, tauri::Error> {
     info!("Getting current deep link...");
-    
+
     #[cfg(desktop)]
     {
         use tauri_plugin_deep_link::DeepLinkExt;
@@ -2423,7 +2444,7 @@ async fn get_current_deep_link(app: AppHandle) -> Result<Option<String>, tauri::
             }
         }
     }
-    
+
     #[cfg(not(desktop))]
     Ok(None)
 }
