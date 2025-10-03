@@ -2,7 +2,7 @@ use roxmltree::{Document, Node};
 use std::collections::HashMap;
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;
-use log::{error, info, warn, debug};
+use log::{error, debug};
 
 use crate::models::{Account, CharListDataset, Character, ClassStats, ParsedItem, PcStat};
 
