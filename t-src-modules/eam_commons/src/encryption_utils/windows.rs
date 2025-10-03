@@ -20,8 +20,10 @@ fn last_os_error(msg: &str) -> io::Error {
     io::Error::new(io::ErrorKind::Other, format!("{msg}: winerr={code}"))
 }
 
+/// Encrypts plaintext; `identifier` is ignored on Windows.
+/// Returns Base64 DPAPI ciphertext to store in DB.
 #[cfg(target_os = "windows")]
-pub fn encrypt_data(data: &str) -> Result<String, Box<dyn std::error::Error>> {
+pub fn encrypt_data(_identifier: &str, data: &str) -> Result<String, Box<dyn std::error::Error>> {
     let data_bytes = data.as_bytes();
 
     let mut in_blob = DATA_BLOB {
@@ -64,6 +66,8 @@ pub fn encrypt_data(data: &str) -> Result<String, Box<dyn std::error::Error>> {
     Ok(STANDARD.encode(&encrypted))
 }
 
+
+/// Decrypts Base64 DPAPI ciphertext from DB.
 #[cfg(target_os = "windows")]
 pub fn decrypt_data(data_b64: &str) -> Result<String, Box<dyn std::error::Error>> {
     if data_b64.is_empty() {
@@ -111,4 +115,10 @@ pub fn decrypt_data(data_b64: &str) -> Result<String, Box<dyn std::error::Error>
     plain.zeroize();
 
     Ok(s)
+}
+
+/// Nothing to delete on Windows (DB owns lifecycle).
+#[cfg(target_os = "windows")]
+pub fn delete_data(_db_value: &str) -> Result<bool, Box<dyn std::error::Error>> {
+    Ok(true)
 }
