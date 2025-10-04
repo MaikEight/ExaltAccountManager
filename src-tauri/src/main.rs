@@ -547,13 +547,7 @@ fn perform_game_update_impl(
 #[tauri::command]
 fn get_save_file_path() -> String {
     info!("Getting save file path...");
-    //OS dependent fixed path
-    //Windows: C:\Users\USERNAME\AppData\Local\ExaltAccountManager\v4\
-    //Mac: /Users/USERNAME/Library/Application Support/ExaltAccountManager/v4/
-    let mut path = dirs::data_local_dir().unwrap();
-    path.push("ExaltAccountManager");
-    path.push("v4");
-    path.to_str().unwrap().to_string()
+    eam_commons::paths::get_save_file_path()
 }
 
 pub fn get_database_path() -> PathBuf {
@@ -673,7 +667,6 @@ fn get_temp_folder_path() -> String {
 fn get_os_user_identity() -> String {
     info!("Getting user identity...");
 
-    // get_os_user_identity_impl()
     get_os_user_identity_impl()
 }
 
@@ -761,7 +754,7 @@ fn get_os_user_identity_impl() -> String {
     }
 }
 
-#[cfg(target_family = "unix")]
+#[cfg(target_family = "macos")]
 fn get_os_user_identity_impl() -> String {
     let uid = unsafe { libc::getuid() };
     uid.to_string()
@@ -1005,48 +998,11 @@ async fn send_patch_request_with_json_body(url: String, data: String) -> Result<
 async fn get_device_unique_identifier() -> Result<String, String> {
     info!("Getting device unique identifier...");
 
-    use sha1::{Digest, Sha1};
-    use std::collections::HashMap;
-    use wmi::{COMLibrary, Variant, WMIConnection};
-
-    let com_con = COMLibrary::new().map_err(|e| e.to_string())?;
-    let wmi_con = WMIConnection::new(com_con.into()).map_err(|e| e.to_string())?;
-
-    let mut concat_str = String::new();
-
-    let baseboard: Vec<HashMap<String, Variant>> = wmi_con
-        .raw_query("SELECT * FROM Win32_BaseBoard")
-        .map_err(|e| e.to_string())?;
-    for obj in baseboard {
-        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
-            concat_str.push_str(&serial);
-        }
+    let device_id = eam_commons::hwid::get_device_unique_identifier().await;
+    match device_id {
+        Ok(id) => Ok(id),
+        Err(e) => Err(e),
     }
-
-    let bios: Vec<HashMap<String, Variant>> = wmi_con
-        .raw_query("SELECT * FROM Win32_BIOS")
-        .map_err(|e| e.to_string())?;
-    for obj in bios {
-        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
-            concat_str.push_str(&serial);
-        }
-    }
-
-    let os: Vec<HashMap<String, Variant>> = wmi_con
-        .raw_query("SELECT * FROM Win32_OperatingSystem")
-        .map_err(|e| e.to_string())?;
-    for obj in os {
-        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
-            concat_str.push_str(&serial);
-        }
-    }
-
-    let mut hasher = Sha1::new();
-    hasher.update(concat_str);
-    let result = hasher.finalize();
-    let hashed = format!("{:x}", result);
-
-    Ok(hashed)
 }
 
 #[tauri::command]
@@ -1067,12 +1023,11 @@ async fn download_and_run_hwid_tool() -> Result<bool, String> {
 
 async fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
     let hwid_tool_url_windows = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-windows.zip";
-    let hwid_tool_url_mac = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-mac.zip";
+    // Mac version not available, as it is not required
     let hwid_tool_path = get_save_file_path();
 
     let hwid_tool_url = match std::env::consts::OS {
         "windows" => hwid_tool_url_windows,
-        "macos" => hwid_tool_url_mac,
         _ => return Err("Unsupported OS".to_string()),
     };
     println!("Downloading HWID tool from: {}", hwid_tool_url);
