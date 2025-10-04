@@ -670,12 +670,6 @@ fn get_os_user_identity() -> String {
     get_os_user_identity_impl()
 }
 
-// #[cfg(target_family = "unix")]
-// fn get_os_user_identity_impl() -> String {
-//     use users::get_current_uid;
-//     get_current_uid().to_string()
-// }
-
 #[cfg(target_os = "windows")]
 extern crate winapi;
 // #[cfg(target_os = "windows")]
@@ -754,7 +748,7 @@ fn get_os_user_identity_impl() -> String {
     }
 }
 
-#[cfg(target_family = "macos")]
+#[cfg(target_os = "macos")]
 fn get_os_user_identity_impl() -> String {
     let uid = unsafe { libc::getuid() };
     uid.to_string()
@@ -1136,6 +1130,14 @@ fn wait_for_file_creation(file_path: &str, timeout: u64) -> bool {
     false
 }
 
+#[cfg(target_os = "macos")]
+#[tauri::command]
+fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
+    info!("This function is only available on Windows");
+    Ok(false)
+}
+
+#[cfg(target_os = "windows")]
 #[tauri::command]
 fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
     info!("Installing EAM daily login task...");
@@ -1166,6 +1168,14 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
 }
 
 #[tauri::command]
+#[cfg(target_os = "macos")]
+fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, String> {
+    info!("This function is only available on Windows");
+    Ok(false)
+}
+
+#[tauri::command]
+#[cfg(target_os = "windows")]
 fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
         info!("This function is only available on Windows");
@@ -1188,6 +1198,14 @@ fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, 
 }
 
 #[tauri::command]
+#[cfg(target_os = "macos")]
+fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, String> {
+    info!("This function is only available on Windows");
+    Ok(false)
+}
+
+#[tauri::command]
+#[cfg(target_os = "windows")]
 fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, String> {
     if std::env::consts::OS != "windows" {
         info!("This function is only available on Windows");
@@ -2017,6 +2035,17 @@ async fn has_old_eam_save_file() -> Result<bool, tauri::Error> {
 }
 
 #[tauri::command]
+#[cfg(target_os = "macos")]
+async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Error> {
+    info!("Formatting of EAM v3 save file was called, but is not available on macOS.");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "This function is only available on Windows",
+    )))
+}
+
+#[tauri::command]
+#[cfg(target_os = "windows")]
 async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Error> {
     info!("Formatting EAM v3 save file to readable JSON...");
 
