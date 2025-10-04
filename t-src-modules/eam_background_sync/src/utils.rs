@@ -28,16 +28,6 @@ pub async fn send_post_request_with_form_url_encoded_data(
     res.text().await.map_err(|e| e.to_string())
 }
 
-pub fn get_save_file_path() -> String {
-    //OS dependent fixed path
-    //Windows: C:\Users\USERNAME\AppData\Local\ExaltAccountManager\v4\
-    //Mac: /Users/USERNAME/Library/Application Support/ExaltAccountManager/v4/
-    let mut path = dirs::data_local_dir().unwrap();
-    path.push("ExaltAccountManager");
-    path.push("v4");
-    path.to_str().unwrap().to_string()
-}
-
 pub fn log_to_audit_log(pool: &DbPool, message: String, account_email: Option<String>) {
     let log = AuditLog {
         id: None,
