@@ -3,6 +3,9 @@ pub use encryption_utils::{encrypt_data, decrypt_data};
 pub mod hwid;
 pub use hwid::get_device_unique_identifier;
 
+pub mod paths;
+pub use paths::get_save_file_path;
+
 pub mod models;
 
 pub mod schema;
