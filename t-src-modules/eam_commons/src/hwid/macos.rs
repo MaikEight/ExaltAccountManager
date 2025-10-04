@@ -7,9 +7,13 @@ pub async fn get_device_unique_identifier() -> Result<String, String> {
     use libc::c_char;
     use std::ffi::CString;
 
+    #[allow(non_camel_case_types)]
     type kern_return_t = i32;
+    #[allow(non_camel_case_types)]
     type io_object_t = u32;           // mach_port_t
+    #[allow(non_camel_case_types)]
     type io_registry_entry_t = io_object_t;
+    #[allow(non_camel_case_types)]
     type io_option_t = u32;
 
     #[link(name = "IOKit", kind = "framework")]
