@@ -7,7 +7,7 @@ const SERVICE: &str = "com.exaltaccountmanager.credentials";
 
 fn osstatus_of(e: &SecError) -> Option<i32> {
     #[allow(deprecated)]
-    e.code()
+    Some(e.code())
 }
 
 /// Writes/updates Keychain item for (SERVICE, identifier). 
