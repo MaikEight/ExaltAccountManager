@@ -64,8 +64,7 @@ function AccountsContextProvider({ children }) {
             const response = await invoke('get_all_eam_accounts');
             const accounts = response.map((acc) => {
                 if (acc.token) {
-                    const token = JSON.parse(acc.token);
-                    acc.token = token;
+                    acc.token = null; // Tokens in the account object are deprecated
                 }
                 return enhanceAccountData(acc);
             });
@@ -92,14 +91,8 @@ function AccountsContextProvider({ children }) {
     const updateAccount = async (updatedAccount, encryptPassword = false, reloadAccounts = true) => {
         if (!updatedAccount) return updatedAccount;
 
-        let token = null;
         if (updatedAccount.token) {
-            try {
-                token = JSON.stringify(updatedAccount.token);
-            } catch (error) {
-                console.error('Error parsing token:', error);
-                token = null;
-            }
+            updatedAccount.token = null; // Tokens in the account object are deprecated            
         }
 
         const getPassword = async () => {
@@ -124,7 +117,7 @@ function AccountsContextProvider({ children }) {
         if (pw === -1)
             return false;
 
-        const acc = { ...updatedAccount, token: token, password: pw };
+        const acc = { ...updatedAccount, password: pw };
         const updAccount = await saveAccount(acc)
             .catch((err) => {
                 console.error('Error saving account:', err, acc);
