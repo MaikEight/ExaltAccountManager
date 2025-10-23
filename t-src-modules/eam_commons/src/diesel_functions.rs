@@ -650,6 +650,7 @@ pub fn insert_or_update_eam_account(
 
         let mut clone_acc = eam_account.clone();
         clone_acc.id = Some(new_id);
+        clone_acc.token = None; // Tokens in the account object are deprecated
         let insertable = NewEamAccount::from(clone_acc.clone());
         let updatable = UpdateEamAccount::from(eam_account.clone());
 
@@ -699,6 +700,18 @@ pub fn insert_or_update_eam_account(
     }
 
     Ok(new_row_inserted as usize)
+}
+
+#[named]
+pub fn delete_token_for_all_eam_accounts(pool: &DbPool) -> Result<usize, diesel::result::Error> {
+    log_fn!();
+    
+    with_db_retry(|| {
+        let mut conn = pool.get().expect("Failed to get connection from pool.");
+        diesel::update(eam_accounts::table)
+            .set(eam_accounts::token.eq(sql::<Nullable<Text>>("NULL")))
+            .execute(&mut conn)
+    }, 5)
 }
 
 #[named]
