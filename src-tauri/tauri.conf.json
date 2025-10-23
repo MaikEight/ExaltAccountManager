@@ -35,8 +35,7 @@
     },
     "macOS": {
       "signingIdentity": "-",
-      "hardenedRuntime": false,
-      "entitlements": "entitlements.plist"
+      "hardenedRuntime": false
     },
     "icon": [
       "icons/32x32.png",
