@@ -3,7 +3,7 @@ import { isUpdateAvailable } from "../constants";
 import { PhysicalSize } from '@tauri-apps/api/window';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { invoke } from '@tauri-apps/api/core';
-import { check  } from '@tauri-apps/plugin-updater';
+import { check } from '@tauri-apps/plugin-updater';
 import { logToErrorLog, checkForUpdates } from "eam-commons-js";
 import { relaunch } from '@tauri-apps/plugin-process';
 import addSystemTray from "./addSystemTrayMenu";
@@ -32,9 +32,18 @@ async function onStartUp() {
     writeStartupLogoToConsole();
     addConsoleLogListener();
 
+    //Check if on MacOS
+    const isMacOs = localStorage.getItem("isMacOs");
+    if (!isMacOs) {
+        const os = await invoke('get_current_os').catch(console.error);
+        if (os === "macos") {
+            localStorage.setItem("isMacOs", "true");
+        }
+    }
+
     invoke('add_api_limit_event_listener').catch(console.error);
     addSystemTray();
-    
+
     //Check for EAM update
     performCheckForUpdates();
     getLatestEamVersion()
@@ -76,7 +85,7 @@ async function onStartUp() {
     if (res > 0) {
         console.log(`Deleted ${res} old error logs`);
     }
-    
+
     logAllEnabledDebugFlags();
 }
 
@@ -101,7 +110,7 @@ function writeStartupLogoToConsole() {
 }
 
 function addConsoleLogListener() {
-    if (process.env.NODE_ENV === 'development'){
+    if (process.env.NODE_ENV === 'development') {
         return;
     }
     // Override console methods to log to error log
