@@ -137,6 +137,22 @@ fn main() {
         }
     }
 
+    // Clear all Token 
+    match POOL.lock() {
+        Ok(pool_guard) => {
+            if let Some(ref pool) = *pool_guard {
+                let _ = eam_commons::diesel_functions::delete_token_for_all_eam_accounts(pool);
+            }
+        }
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool_guard = poisoned.into_inner();
+            if let Some(ref pool) = *pool_guard {
+                let _ = eam_commons::diesel_functions::delete_token_for_all_eam_accounts(pool);
+            }
+        }
+    };
+
     // Setup the api-rate limiter
     info!("Setting up the global API rate limiter...");
 
