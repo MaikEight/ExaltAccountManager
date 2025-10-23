@@ -25,7 +25,10 @@ function UtilitiesPage() {
             }}
         >
             <RealmUpdater />
-            <HwidTool runHwidReader={runHwidReader} />
+            {
+                localStorage.getItem("isMacOs") !== "true" &&
+                <HwidTool runHwidReader={runHwidReader} />
+            }
         </Box>
     );
 }
