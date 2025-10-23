@@ -180,6 +180,7 @@ fn main() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_drpc::init())
         .invoke_handler(tauri::generate_handler![
+            get_current_os,
             add_api_limit_event_listener,   // API Limiter
             create_background_sync_manager, // BackgroundSyncManager
             start_background_sync_manager,
@@ -270,6 +271,12 @@ fn main() {
         })
         .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn get_current_os() -> String {
+    info!("Getting current OS...");
+    env::consts::OS.to_string()
 }
 
 //###################
@@ -572,10 +579,30 @@ fn start_application(
     current_directory: Option<String>,
 ) -> Result<(), tauri::Error> {
     info!("Starting application...");
+
+    //Check if the application exists
+    if !Path::new(&application_path).exists() {
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::NotFound,
+            format!("Application not found at path: {}", application_path),
+        )));
+    }
+
     match std::env::consts::OS {
         "windows" => {
             let mut cmd = std::process::Command::new(&application_path);
             cmd.arg(start_parameters);
+            if let Some(dir) = &current_directory {
+                cmd.current_dir(dir);
+            }
+            let _child = cmd.spawn().expect("Failed to start process");
+        }
+        "macos" => {
+            let mut cmd = std::process::Command::new("open");
+            cmd.arg("-a");
+            cmd.arg(&application_path);
+            cmd.arg("--args");
+            cmd.arg(&start_parameters);
             if let Some(dir) = &current_directory {
                 cmd.current_dir(dir);
             }
@@ -1001,7 +1028,7 @@ async fn get_device_unique_identifier() -> Result<String, String> {
 
 #[tauri::command]
 fn get_default_game_path() -> String {
-    eam_commons::rotmg_updater::get_default_game_path()
+    eam_commons::paths::get_default_game_path()
 }
 
 #[tauri::command]
@@ -1877,7 +1904,6 @@ fn delete_eam_account_impl(
             sender: "tauri".to_string(),
         };
         let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
-
 
         let email_hash = hash_email(&account_email);
         let _ = encryption_utils::delete_data(&email_hash);
