@@ -1,7 +1,7 @@
 {
   "name": "exalt-account-manager",
   "private": true,
-  "version": "4.2.8",
+  "version": "4.2.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,14 +10,14 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.5.0",
+    "@auth0/auth0-react": "^2.8.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.2",
-    "@mui/material": "^7.3.2",
-    "@mui/x-data-grid": "^8.11.3",
+    "@mui/icons-material": "^7.3.4",
+    "@mui/material": "^7.3.4",
+    "@mui/x-data-grid": "^8.15.0",
     "@mui/x-date-pickers": "^7.29.4",
-    "@tauri-apps/api": "^2.8.0",
+    "@tauri-apps/api": "^2.9.0",
     "@tauri-apps/plugin-autostart": "^2.5.0",
     "@tauri-apps/plugin-deep-link": "^2.4.3",
     "@tauri-apps/plugin-dialog": "^2.4.0",
@@ -33,24 +33,23 @@
     "lodash.throttle": "^4.1.1",
     "notistack": "^3.0.2",
     "papaparse": "^5.5.3",
-    "react": "^19.1.1",
+    "react": "^19.2.0",
     "react-chartjs-2": "^5.3.0",
     "react-confetti": "^6.4.0",
-    "react-dom": "^19.1.1",
+    "react-dom": "^19.2.0",
     "react-error-boundary": "^6.0.0",
-    "react-router-dom": "^7.9.1",
+    "react-router-dom": "^7.9.4",
     "react-transition-group": "^4.4.5",
-    "react-virtuoso": "^4.14.0",
+    "react-virtuoso": "^4.14.1",
     "react-window": "^1.8.11",
     "stream-browserify": "^3.0.0",
     "tauri-plugin-drpc": "^1.0.3",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.8.4",
-    "@vitejs/plugin-react": "^5.0.3",
-    "basic-ftp": "^5.0.5",
-    "esbuild": "^0.25.10",
-    "vite": "^7.1.7"
+    "@tauri-apps/cli": "^2.9.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "esbuild": "^0.25.11",
+    "vite": "^7.1.12"
   }
 }
