@@ -210,7 +210,9 @@ function AccountDetails({ acc, onClose }) {
                 if (startGameHWIDWarnings
                     && !startGameHWIDWarnings.hide
                     && !startGameHWIDWarnings.hasHWIDFile
-                    && (startGameHWIDWarnings.amount <= 5 || startGameHWIDWarnings.lastCheck < new Date(Date.now() - 12 * 60 * 60 * 1000 /* 12 hours */))) {
+                    && (startGameHWIDWarnings.amount <= 5 || startGameHWIDWarnings.lastCheck < new Date(Date.now() - 12 * 60 * 60 * 1000 /* 12 hours */))
+                    && localStorage.getItem('isMacOs') !== 'true') // Dont show on MacOS as its not needed there
+                {
 
                     console.log("Checking for HWID file after game start...");
                     startGameHWIDWarnings.amount = (startGameHWIDWarnings.amount || 0) + 1;
@@ -270,14 +272,14 @@ function AccountDetails({ acc, onClose }) {
 
         showSnackbar("Starting the game...");
         const args = `data:{platform:Deca,guid:${btoa(account.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
-        
+
         // Extract the directory from gameExePath by removing the filename
         const currentDirectory = gameExePath ? gameExePath.substring(0, gameExePath.lastIndexOf('\\')) : "";
-        
+
         invoke(
             "start_application",
-            { 
-                applicationPath: gameExePath, 
+            {
+                applicationPath: gameExePath,
                 startParameters: args,
                 currentDirectory: currentDirectory,
             }
