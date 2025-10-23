@@ -97,7 +97,14 @@ fn main() {
     println!("Save file path: {}", save_file_path.clone());
 
     // Initialize the logger
-    let log_file = File::create(save_file_path + "\\log.txt").unwrap();
+    let log_file = match std::env::consts::OS {
+        #[cfg(target_os = "windows")]
+        "windows" => File::create(save_file_path + "\\log.txt").unwrap(),
+        #[cfg(target_os = "macos")]
+        "macos" => File::create(save_file_path + "/log.txt").unwrap(),
+        _ => File::create(save_file_path + "\\log.txt").unwrap(),
+    };
+
     CombinedLogger::init(vec![WriteLogger::new(
         LevelFilter::Info,
         Config::default(),
