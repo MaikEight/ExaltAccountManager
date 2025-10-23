@@ -605,15 +605,72 @@ fn start_application(
             let _child = cmd.spawn().expect("Failed to start process");
         }
         "macos" => {
-            let mut cmd = std::process::Command::new("open");
+            let open_check = std::process::Command::new("which").arg("open").output();
+            match open_check {
+                Ok(output) => {
+                    let open_path = String::from_utf8_lossy(&output.stdout);
+                    info!("Open command found at: {}", open_path.trim());
+                }
+                Err(e) => {
+                    error!("Could not find 'open' command: {}", e);
+                }
+            }
+
+            let mut cmd = std::process::Command::new("/usr/bin/open");
             cmd.arg("-a");
             cmd.arg(&application_path);
-            cmd.arg("--args");
-            cmd.arg(&start_parameters);
+            
+            if !start_parameters.is_empty() {
+                cmd.arg("--args");
+                cmd.arg(&start_parameters);
+            }
+            
             if let Some(dir) = &current_directory {
                 cmd.current_dir(dir);
+            }            
+            
+            match cmd.spawn() {
+                Ok(_child) => {
+                    info!("Application started successfully");
+                }
+                Err(e) => {
+                    error!("Failed to start process: {}", e);
+                    error!("Error kind: {:?}", e.kind());
+                    
+                    // Try alternative approach: direct execution of the binary inside the app bundle
+                    info!("Trying alternative approach...");
+                    let mut app_binary_path = PathBuf::from(&application_path);
+                    app_binary_path.push("Contents");
+                    app_binary_path.push("MacOS");
+                    app_binary_path.push("RotMGExalt"); // We know the executable name from our ls command
+                    
+                    info!("Trying direct execution: {:?}", app_binary_path);
+                    
+                    if app_binary_path.exists() {
+                        let mut direct_cmd = std::process::Command::new(&app_binary_path);
+                        if !start_parameters.is_empty() {
+                            direct_cmd.arg(&start_parameters);
+                        }
+                        
+                        match direct_cmd.spawn() {
+                            Ok(_) => {
+                                info!("Successfully started application directly");
+                                return Ok(());
+                            }
+                            Err(e2) => {
+                                error!("Direct execution also failed: {}", e2);
+                            }
+                        }
+                    } else {
+                        error!("Direct executable not found at: {:?}", app_binary_path);
+                    }
+                    
+                    return Err(tauri::Error::from(std::io::Error::new(
+                        ErrorKind::Other,
+                        format!("Failed to start application: {}", e),
+                    )));
+                }
             }
-            let _child = cmd.spawn().expect("Failed to start process");
         }
         _ => {
             let mut cmd = std::process::Command::new(&application_path);
