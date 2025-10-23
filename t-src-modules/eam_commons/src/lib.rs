@@ -4,7 +4,7 @@ pub mod hwid;
 pub use hwid::get_device_unique_identifier;
 
 pub mod paths;
-pub use paths::get_save_file_path;
+pub use paths::{get_save_file_path, get_default_game_path};
 
 pub mod models;
 
