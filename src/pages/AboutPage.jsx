@@ -143,25 +143,27 @@ function AboutPage() {
                                 View Changelog
                             </StyledButton>
                         </Box>
-                        <Tooltip
-                            title={"Click to open the debug flags page"}
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexGrow: 1,
+                                maxHeight: '78px',
+                                mr: 0.5,
+                                justifyContent: 'flex-end',
+                            }}
                         >
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexGrow: 1,
-                                    maxHeight: '78px',
-                                    mr: 0.5,
-                                    justifyContent: 'flex-end',
-                                    cursor: 'pointer'
-                                }}
-                                onClick={() => {
-                                    navigate('/flags');
-                                }}
+                            <Tooltip
+                                title={"Click to open the debug flags page"}
                             >
-                                <DeveloperSvg h='100%' />
-                            </Box>
-                        </Tooltip>
+                                <DeveloperSvg
+                                    h='100%'
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        navigate('/flags');
+                                    }}
+                                />
+                            </Tooltip>
+                        </Box>
                     </Box>
                 </ComponentBox>
                 <ComponentBox
