@@ -26,6 +26,7 @@ import { invoke } from '@tauri-apps/api/core';
 import RequestStateChip from "../GridComponents/RequestStateChip";
 import { HWID_FILE_PATH, MASCOT_NAME } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import isMacOS from "../../utils/isMacOS";
 
 function AccountDetails({ acc, onClose }) {
     const { groups } = useGroups();
@@ -292,6 +293,10 @@ function AccountDetails({ acc, onClose }) {
         if (charList === null || !charList.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
             showSnackbar("Failed to refresh data", 'error');
+        }
+
+        if (isMacOS()) {
+            return;
         }
 
         checkForHwidFile();
