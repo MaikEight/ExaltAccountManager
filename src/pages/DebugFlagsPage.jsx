@@ -5,6 +5,8 @@ import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined';
 import { Box, Checkbox, Divider, FormControl, FormControlLabel, Grid, Tooltip, Typography, useTheme } from "@mui/material";
 import StyledButton from './../components/StyledButton';
 import { CACHE_PREFIX } from "../constants";
+import { invoke } from '@tauri-apps/api/core';
+import isMacOS from "../utils/isMacOS";
 
 const flags = [
     {
@@ -265,7 +267,8 @@ function DebugFlagsPage() {
                             <StyledButton
                                 onClick={() => {
                                     setWarningActive(false);
-                                    clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}portrait`)}
+                                    clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}portrait`)
+                                }
                                 }
                                 color="secondary"
                                 size="small"
@@ -290,7 +293,7 @@ function DebugFlagsPage() {
                             </StyledButton>
                             <Tooltip title="This will clear all localStorage and sessionStorage items, including your settings and preferences. Use with caution!">
                                 <StyledButton
-                                    onClick={() => {
+                                    onClick={async () => {
                                         if (!warningActive) {
                                             setWarningActive(true);
                                             return;
@@ -299,6 +302,12 @@ function DebugFlagsPage() {
 
                                         sessionStorage.clear();
                                         localStorage.clear();
+
+                                        const os = await invoke('get_current_os').catch(console.error);
+                                        if (isMacOS()) {
+                                            localStorage.setItem("isMacOs", "true");
+                                            console.log("🖥️ Restored isMacOs flag in localStorage as it is important for macOS users.");
+                                        }
 
                                         setWarningActive(false);
                                     }}
