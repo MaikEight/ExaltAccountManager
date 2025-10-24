@@ -7,6 +7,7 @@ import { check } from '@tauri-apps/plugin-updater';
 import { logToErrorLog, checkForUpdates } from "eam-commons-js";
 import { relaunch } from '@tauri-apps/plugin-process';
 import addSystemTray from "./addSystemTrayMenu";
+import isMacOS from "./isMacOS";
 
 const appWindow = getCurrentWebviewWindow()
 
@@ -32,14 +33,7 @@ async function onStartUp() {
     writeStartupLogoToConsole();
     addConsoleLogListener();
 
-    //Check if on MacOS
-    const isMacOs = localStorage.getItem("isMacOs");
-    if (!isMacOs) {
-        const os = await invoke('get_current_os').catch(console.error);
-        if (os === "macos") {
-            localStorage.setItem("isMacOs", "true");
-        }
-    }
+    isMacOS();
 
     invoke('add_api_limit_event_listener').catch(console.error);
     addSystemTray();
