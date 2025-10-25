@@ -350,7 +350,7 @@ impl BackgroundSyncManager {
     pub fn stop(&self) {
         let mut flag = self.should_stop.lock().unwrap();
         *flag = true;
-        self.is_running.store(true, Ordering::SeqCst);
+        self.is_running.store(false, Ordering::SeqCst);
         info!("[BGRSYNC] Stopping background sync manager...");
 
         let mut current = self.current_mode.lock().unwrap();
@@ -558,6 +558,10 @@ impl BackgroundSyncManager {
                                     .to_string(),
                                 None,
                             );
+                            
+                            // Switch back to default mode before returning
+                            info!("[BGRSYNC][DL] Daily login mode finished (already completed today), switching back to default.");
+                            self.switch_mode(SyncMode::Default);
                             return;
                         }
 
@@ -579,6 +583,10 @@ impl BackgroundSyncManager {
                                 "Last daily login did finish, exiting.".to_string(),
                                 None,
                             );
+                            
+                            // Switch back to default mode before returning
+                            info!("[BGRSYNC][DL] Daily login mode finished (already completed), switching back to default.");
+                            self.switch_mode(SyncMode::Default);
                             return;
                         }
 
@@ -668,6 +676,10 @@ impl BackgroundSyncManager {
 
                 self.event_hub
                     .emit(BackgroundSyncEvent::DailyLoginDone { id: Uuid::new_v4() });
+                
+                // Switch back to default mode before returning
+                info!("[BGRSYNC][DL] Daily login mode finished (no accounts to process), switching back to default.");
+                self.switch_mode(SyncMode::Default);
                 return;
             }
 
@@ -697,6 +709,10 @@ impl BackgroundSyncManager {
                     "No accounts to perform daily login with, exiting.".to_string(),
                     None,
                 );
+                
+                // Switch back to default mode before returning
+                info!("[BGRSYNC][DL] Daily login mode finished (no accounts to process), switching back to default.");
+                self.switch_mode(SyncMode::Default);
                 return;
             }
 
@@ -746,6 +762,10 @@ impl BackgroundSyncManager {
                 "No game.exe file found, exiting.".to_string(),
                 None,
             );
+            
+            // Switch back to default mode before returning
+            info!("[BGRSYNC][DL] Daily login mode finished (no game exe path), switching back to default.");
+            self.switch_mode(SyncMode::Default);
             return;
         }
 
