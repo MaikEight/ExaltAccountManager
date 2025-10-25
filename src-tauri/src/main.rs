@@ -14,6 +14,7 @@ use eam_commons::models;
 use eam_commons::models::CallResult;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::DailyLoginReports;
+use eam_commons::models::UserData;
 use eam_commons::models::{AuditLog, ErrorLog};
 use eam_commons::rotmg_updater::FileData;
 use eam_commons::rotmg_updater::UpdaterError;
@@ -202,6 +203,7 @@ fn main() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_drpc::init())
+        .plugin(tauri_plugin_os::init())
         .invoke_handler(tauri::generate_handler![
             get_current_os,
             add_api_limit_event_listener,   // API Limiter
@@ -290,10 +292,29 @@ fn main() {
                 }
             }
 
+            // Initialize game exe path asynchronously
+            tauri::async_runtime::spawn(async {
+                initialize_game_exe_path().await;
+            });
+
             Ok(())
         })
         .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
+}
+
+async fn initialize_game_exe_path() {
+    info!("Checking for existing game exe path in user data...");
+    let stored = get_user_data_by_key("game_exe_path".to_string()).await;
+    if stored.is_err() {
+        info!("No game exe path found in user data, setting default path...");
+        let default_path = eam_commons::paths::get_default_game_path();
+        let _ = insert_or_update_user_data(UserData { dataKey: "game_exe_path".to_string(), dataValue: default_path.clone() }).await;
+        info!("Default game exe path set to: {}", default_path);
+        return;
+    }
+
+    info!("Game exe path already set in user data, skipping...");
 }
 
 #[tauri::command]
