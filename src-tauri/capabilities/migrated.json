@@ -24,6 +24,7 @@
       ]
     },
     "core:app:allow-default-window-icon",
+    "core:window:allow-set-fullscreen",
     "core:window:allow-maximize",
     "core:window:allow-toggle-maximize",
     "core:window:allow-unmaximize",
