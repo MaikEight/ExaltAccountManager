@@ -10,6 +10,7 @@ import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import { MASCOT_NAME } from "../../constants";
 import useUserSettings from "../../hooks/useUserSettings";
+import WindowControls from "./MacOS/WindowControls";
 
 function CustomToolbar(props) {
     const theme = useTheme();
@@ -113,6 +114,7 @@ function CustomToolbar(props) {
 
     return (
         <Box
+            id="custom-toolbar"
             sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -120,6 +122,7 @@ function CustomToolbar(props) {
                 ...props.sx
             }}
         >
+            <WindowControls />
             <Box
                 sx={{
                     display: "flex",
