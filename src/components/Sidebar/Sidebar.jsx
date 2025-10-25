@@ -3,7 +3,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SidebarButton from "./SidebarButton";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ import DiscordButton from "./DiscordButton";
 import VaultPeekerLogo from "../VaultPeekerLogo";
 import { useTheme } from "@emotion/react";
 import SidebarLoginBox from "./SidebarLoginBox";
+import isMacOS from '../../utils/isMacOS';
 
 function Sidebar({ children }) {
     const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
@@ -25,6 +26,10 @@ function Sidebar({ children }) {
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
+
+    const isMac = useMemo(() => {
+        return isMacOS();
+    }, []);
 
     useEffect(() => {
         const intervallId = setInterval(() => {
@@ -154,7 +159,7 @@ function Sidebar({ children }) {
                     id="sidebar"
                     sx={{
                         position: "relative",
-                        top: -22,
+                        top: isMac ? 4 : -22,
                         left: 0,
                         display: "flex",
                         flexDirection: "column",
