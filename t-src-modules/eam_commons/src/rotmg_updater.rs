@@ -51,6 +51,7 @@ pub enum UpdaterError {
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct AppInitData {
     build_id: String,
     build_cdn: String,
@@ -94,7 +95,13 @@ pub async fn get_app_init_data() -> Result<AppInitData, String> {
         .await
         .map_err(|e| e.to_string())?;
 
+    let status = res.status();
+    info!("App init response status: {}", status);
+
     let body = res.text().await.map_err(|e| e.to_string())?;
+    info!("App init response body length: {} bytes", body.len());
+    info!("App init response body:\n{}", body);
+    
     let doc = Document::parse(&body).unwrap();
     let mut build_id: &str = &"";
     let mut build_cdn: &str = &"";
@@ -103,13 +110,16 @@ pub async fn get_app_init_data() -> Result<AppInitData, String> {
     for node in doc.descendants() {
         if node.has_tag_name("BuildId") {
             build_id = node.text().map(|s| s).unwrap();
+            info!("Found BuildId: {}", build_id);
         }
         if node.has_tag_name("BuildCDN") {
             build_cdn = node.text().map(|s| s).unwrap();
+            info!("Found BuildCDN: {}", build_cdn);
         }
 
         if node.has_tag_name("BuildHash") {
             build_hash = node.text().map(|s| s).unwrap();
+            info!("Found BuildHash: {}", build_hash);
         }
     }
 
@@ -127,6 +137,8 @@ pub async fn get_app_init_data() -> Result<AppInitData, String> {
         return Err("Failed to get app init data from RotMG servers.".to_string());
     }
     info!("Successfully fetched app init data from RotMG servers.");
+    info!("Final values - BuildId: {}, BuildCDN: {}, BuildHash: {}", 
+          data.build_id, data.build_cdn, data.build_hash);
     Ok(data)
 }
 
@@ -143,20 +155,35 @@ pub async fn get_game_file_list() -> Result<Vec<FileData>, UpdaterError> {
         .expect("Failed to get app init data.");
 
     let url = format!(
-        "{}{}{}{}",
+        "{}{}/{}{}",
         data.build_cdn, data.build_hash, data.build_id, ROTMG_FILE_LIST_URL
     );
+
+    info!("Fetching file list from URL: {}", url);
 
     let files_res = reqwest::get(&url).await;
     let files: Vec<FileData>;
     match files_res {
         Ok(response) => {
+            let status = response.status();
+            info!("Response status: {}", status);
+            
             let raw_json = response.text().await?;
+            
+            if raw_json.is_empty() {
+                error!("Received empty response from server");
+                return Err(UpdaterError::Other("Empty response from file list endpoint".to_string()));
+            }
+            
             let files_response = serde_json::from_str::<FilesResponse>(&raw_json)
-                .map_err(UpdaterError::SerdeJson)?;
+                .map_err(|e| {
+                    error!("Failed to parse JSON: {}. Raw response: {}", e, raw_json);
+                    UpdaterError::SerdeJson(e)
+                })?;
             files = files_response.files;
         }
         Err(e) => {
+            error!("Failed to fetch file list: {}", e);
             return Err(UpdaterError::from(e));
         }
     }
@@ -245,31 +272,49 @@ async fn perform_game_update_impl(
 
     let build_cdn = APP_INIT_DATA.lock().unwrap().build_cdn.clone();
     let build_hash = APP_INIT_DATA.lock().unwrap().build_hash.clone();
+    let build_id = APP_INIT_DATA.lock().unwrap().build_id.clone();
 
     for game_file_data in game_files_data {
         //1.0. Build the download url for the file
         let url = format!(
-            "{}{}/rotmg-exalt-win-64/{}.gz",
-            build_cdn, build_hash, game_file_data.file
+            "{}{}/{}/{}.gz",
+            build_cdn, build_hash, build_id, game_file_data.file
         );
+
+        info!("Downloading file: {} from URL: {}", game_file_data.file, url);
 
         // 1.1. download file to ram
         let file_data = download_file_to_ram(&url)
             .await
             .map_err(|e| e.to_string())?;
 
+        info!("Downloaded {} bytes, unzipping...", file_data.len());
+
         // 1.2. unzip file
-        let unzipped_data = unzip_gzip_file(file_data).map_err(|e| e.to_string())?;
+        let unzipped_data = unzip_gzip_file(file_data).map_err(|e| {
+            error!("Failed to unzip file: {}", e);
+            e.to_string()
+        })?;
+
+        info!("Unzipped to {} bytes, saving to disk...", unzipped_data.len());
 
         // 1.3. save file to game root path + fileName (field: file)
         let file_path = Path::new(&game_root_path).join(&game_file_data.file);
 
         // Create the directory if it does not exist
         if let Some(parent_dir) = file_path.parent() {
-            fs::create_dir_all(parent_dir).map_err(|e| e.to_string())?;
+            fs::create_dir_all(parent_dir).map_err(|e| {
+                error!("Failed to create directory {:?}: {}", parent_dir, e);
+                e.to_string()
+            })?;
         }
 
-        save_file_to_disk(file_path, unzipped_data).map_err(|e| e.to_string())?;
+        save_file_to_disk(file_path.clone(), unzipped_data, &game_file_data.permision).map_err(|e| {
+            error!("Failed to save file to {:?}: {}", file_path, e);
+            e.to_string()
+        })?;
+
+        info!("Successfully updated file: {}", game_file_data.file);
     }
 
     clean_global_variables();
@@ -290,17 +335,27 @@ fn clean_global_variables() {
 }
 
 async fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
+    info!("Attempting to download from: {}", url);
+    
     let response = reqwest::get(url)
         .await
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+        .map_err(|e| {
+            error!("HTTP request failed: {}", e);
+            std::io::Error::new(std::io::ErrorKind::Other, e.to_string())
+        })?;
+
+    let status = response.status();
+    info!("Download response status: {}", status);
 
     if !response.status().is_success() {
+        error!("Download failed with status: {}", status);
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
-            "Failed to download file",
+            format!("Failed to download file: HTTP {}", status),
         ));
     }
 
+    info!("Download successful, reading response body...");
     Ok(response
         .bytes()
         .await
@@ -308,9 +363,29 @@ async fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
         .to_vec())
 }
 
-fn save_file_to_disk(path: PathBuf, data: Vec<u8>) -> std::io::Result<()> {
-    let mut file = File::create(path)?;
+fn save_file_to_disk(path: PathBuf, data: Vec<u8>, permission: &str) -> std::io::Result<()> {
+    let mut file = File::create(&path)?;
     file.write_all(&data)?;
+    
+    // Set file permissions on Unix systems
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        
+        // Only set permissions if a non-empty permission string is provided
+        if !permission.is_empty() {
+            // Parse the permission string (e.g., "755", "644")
+            if let Ok(mode) = u32::from_str_radix(permission, 8) {
+                info!("Setting permissions {} (octal) for file: {:?}", permission, path);
+                let permissions = std::fs::Permissions::from_mode(mode);
+                std::fs::set_permissions(&path, permissions)?;
+            } else {
+                warn!("Invalid permission string: '{}', skipping permission setting", permission);
+            }
+        }
+        // If permission is empty, use default file permissions (typically 644)
+    }
+    
     Ok(())
 }
 
