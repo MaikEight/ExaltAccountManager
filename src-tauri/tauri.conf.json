@@ -12,6 +12,7 @@
     "targets": "all",
     "homepage": "https://exaltaccountmanager.com/",
     "licenseFile": "windows/LICENSE",
+    "copyright": "© Copyright 2020-2025, MaikEight, All rights reserved.",
     "windows": {
       "allowDowngrades": false,
       "certificateThumbprint": "902a87c85afbc0c5eb692d2e921ff8dabbee5625",
@@ -35,7 +36,8 @@
     },
     "macOS": {
       "signingIdentity": "-",
-      "hardenedRuntime": false
+      "hardenedRuntime": false,
+      "minimumSystemVersion": "10.13"
     },
     "icon": [
       "icons/32x32.png",
