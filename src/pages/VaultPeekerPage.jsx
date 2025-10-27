@@ -5,13 +5,15 @@ import AccountsView from "../components/VaultPeeker/AccountsView";
 import { ItemCanvasContextProvider } from "../contexts/ItemCanvasContext";
 import ItemFilterBox from "../components/VaultPeeker/ItemFilterBox";
 import InverseBorderRadiusSpacer from "../components/InverseBorderRadiusSpacer";
+import usePortraitReady from "../hooks/usePortraitReady";
 
 function VaultPeekerPage() {
+    const isPortraitReady = usePortraitReady();
 
     return (
         <VaultPeekerContextProvider>
             {
-                window.portraitReady &&
+                isPortraitReady &&
                 <ItemCanvasContextProvider>
                     <Box
                         sx={{
