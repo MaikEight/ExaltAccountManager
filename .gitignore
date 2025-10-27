@@ -31,3 +31,4 @@ t-src-modules/EAM_Task_Installer/EAM_Task_Installer/EAM_Task_Tools_Key_File.pfx
 buildEnvKeys.ps1
 .env
 updateEnvVars.ps1
+target
