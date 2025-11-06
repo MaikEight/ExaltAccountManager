@@ -1258,27 +1258,11 @@ fn wait_for_file_creation(file_path: &str, timeout: u64) -> bool {
     false
 }
 
-#[cfg(target_os = "macos")]
-#[tauri::command]
-fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
-    info!("This function is only available on Windows");
-    Ok(false)
-}
-
-#[cfg(target_os = "windows")]
 #[tauri::command]
 fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
     info!("Installing EAM daily login task...");
 
-    if std::env::consts::OS != "windows" {
-        warn!("This function is only available on Windows");
-        return Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "This function is only available on Windows",
-        )));
-    }
-
-    let result = eam_commons::windows_specifics::install_eam_daily_login_task(
+    let result = eam_commons::daily_login_task::install_eam_daily_login_task(
         "explorer.exe",
         Some("eam:start-daily-login-task"),
     );
@@ -1296,22 +1280,9 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
 }
 
 #[tauri::command]
-#[cfg(target_os = "macos")]
 fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, String> {
-    info!("This function is only available on Windows");
-    Ok(false)
-}
-
-#[tauri::command]
-#[cfg(target_os = "windows")]
-fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, String> {
-    if std::env::consts::OS != "windows" {
-        info!("This function is only available on Windows");
-        return Err("This function is only available on Windows".to_string());
-    }
-
     let result =
-        eam_commons::windows_specifics::uninstall_eam_daily_login_task(uninstall_old_versions);
+        eam_commons::daily_login_task::uninstall_eam_daily_login_task(uninstall_old_versions);
 
     match result {
         Ok(_) => Ok(true),
@@ -1326,21 +1297,9 @@ fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, 
 }
 
 #[tauri::command]
-#[cfg(target_os = "macos")]
 fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, String> {
-    info!("This function is only available on Windows");
-    Ok(false)
-}
 
-#[tauri::command]
-#[cfg(target_os = "windows")]
-fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, String> {
-    if std::env::consts::OS != "windows" {
-        info!("This function is only available on Windows");
-        return Ok(false);
-    }
-
-    let result = eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(
+    let result = eam_commons::daily_login_task::check_for_installed_eam_daily_login_task(
         check_for_old_versions,
     );
 
@@ -1353,25 +1312,9 @@ fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Res
 #[tauri::command]
 fn run_eam_daily_login_task_now() -> Result<bool, String> {
     info!("Running EAM daily login task now...");
-
-    if std::env::consts::OS != "windows" {
-        info!("This function is only available on Windows");
-        return Err("This function is only available on Windows".to_string());
-    }
-
-    let save_file_path = get_save_file_path();
-    let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
-
-    if !path.exists() {
-        error!("EAM_Daily_Auto_Login.exe does not exist");
-        return Err("EAM_Daily_Auto_Login.exe does not exist".to_string());
-    }
-
-    let mut cmd = std::process::Command::new(&path);
-    cmd.arg("-force");
-    let _child = cmd.spawn().expect("Failed to start process");
-
-    Ok(true)
+    warn!("Starting the daily login task is currently disabled.");
+    
+    Ok(false)
 }
 
 //########################
