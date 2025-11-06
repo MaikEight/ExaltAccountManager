@@ -32,3 +32,4 @@ buildEnvKeys.ps1
 .env
 updateEnvVars.ps1
 target
+buildEnvKeys.fish
