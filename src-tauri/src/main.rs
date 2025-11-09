@@ -145,7 +145,7 @@ fn main() {
         }
     }
 
-    // Clear all Token 
+    // Clear all Token
     match POOL.lock() {
         Ok(pool_guard) => {
             if let Some(ref pool) = *pool_guard {
@@ -309,7 +309,11 @@ async fn initialize_game_exe_path() {
     if stored.is_err() {
         info!("No game exe path found in user data, setting default path...");
         let default_path = eam_commons::paths::get_default_game_path();
-        let _ = insert_or_update_user_data(UserData { dataKey: "game_exe_path".to_string(), dataValue: default_path.clone() }).await;
+        let _ = insert_or_update_user_data(UserData {
+            dataKey: "game_exe_path".to_string(),
+            dataValue: default_path.clone(),
+        })
+        .await;
         info!("Default game exe path set to: {}", default_path);
         return;
     }
@@ -656,16 +660,16 @@ fn start_application(
             let mut cmd = std::process::Command::new("/usr/bin/open");
             cmd.arg("-a");
             cmd.arg(&application_path);
-            
+
             if !start_parameters.is_empty() {
                 cmd.arg("--args");
                 cmd.arg(&start_parameters);
             }
-            
+
             if let Some(dir) = &current_directory {
                 cmd.current_dir(dir);
-            }            
-            
+            }
+
             match cmd.spawn() {
                 Ok(_child) => {
                     info!("Application started successfully");
@@ -673,22 +677,22 @@ fn start_application(
                 Err(e) => {
                     error!("Failed to start process: {}", e);
                     error!("Error kind: {:?}", e.kind());
-                    
+
                     // Try alternative approach: direct execution of the binary inside the app bundle
                     info!("Trying alternative approach...");
                     let mut app_binary_path = PathBuf::from(&application_path);
                     app_binary_path.push("Contents");
                     app_binary_path.push("MacOS");
                     app_binary_path.push("RotMGExalt"); // We know the executable name from our ls command
-                    
+
                     info!("Trying direct execution: {:?}", app_binary_path);
-                    
+
                     if app_binary_path.exists() {
                         let mut direct_cmd = std::process::Command::new(&app_binary_path);
                         if !start_parameters.is_empty() {
                             direct_cmd.arg(&start_parameters);
                         }
-                        
+
                         match direct_cmd.spawn() {
                             Ok(_) => {
                                 info!("Successfully started application directly");
@@ -701,7 +705,7 @@ fn start_application(
                     } else {
                         error!("Direct executable not found at: {:?}", app_binary_path);
                     }
-                    
+
                     return Err(tauri::Error::from(std::io::Error::new(
                         ErrorKind::Other,
                         format!("Failed to start application: {}", e),
@@ -1262,8 +1266,28 @@ fn wait_for_file_creation(file_path: &str, timeout: u64) -> bool {
 fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
     info!("Installing EAM daily login task...");
 
+    let exe_path = match std::env::consts::OS {
+        "windows" => "explorer.exe",
+        "macos" => {
+            let os = std::env::current_exe()
+                .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+            &os.to_str().map(|s| s.to_owned()).ok_or_else(|| {
+                tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Failed to convert exe path to string",
+                ))
+            })?.to_owned()
+        }
+        _ => {
+            return Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                "Unsupported OS for daily login task installation",
+            )))
+        }
+    };
+
     let result = eam_commons::daily_login_task::install_eam_daily_login_task(
-        "explorer.exe",
+        exe_path,
         Some("eam:start-daily-login-task"),
     );
 
@@ -1298,7 +1322,6 @@ fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, 
 
 #[tauri::command]
 fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, String> {
-
     let result = eam_commons::daily_login_task::check_for_installed_eam_daily_login_task(
         check_for_old_versions,
     );
@@ -1313,7 +1336,7 @@ fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Res
 fn run_eam_daily_login_task_now() -> Result<bool, String> {
     info!("Running EAM daily login task now...");
     warn!("Starting the daily login task is currently disabled.");
-    
+
     Ok(false)
 }
 
