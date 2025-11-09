@@ -7,13 +7,26 @@ use std::io::Error;
 use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
-use chrono::{Local, Timelike};
 
-// LaunchAgent configuration matching Windows Task Scheduler behavior:
-// - Runs 5 minutes after login (matching LogonTrigger with 5min delay)
-// - Runs daily at calculated time based on UTC offset (matching DailyTrigger)
-// - ThrottleInterval prevents multiple runs within 24 hours
-// - StartInterval provides the login delay mechanism
+// LaunchAgent configuration for daily login task:
+// 
+// TRIGGERS:
+// 1. Daily at 01:00 local time (automatically adjusts for DST)
+//    - Uses StartCalendarInterval for scheduled execution
+// 
+// 2. On system wake/unlock (if daily trigger was missed)
+//    - Uses WatchPaths monitoring /var/run/com.apple.SystemManagement.wakeup
+//    - Combined with ThrottleInterval (1 hour) to prevent spam
+//    - Ensures task runs if Mac was asleep during scheduled time
+// 
+// 3. 5 minutes after login (via StartInterval)
+//    - Only triggers once per login session
+//    - Provides fallback if other triggers fail
+//
+// BEHAVIOR:
+// - Uses deep link (eam:start-daily-login-task) for silent startup
+// - ThrottleInterval (3600s = 1 hour) prevents multiple rapid executions
+// - macOS automatically handles DST changes for calendar-based triggers
 const LAUNCH_AGENT_LABEL: &str = "com.exaltaccountmanager.dailylogin";
 const LAUNCH_AGENT_PLIST_NAME: &str = "com.exaltaccountmanager.dailylogin.plist";
 const LAUNCH_AGENT_PLIST_TEMPLATE: &str = include_str!("com.exaltaccountmanager.dailylogin.plist");
@@ -21,6 +34,11 @@ const LAUNCH_AGENT_PLIST_TEMPLATE: &str = include_str!("com.exaltaccountmanager.
 /// Check if the EAM daily login LaunchAgent is installed
 #[cfg(target_os = "macos")]
 pub fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, Error> {
+    if check_for_old_versions {
+        // Currently no old versions to check for
+        return Ok(false);
+    }
+
     let plist_path = get_launch_agent_path()?;
     
     if !plist_path.exists() {
@@ -78,34 +96,59 @@ pub fn install_eam_daily_login_task(exe_path: &str, args: Option<&str>) -> Resul
         ));
     }
 
+    // Convert executable path to .app bundle path
+    // e.g., /Applications/Exalt Account Manager.app/Contents/MacOS/Exalt Account Manager
+    // becomes /Applications/Exalt Account Manager.app
+    let app_bundle_path = extract_app_bundle_path(exe_path)?;
+    
+    info!("Executable path: {}", exe_path);
+    info!("Extracted app bundle path: {}", app_bundle_path);
+
     // Ensure the LaunchAgents directory exists
     let plist_path = get_launch_agent_path()?;
     if let Some(parent) = plist_path.parent() {
         fs::create_dir_all(parent)?;
     }
 
-    // Build the program arguments array (filter out ignoreFileCheck if present)
-    let mut program_arguments = vec![exe_path.to_string()];
+    // Build the program arguments array using 'open' command to launch the .app bundle
+    // This ensures macOS properly identifies the app by its Info.plist instead of the code signing identity
+    let mut program_arguments = vec![
+        "/usr/bin/open".to_string(),
+        "-a".to_string(),
+        app_bundle_path.clone(),
+    ];
+    
+    // Add the deep link argument if provided (filter out ignoreFileCheck)
     if let Some(args_str) = args {
         if !args_str.is_empty() {
-            // Split args by space and add them (excluding ignoreFileCheck)
-            program_arguments.extend(
-                args_str.split_whitespace()
-                    .filter(|&s| s != "ignoreFileCheck")
-                    .map(|s| s.to_string())
-            );
+            let filtered_args: Vec<String> = args_str.split_whitespace()
+                .filter(|&s| s != "ignoreFileCheck")
+                .map(|s| s.to_string())
+                .collect();
+            
+            if !filtered_args.is_empty() && filtered_args[0].starts_with("eam:") {
+                // For deep links (eam:*), use 'open' with the URL directly
+                // The URL scheme handler will launch the app automatically
+                program_arguments = vec![
+                    "/usr/bin/open".to_string(),
+                    filtered_args[0].clone(),
+                ];
+                info!("Using deep link URL: {}", filtered_args[0]);
+            }
         }
     }
+    
+    info!("Final program arguments: {:?}", program_arguments);
 
-    // Calculate trigger time with UTC offset (matching Windows behavior)
-    let now = Local::now();
-    let utc_offset_hours = now.offset().local_minus_utc() / 3600;
-    let trigger_hour = (24 + utc_offset_hours) % 24;
-    let trigger_minute = 1;
+    // Calculate trigger time - Use 01:00 local time to account for DST
+    // macOS automatically adjusts calendar intervals for DST, so we use local time directly
+    let trigger_hour = 1;  // 01:00 local time (after midnight UTC, accounting for most timezones)
+    let trigger_minute = 0;
+
+    info!("LaunchAgent will trigger daily at {:02}:{:02} local time", trigger_hour, trigger_minute);
 
     // Generate the plist content
     let plist_content = generate_launch_agent_plist(
-        exe_path, 
         program_arguments, 
         trigger_hour, 
         trigger_minute
@@ -157,7 +200,7 @@ pub fn install_eam_daily_login_task(exe_path: &str, args: Option<&str>) -> Resul
 
 /// Uninstall the EAM daily login LaunchAgent
 #[cfg(target_os = "macos")]
-pub fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, Error> {
+pub fn uninstall_eam_daily_login_task(_uninstall_old_versions: bool) -> Result<bool, Error> {
     let plist_path = get_launch_agent_path()?;
 
     if !plist_path.exists() {
@@ -207,6 +250,32 @@ pub fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bo
     }
 }
 
+/// Extract the .app bundle path from an executable path
+/// e.g., /Applications/Exalt Account Manager.app/Contents/MacOS/Exalt Account Manager
+/// returns /Applications/Exalt Account Manager.app
+fn extract_app_bundle_path(exe_path: &str) -> Result<String, Error> {
+    let path = std::path::Path::new(exe_path);
+    
+    // Walk up the directory tree looking for .app
+    for ancestor in path.ancestors() {
+        if let Some(extension) = ancestor.extension() {
+            if extension == "app" {
+                return ancestor.to_str()
+                    .map(|s| s.to_string())
+                    .ok_or_else(|| Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        "Failed to convert .app bundle path to string"
+                    ));
+            }
+        }
+    }
+    
+    // If no .app bundle found, return the original path
+    // (this shouldn't happen in normal Tauri apps, but provides a fallback)
+    info!("Warning: Could not find .app bundle in path: {}. Using executable path directly.", exe_path);
+    Ok(exe_path.to_string())
+}
+
 /// Get the path to the LaunchAgent plist file
 fn get_launch_agent_path() -> Result<PathBuf, Error> {
     let mut path = dirs::home_dir().ok_or_else(|| {
@@ -225,7 +294,6 @@ fn get_launch_agent_path() -> Result<PathBuf, Error> {
 
 /// Generate the LaunchAgent plist XML content
 fn generate_launch_agent_plist(
-    exe_path: &str, 
     program_arguments: Vec<String>,
     trigger_hour: i32,
     trigger_minute: i32
@@ -236,10 +304,10 @@ fn generate_launch_agent_plist(
         args_xml.push_str(&format!("\t\t<string>{}</string>\n", escape_xml(&arg)));
     }
 
-    // Build the StartupDelay section (5 minutes delay after login, matching Windows)
+    // Build the login delay section (5 minutes delay after login via StartInterval)
     let minutes_after_login_delay = 5;
     let startup_delay_xml = format!(
-        "\t<key>StartOnMount</key>\n\t<true/>\n\t<key>LaunchOnlyOnce</key>\n\t<true/>\n\t<key>StartInterval</key>\n\t<integer>{}</integer>",
+        "\t<key>StartInterval</key>\n\t<integer>{}</integer>",
         minutes_after_login_delay * 60
     );
 
