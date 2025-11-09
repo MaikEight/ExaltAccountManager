@@ -1,7 +1,6 @@
 import { Box, Paper, Typography, useTheme } from '@mui/material';
 import ChangelogEntry from './ChangelogEntry';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import Confetti from "react-confetti";
 
 function ChangelogVersion4_2_8() {
     const theme = useTheme();
