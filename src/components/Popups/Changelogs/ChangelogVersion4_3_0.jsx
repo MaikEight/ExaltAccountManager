@@ -166,6 +166,15 @@ function ChangelogVersion4_3_0() {
                 />
 
                 <ChangelogEntry
+                    title={'Vault Peeker'}
+                    listOfChanges={[
+                        "Added pagination to the accounts",
+                        "Improved performance and reduced memory usage when handling large numbers of accounts.",   
+                        "Improved item canvas rendering performance.",
+                    ]}
+                />
+
+                <ChangelogEntry
                     title={'Daily Login'}
                     listOfChanges={[
                         "Fixed an issue where the daily login process would never register as done and therefore never start on the next day.",
