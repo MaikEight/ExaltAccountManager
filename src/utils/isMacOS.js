@@ -4,6 +4,10 @@ function isMacOS() {
     const isMacOS = localStorage.getItem('isMacOs');
     if (isMacOS === 'true') {
         return true;
+    } 
+
+    if (isMacOS === 'false') {
+        return false;
     }
 
     if (sessionStorage.getItem('checkedIsMacOs') === 'true') {
@@ -14,8 +18,9 @@ function isMacOS() {
         .then((os) => {
             sessionStorage.setItem('checkedIsMacOs', 'true');
 
+        localStorage.setItem("isMacOs", (os === "macos").toString());
+
             if (os === "macos") {
-                localStorage.setItem("isMacOs", "true");
                 return true;
             }
 
