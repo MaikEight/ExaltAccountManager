@@ -3,7 +3,7 @@ import ChangelogEntry from './ChangelogEntry';
 import { useEffect, useRef, useState } from 'react';
 import Confetti from "react-confetti";
 
-function ChangelogVersion4_2_9() {
+function ChangelogVersion4_3_0() {
     const theme = useTheme();
     const boxHeaderRef = useRef(null);
 
@@ -227,4 +227,4 @@ function ChangelogVersion4_2_9() {
 }
 
 
-export default ChangelogVersion4_2_9;
+export default ChangelogVersion4_3_0;
