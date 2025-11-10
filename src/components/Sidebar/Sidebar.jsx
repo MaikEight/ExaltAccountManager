@@ -165,7 +165,7 @@ function Sidebar({ children }) {
                         flexDirection: "column",
                         alignItems: "left",
                         justifyContent: "space-between",
-                        height: "calc(100% + 22px)",
+                        height: `calc(100% - ${isMac ? 4 : -22}px)`,
                         width: 210,
                     }}
                 >
