@@ -1,10 +1,11 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import useAccounts from "../hooks/useAccounts";
 import { invoke } from "@tauri-apps/api/core";
 import { extractRealmItemsFromCharListDatasets, formatAccountDataFromCharListDatasets } from "../utils/realmItemUtils";
 import ItemLocationPopper from "../components/Realm/ItemLocationPopper";
 import items from "../assets/constants";
 import { useGroups } from 'eam-commons-js';
+import useUserSettings from "../hooks/useUserSettings";
 
 const VaultPeekerContext = createContext();
 
@@ -90,6 +91,8 @@ const defaultFilter = {
 };
 
 function VaultPeekerContextProvider({ children }) {
+    const {getByKeyAndSubKey, setByKeyAndSubKey, settings} = useUserSettings();
+
     const [selectedItem, setSelectedItem] = useState(null);
     const [popperPosition, setPopperPosition] = useState(null);
     const [totalItems, setTotalItems] = useState([]);
@@ -97,6 +100,20 @@ function VaultPeekerContextProvider({ children }) {
     const [accountsData, setAccountsData] = useState([]);
     const [filter, setFilter] = useState(defaultFilter);
     const [filterItemsCallbacks, setFilterItemsCallbacks] = useState({});
+
+    const [page, setPage] = useState(0);    
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    const totalPages = useMemo(() => {
+        if (!accountsData) return 0;
+        return Math.ceil(accountsData.length / rowsPerPage);
+    }, [accountsData, rowsPerPage]);
+
+    const accountsOfCurrentPage = useMemo(() => {
+        if (!accountsData) return [];
+        const startIndex = page * rowsPerPage;
+        return accountsData.slice(startIndex, startIndex + rowsPerPage);
+    }, [accountsData, page, rowsPerPage]);
 
     const { groups } = useGroups();
     const { accounts, getAccountByEmail } = useAccounts();
@@ -304,6 +321,16 @@ function VaultPeekerContextProvider({ children }) {
     };
 
     useEffect(() => {
+        const rows = getByKeyAndSubKey('vaultPeeker', 'rowsPerPage');
+        if (rows && typeof rows === 'number') {
+            setRowsPerPage(rows);
+            return;
+        }
+
+        setRowsPerPage(10);
+    }, []);
+
+    useEffect(() => {
         refreshItemData();
     }, [accounts]);
 
@@ -315,6 +342,10 @@ function VaultPeekerContextProvider({ children }) {
             }
         });
     }, [filter, totalItems]);
+
+    useEffect(() => {
+        setByKeyAndSubKey('vaultPeeker', 'rowsPerPage', rowsPerPage);
+    }, [rowsPerPage]);
 
     const addItemFilterCallback = (id, callback, items) => {
         setFilterItemsCallbacks((prev) => {
@@ -328,6 +359,11 @@ function VaultPeekerContextProvider({ children }) {
     const removeItemFilterCallback = (id) => {
         setFilterItemsCallbacks((prev) => {
             const newCallbacks = { ...prev };
+            // Explicitly clear the callback reference to prevent memory leaks
+            if (newCallbacks[id]) {
+                newCallbacks[id].callback = null;
+                newCallbacks[id].items = null;
+            }
             delete newCallbacks[id];
             return newCallbacks;
         });
@@ -358,6 +394,13 @@ function VaultPeekerContextProvider({ children }) {
         getAccountByEmail,
         popperPosition,
         filter,
+
+        page,
+        setPage,
+        rowsPerPage,
+        setRowsPerPage,
+        totalPages,
+        accountsOfCurrentPage,
 
         setPopperPosition,
         selectedItem,
