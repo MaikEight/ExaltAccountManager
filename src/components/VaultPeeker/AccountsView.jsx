@@ -1,23 +1,27 @@
 import AccountView from "./AccountView";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import ComponentBox from "../ComponentBox";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 
 function AccountsView() {
-    const { accountsData } = useVaultPeeker();
+    const { accountsOfCurrentPage, filter } = useVaultPeeker();
 
-    return (
-        <Fragment>
-            {
-                accountsData ?
-                    accountsData.map((accountData, index) => {
-                        return <AccountView key={index} account={accountData} />
-                    })
-                    :
-                    <ComponentBox title='No Accounts Found' isCollapseable={true} sx={{ mx: 0 }} />
-            }
-        </Fragment>
-    );
+    const accountsUi = useMemo(() => {
+        return (
+            <Fragment>
+                {
+                    accountsOfCurrentPage ?
+                        accountsOfCurrentPage.map((accountData, index) => {
+                            return <AccountView key={accountData.email || index} account={accountData} />
+                        })
+                        :
+                        <ComponentBox title='No Accounts Found' isCollapseable={true} sx={{ mx: 0 }} />
+                }
+            </Fragment>
+        );
+    }, [accountsOfCurrentPage, filter]);
+
+    return accountsUi;
 }
 
 export default AccountsView;
