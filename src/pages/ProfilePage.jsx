@@ -34,7 +34,7 @@ function ProfilePage() {
                     <NotLoggedInBox />
 
             }
-            
+
             <EamPlusComparisonTable />
             <EamPlusFAQ />
         </Box>
@@ -172,19 +172,17 @@ function UserProfileBox() {
                                 justifyContent: 'end',
                             }}
                         >
-                            {
-                                <a href={`${STRIPE_CUSTOMER_PORTAL_URL}?prefilled_email=${user.email}`} target="_blank" rel="noreferrer">
-                                    <StyledButton
-                                        startIcon={<ManageAccountsOutlinedIcon />}
-                                        color="primary"
-                                        sx={{
-                                            width: "fit-content",
-                                        }}
-                                    >
-                                        Manage Subscription
-                                    </StyledButton>
-                                </a>
-                            }
+                            <a href={`${STRIPE_CUSTOMER_PORTAL_URL}?prefilled_email=${user.email}`} target="_blank" rel="noreferrer">
+                                <StyledButton
+                                    startIcon={<ManageAccountsOutlinedIcon />}
+                                    color="primary"
+                                    sx={{
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    Manage Subscription
+                                </StyledButton>
+                            </a>
                             <StyledButton
                                 startIcon={<LogoutOutlinedIcon />}
                                 color="secondary"
