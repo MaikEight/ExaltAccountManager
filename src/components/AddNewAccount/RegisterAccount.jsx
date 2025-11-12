@@ -6,7 +6,7 @@ import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import { useEffect, useState } from "react";
 import { postRegisterAccount } from "eam-commons-js";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { de } from 'date-fns/locale/de';
 import { useTheme } from "@emotion/react";
 import useSnack from "../../hooks/useSnack";
