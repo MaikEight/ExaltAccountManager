@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
 import { useTheme } from "@emotion/react";
 import { listen } from '@tauri-apps/api/event';
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import { MASCOT_NAME } from "../../constants";
@@ -16,6 +16,7 @@ import isMacOS from "../../utils/isMacOS";
 function CustomToolbar(props) {
     const theme = useTheme();
     const { getByKeyAndSubKey } = useUserSettings();
+    const isMac = isMacOS();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [hasGlobalApiCooldown, setHasGlobalApiCooldown] = useState(false);
@@ -26,10 +27,6 @@ function CustomToolbar(props) {
     ]));
 
     const minimizeToTray = getByKeyAndSubKey('general', 'minimizeToTray');
-
-    const isMac = useMemo(() => {
-        return isMacOS();
-    }, []);
 
     useEffect(() => {
         let unlistenGlobalApiCooldown;
@@ -128,7 +125,7 @@ function CustomToolbar(props) {
             }}
         >
             {
-                isMac && (
+                isMac === true && (
                     <WindowControls />
                 )
             }
@@ -268,7 +265,7 @@ function CustomToolbar(props) {
                     }
                 </Box>
                 {
-                    !isMac && (
+                    isMac !== true && (
                         <ButtonGroup
                             disableElevation
                             variant="text"
