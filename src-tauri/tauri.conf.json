@@ -35,7 +35,7 @@
       }
     },
     "macOS": {
-      "signingIdentity": "Apple Development: Maik Kuehne (L83H2V7TG4)",
+      "signingIdentity": "Developer ID Application: Maik Kuehne (7LV36PT6D2)",
       "hardenedRuntime": true,
       "entitlements": "entitlements.plist",
       "minimumSystemVersion": "10.13"
