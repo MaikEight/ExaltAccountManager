@@ -17,7 +17,7 @@ async function getLatestEamVersion() {
             logToErrorLog('getLatestEamVersion', error);
             return null;
         })
-        .then(response => response.data);
+        .then(response => response?.data);
 }
 
 async function startSession(amountOfAccounts, clientIdHash, clientVersion) {
