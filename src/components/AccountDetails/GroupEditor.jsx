@@ -3,7 +3,7 @@ import { useGroups } from "eam-commons-js";
 import React, { useEffect, useState } from "react";
 import * as Icons from '@mui/icons-material';
 import { useTheme } from "@emotion/react";
-import { FixedSizeGrid as FixedGrid } from 'react-window';
+import { Grid as FixedGrid } from 'react-window';
 import StyledButton from "../StyledButton";
 import { GroupUI } from "../GridComponents/GroupUI";
 import { useColorList } from "../../hooks/useColorList";
@@ -52,39 +52,54 @@ function GroupEditor({ g, onSave, onCancel }) {
         const width = 42;
         const height = 42;
 
+        const Cell = ({ columnIndex, rowIndex, style, ...cellProps }) => {
+            const index = rowIndex * columnCount + columnIndex;
+            const icon = cellProps.icons[index];
+            if (!icon) return null;
+            return (
+                <div
+                    style={{
+                        ...style,
+                        backgroundColor: cellProps.selectedIcon === icon ? theme.palette.background.default : null,
+                        borderRadius: 6,
+                        padding: '6px',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => cellProps.onSelect(icon)}
+                >
+                    {React.createElement(Icons[icon], { style: { width: '100%', height: '100%' } })}
+                </div>
+            );
+        };
+
         return (
-            <FixedGrid
-                columnCount={columnCount}
-                columnWidth={width}
-                height={240}
-                rowCount={Math.ceil(allIcons.length / columnCount)}
-                rowHeight={height}
-                width={columnCount * width + 16}
-                style={{
-                    outline: 'none',
-                    borderRadius: 6,
-                    backgroundColor: theme.palette.background.paperLight,
+            <Box
+                sx={{
+                    height: 240,
+                    width: columnCount * width + 16,
+                    overflow: 'auto',
                 }}
             >
-                {({ columnIndex, rowIndex, style }) => {
-                    const index = rowIndex * columnCount + columnIndex;
-                    const icon = allIcons[index];
-                    if (!icon) return null;
-                    return (
-                        <div
-                            style={{
-                                ...style,
-                                ...{ backgroundColor: newGroup.icon === icon ? theme.palette.background.default : null },
-                                borderRadius: 6,
-                                padding: '6px',
-                            }}
-                            onClick={() => setNewGroup({ ...newGroup, icon: icon })}
-                        >
-                            {React.createElement(Icons[icon], { style: { width: '100%', height: '100%' } })}
-                        </div>
-                    );
-                }}
-            </FixedGrid>
+                <FixedGrid
+                    columnCount={columnCount}
+                    columnWidth={width}
+                    height={240}
+                    rowCount={Math.ceil(allIcons.length / columnCount)}
+                    rowHeight={height}
+                    width={columnCount * width + 16}
+                    style={{
+                        outline: 'none',
+                        borderRadius: 6,
+                        backgroundColor: theme.palette.background.paperLight,
+                    }}
+                    cellComponent={Cell}
+                    cellProps={{
+                        icons: allIcons,
+                        selectedIcon: newGroup.icon,
+                        onSelect: (icon) => setNewGroup({ ...newGroup, icon })
+                    }}
+                />
+            </Box>
         );
     };
 
