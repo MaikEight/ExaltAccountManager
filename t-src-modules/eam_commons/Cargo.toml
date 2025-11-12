@@ -1,6 +1,6 @@
 [package]
 name = "eam_commons"
-version = "0.1.9"
+version = "0.1.10"
 homepage = "https://exaltaccountmanager.com"
 publish = false
 edition = "2021"
@@ -8,29 +8,38 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wmi = "0.17"
-sha1 = "0.10"
 base64 = "0.22"
-winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt"] }
-diesel = { version = "2.2.12", features = ["sqlite", "r2d2", "64-column-tables"] }
-diesel_migrations = "2.2.0"
-diesel_derives = "2.2.7"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-lazy_static = "1.5"
-libsqlite3-sys = { version = "0.33.0", features = ["bundled"] }
-uuid = { version = "1.18", features = ["serde", "v4"] }
 chrono = { version = "0.4", features = ["serde"] }
-windows-service = "0.8"
+diesel = { version = "2.3.3", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel_migrations = "2.3.0"
+diesel_derives = "2.3.4"
 dirs = "6.0"
+flate2 = "1.1"
+function_name = "0.3"
+futures = "0.3"
+glob = "0.3.3"
+lazy_static = "1.5"
+libsqlite3-sys = { version = "0.35.0", features = ["bundled"] }
+log = "0.4"
 md5 = "0.8"
 reqwest = { version = "0.12", features = ["blocking", "json"] }
-futures = "0.3"
-flate2 = "1.1"
-tokio = { version = "1.47", features = ["full"] }
-roxmltree = "0.20.0"
-zip = "6"
+roxmltree = "0.21.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha1 = "0.10"
 thiserror = "2.0"
-log = "0.4"
-function_name = "0.3"
-glob = "0.3.3"
+tokio = { version = "1.48", features = ["full"] }
+uuid = { version = "1.18", features = ["serde", "v4"] }
+zeroize = "1.8"
+zip = "6"
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "errhandlingapi", "winbase"] }
+wmi = "0.17"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+anyhow = "1"
+core-foundation = "0.10"
+libc = "0.2"
+security-framework = "3.5"
+security-framework-sys = "2.15"

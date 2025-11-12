@@ -6,6 +6,7 @@ import { checkForPaidSubscription, postPlusToken } from "../backend/eamSubscript
 
 const UserLoginContext = createContext();
 const SUBSCRIPTIONS = ['Default', 'Plus'];
+const ENCRYPTION_KEY = "EAM_USER_REFRESH_TOKEN";
 
 function UserLoginProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -39,7 +40,7 @@ function UserLoginProvider({ children }) {
 
             const refresh_token = response.refresh_token;
             if (refresh_token) {
-                const encToken = await invoke('encrypt_string', { data: refresh_token }).catch(console.error);
+                const encToken = await invoke('encrypt_string', { email: ENCRYPTION_KEY, data: refresh_token }).catch(console.error);
                 await invoke('insert_or_update_user_data', { userData: { dataKey: 'Auth0RefreshToken', dataValue: encToken } }).catch(console.error);
             }
 
@@ -128,7 +129,7 @@ function UserLoginProvider({ children }) {
                 sessionStorage.setItem("id_token", id_token);
 
                 if (refresh_token) {
-                    const encToken = await invoke('encrypt_string', { data: refresh_token });
+                    const encToken = await invoke('encrypt_string', { email: ENCRYPTION_KEY, data: refresh_token });
                     await invoke('insert_or_update_user_data', { userData: { dataKey: 'Auth0RefreshToken', dataValue: encToken } });
                 }
 

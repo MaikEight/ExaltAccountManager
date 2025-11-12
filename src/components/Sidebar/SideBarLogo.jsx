@@ -24,7 +24,7 @@ function SideBarLogo() {
         >
             <img
                 data-tauri-drag-region
-                src={(theme?.palette?.mode || 'dark') === 'dark' ? '/logo/logo_inner.png' : '/logo/logo_inner_dark.png'}
+                src={(theme?.palette?.mode || 'dark') === 'dark' ? '/logo/logo_inner_big.png' : '/logo/logo_inner_big_dark.png'}
                 alt="EAM-Logo"
                 style={{
                     width: 64,

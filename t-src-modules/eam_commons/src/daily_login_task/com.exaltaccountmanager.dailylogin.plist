@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.exaltaccountmanager.dailylogin</string>
+	<key>LimitLoadToSessionType</key>
+	<string>Aqua</string>
+	<key>ProcessType</key>
+	<string>Interactive</string>
+	<key>AssociatedBundleIdentifiers</key>
+	<string>eu.exalt-account-manager.app</string>
+	<key>ProgramArguments</key>
+	<array>
+		<!-- PROGRAM_ARGUMENTS_PLACEHOLDER -->
+	</array>
+	<!-- STARTUP_DELAY_PLACEHOLDER -->
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer><!-- TRIGGER_HOUR_PLACEHOLDER --></integer>
+		<key>Minute</key>
+		<integer><!-- TRIGGER_MINUTE_PLACEHOLDER --></integer>
+	</dict>
+	<key>WatchPaths</key>
+	<array>
+		<string>/var/run/com.apple.SystemManagement.wakeup</string>
+	</array>
+	<key>QueueDirectories</key>
+	<array/>
+	<key>StandardOutPath</key>
+	<string>/tmp/eam-dailylogin.log</string>
+	<key>StandardErrorPath</key>
+	<string>/tmp/eam-dailylogin.err</string>
+	<key>KeepAlive</key>
+	<false/>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>ThrottleInterval</key>
+	<integer>3600</integer>
+</dict>
+</plist>

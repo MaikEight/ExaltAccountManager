@@ -1,8 +1,9 @@
 import { Box, Paper, Typography, useTheme } from '@mui/material';
 import ChangelogEntry from './ChangelogEntry';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Confetti from "react-confetti";
 
-function ChangelogVersion4_2_8() {
+function ChangelogVersion4_3_0() {
     const theme = useTheme();
     const boxHeaderRef = useRef(null);
 
@@ -34,8 +35,8 @@ function ChangelogVersion4_2_8() {
     }, []);
 
     const title = [
-        "Exalt Account Manager v4.2.8",
-        "Login Hotfix and preparations...",
+        "Exalt Account Manager v4.3.0",
+        "The first MacOS release is here with bug fixes and improvements!",
     ];
 
     return (
@@ -69,6 +70,17 @@ function ChangelogVersion4_2_8() {
                     overflow: "hidden",
                 }}
             >
+                {
+                    <Confetti
+                        width={windowSize?.width || 0}
+                        height={windowSize?.height || 0}
+                        style={{
+                            borderRadius: `${theme.shape.borderRadius * 2 - 1}px`,
+                            opacity: windowSize.visible ? 1 : 0,
+                            transition: 'opacity 1s ease-in-out',
+                        }}
+                    />
+                }
                 <img
                     src='https://app-data.exaltaccountmanager.com/images/eam/logo/EAM_logo_stroke.png'
                     alt='EAM Logo'
@@ -84,9 +96,9 @@ function ChangelogVersion4_2_8() {
                     }}
                 />
                 <img
-                    src='https://app-data.exaltaccountmanager.com/images/okta/error_network_180.png'
+                    src='https://app-data.exaltaccountmanager.com/images/okta/apple_update2_512.png'
                     alt='EAM Logo'
-                    height='128px'
+                    height='171px'
                     style={{
                         zIndex: 1001,
                     }}
@@ -130,9 +142,6 @@ function ChangelogVersion4_2_8() {
                     <Typography variant="subtitle1" color="textSecondary">
                         {title[1]}
                     </Typography>
-                    <Typography variant="subtitle2" color="textSecondary">
-                        Sorry for the inconvenience, a game update broke the login for some users.
-                    </Typography>
                 </Box>
             </Box>
             {/* CONTENT */}
@@ -147,16 +156,39 @@ function ChangelogVersion4_2_8() {
                 }}
             >
                 <ChangelogEntry
-                    title={'Login'}
+                    title={'MacOS Support'}
                     listOfChanges={[
-                        "Fixed an issue where the game would crash immediately after starting.",
+                        "After a lot of work, testing and adjustments, Exalt Account Manager is now officially supported on MacOS!",
+                        "Please note that this is the first release for MacOS and there might still be some bugs or issues. If you encounter any problems, please report them on our Discord or GitHub.",
+                        "Spread the word to your Mac-using friends so they can also enjoy the benefits of Exalt Account Manager!",
+                        "Some features still need some more adjustments, like the settings are not MacOS native yet, but we are working on it!",
+                    ]}
+                />
+
+                <ChangelogEntry
+                    title={'Vault Peeker'}
+                    listOfChanges={[
+                        "Added pagination to the accounts",
+                        "Improved performance and reduced memory usage when handling large numbers of accounts.",   
+                        "Improved item canvas rendering performance.",
+                    ]}
+                />
+
+                <ChangelogEntry
+                    title={'Daily Login'}
+                    listOfChanges={[
+                        "Fixed an issue where the daily login process would never register as done and therefore never start on the next day.",
+                        "Fixed an issue where the Background Manager did not stop properly for the daily login process to start.",                        
                     ]}
                 />
 
                 <ChangelogEntry
                     title={'Miscellaneous'}
                     listOfChanges={[
-                        "Added the first implementation of the new char/list parser (still under development, not in use).",
+                        "Improved the logging of many background processes to better identify issues.",
+                        "Improved sprite preloading to reduce performance impacts when starting EAM.",
+                        "Improved the game updater: increases in logging and stability.",
+                        "Fixed an issue where EAM would crash on startup for some users.",
                     ]}
                 />
 
@@ -191,8 +223,8 @@ function ChangelogVersion4_2_8() {
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
-                                <li>TadusPro</li>
-                                <li>icanplat</li>
+                                <li>K3y0708</li>
+                                <li>Rakya</li>
                                 <li>and many more...</li>
                             </ul>
                         </Typography>
@@ -204,4 +236,4 @@ function ChangelogVersion4_2_8() {
 }
 
 
-export default ChangelogVersion4_2_8;
+export default ChangelogVersion4_3_0;

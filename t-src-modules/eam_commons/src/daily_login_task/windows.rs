@@ -24,7 +24,7 @@ const CREATE_NO_WINDOW: u32 = 0x08000000;
 // 7 - Permission denied
 #[cfg(target_os = "windows")]
 const EAM_TASK_TOOLS: &'static [u8] =
-    include_bytes!("../../EAM_Task_Installer/EAM_Task_Installer/bin/Release/EAM_Task_Tools.exe");
+    include_bytes!("../../../EAM_Task_Installer/EAM_Task_Installer/bin/Release/EAM_Task_Tools.exe");
 const EAM_TASK_TOOLS_HASH: &'static str = "3761a4a4969b87c62262c064ce0e36a5";
 
 #[cfg(target_os = "windows")]

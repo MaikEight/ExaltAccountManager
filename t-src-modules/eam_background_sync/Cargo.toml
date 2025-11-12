@@ -16,7 +16,7 @@ chrono = { version = "0.4", features = ["serde"] }
 dirs = "6.0"
 reqwest = { version = "0.12", features = ["blocking", "json"] }
 tokio = { version = "1.47", features = ["full"] }
-roxmltree = "0.20"
+roxmltree = "0.21"
 log = "0.4"
 base64 = "0.22"
 

@@ -3,14 +3,17 @@ import { getCurrentWindow } from '@tauri-apps/api/window'
 import { defaultWindowIcon } from '@tauri-apps/api/app';
 import { Menu } from '@tauri-apps/api/menu';
 import navigationService from './navigationService';
+import isMacOS from './isMacOS';
+import { Image } from '@tauri-apps/api/image';
 
 async function addSystemTray() {
-    
+    const isMac = isMacOS();
+
     const menu = await Menu.new({
         items: [
             {
                 id: 'open',
-                text: '📂 Open',                
+                text: '📂 Open',
                 action: () => onTrayMenuClick('open'),
             },
             {
@@ -121,7 +124,7 @@ async function addSystemTray() {
             case 'importer':
                 await showAndFocusWindow();
                 navigationService.goToImporter();
-                break;                
+                break;
             case 'profile':
                 await showAndFocusWindow();
                 navigationService.goToProfile();
@@ -150,14 +153,22 @@ async function addSystemTray() {
         icon: await defaultWindowIcon(),
         type: 'icon',
         menu: menu,
-
     };
-    
+
+    if (isMac) {
+        options.title = ' EAM';
+
+        const icon = await Image.fromBytes(await (await fetch('/logo/logo_inner_big.png')).arrayBuffer());
+        if (icon) {
+            options.icon = icon;
+        }
+    }
+
     const trayIconId = sessionStorage.getItem('trayIconId');
     if (trayIconId) {
         TrayIcon.removeById(trayIconId).catch(console.error);
     }
-    
+
     const tray = await TrayIcon.new(options);
     sessionStorage.setItem('trayIconId', tray.id);
 }

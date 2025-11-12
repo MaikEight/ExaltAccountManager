@@ -14,6 +14,7 @@ use eam_commons::models;
 use eam_commons::models::CallResult;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::DailyLoginReports;
+use eam_commons::models::UserData;
 use eam_commons::models::{AuditLog, ErrorLog};
 use eam_commons::rotmg_updater::FileData;
 use eam_commons::rotmg_updater::UpdaterError;
@@ -76,7 +77,7 @@ lazy_static! {
         }));
     static ref HAS_REGISTERED_API_LIMIT_EVENT_LISTENER: Arc<Mutex<bool>> =
         Arc::new(Mutex::new(false));
-    static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);    
+    static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);
     static ref BACKGROUND_SYNC_MANAGER: Arc<Mutex<Option<BackgroundSyncManager>>> =
         Arc::new(Mutex::new(None));
     static ref HAS_STARTED_PERIODIC_DAILY_LOGIN_CHECK: AtomicBool = AtomicBool::new(false);
@@ -97,7 +98,14 @@ fn main() {
     println!("Save file path: {}", save_file_path.clone());
 
     // Initialize the logger
-    let log_file = File::create(save_file_path + "\\log.txt").unwrap();
+    let log_file = match std::env::consts::OS {
+        #[cfg(target_os = "windows")]
+        "windows" => File::create(save_file_path + "\\log.txt").unwrap(),
+        #[cfg(target_os = "macos")]
+        "macos" => File::create(save_file_path + "/log.txt").unwrap(),
+        _ => File::create(save_file_path + "\\log.txt").unwrap(),
+    };
+
     CombinedLogger::init(vec![WriteLogger::new(
         LevelFilter::Info,
         Config::default(),
@@ -137,7 +145,7 @@ fn main() {
         }
     }
 
-    // Clear all Token 
+    // Clear all Token
     match POOL.lock() {
         Ok(pool_guard) => {
             if let Some(ref pool) = *pool_guard {
@@ -173,7 +181,7 @@ fn main() {
     info!("Starting Tauri application...");
     //Run the tauri application
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {            
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             info!("New app instance detected with args: {:?}", argv);
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.set_focus();
@@ -181,10 +189,12 @@ fn main() {
                 let _ = window.unminimize();
             }
         }))
-        .plugin(tauri_plugin_autostart::Builder::new()
-            .args(["--autostart"])
-            .app_name("Exalt Account Manager")
-            .build())
+        .plugin(
+            tauri_plugin_autostart::Builder::new()
+                .args(["--autostart"])
+                .app_name("Exalt Account Manager")
+                .build(),
+        )
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
@@ -193,8 +203,10 @@ fn main() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_drpc::init())
+        .plugin(tauri_plugin_os::init())
         .invoke_handler(tauri::generate_handler![
-            add_api_limit_event_listener, // API Limiter
+            get_current_os,
+            add_api_limit_event_listener,   // API Limiter
             create_background_sync_manager, // BackgroundSyncManager
             start_background_sync_manager,
             stop_background_sync_manager,
@@ -260,8 +272,8 @@ fn main() {
             install_eam_daily_login_task,
             uninstall_eam_daily_login_task,
             run_eam_daily_login_task_now,
-            get_current_deep_link, // Deep link helper
-            is_started_with_autostart // Autostart helper
+            get_current_deep_link,     // Deep link helper
+            is_started_with_autostart  // Autostart helper
         ])
         .setup(|app| {
             // Handle deep links when the app starts - register all configured schemes
@@ -280,10 +292,39 @@ fn main() {
                 }
             }
 
+            // Initialize game exe path asynchronously
+            tauri::async_runtime::spawn(async {
+                initialize_game_exe_path().await;
+            });
+
             Ok(())
         })
         .run(tauri::generate_context!("./tauri.conf.json"))
         .expect("error while running tauri application");
+}
+
+async fn initialize_game_exe_path() {
+    info!("Checking for existing game exe path in user data...");
+    let stored = get_user_data_by_key("game_exe_path".to_string()).await;
+    if stored.is_err() {
+        info!("No game exe path found in user data, setting default path...");
+        let default_path = eam_commons::paths::get_default_game_path();
+        let _ = insert_or_update_user_data(UserData {
+            dataKey: "game_exe_path".to_string(),
+            dataValue: default_path.clone(),
+        })
+        .await;
+        info!("Default game exe path set to: {}", default_path);
+        return;
+    }
+
+    info!("Game exe path already set in user data, skipping...");
+}
+
+#[tauri::command]
+fn get_current_os() -> String {
+    info!("Getting current OS...");
+    env::consts::OS.to_string()
 }
 
 //###################
@@ -561,13 +602,7 @@ fn perform_game_update_impl(
 #[tauri::command]
 fn get_save_file_path() -> String {
     info!("Getting save file path...");
-    //OS dependent fixed path
-    //Windows: C:\Users\USERNAME\AppData\Local\ExaltAccountManager\v4\
-    //Mac: /Users/USERNAME/Library/Application Support/ExaltAccountManager/v4/
-    let mut path = dirs::data_local_dir().unwrap();
-    path.push("ExaltAccountManager");
-    path.push("v4");
-    path.to_str().unwrap().to_string()
+    eam_commons::paths::get_save_file_path()
 }
 
 pub fn get_database_path() -> PathBuf {
@@ -592,6 +627,15 @@ fn start_application(
     current_directory: Option<String>,
 ) -> Result<(), tauri::Error> {
     info!("Starting application...");
+
+    //Check if the application exists
+    if !Path::new(&application_path).exists() {
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::NotFound,
+            format!("Application not found at path: {}", application_path),
+        )));
+    }
+
     match std::env::consts::OS {
         "windows" => {
             let mut cmd = std::process::Command::new(&application_path);
@@ -600,6 +644,74 @@ fn start_application(
                 cmd.current_dir(dir);
             }
             let _child = cmd.spawn().expect("Failed to start process");
+        }
+        "macos" => {
+            let open_check = std::process::Command::new("which").arg("open").output();
+            match open_check {
+                Ok(output) => {
+                    let open_path = String::from_utf8_lossy(&output.stdout);
+                    info!("Open command found at: {}", open_path.trim());
+                }
+                Err(e) => {
+                    error!("Could not find 'open' command: {}", e);
+                }
+            }
+
+            let mut cmd = std::process::Command::new("/usr/bin/open");
+            cmd.arg("-a");
+            cmd.arg(&application_path);
+
+            if !start_parameters.is_empty() {
+                cmd.arg("--args");
+                cmd.arg(&start_parameters);
+            }
+
+            if let Some(dir) = &current_directory {
+                cmd.current_dir(dir);
+            }
+
+            match cmd.spawn() {
+                Ok(_child) => {
+                    info!("Application started successfully");
+                }
+                Err(e) => {
+                    error!("Failed to start process: {}", e);
+                    error!("Error kind: {:?}", e.kind());
+
+                    // Try alternative approach: direct execution of the binary inside the app bundle
+                    info!("Trying alternative approach...");
+                    let mut app_binary_path = PathBuf::from(&application_path);
+                    app_binary_path.push("Contents");
+                    app_binary_path.push("MacOS");
+                    app_binary_path.push("RotMGExalt"); // We know the executable name from our ls command
+
+                    info!("Trying direct execution: {:?}", app_binary_path);
+
+                    if app_binary_path.exists() {
+                        let mut direct_cmd = std::process::Command::new(&app_binary_path);
+                        if !start_parameters.is_empty() {
+                            direct_cmd.arg(&start_parameters);
+                        }
+
+                        match direct_cmd.spawn() {
+                            Ok(_) => {
+                                info!("Successfully started application directly");
+                                return Ok(());
+                            }
+                            Err(e2) => {
+                                error!("Direct execution also failed: {}", e2);
+                            }
+                        }
+                    } else {
+                        error!("Direct executable not found at: {:?}", app_binary_path);
+                    }
+
+                    return Err(tauri::Error::from(std::io::Error::new(
+                        ErrorKind::Other,
+                        format!("Failed to start application: {}", e),
+                    )));
+                }
+            }
         }
         _ => {
             let mut cmd = std::process::Command::new(&application_path);
@@ -687,15 +799,8 @@ fn get_temp_folder_path() -> String {
 fn get_os_user_identity() -> String {
     info!("Getting user identity...");
 
-    // get_os_user_identity_impl()
     get_os_user_identity_impl()
 }
-
-// #[cfg(target_family = "unix")]
-// fn get_os_user_identity_impl() -> String {
-//     use users::get_current_uid;
-//     get_current_uid().to_string()
-// }
 
 #[cfg(target_os = "windows")]
 extern crate winapi;
@@ -775,7 +880,7 @@ fn get_os_user_identity_impl() -> String {
     }
 }
 
-#[cfg(target_family = "unix")]
+#[cfg(target_os = "macos")]
 fn get_os_user_identity_impl() -> String {
     let uid = unsafe { libc::getuid() };
     uid.to_string()
@@ -1019,53 +1124,16 @@ async fn send_patch_request_with_json_body(url: String, data: String) -> Result<
 async fn get_device_unique_identifier() -> Result<String, String> {
     info!("Getting device unique identifier...");
 
-    use sha1::{Digest, Sha1};
-    use std::collections::HashMap;
-    use wmi::{COMLibrary, Variant, WMIConnection};
-
-    let com_con = COMLibrary::new().map_err(|e| e.to_string())?;
-    let wmi_con = WMIConnection::new(com_con.into()).map_err(|e| e.to_string())?;
-
-    let mut concat_str = String::new();
-
-    let baseboard: Vec<HashMap<String, Variant>> = wmi_con
-        .raw_query("SELECT * FROM Win32_BaseBoard")
-        .map_err(|e| e.to_string())?;
-    for obj in baseboard {
-        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
-            concat_str.push_str(&serial);
-        }
+    let device_id = eam_commons::hwid::get_device_unique_identifier().await;
+    match device_id {
+        Ok(id) => Ok(id),
+        Err(e) => Err(e),
     }
-
-    let bios: Vec<HashMap<String, Variant>> = wmi_con
-        .raw_query("SELECT * FROM Win32_BIOS")
-        .map_err(|e| e.to_string())?;
-    for obj in bios {
-        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
-            concat_str.push_str(&serial);
-        }
-    }
-
-    let os: Vec<HashMap<String, Variant>> = wmi_con
-        .raw_query("SELECT * FROM Win32_OperatingSystem")
-        .map_err(|e| e.to_string())?;
-    for obj in os {
-        if let Some(Variant::String(serial)) = obj.get("SerialNumber") {
-            concat_str.push_str(&serial);
-        }
-    }
-
-    let mut hasher = Sha1::new();
-    hasher.update(concat_str);
-    let result = hasher.finalize();
-    let hashed = format!("{:x}", result);
-
-    Ok(hashed)
 }
 
 #[tauri::command]
 fn get_default_game_path() -> String {
-    eam_commons::rotmg_updater::get_default_game_path()
+    eam_commons::paths::get_default_game_path()
 }
 
 #[tauri::command]
@@ -1081,12 +1149,11 @@ async fn download_and_run_hwid_tool() -> Result<bool, String> {
 
 async fn download_and_run_hwid_tool_impl() -> Result<bool, String> {
     let hwid_tool_url_windows = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-windows.zip";
-    let hwid_tool_url_mac = "https://github.com/MaikEight/EAM-GetClientHWID/releases/download/v1.1.0/EAM-GetClientHWID-mac.zip";
+    // Mac version not available, as it is not required
     let hwid_tool_path = get_save_file_path();
 
     let hwid_tool_url = match std::env::consts::OS {
         "windows" => hwid_tool_url_windows,
-        "macos" => hwid_tool_url_mac,
         _ => return Err("Unsupported OS".to_string()),
     };
     println!("Downloading HWID tool from: {}", hwid_tool_url);
@@ -1199,16 +1266,28 @@ fn wait_for_file_creation(file_path: &str, timeout: u64) -> bool {
 fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
     info!("Installing EAM daily login task...");
 
-    if std::env::consts::OS != "windows" {
-        warn!("This function is only available on Windows");
-        return Err(tauri::Error::from(std::io::Error::new(
-            ErrorKind::Other,
-            "This function is only available on Windows",
-        )));
-    }
+    let exe_path = match std::env::consts::OS {
+        "windows" => "explorer.exe",
+        "macos" => {
+            let os = std::env::current_exe()
+                .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+            &os.to_str().map(|s| s.to_owned()).ok_or_else(|| {
+                tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Failed to convert exe path to string",
+                ))
+            })?.to_owned()
+        }
+        _ => {
+            return Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                "Unsupported OS for daily login task installation",
+            )))
+        }
+    };
 
-    let result = eam_commons::windows_specifics::install_eam_daily_login_task(
-        "explorer.exe",
+    let result = eam_commons::daily_login_task::install_eam_daily_login_task(
+        exe_path,
         Some("eam:start-daily-login-task"),
     );
 
@@ -1226,12 +1305,8 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
 
 #[tauri::command]
 fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, String> {
-    if std::env::consts::OS != "windows" {
-        info!("This function is only available on Windows");
-        return Err("This function is only available on Windows".to_string());
-    }
-
-    let result = eam_commons::windows_specifics::uninstall_eam_daily_login_task(uninstall_old_versions);
+    let result =
+        eam_commons::daily_login_task::uninstall_eam_daily_login_task(uninstall_old_versions);
 
     match result {
         Ok(_) => Ok(true),
@@ -1247,16 +1322,12 @@ fn uninstall_eam_daily_login_task(uninstall_old_versions: bool) -> Result<bool, 
 
 #[tauri::command]
 fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Result<bool, String> {
-    if std::env::consts::OS != "windows" {
-        info!("This function is only available on Windows");
-        return Ok(false);
-    }
-
-    let result =
-        eam_commons::windows_specifics::check_for_installed_eam_daily_login_task(check_for_old_versions);
+    let result = eam_commons::daily_login_task::check_for_installed_eam_daily_login_task(
+        check_for_old_versions,
+    );
 
     match result {
-        Ok(result) =>  Ok(result),
+        Ok(result) => Ok(result),
         Err(e) => Err(e.to_string()),
     }
 }
@@ -1264,25 +1335,9 @@ fn check_for_installed_eam_daily_login_task(check_for_old_versions: bool) -> Res
 #[tauri::command]
 fn run_eam_daily_login_task_now() -> Result<bool, String> {
     info!("Running EAM daily login task now...");
+    warn!("Starting the daily login task is currently disabled.");
 
-    if std::env::consts::OS != "windows" {
-        info!("This function is only available on Windows");
-        return Err("This function is only available on Windows".to_string());
-    }
-
-    let save_file_path = get_save_file_path();
-    let path = Path::new(&save_file_path).join("EAM_Daily_Auto_Login.exe");
-
-    if !path.exists() {
-        error!("EAM_Daily_Auto_Login.exe does not exist");
-        return Err("EAM_Daily_Auto_Login.exe does not exist".to_string());
-    }
-
-    let mut cmd = std::process::Command::new(&path);
-    cmd.arg("-force");
-    let _child = cmd.spawn().expect("Failed to start process");
-
-    Ok(true)
+    Ok(false)
 }
 
 //########################
@@ -1917,6 +1972,9 @@ fn delete_eam_account_impl(
         };
         let _ = diesel_functions::insert_audit_log(pool, audit_log_entry);
 
+        let email_hash = hash_email(&account_email);
+        let _ = encryption_utils::delete_data(&email_hash);
+
         return diesel_functions::delete_eam_account(pool, account_email)
             .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
     }
@@ -1929,12 +1987,25 @@ fn delete_eam_account_impl(
 }
 
 #[tauri::command]
-fn encrypt_string(data: String) -> Result<String, tauri::Error> {
+fn encrypt_string(email: String, data: String) -> Result<String, tauri::Error> {
     info!("Encrypting string...");
 
-    let encrypted_data = encryption_utils::encrypt_data(&data)
+    let mut email = email;
+    if std::env::consts::OS != "windows" {
+        email = hash_email(&email);
+    }
+
+    let encrypted_data = encryption_utils::encrypt_data(&email, &data)
         .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
     Ok(encrypted_data)
+}
+
+fn hash_email(email: &str) -> String {
+    use sha1::{Digest, Sha1};
+    let mut hasher = Sha1::new();
+    hasher.update(email.as_bytes());
+    let email_hash = hasher.finalize();
+    format!("{:x}", email_hash)
 }
 
 #[tauri::command]
@@ -2057,6 +2128,17 @@ async fn has_old_eam_save_file() -> Result<bool, tauri::Error> {
 }
 
 #[tauri::command]
+#[cfg(target_os = "macos")]
+async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Error> {
+    info!("Formatting of EAM v3 save file was called, but is not available on macOS.");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "This function is only available on Windows",
+    )))
+}
+
+#[tauri::command]
+#[cfg(target_os = "windows")]
 async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Error> {
     info!("Formatting EAM v3 save file to readable JSON...");
 
@@ -2404,7 +2486,7 @@ fn delete_from_error_log_impl(
 #[tauri::command]
 async fn get_current_deep_link(app: AppHandle) -> Result<Option<String>, tauri::Error> {
     info!("Getting current deep link...");
-    
+
     #[cfg(desktop)]
     {
         use tauri_plugin_deep_link::DeepLinkExt;
@@ -2423,7 +2505,7 @@ async fn get_current_deep_link(app: AppHandle) -> Result<Option<String>, tauri::
             }
         }
     }
-    
+
     #[cfg(not(desktop))]
     Ok(None)
 }

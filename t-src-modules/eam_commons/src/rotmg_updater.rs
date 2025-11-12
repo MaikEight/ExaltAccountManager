@@ -1,12 +1,12 @@
 use crate::diesel_functions::get_user_data_by_key;
 use crate::diesel_setup::DbPool;
+use crate::paths::get_default_game_path;
 use futures::stream::{self, StreamExt};
 use lazy_static::lazy_static;
-use log::info;
+use log::{info, warn, error};
 use reqwest::header::{HeaderMap, HeaderValue, CONTENT_LENGTH, CONTENT_TYPE};
 use roxmltree::Document;
 use serde::Deserialize;
-use std::env;
 use std::fs;
 use std::fs::File;
 use std::io;
@@ -19,12 +19,18 @@ use thiserror::Error;
 use tokio;
 use tokio::io::AsyncReadExt;
 
+const ROTMG_FILE_LIST_URL: &str = "/checksum.json";
+
+#[cfg(target_os = "windows")]
 const ROTMG_APP_INIT_URL: &str =
     "https://www.realmofthemadgod.com/app/init?platform=standalonewindows64&key=9KnJFxtTvLu2frXv";
-const ROTMG_FILE_LIST_URL: &str = "/rotmg-exalt-win-64/checksum.json";
+
+#[cfg(target_os = "macos")]
+const ROTMG_APP_INIT_URL: &str = "https://www.realmofthemadgod.com/app/init?platform=standaloneosxuniversal&key=9KnJFxtTvLu2frXv";
 
 lazy_static! {
     static ref APP_INIT_DATA: Arc<Mutex<AppInitData>> = Arc::new(Mutex::new(AppInitData {
+        build_id: "".to_string(),
         build_cdn: "".to_string(),
         build_hash: "".to_string(),
     }));
@@ -45,7 +51,9 @@ pub enum UpdaterError {
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct AppInitData {
+    build_id: String,
     build_cdn: String,
     build_hash: String,
 }
@@ -55,7 +63,7 @@ pub struct AppInitData {
 pub struct FileData {
     file: String,
     checksum: String,
-    permision: String, 
+    permision: String,
     size: usize,
 }
 
@@ -69,6 +77,8 @@ pub async fn get_app_init_data() -> Result<AppInitData, String> {
     if !app_init_data.build_cdn.is_empty() && !app_init_data.build_hash.is_empty() {
         return Ok(app_init_data.clone());
     }
+
+    info!("Fetching app init data from RotMG servers...");
 
     let mut headers = HeaderMap::new();
     headers.insert(CONTENT_LENGTH, HeaderValue::from_static("0"));
@@ -85,22 +95,36 @@ pub async fn get_app_init_data() -> Result<AppInitData, String> {
         .await
         .map_err(|e| e.to_string())?;
 
+    let status = res.status();
+    info!("App init response status: {}", status);
+
     let body = res.text().await.map_err(|e| e.to_string())?;
+    info!("App init response body length: {} bytes", body.len());
+    info!("App init response body:\n{}", body);
+    
     let doc = Document::parse(&body).unwrap();
+    let mut build_id: &str = &"";
     let mut build_cdn: &str = &"";
     let mut build_hash: &str = &"";
 
     for node in doc.descendants() {
+        if node.has_tag_name("BuildId") {
+            build_id = node.text().map(|s| s).unwrap();
+            info!("Found BuildId: {}", build_id);
+        }
         if node.has_tag_name("BuildCDN") {
             build_cdn = node.text().map(|s| s).unwrap();
+            info!("Found BuildCDN: {}", build_cdn);
         }
 
         if node.has_tag_name("BuildHash") {
             build_hash = node.text().map(|s| s).unwrap();
+            info!("Found BuildHash: {}", build_hash);
         }
     }
 
     let data = AppInitData {
+        build_id: build_id.to_string(),
         build_cdn: build_cdn.to_string(),
         build_hash: build_hash.to_string(),
     };
@@ -108,6 +132,13 @@ pub async fn get_app_init_data() -> Result<AppInitData, String> {
     let mut app_init_data_mut = APP_INIT_DATA.lock().unwrap();
     *app_init_data_mut = data.clone();
 
+    if data.build_cdn.is_empty() || data.build_hash.is_empty() {
+        error!("Failed to get app init data from RotMG servers.");
+        return Err("Failed to get app init data from RotMG servers.".to_string());
+    }
+    info!("Successfully fetched app init data from RotMG servers.");
+    info!("Final values - BuildId: {}, BuildCDN: {}, BuildHash: {}", 
+          data.build_id, data.build_cdn, data.build_hash);
     Ok(data)
 }
 
@@ -117,65 +148,70 @@ pub async fn get_game_file_list() -> Result<Vec<FileData>, UpdaterError> {
         return Ok(file_list.clone().to_vec());
     }
 
+    info!("Fetching game file list from RotMG servers...");
+
     let data = get_app_init_data()
         .await
         .expect("Failed to get app init data.");
 
     let url = format!(
-        "{}{}{}",
-        data.build_cdn, data.build_hash, ROTMG_FILE_LIST_URL
+        "{}{}/{}{}",
+        data.build_cdn, data.build_hash, data.build_id, ROTMG_FILE_LIST_URL
     );
+
+    info!("Fetching file list from URL: {}", url);
 
     let files_res = reqwest::get(&url).await;
     let files: Vec<FileData>;
     match files_res {
         Ok(response) => {
+            let status = response.status();
+            info!("Response status: {}", status);
+            
             let raw_json = response.text().await?;
+            
+            if raw_json.is_empty() {
+                error!("Received empty response from server");
+                return Err(UpdaterError::Other("Empty response from file list endpoint".to_string()));
+            }
+            
             let files_response = serde_json::from_str::<FilesResponse>(&raw_json)
-                .map_err(UpdaterError::SerdeJson)?;
+                .map_err(|e| {
+                    error!("Failed to parse JSON: {}. Raw response: {}", e, raw_json);
+                    UpdaterError::SerdeJson(e)
+                })?;
             files = files_response.files;
         }
         Err(e) => {
+            error!("Failed to fetch file list: {}", e);
             return Err(UpdaterError::from(e));
         }
     }
 
     let mut file_list_mut = FILE_LIST.lock().unwrap();
     *file_list_mut = files.clone();
+
+    info!("Successfully fetched game file list from RotMG servers.");
+
     Ok(files)
-}
-
-pub fn get_default_game_path() -> String {
-    info!("Getting default game path...");
-    let os = env::consts::OS;
-
-    match os {
-        "windows" => {
-            let user_profile = env::var("USERPROFILE").unwrap_or_else(|_| "C:\\Users\\Default".to_string());
-            format!("{}\\Documents\\RealmOfTheMadGod\\Production\\RotMG Exalt.exe", user_profile)
-        }
-        "macos" => {
-            let home_dir = env::var("HOME").unwrap_or_else(|_| "".into());
-            format!(
-                "{}/Library/Application Support/RealmOfTheMadGod/Production/Realm of the Mad God.app",
-                home_dir
-            )
-        }
-        _ => "".into(),
-    }
 }
 
 fn get_game_exe_path_with_fallback(pool: &DbPool) -> String {
     match get_user_data_by_key(pool, "game_exe_path".to_string()) {
         Ok(game_exe_path_data) => game_exe_path_data.dataValue,
         Err(_) => {
-            info!("Failed to read game_exe_path from database, using default path");
+            warn!("Failed to read game_exe_path from database, using default path");
             get_default_game_path()
         }
     }
 }
 
-pub fn get_game_files_to_update(pool: &DbPool, force_recheck: bool) -> Result<Vec<FileData>, UpdaterError> {
+pub fn get_game_files_to_update(
+    pool: &DbPool,
+    force_recheck: bool,
+) -> Result<Vec<FileData>, UpdaterError> {
+    info!("Checking for game files to update, force_recheck: {}", force_recheck);
+
     if force_recheck {
         clean_global_variables();
     } else {
@@ -183,6 +219,7 @@ pub fn get_game_files_to_update(pool: &DbPool, force_recheck: bool) -> Result<Ve
             GAME_FILES_TO_UPDATE.lock().unwrap();
         let game_files = game_files_locked.clone();
         if !game_files.is_empty() {
+            info!("Found cached game files to update. Found {} files.", game_files.len());
             return Ok(game_files.clone().to_vec());
         }
     }
@@ -198,19 +235,30 @@ pub fn get_game_files_to_update(pool: &DbPool, force_recheck: bool) -> Result<Ve
 }
 
 pub fn perform_game_update(pool: &DbPool) -> Result<bool, UpdaterError> {
+    info!("Starting game update...");
+
     let pool = Arc::new(pool.clone());
     let pool_clone = Arc::clone(&pool);
-    let game_files_data: Vec<FileData> =
-        get_game_files_to_update(&*pool_clone.clone(), false).map_err(|e| UpdaterError::Other(e.to_string()))?;
+    let game_files_data: Vec<FileData> = get_game_files_to_update(&*pool_clone.clone(), false)
+        .map_err(|e| UpdaterError::Other(e.to_string()))?;
 
     let res = tokio::runtime::Runtime::new()
         .unwrap()
         .block_on(perform_game_update_impl(&*pool_clone, game_files_data));
 
     match res {
-        Ok(true) => Ok(true),
-        Ok(false) => Ok(false),
-        Err(e) => Err(UpdaterError::Other(e.to_string())),
+        Ok(true) => {
+            info!("Game update completed successfully.");
+            return Ok(true);
+        },
+        Ok(false) => {
+            warn!("Game update did not complete successfully.");
+            return Ok(false);
+        },
+        Err(e) => {
+            error!("Failed to perform game update: {}", e);
+            return Err(UpdaterError::Other(e.to_string()));
+        },
     }
 }
 
@@ -224,31 +272,49 @@ async fn perform_game_update_impl(
 
     let build_cdn = APP_INIT_DATA.lock().unwrap().build_cdn.clone();
     let build_hash = APP_INIT_DATA.lock().unwrap().build_hash.clone();
+    let build_id = APP_INIT_DATA.lock().unwrap().build_id.clone();
 
     for game_file_data in game_files_data {
         //1.0. Build the download url for the file
         let url = format!(
-            "{}{}/rotmg-exalt-win-64/{}.gz",
-            build_cdn, build_hash, game_file_data.file
+            "{}{}/{}/{}.gz",
+            build_cdn, build_hash, build_id, game_file_data.file
         );
+
+        info!("Downloading file: {} from URL: {}", game_file_data.file, url);
 
         // 1.1. download file to ram
         let file_data = download_file_to_ram(&url)
             .await
             .map_err(|e| e.to_string())?;
 
+        info!("Downloaded {} bytes, unzipping...", file_data.len());
+
         // 1.2. unzip file
-        let unzipped_data = unzip_gzip_file(file_data).map_err(|e| e.to_string())?;
+        let unzipped_data = unzip_gzip_file(file_data).map_err(|e| {
+            error!("Failed to unzip file: {}", e);
+            e.to_string()
+        })?;
+
+        info!("Unzipped to {} bytes, saving to disk...", unzipped_data.len());
 
         // 1.3. save file to game root path + fileName (field: file)
         let file_path = Path::new(&game_root_path).join(&game_file_data.file);
 
         // Create the directory if it does not exist
         if let Some(parent_dir) = file_path.parent() {
-            fs::create_dir_all(parent_dir).map_err(|e| e.to_string())?;
+            fs::create_dir_all(parent_dir).map_err(|e| {
+                error!("Failed to create directory {:?}: {}", parent_dir, e);
+                e.to_string()
+            })?;
         }
 
-        save_file_to_disk(file_path, unzipped_data).map_err(|e| e.to_string())?;
+        save_file_to_disk(file_path.clone(), unzipped_data, &game_file_data.permision).map_err(|e| {
+            error!("Failed to save file to {:?}: {}", file_path, e);
+            e.to_string()
+        })?;
+
+        info!("Successfully updated file: {}", game_file_data.file);
     }
 
     clean_global_variables();
@@ -259,6 +325,7 @@ async fn perform_game_update_impl(
 fn clean_global_variables() {
     let mut app_init_data_mut = APP_INIT_DATA.lock().unwrap();
     *app_init_data_mut = AppInitData {
+        build_id: "".to_string(),
         build_cdn: "".to_string(),
         build_hash: "".to_string(),
     };
@@ -268,17 +335,27 @@ fn clean_global_variables() {
 }
 
 async fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
+    info!("Attempting to download from: {}", url);
+    
     let response = reqwest::get(url)
         .await
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+        .map_err(|e| {
+            error!("HTTP request failed: {}", e);
+            std::io::Error::new(std::io::ErrorKind::Other, e.to_string())
+        })?;
+
+    let status = response.status();
+    info!("Download response status: {}", status);
 
     if !response.status().is_success() {
+        error!("Download failed with status: {}", status);
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
-            "Failed to download file",
+            format!("Failed to download file: HTTP {}", status),
         ));
     }
 
+    info!("Download successful, reading response body...");
     Ok(response
         .bytes()
         .await
@@ -286,9 +363,29 @@ async fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
         .to_vec())
 }
 
-fn save_file_to_disk(path: PathBuf, data: Vec<u8>) -> std::io::Result<()> {
-    let mut file = File::create(path)?;
+fn save_file_to_disk(path: PathBuf, data: Vec<u8>, permission: &str) -> std::io::Result<()> {
+    let mut file = File::create(&path)?;
     file.write_all(&data)?;
+    
+    // Set file permissions on Unix systems
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        
+        // Only set permissions if a non-empty permission string is provided
+        if !permission.is_empty() {
+            // Parse the permission string (e.g., "755", "644")
+            if let Ok(mode) = u32::from_str_radix(permission, 8) {
+                info!("Setting permissions {} (octal) for file: {:?}", permission, path);
+                let permissions = std::fs::Permissions::from_mode(mode);
+                std::fs::set_permissions(&path, permissions)?;
+            } else {
+                warn!("Invalid permission string: '{}', skipping permission setting", permission);
+            }
+        }
+        // If permission is empty, use default file permissions (typically 644)
+    }
+    
     Ok(())
 }
 
@@ -332,6 +429,9 @@ async fn get_game_files_to_update_impl(
 
     let mut game_files = GAME_FILES_TO_UPDATE.lock().unwrap();
     *game_files = files_to_update.clone();
+
+    info!("Found {} files to update.", files_to_update.len());
+
     Ok(files_to_update)
 }
 

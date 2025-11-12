@@ -26,6 +26,7 @@ import { invoke } from '@tauri-apps/api/core';
 import RequestStateChip from "../GridComponents/RequestStateChip";
 import { HWID_FILE_PATH, MASCOT_NAME } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import isMacOS from "../../utils/isMacOS";
 
 function AccountDetails({ acc, onClose }) {
     const { groups } = useGroups();
@@ -210,7 +211,9 @@ function AccountDetails({ acc, onClose }) {
                 if (startGameHWIDWarnings
                     && !startGameHWIDWarnings.hide
                     && !startGameHWIDWarnings.hasHWIDFile
-                    && (startGameHWIDWarnings.amount <= 5 || startGameHWIDWarnings.lastCheck < new Date(Date.now() - 12 * 60 * 60 * 1000 /* 12 hours */))) {
+                    && (startGameHWIDWarnings.amount <= 5 || startGameHWIDWarnings.lastCheck < new Date(Date.now() - 12 * 60 * 60 * 1000 /* 12 hours */))
+                    && localStorage.getItem('isMacOs') !== 'true') // Dont show on MacOS as its not needed there
+                {
 
                     console.log("Checking for HWID file after game start...");
                     startGameHWIDWarnings.amount = (startGameHWIDWarnings.amount || 0) + 1;
@@ -270,14 +273,14 @@ function AccountDetails({ acc, onClose }) {
 
         showSnackbar("Starting the game...");
         const args = `data:{platform:Deca,guid:${btoa(account.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin()}}`;
-        
+
         // Extract the directory from gameExePath by removing the filename
         const currentDirectory = gameExePath ? gameExePath.substring(0, gameExePath.lastIndexOf('\\')) : "";
-        
+
         invoke(
             "start_application",
-            { 
-                applicationPath: gameExePath, 
+            {
+                applicationPath: gameExePath,
                 startParameters: args,
                 currentDirectory: currentDirectory,
             }
@@ -290,6 +293,10 @@ function AccountDetails({ acc, onClose }) {
         if (charList === null || !charList.success) {
             logToErrorLog("refresh Data", "Failed to refresh data for " + account.email);
             showSnackbar("Failed to refresh data", 'error');
+        }
+
+        if (isMacOS()) {
+            return;
         }
 
         checkForHwidFile();
@@ -400,7 +407,7 @@ function AccountDetails({ acc, onClose }) {
                                                     onClick={() => {
                                                         console.log("save account", account);
                                                         if (newDecryptedPassword !== decryptedPassword) {
-                                                            invoke("encrypt_string", { data: newDecryptedPassword }).then((res) => {
+                                                            invoke("encrypt_string", { email: account.email, data: newDecryptedPassword }).then((res) => {
                                                                 const newAcc = ({ ...account, password: res });
                                                                 updateAccount(newAcc);
                                                             });

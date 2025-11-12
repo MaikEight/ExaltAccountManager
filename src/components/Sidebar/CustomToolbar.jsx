@@ -5,11 +5,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
 import { useTheme } from "@emotion/react";
 import { listen } from '@tauri-apps/api/event';
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import { MASCOT_NAME } from "../../constants";
 import useUserSettings from "../../hooks/useUserSettings";
+import WindowControls from "./MacOS/WindowControls";
+import isMacOS from "../../utils/isMacOS";
 
 function CustomToolbar(props) {
     const theme = useTheme();
@@ -24,6 +26,10 @@ function CustomToolbar(props) {
     ]));
 
     const minimizeToTray = getByKeyAndSubKey('general', 'minimizeToTray');
+
+    const isMac = useMemo(() => {
+        return isMacOS();
+    }, []);
 
     useEffect(() => {
         let unlistenGlobalApiCooldown;
@@ -113,6 +119,7 @@ function CustomToolbar(props) {
 
     return (
         <Box
+            id="custom-toolbar"
             sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -120,6 +127,11 @@ function CustomToolbar(props) {
                 ...props.sx
             }}
         >
+            {
+                isMac && (
+                    <WindowControls />
+                )
+            }
             <Box
                 sx={{
                     display: "flex",
@@ -255,51 +267,55 @@ function CustomToolbar(props) {
                         </>
                     }
                 </Box>
-                <ButtonGroup
-                    disableElevation
-                    variant="text"
-                    size="small"
-                    aria-label="Toolbar buttons"
-                    sx={{
-                        mt: 0.25,
-                        mr: 0.375,
-                        height: 25,
-                    }}
-                >
-                    <Button
-                        onClick={async () => await getCurrentWindow().minimize()}
-                        sx={{
-                            color: theme?.palette?.text?.primary || '#E7E3FCDE',
-                            borderRadius: `${(theme?.shape?.borderRadius || 9) - 4}px 0px 0px ${(theme?.shape?.borderRadius || 9) - 4}px`,
-                        }}
-                    >
-                        <MinimizeIcon />
-                    </Button>
-                    <Button
-                        onClick={async () => await getCurrentWindow().toggleMaximize()}
-                        sx={{
-                            color: theme?.palette?.text?.primary || '#E7E3FCDE'
-                        }}
-                    >
-                        <CropSquareIcon />
-                    </Button>
-                    <Button
-                        onClick={async () => {
-                            if (minimizeToTray) {
-                                await getCurrentWindow().hide();
-                                return;
-                            }
+                {
+                    !isMac && (
+                        <ButtonGroup
+                            disableElevation
+                            variant="text"
+                            size="small"
+                            aria-label="Toolbar buttons"
+                            sx={{
+                                mt: 0.25,
+                                mr: 0.375,
+                                height: 25,
+                            }}
+                        >
+                            <Button
+                                onClick={async () => await getCurrentWindow().minimize()}
+                                sx={{
+                                    color: theme?.palette?.text?.primary || '#E7E3FCDE',
+                                    borderRadius: `${(theme?.shape?.borderRadius || 9) - 4}px 0px 0px ${(theme?.shape?.borderRadius || 9) - 4}px`,
+                                }}
+                            >
+                                <MinimizeIcon />
+                            </Button>
+                            <Button
+                                onClick={async () => await getCurrentWindow().toggleMaximize()}
+                                sx={{
+                                    color: theme?.palette?.text?.primary || '#E7E3FCDE'
+                                }}
+                            >
+                                <CropSquareIcon />
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    if (minimizeToTray) {
+                                        await getCurrentWindow().hide();
+                                        return;
+                                    }
 
-                            await getCurrentWindow().close();
-                        }}
-                        sx={{
-                            color: theme?.palette?.text?.primary || '#E7E3FCDE',
-                            borderRadius: `0px ${(theme?.shape?.borderRadius || 9) - 4}px ${(theme?.shape?.borderRadius || 9) - 4}px 0px`,
-                        }}
-                    >
-                        <CloseIcon />
-                    </Button>
-                </ButtonGroup>
+                                    await getCurrentWindow().close();
+                                }}
+                                sx={{
+                                    color: theme?.palette?.text?.primary || '#E7E3FCDE',
+                                    borderRadius: `0px ${(theme?.shape?.borderRadius || 9) - 4}px ${(theme?.shape?.borderRadius || 9) - 4}px 0px`,
+                                }}
+                            >
+                                <CloseIcon />
+                            </Button>
+                        </ButtonGroup>
+                    )
+                }
             </Box>
         </Box>
     );

@@ -5,22 +5,26 @@ import AccountsView from "../components/VaultPeeker/AccountsView";
 import { ItemCanvasContextProvider } from "../contexts/ItemCanvasContext";
 import ItemFilterBox from "../components/VaultPeeker/ItemFilterBox";
 import InverseBorderRadiusSpacer from "../components/InverseBorderRadiusSpacer";
+import usePortraitReady from "../hooks/usePortraitReady";
+import AccountsPagination from "../components/VaultPeeker/AccountsPagination";
 
 function VaultPeekerPage() {
+    const isPortraitReady = usePortraitReady();
 
     return (
         <VaultPeekerContextProvider>
             {
-                window.portraitReady &&
+                isPortraitReady &&
                 <ItemCanvasContextProvider>
                     <Box
                         sx={{
                             width: '100%',
                             display: 'flex',
                             flexDirection: 'column',
+                            minHeight: '100%',
                         }}
                     >
-                        <Box sx={{ width: '100%', position: 'relative', overflow: 'auto' }}>
+                        <Box sx={{ width: '100%', position: 'relative', overflow: 'auto', minHeight: '100%', }}>
                             <Box
                                 id="filter-box-root"
                                 sx={{
@@ -49,6 +53,8 @@ function VaultPeekerPage() {
                                     borderRadius: '9px',
                                     mx: 2,
                                     mt: 0,
+                                    mb: -2,                                    
+                                    minHeight: '100%',
                                 }}
                             >
                                 {/* Totals */}
@@ -57,6 +63,9 @@ function VaultPeekerPage() {
                                 {/* Accounts */}
                                 <AccountsView />
                             </Box>
+
+                            {/* Pagination */}
+                            <AccountsPagination />
                         </Box>
                     </Box>
                 </ItemCanvasContextProvider>

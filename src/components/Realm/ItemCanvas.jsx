@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import throttle from 'lodash.throttle';
 import { alpha, useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
@@ -13,6 +13,51 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
     const theme = useTheme();
     const { hoveredConvasId, setHoveredConvasId } = useItemCanvas();
     const { setSelectedItem, setPopperPosition } = useVaultPeeker();
+
+    const redrawCanvas = useCallback((hoverId) => {        
+        const canvas = canvasRef.current;
+        const baseCanvas = baseCanvasRef.current;
+        if (!canvas || !baseCanvas) return;
+        if (canvas.width === 0 || canvas.height === 0) {
+            return;
+        }
+
+        const ct = canvas.getContext('2d');
+        if (!ct) return;
+
+        // Draw the base image
+        ct.clearRect(0, 0, canvas.width, canvas.height);
+        ct.drawImage(baseCanvas, 0, 0);
+
+        // Highlight the hovered item
+        if (hoverId) {
+            const _hoveredPosition = itemPositionsRef.current.find(item => item.uniqueId === hoverId);
+            const hoveredPosition = _hoveredPosition ? {
+                ..._hoveredPosition,
+                x: _hoveredPosition.x - 2,
+                y: _hoveredPosition.y - 2,
+                width: _hoveredPosition.width + 4,
+                height: _hoveredPosition.height + 4
+            } : null;
+            if (hoveredPosition) {
+                ct.save();
+                ct.translate(hoveredPosition.x, hoveredPosition.y);
+                ct.fillStyle = theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+                ct.beginPath();
+                ct.moveTo(hoveredPosition.width - 9, 0);
+                ct.arcTo(hoveredPosition.width, 0, hoveredPosition.width, 9, 9);
+                ct.lineTo(hoveredPosition.width, hoveredPosition.height - 9);
+                ct.arcTo(hoveredPosition.width, hoveredPosition.height, hoveredPosition.width - 9, hoveredPosition.height, 9);
+                ct.lineTo(9, hoveredPosition.height);
+                ct.arcTo(0, hoveredPosition.height, 0, hoveredPosition.height - 9, 9);
+                ct.lineTo(0, 9);
+                ct.arcTo(0, 0, 9, 0, 9);
+                ct.closePath();
+                ct.fill();
+                ct.restore();
+            }
+        }
+    }, [theme.palette.mode]);
 
     useEffect(() => {
         if (!saveCanvas || saveCanvas === 0) {
@@ -214,7 +259,7 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
 
         img.onload = () => {
             drawBaseImage();
-            redrawCanvas(hoveredItem, true);
+            redrawCanvas(hoveredItem);
         };
 
         img.onerror = () => {
@@ -230,8 +275,22 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
 
         return () => {
             window.removeEventListener('resize', handleResize);
+            // Clean up canvas contexts and image references
+            if (img) {
+                img.onload = null;
+                img.onerror = null;
+            }
+            // Clear canvas contexts
+            if (canvas && baseCanvas) {
+                const ct = canvas.getContext('2d');
+                const baseCt = baseCanvas.getContext('2d');
+                if (ct) ct.clearRect(0, 0, canvas.width, canvas.height);
+                if (baseCt) baseCt.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
+            }
+            // Clear item positions to prevent memory accumulation
+            itemPositionsRef.current = [];
         };
-    }, [itemIds, items, imgSrc, hoveredItem]);
+    }, [itemIds, items, imgSrc]);
 
     useEffect(() => {
         if (hoveredConvasId !== canvasIdentifier) {
@@ -266,6 +325,13 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
         setHoveredItem(hoverId);
         setHoveredConvasId(canvasIdentifier);
     }, 10);
+
+    // Cleanup function for the throttled event handler
+    useEffect(() => {
+        return () => {
+            handleMouseMove.cancel?.();
+        };
+    }, []);
 
     const handleClick = (event) => {
         const canvas = canvasRef.current;
@@ -319,54 +385,9 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
         }
     };
 
-    const redrawCanvas = (hoverId) => {        
-        const canvas = canvasRef.current;
-        const baseCanvas = baseCanvasRef.current;
-        if (!canvas || !baseCanvas) return;
-        if (canvas.width === 0 || canvas.height === 0) {
-            return;
-        }
-
-        const ct = canvas.getContext('2d');
-        if (!ct) return;
-
-        // Draw the base image
-        ct.clearRect(0, 0, canvas.width, canvas.height);
-        ct.drawImage(baseCanvas, 0, 0);
-
-        // Highlight the hovered item
-        if (hoverId) {
-            const _hoveredPosition = itemPositionsRef.current.find(item => item.uniqueId === hoverId);
-            const hoveredPosition = _hoveredPosition ? {
-                ..._hoveredPosition,
-                x: _hoveredPosition.x - 2,
-                y: _hoveredPosition.y - 2,
-                width: _hoveredPosition.width + 4,
-                height: _hoveredPosition.height + 4
-            } : null;
-            if (hoveredPosition) {
-                ct.save();
-                ct.translate(hoveredPosition.x, hoveredPosition.y);
-                ct.fillStyle = theme.palette.mode === 'dark' ? 'rgba(220, 220, 220, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-                ct.beginPath();
-                ct.moveTo(hoveredPosition.width - 9, 0);
-                ct.arcTo(hoveredPosition.width, 0, hoveredPosition.width, 9, 9);
-                ct.lineTo(hoveredPosition.width, hoveredPosition.height - 9);
-                ct.arcTo(hoveredPosition.width, hoveredPosition.height, hoveredPosition.width - 9, hoveredPosition.height, 9);
-                ct.lineTo(9, hoveredPosition.height);
-                ct.arcTo(0, hoveredPosition.height, 0, hoveredPosition.height - 9, 9);
-                ct.lineTo(0, 9);
-                ct.arcTo(0, 0, 9, 0, 9);
-                ct.closePath();
-                ct.fill();
-                ct.restore();
-            }
-        }
-    };
-
     useEffect(() => {
         redrawCanvas(hoveredItem);
-    }, [hoveredItem]);
+    }, [hoveredItem, theme.palette.mode, redrawCanvas]);
 
     return (
         <Box id="itemCanvasBox" sx={{ width: '100%', height: 'fit-content', position: 'relative', p: 0, m:0, mb: '-7px' }}>
