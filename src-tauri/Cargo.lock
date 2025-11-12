@@ -1407,7 +1407,7 @@ dependencies = [
 
 [[package]]
 name = "exalt-account-manager"
-version = "4.2.9"
+version = "4.3.0"
 dependencies = [
  "anyhow",
  "async-std",
