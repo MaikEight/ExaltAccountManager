@@ -3,7 +3,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SidebarButton from "./SidebarButton";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,18 +18,17 @@ import { useTheme } from "@emotion/react";
 import SidebarLoginBox from "./SidebarLoginBox";
 import isMacOS from '../../utils/isMacOS';
 
-function Sidebar({ children }) {
-    const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
-    const [isOlddailyLoginTaskInstalled, setIsOlddailyLoginTaskInstalled] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
+function Sidebar({ children }) {    
+    const isMac = isMacOS();
     const { showSnackbar } = useSnack();
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
 
-    const isMac = useMemo(() => {
-        return isMacOS();
-    }, []);
+    const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
+    const [isOlddailyLoginTaskInstalled, setIsOlddailyLoginTaskInstalled] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+
 
     useEffect(() => {
         const intervallId = setInterval(() => {
@@ -159,13 +158,13 @@ function Sidebar({ children }) {
                     id="sidebar"
                     sx={{
                         position: "relative",
-                        top: isMac ? 4 : -22,
+                        top: isMac === true ? 4 : -22,
                         left: 0,
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "left",
                         justifyContent: "space-between",
-                        height: `calc(100% - ${isMac ? 4 : -22}px)`,
+                        height: `calc(100% - ${isMac === true ? 4 : -22}px)`,
                         width: 210,
                     }}
                 >
