@@ -39,8 +39,8 @@
 </a>
 <a href="https://tauri.app" style="display: inline">
   <img
-    src="https://img.shields.io/badge/Tauri-2.8.3-violet.svg?style=flat&logo=Tauri&color=512BD4"
-    alt="Tauri version 2.8.3" />
+    src="https://img.shields.io/badge/Tauri-2.9.1-violet.svg?style=flat&logo=Tauri&color=512BD4"
+    alt="Tauri version 2.9.1" />
 </a>
 <a href="https://good-labs.github.io/greater-good-affirmation" style="display: inline">
 <img
@@ -105,10 +105,19 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 
 ## How to get started 🚀
 
+#### Windows
+
 1. Get the latest release of EAM [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
 2. If you don't have it installed already, install [Visual C++ Redistributable Version X64](https://learn.microsoft.com/de-de/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version)
 3. Run the installer
 4. Enjoy!
+
+#### MacOS
+
+1. Get the latest release of EAM [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
+3. Run the installer (Drag & Drop EAM into Applications)
+4. Start Exalt Account Manager
+5. Enjoy!
 
 ## Need support or have questions? 📝
 Join the [Discord server](https://discord.exalt-account-manager.eu) and leave a message in the help-request or general channel. I respond to inquiries promptly!
@@ -135,13 +144,15 @@ If you want to contribut to this project, please leave me a message in discord a
 Version-Tests and feedback are important aswell, if you have a minute to write me your thought about EAM and how it could be improved, please do.
 
 If you want, you can donate a buck or two, any money donated will be re-invested into this project.
-Purchases: 
+
+#### Purchases
 - The awesome, custom made application-logo.
 - Okta - the mascot; and all his variations.
 - The domain exalt-account-manager.eu.
 - The domain ExaltAccountManager.com.
-- A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
+- A VPS to host the "Analytics"- and "General Services"-API aswell as other EAM-services.
 - 3x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
+- 1x 1 year Apple Developer Membership to sign and notarize MacOS build.
 - Webhosting for the [website](https://ExaltAccountManager.com).
 
 <b>Any help is greatly appreciated</b> 🍻
