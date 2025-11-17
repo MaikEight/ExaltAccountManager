@@ -7,70 +7,23 @@
 # Exalt Account Manager
 
 <div align="center">
-<a href="https://exaltaccountmanager.com" style="display: inline">
-  <img
-   src="https://img.shields.io/badge/Project-Exalt%20Account%20Manager-violet.svg?style=flat&color=6200EE"
-    alt="Exalt Account Manager" />
-</a>
-<a href="https://app.codacy.com/gh/MaikEight/ExaltAccountManager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" style="display: inline">
-  <img
-   src="https://app.codacy.com/project/badge/Grade/0ef544da9dd44beeac1d3e69f7312d94"
-    alt="Exalt Account Manager" />
-</a>
-<a href="https://github.com/MaikEight/ExaltAccountManager/blob/main/LICENSE" style="display: inline">
-  <img
-    src="https://img.shields.io/github/license/MaikEight/ExaltAccountManager?label=License"
-    alt="License GPL-3.0" />
-</a>
-<a href="https://github.com/MaikEight/ExaltAccountManager#Languages:~:text=your%20first%20package-,Languages" style="display: inline">
-  <img
-    src="https://img.shields.io/github/languages/top/MaikEight/ExaltAccountManager"
-    alt="Top language" />
-</a>
-<a href="https://github.com/MaikEight" style="display: inline">
-  <img
-    src="https://img.shields.io/maintenance/yes/2025?label=Maintained"
-    alt="Maintained" />
-</a>
-<a href="https://github.com/MaikEight/ExaltAccountManager/commits/main" style="display: inline">
-  <img
-    src="https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit"
-    alt="Last commit" />
-</a>
-<a href="https://tauri.app" style="display: inline">
-  <img
-    src="https://img.shields.io/badge/Tauri-2.9.1-violet.svg?style=flat&logo=Tauri&color=512BD4"
-    alt="Tauri version 2.9.1" />
-</a>
-<a href="https://good-labs.github.io/greater-good-affirmation" style="display: inline">
-<img
-    src="https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg"
-    alt="Greater Good Affirmation" />
-</a>
-<a href="https://github.com/MaikEight/ExaltAccountManager/releases/latest" style="display: inline">
-  <img
-    src="https://img.shields.io/github/v/release/MaikEight/ExaltAccountManager?label=Latest%20Release"
-    alt="Latest release" />
-</a>
-<a href="https://github.com/MaikEight/ExaltAccountManager/releases/latest" style="display: inline">
-  <img
-    src="https://img.shields.io/github/release-date/MaikEight/ExaltAccountManager?label=Release%20date"
-    alt="Release date" />
-</a>
-<a href="https://github.com/MaikEight/ExaltAccountManager/releases/latest" style="display: inline">
-  <img
-    src="https://img.shields.io/github/downloads/MaikEight/ExaltAccountManager/total?label=Downloads"
-    alt="Downloads" />
-</a>
-<a href="https://discord.exalt-account-manager.eu" style="display: inline">
-  <img
-    src="https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord"
-    alt="Discord server" />
-</a>
+
+![Project](https://img.shields.io/badge/Project-Exalt%20Account%20Manager-violet.svg?style=flat&color=6200EE)
+[![Codacy](https://app.codacy.com/project/badge/Grade/0ef544da9dd44beeac1d3e69f7312d94)](https://app.codacy.com/gh/MaikEight/ExaltAccountManager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![License](https://img.shields.io/github/license/MaikEight/ExaltAccountManager?label=License)](https://github.com/MaikEight/ExaltAccountManager/blob/main/LICENSE)
+[![Top Language](https://img.shields.io/github/languages/top/MaikEight/ExaltAccountManager)](https://github.com/MaikEight/ExaltAccountManager#Languages:~:text=your%20first%20package-,Languages)
+[![Maintained](https://img.shields.io/maintenance/yes/2025?label=Maintained)](https://github.com/MaikEight)
+[![Last Commit](https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit)](https://github.com/MaikEight/ExaltAccountManager/commits/main)
+[![Tauri](https://img.shields.io/badge/Tauri-2.9.1-violet.svg?style=flat&logo=Tauri&color=512BD4)](https://tauri.app)
+[![Greater Good](https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg)](https://good-labs.github.io/greater-good-affirmation)
+[![Latest Release](https://img.shields.io/github/v/release/MaikEight/ExaltAccountManager?label=Latest%20Release)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
+[![Release Date](https://img.shields.io/github/release-date/MaikEight/ExaltAccountManager?label=Release%20date)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/MaikEight/ExaltAccountManager/total?label=Downloads)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
+[![Discord](https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord)](https://discord.exalt-account-manager.eu)
 
 <br >
 
-<a href="https://exaltaccountmanager.com" style="display: inline">
+<a href="https://exaltaccountmanager.com">
 <img  width="250" height="250" src="https://raw.githubusercontent.com/MaikEight/ExaltAccountManager/main/src-tauri/icons/logo.png" alt="EAM logo" title="EAM logo">  
 </a>
 </div>
@@ -105,14 +58,14 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 
 ## How to get started 🚀
 
-#### Windows
+### Windows
 
 1. Get the latest release of EAM [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest).
 2. If you don't have it installed already, install [Visual C++ Redistributable Version X64](https://learn.microsoft.com/de-de/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version)
 3. Run the installer
 4. Enjoy!
 
-#### MacOS
+### MacOS
 
 1. Get the latest release of EAM [here](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
 3. Run the installer (Drag & Drop EAM into Applications)
@@ -144,32 +97,28 @@ If you want to contribut to this project, please leave me a message in discord a
 Version-Tests and feedback are important aswell, if you have a minute to write me your thought about EAM and how it could be improved, please do.
 
 If you want, you can donate a buck or two, any money donated will be re-invested into this project.
-
-#### Purchases
+Purchases: 
 - The awesome, custom made application-logo.
 - Okta - the mascot; and all his variations.
 - The domain exalt-account-manager.eu.
 - The domain ExaltAccountManager.com.
-- A VPS to host the "Analytics"- and "General Services"-API aswell as other EAM-services.
+- A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
 - 3x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
-- 1x 1 year Apple Developer Membership to sign and notarize MacOS build.
 - Webhosting for the [website](https://ExaltAccountManager.com).
 
 <b>Any help is greatly appreciated</b> 🍻
 
 <a href="https://ko-fi.com/maik8">
   <img
-    height='48'
+    height="48"
     src="https://storage.ko-fi.com/cdn/brandasset/kofi_bg_tag_dark.png"
-    alt="Ko-Fi"
-  />
+    alt="Ko-Fi" />
 </a>
 <a href="https://www.buymeacoffee.com/Maik8">
   <img
-    height='48'
+    height="48"
     src="https://i.imgur.com/tAUkwTQ.png"
-    alt="Ko-Fi"
-  />
+    alt="Buy Me a Coffee" />
 </a>
 
 ## Credits 💚
