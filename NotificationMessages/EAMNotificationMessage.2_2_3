@@ -1,8 +1,8 @@
 {
-	"id":6,
+	"id":7,
 	"type":1,
-	"message":"Version 4.0.0 is now available, it is a complete overhaul of EAM!",
-	"link":"https://github.com/MaikEight/ExaltAccountManager/releases/latest",
-	"linkM":"https://github.com/MaikEight/ExaltAccountManager/releases/latest",
+	"message":"Version 4.3.0 is now available, we still work on EAM and would love to see you use the latest version as well!",
+	"link":"https://exaltaccountmanager.com",
+	"linkM":"https://exaltaccountmanager.com",
 	"forceShow":true
 }
