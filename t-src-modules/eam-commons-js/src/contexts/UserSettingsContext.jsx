@@ -84,6 +84,14 @@ const defaultSettings = {
     dailyLogin: {
         closeAfterFinish: false,
         //HIDDEN: disableAutoHideOnDailyLoginStartup: boolean // Whether to disable auto-hide on daily login startup, store in the database
+    },
+    widgets: {
+        widgetBars: {
+
+        },
+        widgets: {
+            
+        }
     }
 };
 
