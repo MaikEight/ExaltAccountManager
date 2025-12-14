@@ -3,18 +3,27 @@ import { createContext, useEffect, useState } from "react";
 import useUserSettings from "../hooks/useUserSettings";
 import { useMemo } from "react";
 import { WidgetBarEvents, WidgetBars } from "../components/Widgets/Widgetbars";
+import BarSlotsControl from "../components/Widgets/WidgetBars/Components/BarSlotsControl";
 
 const WidgetsContext = createContext();
 
-function updateWidgetBarState(current = null, open = null, type = null, data = null) {
+function updateWidgetBarState(current = null, open = null, type = null, data = null, editMode = false) {
+    editMode = (
+        open === false ? false :
+            (open === true ? editMode :
+                (current?.isOpen === false ? false : editMode))
+    )
+
     return {
         isOpen: false,
         type: null,
         data: null,
+        editMode: false,
         ...current,
         ...(open !== null ? { isOpen: open } : {}),
         ...(type ? { type } : {}),
         ...(data ? { data } : {}),
+        ...(editMode !== null ? { editMode } : {}),
     }
 }
 
@@ -42,7 +51,7 @@ function WidgetsContextProvider({ children }) {
     const subscribeToEvent = (eventName, callback) => {
         if (!WidgetBarEvents.validateName(eventName)) {
             console.warn(`Invalid event name "${eventName}" for WidgetBarEvents`);
-            return () => {}; // Return no-op function
+            return () => { }; // Return no-op function
         }
 
         // Add the callback to the subscribers list
@@ -79,6 +88,27 @@ function WidgetsContextProvider({ children }) {
                 console.error(`Error in ${eventName} subscriber:`, error);
             }
         });
+    }
+
+    const getWidgetConfiguration = (type) => {
+        const savedConfigs = getByKeyAndSubKey('widgets', 'widgets');
+        if (!savedConfigs) return type.defaultConfig;
+
+        return savedConfigs[type.type] || type.defaultConfig;
+    }
+
+    const updateWidgetConfiguration = (type, newConfig) => {
+        const savedConfigs = getByKeyAndSubKey('widgets', 'widgets') || {};
+        const updatedConfigs = {
+            ...savedConfigs,
+            [type.type]: {
+                ...type.defaultConfig,
+                ...savedConfigs[type.type],
+                ...newConfig,
+            }
+        };
+        setByKeyAndSubKey('widgets', 'widgets', updatedConfigs);
+        setUpdateConfig((current) => current + 1);
     }
 
     const widgetBarConfig = useMemo(() => {
@@ -138,10 +168,53 @@ function WidgetsContextProvider({ children }) {
         setWidgetBarState((current) => updateWidgetBarState(current, null, null, data));
     }
 
+    const updateWidgetBarEditMode = (editMode) => {
+        setWidgetBarState((current) => updateWidgetBarState(current, null, null, null, editMode));
+    }
+
+    const addWidgetToBar = (widgetType) => {
+        if (!widgetBarState?.type) return;
+
+        const currentWidgets = widgetBarConfig?.activeWidgets || [];
+        const newConfig = {
+            activeWidgets: [...currentWidgets, widgetType]
+        };
+
+        updateWidgetBarConfig(newConfig);
+    }
+
+    const removeWidgetFromBar = (widgetType) => {
+        if (!widgetBarState?.type) return;
+
+        const currentWidgets = widgetBarConfig?.activeWidgets || [];
+        const newConfig = {
+            activeWidgets: currentWidgets.filter(w => w !== widgetType)
+        };
+
+        updateWidgetBarConfig(newConfig);
+    }
+
+    const reorderWidgets = (newOrder) => {
+        if (!widgetBarState?.type) return;
+
+        const newConfig = {
+            activeWidgets: newOrder
+        };
+
+        updateWidgetBarConfig(newConfig);
+    }
+
 
     const values = {
         widgetBarConfig,
         updateWidgetBarConfig,
+
+        getWidgetConfiguration,
+        updateWidgetConfiguration,
+
+        addWidgetToBar,
+        removeWidgetFromBar,
+        reorderWidgets,
 
         subscribeToEvent,
 
@@ -151,6 +224,7 @@ function WidgetsContextProvider({ children }) {
         updateWidgetBarType,
         showWidgetBar,
         updateWidgetBarData,
+        updateWidgetBarEditMode,
     };
 
     return (
@@ -166,13 +240,24 @@ function WidgetsContextProvider({ children }) {
                     pointerEvents: widgetBarState?.isOpen ? 'auto' : 'none',
                     transition: 'width 0.2s ease-in-out',
                     width: widgetBarState?.isOpen ? WidgetBars.getWidgetBarWidthBySlots(widgetBarConfig?.slots || 1) : '0px',
-                    overflow: 'hidden',
                 }}
             >
-                {
-                    widgetBarState.type?.BarComponent &&
-                    <widgetBarState.type.BarComponent />
-                }
+                {/* Control positioned outside the main container */}
+                {widgetBarState?.isOpen && <BarSlotsControl />}
+                
+                {/* Main widget bar content with overflow hidden */}
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '100%',
+                        overflow: 'hidden',
+                    }}
+                >
+                    {
+                        widgetBarState.type?.BarComponent &&
+                        <widgetBarState.type.BarComponent />
+                    }
+                </Box>
             </Box>
         </WidgetsContext.Provider>
     )
