@@ -1,4 +1,4 @@
-import { Box, Typography, Divider, Menu, MenuItem } from '@mui/material';
+import { Box, Typography, Divider, Menu, MenuItem, darken } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import useStringToColor from '../../../hooks/useStringToColor';
 import useServerList from '../../../hooks/useServerList';
@@ -62,47 +62,49 @@ function ServerBadge({ serverName, editable, onChange }) {
                     )
                 }
             </Box>
-            {editable && (
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                    slotProps={{
-                        paper: {
-                            sx: {
-                                maxHeight: 48 * 4.5 + 8,
-                                width: 150,
+            {
+                editable && (
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                        slotProps={{
+                            paper: {
+                                sx: {
+                                    maxHeight: 48 * 4.5 + 8,
+                                    width: 150,
+                                }
                             }
+                        }}
+                    >
+                        {
+                            serverList && serverList.length > 0 && [
+                                { Name: 'Default', DNS: 'DEFAULT' },
+                                { Name: 'Last server', DNS: 'LAST' },
+                                ...serverList].map((server) => (
+                                    <MenuItem
+                                        key={server.DNS}
+                                        onClick={() => handleServerSelect(server)}
+                                        selected={server.Name === serverName}
+                                        sx={{
+                                            '&.Mui-selected': {
+                                                backgroundColor: theme.palette.mode === 'dark' ? darken(theme.palette.action.selected, 0.55) : theme.palette.action.selected,
+                                            },
+                                            '&.Mui-selected:hover': {
+                                                backgroundColor: theme.palette.action.hover,
+                                            },
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <ServerChip params={{ value: server.Name }} />
+                                    </MenuItem>
+                                ))
                         }
-                    }}
-                >
-                    {
-                        serverList && serverList.length > 0 && [
-                            { Name: 'Default', DNS: 'DEFAULT' },
-                            { Name: 'Last server', DNS: 'LAST' },
-                            ...serverList].map((server) => (
-                                <MenuItem
-                                    key={server.DNS}
-                                    onClick={() => handleServerSelect(server)}
-                                    selected={server.Name === serverName}
-                                    sx={{
-                                        '&.Mui-selected': {
-                                            backgroundColor: theme.palette.action.selected,
-                                        },
-                                        '&.Mui-selected:hover': {
-                                            backgroundColor: theme.palette.action.hover,
-                                        },
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <ServerChip params={{ value: server.Name }} />
-                                </MenuItem>
-                            ))
-                    }
-                </Menu>
-            )}
+                    </Menu>
+                )
+            }
         </>
     );
 }
