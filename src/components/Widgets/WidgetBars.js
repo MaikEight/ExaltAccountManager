@@ -1,5 +1,9 @@
 import AccountHeader from "./WidgetBars/Components/AccountHeader";
+import WidgetGrid from "./WidgetBars/Components/WidgetGrid";
+import WidgetControls from "./WidgetBars/Components/WidgetControls";
 import WidgetBarBase from './WidgetBars/WidgetBarBase';
+import { Widgets } from './Widgets';
+import AddWidgets from "./Components/AddWidgets";
 
 export class WidgetBars {
 
@@ -26,14 +30,25 @@ export class WidgetBars {
         name: 'Account',
         maxSlots: 2,
         BarComponent: WidgetBarBase,
+        availableWidgets: [
+            Widgets.STATS,
+            Widgets.ACTIVITY,
+            Widgets.QUICK_ACTIONS,
+            Widgets.TEST,
+        ],
         headerComponents: [
             AccountHeader
         ],
-        components: [],
+        components: [
+            WidgetGrid
+        ],
         footerComponents: [],
+        floatingComponents: [
+            WidgetControls,
+        ],
         defaultConfig: {
             slots: 1,
-            // activeWidgets: []
+            activeWidgets: []
         }
     }
 }
