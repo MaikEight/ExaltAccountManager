@@ -12,7 +12,7 @@
 [![Codacy](https://app.codacy.com/project/badge/Grade/0ef544da9dd44beeac1d3e69f7312d94)](https://app.codacy.com/gh/MaikEight/ExaltAccountManager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![License](https://img.shields.io/github/license/MaikEight/ExaltAccountManager?label=License)](https://github.com/MaikEight/ExaltAccountManager/blob/main/LICENSE)
 [![Top Language](https://img.shields.io/github/languages/top/MaikEight/ExaltAccountManager)](https://github.com/MaikEight/ExaltAccountManager#Languages:~:text=your%20first%20package-,Languages)
-[![Maintained](https://img.shields.io/maintenance/yes/2025?label=Maintained)](https://github.com/MaikEight)
+[![Maintained](https://img.shields.io/maintenance/yes/2026?label=Maintained)](https://github.com/MaikEight)
 [![Last Commit](https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit)](https://github.com/MaikEight/ExaltAccountManager/commits/main)
 [![Tauri](https://img.shields.io/badge/Tauri-2.9.1-violet.svg?style=flat&logo=Tauri&color=512BD4)](https://tauri.app)
 [![Greater Good](https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg)](https://good-labs.github.io/greater-good-affirmation)
