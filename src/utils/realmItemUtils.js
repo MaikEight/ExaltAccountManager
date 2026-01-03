@@ -116,7 +116,7 @@ export function formatCharacterDataFromCharListDataset(character) {
         level: character.level,
         backpackSlots: character.backpack_slots,
         hasBelt: character.has3_quickslots === 1,
-        equipment: extractItemIdsFromValueString(character.equipment, true, false),
+        equipment: extractItemIdsFromValueString(character.equipment, true, false, true),
         maxHp: character.max_hit_points,
         maxMp: character.max_magic_points,
         def: character.defense,
@@ -378,7 +378,7 @@ export function extractRealmItemsFromCharListDataset(charListDataset) {
     return realmItems;
 }
 
-function extractItemIdsFromValueString(valueString, removeTrackingId = true, removeEmptyValues = true) {
+function extractItemIdsFromValueString(valueString, removeTrackingId = true, removeEmptyValues = true, keepOrder = false) {
     if (!valueString) {
         return [];
     }
@@ -389,8 +389,8 @@ function extractItemIdsFromValueString(valueString, removeTrackingId = true, rem
 
     if (removeEmptyValues) {
         vaultItems = vaultItems.filter((itemId) => itemId !== '-1');
-    } else {
-        // Sort the items so that -1 is at the end of the array
+    } else if (!keepOrder) {
+        // Sort the items so that -1 is at the end of the array if we are keeping empty values
         vaultItems = vaultItems.sort((a, b) => {
             if (a === '-1' && b !== '-1') {
                 return 1;
