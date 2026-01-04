@@ -4,7 +4,7 @@ import StatsWidget from './Widgets/StatsWidget';
 import ActivityWidget from './Widgets/ActivityWidget';
 import QuickActionsWidget from './Widgets/QuickActionsWidget';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import BasicActions from './Widgets/BasicActions';
+import BasicActionsWidget from './Widgets/BasicActionsWidget';
 import AutoAwesomeMosaicOutlinedIconRotate from '../Icons/AutoAwesomeMosaicOutlinedIconRotate';
 import BestCharactersWidget from './Widgets/BestCharactersWidget';
 import AuditLogWidget from './Widgets/AuditLogWidget';
@@ -35,7 +35,7 @@ export class Widgets {
         type: 'BASIC_ACTIONS',
         name: 'Actions',
         icon: AutoAwesomeMosaicOutlinedIconRotate,
-        Component: BasicActions,
+        Component: BasicActionsWidget,
         minSlots: 1,
         maxSlots: 2,
         defaultConfig: {
