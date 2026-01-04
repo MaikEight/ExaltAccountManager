@@ -244,7 +244,7 @@ function WidgetsContextProvider({ children }) {
             >
                 {/* Control positioned outside the main container */}
                 {widgetBarState?.isOpen && <BarSlotsControl />}
-                
+
                 {/* Main widget bar content with overflow hidden */}
                 <Box
                     sx={{
