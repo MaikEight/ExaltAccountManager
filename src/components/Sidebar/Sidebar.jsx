@@ -18,7 +18,7 @@ import { useTheme } from "@emotion/react";
 import SidebarLoginBox from "./SidebarLoginBox";
 import isMacOS from '../../utils/isMacOS';
 
-function Sidebar({ children }) {    
+function Sidebar({ children }) {
     const isMac = isMacOS();
     const { showSnackbar } = useSnack();
     const navigate = useNavigate();
@@ -135,7 +135,8 @@ function Sidebar({ children }) {
                 display: "flex",
                 flexDirection: 'column',
                 userSelect: "none"
-            }}>
+            }}
+        >
             <CustomToolbar
                 sx={{
                     width: "100%",
