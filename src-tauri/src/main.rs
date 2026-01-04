@@ -242,6 +242,7 @@ fn main() {
             delete_eam_group,
             get_latest_char_list_for_each_account, //CHAR LIST ENTRIES
             get_latest_char_list_dataset_for_each_account,
+            get_latest_char_list_dataset_for_account,
             insert_char_list_dataset,
             download_and_run_hwid_tool,
             encrypt_string,
@@ -2206,6 +2207,38 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#########################
 //#   char_list_dataset   #
 //#########################
+
+#[tauri::command]
+async fn get_latest_char_list_dataset_for_account(
+    email: String
+) -> Result<models::CharListDataset, tauri::Error> {
+    info!("Getting latest char list dataset for account...");
+
+    match POOL.lock() {
+        Ok(pool) => get_latest_char_list_dataset_for_account_impl(email, pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return get_latest_char_list_dataset_for_account_impl(email, pool);
+        }
+    }
+}
+
+fn get_latest_char_list_dataset_for_account_impl(
+    email: String,
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<models::CharListDataset, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_latest_char_list_dataset_for_account(email, pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
 
 #[tauri::command]
 async fn get_latest_char_list_dataset_for_each_account(
