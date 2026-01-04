@@ -10,6 +10,7 @@ import { getRelativeTimeString } from 'eam-commons-js';
 import { useColorList } from '../../../../hooks/useColorList';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import EamIconButton from '../../../EamIconButton';
 
 function AccountHeader() {
     const { widgetBarState, closeWidgetBar, updateWidgetBarEditMode } = useWidgets();
@@ -54,36 +55,30 @@ function AccountHeader() {
         >
             {/* Header Actions */}
             <Box
+                data-tauri-drag-region
                 sx={{
                     position: 'relative',
-                    mb: 1.5,                    
+                    mb: 1.5,
                 }}
             >
-                <IconButton size="small" onClick={() => closeWidgetBar()}>
-                    <CloseIcon
-                        fontSize="small"
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                    />
-                </IconButton>
+                <EamIconButton
+                    icon={<CloseIcon fontSize='small' />}
+                    onClick={closeWidgetBar}
+                />
 
                 <Typography variant="h6" component="span" sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
                     Details
                 </Typography>
-
-                <Tooltip title="Edit Layout">
-                <IconButton
-                    size="small"
+                <EamIconButton
                     sx={{
                         position: 'absolute',
                         right: 0,
                     }}
+                    icon={<EditOutlinedIcon fontSize='small' />}
+                    tooltip={'Edit Layout'}
+                    tooltipDirection='left'
                     onClick={() => updateWidgetBarEditMode(!widgetBarState.editMode)}
-                >
-                    <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-                </Tooltip>
+                />
             </Box>
             {/* Account Info */}
 
