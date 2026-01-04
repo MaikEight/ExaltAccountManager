@@ -92,7 +92,9 @@ function WidgetGrid() {
                 >
                     {
                         activeWidgets.map((widgettype) => {
+                            
                             const type = Widgets.getWidgetByType(widgettype);
+                            
                             if (!type) return null;
                             const WidgetComponent = type.Component;
                             
