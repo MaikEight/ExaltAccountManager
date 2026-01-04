@@ -45,52 +45,65 @@ function BarSlotsControl() {
                 overflow: 'hidden'
             }}
         >
-            <Box
-                sx={{
-                    opacity: canGrowSlots ? 1 : 0.3,
-                    cursor: canGrowSlots ? 'pointer' : 'default',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '36px',
-                    maxWidth: '100%',
-                    '&:hover': {
-                        ...(canGrowSlots && {
-                            backgroundColor: 'action.hover',
-                        })
-                    }
-                }}
-                onClick={() => {
-                    if (canGrowSlots) {
-                        updateWidgetBarSlots(widgetBarConfig.slots + 1);
-                    }
-                }}
-            >
-                <ChevronLeftRoundedIcon />
-            </Box>
-            <Box
-                sx={{
-                    opacity: canShrinkSlots ? 1 : 0.3,
-                    cursor: canShrinkSlots ? 'pointer' : 'default',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '36px',
-                    maxWidth: '100%',
-                    '&:hover': {
-                        ...(canShrinkSlots && {
-                            backgroundColor: 'action.hover',
-                        })
-                    }
-                }}
-                onClick={() => {
-                    if (canShrinkSlots) {
-                        updateWidgetBarSlots(widgetBarConfig.slots - 1);
-                    }
-                }}
-            >
-                <ChevronRightRoundedIcon />
-            </Box>
+            {
+                canGrowSlots &&
+                <Box
+                    sx={{
+                        opacity: canGrowSlots ? 1 : 0.3,
+                        cursor: canGrowSlots ? 'pointer' : 'default',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        maxWidth: '100%',
+                        ...(!canShrinkSlots ? {
+                            py: 2.5,
+                        } : {
+                            height: '36px',
+                        }),
+                        '&:hover': {
+                            ...(canGrowSlots && {
+                                backgroundColor: 'action.hover',
+                            })
+                        }
+                    }}
+                    onClick={() => {
+                        if (canGrowSlots) {
+                            updateWidgetBarSlots(widgetBarConfig.slots + 1);
+                        }
+                    }}
+                >
+                    <ChevronLeftRoundedIcon />
+                </Box>
+            }
+            {
+                canShrinkSlots &&
+                <Box
+                    sx={{
+                        opacity: canShrinkSlots ? 1 : 0.3,
+                        cursor: canShrinkSlots ? 'pointer' : 'default',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        maxWidth: '100%',
+                        ...(!canGrowSlots ? {
+                            py: 2.5,
+                        } : {
+                            height: '36px',
+                        }),
+                        '&:hover': {
+                            ...(canShrinkSlots && {
+                                backgroundColor: 'action.hover',
+                            })
+                        }
+                    }}
+                    onClick={() => {
+                        if (canShrinkSlots) {
+                            updateWidgetBarSlots(widgetBarConfig.slots - 1);
+                        }
+                    }}
+                >
+                    <ChevronRightRoundedIcon />
+                </Box>}
         </Box>
     );
 }
