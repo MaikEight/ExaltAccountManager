@@ -1,5 +1,5 @@
 
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import useWidgets from '../../../hooks/useWidgets';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useSortable } from '@dnd-kit/sortable';
@@ -8,8 +8,9 @@ import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutl
 import EamToggle from '../../EamToggle';
 import ExpandRoundedIcon from '@mui/icons-material/ExpandRounded';
 import UnfoldLessRoundedIcon from '@mui/icons-material/UnfoldLessRounded';
+import EamIconButton from '../../EamIconButton';
 
-function WidgetBase({ children, type, widgetId }) {
+function WidgetBase({ children, type, widgetId, sx }) {
     const { getWidgetConfiguration, widgetBarConfig, removeWidgetFromBar, widgetBarState, updateWidgetConfiguration } = useWidgets();
 
     const {
@@ -40,6 +41,15 @@ function WidgetBase({ children, type, widgetId }) {
         updateWidgetConfiguration(type, { slots: newSlots });
     };
 
+    const TitleIcon = () => {
+        if (!type.icon || widgetBarState?.editMode) {
+            return null;
+        }
+
+        const Icon = type.icon;
+        return <Icon fontSize="small" />
+    }
+
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
@@ -62,6 +72,7 @@ function WidgetBase({ children, type, widgetId }) {
                 position: 'relative',
                 opacity: isDragging ? 0.5 : 1,
                 cursor: isDragging ? 'grabbing' : 'default',
+                ...sx,
             }}
         >
             <Box
@@ -96,7 +107,8 @@ function WidgetBase({ children, type, widgetId }) {
                             <DragIndicatorIcon sx={{ mr: 1 }} />
                         </Box>
                     }
-                    <Box sx={{ fontWeight: 'bold' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: 1, fontWeight: 'bold' }}>
+                        {TitleIcon()}
                         {type.name}
                     </Box>
                 </Box>
@@ -121,21 +133,15 @@ function WidgetBase({ children, type, widgetId }) {
                             </Box>
                         </Tooltip>
                     }
-                    <Tooltip title="Remove Widget">
-                        <IconButton
-                            size="small"
-                            onClick={handleRemove}
-                            sx={{
-                                ml: 1,
-                                opacity: 0.6,
-                                '&:hover': {
-                                    opacity: 1,
-                                }
-                            }}
-                        >
-                            <RemoveCircleOutlineRoundedIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
+                    <EamIconButton
+                        icon={<RemoveCircleOutlineRoundedIcon fontSize="small" />}
+                        tooltip={'Remove Widget'}
+                        tooltipDirection='left'
+                        onClick={handleRemove}
+                        sx={{
+                            ml: 0.5
+                        }}
+                    />
                 </Box>
             </Box>
             {children}
