@@ -9,7 +9,7 @@ import { WidgetBarEvents, WidgetBars } from "../components/Widgets/Widgetbars";
 
 function AccountsPage() {
     const { selectedAccount, setSelectedAccount } = useAccounts();
-    const { showWidgetBar, closeWidgetBar, updateWidgetBarData, widgetBarState, subscribeToEvent } = useWidgets();
+    const { showWidgetBar, closeWidgetBar, updateWidgetBarData, widgetBarState, subscribeToEvent } = useWidgets() || {};
     const [showAddNewAccount, setShowAddNewAccount] = useState(false);
 
     useEffect(() => {
