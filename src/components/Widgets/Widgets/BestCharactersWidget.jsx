@@ -13,7 +13,6 @@ function BestCharactersWidget({ type, widgetId }) {
     const [character, setCharacter] = useState([]);
 
     const lastEmailRef = useRef(null);
-
     const sortCharacters = (dataset) => {
         if (!dataset || !dataset.character) {
             setCharacter([]);
@@ -48,7 +47,6 @@ function BestCharactersWidget({ type, widgetId }) {
     }, [widgetBarState.data]);
 
     const charsToRender = useMemo(() => {
-        console.log("Rendering chars", character, widgetBarConfig);
         const currentSlots = config?.slots || type?.defaultConfig?.slots || 1;
         const maxAmount = ((widgetBarConfig?.slots || 1 ) > 1 && currentSlots > 1) ? currentSlots * 3 : 3;
         let amnt = 0;
@@ -72,7 +70,6 @@ function BestCharactersWidget({ type, widgetId }) {
             </Fragment>
         );
     }, [character, widgetBarConfig.slots, config.slots]);
-
 
     return (
         <WidgetBase type={type} widgetId={widgetId}>
