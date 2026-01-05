@@ -30,6 +30,7 @@ export class WidgetBars {
         maxSlots: 2,
         BarComponent: WidgetBarBase,
         availableWidgets: [
+            Widgets.ACCOUNT_DETAILS,
             Widgets.BASIC_ACTIONS,
             Widgets.BEST_CHARACTERS,
             Widgets.AUDITLOG,
