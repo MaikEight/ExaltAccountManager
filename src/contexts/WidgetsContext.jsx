@@ -35,6 +35,31 @@ function WidgetsContextProvider({ children }) {
         [WidgetBarEvents.ON_OPEN]: [],
         [WidgetBarEvents.ON_CLOSE]: [],
     });
+    
+    const [openedBarTypes, setOpenedBarTypes] = useState(new Set());
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        if (widgetBarState?.isOpen) {
+            setIsVisible(true);
+        } else {
+            // Delay hiding until after transition (200ms)
+            const timer = setTimeout(() => {
+                setIsVisible(false);
+            }, 200);
+            return () => clearTimeout(timer);
+        }
+    }, [widgetBarState?.isOpen]);
+
+    useEffect(() => {
+        if (widgetBarState?.isOpen && widgetBarState?.type?.type) {
+            setOpenedBarTypes(prev => {
+                const newSet = new Set(prev);
+                newSet.add(widgetBarState.type.type);
+                return newSet;
+            });
+        }
+    }, [widgetBarState?.isOpen, widgetBarState?.type?.type]);
 
     /**
      * Subscribe to a widget bar event
@@ -254,8 +279,16 @@ function WidgetsContextProvider({ children }) {
                     }}
                 >
                     {
-                        widgetBarState.type?.BarComponent &&
-                        <widgetBarState.type.BarComponent />
+                        widgetBarState.type?.BarComponent && openedBarTypes.has(widgetBarState.type.type) &&
+                        <Box
+                            sx={{
+                                display: isVisible ? 'flex' : 'none',
+                                width: '100%',
+                                height: '100%',
+                            }}
+                        >
+                            <widgetBarState.type.BarComponent />
+                        </Box>
                     }
                 </Box>
             </Box>
