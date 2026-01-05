@@ -1,5 +1,5 @@
 
-import { Box, Tooltip } from '@mui/material';
+import { Box, Tooltip, Typography } from '@mui/material';
 import useWidgets from '../../../hooks/useWidgets';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useSortable } from '@dnd-kit/sortable';
@@ -9,8 +9,10 @@ import EamToggle from '../../EamToggle';
 import ExpandRoundedIcon from '@mui/icons-material/ExpandRounded';
 import UnfoldLessRoundedIcon from '@mui/icons-material/UnfoldLessRounded';
 import EamIconButton from '../../EamIconButton';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { useState } from 'react';
 
-function WidgetBase({ children, type, widgetId, sx }) {
+function WidgetBase({ children, type, widgetId, onWidgetEditModeChanged, isEditMode = false, sx }) {
     const { getWidgetConfiguration, widgetBarConfig, removeWidgetFromBar, widgetBarState, updateWidgetConfiguration } = useWidgets();
 
     const {
@@ -65,13 +67,14 @@ function WidgetBase({ children, type, widgetId, sx }) {
                 height: 'fit-content',
                 width: '100%',
                 gridColumn: `span ${gridColumnSpan}`,
-                border: (theme) => `1px solid ${theme.palette.divider}`,
+                border: (theme) => `1px solid ${isEditMode ? theme.palette.primary.main : theme.palette.divider}`,
                 borderRadius: (theme) => `${theme.shape.borderRadius * 2}px`,
                 p: 1,
                 backgroundColor: 'background.paper',
                 position: 'relative',
                 opacity: isDragging ? 0.5 : 1,
                 cursor: isDragging ? 'grabbing' : 'default',
+                transition: 'border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, height 0.2s ease-in-out',
                 ...sx,
             }}
         >
@@ -110,6 +113,12 @@ function WidgetBase({ children, type, widgetId, sx }) {
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', gap: 1, fontWeight: 'bold' }}>
                         {TitleIcon()}
                         {type.name}
+                        {
+                            isEditMode &&
+                            <Typography sx={{ fontWeight: 'normal', fontSize: '0.8em', color: 'text.secondary' }}>
+                                editing ...
+                            </Typography>
+                        }
                     </Box>
                 </Box>
                 {/* Options */}
@@ -132,6 +141,20 @@ function WidgetBase({ children, type, widgetId, sx }) {
                                 />
                             </Box>
                         </Tooltip>
+                    }
+                    {
+                        !widgetBarState?.editMode &&
+                        onWidgetEditModeChanged &&
+                        <EamIconButton
+                            icon={<EditOutlinedIcon fontSize="small" />}
+                            onClick={() => {
+                                if (typeof onWidgetEditModeChanged === 'function') {
+                                    onWidgetEditModeChanged();
+                                }
+                            }}
+                            tooltip={"Edit Widget"}
+                            tooltipDirection={"left"}
+                        />
                     }
                     <EamIconButton
                         icon={<RemoveCircleOutlineRoundedIcon fontSize="small" />}
