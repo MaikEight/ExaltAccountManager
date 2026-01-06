@@ -46,6 +46,11 @@ function WidgetControls() {
                     right: 8,
                     bgcolor: (theme) => theme.palette.background.default,
                     border: (theme) => `1px solid ${theme.palette.divider}`,
+                    zIndex: 11,
+                    '&:hover': {
+                        backgroundColor: (theme) => theme.palette.background.paperLight,
+                        border: (theme) => `1px solid ${theme.palette.divider}`,
+                    }
                 }}
             >
                 <AddIcon />
