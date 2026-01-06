@@ -262,27 +262,42 @@ function TableDataWidget({ type, widgetId }) {
                 >
                     {formatValue(field, value)}
                 </Typography>
-                {field.dataType === 'password' && value && (
-                    <EamIconButton
-                        icon={decryptedPasswords[field.dataField]
-                            ? <VisibilityOffOutlinedIcon fontSize="small" />
-                            : <VisibilityOutlinedIcon fontSize="small" />
-                        }
-                        onClick={() => togglePasswordVisibility(field.dataField, value)}
-                    />
-                )}
-                {field.showCopyButton && value && (
-                    <EamIconButton
-                        icon={<ContentCopyRoundedIcon fontSize="small" />}
-                        onClick={() => handleCopy(value)}
-                    />
-                )}
-                {field.editable && (
-                    <EamIconButton
-                        icon={<EditOutlinedIcon fontSize="small" />}
-                        onClick={() => handleStartEdit(fieldKey, value, field)}
-                    />
-                )}
+                {
+                    field.dataType === 'password' && value && (
+                        <EamIconButton
+                            icon={decryptedPasswords[field.dataField]
+                                ? <VisibilityOffOutlinedIcon fontSize="small" />
+                                : <VisibilityOutlinedIcon fontSize="small" />
+                            }
+                            onClick={() => togglePasswordVisibility(field.dataField, value)}
+                            tooltip={decryptedPasswords[field.dataField] ? "Hide Password" : "Show Password"}
+                            tooltipDirection={"left"}
+                            tooltipBackground={"background.paperLight"}
+                        />
+                    )
+                }
+                {
+                    field.showCopyButton && value && (
+                        <EamIconButton
+                            icon={<ContentCopyRoundedIcon fontSize="small" />}
+                            onClick={() => handleCopy(value)}
+                            tooltip={"Copy to Clipboard"}
+                            tooltipDirection={"left"}
+                            tooltipBackground={"background.paperLight"}
+                        />
+                    )
+                }
+                {
+                    field.editable && (
+                        <EamIconButton
+                            icon={<EditOutlinedIcon fontSize="small" />}
+                            onClick={() => handleStartEdit(fieldKey, value, field)}
+                            tooltip={`Edit ${field.displayName}`}
+                            tooltipDirection={"left"}
+                            tooltipBackground={"background.paperLight"}
+                        />
+                    )
+                }
             </Box>
         );
     };
@@ -302,39 +317,41 @@ function TableDataWidget({ type, widgetId }) {
             }}
         >
             <TableBody>
-                {fieldEntries.map(([fieldKey, field], index) => (
-                    <TableRow
-                        key={fieldKey}
-                        sx={{
-                            backgroundColor: index % 2 === 1 ? 'action.hover' : 'transparent',
-                            ...(useRowHeights && rowHeights[index] ? { height: rowHeights[index] } : {}),
-                        }}
-                    >
-                        <TableCell
-                            component="th"
-                            scope="row"
+                {
+                    fieldEntries.map(([fieldKey, field], index) => (
+                        <TableRow
+                            key={fieldKey}
                             sx={{
-                                borderBottom: 'none',
-                                py: 0.5,
-                                pl: 1,
-                                width: '40%',
+                                backgroundColor: index % 2 === 1 ? 'action.hover' : 'transparent',
+                                ...(useRowHeights && rowHeights[index] ? { height: rowHeights[index] } : {}),
                             }}
                         >
-                            <Typography variant="body2" color="text.secondary">
-                                {field.displayName}
-                            </Typography>
-                        </TableCell>
-                        <TableCell
-                            sx={{
-                                borderBottom: 'none',
-                                py: 0.5,
-                                pr: 1,
-                            }}
-                        >
-                            {renderFieldValue(field, fieldKey, data[field.dataField])}
-                        </TableCell>
-                    </TableRow>
-                ))}
+                            <TableCell
+                                component="th"
+                                scope="row"
+                                sx={{
+                                    borderBottom: 'none',
+                                    py: 0.5,
+                                    pl: 1,
+                                    width: '40%',
+                                }}
+                            >
+                                <Typography variant="body2" color="text.secondary">
+                                    {field.displayName}
+                                </Typography>
+                            </TableCell>
+                            <TableCell
+                                sx={{
+                                    borderBottom: 'none',
+                                    py: 0.5,
+                                    pr: 1,
+                                }}
+                            >
+                                {renderFieldValue(field, fieldKey, data[field.dataField])}
+                            </TableCell>
+                        </TableRow>
+                    ))
+                }
             </TableBody>
         </Table>
     );
@@ -378,7 +395,7 @@ function TableDataWidget({ type, widgetId }) {
                                 <TableRow
                                     key={fieldKey}
                                     sx={{
-                                        backgroundColor: index % 2 === 1 ? 'action.hover' : 'transparent',
+                                        backgroundColor: index % 2 === 0 ? 'action.hover' : 'transparent',
                                     }}
                                 >
                                     <TableCell
