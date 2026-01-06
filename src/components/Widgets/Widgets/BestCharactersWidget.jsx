@@ -22,7 +22,6 @@ function BestCharactersWidget({ type, widgetId }) {
         const chars = dataset.character.sort(
             (a, b) => b.current_fame - a.current_fame
         );
-        console.log(chars);
         setCharacter(chars);
     }
 
