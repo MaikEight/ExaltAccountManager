@@ -64,7 +64,7 @@ function AuditLogWidget({ type, widgetId }) {
                 sx={{
                     width: '100%',
                     minWidth: '300px',
-                    maxWidth: `${(slotSize === 1 ? 415 : 899)}px`,
+                    maxWidth: `${(slotSize === 1 ? (widgetBarConfig?.slots || 1) === 1 ? 415 : 446 : 899)}px`,
                     minHeight: '150px',
                 }}
             >
