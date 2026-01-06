@@ -1,5 +1,5 @@
 
-import { Box, Paper, Typography, IconButton, Chip, Tooltip } from '@mui/material';
+import { Box, Typography, Chip, Tooltip } from '@mui/material';
 import useWidgets from '../../../../hooks/useWidgets';
 import CloseIcon from '@mui/icons-material/Close';
 import ServerBadge from '../../Components/ServerBadge';
@@ -11,12 +11,50 @@ import { useColorList } from '../../../../hooks/useColorList';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EamIconButton from '../../../EamIconButton';
+import CharacterPortraitAvatarGroup from './CharacterPortraitAvatarGroup';
+import { useEffect, useRef, useState } from 'react';
+import { invoke } from "@tauri-apps/api/core";
+import { WidgetBars } from '../../Widgetbars';
 
 function AccountHeader() {
-    const { widgetBarState, closeWidgetBar, updateWidgetBarEditMode } = useWidgets();
+    const { widgetBarState, closeWidgetBar, updateWidgetBarEditMode, widgetBarConfig } = useWidgets();
     const { updateAccount, getAccountByEmail } = useAccounts();
 
-    console.log('AccountHeader render', widgetBarState);
+    const type = widgetBarState?.type || WidgetBars.ACCOUNT;
+    const currentSlots = widgetBarConfig?.slots || type?.defaultConfig?.slots || 1;
+    const [character, setCharacter] = useState([]);
+
+    const lastEmailRef = useRef(null);
+    const sortCharacters = (dataset) => {
+        if (!dataset || !dataset.character) {
+            setCharacter([]);
+            return;
+        }
+
+        const chars = dataset.character.sort(
+            (a, b) => b.current_fame - a.current_fame
+        );
+        setCharacter(chars);
+    }
+
+    useEffect(() => {
+        if (widgetBarState?.data?.email && widgetBarState.data.email !== lastEmailRef.current) {
+            lastEmailRef.current = widgetBarState.data.email;
+            const email = widgetBarState.data.email;            
+            invoke('get_latest_char_list_dataset_for_account', { email: widgetBarState.data.email })
+                .then((res) => {
+                    if (lastEmailRef.current === email) {                        
+                        sortCharacters(res);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                })
+        } else {
+            sortCharacters(null);
+        }
+    }, [widgetBarState.data]);
+
     if (!widgetBarState?.data) {
         return null;
     }
@@ -77,6 +115,7 @@ function AccountHeader() {
                     icon={<EditOutlinedIcon fontSize='small' />}
                     tooltip={'Edit Layout'}
                     tooltipDirection='left'
+                    tooltipBackground='background.paperLight'
                     onClick={() => updateWidgetBarEditMode(!widgetBarState.editMode)}
                 />
             </Box>
@@ -145,15 +184,28 @@ function AccountHeader() {
                 </Box>
                 <Box
                     sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: 'fit-content',
-                        gap: 1,
                         ml: 'auto',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 2,
                     }}
                 >
-                    <ServerBadge serverName={acc?.serverName} editable={true} onChange={handleChangeServer} />
-                    <RequestStateChip state={acc?.state} useShortName={false} />
+                    {
+                        currentSlots > 1 &&
+                        <CharacterPortraitAvatarGroup characters={character} renderAmount={8} />
+                    }
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: 'fit-content',
+                            gap: 1,
+                        }}
+                    >
+                        <ServerBadge serverName={acc?.serverName} editable={true} onChange={handleChangeServer} />
+                        <RequestStateChip state={acc?.state} useShortName={false} />
+                    </Box>
                 </Box>
             </Box>
         </Box>
