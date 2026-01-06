@@ -44,14 +44,13 @@ function WidgetBarBase() {
                     widgetBarState?.editMode &&
                     <Box
                         sx={{
-                            backgroundColor: (theme) => alpha(theme.palette.warning.main, 0.6),
-                            border: (theme) => `1px solid ${theme.palette.divider}`,
+                            backgroundColor: (theme) => alpha(theme.palette.warning.main, 0.1),
+                            border: (theme) => `1px solid ${theme.palette.mode === 'dark' ? theme.palette.warning.dark : theme.palette.warning.main}`,
                             borderRadius: (theme) => `${theme.shape.borderRadius}px`,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             p: 1,
-                            mb: 1,
                         }}
                     >
                         Edit Mode Enabled
@@ -59,7 +58,7 @@ function WidgetBarBase() {
                         <Button
                             variant="contained"
                             size="small"
-                            color="primary"
+                            color="secondary"
                             onClick={() => updateWidgetBarEditMode(false)}
                         >
                             End
