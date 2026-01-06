@@ -64,7 +64,7 @@ function WidgetBase({ children, type, widgetId, onWidgetEditModeChanged, isEditM
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                height: 'fit-content',
+                height: '100%',
                 width: '100%',
                 gridColumn: `span ${gridColumnSpan}`,
                 border: (theme) => `1px solid ${isEditMode ? theme.palette.primary.main : theme.palette.divider}`,
@@ -154,12 +154,14 @@ function WidgetBase({ children, type, widgetId, onWidgetEditModeChanged, isEditM
                             }}
                             tooltip={"Edit Widget"}
                             tooltipDirection={"left"}
+                            tooltipBackground={"background.paperLight"}
                         />
                     }
                     <EamIconButton
                         icon={<RemoveCircleOutlineRoundedIcon fontSize="small" />}
                         tooltip={'Remove Widget'}
                         tooltipDirection='left'
+                        tooltipBackground={"background.paperLight"}
                         onClick={handleRemove}
                         sx={{
                             ml: 0.5
