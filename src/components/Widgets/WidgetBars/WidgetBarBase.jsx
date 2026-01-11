@@ -1,5 +1,5 @@
 
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import useWidgets from '../../../hooks/useWidgets';
 import { alpha } from '@mui/material/styles';
 
@@ -53,7 +53,9 @@ function WidgetBarBase() {
                             p: 1,
                         }}
                     >
-                        Edit Mode Enabled
+                        <Typography variant="body1" color="textPrimary">
+                            Edit Mode Enabled
+                        </Typography>
 
                         <Button
                             variant="contained"
