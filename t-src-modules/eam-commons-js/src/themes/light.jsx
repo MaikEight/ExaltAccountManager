@@ -74,6 +74,10 @@ export const lightTheme = createTheme({
                     '& .css-1oudwrl::after': {
                         height: 0,
                     },
+                    '& .css-1tdeh38': {
+                        height: 0,
+                        display: 'none',
+                    }
                 },
             },
             defaultProps: {
