@@ -7,12 +7,17 @@ import ServerChip from "./GridComponents/ServerChip";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 150,
-        },
-    },
+    slotProps: {
+        paper: {
+            sx: {
+                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                width: 150,
+                backgroundColor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+            }
+        }
+    }
 };
 
 function ServerListSelect({ serversToAdd, selectedServer, onChange, defaultValue }) {
