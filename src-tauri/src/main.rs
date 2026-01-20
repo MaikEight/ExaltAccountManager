@@ -243,6 +243,7 @@ fn main() {
             get_latest_char_list_for_each_account, //CHAR LIST ENTRIES
             get_latest_char_list_dataset_for_each_account,
             get_latest_char_list_dataset_for_account,
+            get_last_days_char_list_dataset_for_account,
             insert_char_list_dataset,
             download_and_run_hwid_tool,
             encrypt_string,
@@ -1034,7 +1035,13 @@ async fn send_post_request_with_form_url_encoded_data(
     );
 
     let client = reqwest::Client::new();
-    let result = client.post(&url).headers(headers).form(&data).send().await;
+    let body = serde_urlencoded::to_string(&data).map_err(|e| e.to_string())?;
+    let result = client
+    .post(&url)
+    .headers(headers)
+    .body(body)
+    .send()
+    .await;
 
     // Check result and re-acquire lock if needed
     match result {
@@ -2207,6 +2214,40 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#########################
 //#   char_list_dataset   #
 //#########################
+
+#[tauri::command]
+async fn get_last_days_char_list_dataset_for_account(
+    email: String,
+    last_days: i32,
+) -> Result<Vec<(String, Option<models::CharListDataset>)>, tauri::Error> {
+    info!("Getting latest char list dataset for account...");
+
+    match POOL.lock() {
+        Ok(pool) => get_last_days_char_list_dataset_for_account_impl(email, last_days, pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return get_last_days_char_list_dataset_for_account_impl(email, last_days, pool);
+        }
+    }
+}
+
+fn get_last_days_char_list_dataset_for_account_impl(
+    email: String,
+    last_days: i32,
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<(String, Option<models::CharListDataset>)>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_last_days_char_list_dataset_for_account(email, last_days, pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
 
 #[tauri::command]
 async fn get_latest_char_list_dataset_for_account(
