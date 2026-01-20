@@ -22,16 +22,16 @@ lazy_static = "1.5"
 libsqlite3-sys = { version = "0.35.0", features = ["bundled"] }
 log = "0.4"
 md5 = "0.8"
-reqwest = { version = "0.12", features = ["blocking", "json"] }
+reqwest = { version = "0.13", features = ["blocking", "json"] }
 roxmltree = "0.21.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sha1 = "0.10"
 thiserror = "2.0"
-tokio = { version = "1.48", features = ["full"] }
+tokio = { version = "1.49", features = ["full"] }
 uuid = { version = "1.19", features = ["serde", "v4"] }
 zeroize = "1.8"
-zip = "6"
+zip = "7"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "errhandlingapi", "winbase"] }
