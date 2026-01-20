@@ -5,6 +5,7 @@ import useWidgets from "../../../hooks/useWidgets";
 import { formatTime, getAuditLogForAccount } from 'eam-commons-js';
 import { Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { WidgetBars } from "../Widgetbars";
 
 function AuditLogWidget({ type, widgetId }) {
     const { applySettingsToHeaderName } = useApplySettingsToHeaderName();
@@ -64,7 +65,7 @@ function AuditLogWidget({ type, widgetId }) {
                 sx={{
                     width: '100%',
                     minWidth: '300px',
-                    maxWidth: `${(slotSize === 1 ? (widgetBarConfig?.slots || 1) === 1 ? 415 : 446 : 899)}px`,
+                    maxWidth: `${(slotSize === 1 ? (widgetBarConfig?.slots || 1) === 1 ? WidgetBars.WIDGET_SLOT_WIDTH - 16 : WidgetBars.WIDGET_SLOT_WIDTH - 16 : (WidgetBars.WIDGET_SLOT_WIDTH * 2))}px`,
                     minHeight: '150px',
                 }}
             >
