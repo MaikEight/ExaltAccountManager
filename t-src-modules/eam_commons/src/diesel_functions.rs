@@ -422,6 +422,129 @@ pub fn get_latest_char_list_for_each_account(
 //########################
 
 #[named]
+pub fn get_last_days_char_list_dataset_for_account(
+    email: String,
+    last_days: i32,
+    pool: &DbPool,
+) -> Result<Vec<(String, Option<CharListDataset>)>, diesel::result::Error> {
+    log_fn!();
+
+    // Calculate date range
+    let now = chrono::Utc::now().naive_utc();
+    let start_date = now - chrono::Duration::try_days(last_days as i64)
+        .expect("Invalid number of days");
+    
+    // Get all char_list_entries for this email within the date range
+    let entries: Vec<CharListEntries> = with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            char_list_entries::table
+                .filter(char_list_entries::email.eq(&email))
+                .filter(char_list_entries::timestamp.ge(diesel::dsl::sql(&format!(
+                    "'{}'",
+                    start_date.format("%Y-%m-%d %H:%M:%S")
+                ))))
+                .order(char_list_entries::timestamp.desc())
+                .load::<CharListEntries>(&mut conn)
+        },
+        5,
+    )?;
+    
+    // Group entries by date and keep the latest for each day
+    let mut entries_by_date: std::collections::HashMap<String, CharListEntries> = 
+        std::collections::HashMap::new();
+    
+    for entry in entries {
+        if let Some(ref timestamp_str) = entry.timestamp {
+            // Parse timestamp and extract date part
+            // Try parsing with fractional seconds first, then without
+            let parsed_timestamp = NaiveDateTime::parse_from_str(timestamp_str, "%Y-%m-%d %H:%M:%S%.f")
+                .or_else(|_| NaiveDateTime::parse_from_str(timestamp_str, "%Y-%m-%d %H:%M:%S"));
+            
+            if let Ok(timestamp) = parsed_timestamp {
+                let date_key = timestamp.format("%Y-%m-%d").to_string();
+                
+                // Keep only the latest entry for each date (entries are ordered desc)
+                entries_by_date.entry(date_key).or_insert(entry);
+            }
+        }
+    }
+    
+    // Build result vector for all requested days
+    let mut result = Vec::new();
+    
+    for day_offset in (0..last_days).rev() {
+        let target_date = now - chrono::Duration::try_days(day_offset as i64)
+            .expect("Invalid day offset");
+        let date_key = target_date.format("%Y-%m-%d").to_string();
+        
+        if let Some(entry) = entries_by_date.get(&date_key) {
+            // Build the dataset for this entry
+            match build_char_list_dataset_from_entry(entry.clone(), pool) {
+                Ok(dataset) => result.push((date_key, Some(dataset))),
+                Err(e) => {
+                    log::warn!(
+                        "[get_last_days_char_list_dataset] Failed to build dataset for {}: {:?}",
+                        date_key, e
+                    );
+                    result.push((date_key, None));
+                }
+            }
+        } else {
+            // No entry for this day
+            result.push((date_key, None));
+        }
+    }
+    
+    Ok(result)
+}
+
+// Helper function to build a CharListDataset from a CharListEntries
+fn build_char_list_dataset_from_entry(
+    entry: CharListEntries,
+    pool: &DbPool,
+) -> Result<CharListDataset, diesel::result::Error> {
+    let account = with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            account::table
+                .filter(account::entry_id.eq(&entry.id))
+                .first::<Account>(&mut conn)
+        },
+        5,
+    )?;
+
+    let class_stats = with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            class_stats::table
+                .filter(class_stats::entry_id.eq(entry.id.clone()))
+                .load::<ClassStats>(&mut conn)
+        },
+        5,
+    )?;
+
+    let character = with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            character::table
+                .filter(character::entry_id.eq(entry.clone().id))
+                .load::<Character>(&mut conn)
+        },
+        5,
+    )?;
+
+    Ok(CharListDataset {
+        email: entry.email.unwrap_or_else(|| "<unknown>".into()),
+        account,
+        class_stats,
+        character,
+        items: Vec::new(),    // TODO: Implement item parsing
+        pc_stats: Vec::new(), // TODO: Implement pc_stats parsing
+    })
+}
+
+#[named]
 pub fn get_latest_char_list_dataset_for_account(
     email: String,
     pool: &DbPool,
