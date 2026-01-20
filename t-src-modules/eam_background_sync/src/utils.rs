@@ -17,10 +17,11 @@ pub async fn send_post_request_with_form_url_encoded_data(
     );
 
     let client = reqwest::Client::new();
+    let body = serde_urlencoded::to_string(&data).map_err(|e| e.to_string())?;
     let res = client
         .post(&url)
         .headers(headers)
-        .form(&data)
+        .body(body)
         .send()
         .await
         .map_err(|e| e.to_string())?;
