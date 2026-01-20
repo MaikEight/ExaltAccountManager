@@ -3,6 +3,11 @@ import AutoAwesomeMosaicOutlinedIconRotate from '../Icons/AutoAwesomeMosaicOutli
 import BestCharactersWidget from './Widgets/BestCharactersWidget';
 import AuditLogWidget from './Widgets/AuditLogWidget';
 import TableDataWidget from './Widgets/TableDataWidget';
+import SingleCharacterOverviewWidget from './Widgets/SingleCharacterOverviewWidget';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import HistoryEduRoundedIcon from '@mui/icons-material/HistoryEduRounded';
+import TocRoundedIcon from '@mui/icons-material/TocRounded';
 
 export class Widgets {
     static getWidgetByType(type) {
@@ -11,6 +16,8 @@ export class Widgets {
                 return Widgets.BASIC_ACTIONS;
             case Widgets.BEST_CHARACTERS.type:
                 return Widgets.BEST_CHARACTERS;
+            case Widgets.SINGLE_CHARACTER_OVERVIEW.type:
+                return Widgets.SINGLE_CHARACTER_OVERVIEW;
             case Widgets.AUDITLOG.type:
                 return Widgets.AUDITLOG;
             case Widgets.ACCOUNT_DETAILS.type:
@@ -38,6 +45,7 @@ export class Widgets {
     static BEST_CHARACTERS = {
         type: 'BEST_CHARACTERS',
         name: 'Best Characters',
+        icon: GroupsOutlinedIcon,
         Component: BestCharactersWidget,
         minSlots: 1,
         maxSlots: 2,
@@ -49,9 +57,27 @@ export class Widgets {
         }
     }
 
+    static SINGLE_CHARACTER_OVERVIEW = {
+        type: 'SINGLE_CHARACTER_OVERVIEW',
+        name: 'Single Character',
+        icon: PersonOutlineOutlinedIcon,
+        Component: SingleCharacterOverviewWidget, 
+        minSlots: 1,
+        maxSlots: 2,
+        defaultConfig: {
+            slots: 1,
+            daysToFetchOptions: [3, 7, 14, 30],
+            settings: {
+                daysToFetch: 7,
+                characterIdPerAccount: {}, // Mapping of account email to character ID                
+            }
+        }
+    };
+
     static AUDITLOG = {
         type: 'AUDITLOG',
         name: 'Audit Log',
+        icon: HistoryEduRoundedIcon,
         Component: AuditLogWidget,
         minSlots: 1,
         maxSlots: 2,
@@ -66,6 +92,7 @@ export class Widgets {
     static ACCOUNT_DETAILS = {
         type: 'ACCOUNT_DETAILS',
         name: 'Account Details',
+        icon: TocRoundedIcon,
         Component: TableDataWidget,
         dataSourceObject: null, // to be used for sub-data sources
         editFunctionType: 'ACCOUNT',
