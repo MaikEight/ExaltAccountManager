@@ -10,12 +10,13 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+serde_urlencoded = "0.7"
 sha1 = "0.10"
 uuid = { version = "1.19", features = ["serde", "v4"] }
 chrono = { version = "0.4", features = ["serde"] }
 dirs = "6.0"
-reqwest = { version = "0.12", features = ["blocking", "json"] }
-tokio = { version = "1.48", features = ["full"] }
+reqwest = { version = "0.13", features = ["blocking", "json"] }
+tokio = { version = "1.49", features = ["full"] }
 roxmltree = "0.21"
 log = "0.4"
 base64 = "0.22"
@@ -23,5 +24,5 @@ base64 = "0.22"
 # Local libs
 eam_commons = { path = "../eam_commons" }
 # THIS IS NOT PUBLIC
-eam_plus_lib = { path = "../eam_plus_lib_mock" }
-# eam_plus_lib = { path = "../../../eam_plus_lib" }
+# eam_plus_lib = { path = "../eam_plus_lib_mock" }
+eam_plus_lib = { path = "../../../eam_plus_lib" }
