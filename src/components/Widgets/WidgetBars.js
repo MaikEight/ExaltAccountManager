@@ -16,11 +16,12 @@ export class WidgetBars {
         }
     }
 
+    static WIDGET_SLOT_WIDTH = 450; // Width in pixels for a single widget slot
+
     //Utility function to get widget bar width by slots
     static getWidgetBarWidthBySlots(slots) {
-        const baseWidth = 450; // Base width for 1 slot
-        const paddingInPixels = 16; // Padding in pixels per space (left, right, between)
-        return (slots * baseWidth) + ((slots - 1) * paddingInPixels);
+        const paddingInPixels = 8; // Padding in pixels per space (left, right, between)
+        return (slots * WidgetBars.WIDGET_SLOT_WIDTH) + ((slots  + 1) * paddingInPixels);
     }
 
     // TYPES
@@ -33,6 +34,7 @@ export class WidgetBars {
             Widgets.ACCOUNT_DETAILS,
             Widgets.BASIC_ACTIONS,
             Widgets.BEST_CHARACTERS,
+            Widgets.SINGLE_CHARACTER_OVERVIEW,
             Widgets.AUDITLOG,
         ],
         headerComponents: [
