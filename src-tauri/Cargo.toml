@@ -18,7 +18,7 @@ tauri-build = { version = "2.5.3", features = [] }
 tauri = { version = "2.9.5", features = ["devtools", "macos-private-api", "tray-icon", "image-png"] }
 tauri-plugin = "2"
 tauri-plugin-deep-link = "2"
-tauri-plugin-single-instance = { version = "2.3.2", features = ["deep-link"] }
+tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
 tauri-plugin-fs = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-http = "2"
@@ -29,16 +29,17 @@ tauri-plugin-drpc = "0.1"
 tauri-plugin-os = "2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+serde_urlencoded = "0.7"
 async-std = "1.13"
 window-vibrancy = "0.7"
 dirs = "6.0"
 md5 = "0.8"
-tokio = "1.48"
+tokio = "1.49"
 futures = "0.3"
 flate2 = "1.1"
 walkdir = "2.5"
-reqwest = { version = "0.12", features = ["blocking"] }
-zip = "6"
+reqwest = { version = "0.13", features = ["blocking"] }
+zip = "7"
 mpsc = "0.2.6"
 anyhow = "1.0"
 curl = "0.4"
@@ -52,7 +53,7 @@ diesel_derives = "2.3.6"
 lazy_static = "1.5.0"
 uuid = "1.19"
 base64 = "0.22"
-h2 = "0.4.12"
+h2 = "0.4.13"
 mio = "1.1.1"
 libsqlite3-sys = { version = "0.35.0", features = ["bundled"] }
 log = "0.4"
