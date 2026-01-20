@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
 import usePortraitReady from "../../../../hooks/usePortraitReady";
 import CharacterPortrait from "../../../Realm/CharacterPortrait";
 import { getItemById } from "../../../../utils/realmItemUtils";
@@ -6,39 +6,21 @@ import { classes } from "../../../../assets/constants";
 import itemsSlotTypeMap from "../../../../assets/slotmap";
 import { drawItem } from "../../../../utils/realmItemDrawUtils";
 import { useEffect, useState } from "react";
-
-const BACKPACK_ITEM_ID = 3180;
-const BACKPACK_EXTENDER_ITEM_ID = 65280;
-const ADCENTUREERS_BELT = 31883;
+import { ADCENTUREERS_BELT, BACKPACK_EXTENDER_ITEM_ID, BACKPACK_ITEM_ID, extractEquipmentIds, getXof8OfCharacter } from "../../../../utils/realmCharacterUtils";
 
 function SingleCharacterOverview({ character, number }) {
     const isPortraitReady = usePortraitReady();
 
     const [itemImages, setItemImages] = useState([null, null, null, null]);
+    const [items, setItems] = useState([null, null, null, null]);
     const [xof8, setXof8] = useState(0);
     const [backpackItemImages, setBackpackItemImages] = useState([null, null, null]);
-
-    /**
-     * Extract equipment IDs from a comma-separated string
-     * Only the first 4 IDs are returned, if more exist
-     * If less than 4 IDs exist, the remaining slots are filled with -1 (empty)
-     * @param {string} equipmentString 
-     * @returns {number[]} Array of equipment IDs - length 4
-     */
-    const extractEquipmentIds = (equipmentString) => {
-        if (!equipmentString) return [];
-        const equipmentIds = equipmentString.split(',').map(id => parseInt(id, 10));
-        const filledEquipmentIds = equipmentIds.slice(0, 4);
-        while (filledEquipmentIds.length < 4) {
-            filledEquipmentIds.push(-1);
-        }
-        return filledEquipmentIds;
-    };
 
     useEffect(() => {
         console.log("char", character);
         const eq = extractEquipmentIds(character?.equipment);
         const eqItems = eq.map(id => getItemById(id));
+        setItems(eqItems);
 
         const cls = classes[character.char_class];
         const charSlots = cls?.[4];
@@ -82,22 +64,7 @@ function SingleCharacterOverview({ character, number }) {
             });
         })
 
-        //xof8
-
-        let x = 0;
-        try {
-            x += cls[3][0] - character.max_hit_points <= 0 ? 1 : 0;
-            x += cls[3][1] - character.max_magic_points <= 0 ? 1 : 0;
-            x += cls[3][2] - character.attack <= 0 ? 1 : 0;
-            x += cls[3][3] - character.defense <= 0 ? 1 : 0;
-            x += cls[3][4] - character.speed <= 0 ? 1 : 0;
-            x += cls[3][5] - character.dexterity <= 0 ? 1 : 0;
-            x += cls[3][6] - character.hp_regen <= 0 ? 1 : 0;
-            x += cls[3][7] - character.mp_regen <= 0 ? 1 : 0;
-        } catch (e) {
-            console.error(e);
-        }
-        setXof8(x);
+        setXof8(getXof8OfCharacter(character));
 
         drawItem("renders.png", getItemById(BACKPACK_ITEM_ID), (imageUrl) => {
             setBackpackItemImages((prevImages) => {
@@ -163,13 +130,15 @@ function SingleCharacterOverview({ character, number }) {
                         }
 
                         return (
-                            <img
-                                key={index}
-                                src={img}
-                                alt={`Item Slot ${index + 1}`}
-                                width={50}
-                                height={50}
-                            />
+                            <Tooltip key={index} title={img ? `${items[index][0]}` : "Loading..."}>
+                                <img
+                                    key={index}
+                                    src={img}
+                                    alt={`Item Slot ${index + 1}`}
+                                    width={50}
+                                    height={50}
+                                />
+                            </Tooltip>
                         )
                     })
                 }
