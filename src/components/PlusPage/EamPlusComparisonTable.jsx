@@ -159,6 +159,8 @@ function EamPlusComparisonTable() {
                         p: 1,
                         borderRadius: theme => `${theme.shape.borderRadius}px`,
                         backgroundColor: theme => theme.palette.background.default,
+                        border: '1px solid',
+                        borderColor: 'divider',
                     }}
                 >
                     {pricesTable()}
