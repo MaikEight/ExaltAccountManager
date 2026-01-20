@@ -40,38 +40,6 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
         setAccounts(acc);
     }, [selectedItem]);
 
-    const getTierText = () => {
-        if (!item) {
-            return null;
-        }
-
-        if (item[2] === -1) {
-            // UT / ST
-            if (item[9] === 0) {
-                return null;
-            }
-
-            return (
-                <Typography
-                    variant="h6"
-                    sx={{
-                        color: item[9] === 2 ? theme.palette.warning.main : theme.palette.primary.main,
-                    }}
-                >
-                    {item[9] === 2 ? 'ST' : 'UT'}
-                </Typography>
-            );
-        }
-
-        return (
-            <Typography
-                variant="h6"
-            >
-                T{item[2]}
-            </Typography>
-        );
-    };
-
     const getContent = () => {
         if (!item) {
             return null;
@@ -83,6 +51,8 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                     padding: item ? 0.25 : 0,
                     backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.paper,
                     borderRadius: `${theme.shape.borderRadius}px`,
+                    border: '1px solid',
+                    borderColor: 'divider',
                 }}
             >
                 {/* Headline */}
@@ -117,10 +87,10 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                     borderRadius: `${theme.shape.borderRadius}px`,
                                 }}
                             >
-                                <SingleItemCanvas item={item} doTransition/>
+                                <SingleItemCanvas item={item} doTransition />
                             </Box>
                         }
-                        {getTierText()}
+                        <TierText item={item} />
                         <Typography variant="h6">
                             {item[0]}
                         </Typography>
@@ -171,6 +141,8 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
                                 padding: 1,
                                 borderRadius: `${theme.shape.borderRadius - 2}px`,
                                 backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.background.paperLight,
+                                border: '1px solid',
+                                borderColor: 'divider',
                             }}
                         >
                             {
@@ -336,4 +308,38 @@ function ItemLocationPopper({ open, position, selectedItem, onClose }) {
     );
 }
 
+function TierText({ item, variant = 'h6' }) {
+    const theme = useTheme();
+    if (!item) {
+        return null;
+    }
+
+    if (item[2] === -1) {
+        // UT / ST
+        if (item[9] === 0) {
+            return null;
+        }
+
+        return (
+            <Typography
+                variant={variant}
+                sx={{
+                    color: item[9] === 2 ? theme.palette.warning.main : theme.palette.primary.main,
+                }}
+            >
+                {item[9] === 2 ? 'ST' : 'UT'}
+            </Typography>
+        );
+    }
+
+    return (
+        <Typography
+            variant={variant}
+        >
+            T{item[2]}
+        </Typography>
+    );
+};
+
+export { TierText };
 export default ItemLocationPopper;
