@@ -73,6 +73,9 @@ function ServerBadge({ serverName, editable, onChange }) {
                                 sx: {
                                     maxHeight: 48 * 4.5 + 8,
                                     width: 150,
+                                    backgroundColor: 'background.paper',
+                                    border: '1px solid',
+                                    borderColor: 'divider',
                                 }
                             }
                         }}
