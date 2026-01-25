@@ -47,6 +47,10 @@ pub enum BackgroundSyncEvent {
         failed_emails: Vec<String>,
         estimated_time: DateTime<Utc>,
     },
+    /// Emitted when daily login is auto-triggered due to a new UTC day (after 00:05 UTC)
+    DailyLoginAutoTriggered {
+        id: Uuid,
+    },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
