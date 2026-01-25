@@ -20,6 +20,7 @@ function ChangelogVersion4_4_0() {
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 borderRadius: `${theme.shape.borderRadius * 2}px`,
+                border: `1px solid ${theme.palette.divider}`,
                 width: '925px',
                 maxHeight: '95vh',
                 maxWidth: '90vw',
@@ -36,6 +37,7 @@ function ChangelogVersion4_4_0() {
                             minHeight: '525px',
                             borderRadius: `0 0 ${theme.shape.borderRadius * 2}px ${theme.shape.borderRadius * 2}px`,
                             flexShrink: 0,
+                            borderBottom: `1px solid ${theme.palette.divider}`,
                         }}
                     />
                 )
@@ -50,6 +52,7 @@ function ChangelogVersion4_4_0() {
                     height: 'auto',
                     marginLeft: '-1px',
                     borderRadius: `${theme.shape.borderRadius * 2}px`,
+                    borderBottom: `1px solid ${theme.palette.divider}`,
 
                 }}
             />
@@ -106,11 +109,19 @@ function ChangelogVersion4_4_0() {
                     ]}
                 />
 
-               
+                <ChangelogEntry
+                    title={'Daily Logins'}
+                    listOfChanges={[
+                        "Added the option to start the Daily Login process manually via a button in the Daily Logins page.",
+                        "Fixed an issue where the Daily Login did not properly start on the second day and onwards.",
+                    ]}
+                />
+
                 <ChangelogEntry
                     title={'Miscellaneous'}
                     listOfChanges={[
-                        "",
+                        "Changed the overall appearance of EAM with a new logo and updated borders.",
+                        "Changed the Stripe Logo to the new version.",
                     ]}
                 />
 
@@ -146,7 +157,7 @@ function ChangelogVersion4_4_0() {
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
                                 <li>K3y0708</li>
-                                <li>Rakya</li>
+                                <li>Melon</li>
                                 <li>and many more...</li>
                             </ul>
                         </Typography>
