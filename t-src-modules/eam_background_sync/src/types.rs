@@ -74,29 +74,3 @@ impl BackgroundSyncConfig {
         }
     }
 }
-
-#[derive(Debug)]
-pub enum ApiLimiterBlocked {
-    CooldownActive,
-    RateLimitHit,
-    RequestFailed(String),
-}
-
-impl ToString for ApiLimiterBlocked {
-    fn to_string(&self) -> String {
-        match self {
-            ApiLimiterBlocked::CooldownActive => "Cooldown active".to_string(),
-            ApiLimiterBlocked::RateLimitHit => "Rate limit hit".to_string(),
-            ApiLimiterBlocked::RequestFailed(msg) => {
-                format!("Request failed: {}", msg)
-            }
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct GameAccessToken {
-    pub access_token: String,
-    pub access_token_timestamp: String,
-    pub access_token_expiration: String,
-}
