@@ -10,6 +10,12 @@ pub use daily_login_task::{check_for_installed_eam_daily_login_task, install_eam
 pub mod paths;
 pub use paths::{get_save_file_path, get_default_game_path};
 
+pub mod requests;
+pub use requests::*;
+
+pub mod utils;
+pub use utils::{send_post_request_with_form_url_encoded_data, log_to_audit_log};
+
 pub mod models;
 
 pub mod schema;
