@@ -1,8 +1,11 @@
 use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, CONTENT_TYPE};
 use std::collections::HashMap;
-use eam_commons::diesel_functions::insert_audit_log;
-use eam_commons::models::AuditLog;
-use eam_commons::DbPool;
+use crate::DbPool;
+use crate::diesel_functions;
+use crate::models;
+
+use diesel_functions::insert_audit_log;
+use models::AuditLog;
 
 /// Sends a POST request with form-url-encoded data and returns the response body as a String.
 pub async fn send_post_request_with_form_url_encoded_data(
