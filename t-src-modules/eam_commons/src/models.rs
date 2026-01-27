@@ -79,7 +79,7 @@ pub struct ParsedItem {
     pub item_id: i32,                   // numeric id; -1 allowed for empty slots
     pub unique_id_raw: Option<String>,  // trailing "#..." if present
     pub enchant_b64: Option<String>,    // from <ItemData>
-    pub enchant_json: Option<String>,   // None for now (decoder later)
+    pub enchant_ids: Option<u16>,   // None for now (decoder later)
 }
 
 // ############################
