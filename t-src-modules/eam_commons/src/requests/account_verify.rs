@@ -1,13 +1,17 @@
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use crate::diesel_functions;
+use crate::diesel_setup;
+use crate::encryption_utils;
+use crate::limiter;
+use crate::models;
 
 use crate::types::{ApiLimiterBlocked, GameAccessToken};
 use crate::utils::send_post_request_with_form_url_encoded_data;
-use eam_commons::diesel_functions::get_eam_account_by_email;
-use eam_commons::diesel_setup::DbPool;
-use eam_commons::encryption_utils;
-use eam_commons::limiter::manager::RateLimiterManager;
-use eam_commons::models::CallResult;
+use diesel_functions::get_eam_account_by_email;
+use diesel_setup::DbPool;
+use limiter::manager::RateLimiterManager;
+use models::CallResult;
 
 use roxmltree::Document;
 
