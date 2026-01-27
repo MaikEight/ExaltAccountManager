@@ -1,10 +1,11 @@
 use crate::events::{AccountProgressState, BackgroundSyncEvent, BackgroundSyncEventHub};
-use crate::types::{SyncResult, ApiLimiterBlocked};
-use crate::account_verify::send_account_verify_request;
-use crate::char_list::send_char_list_request;
+use crate::types::{SyncResult};
+use eam_commons::account_verify::send_account_verify_request;
+use eam_commons::char_list::send_char_list_request;
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::limiter::manager::RateLimiterManager;
 use eam_commons::models::EamAccount;
+use eam_commons::ApiLimiterBlocked;
 
 use std::sync::{Arc, Mutex};
 use uuid::Uuid;
