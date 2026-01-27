@@ -1,9 +1,10 @@
 use roxmltree::{Document, Node};
 use std::collections::HashMap;
 use base64::Engine;
-use base64::engine::general_purpose::STANDARD;
+use base64::engine::general_purpose::{STANDARD, URL_SAFE};
 use log::{error, debug};
 
+use crate::parser::character_stats_mapper;
 use crate::models::{Account, CharListDataset, Character, ClassStats, ParsedItem, PcStat};
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -395,6 +396,11 @@ pub fn parse_pc_stats(raw: &str) -> Vec<PcStat> {
         error!("🔴 0 entries found. Input was: {}", raw);
     }
 
+   //Iterate throur r and replace every stat_type with the mapped value from map_character_stats_type
+    for stat in r.iter_mut() {
+        stat.stat_type = character_stats_mapper::map_character_stats_type(stat.stat_type as u8) as i32;
+    }
+
     r
 }
 
@@ -710,6 +716,29 @@ fn collect_all_items(
     out
 }
 
+fn decode_item_enchantments(code: &str) -> (u16, Vec<u16>) {
+    let bytes = URL_SAFE.decode(code).unwrap_or_default();
+    if bytes.len() <= 3 { return (0, Vec::new()); }
+    
+    // Extract item type from bytes 1-2 (little-endian u16)
+    let item_type = u16::from_le_bytes([bytes[1], bytes[2]]);
+    
+    let mut pos = 3;
+    let mut enchantment_ids = Vec::new();
+    while pos + 1 < bytes.len() {
+        let val = u16::from_le_bytes([bytes[pos], bytes[pos+1]]);
+        pos += 2;
+        if val == 0xFFFD { break; }
+        // 0xFFFE is locked/empty slot - represent as 0
+        if val == 0xFFFE {
+            enchantment_ids.push(0);
+        } else {
+            enchantment_ids.push(val);
+        }
+    }
+    (item_type, enchantment_ids)
+}
+
 /// Characters: slice the long equipment into containers (0=equip 4 slots, 1=inv 8 slots, 2..=backpacks)
 fn emit_character_equipment(
     tokens: &Vec<Token>,
@@ -795,6 +824,13 @@ fn emit_slice(
             None
         };
 
+        let enchant_ids = enchant.as_ref()
+            .map(|b64| {
+                let (_item_type, ids) = decode_item_enchantments(b64);
+                ids
+            })
+            .filter(|ids| !ids.is_empty());
+
         out.push(ParsedItem {
             entry_id: entry_id.clone(),
             account_id: account_id.clone(),
@@ -805,7 +841,7 @@ fn emit_slice(
             item_id: tok.item_id,
             unique_id_raw: tok.unique_id.clone(),
             enchant_b64: enchant,
-            enchant_json: None, // decoder later
+            enchant_ids,
         });
     }
 }
@@ -827,6 +863,13 @@ fn emit_from_flat_list(
             None
         };
 
+        let enchant_ids = enchant.as_ref()
+            .map(|b64| {
+                let (_item_type, ids) = decode_item_enchantments(b64);
+                ids
+            })
+            .filter(|ids| !ids.is_empty());
+
         out.push(ParsedItem {
             entry_id: entry_id.clone(),
             account_id: account_id.clone(),
@@ -837,7 +880,7 @@ fn emit_from_flat_list(
             item_id: tok.item_id,
             unique_id_raw: tok.unique_id,
             enchant_b64: enchant,
-            enchant_json: None,
+            enchant_ids,
         });
     }
 }
