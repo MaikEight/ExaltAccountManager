@@ -20,6 +20,9 @@ use eam_commons::rotmg_updater::FileData;
 use eam_commons::rotmg_updater::UpdaterError;
 use eam_commons::setup_database;
 use eam_commons::DbPool;
+use eam_commons::requests::GameAccessToken;
+use eam_commons::requests::char_list::send_and_parse_char_list_request;
+
 
 use chrono::{DateTime, Utc};
 use diesel::r2d2::Pool;
@@ -181,7 +184,7 @@ fn main() {
     info!("Starting Tauri application...");
     //Run the tauri application
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
+        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
             info!("New app instance detected with args: {:?}", argv);
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.set_focus();
@@ -229,6 +232,7 @@ fn main() {
             send_post_request_with_form_url_encoded_data,
             send_post_request_with_json_body,
             send_patch_request_with_json_body,
+            perform_char_list_request_for_account, // Char List Request
             get_device_unique_identifier,
             get_os_user_identity,
             quick_hash,
@@ -1269,14 +1273,18 @@ fn install_eam_daily_login_task() -> Result<bool, tauri::Error> {
     let exe_path = match std::env::consts::OS {
         "windows" => "explorer.exe",
         "macos" => {
-            let os = std::env::current_exe()
-                .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
-            &os.to_str().map(|s| s.to_owned()).ok_or_else(|| {
-                tauri::Error::from(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Failed to convert exe path to string",
-                ))
-            })?.to_owned()
+            let os = std::env::current_exe().map_err(|e| {
+                tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string()))
+            })?;
+            &os.to_str()
+                .map(|s| s.to_owned())
+                .ok_or_else(|| {
+                    tauri::Error::from(std::io::Error::new(
+                        ErrorKind::Other,
+                        "Failed to convert exe path to string",
+                    ))
+                })?
+                .to_owned()
         }
         _ => {
             return Err(tauri::Error::from(std::io::Error::new(
@@ -2265,6 +2273,46 @@ fn get_latest_char_list_for_each_account_impl(
         ErrorKind::Other,
         "Pool is not initialized",
     )))
+}
+
+#[tauri::command]
+async fn perform_char_list_request_for_account(email: &str, access_token: GameAccessToken,) -> Result<models::CharListDataset, tauri::Error> {
+    info!("Performing char list request for account...");
+
+    let api_limiter = Arc::clone(&GLOBAL_API_LIMITER);
+
+    let char_list_dataset = send_and_parse_char_list_request(
+        email,
+        access_token,
+        None,
+        api_limiter
+    ).await;
+
+    match char_list_dataset {
+        Ok(dataset) => {
+            let insert_result = insert_char_list_dataset(dataset.clone()).await;
+            if insert_result.is_err() {
+                let result_err = insert_result.unwrap_err();
+                error!(
+                    "Failed to insert char list dataset for account {}: {}",
+                    email,
+                    result_err
+                );
+                return Err(result_err);
+            }
+            Ok(dataset)
+        }
+        Err(e) => {
+            error!(
+                "Failed to get char list dataset for account {}: {}",
+                email, e
+            );
+            return Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                e.to_string(),
+            )));
+        }
+    }
 }
 
 #[tauri::command]
