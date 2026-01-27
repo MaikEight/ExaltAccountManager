@@ -363,7 +363,7 @@ async fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
         .to_vec())
 }
 
-fn save_file_to_disk(path: PathBuf, data: Vec<u8>, permission: &str) -> std::io::Result<()> {
+fn save_file_to_disk(path: PathBuf, data: Vec<u8>, _permission: &str) -> std::io::Result<()> {
     let mut file = File::create(&path)?;
     file.write_all(&data)?;
     
@@ -373,14 +373,14 @@ fn save_file_to_disk(path: PathBuf, data: Vec<u8>, permission: &str) -> std::io:
         use std::os::unix::fs::PermissionsExt;
         
         // Only set permissions if a non-empty permission string is provided
-        if !permission.is_empty() {
+        if !_permission.is_empty() {
             // Parse the permission string (e.g., "755", "644")
-            if let Ok(mode) = u32::from_str_radix(permission, 8) {
-                info!("Setting permissions {} (octal) for file: {:?}", permission, path);
+            if let Ok(mode) = u32::from_str_radix(_permission, 8) {
+                info!("Setting permissions {} (octal) for file: {:?}", _permission, path);
                 let permissions = std::fs::Permissions::from_mode(mode);
                 std::fs::set_permissions(&path, permissions)?;
             } else {
-                warn!("Invalid permission string: '{}', skipping permission setting", permission);
+                warn!("Invalid permission string: '{}', skipping permission setting", _permission);
             }
         }
         // If permission is empty, use default file permissions (typically 644)
