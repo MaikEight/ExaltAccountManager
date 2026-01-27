@@ -2,7 +2,6 @@ use crate::daily_login;
 use crate::events::*;
 use crate::process_account::process_account;
 use crate::types::*;
-use crate::utils::log_to_audit_log;
 
 use chrono::{DateTime, Utc};
 use log::{debug, error, warn, info};
@@ -18,6 +17,7 @@ use uuid::Uuid;
 use eam_commons::diesel_functions::{
     self, get_all_eam_accounts_for_daily_login, get_next_eam_account_for_background_sync,
 };
+use eam_commons::utils::log_to_audit_log;
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::paths::get_save_file_path;
 
