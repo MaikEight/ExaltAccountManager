@@ -6,6 +6,7 @@ use eam_commons::diesel_setup::DbPool;
 use eam_commons::limiter::manager::RateLimiterManager;
 use eam_commons::models::EamAccount;
 use eam_commons::ApiLimiterBlocked;
+use eam_commons::parser::RequestState;
 
 use std::sync::{Arc, Mutex};
 use uuid::Uuid;
@@ -50,11 +51,20 @@ pub async fn process_account(
     .await;
 
     let access_token = match verify_result {
-        Ok(Some(token)) => token,
-        Ok(None) => {
+        Ok((Some(token), RequestState::Success, _account_name)) => token,
+        Ok((None, request_state, _)) => {
+            let msg = format!("Account verify failed: {}", request_state);
             return (
-                SyncResult::Failed("No token returned from verify".into()),
-                None,
+                SyncResult::Failed(msg.clone()),
+                Some(msg),
+            );
+        }
+        Ok((Some(_), request_state, _)) => {
+            // Received a token but not success state (unlikely but handle it)
+            let msg = format!("Account verify returned non-success state: {}", request_state);
+            return (
+                SyncResult::Failed(msg.clone()),
+                Some(msg),
             );
         }
         Err(err) => {
@@ -66,7 +76,7 @@ pub async fn process_account(
                     return (SyncResult::RateLimited, None);
                 }
                 ApiLimiterBlocked::RequestFailed(msg) => {
-                    return (SyncResult::Failed(msg.clone()), msg.into());
+                    return (SyncResult::Failed(msg.clone()), Some(msg));
                 }
             }
         }
