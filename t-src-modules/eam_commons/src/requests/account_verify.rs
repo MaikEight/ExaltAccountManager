@@ -5,6 +5,7 @@ use crate::diesel_setup;
 use crate::encryption_utils;
 use crate::limiter;
 use crate::models;
+use crate::parser::{parse_request_state, parse_account_name, RequestState};
 
 use crate::types::{ApiLimiterBlocked, GameAccessToken};
 use crate::utils::send_post_request_with_form_url_encoded_data;
@@ -17,12 +18,16 @@ use roxmltree::Document;
 
 const BASE_URL: &str = "https://www.realmofthemadgod.com";
 
+/// Sends an account/verify request and returns:
+/// - `Ok((Some(token), RequestState::Success, Some(name)))` on success
+/// - `Ok((None, request_state, None))` on API errors (wrong password, captcha, etc.)
+/// - `Err(ApiLimiterBlocked)` on rate limit or request failures
 pub async fn send_account_verify_request(
     pool: Arc<DbPool>,
     account_email: String,
     hwid: String,
     global_api_limiter: Arc<Mutex<RateLimiterManager>>,
-) -> Result<Option<GameAccessToken>, ApiLimiterBlocked> {
+) -> Result<(Option<GameAccessToken>, RequestState, Option<String>), ApiLimiterBlocked> {
     // Step 1: Check if the API can be called
     {
         let mut limiter = global_api_limiter.lock().unwrap();
@@ -86,36 +91,27 @@ pub async fn send_account_verify_request(
         })?;
 
     // Step 5: Parse response
+    let request_state = parse_request_state(&response);
+    let account_name = parse_account_name(&response);
     let token = get_access_token(&response);
+    
     let mut limiter = global_api_limiter.lock().unwrap();
 
-    match token {
-        Some(t) => {
+    match request_state {
+        RequestState::Success => {
             limiter.record_api_use("account/verify", CallResult::Success);
-            Ok(Some(t))
+            Ok((token, RequestState::Success, account_name))
         }
-        None => {
-            // check for rate limit error in response
-            let doc = Document::parse(&response).unwrap();
-            for node in doc.descendants() {
-                if node.has_tag_name("Error") {
-                    let error_message = node.text().unwrap_or("").to_string();
-                    if error_message.contains("please wait 5 minutes") {
-                        limiter.record_api_use("account/verify", CallResult::RateLimited);
-                        limiter.trigger_cooldown();
-                        return Err(ApiLimiterBlocked::RateLimitHit);
-                    }
-                    Err(ApiLimiterBlocked::RequestFailed(response.clone())).map_err(|e| {
-                        limiter.record_api_use("account/verify", CallResult::Failed);
-                        e
-                    })?;
-                }
-            }
-
+        RequestState::TooManyRequests => {
+            limiter.record_api_use("account/verify", CallResult::RateLimited);
+            limiter.trigger_cooldown();
+            Err(ApiLimiterBlocked::RateLimitHit)
+        }
+        _ => {
+            // For all other error states (WrongPassword, Captcha, etc.),
+            // return the state but don't consider it a "failed" API call for rate limiting
             limiter.record_api_use("account/verify", CallResult::Failed);
-            Err(ApiLimiterBlocked::RequestFailed(
-                response.clone()
-            ))
+            Ok((None, request_state, None))
         }
     }
 }
