@@ -8,15 +8,13 @@ import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import ComponentBox from "../ComponentBox";
 import StyledButton from "../StyledButton";
-import useHWID from "../../hooks/useHWID";
-import { postAccountVerify, postCharList, getRequestState, storeCharList, useGroups } from 'eam-commons-js';
+import { useGroups } from 'eam-commons-js';
 import GroupSelector from "../AccountDetails/GroupSelector";
 import GroupRow from "../AccountDetails/GroupRow";
 import TextTableRow from "../AccountDetails/TextTableRow";
 import DailyLoginCheckBoxTableRow from "../AccountDetails/DailyLoginCheckBoxTableRow";
 import PaddedTableCell from "../AccountDetails/PaddedTableCell";
 import useAccounts from "../../hooks/useAccounts";
-import useServerList from '../../hooks/useServerList';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
@@ -35,14 +33,13 @@ const icons = [
 ];
 
 function AddNewAccount({ isOpen, onClose }) {
-    const { accounts, updateAccount } = useAccounts();
+    const { accounts, updateAccount, sendAccountVerify, sendCharList } = useAccounts();
 
     const [activeStep, setActiveStep] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
 
     const [newAccount, setNewAccount] = useState({ email: '', password: '', isSteam: false, steamId: null });
     const [showRegisterForm, setShowRegisterForm] = useState(false);
-    const { saveServerList } = useServerList();
 
     //STEP 1
     const [passwordEmailWrong, setPasswordEmailWrong] = useState(false);
@@ -50,7 +47,6 @@ function AddNewAccount({ isOpen, onClose }) {
     const { groups } = useGroups();
 
     const theme = useTheme();
-    const { hwid } = useHWID();
     const color = useColorList(0);
     const containerRef = useRef(null);
     const navigate = useNavigate();
@@ -123,52 +119,63 @@ function AddNewAccount({ isOpen, onClose }) {
         </Box>);
     };
 
-    const handleLoginButtonClick = () => {
+    const handleLoginButtonClick = async () => {
         setIsLoading(true);
-        const email = newAccount.email;
-        let accName = '';
-        postAccountVerify(newAccount, hwid, false)
-            .then((response) => {
-                if (!response || response.Error) {
-                    setPasswordEmailWrong(true);
-                    setNewAccount({ ...newAccount, password: '' });
-                    return;
-                }
+        try {
+            // First, we need to save the account temporarily to the database so sendAccountVerify can find it
+            // This is because the Rust-side function needs the account in the database
+            const tempAccount = {
+                ...newAccount,
+                isDeleted: false,
+                performDailyLogin: newAccount.performDailyLogin || false,
+            };
+            
+            // Save the temp account (will be encrypted)
+            await updateAccount(tempAccount, true, false);
 
-                accName = response?.Account?.Name;
-                setNewAccount({
-                    ...newAccount,
-                    ...(accName && accName.length > 0 ? { name: accName } : {})
-                });
-
-                setActiveStep(1);
-
-                if (response.Account && response.Account.Name) {
-                    postCharList(response.Account.AccessToken)
-                        .then((charList) => {
-                            setNewAccount({
-                                ...newAccount,
-                                state: getRequestState(charList),
-                                ...(accName && accName.length > 0 ? { name: accName } : {})
-                            });
-                            storeCharList(charList, email);
-                            const servers = charList.Chars.Servers.Server;
-                            if (servers && servers.length > 0) {
-                                saveServerList(servers);
-                            }
-                        }).catch((err) => {
-                            console.error("error", err);
-                        });
-                }
-            })
-            .catch((error) => {
-                console.error("Error: ", error);
+            // Now call sendAccountVerify with the email
+            const verifyResponse = await sendAccountVerify(newAccount.email, false, false);
+            
+            if (!verifyResponse || !verifyResponse.success) {
                 setPasswordEmailWrong(true);
                 setNewAccount({ ...newAccount, password: '' });
-            })
-            .finally(() => {
-                setIsLoading(false);
+                // Clean up the temp account if verification failed
+                // Note: The account will be updated later with correct details or deleted
+                return;
+            }
+
+            const accName = verifyResponse.data?.Account?.Name;
+            setNewAccount({
+                ...newAccount,
+                ...(accName && accName.length > 0 ? { name: accName } : {}),
+                state: verifyResponse.requestState
             });
+
+            setActiveStep(1);
+
+            // If we got an access token, also fetch the char list
+            if (verifyResponse.data?.Account?.AccessToken) {
+                const charListResponse = await sendCharList(
+                    newAccount.email, 
+                    verifyResponse.data.Account.AccessToken, 
+                    { ...tempAccount, name: accName }
+                );
+                
+                if (charListResponse && charListResponse.success) {
+                    setNewAccount(prev => ({
+                        ...prev,
+                        state: charListResponse.requestState,
+                        ...(accName && accName.length > 0 ? { name: accName } : {})
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error("Error: ", error);
+            setPasswordEmailWrong(true);
+            setNewAccount({ ...newAccount, password: '' });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const getStepContent = () => {
