@@ -7,8 +7,9 @@ use std::sync::{Arc, Mutex};
 use crate::utils::send_post_request_with_form_url_encoded_data;
 use limiter::manager::RateLimiterManager;
 use models::CallResult;
-use parser::parse_char_list;
+use parser::{parse_char_list, parse_servers, parse_request_state, RequestState};
 use crate::types::{ApiLimiterBlocked, GameAccessToken};
+use crate::models::Server;
 
 const BASE_URL: &str = "https://www.realmofthemadgod.com";
 
@@ -59,17 +60,27 @@ pub async fn send_char_list_request(
     Ok(response)
 }
 
+/// Sends a char/list request, parses the response and returns:
+/// - `Ok((dataset, servers, request_state))` on success
+/// - `Err(ApiLimiterBlocked)` on rate limit or request failures
 pub async fn send_and_parse_char_list_request(
     email: &str,
     access_token: GameAccessToken,
     entry_id: Option<&str>,
     global_api_limiter: Arc<Mutex<RateLimiterManager>>,
-) -> Result<models::CharListDataset, ApiLimiterBlocked> {
+) -> Result<(models::CharListDataset, Vec<Server>, RequestState), ApiLimiterBlocked> {
     let response = send_char_list_request(access_token, global_api_limiter).await?;
 
+    // Parse request state first
+    let request_state = parse_request_state(&response);
+    
+    // Parse servers (may be empty if error response)
+    let servers = parse_servers(&response);
+
+    // Parse char list dataset
     let dataset = parse_char_list(email, &response, entry_id).map_err(|e| {
         ApiLimiterBlocked::RequestFailed(format!("Failed to parse char list response: {}", e))
     })?;
 
-    Ok(dataset)
+    Ok((dataset, servers, request_state))
 }
