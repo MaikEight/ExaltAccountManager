@@ -3,8 +3,7 @@ import { APP_VERSION } from "../constants";
 import { startSession } from "../backend/eamApi";
 import { useSearchParams } from "react-router-dom";
 import { invoke } from "@tauri-apps/api/core";
-import { logToAuditLog, logToErrorLog, postAccountVerify, postCharList, getRequestState, storeCharList, requestStateToMessage } from "eam-commons-js";
-import useHWID from "../hooks/useHWID";
+import { logToAuditLog, logToErrorLog, requestStateToMessage } from "eam-commons-js";
 import useServerList from "../hooks/useServerList";
 import useSnack from "../hooks/useSnack";
 
@@ -12,8 +11,7 @@ const AccountsContext = createContext();
 
 function AccountsContextProvider({ children }) {
     const [searchParams, setSearchParams] = useSearchParams();
-    const { hwid } = useHWID();
-    const { saveServerList } = useServerList();
+    const { reloadServers } = useServerList();
     const { showSnackbar } = useSnack();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -155,15 +153,10 @@ function AccountsContextProvider({ children }) {
 
         logToAuditLog('sendAccountVerify', `Sending account/verify request...`, email);
         try {
-            const response = await postAccountVerify(acc, hwid)
+            const response = await invoke('send_account_verify_request_for_account', { accountEmail: email })
                 .catch((err) => {
                     logToErrorLog('sendAccountVerify', `Error sending account/verify request: ${err}`, email);
                     console.error('Error sending account/verify request:', err);
-
-                    if (err && typeof err === "string" && err.includes('Rate limit exceeded')) {
-                        return { error: true, data: { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' } };
-                    }
-
                     return null;
                 });
 
@@ -171,38 +164,53 @@ function AccountsContextProvider({ children }) {
                 return { success: false, message: 'Failed to verify account' };
             }
 
-            if (typeof response === "string" && response.includes('Error: Rate limit exceeded')) {
+            const { access_token, request_state, account_name } = response;
+            
+            // Handle rate limit errors
+            if (request_state === 'RateLimitExceeded') {
                 return { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' };
             }
 
-            if (response.error) {
-                return response.data || { success: false, message: 'Failed to verify account', requestState: response.requestState || 'Error' };
-            }
-
-            const requestState = getRequestState(response);
-            const newAcc = ({ ...acc, state: requestState });
-            if (updateLastLogin
-                && requestState === 'Success') {
+            const isSuccess = request_state === 'Success';
+            const newAcc = ({ ...acc, state: request_state });
+            
+            if (updateLastLogin && isSuccess) {
                 newAcc.lastLogin = new Date();
             }
 
-            newAcc.name = response?.Account?.Name;
+            if (account_name) {
+                newAcc.name = account_name;
+            }
 
-            if (updateAccountInDatabase || requestState !== 'Success') {
+            if (updateAccountInDatabase || !isSuccess) {
                 await updateAccount(newAcc);
             }
 
-            if (!response || response.Error) {
-                logToAuditLog('sendAccountVerify', `Account/verify request failed.`, email);
-
-                return { success: false, message: 'Failed to verify account' };
+            if (!isSuccess) {
+                logToAuditLog('sendAccountVerify', `Account/verify request failed with state: ${request_state}`, email);
+                return { 
+                    success: false, 
+                    message: requestStateToMessage(request_state) || 'Failed to verify account',
+                    requestState: request_state,
+                    acc: newAcc
+                };
             }
 
             logToAuditLog('sendAccountVerify', `Account/verify request successful.`, email);
 
-            return { success: true, message: 'Account verified', data: response, acc: newAcc };
+            // Build response data in expected format
+            const responseData = {
+                Account: {
+                    AccessToken: access_token?.access_token,
+                    AccessTokenTimestamp: access_token?.access_token_timestamp,
+                    AccessTokenExpiration: access_token?.access_token_expiration,
+                    Name: account_name
+                }
+            };
+
+            return { success: true, message: 'Account verified', data: responseData, acc: newAcc, requestState: request_state };
         } catch (error) {
-            logToErrorLog('postAccountVerify', error);
+            logToErrorLog('sendAccountVerify', error);
             return { success: false, message: 'Failed to verify account' };
         }
     }
@@ -217,51 +225,61 @@ function AccountsContextProvider({ children }) {
         logToAuditLog('sendCharList', `Sending char/list request...`, email);
         let requestState = 'Error';
         try {
-            const response = await postCharList(accessToken)
+            // Build access token object for Rust
+            const accessTokenObj = typeof accessToken === 'string' 
+                ? { access_token: accessToken, access_token_timestamp: '', access_token_expiration: '' }
+                : {
+                    access_token: accessToken?.AccessToken || accessToken?.access_token || '',
+                    access_token_timestamp: accessToken?.AccessTokenTimestamp || accessToken?.access_token_timestamp || '',
+                    access_token_expiration: accessToken?.AccessTokenExpiration || accessToken?.access_token_expiration || ''
+                };
+
+            const response = await invoke('send_char_list_request_for_account', { 
+                email, 
+                accessToken: accessTokenObj 
+            })
                 .catch((err) => {
                     logToErrorLog('sendCharList', `Error sending char/list request: ${err}`, email);
                     console.error('Error sending char/list request:', err);
 
-                    if (err && typeof err === "string" && err.includes('Rate limit exceeded')) {
+                    if (err && typeof err === "string" && err.includes('RateLimitExceeded')) {
                         return { error: true, data: { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' } };
                     }
 
                     return null;
                 });
 
+            console.log('sendCharList response', response);
 
             if (!response) {
                 return { success: false, message: 'Failed to get character list', requestState: requestState };
-            }
-
-            if (typeof response === "string" && response.includes('Error: Rate limit exceeded')) {
-                return { success: false, message: 'Rate limit exceeded', requestState: 'RateLimitExceeded' };
             }
 
             if (response.error) {
                 return response.data || { success: false, message: 'Failed to get character list', requestState: response.requestState || requestState };
             }
 
-            requestState = getRequestState(response);
+            const { dataset, servers, request_state } = response;
+            requestState = request_state;
+            
+            const isSuccess = requestState === 'Success';
             const newAcc = ({ ...acc, state: requestState, lastRefresh: new Date() });
             await updateAccount(newAcc);
 
-            if (!response || response.Error) {
-                logToAuditLog('sendCharList', `Char/list request failed.`, email);
-                return { success: false, message: 'Failed to get character list', requestState: requestState };
+            if (!isSuccess) {
+                logToAuditLog('sendCharList', `Char/list request failed with state: ${requestState}`, email);
+                return { success: false, message: requestStateToMessage(requestState) || 'Failed to get character list', requestState: requestState };
             }
 
-            storeCharList(response, acc.email);
-
-            const servers = response.Chars?.Servers?.Server;
+            // Reload servers from database (they were stored by Rust)
             if (servers && servers.length > 0) {
-                saveServerList(servers);
+                await reloadServers();
             }
 
             logToAuditLog('sendCharList', `Char/list request successful.`, email);
-            return { success: true, message: 'Character list received', data: response, requestState: requestState };
+            return { success: true, message: 'Character list received', data: dataset, requestState: requestState };
         } catch (error) {
-            logToErrorLog('postCharList', error);
+            logToErrorLog('sendCharList', error);
             return { success: false, message: 'Failed to get character list', requestState: requestState };
         };
     }
