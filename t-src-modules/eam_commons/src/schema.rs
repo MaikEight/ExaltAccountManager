@@ -208,6 +208,43 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    Servers (id) {
+        id -> Nullable<Integer>,
+        name -> Text,
+        dns -> Text,
+        lat -> Nullable<Text>,
+        long -> Nullable<Text>,
+        usage -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    ParsedItems (id) {
+        id -> Nullable<Integer>,
+        entry_id -> Nullable<Text>,
+        account_id -> Nullable<Text>,
+        storage_type_id -> Text,
+        container_index -> Nullable<Integer>,
+        slot_index -> Nullable<Integer>,
+        quantity -> Integer,
+        item_id -> Integer,
+        unique_id_raw -> Nullable<Text>,
+        enchant_b64 -> Nullable<Text>,
+        enchant_ids -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    PcStats (id) {
+        id -> Nullable<Integer>,
+        entry_id -> Nullable<Text>,
+        char_id -> Nullable<Integer>,
+        stat_type -> Integer,
+        stat_value -> Integer,
+    }
+}
+
 diesel::joinable!(Account -> Char_list_entries (entry_id));
 diesel::joinable!(Class_stats -> Account (entry_id));
 diesel::joinable!(AuditLog -> EamAccount (accountEmail));
@@ -225,4 +262,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     ErrorLog,
     DailyLoginReportEntries,
     DailyLoginReports,
+    Servers,
+    ParsedItems,
+    PcStats,
 );
