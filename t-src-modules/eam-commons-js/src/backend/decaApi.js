@@ -4,6 +4,16 @@ import { logToErrorLog } from '../utils/loggingUtils';
 import { ROTMG_BASE_URL, UPDATE_URLS } from '../../constants';
 import { xmlToJson } from '../utils/XmlUtils';
 
+/**
+ * @deprecated Use AccountsContext.sendAccountVerify() which calls Rust-side 
+ * implementation via 'send_account_verify_request_for_account' Tauri command.
+ * This function is kept for backward compatibility but should not be used in new code.
+ * 
+ * @param {Object} account - The account object with email and password
+ * @param {string} clientId - The HWID/client token
+ * @param {boolean} decryptNeeded - Whether password decryption is needed
+ * @returns {Promise<Object|null>} The account verify response or null
+ */
 async function postAccountVerify(account, clientId, decryptNeeded = true) {
     if (!account || !clientId) return null;
 
@@ -48,6 +58,15 @@ async function postAccountVerify(account, clientId, decryptNeeded = true) {
     }
 }
 
+/**
+ * @deprecated Use AccountsContext.sendCharList() which calls Rust-side 
+ * implementation via 'send_char_list_request_for_account' Tauri command.
+ * This function is kept for backward compatibility but should not be used in new code.
+ * The Rust implementation also handles server list storage in the database.
+ * 
+ * @param {string} accessToken - The access token from account/verify
+ * @returns {Promise<Object|null>} The char list response or null
+ */
 async function postCharList(accessToken) {
     if (!accessToken) return null;
 
