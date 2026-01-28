@@ -79,7 +79,80 @@ pub struct ParsedItem {
     pub item_id: i32,                   // numeric id; -1 allowed for empty slots
     pub unique_id_raw: Option<String>,  // trailing "#..." if present
     pub enchant_b64: Option<String>,    // from <ItemData>
-    pub enchant_ids: Option<Vec<u16>>,   // None for now (decoder later)
+    pub enchant_ids: Option<Vec<u16>>,  // decoded enchantment IDs
+}
+
+/// Database row representation for ParsedItem (enchant_ids stored as CSV)
+#[derive(Queryable, Serialize, Deserialize, Clone, Debug)]
+pub struct ParsedItemRow {
+    pub id: Option<i32>,
+    pub entry_id: Option<String>,
+    pub account_id: Option<String>,
+    pub storage_type_id: String,
+    pub container_index: Option<i32>,
+    pub slot_index: Option<i32>,
+    pub quantity: i32,
+    pub item_id: i32,
+    pub unique_id_raw: Option<String>,
+    pub enchant_b64: Option<String>,
+    pub enchant_ids: Option<String>,    // stored as CSV: "123,456,789"
+}
+
+impl From<ParsedItemRow> for ParsedItem {
+    fn from(row: ParsedItemRow) -> Self {
+        ParsedItem {
+            entry_id: row.entry_id,
+            account_id: row.account_id,
+            storage_type_id: row.storage_type_id,
+            container_index: row.container_index,
+            slot_index: row.slot_index,
+            quantity: row.quantity,
+            item_id: row.item_id,
+            unique_id_raw: row.unique_id_raw,
+            enchant_b64: row.enchant_b64,
+            enchant_ids: row.enchant_ids.and_then(|csv| {
+                let ids: Vec<u16> = csv.split(',')
+                    .filter(|s| !s.is_empty())
+                    .filter_map(|s| s.parse::<u16>().ok())
+                    .collect();
+                if ids.is_empty() { None } else { Some(ids) }
+            }),
+        }
+    }
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::ParsedItems)]
+pub struct NewParsedItem {
+    pub entry_id: Option<String>,
+    pub account_id: Option<String>,
+    pub storage_type_id: String,
+    pub container_index: Option<i32>,
+    pub slot_index: Option<i32>,
+    pub quantity: i32,
+    pub item_id: i32,
+    pub unique_id_raw: Option<String>,
+    pub enchant_b64: Option<String>,
+    pub enchant_ids: Option<String>,
+}
+
+impl NewParsedItem {
+    pub fn from_parsed_item(item: &ParsedItem, entry_id: Option<String>) -> Self {
+        NewParsedItem {
+            entry_id,
+            account_id: item.account_id.clone(),
+            storage_type_id: item.storage_type_id.clone(),
+            container_index: item.container_index,
+            slot_index: item.slot_index,
+            quantity: item.quantity,
+            item_id: item.item_id,
+            unique_id_raw: item.unique_id_raw.clone(),
+            enchant_b64: item.enchant_b64.clone(),
+            enchant_ids: item.enchant_ids.as_ref().map(|ids| {
+                ids.iter().map(|id| id.to_string()).collect::<Vec<_>>().join(",")
+            }),
+        }
+    }
 }
 
 // ############################
@@ -339,12 +412,65 @@ impl NewClassStats {
 // #         pc_stats        #
 // ###########################
 
-#[derive(Queryable, Serialize, Deserialize, Clone)]
+/// Runtime representation of PcStat (used by parser and application logic)
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct PcStat {
     pub entry_id: Option<String>,
     pub char_id: Option<i32>,
     pub stat_type: i32,
     pub stat_value: i32,
+}
+
+/// Database row representation for PcStat
+#[derive(Queryable, Serialize, Deserialize, Clone, Debug)]
+pub struct PcStatRow {
+    pub id: Option<i32>,            // database primary key
+    pub entry_id: Option<String>,
+    pub char_id: Option<i32>,
+    pub stat_type: i32,
+    pub stat_value: i32,
+}
+
+impl From<PcStatRow> for PcStat {
+    fn from(row: PcStatRow) -> Self {
+        PcStat {
+            entry_id: row.entry_id,
+            char_id: row.char_id,
+            stat_type: row.stat_type,
+            stat_value: row.stat_value,
+        }
+    }
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::PcStats)]
+pub struct NewPcStat {
+    pub entry_id: Option<String>,
+    pub char_id: Option<i32>,
+    pub stat_type: i32,
+    pub stat_value: i32,
+}
+
+impl From<PcStat> for NewPcStat {
+    fn from(pc_stat: PcStat) -> Self {
+        NewPcStat {
+            entry_id: pc_stat.entry_id,
+            char_id: pc_stat.char_id,
+            stat_type: pc_stat.stat_type,
+            stat_value: pc_stat.stat_value,
+        }
+    }
+}
+
+impl NewPcStat {
+    pub fn from_pc_stat(pc_stat: &PcStat, entry_id: Option<String>) -> Self {
+        NewPcStat {
+            entry_id,
+            char_id: pc_stat.char_id,
+            stat_type: pc_stat.stat_type,
+            stat_value: pc_stat.stat_value,
+        }
+    }
 }
 
 // ############################
@@ -1210,4 +1336,40 @@ pub struct GameAccessToken {
    pub access_token: String,
    pub access_token_timestamp: String,
    pub access_token_expiration: String,
+}
+
+// ############################
+// #         Servers          #
+// ############################
+
+#[derive(Queryable, Serialize, Deserialize, Clone, Debug)]
+pub struct Server {
+    pub id: Option<i32>,
+    pub name: String,
+    pub dns: String,
+    pub lat: Option<String>,
+    pub long: Option<String>,
+    pub usage: Option<String>,
+}
+
+#[derive(Insertable, Serialize, Deserialize)]
+#[diesel(table_name = schema::Servers)]
+pub struct NewServer {
+    pub name: String,
+    pub dns: String,
+    pub lat: Option<String>,
+    pub long: Option<String>,
+    pub usage: Option<String>,
+}
+
+impl From<Server> for NewServer {
+    fn from(server: Server) -> Self {
+        NewServer {
+            name: server.name,
+            dns: server.dns,
+            lat: server.lat,
+            long: server.long,
+            usage: server.usage,
+        }
+    }
 }
