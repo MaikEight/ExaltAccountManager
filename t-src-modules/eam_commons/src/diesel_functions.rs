@@ -14,6 +14,9 @@ use crate::models::{EamGroup, NewEamGroup, UpdateEamGroup};
 use crate::models::{ErrorLog, NewErrorLog};
 use crate::models::{NewAccount, NewCharacter, NewClassStats};
 use crate::models::{NewUserData, UpdateUserData, UserData};
+use crate::models::{Server, NewServer};
+use crate::models::{ParsedItem, ParsedItemRow, NewParsedItem};
+use crate::models::{PcStat, PcStatRow, NewPcStat};
 use crate::schema::Account as account;
 use crate::schema::ApiRequests as api_requests;
 use crate::schema::AuditLog as audit_logs;
@@ -28,6 +31,9 @@ use crate::schema::EamGroup as eam_groups;
 use crate::schema::EamGroup::dsl::*;
 use crate::schema::ErrorLog as error_logs;
 use crate::schema::UserData as user_data;
+use crate::schema::Servers as servers;
+use crate::schema::ParsedItems as parsed_items;
+use crate::schema::PcStats as pc_stats_table;
 use chrono::{Local, NaiveDateTime, TimeZone, Utc};
 use diesel::dsl::sql;
 use diesel::insert_into;
@@ -412,13 +418,49 @@ pub fn get_latest_char_list_dataset_for_each_account(
             }
         };
 
+        // Load items for this entry
+        let items = match with_db_retry(|| {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            parsed_items::table
+                .filter(parsed_items::entry_id.eq(entry.clone().id))
+                .load::<ParsedItemRow>(&mut conn)
+        }, 5) {
+            Ok(rows) => rows.into_iter().map(ParsedItem::from).collect(),
+            Err(e) => {
+                log::warn!(
+                    "[DatasetBuilder] Entry {:?}: Failed to load items: {:?}, using empty vec",
+                    entry.id,
+                    e
+                );
+                Vec::new()
+            }
+        };
+
+        // Load pc_stats for this entry
+        let pc_stats = match with_db_retry(|| {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            pc_stats_table::table
+                .filter(pc_stats_table::entry_id.eq(entry.clone().id))
+                .load::<PcStatRow>(&mut conn)
+        }, 5) {
+            Ok(rows) => rows.into_iter().map(PcStat::from).collect(),
+            Err(e) => {
+                log::warn!(
+                    "[DatasetBuilder] Entry {:?}: Failed to load pc_stats: {:?}, using empty vec",
+                    entry.id,
+                    e
+                );
+                Vec::new()
+            }
+        };
+
         datasets.push(CharListDataset {
             email: entry.email.unwrap_or_else(|| "<unknown>".into()),
             account,
             class_stats,
             character,
-            items: Vec::new(), //TODO: Implement item parsing
-            pc_stats: Vec::new(), //TODO: Implement pc_stats parsing
+            items,
+            pc_stats,
         });
     }
 
@@ -478,6 +520,22 @@ pub fn insert_char_list_dataset(
                 ))
                 .execute(&mut conn)
                 .expect("Failed to insert character");
+        }
+
+        //items (ParsedItems)
+        for item in &dataset.items {
+            insert_into(parsed_items::table)
+                .values(NewParsedItem::from_parsed_item(item, Some(entry_uuid.clone())))
+                .execute(&mut conn)
+                .expect("Failed to insert parsed_item");
+        }
+
+        //pc_stats
+        for pc_stat in &dataset.pc_stats {
+            insert_into(pc_stats_table::table)
+                .values(NewPcStat::from_pc_stat(pc_stat, Some(entry_uuid.clone())))
+                .execute(&mut conn)
+                .expect("Failed to insert pc_stat");
         }
 
         Ok(0)
@@ -977,4 +1035,58 @@ pub fn delete_api_requests_older_than_days(
 
         Ok(num_deleted)
     }, 5)
+}
+
+//########################
+//#       Servers        #
+//########################
+
+#[named]
+pub fn get_all_servers(pool: &DbPool) -> Result<Vec<Server>, diesel::result::Error> {
+    log_fn!();
+    
+    with_db_retry(|| {
+        let mut conn = pool.get().expect("Failed to get connection from pool.");
+        servers::table
+            .order(servers::name.asc())
+            .load::<Server>(&mut conn)
+    }, 5)
+}
+
+#[named]
+pub fn delete_all_servers(pool: &DbPool) -> Result<usize, diesel::result::Error> {
+    log_fn!();
+    
+    with_db_retry(|| {
+        let mut conn = pool.get().expect("Failed to get connection from pool.");
+        diesel::delete(servers::table).execute(&mut conn)
+    }, 5)
+}
+
+#[named]
+pub fn insert_servers(pool: &DbPool, servers_to_insert: Vec<Server>) -> Result<usize, diesel::result::Error> {
+    log_fn!();
+    
+    let mut total_inserted = 0;
+    
+    for server in servers_to_insert {
+        let insertable = NewServer::from(server);
+        
+        let result = with_db_retry(|| {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            diesel::insert_into(servers::table)
+                .values(&insertable)
+                .execute(&mut conn)
+        }, 5);
+        
+        match result {
+            Ok(count) => total_inserted += count,
+            Err(e) => {
+                log::warn!("Failed to insert server: {:?}", e);
+                // Continue with other servers even if one fails (e.g., duplicate)
+            }
+        }
+    }
+    
+    Ok(total_inserted)
 }
