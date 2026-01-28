@@ -14,6 +14,7 @@ use eam_commons::GameAccessToken;
 use eam_commons::utils::log_to_audit_log;
 use eam_commons::account_verify;
 use eam_commons::char_list::send_char_list_request;
+use eam_commons::parser::RequestState;
 use eam_commons::diesel_functions;
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::insert_or_update_daily_login_report_entry;
@@ -185,7 +186,40 @@ pub async fn perform_daily_login_for_account(
         .await;
 
         break match acc_verify_result {
-            Ok(token) => token,
+            Ok((token, RequestState::Success, _account_name)) => token,
+            Ok((None, request_state, _)) => {
+                error!(
+                    "[BGRSYNC][DL] Account verify failed with state: {}",
+                    request_state
+                );
+                log_to_audit_log(
+                    pool,
+                    format!("Account verify failed: {}", request_state),
+                    Some(account.email.clone()),
+                );
+                
+                return Err(Box::new(std::io::Error::new(
+                    ErrorKind::Other,
+                    format!("Account verify failed: {}", request_state),
+                )));
+            }
+            Ok((Some(_), request_state, _)) => {
+                // Got token but non-success state (unlikely)
+                error!(
+                    "[BGRSYNC][DL] Account verify returned non-success state: {}",
+                    request_state
+                );
+                log_to_audit_log(
+                    pool,
+                    format!("Account verify returned non-success state: {}", request_state),
+                    Some(account.email.clone()),
+                );
+                
+                return Err(Box::new(std::io::Error::new(
+                    ErrorKind::Other,
+                    format!("Account verify failed: {}", request_state),
+                )));
+            }
             Err(e) => {
                 error!(
                     "[BGRSYNC][DL] Error during account verification: {}",
