@@ -22,6 +22,9 @@ use eam_commons::setup_database;
 use eam_commons::DbPool;
 use eam_commons::requests::GameAccessToken;
 use eam_commons::requests::char_list::send_and_parse_char_list_request;
+use eam_commons::requests::account_verify::send_account_verify_request;
+use eam_commons::models::Server;
+use serde::Serialize;
 
 
 use chrono::{DateTime, Utc};
@@ -233,6 +236,10 @@ fn main() {
             send_post_request_with_json_body,
             send_patch_request_with_json_body,
             perform_char_list_request_for_account, // Char List Request
+            send_account_verify_request_for_account, // Account Verify Request (new)
+            send_char_list_request_for_account, // Char List Request (new, with servers)
+            get_all_servers, // Servers DB
+            insert_servers_from_migration, // Servers migration from file
             get_device_unique_identifier,
             get_os_user_identity,
             quick_hash,
@@ -2281,15 +2288,15 @@ async fn perform_char_list_request_for_account(email: &str, access_token: GameAc
 
     let api_limiter = Arc::clone(&GLOBAL_API_LIMITER);
 
-    let char_list_dataset = send_and_parse_char_list_request(
+    let char_list_result = send_and_parse_char_list_request(
         email,
         access_token,
         None,
         api_limiter
     ).await;
 
-    match char_list_dataset {
-        Ok(dataset) => {
+    match char_list_result {
+        Ok((dataset, _servers, _request_state)) => {
             let insert_result = insert_char_list_dataset(dataset.clone()).await;
             if insert_result.is_err() {
                 let result_err = insert_result.unwrap_err();
@@ -2563,4 +2570,256 @@ fn is_started_with_autostart() -> bool {
     info!("Checking if started with autostart...");
     let args: Vec<String> = std::env::args().collect();
     args.contains(&"--autostart".to_string())
+}
+
+//########################
+//#   Account Verify     #
+//########################
+
+#[derive(Serialize)]
+struct AccountVerifyResponse {
+    access_token: Option<GameAccessToken>,
+    request_state: String,
+    account_name: Option<String>,
+}
+
+#[tauri::command]
+async fn send_account_verify_request_for_account(
+    account_email: String
+) -> Result<AccountVerifyResponse, tauri::Error> {
+    info!("Sending account verify request for account: {}", &account_email);
+
+    // Get HWID internally
+    let hwid = eam_commons::hwid::get_device_unique_identifier()
+        .await
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e)))?;
+
+    // Get pool
+    let pool_arc = match POOL.lock() {
+        Ok(guard) => {
+            if let Some(ref pool) = *guard {
+                Arc::new(pool.clone())
+            } else {
+                return Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized",
+                )));
+            }
+        }
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let guard = poisoned.into_inner();
+            if let Some(ref pool) = *guard {
+                Arc::new(pool.clone())
+            } else {
+                return Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized",
+                )));
+            }
+        }
+    };
+
+    let api_limiter = Arc::clone(&GLOBAL_API_LIMITER);
+
+    let result = send_account_verify_request(
+        pool_arc,
+        account_email.clone(),
+        hwid,
+        api_limiter,
+    ).await;
+
+    match result {
+        Ok((access_token, request_state, account_name)) => {
+            Ok(AccountVerifyResponse {
+                access_token,
+                request_state: request_state.to_string(),
+                account_name,
+            })
+        }
+        Err(e) => {
+            // Map ApiLimiterBlocked errors to appropriate request states
+            let request_state = match e {
+                eam_commons::requests::ApiLimiterBlocked::CooldownActive |
+                eam_commons::requests::ApiLimiterBlocked::RateLimitHit => "RateLimitExceeded",
+                eam_commons::requests::ApiLimiterBlocked::RequestFailed(_) => "Error",
+            };
+            
+            error!("Account verify request failed for {}: {:?}", &account_email, e);
+            
+            Ok(AccountVerifyResponse {
+                access_token: None,
+                request_state: request_state.to_string(),
+                account_name: None,
+            })
+        }
+    }
+}
+
+//########################
+//#   Char List Request  #
+//########################
+
+#[derive(Serialize)]
+struct CharListResponse {
+    dataset: models::CharListDataset,
+    servers: Vec<Server>,
+    request_state: String,
+}
+
+#[tauri::command]
+async fn send_char_list_request_for_account(
+    email: String,
+    access_token: GameAccessToken
+) -> Result<CharListResponse, tauri::Error> {
+    info!("Sending char list request for account: {}", &email);
+
+    let api_limiter = Arc::clone(&GLOBAL_API_LIMITER);
+
+    let result = send_and_parse_char_list_request(
+        &email,
+        access_token,
+        None,
+        api_limiter
+    ).await;
+
+    match result {
+        Ok((dataset, servers, request_state)) => {
+            // Insert dataset into database
+            let insert_result = insert_char_list_dataset(dataset.clone()).await;
+            if let Err(e) = insert_result {
+                error!("Failed to insert char list dataset for account {}: {}", &email, e);
+                return Err(e);
+            }
+
+            // If servers are present, update the servers table
+            if !servers.is_empty() {
+                match POOL.lock() {
+                    Ok(pool_guard) => {
+                        if let Some(ref pool) = *pool_guard {
+                            // Delete all servers and insert new ones
+                            if let Err(e) = diesel_functions::delete_all_servers(pool) {
+                                error!("Failed to delete servers: {:?}", e);
+                            } else {
+                                if let Err(e) = diesel_functions::insert_servers(pool, servers.clone()) {
+                                    error!("Failed to insert servers: {:?}", e);
+                                }
+                            }
+                        }
+                    }
+                    Err(poisoned) => {
+                        error!("Mutex was poisoned. Recovering...");
+                        let pool_guard = poisoned.into_inner();
+                        if let Some(ref pool) = *pool_guard {
+                            if let Err(e) = diesel_functions::delete_all_servers(pool) {
+                                error!("Failed to delete servers: {:?}", e);
+                            } else {
+                                if let Err(e) = diesel_functions::insert_servers(pool, servers.clone()) {
+                                    error!("Failed to insert servers: {:?}", e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Ok(CharListResponse {
+                dataset,
+                servers,
+                request_state: request_state.to_string(),
+            })
+        }
+        Err(e) => {
+            let request_state = match e {
+                eam_commons::requests::ApiLimiterBlocked::CooldownActive |
+                eam_commons::requests::ApiLimiterBlocked::RateLimitHit => "RateLimitExceeded",
+                eam_commons::requests::ApiLimiterBlocked::RequestFailed(_) => "Error",
+            };
+            
+            error!("Char list request failed for {}: {:?}", &email, e);
+            
+            Err(tauri::Error::from(std::io::Error::new(
+                ErrorKind::Other,
+                format!("Char list request failed: {} - {}", request_state, e.to_string()),
+            )))
+        }
+    }
+}
+
+//########################
+//#      Servers DB      #
+//########################
+
+#[tauri::command]
+async fn get_all_servers() -> Result<Vec<Server>, tauri::Error> {
+    info!("Getting all servers from database...");
+
+    match POOL.lock() {
+        Ok(pool_guard) => {
+            if let Some(ref pool) = *pool_guard {
+                diesel_functions::get_all_servers(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized",
+                )))
+            }
+        }
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool_guard = poisoned.into_inner();
+            if let Some(ref pool) = *pool_guard {
+                diesel_functions::get_all_servers(pool)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized",
+                )))
+            }
+        }
+    }
+}
+
+#[tauri::command]
+async fn insert_servers_from_migration(servers: Vec<Server>) -> Result<usize, tauri::Error> {
+    info!("Inserting servers from migration ({} servers)...", servers.len());
+
+    match POOL.lock() {
+        Ok(pool_guard) => {
+            if let Some(ref pool) = *pool_guard {
+                // Delete existing servers first
+                if let Err(e) = diesel_functions::delete_all_servers(pool) {
+                    error!("Failed to delete existing servers: {:?}", e);
+                }
+                
+                // Insert new servers
+                diesel_functions::insert_servers(pool, servers)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized",
+                )))
+            }
+        }
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool_guard = poisoned.into_inner();
+            if let Some(ref pool) = *pool_guard {
+                if let Err(e) = diesel_functions::delete_all_servers(pool) {
+                    error!("Failed to delete existing servers: {:?}", e);
+                }
+                
+                diesel_functions::insert_servers(pool, servers)
+                    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
+            } else {
+                Err(tauri::Error::from(std::io::Error::new(
+                    ErrorKind::Other,
+                    "Database pool not initialized",
+                )))
+            }
+        }
+    }
 }
