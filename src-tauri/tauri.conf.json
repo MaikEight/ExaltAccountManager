@@ -12,7 +12,7 @@
     "targets": "all",
     "homepage": "https://exaltaccountmanager.com/",
     "licenseFile": "windows/LICENSE",
-    "copyright": "© Copyright 2020-2025, MaikEight, All rights reserved.",
+    "copyright": "© Copyright 2020-2026, MaikEight, All rights reserved.",
     "windows": {
       "allowDowngrades": false,
       "certificateThumbprint": "902a87c85afbc0c5eb692d2e921ff8dabbee5625",
@@ -51,7 +51,7 @@
   },
   "productName": "Exalt Account Manager",
   "mainBinaryName": "Exalt Account Manager",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "identifier": "eu.exalt-account-manager.app",
   "plugins": {
     "updater": {
