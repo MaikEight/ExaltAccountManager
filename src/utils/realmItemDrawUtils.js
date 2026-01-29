@@ -87,12 +87,12 @@ const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
             if (rarityConfig && rarityConfig.source) {
                 const rarityImg = new Image();
                 rarityImg.src = rarityConfig.source;
-                
+
                 rarityImg.onload = () => {
                     // Position at bottom right, respecting padding
                     const rarityX = canvasSize - itemPadding - rarityConfig.width;
                     const rarityY = canvasSize - itemPadding - rarityConfig.height;
-                    
+
                     ctx.drawImage(
                         rarityImg,
                         rarityX,
@@ -100,7 +100,7 @@ const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
                         rarityConfig.width,
                         rarityConfig.height
                     );
-                    
+
                     // Convert canvas to an image URL and cache it
                     const imageUrl = canvas.toDataURL("image/png");
                     const cacheObject = {
@@ -110,7 +110,7 @@ const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
                     localStorage.setItem(cacheKey, JSON.stringify(cacheObject));
                     resolve(imageUrl);
                 };
-                
+
                 rarityImg.onerror = (error) => {
                     console.error("Failed to load rarity image", rarityConfig.source, error);
                     // Still resolve with the item image even if rarity fails
@@ -149,4 +149,11 @@ export const drawItem = (imgSrc, item, callback, rarity = 0, itemPadding = 5) =>
 
 export const drawItemAsync = async (imgSrc, item, rarity = 0, itemPadding = 5) => {
     return await drawItemPromise(imgSrc, item, rarity, itemPadding);
+};
+
+export const getItemRarity = (itemData) => {
+    if (!itemData || !itemData.enchant_ids || itemData.enchant_ids.length === 0) return 0; // No enchantments, no rarity - common
+    const minEnchantId = 16; // Every id below does not count towards rarity
+    // Return the length of enchantments above minEnchantId as rarity
+    return Math.min(4, itemData.enchant_ids.filter(id => id >= minEnchantId).length);
 };
