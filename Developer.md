@@ -36,15 +36,12 @@ EAM is a project with the following components:
    - Run either `npm link` or `bun link` in [t-src-modules/eam-commons-js](t-src-modules/eam-commons-js)
    - Run either `npm link eam-commons-js` or `bun link eam-commons-js` in the project root
   
-3. **Build the included binaries:**
+3. **Build the included binaries (Windows only):**
    - Create a new folder called `IncludedBinaries` at `src-tauri` resulting in a path like: [src-tauri/IncludedBinaries](src-tauri/IncludedBinaries)
-   - Build the `daily_auto_login_cli` sub-project.
-        - Run `cargo build --release` in [t-src-modules/daily_auto_login_cli](t-src-modules/daily_auto_login_cli)
-        - Copy and rename the resulting .exe from [t-src-modules\daily_auto_login_cli\target\release\daily_auto_login.exe](t-src-modules\daily_auto_login_cli\target\release\daily_auto_login.exe) to [src-tauri\IncludedBinaries\EAM_Daily_Auto_Login.exe](src-tauri\IncludedBinaries\EAM_Daily_Auto_Login.exe)
    - Copy the `EAM_Save_File_Converter.exe` from your known source into [src-tauri/IncludedBinaries](src-tauri/IncludedBinaries)
    - Build the [EAM_Task_Installer](t-src-modules\EAM_Task_Installer) in `Release` mode.
   
-    If you have trouble building the `daily_auto_login_cli` or the `EAM_Task_Installer` you can just copy the current existing versions from [C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4](C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4) into the specified destinations. (Requires an installed EAM version)
+    If you have trouble building the `EAM_Task_Installer` you can just copy the current existing versions from your[C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4](C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4) into the specified destinations. (Requires an installed EAM version)
 
 4. **Run EAM in developer mode:**
     Run `npm run tauri dev` in the root of the project.

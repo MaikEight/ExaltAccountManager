@@ -573,6 +573,8 @@ function SettingsPage() {
                                 p: 0.25,
                                 backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.paper : theme.palette.background.paper,
                                 borderRadius: `${theme.shape.borderRadius}px`,
+                                border: '1px solid',
+                                borderColor: 'divider',
                             }}
                         >
                             <AccountSelectorTable
@@ -1045,6 +1047,8 @@ function SettingsPage() {
                                     p: 0.25,
                                     backgroundColor: theme => theme.palette.background.paper,
                                     borderRadius: `${theme.shape.borderRadius}px`,
+                                    border: '1px solid',
+                                    borderColor: 'divider',
                                 }}
                             >
                                 <Box
@@ -1054,6 +1058,8 @@ function SettingsPage() {
                                         gap: 1.5,
                                         backgroundColor: theme => theme.palette.background.default,
                                         borderRadius: `${theme.shape.borderRadius - 2}px`,
+                                        border: '1px solid',
+                                        borderColor: 'divider',
                                         p: 1.25
                                     }}
                                 >

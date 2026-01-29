@@ -1,4 +1,4 @@
-import { Box, Collapse, LinearProgress, Paper, Typography, Tooltip as MUITooltip, alpha, IconButton } from "@mui/material";
+import { Box, Collapse, LinearProgress, Paper, Typography, Tooltip as MUITooltip, alpha, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState, useMemo } from "react";
 import StyledButton from "../components/StyledButton";
@@ -9,6 +9,8 @@ import ComponentBox from "../components/ComponentBox";
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import useSnack from './../hooks/useSnack';
+import useBackgroundSync from './../hooks/useBackgroundSync';
+import { SyncMode } from './../contexts/BackgroundSyncContext';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { DataGrid } from "@mui/x-data-grid";
@@ -44,7 +46,10 @@ function DailyLoginsPage() {
     const [selectedReport, setSelectedReport] = useState(null);
     const [timeoutFunction, setTimeoutFunction] = useState(null);
     const [isCurrentlyCollapsed, setIsCurrentlyCollapsed] = useState();
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+    const [isStartingDailyLogin, setIsStartingDailyLogin] = useState(false);
     const { showSnackbar } = useSnack();
+    const { syncMode } = useBackgroundSync();
     const theme = useTheme();
 
     const convertUtcDatetoLocalDate = (date) => {
@@ -639,12 +644,89 @@ function DailyLoginsPage() {
                             Uninstall Task
                         </StyledButton>
                     }
+                    <StyledButton
+                        disabled={syncMode === SyncMode.DailyLogin || isStartingDailyLogin}
+                        color="primary"
+                        onClick={() => setConfirmDialogOpen(true)}
+                        startIcon={<PlayCircleFilledWhiteOutlinedIcon />}
+                    >
+                        {syncMode === SyncMode.DailyLogin ? 'Daily Login Running...' : 'Run Daily Login Now'}
+                    </StyledButton>
                 </Box>
             </ComponentBox>
             <DailyLoginsSlideout isOpen={slideoutOpen} report={selectedReport} onClose={() => {
                 setSlideoutOpen(false);
                 setTimeout(() => setSelectedReport(null), 300);
             }} />
+
+            {/* Confirmation Dialog for Manual Daily Login Trigger */}
+            <Dialog
+                open={confirmDialogOpen}
+                onClose={() => setConfirmDialogOpen(false)}
+                aria-labelledby="confirm-daily-login-dialog-title"
+                aria-describedby="confirm-daily-login-dialog-description"
+                slotProps={{
+                    paper: {
+                        elevation: 0,
+                        sx: {
+                            p: 1.5,
+                            backgroundColor: theme.palette.background.default,
+                            border: `1px solid ${theme.palette.divider}`,
+                        },
+                    },
+                    
+                }}
+            >
+                <DialogTitle id="confirm-daily-login-dialog-title" sx={{ p: 0, pb: 2}}>
+                    Start Daily Login?
+                </DialogTitle>
+                <DialogContent sx={{ p: 0, pb: 2 }}>
+                    <DialogContentText id="confirm-daily-login-dialog-description">
+                        This will process all accounts marked for daily login.
+                    </DialogContentText>
+                    {allDailyLoginReports.length > 0 && allDailyLoginReports[0]?.startTime && (
+                        <DialogContentText sx={{ mt: 1  }}>
+                            Last daily login ran: {formatTime(allDailyLoginReports[0].startTime)}
+                        </DialogContentText>
+                    )}
+                    {(!allDailyLoginReports.length || !allDailyLoginReports[0]?.startTime) && (
+                        <DialogContentText sx={{ mt: 1 }}>
+                            No previous daily login found.
+                        </DialogContentText>
+                    )}
+                </DialogContent>
+                <DialogActions sx={{ p: 0 }}>
+                    <Button onClick={() => setConfirmDialogOpen(false)} color="inherit">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={async () => {
+                            setConfirmDialogOpen(false);
+                            setIsStartingDailyLogin(true);
+                            try {
+                                // force_start_daily_login now handles waiting for manager creation internally
+                                console.log('Calling force_start_daily_login...');
+                                await invoke('force_start_daily_login');
+                                console.log('force_start_daily_login succeeded');
+                                showSnackbar('Starting daily login...', 'default');
+                            } catch (err) {
+                                console.error('Failed to start daily login:', err);
+                                showSnackbar(
+                                    typeof err === 'string' ? err : 'Failed to start daily login, please try again later.',
+                                    'error'
+                                );
+                            } finally {
+                                setIsStartingDailyLogin(false);
+                            }
+                        }}
+                        color="primary"
+                        variant="contained"
+                        autoFocus
+                    >
+                        Start
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

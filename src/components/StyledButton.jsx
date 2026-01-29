@@ -6,7 +6,7 @@ function StyledButton({ children, loading, ...props }) {
     return (
         <Button
             color="primary"
-            variant="contained"            
+            variant="contained"
             {...props}
             sx={{
                 borderRadius: `${theme.shape.borderRadius}px`,

@@ -329,7 +329,9 @@ function BackgroundSyncProvider({ children }) {
         if (event.payload.DailyLoginProgress) {
             const e = event.payload.DailyLoginProgress;
 
-            if (!e || !e.id || !e.left_emails || !e.failed_emails || !e.done || !e.left || !e.estimated_time) {
+            // Validate required fields - use typeof checks for numbers since 0 is valid
+            if (!e || !e.id || !Array.isArray(e.left_emails) || !Array.isArray(e.failed_emails) || 
+                typeof e.done !== 'number' || typeof e.left !== 'number' || !e.estimated_time) {
                 if (debugFlag) {
                     console.warn('Received DailyLoginProgress event with missing data:', event);
                 }
@@ -461,12 +463,46 @@ function BackgroundSyncProvider({ children }) {
                     break;
                 case 'DailyLogin':
                     setSyncMode(SyncMode.DailyLogin);
+                    // Initialize progress data with defaults when switching to DailyLogin mode
+                    setDailyLoginProgressData({
+                        done: 0,
+                        left: null,
+                        leftEmails: [],
+                        leftAccountNames: [],
+                        failedEmails: [],
+                        failedAccountNames: [],
+                        estimatedTime: null,
+                    });
                     break;
                 default:
                     console.warn('Unknown sync mode received:', e.mode);
                     break;
             }
 
+            return;
+        }
+
+        // Handle auto-triggered daily login (new UTC day detected)
+        if (event.payload.DailyLoginAutoTriggered) {
+            const e = event.payload.DailyLoginAutoTriggered;
+
+            if (!e || !e.id) {
+                console.warn('Received DailyLoginAutoTriggered event with missing data:', event);
+                return;
+            }
+
+            if (!checkAndAddEventId('DailyLoginAutoTriggered', e.id, debugFlag)) {
+                return;
+            }
+
+            if (debugFlag) {
+                console.log('Daily Login Auto Triggered (new UTC day):', e);
+            }
+
+            // Show snackbar notification
+            showSnackbar('Starting daily login...', 'default');
+
+            // Mode will be changed by the ModeChanged event that follows
             return;
         }
 

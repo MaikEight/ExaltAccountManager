@@ -86,6 +86,7 @@ lazy_static! {
     static ref HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER: AtomicBool = AtomicBool::new(false);
     static ref BACKGROUND_SYNC_MANAGER: Arc<Mutex<Option<BackgroundSyncManager>>> =
         Arc::new(Mutex::new(None));
+    static ref IS_CREATING_BACKGROUND_SYNC_MANAGER: AtomicBool = AtomicBool::new(false);
     static ref HAS_STARTED_PERIODIC_DAILY_LOGIN_CHECK: AtomicBool = AtomicBool::new(false);
 }
 
@@ -253,6 +254,8 @@ fn main() {
             delete_eam_group,
             get_latest_char_list_for_each_account, //CHAR LIST ENTRIES
             get_latest_char_list_dataset_for_each_account,
+            get_latest_char_list_dataset_for_account,
+            get_last_days_char_list_dataset_for_account,
             insert_char_list_dataset,
             download_and_run_hwid_tool,
             encrypt_string,
@@ -271,6 +274,7 @@ fn main() {
             delete_user_data_by_key,
             needs_to_do_daily_login, //DAILY LOGIN
             start_periodic_daily_login_check,
+            force_start_daily_login,
             get_all_daily_login_reports, //DAILY LOGIN REPORTS
             get_daily_login_reports_of_last_days,
             get_daily_login_report_by_id,
@@ -401,44 +405,96 @@ async fn add_api_limit_event_listener(app: AppHandle) {
 
 #[tauri::command]
 async fn create_background_sync_manager(app: AppHandle) -> Result<(), Error> {
-    if HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER.swap(true, Ordering::SeqCst) {
-        info!("Background sync event listener already registered, skipping...");
-        return Ok(());
+    info!("[CREATE_BGS] Starting create_background_sync_manager...");
+    
+    // Check if manager already exists
+    {
+        let manager = BACKGROUND_SYNC_MANAGER.lock().unwrap();
+        if manager.is_some() {
+            info!("[CREATE_BGS] Background sync manager already exists, skipping creation...");
+            return Ok(());
+        }
     }
+    
+    // Check if creation is already in progress (prevent concurrent creation)
+    if IS_CREATING_BACKGROUND_SYNC_MANAGER.swap(true, Ordering::SeqCst) {
+        info!("[CREATE_BGS] Manager creation already in progress, waiting...");
+        // Wait for the other creation to complete (up to 120 seconds for slow network calls)
+        for i in 0..120 {
+            tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+            let manager = BACKGROUND_SYNC_MANAGER.lock().unwrap();
+            if manager.is_some() {
+                info!("[CREATE_BGS] Manager was created by concurrent call after {}s, done waiting", i + 1);
+                return Ok(());
+            }
+            if i % 10 == 9 {
+                info!("[CREATE_BGS] Still waiting for manager creation... ({}s elapsed)", i + 1);
+            }
+        }
+        // Reset the flag if we timed out waiting
+        IS_CREATING_BACKGROUND_SYNC_MANAGER.store(false, Ordering::SeqCst);
+        error!("[CREATE_BGS] Timed out waiting for background sync manager creation after 120s");
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Timed out waiting for background sync manager creation",
+        )));
+    }
+    
+    info!("[CREATE_BGS] Manager does not exist, will create...");
 
-    info!("Creating background sync manager...");
-
-    let pool = POOL.lock().unwrap().clone();
-    if pool.is_none() {
+    // Check the pool
+    let pool_clone = {
+        let pool = POOL.lock().unwrap();
+        pool.clone()
+    };
+    
+    if pool_clone.is_none() {
+        error!("[CREATE_BGS] Database pool not initialized");
+        IS_CREATING_BACKGROUND_SYNC_MANAGER.store(false, Ordering::SeqCst);
         return Err(tauri::Error::from(std::io::Error::new(
             ErrorKind::Other,
             "Database pool not initialized",
         )));
     }
+    info!("[CREATE_BGS] Pool is available...");
 
-    let pool = Arc::new(pool.unwrap());
+    let pool = Arc::new(pool_clone.unwrap());
     let api_limiter = Arc::clone(&GLOBAL_API_LIMITER);
 
+    info!("[CREATE_BGS] Creating BackgroundSyncManager...");
     let manager = BackgroundSyncManager::new(pool, api_limiter).await;
+    info!("[CREATE_BGS] BackgroundSyncManager created, storing...");
+    
     *BACKGROUND_SYNC_MANAGER.lock().unwrap() = Some(manager.clone());
+    info!("[CREATE_BGS] Manager stored.");
 
-    manager.get_event_hub().register_listener(move |event| {
-        if matches!(
-            event,
-            eam_background_sync::events::BackgroundSyncEvent::AccountCharListSync { .. }
-        ) {
-            info!("Background sync AccountCharListSync event received");
-        } else {
-            info!("Background sync event: {:?}", event);
-        }
+    // Only register the event listener once
+    if !HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER.swap(true, Ordering::SeqCst) {
+        info!("[CREATE_BGS] Registering event listener...");
+        manager.get_event_hub().register_listener(move |event| {
+            if matches!(
+                event,
+                eam_background_sync::events::BackgroundSyncEvent::AccountCharListSync { .. }
+            ) {
+                info!("Background sync AccountCharListSync event received");
+            } else {
+                info!("Background sync event: {:?}", event);
+            }
 
-        // Emit the event to the frontend
-        if let Err(e) = app.emit("background-sync-event", event) {
-            error!("Failed to emit background sync event: {}", e);
-        }
-    });
+            // Emit the event to the frontend
+            if let Err(e) = app.emit("background-sync-event", event) {
+                error!("Failed to emit background sync event: {}", e);
+            }
+        });
+        info!("[CREATE_BGS] Event listener registered.");
+    } else {
+        info!("[CREATE_BGS] Event listener already registered, skipping...");
+    }
 
-    info!("Background sync manager created successfully");
+    // Reset the creation flag now that we're done
+    IS_CREATING_BACKGROUND_SYNC_MANAGER.store(false, Ordering::SeqCst);
+    
+    info!("[CREATE_BGS] Background sync manager created successfully");
     Ok(())
 }
 
@@ -1044,7 +1100,13 @@ async fn send_post_request_with_form_url_encoded_data(
     );
 
     let client = reqwest::Client::new();
-    let result = client.post(&url).headers(headers).form(&data).send().await;
+    let body = serde_urlencoded::to_string(&data).map_err(|e| e.to_string())?;
+    let result = client
+    .post(&url)
+    .headers(headers)
+    .body(body)
+    .send()
+    .await;
 
     // Check result and re-acquire lock if needed
     match result {
@@ -1597,6 +1659,61 @@ async fn start_periodic_daily_login_check(app: AppHandle) {
             }
         }
     });
+}
+
+/// Force starts the daily login process, bypassing the "already completed today" check.
+/// This allows users to manually re-trigger daily login on the same day.
+#[tauri::command]
+async fn force_start_daily_login() -> Result<(), String> {
+    info!("[DAILY_LOGIN] ========== Force starting daily login ==========");
+
+    // Wait for manager to be available (in case creation is still in progress)
+    let mut wait_count = 0;
+    let manager = loop {
+        let manager_opt = BACKGROUND_SYNC_MANAGER.lock().unwrap().clone();
+        if let Some(m) = manager_opt {
+            break m;
+        }
+        
+        wait_count += 1;
+        if wait_count > 120 {
+            info!("[DAILY_LOGIN] Timed out waiting for manager after 120s");
+            return Err("Background sync manager not initialized (timed out waiting)".into());
+        }
+        
+        if wait_count == 1 {
+            info!("[DAILY_LOGIN] Manager not found, waiting for creation...");
+        } else if wait_count % 10 == 0 {
+            info!("[DAILY_LOGIN] Still waiting for manager... ({}s elapsed)", wait_count);
+        }
+        
+        tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+    };
+    
+    let current_mode = manager.get_current_mode();
+    let is_running = manager.is_running();
+    info!("[DAILY_LOGIN] Manager found: is_running={}, current_mode={:?}", is_running, current_mode);
+    
+    // Check if already in daily login mode
+    if current_mode == SyncMode::DailyLogin {
+        info!("[DAILY_LOGIN] Already in DailyLogin mode, returning error");
+        return Err("Daily login is already running".into());
+    }
+
+    // Ensure the manager is running before triggering
+    if !is_running {
+        info!("[DAILY_LOGIN] Manager not running, starting it first...");
+        manager.start();
+        // Give it a moment to start the run loop
+        tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+        info!("[DAILY_LOGIN] Manager should now be running");
+    }
+
+    // Use the force trigger method which bypasses date checks
+    info!("[DAILY_LOGIN] Calling force_trigger_daily_login()...");
+    manager.force_trigger_daily_login();
+    info!("[DAILY_LOGIN] Force daily login triggered successfully");
+    Ok(())
 }
 
 //#########################
@@ -2221,6 +2338,72 @@ async fn format_eam_v3_save_file_to_readable_json() -> Result<String, tauri::Err
 //#########################
 //#   char_list_dataset   #
 //#########################
+
+#[tauri::command]
+async fn get_last_days_char_list_dataset_for_account(
+    email: String,
+    last_days: i32,
+) -> Result<Vec<(String, Option<models::CharListDataset>)>, tauri::Error> {
+    info!("Getting latest char list dataset for account...");
+
+    match POOL.lock() {
+        Ok(pool) => get_last_days_char_list_dataset_for_account_impl(email, last_days, pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return get_last_days_char_list_dataset_for_account_impl(email, last_days, pool);
+        }
+    }
+}
+
+fn get_last_days_char_list_dataset_for_account_impl(
+    email: String,
+    last_days: i32,
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<(String, Option<models::CharListDataset>)>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_last_days_char_list_dataset_for_account(email, last_days, pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn get_latest_char_list_dataset_for_account(
+    email: String
+) -> Result<models::CharListDataset, tauri::Error> {
+    info!("Getting latest char list dataset for account...");
+
+    match POOL.lock() {
+        Ok(pool) => get_latest_char_list_dataset_for_account_impl(email, pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            return get_latest_char_list_dataset_for_account_impl(email, pool);
+        }
+    }
+}
+
+fn get_latest_char_list_dataset_for_account_impl(
+    email: String,
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<models::CharListDataset, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_latest_char_list_dataset_for_account(email, pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+
+    error!("Database pool not initialized");
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
 
 #[tauri::command]
 async fn get_latest_char_list_dataset_for_each_account(

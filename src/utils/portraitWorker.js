@@ -53,10 +53,7 @@ async function load_img(src, key) {
 }
 
 // Main function to load all sheets
-async function load_sheets() {
-    console.log('[Worker] Loading skinsheets and textiles...');
-    console.time('[Worker] load_sheets');
-    
+async function load_sheets() {    
     const sprites = {};
     
     // Load skinsheets
@@ -100,10 +97,7 @@ async function load_sheets() {
     });
     
     // Wait for all to complete
-    const results = await Promise.all([...skinsheetPromises, ...textilePromises]);
-    
-    console.timeEnd('[Worker] load_sheets');
-    console.log('[Worker] Loaded sheets:', results.filter(r => r.success).length, '/', results.length);
+    await Promise.all([...skinsheetPromises, ...textilePromises]);
     
     return sprites;
 }
@@ -135,8 +129,6 @@ self.addEventListener('message', async (event) => {
                 }
             });
             
-            console.log(`[Worker] Transferring ${transferList.length} ArrayBuffers (zero-copy)`);
-            
             // Send processed sprites back to main thread using transfer list
             // This transfers ownership without copying - much faster!
             self.postMessage({
@@ -153,5 +145,3 @@ self.addEventListener('message', async (event) => {
         }
     }
 });
-
-console.log('[Worker] Portrait worker initialized and ready');

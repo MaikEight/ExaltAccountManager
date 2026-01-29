@@ -27,6 +27,8 @@ function ComponentBox({ children, isLoading, title, icon, fullwidth, isCollapsea
                 m: 2,
                 background: theme.palette.background.paper,
                 transition: theme.transitions.create('background-color'),
+                border: '1px solid',
+                borderColor: 'divider',
                 ...(fullwidth && { width: '100%' }),
                 ...sx
             }}

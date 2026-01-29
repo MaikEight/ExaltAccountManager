@@ -212,6 +212,14 @@ function CustomToolbar({ onSearchChanged, onAddNew }) {
                     vertical: 'top',
                     horizontal: 'center',
                 }}
+                slotProps={{
+                    paper: {
+                        sx:{
+                            border: '1px solid',
+                            borderColor: 'divider',
+                        }
+                    }
+                }}
             >
                 <Box
                     sx={{

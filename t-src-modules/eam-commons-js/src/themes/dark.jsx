@@ -74,15 +74,20 @@ export const darkTheme = createTheme({
                     '& .css-1oudwrl::after': {
                         height: 0,
                     },
+                    '& .css-1tdeh38': {
+                        height: 0,
+                        display: 'none',
+                    }
                 },
             },
             defaultProps: {
                 sx: {
                     minHeight: '200px',
                     width: '100%',
-                    border: 0,
+                    border: '1px solid', 
+                    borderColor: 'divider',
                     '& [class^=MuiDataGrid]': {
-                        border: 'none !important'
+                        border: 'none !important',
                     },
                     '& .MuiDataGrid-columnHeaders': {
                         backgroundColor: 'background.paperLight',
@@ -129,6 +134,19 @@ export const darkTheme = createTheme({
                 },
             },
         },
+        MuiMenu: {
+            defaultProps: {
+                slotProps: {
+                    paper: {
+                        sx: {
+                            backgroundColor: 'background.paper',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                        }
+                    }
+                }
+            }
+        }
     },
     shadows: [
         "none",

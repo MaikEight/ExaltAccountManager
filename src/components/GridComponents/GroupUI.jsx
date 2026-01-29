@@ -1,8 +1,15 @@
 import { Box, Tooltip } from "@mui/material";
 import * as Icons from "@mui/icons-material";
 import { useColorList } from "../../hooks/useColorList";
+import { useGroups } from 'eam-commons-js';
 
 function GroupUI({ group, onClick, innerSx }) {
+    const { groups } = useGroups();
+
+    if (typeof group === 'string') {
+        group = groups.find(g => g.name === group);
+    }
+
     if (!group) return null;
 
     const Icon = group.icon ? Icons[group.icon] : null;

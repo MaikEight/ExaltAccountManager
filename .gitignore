@@ -33,3 +33,4 @@ buildEnvKeys.ps1
 updateEnvVars.ps1
 target
 buildEnvKeys.fish
+.envrc

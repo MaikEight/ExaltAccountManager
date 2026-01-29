@@ -3,7 +3,7 @@ use crate::events::*;
 use crate::process_account::process_account;
 use crate::types::*;
 
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use log::{debug, error, warn, info};
 use sha1::{Digest, Sha1};
 use std::fs::File;
@@ -43,6 +43,10 @@ pub struct BackgroundSyncManager {
     should_stop: Arc<Mutex<bool>>,
     is_running: Arc<AtomicBool>,
     is_plus_user: Arc<AtomicBool>,
+    /// Tracks the last UTC date when daily login was completed to prevent re-triggering on the same day
+    last_daily_login_utc_date: Arc<Mutex<Option<NaiveDate>>>,
+    /// Flag to indicate that the next daily login run should be a force run (bypass date check)
+    force_next_daily_login: Arc<AtomicBool>,
 }
 
 impl BackgroundSyncManager {
@@ -235,24 +239,37 @@ impl BackgroundSyncManager {
     }
 
     pub async fn new(pool: Arc<DbPool>, api_limiter: Arc<Mutex<RateLimiterManager>>) -> Self {
+        info!("[BGRSYNC][NEW] Starting BackgroundSyncManager::new()");
+        
+        info!("[BGRSYNC][NEW] Reading HWID...");
         let hwid = Self::read_hwid().await;
+        info!("[BGRSYNC][NEW] HWID read complete");
 
+        info!("[BGRSYNC][NEW] Getting JWT signature...");
         let jwt = diesel_functions::get_user_data_by_key(&pool, "jwtSignature".to_string())
             .unwrap_or_else(|_| {
-                info!("[BGRSYNC] No JWT signature found.");
+                info!("[BGRSYNC][NEW] No JWT signature found.");
                 UserData {
                     dataKey: "jwtSignature".to_string(),
                     dataValue: "".to_string(),
                 }
             });
+        info!("[BGRSYNC][NEW] JWT signature retrieved: has_value={}", !jwt.dataValue.is_empty());
 
+        info!("[BGRSYNC][NEW] Checking is_plus_user...");
         let is_plus_user = if jwt.dataValue.is_empty() {
+            info!("[BGRSYNC][NEW] JWT empty, skipping plus user check");
             false
         } else {
-            user_status_utils::is_plus_user(&jwt.dataValue, &pool).await
+            info!("[BGRSYNC][NEW] Calling user_status_utils::is_plus_user()...");
+            let result = user_status_utils::is_plus_user(&jwt.dataValue, &pool).await;
+            info!("[BGRSYNC][NEW] is_plus_user check complete: {}", result);
+            result
         };
+        info!("[BGRSYNC][NEW] is_plus_user={}", is_plus_user);
 
-        Self {
+        info!("[BGRSYNC][NEW] Creating BackgroundSyncManager struct...");
+        let manager = Self {
             pool,
             event_hub: BackgroundSyncEventHub::new(),
             api_limiter,
@@ -265,7 +282,11 @@ impl BackgroundSyncManager {
             should_stop: Arc::new(Mutex::new(false)),
             is_running: Arc::new(AtomicBool::new(false)),
             is_plus_user: Arc::new(AtomicBool::new(is_plus_user)),
-        }
+            last_daily_login_utc_date: Arc::new(Mutex::new(None)),
+            force_next_daily_login: Arc::new(AtomicBool::new(false)),
+        };
+        info!("[BGRSYNC][NEW] BackgroundSyncManager::new() complete");
+        manager
     }
 
     fn get_fallback_hash() -> String {
@@ -372,40 +393,151 @@ impl BackgroundSyncManager {
         }
         info!("[BGRSYNC] Starting background sync manager...");
 
+        // Reset the stop flag before starting
+        {
+            let mut flag = self.should_stop.lock().unwrap();
+            *flag = false;
+            info!("[BGRSYNC] Reset should_stop flag to false");
+        }
+
+        // IMPORTANT: Set mode to Default before starting the run_loop
+        // Otherwise run_loop will see Stopped mode and exit immediately
+        {
+            let mut current = self.current_mode.lock().unwrap();
+            if *current == SyncMode::Stopped {
+                info!("[BGRSYNC] Mode was Stopped, setting to Default before starting run_loop");
+                *current = SyncMode::Default;
+            }
+        }
+
         self.is_running.store(true, Ordering::SeqCst);
         let manager = self.clone();
 
         tokio::spawn(async move {
             manager.run_loop().await;
             manager.is_running.store(false, Ordering::SeqCst);
+            info!("[BGRSYNC] run_loop ended, is_running set to false");
         });
     }
 
     async fn run_loop(&self) {
+        info!("[BGRSYNC][LOOP] run_loop started");
         let mut last_mode = self.current_mode.lock().unwrap().clone();
+        let mut iteration_count = 0u64;
         loop {
+            iteration_count += 1;
+            if iteration_count <= 5 || iteration_count % 60 == 0 {
+                info!("[BGRSYNC][LOOP] Iteration {} - current_mode={:?}", iteration_count, last_mode);
+            }
+            
             if *self.should_stop.lock().unwrap() {
+                info!("[BGRSYNC][LOOP] run_loop exiting due to should_stop flag");
                 break;
             }
 
             let mode = self.current_mode.lock().unwrap().clone();
             if last_mode != mode {
+                info!("[BGRSYNC][LOOP] Mode changed from {:?} to {:?}", last_mode, mode);
                 last_mode = mode.clone();
                 self.event_hub.emit(BackgroundSyncEvent::ModeChanged {
                     id: Uuid::new_v4(),
                     mode: format!("{:?}", mode),
                 });
             }
+            
+            // Check for UTC day change when in Default mode (after 00:05 UTC)
+            if mode == SyncMode::Default {
+                if self.should_trigger_daily_login_for_new_day() {
+                    info!("[BGRSYNC] New UTC day detected (after 00:05 UTC), auto-triggering daily login");
+                    // Mark the date BEFORE switching mode to prevent repeated triggers
+                    self.mark_daily_login_completed_today();
+                    self.event_hub.emit(BackgroundSyncEvent::DailyLoginAutoTriggered {
+                        id: Uuid::new_v4(),
+                    });
+                    self.switch_mode(SyncMode::DailyLogin);
+                    // Continue the loop - the next iteration will run daily login mode
+                    tokio::time::sleep(Duration::from_secs(1)).await;
+                    continue;
+                }
+            }
+            
             match mode {
-                SyncMode::Default => self.run_default_mode().await,
-                SyncMode::DailyLogin => self.run_daily_login_mode(false).await,
+                SyncMode::Default => {
+                    debug!("[BGRSYNC][LOOP] Running default mode...");
+                    self.run_default_mode().await;
+                },
+                SyncMode::DailyLogin => {
+                    // Check if this should be a forced run (manual trigger)
+                    let do_force = self.force_next_daily_login.swap(false, Ordering::SeqCst);
+                    info!("[BGRSYNC][LOOP] === About to run daily login mode, do_force={} ===", do_force);
+                    self.run_daily_login_mode(do_force).await;
+                    info!("[BGRSYNC][LOOP] === Daily login mode completed ===");
+                },
                 SyncMode::Stopped => {
+                    info!("[BGRSYNC][LOOP] run_loop exiting due to Stopped mode");
                     break;
                 }
             }
 
             tokio::time::sleep(Duration::from_secs(1)).await;
         }
+    }
+
+    /// Checks if daily login should be triggered for a new UTC day.
+    /// Returns true if:
+    /// 1. Current UTC time is after 00:05:00
+    /// 2. Current UTC date is different from the last recorded daily login date
+    fn should_trigger_daily_login_for_new_day(&self) -> bool {
+        let now = Utc::now();
+        let current_time = now.time();
+        let current_date = now.date_naive();
+        
+        // Only trigger after 00:05 UTC to ensure logins count towards the new day
+        let trigger_time = NaiveTime::from_hms_opt(0, 5, 0).unwrap();
+        if current_time < trigger_time {
+            debug!("[BGRSYNC] Current UTC time {:?} is before 00:05, not triggering daily login", current_time);
+            return false;
+        }
+        
+        let last_date = self.last_daily_login_utc_date.lock().unwrap().clone();
+        
+        match last_date {
+            Some(date) if date == current_date => {
+                // Already ran today
+                debug!("[BGRSYNC] Daily login already ran today ({}), not triggering", date);
+                false
+            }
+            _ => {
+                // Either never ran or ran on a different day
+                debug!("[BGRSYNC] Daily login should trigger: last_date={:?}, current_date={}", last_date, current_date);
+                true
+            }
+        }
+    }
+
+    /// Marks the current UTC date as the last daily login date.
+    /// Called when daily login completes successfully.
+    fn mark_daily_login_completed_today(&self) {
+        let current_date = Utc::now().date_naive();
+        let mut last_date = self.last_daily_login_utc_date.lock().unwrap();
+        *last_date = Some(current_date);
+        info!("[BGRSYNC] Marked daily login as completed for UTC date: {}", current_date);
+    }
+
+    /// Public method to force trigger daily login mode.
+    /// This bypasses the date check and allows re-running daily login on the same day.
+    pub fn force_trigger_daily_login(&self) {
+        info!("[BGRSYNC] ========== Force triggering daily login mode ==========");
+        info!("[BGRSYNC] Current is_running={}, current_mode={:?}", 
+            self.is_running.load(Ordering::SeqCst), 
+            self.current_mode.lock().unwrap().clone());
+        
+        // Set the force flag so run_loop knows to pass do_force_run=true
+        self.force_next_daily_login.store(true, Ordering::SeqCst);
+        info!("[BGRSYNC] force_next_daily_login flag set to true");
+        
+        self.switch_mode(SyncMode::DailyLogin);
+        info!("[BGRSYNC] Mode switched to DailyLogin");
     }
 
     async fn run_default_mode(&self) {
@@ -416,6 +548,12 @@ impl BackgroundSyncManager {
 
         loop {
             if *self.should_stop.lock().unwrap() {
+                return;
+            }
+            
+            // Check if mode changed - exit immediately to let run_loop handle it
+            if *self.current_mode.lock().unwrap() != SyncMode::Default {
+                info!("[BGRSYNC] Mode changed, exiting run_default_mode");
                 return;
             }
 
@@ -435,7 +573,14 @@ impl BackgroundSyncManager {
 
             if !can_call {
                 debug!("[BGRSYNC] API limiter active, waiting...");
-                tokio::time::sleep(Duration::from_secs(10)).await;
+                // Wait in small increments to allow checking for mode changes
+                for _ in 0..10 {
+                    if *self.current_mode.lock().unwrap() != SyncMode::Default {
+                        info!("[BGRSYNC] Mode changed during API wait, exiting run_default_mode");
+                        return;
+                    }
+                    tokio::time::sleep(Duration::from_secs(1)).await;
+                }
                 continue;
             }
 
@@ -445,7 +590,17 @@ impl BackgroundSyncManager {
                 Ok(Some(acc)) => acc,
                 Ok(None) => {
                     info!("[BGRSYNC] No more accounts to process, waiting 5 minutes.");
-                    tokio::time::sleep(Duration::from_secs(300)).await;
+                    // Wait in small increments to allow checking for mode changes
+                    for _ in 0..300 {
+                        if *self.current_mode.lock().unwrap() != SyncMode::Default {
+                            info!("[BGRSYNC] Mode changed during 5-min wait, exiting run_default_mode");
+                            return;
+                        }
+                        if *self.should_stop.lock().unwrap() {
+                            return;
+                        }
+                        tokio::time::sleep(Duration::from_secs(1)).await;
+                    }
                     continue;
                 }
                 Err(e) => {
@@ -524,26 +679,36 @@ impl BackgroundSyncManager {
     /// Runs the daily login mode, which processes accounts for daily login rewards.
     /// FOR NON-PLUS USERS: The Game files need to be up-to-date for this to work.
     async fn run_daily_login_mode(&self, do_force_run: bool) {
-        info!("[BGRSYNC][DL] Running daily login mode...");
+        info!("[BGRSYNC][DL] ========== Running daily login mode ==========");
+        info!("[BGRSYNC][DL] do_force_run={}", do_force_run);
 
         //SETUP
         //Check if daily login did already run today and if so, if it finished
         //Load accounts for daily login
         //Store DailyLoginsReport in DB (start with empty report / use the existing one if it exists)
 
+        info!("[BGRSYNC][DL] Getting latest daily login report from DB...");
         let daily_login_report_ret = get_latest_daily_login(&self.pool);
         let mut daily_login_report: DailyLoginReports;
+        
+        info!("[BGRSYNC][DL] Getting accounts for daily login...");
         let mut accounts_to_perform_daily_login_with =
             get_all_eam_accounts_for_daily_login(&self.pool).unwrap();
+        info!("[BGRSYNC][DL] Found {} accounts for daily login", accounts_to_perform_daily_login_with.len());
 
         if daily_login_report_ret.is_ok() {
             daily_login_report = daily_login_report_ret.unwrap();
+            info!("[BGRSYNC][DL] Found existing report: id={}, hasFinished={}, amountProcessed={}/{}", 
+                daily_login_report.id, daily_login_report.hasFinished, 
+                daily_login_report.amountOfAccountsProcessed, daily_login_report.amountOfAccounts);
+            
             let daily_login_report_time = daily_login_report.startTime.clone().unwrap();
             let daily_login_report_time =
                 DateTime::parse_from_rfc3339(&daily_login_report_time).unwrap();
             let daily_login_report_time = daily_login_report_time.with_timezone(&Utc);
 
             if daily_login_report_time.date_naive() == Utc::now().date_naive() {
+                info!("[BGRSYNC][DL] Report is from today (UTC)");
                 let mut is_force_run = false;
                 let force_run = do_force_run;
                 if daily_login_report.hasFinished {
@@ -922,6 +1087,9 @@ impl BackgroundSyncManager {
         daily_login_report.endTime = Some(Utc::now().to_rfc3339());
         daily_login_report.emailsToProcess = None;
         let _ = insert_or_update_daily_login_report(&self.pool, daily_login_report);
+
+        // Mark that daily login completed for today's UTC date
+        self.mark_daily_login_completed_today();
 
         self.event_hub
             .emit(BackgroundSyncEvent::DailyLoginDone { id: Uuid::new_v4() });

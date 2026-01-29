@@ -149,6 +149,8 @@ function FaqAccordion({ title, content }) {
             square={false}
             sx={{
                 borderRadius: theme => `${theme.shape.borderRadius}px`,
+                border: '1px solid',
+                borderColor: 'divider',
                 overflow: 'hidden',
                 my: 0.25,
             }}
@@ -159,6 +161,8 @@ function FaqAccordion({ title, content }) {
                 id="panel1-header"
                 sx={{
                     borderRadius: theme => `${theme.shape.borderRadius}px`,
+                    borderBottom: 'none',
+                    borderColor: 'divider',
                     backgroundColor: theme => theme.palette.background.paper,
                     [`& .${accordionSummaryClasses.expandIconWrapper}.${accordionSummaryClasses.expanded}`]:
                     {

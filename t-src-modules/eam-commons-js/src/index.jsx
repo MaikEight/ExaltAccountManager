@@ -41,7 +41,8 @@ export {
 
 export {
     formatTime,
-    getCurrentTime
+    getCurrentTime,
+    getRelativeTimeString
 } from './utils/timeUtils';
 
 export {
