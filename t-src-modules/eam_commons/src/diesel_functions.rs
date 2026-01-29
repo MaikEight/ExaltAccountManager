@@ -622,13 +622,49 @@ pub fn get_latest_char_list_dataset_for_account(
         }
     };
 
+    // Load items for this entry
+        let items = match with_db_retry(|| {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            parsed_items::table
+                .filter(parsed_items::entry_id.eq(entry.clone().id))
+                .load::<ParsedItemRow>(&mut conn)
+        }, 5) {
+            Ok(rows) => rows.into_iter().map(ParsedItem::from).collect(),
+            Err(e) => {
+                log::warn!(
+                    "[DatasetBuilder] Entry {:?}: Failed to load items: {:?}, using empty vec",
+                    entry.id,
+                    e
+                );
+                Vec::new()
+            }
+        };
+
+        // Load pc_stats for this entry
+        let pc_stats = match with_db_retry(|| {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            pc_stats_table::table
+                .filter(pc_stats_table::entry_id.eq(entry.clone().id))
+                .load::<PcStatRow>(&mut conn)
+        }, 5) {
+            Ok(rows) => rows.into_iter().map(PcStat::from).collect(),
+            Err(e) => {
+                log::warn!(
+                    "[DatasetBuilder] Entry {:?}: Failed to load pc_stats: {:?}, using empty vec",
+                    entry.id,
+                    e
+                );
+                Vec::new()
+            }
+        };
+
     let dataset = CharListDataset {
         email: entry.email.unwrap_or_else(|| "<unknown>".into()),
         account,
         class_stats,
         character,
-        items: Vec::new(),    //TODO: Implement item parsing
-        pc_stats: Vec::new(), //TODO: Implement pc_stats parsing
+        items,
+        pc_stats,
     };
 
     Ok(dataset)
