@@ -1267,12 +1267,13 @@ dependencies = [
  "security-framework-sys",
  "serde",
  "serde_json",
+ "serde_urlencoded",
  "sha1",
  "thiserror 2.0.17",
  "tokio",
  "uuid 1.19.0",
  "winapi",
- "wmi",
+ "wmi 0.17.3",
  "zeroize",
  "zip 7.1.0",
 ]
@@ -1465,7 +1466,7 @@ dependencies = [
  "winapi",
  "window-vibrancy 0.7.1",
  "winreg 0.55.0",
- "wmi",
+ "wmi 0.18.0",
  "zip 7.1.0",
 ]
 
@@ -7052,6 +7053,21 @@ name = "wit-bindgen"
 version = "0.46.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f17a85883d4e6d00e8a97c586de764dabcc06133f7f1d55dce5cdc070ad7fe59"
+
+[[package]]
+name = "wmi"
+version = "0.17.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "120d8c2b6a7c96c27bf4a7947fd7f02d73ca7f5958b8bd72a696e46cb5521ee6"
+dependencies = [
+ "chrono",
+ "futures",
+ "log",
+ "serde",
+ "thiserror 2.0.17",
+ "windows 0.62.2",
+ "windows-core 0.62.2",
+]
 
 [[package]]
 name = "wmi"
