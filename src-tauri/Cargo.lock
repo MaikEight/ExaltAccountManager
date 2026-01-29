@@ -1222,7 +1222,7 @@ checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 
 [[package]]
 name = "eam_background_sync"
-version = "1.0.2"
+version = "1.1.0"
 dependencies = [
  "base64 0.22.1",
  "chrono",
@@ -1242,7 +1242,7 @@ dependencies = [
 
 [[package]]
 name = "eam_commons"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -1413,7 +1413,7 @@ dependencies = [
 
 [[package]]
 name = "exalt-account-manager"
-version = "4.3.0"
+version = "4.4.0"
 dependencies = [
  "anyhow",
  "async-std",
