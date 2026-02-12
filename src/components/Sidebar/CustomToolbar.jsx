@@ -190,8 +190,10 @@ function CustomToolbar(props) {
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        p: 0.25,
+                                        p: 0.125,
                                         borderRadius: `${(theme?.shape?.borderRadius || 9)}px`,
+                                        border: '1px solid',
+                                        borderColor: theme?.palette?.divider || '#3A3541',
                                         overflow: 'hidden',
                                         height: 'fit-content',
                                         width: 'fit-content',
@@ -201,6 +203,8 @@ function CustomToolbar(props) {
                                         sx={{
                                             backgroundColor: theme?.palette?.background?.default || '#28243D',
                                             borderRadius: `${(theme?.shape?.borderRadius || 9) - 2}px`,
+                                            border: '1px solid',
+                                            borderColor: theme?.palette?.divider || '#3A3541',
                                             display: 'flex',
                                             flexDirection: 'column',
                                             alignItems: 'center',
@@ -248,7 +252,7 @@ function CustomToolbar(props) {
                                                 textAlign: 'center',
                                             }}
                                         >
-                                            <Typography variant="body1">
+                                            <Typography variant="body1" fontWeight={600}>
                                                 {`Oops!`}
                                             </Typography>
                                             <Typography variant="body2">
