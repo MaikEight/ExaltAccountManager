@@ -31,11 +31,6 @@ pub enum BackgroundSyncEvent {
         email: String,
         error: String,
     },
-    AccountCharListSync {
-        id: Uuid,
-        email: String,
-        dataset: String,
-    },
     DailyLoginDone {
         id: Uuid,
     },
