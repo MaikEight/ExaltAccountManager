@@ -7,9 +7,7 @@ import { isCrucibleActive, isStatMaxed, getXof8OfCharacter } from "../../../util
 import CharacterPortrait from "../../Realm/CharacterPortrait";
 import ItemGridV2 from "./ItemGridV2";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
-
-// Fixed card width for consistent grid layout
-const CARD_WIDTH = 380;
+import useUserSettings from "../../../hooks/useUserSettings";
 
 /**
  * CharacterCardV2 - Displays a single character with equipment, stats, and inventory
@@ -31,6 +29,21 @@ function CharacterCardV2({ character, onItemClick }) {
     const { filter, selectItem } = useVaultPeeker();
     const seasonalChipColor = useColorList(1);
     const crucibleChipColor = useColorList(3);
+    const { getByKeyAndSubKey } = useUserSettings();
+    const density = getByKeyAndSubKey('vaultPeeker', 'density') || 'comfortable';
+
+    const CARD_WIDTH = useMemo(() => {
+        switch (density) {
+            case 'dense':
+                return 346;
+            case 'comfortable':
+                return 380;
+            case 'spacious':
+                return 426;
+            default:
+                return 380;
+        }
+    }, [density]);
 
     // Check if this character should be shown based on filter
     const shouldShow = useMemo(() => {
