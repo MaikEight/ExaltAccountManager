@@ -472,14 +472,7 @@ async fn create_background_sync_manager(app: AppHandle) -> Result<(), Error> {
     if !HAS_REGISTERED_BACKGROUND_SYNC_EVENT_LISTENER.swap(true, Ordering::SeqCst) {
         info!("[CREATE_BGS] Registering event listener...");
         manager.get_event_hub().register_listener(move |event| {
-            if matches!(
-                event,
-                eam_background_sync::events::BackgroundSyncEvent::AccountCharListSync { .. }
-            ) {
-                info!("Background sync AccountCharListSync event received");
-            } else {
-                info!("Background sync event: {:?}", event);
-            }
+            info!("Background sync event: {:?}", event);
 
             // Emit the event to the frontend
             if let Err(e) = app.emit("background-sync-event", event) {
