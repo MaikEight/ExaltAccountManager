@@ -57,8 +57,12 @@ EAM is a project with the following components:
 
 ## Bonus
 
-- Press **F12** when EAM is focused to open the Developer console.
-- Press **F5** or **Ctrl + R** to reload the window.
+- Opening the developer tools
+  - **Windows**: Press **F12** when EAM is focused to open the Developer console.
+  - **macOS**: Right-Click -> Inspect or press **CMD + Shift + J**
+- Reload the page
+  - **Windows**: Press **F5** or **Ctrl + R** to reload the window.
+  - **macOS**: Right-Click -> Reload or open the **developer tools** and press **CMD + R**
 - The **LocalStorage** and **SessionStorage** contain data.
 
 ## Building for Production
