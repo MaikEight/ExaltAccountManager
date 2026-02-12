@@ -151,6 +151,7 @@ export const lightTheme = createTheme({
             defaultProps: {
                 slotProps: {
                     paper: {
+                        elevation: 0,
                         sx: {
                             backgroundColor: 'background.default',
                             border: '1px solid',
