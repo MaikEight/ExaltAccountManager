@@ -18,17 +18,22 @@ import { useTheme } from "@emotion/react";
 import CloseIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
 import LockIcon from '@mui/icons-material/Lock';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { save } from '@tauri-apps/plugin-dialog';
 import { writeFile } from '@tauri-apps/plugin-fs';
 import { useUserLogin } from 'eam-commons-js';
 import { drawItemAsync } from "../../../utils/realmItemDrawUtils";
 import items from "../../../assets/constants";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_EXPORT_OPTIONS = {
     backgroundColor: '#1e1e2e',
     showBranding: true,
-    headerText: '',
+    showCaption: true,
+    headerText: 'Total Items exported by Exalt Account Manager',
     footerText: '',
     itemPadding: 2,
 };
@@ -36,15 +41,19 @@ const DEFAULT_EXPORT_OPTIONS = {
 function ExportModalV2({ open, onClose, items: itemsData = [] }) {
     const theme = useTheme();
     const canvasRef = useRef(null);
+    const isGeneratingRef = useRef(false);
+    const navigate = useNavigate();
     const { isPlusUser } = useUserLogin();
     const { itemPadding: contextPadding, accountsData } = useVaultPeeker();
 
     const [exportOptions, setExportOptions] = useState({
         ...DEFAULT_EXPORT_OPTIONS,
+        backgroundColor: theme.palette.background.default,
         itemPadding: contextPadding,
     });
     const [isExporting, setIsExporting] = useState(false);
     const [previewUrl, setPreviewUrl] = useState(null);
+    const [zoomLevel, setZoomLevel] = useState(1);
 
     const canCustomize = isPlusUser;
 
@@ -55,18 +64,25 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
     // Update option handler
     const updateOption = useCallback((key, value) => {
         if (!canCustomize) return;
+        // Max length limits for header and footer is 64 characters to prevent overflow in the preview
+        if ((key === 'headerText' || key === 'footerText') && value.length > 64) {
+            value = value.slice(0, 64);
+        }
         setExportOptions((prev) => ({ ...prev, [key]: value }));
     }, [canCustomize]);
 
     // Generate canvas preview
     const generatePreview = useCallback(async () => {
         if (!itemsData?.length) return;
+        if (isGeneratingRef.current) return; // Prevent concurrent executions
 
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const ctx = canvas.getContext('2d');
-        const { backgroundColor, showBranding, headerText, footerText, itemPadding } = exportOptions;
+        isGeneratingRef.current = true;
+        try {
+            const ctx = canvas.getContext('2d');
+            const { backgroundColor, showBranding, showCaption, headerText, footerText, itemPadding } = exportOptions;
 
         // Calculate dimensions
         const itemSize = 40 + (2 * itemPadding);
@@ -76,10 +92,11 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
         const padding = 20;
         const headerHeight = headerText ? 40 : 0;
         const footerHeight = footerText ? 30 : 0;
+        const captionHeight = showCaption ? 20 : 0;
         const brandingHeight = showBranding ? 60 : 0;
 
         canvas.width = (itemsPerRow * itemSize) + (2 * padding);
-        canvas.height = (rows * itemSize) + (2 * padding) + headerHeight + footerHeight + brandingHeight;
+        canvas.height = (rows * itemSize) + (2 * padding) + headerHeight + footerHeight + captionHeight + brandingHeight;
 
         // Draw background
         ctx.fillStyle = backgroundColor;
@@ -87,8 +104,8 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
 
         // Draw header text
         if (headerText) {
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 18px Arial';
+            ctx.fillStyle = theme.palette.text.primary;
+            ctx.font = 'bold 18px Roboto';
             ctx.textAlign = 'center';
             ctx.fillText(headerText, canvas.width / 2, padding + 25);
         }
@@ -143,7 +160,7 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
                         if (count > 1) {
                             const countText = count > 999 ? '999+' : count.toString();
                             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                            ctx.font = 'bold 10px Arial';
+                            ctx.font = 'bold 10px Roboto';
                             const textWidth = ctx.measureText(countText).width;
                             const badgeX = x + itemSize - textWidth - 6;
                             const badgeY = y + itemSize - 4;
@@ -161,27 +178,44 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
         // Draw footer text
         if (footerText) {
             ctx.fillStyle = '#888888';
-            ctx.font = '12px Arial';
+            ctx.font = '12px Roboto';
             ctx.textAlign = 'center';
-            ctx.fillText(footerText, canvas.width / 2, canvas.height - padding - 5);
+            ctx.fillText(footerText, canvas.width / 2, canvas.height - padding - captionHeight - brandingHeight - 5);
+        }
+
+        // Draw caption text
+        if (showCaption) {
+            const captionText = `${itemsData.length} unique items from ${accountCount} accounts`;
+            ctx.fillStyle = '#888888';
+            ctx.font = '10px Roboto';
+            ctx.textAlign = 'center';
+            ctx.fillText(captionText, canvas.width / 2, canvas.height - padding - brandingHeight - 8);
         }
 
         // Draw branding text at bottom
         if (showBranding) {
             ctx.fillStyle = '#666666';
-            ctx.font = '11px Arial';
+            ctx.font = '11px Roboto';
             ctx.textAlign = 'right';
             ctx.fillText('Generated by Exalt Account Manager', canvas.width - padding, canvas.height - 8);
         }
 
         // Generate preview URL
         setPreviewUrl(canvas.toDataURL('image/png'));
-    }, [itemsData, exportOptions]);
+        } finally {
+            isGeneratingRef.current = false;
+        }
+    }, [itemsData, exportOptions, accountCount]);
 
     // Regenerate preview when options change
+    // Use timeout to ensure Dialog content is mounted before accessing canvas
+    // Also debounce to prevent multiple concurrent generations when typing
     useEffect(() => {
         if (open) {
-            generatePreview();
+            const timeoutId = setTimeout(() => {
+                generatePreview();
+            }, 300); // 300ms debounce for typing
+            return () => clearTimeout(timeoutId);
         }
     }, [open, generatePreview]);
 
@@ -213,21 +247,45 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
         }
     };
 
-    // Reset options when modal opens
+    // Handle zoom controls
+    const handleZoomIn = useCallback(() => {
+        setZoomLevel(prev => Math.min(prev + 0.25, 5));
+    }, []);
+
+    const handleZoomOut = useCallback(() => {
+        setZoomLevel(prev => Math.max(prev - 0.25, 0.25));
+    }, []);
+
+    const handleZoomReset = useCallback(() => {
+        setZoomLevel(1);
+    }, []);
+
+    // Handle mouse wheel zoom
+    const handleWheel = useCallback((e) => {
+        if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            setZoomLevel(prev => Math.max(0.25, Math.min(5, prev + delta)));
+        }
+    }, []);
+
+    // Reset options and zoom when modal opens
     useEffect(() => {
         if (open) {
             setExportOptions({
                 ...DEFAULT_EXPORT_OPTIONS,
+                backgroundColor: theme.palette.background.default,
                 itemPadding: contextPadding,
             });
+            setZoomLevel(1);
         }
-    }, [open, contextPadding]);
+    }, [open, contextPadding, theme.palette.background.default]);
 
     return (
         <Dialog
             open={open}
             onClose={onClose}
-            maxWidth="md"
+            maxWidth="lg"
             fullWidth
             slotProps={{
                 paper: {
@@ -236,6 +294,8 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
                         border: '1px solid',
                         borderColor: theme => theme.palette.divider,
                         borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        height: '80vh',
+                        maxHeight: '800px',
                     }
                 }
             }}
@@ -255,50 +315,106 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
                 </IconButton>
             </DialogTitle>
 
-            <DialogContent dividers sx={{ display: 'flex', gap: 2, backgroundColor: 'background.default', }}>
+            <DialogContent dividers sx={{ display: 'flex', gap: 2, backgroundColor: 'background.default', p: 0, overflow: 'hidden' }}>
                 {/* Preview Panel */}
                 <Box
                     sx={{
-                        flex: 2,
+                        flex: 1,
+                        minWidth: 0,
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         backgroundColor: 'background.default',
-                        borderRadius: 1,
-                        p: 2,
-                        overflow: 'auto',
+                        borderRight: 1,
+                        borderColor: 'divider',
+                        position: 'relative',
                     }}
                 >
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-                        Preview
-                    </Typography>
-                    {previewUrl ? (
-                        <img
-                            src={previewUrl}
-                            alt="Export preview"
-                            style={{
-                                maxWidth: '100%',
-                                maxHeight: '100%',
-                                objectFit: 'contain',
-                                borderRadius: 4,
-                            }}
-                        />
-                    ) : (
-                        <Typography color="text.secondary">Generating preview...</Typography>
-                    )}
+                    {/* Preview Header with Zoom Controls */}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, borderBottom: 1, borderColor: 'divider' }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Preview
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                            <Tooltip title="Zoom Out">
+                                <span>
+                                    <IconButton size="small" onClick={handleZoomOut} disabled={zoomLevel <= 0.25}>
+                                        <ZoomOutIcon fontSize="small" />
+                                    </IconButton>
+                                </span>
+                            </Tooltip>
+                            <Typography variant="caption" color="text.secondary" sx={{ minWidth: 45, textAlign: 'center' }}>
+                                {Math.round(zoomLevel * 100)}%
+                            </Typography>
+                            <Tooltip title="Zoom In">
+                                <span>
+                                    <IconButton size="small" onClick={handleZoomIn} disabled={zoomLevel >= 5}>
+                                        <ZoomInIcon fontSize="small" />
+                                    </IconButton>
+                                </span>
+                            </Tooltip>
+                            <Tooltip title="Reset Zoom">
+                                <IconButton size="small" onClick={handleZoomReset}>
+                                    <RestartAltIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                    </Box>
+                    
+                    {/* Scrollable Preview Container */}
+                    <Box
+                        onWheel={handleWheel}
+                        sx={{
+                            flex: 1,
+                            overflow: 'auto',
+                            p: 2,
+                            cursor: zoomLevel > 1 ? 'grab' : 'default',
+                            '&:active': {
+                                cursor: zoomLevel > 1 ? 'grabbing' : 'default',
+                            },
+                        }}
+                    >
+                        {previewUrl ? (
+                            <Box
+                                sx={{
+                                    display: 'inline-block',
+                                    minWidth: '100%',
+                                    minHeight: '100%',
+                                    display: 'flex',
+                                    alignItems: zoomLevel <= 1 ? 'center' : 'flex-start',
+                                    justifyContent: zoomLevel <= 1 ? 'center' : 'flex-start',
+                                }}
+                            >
+                                <img
+                                    src={previewUrl}
+                                    alt="Export preview"
+                                    style={{
+                                        width: `${zoomLevel * 100}%`,
+                                        height: 'auto',
+                                        borderRadius: 4,
+                                        transition: 'width 0.1s ease-out',
+                                    }}
+                                />
+                            </Box>
+                        ) : (
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                <Typography color="text.secondary">Generating preview...</Typography>
+                            </Box>
+                        )}
+                    </Box>
                     <canvas ref={canvasRef} style={{ display: 'none' }} />
                 </Box>
 
                 {/* Options Panel */}
                 <Box
                     sx={{
-                        flex: 1,
+                        width: 320,
+                        flexShrink: 0,
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
-                        minWidth: 250,
+                        p: 2,
                         position: 'relative',
+                        overflowY: 'auto',
                     }}
                 >
                     {/* Plus Required Overlay */}
@@ -323,9 +439,19 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
                             <Typography variant="h6" color="white" textAlign="center">
                                 EAM Plus Required
                             </Typography>
-                            <Typography variant="body2" color="grey.400" textAlign="center" sx={{ mt: 1, px: 2 }}>
+                            <Typography variant="body2" color={theme.palette.mode === "dark" ? "grey.400" : "white"} textAlign="center" sx={{ mt: 1, px: 2 }}>
                                 Upgrade to EAM Plus to customize your exports
                             </Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => navigate('/profile')}
+                                sx={{
+                                    mt: 2,
+                                }}
+                            >
+                                Learn More
+                            </Button>
                         </Box>
                     )}
 
@@ -396,6 +522,18 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
                         disabled={!canCustomize}
                         size="small"
                         fullWidth
+                    />
+
+                    {/* Show Caption */}
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={exportOptions.showCaption}
+                                onChange={(e) => updateOption('showCaption', e.target.checked)}
+                                disabled={!canCustomize}
+                            />
+                        }
+                        label={`Show Caption (${itemsData.length} items, ${accountCount} accounts)`}
                     />
 
                     <Divider />
