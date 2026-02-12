@@ -325,6 +325,9 @@ function TierText({ item, variant = 'h6' }) {
                 variant={variant}
                 sx={{
                     color: item[9] === 2 ? theme.palette.warning.main : theme.palette.primary.main,
+                    ...(theme.palette.mode === 'light' && {
+                        fontWeight: 900,
+                    })
                 }}
             >
                 {item[9] === 2 ? 'ST' : 'UT'}
