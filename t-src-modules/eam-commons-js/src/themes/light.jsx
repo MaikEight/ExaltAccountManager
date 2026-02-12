@@ -146,6 +146,36 @@ export const lightTheme = createTheme({
                     }
                 }
             }
+        },
+        MuiDialog: {
+            defaultProps: {
+                slotProps: {
+                    paper: {
+                        sx: {
+                            backgroundColor: 'background.default',
+                            border: '1px solid',
+                            borderColor: theme => theme.palette.divider,
+                            borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        }
+                    }
+                }
+            }
+        },
+        MuiDialogTitle: {
+            defaultProps: {
+                sx: {
+                    backgroundColor: 'background.default',
+                    borderBottom: '1px solid',
+                    borderColor: theme => theme.palette.divider,
+                }
+            }
+        },
+        MuiDialogContent: {
+            defaultProps: {
+                sx: {
+                    backgroundColor: 'background.default',
+                }
+            }
         }
     },
     shadows: [
