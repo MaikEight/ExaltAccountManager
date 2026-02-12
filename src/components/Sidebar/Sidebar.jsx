@@ -73,13 +73,13 @@ function Sidebar({ children }) {
                 <VaultPeekerLogo
                     sx={{ ml: '2px', mt: '3px', width: '20px' }}
                     color={
-                        location.pathname === '/vaultPeeker' && theme.palette.mode === 'light' ?
+                        location.pathname === '/vaultPeekerV2' && theme.palette.mode === 'light' ?
                             theme.palette.background.default
                             : theme.palette.text.primary
                     }
                 />,
             action: handleNavigate,
-            navigate: '/vaultPeeker',
+            navigate: '/vaultPeekerV2',
             showInFooter: false
         },
         {
