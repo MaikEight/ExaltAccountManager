@@ -5,6 +5,29 @@ import { drawItem } from "../../../../utils/realmItemDrawUtils";
 import { TierText } from "../../../Realm/ItemLocationPopper";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+export const TooltipUiForItem = ({ item }) => {
+    if (!item) return "Loading...";
+
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 1,
+            }}
+        >
+            <TierText item={item} variant="body2" />
+            <Typography variant="body2" fontWeight={600}>
+                {item[0]}
+            </Typography>
+            {
+                item[8] &&
+                <LockOutlinedIcon />
+            }
+        </Box>
+    )
+}
 
 function InventoryRender({ character }) {
     const [itemImages, setItemImages] = useState([null, null, null, null, null, null, null, null]);
@@ -40,30 +63,6 @@ function InventoryRender({ character }) {
             setItemImages(images);
         });
     };
-
-    const getTooltipUiForItem = (item) => {
-        if (!item) return "Loading...";
-
-        return (
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 1,
-                }}
-            >
-                <TierText item={item} variant="body2" />
-                <Typography variant="body2" fontWeight="bold" color="text.primary">
-                    {item[0]}
-                </Typography>
-                {
-                    item[8] &&
-                    <LockOutlinedIcon />
-                }
-            </Box>
-        )
-    }
 
     useEffect(() => {
         renderItemImages();
@@ -104,7 +103,7 @@ function InventoryRender({ character }) {
                     }
 
                     return (
-                        <Tooltip key={index} title={img ? getTooltipUiForItem(items[index] || null) : "Loading..."}>
+                        <Tooltip key={index} title={img ? <TooltipUiForItem item={items[index] || null} /> : "Loading..."}>
                             <img
                                 key={index}
                                 src={img}
