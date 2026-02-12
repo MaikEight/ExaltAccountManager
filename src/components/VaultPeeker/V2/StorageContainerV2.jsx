@@ -45,6 +45,7 @@ function StorageModalV2({ open, onClose, title, itemEntries, icon }) {
             }}
         >
             <DialogTitle
+                component={Box}
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
