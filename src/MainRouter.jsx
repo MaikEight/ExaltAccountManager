@@ -17,6 +17,7 @@ import ImporterPage from './pages/ImporterPage';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorBoundaryFallback from './components/ErrorBoundaryFallback';
 import VaultPeekerPage from './pages/VaultPeekerPage';
+import VaultPeekerPageV2 from './pages/V2/VaultPeekerPageV2';
 import FatalErrorPage from './pages/FatalErrorPage';
 import DeepLinkingComponent from './components/DeepLinkingComponent';
 import ProfilePage from './pages/ProfilePage';
@@ -65,6 +66,7 @@ function MainRouter() {
                                                                 <Route path='/error' element={<FatalErrorPage />}></Route>
                                                                 <Route path='/accounts' element={<AccountsPage />}></Route>
                                                                 <Route path='/vaultPeeker' element={<VaultPeekerPage />}></Route>
+                                                                <Route path='/vaultPeekerV2' element={<VaultPeekerPageV2 />}></Route>
                                                                 <Route path='/dailyLogins' element={<DailyLoginsPage />}></Route>
                                                                 <Route path='/utilities' element={<UtilitiesPage />}></Route>
                                                                 <Route path='/settings' element={<SettingsPage />}></Route>
