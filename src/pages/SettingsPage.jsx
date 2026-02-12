@@ -1,5 +1,5 @@
 
-import { Box, Checkbox, FormControlLabel, FormGroup, LinearProgress, Paper, Popover, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Input, InputLabel, LinearProgress, MenuItem, Paper, Popover, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -32,7 +32,7 @@ import { EAM_PRIVACY_GATE_API } from 'eam-commons-js/constants';
 import ServerSvg from '../components/Illustrations/ServerSvg';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import { MASCOT_NAME } from '../constants';
+import { CACHE_PREFIX, MASCOT_NAME } from '../constants';
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined';
 import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
@@ -533,25 +533,26 @@ function SettingsPage() {
                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, px: 1.5 }}>
                     <ColumnSwitch
                         label="Filter"
-                        checked={settings?.vaultPeeker?.collapsedFileds?.filter !== undefined ? settings.vaultPeeker.collapsedFileds.filter : true}
+                        checked={settings?.vaultPeeker?.collapsedFields?.filter !== undefined ? settings.vaultPeeker.collapsedFields.filter : true}
                         onChange={(event) => {
                             const newSettings = { ...settings };
-                            if (!newSettings.vaultPeeker.collapsedFileds) newSettings.vaultPeeker.collapsedFileds = {};
-                            newSettings.vaultPeeker.collapsedFileds.filter = event.target.checked;
+                            if (!newSettings.vaultPeeker.collapsedFields) newSettings.vaultPeeker.collapsedFields = {};
+                            newSettings.vaultPeeker.collapsedFields.filter = event.target.checked;
                             setSettings(newSettings);
                         }}
                     />
                     <ColumnSwitch
                         label="Totals"
-                        checked={settings?.vaultPeeker?.collapsedFileds?.totals !== undefined ? settings.vaultPeeker.collapsedFileds.totals : false}
+                        checked={settings?.vaultPeeker?.collapsedFields?.totals !== undefined ? settings.vaultPeeker.collapsedFields.totals : false}
                         onChange={(event) => {
                             const newSettings = { ...settings };
-                            if (!newSettings.vaultPeeker.collapsedFileds) newSettings.vaultPeeker.collapsedFileds = {};
-                            newSettings.vaultPeeker.collapsedFileds.totals = event.target.checked;
+                            if (!newSettings.vaultPeeker.collapsedFields) newSettings.vaultPeeker.collapsedFields = {};
+                            newSettings.vaultPeeker.collapsedFields.totals = event.target.checked;
                             setSettings(newSettings);
                         }}
                     />
                 </Box>
+
                 <Box ref={openVaultPeekerButtonRef} sx={{ display: 'flex', flexDirection: 'row', mt: 2 }}>
                     <StyledButton
                         color="secondary"
@@ -581,13 +582,49 @@ function SettingsPage() {
                                 settings={settings}
                                 setCheckedMails={(emails) => {
                                     const newSettings = { ...settings };
-                                    if (!newSettings.vaultPeeker.collapsedFileds) newSettings.vaultPeeker.collapsedFileds = {};
-                                    newSettings.vaultPeeker.collapsedFileds.accounts = emails;
+                                    if (!newSettings.vaultPeeker.collapsedFields) newSettings.vaultPeeker.collapsedFields = {};
+                                    newSettings.vaultPeeker.collapsedFields.accounts = emails;
                                     setSettings(newSettings);
                                 }}
                             />
                         </Paper>
                     </Popover>
+                </Box>
+                {/* density */}
+                <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, mt: 3 }}>
+                        Choose the density for the Vault Peeker views.
+                    </Typography>
+                    <FormControl>
+                        <InputLabel id="density-select-label">Density</InputLabel>
+                        <Select
+                            labelId="density-select-label"
+                            label="Density"
+                            value={settings?.vaultPeeker?.density || 'comfortable'}
+                            onChange={(event) => {
+                                // Clear relevant cache items
+                                const clearAllCacheItemsWithPrefix = (prefix) => {
+                                    const keysToRemove = Object.keys(localStorage).filter(key => key.startsWith(prefix));
+                                    console.log(`🔥 Clearing cache items with prefix "${prefix}":`, keysToRemove);
+                                    keysToRemove.forEach(key => {
+                                        localStorage.removeItem(key);
+                                        console.log(`🔥 Cleared cache item: ${key}`);
+                                    });
+                                }
+                                clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}drawItem`);
+                                clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}single-item`);
+
+                                const newSettings = { ...settings };
+                                if (!newSettings.vaultPeeker) newSettings.vaultPeeker = {};
+                                newSettings.vaultPeeker.density = event.target.value;
+                                setSettings(newSettings);
+                            }}
+                        >
+                            <MenuItem value="dense">Dense</MenuItem>
+                            <MenuItem value="comfortable">Comfortable</MenuItem>
+                            <MenuItem value="spacious">Spacious</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Box>
             </ComponentBox>
 
