@@ -13,9 +13,9 @@ use uuid::Uuid;
 use eam_commons::GameAccessToken;
 use eam_commons::utils::log_to_audit_log;
 use eam_commons::account_verify;
-use eam_commons::char_list::send_char_list_request;
+use eam_commons::char_list::{send_char_list_request, parse_char_list_request};
 use eam_commons::parser::RequestState;
-use eam_commons::diesel_functions;
+use eam_commons::diesel_functions::{self, insert_char_list_dataset, delete_all_servers, insert_servers};
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::insert_or_update_daily_login_report_entry;
 use eam_commons::limiter::manager::RateLimiterManager;
@@ -71,12 +71,27 @@ pub async fn perform_daily_login_for_account(
                             state: AccountProgressState::SyncingCharList,
                         });
 
-                        let uuid = Uuid::new_v4();
-                        event_hub.emit(BackgroundSyncEvent::AccountCharListSync {
-                            id: uuid,
-                            email: account_email.clone(),
-                            dataset: daily_login_report.char_list.to_string(),
-                        });
+                        // Parse and insert char list dataset directly
+                        match parse_char_list_request(&account_email, None, daily_login_report.char_list.to_string()).await {
+                            Ok((dataset, servers, _request_state)) => {
+                                // Insert dataset into database
+                                if let Err(e) = insert_char_list_dataset(pool, dataset) {
+                                    error!("[BGRSYNC][DL] Failed to insert char list dataset for {}: {}", &account_email, e);
+                                }
+
+                                // Update servers if present
+                                if !servers.is_empty() {
+                                    if let Err(e) = delete_all_servers(pool) {
+                                        error!("[BGRSYNC][DL] Failed to delete servers: {:?}", e);
+                                    } else if let Err(e) = insert_servers(pool, servers) {
+                                        error!("[BGRSYNC][DL] Failed to insert servers: {:?}", e);
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                error!("[BGRSYNC][DL] Failed to parse char list for {}: {}", &account_email, e);
+                            }
+                        }
                     }
                 }
 
@@ -379,12 +394,27 @@ pub async fn perform_daily_login_for_account(
             state: AccountProgressState::SyncingCharList,
         });
 
-        let uuid = Uuid::new_v4();
-        event_hub.emit(BackgroundSyncEvent::AccountCharListSync {
-            id: uuid,
-            email: account.email.clone(),
-            dataset: char_list_response.to_string(),
-        });
+        // Parse and insert char list dataset directly
+        match parse_char_list_request(&account.email, None, char_list_response).await {
+            Ok((dataset, servers, _request_state)) => {
+                // Insert dataset into database
+                if let Err(e) = insert_char_list_dataset(pool, dataset) {
+                    error!("[BGRSYNC][DL] Failed to insert char list dataset for {}: {}", &account.email, e);
+                }
+
+                // Update servers if present
+                if !servers.is_empty() {
+                    if let Err(e) = delete_all_servers(pool) {
+                        error!("[BGRSYNC][DL] Failed to delete servers: {:?}", e);
+                    } else if let Err(e) = insert_servers(pool, servers) {
+                        error!("[BGRSYNC][DL] Failed to insert servers: {:?}", e);
+                    }
+                }
+            }
+            Err(e) => {
+                error!("[BGRSYNC][DL] Failed to parse char list for {}: {}", &account.email, e);
+            }
+        }
     }
 
     //Wait for the game to automatically login
