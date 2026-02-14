@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import WidgetBase from "./WidgetBase";
 import useWidgets from "../../../hooks/useWidgets";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import SingleCharacterOverview from "./Components/SingleCharacterOverview";
 
@@ -26,60 +26,61 @@ function BestCharactersWidget({ type, widgetId }) {
     }
 
     useEffect(() => {
-        if (widgetBarState?.data?.email && widgetBarState.data.email !== lastEmailRef.current) {
-            lastEmailRef.current = widgetBarState.data.email;
-            const email = widgetBarState.data.email;
-            invoke('get_latest_char_list_dataset_for_account', { email: widgetBarState.data.email })
-                .then((res) => {
-                    if (lastEmailRef.current === email) {
-                        setCharListDataset(res);
-                        sortCharacters(res);
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                })
-        } else {
+        if (!widgetBarState?.data?.email) {
+            lastEmailRef.current = null;
             setCharListDataset(null);
             sortCharacters(null);
+            return;
         }
+
+        const email = widgetBarState.data.email;
+        lastEmailRef.current = email;
+        invoke('get_latest_char_list_dataset_for_account', { email })
+            .then((res) => {
+                if (lastEmailRef.current === email) {
+                    setCharListDataset(res);
+                    sortCharacters(res);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     }, [widgetBarState.data]);
 
-    const charsToRender = useMemo(() => {
-        const currentSlots = config?.slots || type?.defaultConfig?.slots || 1;
-        const maxAmount = ((widgetBarConfig?.slots || 1 ) > 1 && currentSlots > 1) ? currentSlots * 3 : 3;
-        let amnt = 0;
-        const chars = [];
+    const currentSlots = Math.min(widgetBarConfig?.slots || 1, config?.slots || type?.defaultConfig?.slots || 1);
+    const columns = currentSlots > 1 ? 2 : 1;
 
-        while (amnt < maxAmount) {
-            if (character.length <= amnt) {
-                break;
-            }
-            chars.push(character[amnt])
-            amnt++;
+    // Group parsed items by character id for equipment lookup
+    const itemsByCharId = useMemo(() => {
+        if (!charListDataset?.items) return {};
+        const map = {};
+        for (const item of charListDataset.items) {
+            if (!item.storage_type_id?.startsWith('char:')) continue;
+            const charId = parseInt(item.storage_type_id.split(':')[1], 10);
+            if (!map[charId]) map[charId] = [];
+            map[charId].push(item);
         }
+        return map;
+    }, [charListDataset]);
 
-        return (
-            <Fragment>
-                {
-                    chars.map((c, i) => {
-                        return <SingleCharacterOverview key={i} number={i + 1} character={c} />
-                    })
-                }
-            </Fragment>
-        );
-    }, [character, widgetBarConfig.slots, config.slots]);
+    const charsToRender = useMemo(() => {
+        const maxAmount = columns * 3;
+        const chars = character.slice(0, maxAmount);
+
+        return chars.map((c, i) => (
+            <SingleCharacterOverview key={i} number={i + 1} character={c} parsedItems={itemsByCharId[c.char_id] || []} />
+        ));
+    }, [character, columns, itemsByCharId]);
 
     return (
         <WidgetBase type={type} widgetId={widgetId}>
             <Box
                 sx={{
                     width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexWrap: 'wrap',
-                    maxHeight: '200px',
-                    alignItems: 'start',
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                    gridAutoFlow: 'column',
+                    gridTemplateRows: 'repeat(3, auto)',
                 }}
             >
                 {charsToRender}
