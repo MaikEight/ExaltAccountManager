@@ -25,9 +25,30 @@ function RarityFilter() {
     };
 
     // Custom chip renderer with rarity images
-    const renderChip = (option, value) => {
+    const renderChip = (option, value, index) => {
         if (!option) return null;
+        
+        // If more than 3 selected, show "x selected" only once
+        if (selectedValues.length > 3) {
+            if (index === 0) {
+                return (
+                    <Chip
+                        key="count"
+                        label={`${selectedValues.length} selected`}
+                        size="small"
+                        sx={{
+                            height: 22,
+                            fontSize: '0.7rem',
+                        }}
+                        variant="outlined"
+                    />
+                );
+            }
+            return null;
+        }
+        
         const raritySource = RARITY_IMAGE_SOURCES[option.value];
+        const showTextInChip = selectedValues.length === 1;
         
         return (
             <Chip
@@ -46,7 +67,7 @@ function RarityFilter() {
                                 }}
                             />
                         )}
-                        <span>{option.name}</span>
+                        {showTextInChip && <span>{option.name}</span>}
                     </Box>
                 }
                 size="small"
@@ -112,6 +133,7 @@ function RarityFilter() {
             selectedValues={selectedValues}
             onChange={handleChange}
             width={140}
+            menuWidth={180}
             renderChip={renderChip}
             renderOption={renderOption}
         />
