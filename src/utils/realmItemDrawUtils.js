@@ -1,34 +1,39 @@
 import { CACHE_PREFIX } from "../constants";
 
-const RARITY_IMAGE_SOURCES = {
+export const RARITY_IMAGE_SOURCES = {
     0: {
+        rarity: "common",
         source: null,
         width: 0,
         height: 0,
     },
     1: {
+        rarity: "uncommon",
         source: "/realm/enchantments/uncommon.png",
         width: 8,
         height: 8,
     },
     2: {
+        rarity: "rare",
         source: "/realm/enchantments/rare.png",
         width: 16,
         height: 8,
     },
     3: {
+        rarity: "legendary",
         source: "/realm/enchantments/legendary.png",
         width: 16,
         height: 12,
     },
     4: {
+        rarity: "divine",
         source: "realm/enchantments/divine.png",
         width: 16,
         height: 16,
     },
 };
 
-const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
+export const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
     return new Promise((resolve, reject) => {
         if (!item) {
             return resolve(null);

@@ -14,6 +14,8 @@ function WidgetBarBase() {
                 flexDirection: 'column',
                 height: '100%',
                 width: '100%',
+                minWidth: 0,
+                overflowX: 'hidden',
                 overflowY: 'auto',
                 backgroundColor: 'background.default',
                 borderRadius: (theme) => `${theme.shape.borderRadius * 2}px 0 0 ${theme.shape.borderRadius * 2}px`,
@@ -34,9 +36,13 @@ function WidgetBarBase() {
                     display: 'flex',
                     flexDirection: 'column',
                     width: '100%',
+                    minWidth: 0,
                     flexGrow: 1,
+                    overflowX: 'hidden',
                     overflowY: 'auto',
-                    p: 1,
+                    scrollbarGutter: 'stable',
+                    px: 1.5,
+                    py: 1,
                     gap: 1,
                 }}
             >

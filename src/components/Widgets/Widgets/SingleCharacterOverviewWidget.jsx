@@ -1,17 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useWidgets from "../../../hooks/useWidgets";
 import { invoke } from '@tauri-apps/api/core';
 import WidgetBase from "./WidgetBase";
-import usePortraitReady from "../../../hooks/usePortraitReady";
-import { ADCENTUREERS_BELT, BACKPACK_EXTENDER_ITEM_ID, BACKPACK_ITEM_ID, extractEquipmentIds, getXof8OfCharacter, isCrucibleActive, isStatMaxed } from "../../../utils/realmCharacterUtils";
-import { getItemById } from "../../../utils/realmItemUtils";
-import { Box, Chip, Skeleton, Tooltip, Typography, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { getXof8OfCharacter, isCrucibleActive, isStatMaxed } from "../../../utils/realmCharacterUtils";
+import { Box, Chip, Tooltip, Typography, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import CharacterPortrait from "../../Realm/CharacterPortrait";
 import { classes } from "../../../assets/constants";
-import itemsSlotTypeMap from "../../../assets/slotmap";
-import { drawItem } from "../../../utils/realmItemDrawUtils";
 import { useColorList } from "../../../hooks/useColorList";
-import InventoryRender from "./Components/InventoryRender";
+import ItemGridV2 from "../../VaultPeeker/V2/ItemGridV2";
 import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
 import { useTheme } from "@emotion/react";
 import { areaElementClasses, chartsAxisHighlightClasses, lineElementClasses } from "@mui/x-charts";
@@ -25,14 +21,8 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
     const daysToFetch = config?.settings?.daysToFetch || 7;
 
     const theme = useTheme();
-    const isPortraitReady = usePortraitReady();
     const seasonalChipColor = useColorList(1);
     const crucibleChipColor = useColorList(3);
-
-    const [itemImages, setItemImages] = useState([null, null, null, null]);
-    const [items, setItems] = useState([null, null, null, null]);
-    const [xof8, setXof8] = useState(0);
-    const [backpackItemImages, setBackpackItemImages] = useState([null, null, null]);
 
     const [characterIdToShow, setCharacterIdToShow] = useState(null);
     const [character, setCharacter] = useState(null);
@@ -96,77 +86,44 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
         return data;
     }, [lastDaysCharListDataset, characterIdToShow]);
 
-    const drawItemImagesOfCharacter = (character) => {
-        const eq = extractEquipmentIds(character?.equipment);
-        const eqItems = eq.map(id => getItemById(id));
-        setItems(eqItems);
+    // Helper to map ParsedItem[] to the format ItemGridV2 expects
+    const mapItems = useCallback((itemArray) => {
+        if (!itemArray) return [];
+        return itemArray.map((item) => ({
+            itemId: item.item_id,
+            count: 1,
+            maxRarity: item.enchant_ids?.length ? Math.min(4, item.enchant_ids.length) : 0,
+            parsedItem: item,
+        }));
+    }, []);
 
-        const cls = classes[character.char_class];
-        const charSlots = cls?.[4];
-        const slotMapKeys = charSlots.map((slot) => Object.keys(itemsSlotTypeMap).find((key) => itemsSlotTypeMap[key].slotType === slot));
-        const slotMapValues = slotMapKeys.map((key) => itemsSlotTypeMap[key]);
+    // Build grouped item arrays from dataset.items for the current character
+    const { equipmentItems, inventoryItems, backpackItems, backpackExtenderItems } = useMemo(() => {
+        if (!latestCharListDataset?.items || !characterIdToShow) {
+            return { equipmentItems: [], inventoryItems: [], backpackItems: [], backpackExtenderItems: [] };
+        }
 
-        //Item images
-        eqItems.forEach((item, index) => {
-            const slot = slotMapValues[index];
-            const itemId = eq[index];
-
-            if (!item || itemId === -1) {
-                // Empty slot - use silhouette
-                const slotItem = [
-                    -1,
-                    null,
-                    null,
-                    slot.sheet[0],
-                    slot.sheet[1],
-                ];
-                drawItem(
-                    "realm/itemsilhouettes_25p.png",
-                    slotItem,
-                    (imageUrl) => {
-                        setItemImages((prevImages) => {
-                            const newImages = [...prevImages];
-                            newImages[index] = imageUrl;
-                            return newImages;
-                        });
-                    }
-                );
-                return;
-            }
-
-            drawItem("renders.png", item, (imageUrl) => {
-                setItemImages((prevImages) => {
-                    const newImages = [...prevImages];
-                    newImages[index] = imageUrl;
-                    return newImages;
-                });
+        const charItems = latestCharListDataset.items
+            .filter((item) => item.storage_type_id === `char:${characterIdToShow}`)
+            .sort((a, b) => {
+                const containerDiff = (a.container_index || 0) - (b.container_index || 0);
+                if (containerDiff !== 0) return containerDiff;
+                return (a.slot_index || 0) - (b.slot_index || 0);
             });
-        })
 
-        setXof8(getXof8OfCharacter(character));
+        const equipment = charItems.filter((i) => i.container_index === 0);
+        const inventory = charItems.filter((i) => i.container_index === 1);
+        const backpacks = charItems.filter((i) => i.container_index >= 2);
 
-        drawItem("renders.png", getItemById(BACKPACK_ITEM_ID), (imageUrl) => {
-            setBackpackItemImages((prevImages) => {
-                const newImages = [...prevImages];
-                newImages[0] = imageUrl;
-                return newImages;
-            });
-        });
-        drawItem("renders.png", getItemById(BACKPACK_EXTENDER_ITEM_ID), (imageUrl) => {
-            setBackpackItemImages((prevImages) => {
-                const newImages = [...prevImages];
-                newImages[1] = imageUrl;
-                return newImages;
-            });
-        });
-        drawItem("renders.png", getItemById(ADCENTUREERS_BELT), (imageUrl) => {
-            setBackpackItemImages((prevImages) => {
-                const newImages = [...prevImages];
-                newImages[2] = imageUrl;
-                return newImages;
-            });
-        });
-    }
+        return {
+            equipmentItems: mapItems(equipment),
+            inventoryItems: mapItems(inventory),
+            backpackItems: mapItems(backpacks.slice(0, 8)),
+            backpackExtenderItems: mapItems(backpacks.slice(8, 16)),
+        };
+    }, [latestCharListDataset?.items, characterIdToShow, mapItems]);
+
+    const xof8 = useMemo(() => character ? getXof8OfCharacter(character) : 0, [character]);
 
     const getCharacterIdToShow = (dataset) => {
         if (!dataset?.email) {
@@ -359,12 +316,6 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
         setCharacter(char);
     }, [latestCharListDataset]);
 
-    useEffect(() => {
-        if (character) {
-            drawItemImagesOfCharacter(character);
-        }
-    }, [character]);
-
     const getCreationDate = () => {
         if (!character) {
             return 'N/A';
@@ -485,44 +436,27 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
                     sx={{
                         display: 'flex',
                         flexDirection: 'row',
-                        justifyContent: 'center',
                         alignItems: 'center',
                         gap: 2,
                     }}
                 >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: theme => theme.palette.background.default,
-                            borderRadius: 1,
-                            gap: 0.25,
-                        }}
-                    >
-                        {
-                            itemImages.map((img, index) => {
-                                if (!img) {
-                                    return (
-                                        <Skeleton key={index} variant="rounded" width={50} height={50} />
-                                    )
-                                }
-
-                                return (
-                                    <Tooltip key={index} title={img ? `${items[index][0]}` : "Loading..."}>
-                                        <img
-                                            key={index}
-                                            src={img}
-                                            alt={`Item Slot ${index + 1}`}
-                                            width={50}
-                                            height={50}
-                                        />
-                                    </Tooltip>
-                                )
-                            })
-                        }
-                    </Box>
+                    {equipmentItems.length > 0 && (
+                        <Box
+                            sx={{
+                                backgroundColor: theme => theme.palette.background.default,
+                                borderRadius: 1,
+                                p: 0.25,
+                            }}
+                        >
+                            <ItemGridV2
+                                items={equipmentItems}
+                                showCounts={false}
+                                showEmptySlots={true}
+                                showTooltips={true}
+                                columns={4}
+                            />
+                        </Box>
+                    )}
                     <Box>
                         <Typography variant="body2" fontWeight="bold" color={xof8 === 8 ? 'warning' : 'inherit'}>
                             {xof8} / 8
@@ -531,34 +465,55 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
                             {character.current_fame} <img src="/realm/fame.png" alt="Fame" width={16} height={16} style={{ marginBottom: -2 }} />
                         </Typography>
                     </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            flexWrap: 'wrap',
-                            justifyContent: 'center',
-                            alignItems: 'end',
-                            maxHeight: '50px',
-                            width: 'fit-content',
-                            ml: "-8px"
-                        }}
-                    >
-                        {
-                            character.backpack_slots > 0 && backpackItemImages[0] &&
-                            <img src={backpackItemImages[0]} alt="Backpack" width={25} height={25} />
-                        }
-                        {
-                            character.backpack_slots > 8 && backpackItemImages[1] &&
-                            <img src={backpackItemImages[1]} alt="Backpack Extender" width={25} height={25} />
-                        }
-                        {
-                            character.has3_quickslots > 0 && backpackItemImages[2] &&
-                            <img src={backpackItemImages[2]} alt="Adventurer's Belt" width={25} height={25} />
-                        }
-                    </Box>
                 </Box>
-                {/* Inventory & Backpack */}
-                <InventoryRender character={character} />
+
+                {/* Inventory */}
+                {inventoryItems.length > 0 && (
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25 }}>
+                            Inventory
+                        </Typography>
+                        <ItemGridV2
+                            items={inventoryItems}
+                            showCounts={false}
+                            showEmptySlots={true}
+                            showTooltips={true}
+                            columns={8}
+                        />
+                    </Box>
+                )}
+
+                {/* Backpack */}
+                {backpackItems.length > 0 && (
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25 }}>
+                            Backpack
+                        </Typography>
+                        <ItemGridV2
+                            items={backpackItems}
+                            showCounts={false}
+                            showEmptySlots={true}
+                            showTooltips={true}
+                            columns={8}
+                        />
+                    </Box>
+                )}
+
+                {/* Backpack Extender */}
+                {backpackExtenderItems.length > 0 && (
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25 }}>
+                            Backpack Extender
+                        </Typography>
+                        <ItemGridV2
+                            items={backpackExtenderItems}
+                            showCounts={false}
+                            showEmptySlots={true}
+                            showTooltips={true}
+                            columns={8}
+                        />
+                    </Box>
+                )}
             </Box>
         );
     }

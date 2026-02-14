@@ -9,7 +9,7 @@ function ChangelogVersion4_4_0() {
 
     const title = [
         "Exalt Account Manager v4.4.0",
-        "New Logo, Widgets and improvements!",
+        "New Logo, Widgets and Vault Peeker redesign!",
     ];
 
     return (
@@ -52,8 +52,8 @@ function ChangelogVersion4_4_0() {
                     height: 'auto',
                     marginLeft: '-1px',
                     borderRadius: `${theme.shape.borderRadius * 2}px`,
+                    borderTopRightRadius: 0,
                     borderBottom: `1px solid ${theme.palette.divider}`,
-
                 }}
             />
             <Box
@@ -106,6 +106,14 @@ function ChangelogVersion4_4_0() {
                         "Account Details are now using the new Widgets system, add / remove them as you like.",
                         "You can enable Edit Mode for Widget Bars to add, remove or rearrange Widgets. Just click the 'Edit' button in the top right of a Widget Bar.",
                         "Some widgets have its own settings, accessible via the edit icon in the top right of the Widget itself.",
+                    ]}
+                />
+                <ChangelogEntry
+                    title={'Vault Peeker'}
+                    listOfChanges={[
+                        "Redesigned the whole Vault Peeker interface for better usability and appearance.",
+                        "Added support for Enchantments and Rarity display.",
+                        "Improved performance when loading many items at once.",                        
                     ]}
                 />
 

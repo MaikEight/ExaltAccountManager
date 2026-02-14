@@ -68,7 +68,7 @@ const defaultSettings = {
         //HIDDEN: exePath: string // Path to the game executable, store in the database
     },
     vaultPeeker: {
-        collapsedFileds: {
+        collapsedFields: {
             filter: true,
             totals: false,
             accounts: [] //Array of account emails that are collapsed
@@ -76,7 +76,8 @@ const defaultSettings = {
         accountView: {
             hiddenVaults: [], //Array of vault names that are hidden
         },
-        rowsPerPage: 10,
+        rowsPerPage: 25,
+        density: 'comfortable', // 'dense' | 'comfortable' | 'spacious'
     },
     backgroundSync: {
         enabled: true,

@@ -71,6 +71,17 @@ pub async fn send_and_parse_char_list_request(
 ) -> Result<(models::CharListDataset, Vec<Server>, RequestState), ApiLimiterBlocked> {
     let response = send_char_list_request(access_token, global_api_limiter).await?;
 
+    parse_char_list_request(email, entry_id, response).await
+}
+
+/// Parses the char/list response and returns:
+/// - `Ok((dataset, servers, request_state))` on success
+/// - `Err(ApiLimiterBlocked)` on rate limit or request failures
+pub async fn parse_char_list_request(
+    email: &str,
+    entry_id: Option<&str>,
+    response: String,
+) -> Result<(models::CharListDataset, Vec<Server>, RequestState), ApiLimiterBlocked> {
     // Parse request state first
     let request_state = parse_request_state(&response);
     

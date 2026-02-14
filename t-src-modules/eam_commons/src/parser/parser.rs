@@ -325,7 +325,7 @@ pub fn parse_pc_stats(raw: &str) -> Vec<PcStat> {
     let mut stats_count = 0;
     let mut stats_flagged = Vec::new();
     let mut total_flags_read = 0;
-    while i < END_OF_FLAGS {
+    while i < END_OF_FLAGS && i + 3 < b.len() {
         let t = ((b[i] as u32) << 24)
             | ((b[i + 1] as u32) << 16)
             | ((b[i + 2] as u32) << 8)

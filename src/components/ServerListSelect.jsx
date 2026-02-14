@@ -39,17 +39,6 @@ function ServerListSelect({ serversToAdd, selectedServer, onChange, defaultValue
                     onChange?.(event.target.value);
                     setSelected(event.target.value);
                 }}
-                input={
-                    <Input
-                        id="server-list-label"
-                        disableUnderline
-                        sx={{
-                            backgroundColor: theme.palette.background.backdrop,
-                            borderRadius: `${theme.shape.borderRadius}px`,
-                            height: '39px'
-                        }}
-                    />
-                }
                 renderValue={(selected) => (
                     <Box
                         sx={{
@@ -58,8 +47,8 @@ function ServerListSelect({ serversToAdd, selectedServer, onChange, defaultValue
                             alignItems: 'center',
                             width: '100%',
                             height: '100%',
-                            ml: 0.5,
-                            mr: 0.5
+                            ml: -0.5,
+                            mr: 0.5,
                         }}
                     >
                         <ServerChip key={"key-" + selected} params={{ value: selected }} />

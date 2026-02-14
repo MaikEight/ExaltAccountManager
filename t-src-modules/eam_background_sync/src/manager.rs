@@ -611,7 +611,7 @@ impl BackgroundSyncManager {
 
             info!("[BGRSYNC] Processing account: {}", account.email);
 
-            let (result, dataset_opt) = process_account(
+            let result = process_account(
                 Arc::clone(&self.pool),
                 account.clone(),
                 self.hwid.clone(),
@@ -626,15 +626,6 @@ impl BackgroundSyncManager {
                         "[BGRSYNC] Successfully processed account: {}",
                         account.email
                     );
-                    if let Some(dataset) = dataset_opt {
-                        let uuid = Uuid::new_v4();
-                        self.event_hub
-                            .emit(BackgroundSyncEvent::AccountCharListSync {
-                                id: uuid,
-                                email: account.email.clone(),
-                                dataset: dataset.to_string(),
-                            });
-                    }
                 }
                 SyncResult::RateLimited => {
                     info!("[BGRSYNC] Rate limit hit for account: {}", account.email);

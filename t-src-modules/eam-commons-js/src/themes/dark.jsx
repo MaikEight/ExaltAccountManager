@@ -84,7 +84,7 @@ export const darkTheme = createTheme({
                 sx: {
                     minHeight: '200px',
                     width: '100%',
-                    border: '1px solid', 
+                    border: '1px solid',
                     borderColor: 'divider',
                     '& [class^=MuiDataGrid]': {
                         border: 'none !important',
@@ -144,6 +144,37 @@ export const darkTheme = createTheme({
                             borderColor: 'divider',
                         }
                     }
+                }
+            }
+        },
+        MuiDialog: {
+            defaultProps: {
+                slotProps: {
+                    paper: {
+                        elevation: 0,
+                        sx: {
+                            backgroundColor: 'background.default',
+                            border: '1px solid',
+                            borderColor: theme => theme.palette.divider,
+                            borderRadius: theme => `${theme.shape.borderRadius}px`,
+                        }
+                    }
+                }
+            }
+        },
+        MuiDialogTitle: {
+            defaultProps: {
+                sx: {
+                    backgroundColor: 'background.default',
+                    borderBottom: '1px solid',
+                    borderColor: theme => theme.palette.divider,
+                }
+            }
+        },
+        MuiDialogContent: {
+            defaultProps: {
+                sx: {
+                    backgroundColor: 'background.default',
                 }
             }
         }

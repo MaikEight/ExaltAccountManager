@@ -17,11 +17,18 @@ export class WidgetBars {
     }
 
     static WIDGET_SLOT_WIDTH = 450; // Width in pixels for a single widget slot
+    static SCROLLBAR_GUTTER_WIDTH = 15; // Reserved by scrollbar-gutter: stable (Chromium/Windows default)
 
     //Utility function to get widget bar width by slots
     static getWidgetBarWidthBySlots(slots) {
-        const paddingInPixels = 8; // Padding in pixels per space (left, right, between)
-        return (slots * WidgetBars.WIDGET_SLOT_WIDTH) + ((slots  + 1) * paddingInPixels);
+        const contentPaddingX = 12; // px: 1.5 per side in WidgetBarBase content area
+        const gridGap = 8;          // gap: 1 between grid columns in WidgetGrid
+        const borderWidth = 1;      // borderLeft on WidgetBarBase
+        return (slots * WidgetBars.WIDGET_SLOT_WIDTH)
+            + ((slots - 1) * gridGap)
+            + (contentPaddingX * 2)
+            + borderWidth
+            + WidgetBars.SCROLLBAR_GUTTER_WIDTH;
     }
 
     // TYPES

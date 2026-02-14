@@ -24,6 +24,7 @@ function EamPlusComparisonTable() {
 
     const trueIcon = <CheckCircleOutlineOutlinedIcon color="success" />;
     const falseIcon = <CancelOutlinedIcon color="error" />;
+    const partlyTrueIcon = <CheckCircleOutlineOutlinedIcon color="warning" />;
     const infinityIcon = <AllInclusiveIcon color="success" />;
     const workInProgressIcon = <EngineeringOutlinedIcon color="primary" />;
     const chipColor = useColorList(0);
@@ -256,17 +257,18 @@ function EamPlusComparisonTable() {
                             }
 
                             <ComparisonTableCategoryRow category="Vault Peeker" />
+
+                            <ComparisonTableRow
+                                attribute="Export Totals"
+                                defaultValue={partlyTrueIcon}
+                                signedInValue={partlyTrueIcon}
+                                eamPlusValue={trueIcon}
+                            />
                             {
                                 expandedVP ?
                                     <>
                                         <ComparisonTableRow
                                             attribute="Extensive filter options"
-                                            defaultValue={trueIcon}
-                                            signedInValue={trueIcon}
-                                            eamPlusValue={trueIcon}
-                                        />
-                                        <ComparisonTableRow
-                                            attribute="Export Totals"
                                             defaultValue={trueIcon}
                                             signedInValue={trueIcon}
                                             eamPlusValue={trueIcon}
@@ -293,12 +295,6 @@ function EamPlusComparisonTable() {
                                 defaultValue={falseIcon}
                                 signedInValue={falseIcon}
                                 eamPlusValue={trueIcon}
-                            />
-                            <ComparisonTableRow
-                                attribute="Custom timing settings"
-                                defaultValue={falseIcon}
-                                signedInValue={falseIcon}
-                                eamPlusValue={workInProgressIcon}
                             />
                             <ComparisonTableCategoryRow category="Miscellaneous" />
                             <ComparisonTableRow
