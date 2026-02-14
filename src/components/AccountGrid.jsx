@@ -15,6 +15,7 @@ import NoRowsOverlay from "./GridComponents/NoRowsOverlay";
 import { GroupUI } from "./GridComponents/GroupUI";
 import FloatingSelectedRowComponent from "./GridComponents/FloatingSelectedRowComponent";
 import RequestStateChip from "./GridComponents/RequestStateChip";
+import AccountContextMenu from "./GridComponents/AccountContextMenu";
 
 
 function AccountGrid({ setShowAddNewAccount }) {
@@ -29,6 +30,8 @@ function AccountGrid({ setShowAddNewAccount }) {
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
     const [floatingPosition, setFloatingPosition] = useState(null);
     const [performFloatingPositionUpdate, setPerformFloatingPositionUpdate] = useState(0);
+    const [contextMenuPosition, setContextMenuPosition] = useState(null);
+    const [contextMenuAccount, setContextMenuAccount] = useState(null);
 
     useEffect(() => {
         setShownAccounts(getSearchedAccounts());
@@ -171,6 +174,11 @@ function AccountGrid({ setShowAddNewAccount }) {
         }
     };
 
+    const handleCloseContextMenu = () => {
+        setContextMenuPosition(null);
+        setContextMenuAccount(null);
+    };
+
     const getSearchedAccounts = () => {
         if (search === '') return accounts;
 
@@ -186,7 +194,9 @@ function AccountGrid({ setShowAddNewAccount }) {
     };
 
     return (
-        <Paper sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', background: theme.palette.background.paper, position: 'relative' }}>
+        <Paper 
+            sx={{ minHeight: '200px', height: 'calc(100vh - 70px)', width: '100%', background: theme.palette.background.paper, position: 'relative' }}
+        >
             <DataGrid
                 initialState={{
                     columns: {
@@ -240,6 +250,26 @@ function AccountGrid({ setShowAddNewAccount }) {
                     basePopper: {
                         placement: 'bottom-start',
                     },
+                    row: {
+                        onContextMenu: (event) => {
+                            event.preventDefault();
+                            const rowElement = event.currentTarget;
+                            const rowIdString = rowElement.getAttribute('data-id');
+                            const rowId = rowIdString?.length > 0 ? parseInt(rowIdString, 10) : null;
+                            if (rowId === null) {
+                                console.error('Could not determine row ID from event:', event);
+                                return;
+                            }
+                            const account = accounts.find(acc => acc.id === rowId);
+                            if (account) {
+                                setContextMenuAccount(account);
+                                setContextMenuPosition({
+                                    mouseX: event.clientX,
+                                    mouseY: event.clientY,
+                                });
+                            }
+                        },
+                    },
                 }}
             />
 
@@ -251,6 +281,18 @@ function AccountGrid({ setShowAddNewAccount }) {
                     await new Promise(resolve => setTimeout(resolve, 250));
                     setPerformFloatingPositionUpdate(value);
                 }}
+            />
+
+            {/* Context menu for right-click actions */}
+            <AccountContextMenu
+                anchorPosition={
+                    contextMenuPosition !== null
+                        ? { top: contextMenuPosition.mouseY, left: contextMenuPosition.mouseX }
+                        : null
+                }
+                onClose={handleCloseContextMenu}
+                account={contextMenuAccount}
+                accounts={accounts}
             />
         </Paper>
     );
