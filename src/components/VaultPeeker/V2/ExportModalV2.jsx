@@ -376,7 +376,6 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
                         {previewUrl ? (
                             <Box
                                 sx={{
-                                    display: 'inline-block',
                                     minWidth: '100%',
                                     minHeight: '100%',
                                     display: 'flex',
