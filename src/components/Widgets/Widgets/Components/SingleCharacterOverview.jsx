@@ -1,98 +1,55 @@
-import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
-import usePortraitReady from "../../../../hooks/usePortraitReady";
+import { Box, Typography } from "@mui/material";
 import CharacterPortrait from "../../../Realm/CharacterPortrait";
-import { getItemById } from "../../../../utils/realmItemUtils";
 import { classes } from "../../../../assets/constants";
-import itemsSlotTypeMap from "../../../../assets/slotmap";
-import { drawItem } from "../../../../utils/realmItemDrawUtils";
-import { useEffect, useState } from "react";
-import { ADCENTUREERS_BELT, BACKPACK_EXTENDER_ITEM_ID, BACKPACK_ITEM_ID, extractEquipmentIds, getXof8OfCharacter } from "../../../../utils/realmCharacterUtils";
+import { useEffect, useMemo, useState } from "react";
+import { ADCENTUREERS_BELT, BACKPACK_EXTENDER_ITEM_ID, BACKPACK_ITEM_ID, getXof8OfCharacter } from "../../../../utils/realmCharacterUtils";
+import { getItemById } from "../../../../utils/realmItemUtils";
+import { drawItemAsync } from "../../../../utils/realmItemDrawUtils";
+import ItemGridV2 from "../../../VaultPeeker/V2/ItemGridV2";
 
-function SingleCharacterOverview({ character, number }) {
-    const isPortraitReady = usePortraitReady();
+function SingleCharacterOverview({ character, number, parsedItems }) {
 
-    const [itemImages, setItemImages] = useState([null, null, null, null]);
-    const [items, setItems] = useState([null, null, null, null]);
-    const [xof8, setXof8] = useState(0);
-    const [backpackItemImages, setBackpackItemImages] = useState([null, null, null]);
+    // Map parsed equipment items to ItemGridV2 format
+    const equipmentItems = useMemo(() => {
+        if (!parsedItems) return [];
+        return parsedItems
+            .filter((i) => i.container_index === 0)
+            .sort((a, b) => (a.slot_index || 0) - (b.slot_index || 0))
+            .map((item) => ({
+                itemId: item.item_id,
+                count: 1,
+                maxRarity: item.enchant_ids?.length ? Math.min(4, item.enchant_ids.length) : 0,
+                parsedItem: item,
+            }));
+    }, [parsedItems]);
+
+    const xof8 = useMemo(() => getXof8OfCharacter(character), [character]);
+    const charClass = useMemo(() => classes[character.char_class], [character.char_class]);
+
+    // Backpack / extender / belt indicator icons
+    const [backpackIcons, setBackpackIcons] = useState({ backpack: null, extender: null, belt: null });
 
     useEffect(() => {
-        console.log("char", character);
-        const eq = extractEquipmentIds(character?.equipment);
-        const eqItems = eq.map(id => getItemById(id));
-        setItems(eqItems);
-
-        const cls = classes[character.char_class];
-        const charSlots = cls?.[4];
-        const slotMapKeys = charSlots.map((slot) => Object.keys(itemsSlotTypeMap).find((key) => itemsSlotTypeMap[key].slotType === slot));
-        const slotMapValues = slotMapKeys.map((key) => itemsSlotTypeMap[key]);
-
-        //Item images
-        eqItems.forEach((item, index) => {
-            const slot = slotMapValues[index];
-            const itemId = eq[index];
-
-            if (!item || itemId === -1) {
-                // Empty slot - use silhouette
-                const slotItem = [
-                    -1,
-                    null,
-                    null,
-                    slot.sheet[0],
-                    slot.sheet[1],
-                ];
-                drawItem(
-                    "realm/itemsilhouettes_25p.png",
-                    slotItem,
-                    (imageUrl) => {
-                        setItemImages((prevImages) => {
-                            const newImages = [...prevImages];
-                            newImages[index] = imageUrl;
-                            return newImages;
-                        });
-                    }
-                );
-                return;
+        let cancelled = false;
+        const load = async () => {
+            const results = {};
+            if (character.backpack_slots > 0) {
+                const item = getItemById(BACKPACK_ITEM_ID);
+                if (item) results.backpack = await drawItemAsync("renders.png", item);
             }
-
-            drawItem("renders.png", item, (imageUrl) => {
-                setItemImages((prevImages) => {
-                    const newImages = [...prevImages];
-                    newImages[index] = imageUrl;
-                    return newImages;
-                });
-            });
-        })
-
-        setXof8(getXof8OfCharacter(character));
-
-        drawItem("renders.png", getItemById(BACKPACK_ITEM_ID), (imageUrl) => {
-            setBackpackItemImages((prevImages) => {
-                const newImages = [...prevImages];
-                newImages[0] = imageUrl;
-                return newImages;
-            });
-        });
-        drawItem("renders.png", getItemById(BACKPACK_EXTENDER_ITEM_ID), (imageUrl) => {
-            setBackpackItemImages((prevImages) => {
-                const newImages = [...prevImages];
-                newImages[1] = imageUrl;
-                return newImages;
-            });
-        });
-        drawItem("renders.png", getItemById(ADCENTUREERS_BELT), (imageUrl) => {
-            setBackpackItemImages((prevImages) => {
-                const newImages = [...prevImages];
-                newImages[2] = imageUrl;
-                return newImages;
-            });
-        });
-
+            if (character.backpack_slots > 8) {
+                const item = getItemById(BACKPACK_EXTENDER_ITEM_ID);
+                if (item) results.extender = await drawItemAsync("renders.png", item);
+            }
+            if (character.has3_quickslots > 0) {
+                const item = getItemById(ADCENTUREERS_BELT);
+                if (item) results.belt = await drawItemAsync("renders.png", item);
+            }
+            if (!cancelled) setBackpackIcons(prev => ({ ...prev, ...results }));
+        };
+        load();
+        return () => { cancelled = true; };
     }, [character]);
-
-    if (!isPortraitReady) {
-        return;
-    }
 
     return (
         <Box
@@ -109,40 +66,23 @@ function SingleCharacterOverview({ character, number }) {
             <Typography variant="h6">{number}.</Typography>
             <CharacterPortrait type={character.class} skin={character?.texture} tex1={character?.tex1} tex2={character?.tex2} adjust={false} />
             {/* Equipment */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: theme => theme.palette.background.default,
-                    borderRadius: 1,
-                    gap: 0.25,
-                    ml: 1
-                }}
-            >
-                {
-                    itemImages.map((img, index) => {
-                        if (!img) {
-                            return (
-                                <Skeleton key={index} variant="rounded" width={50} height={50} />
-                            )
-                        }
-
-                        return (
-                            <Tooltip key={index} title={img ? `${items[index][0]}` : "Loading..."}>
-                                <img
-                                    key={index}
-                                    src={img}
-                                    alt={`Item Slot ${index + 1}`}
-                                    width={50}
-                                    height={50}
-                                />
-                            </Tooltip>
-                        )
-                    })
-                }
-            </Box>
+            {equipmentItems.length > 0 && (
+                <Box
+                    sx={{
+                        backgroundColor: theme => theme.palette.background.default,
+                        borderRadius: 1,
+                        p: 0.25,
+                    }}
+                >
+                    <ItemGridV2
+                        items={equipmentItems}
+                        showCounts={false}
+                        showEmptySlots={true}
+                        showTooltips={true}
+                        columns={4}
+                    />
+                </Box>
+            )}
             {/* Stats */}
             <Box>
                 <Typography variant="body2" fontWeight="bold" color={xof8 === 8 ? 'warning' : 'inherit'}>
@@ -152,6 +92,7 @@ function SingleCharacterOverview({ character, number }) {
                     {character.current_fame} <img src="/realm/fame.png" alt="Fame" width={16} height={16} style={{ marginBottom: -2 }} />
                 </Typography>
             </Box>
+            {/* Backpack / Extender / Belt indicators */}
             <Box
                 sx={{
                     display: 'flex',
@@ -161,21 +102,12 @@ function SingleCharacterOverview({ character, number }) {
                     alignItems: 'end',
                     maxHeight: '50px',
                     width: 'fit-content',
-                    ml: "-8px"
+                    ml: '-8px',
                 }}
             >
-                {
-                    character.backpack_slots > 0 && backpackItemImages[0] &&
-                    <img src={backpackItemImages[0]} alt="Backpack" width={25} height={25} />
-                }
-                {
-                    character.backpack_slots > 8 && backpackItemImages[1] &&
-                    <img src={backpackItemImages[1]} alt="Backpack Extender" width={25} height={25} />
-                }
-                {
-                    character.has3_quickslots > 0 && backpackItemImages[2] &&
-                    <img src={backpackItemImages[2]} alt="Adventurer's Belt" width={25} height={25} />
-                }
+                {backpackIcons.backpack && <img src={backpackIcons.backpack} alt="Backpack" width={25} height={25} />}
+                {backpackIcons.extender && <img src={backpackIcons.extender} alt="Backpack Extender" width={25} height={25} />}
+                {backpackIcons.belt && <img src={backpackIcons.belt} alt="Adventurer's Belt" width={25} height={25} />}
             </Box>
         </Box>
     );
