@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import AccountViewV2 from "./AccountViewV2";
 import useDebugLogs from "../../../hooks/useDebugLogs";
+import useUserSettings from "../../../hooks/useUserSettings";
 
 // Page size options
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 'all'];
@@ -18,11 +19,13 @@ function AccountsViewV2() {
     const theme = useTheme();
     const { accountsData, filter, isLoading } = useVaultPeeker();
     const [collapsedAccounts, setCollapsedAccounts] = useState(new Set());
+    const { getByKeyAndSubKey, setByKeyAndSubKey } = useUserSettings();
+    const rowsPerPage = getByKeyAndSubKey('vaultPeeker', 'rowsPerPage') || DEFAULT_PAGE_SIZE;
     const { debugLogs } = useDebugLogs();
     
     // Pagination state
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+    const [pageSize, setPageSize] = useState(rowsPerPage);
     // Filter accounts based on current filter state
     const filteredAccounts = useMemo(() => {
         if (!accountsData?.length) return [];
@@ -83,7 +86,8 @@ function AccountsViewV2() {
     const handlePageSizeChange = useCallback((event) => {
         const newSize = event.target.value;
         setPageSize(newSize);
-        setPage(1); // Reset to first page when changing page size
+        setPage(1);
+        setByKeyAndSubKey('vaultPeeker', 'rowsPerPage', newSize);
     }, []);
 
     // Show loading state - only show if actually loading and no data yet
