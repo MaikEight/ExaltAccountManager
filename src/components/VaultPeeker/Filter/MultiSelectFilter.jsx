@@ -12,6 +12,7 @@ const ITEM_PADDING_TOP = 8;
  * @param {Array} selectedValues - Array of selected values
  * @param {Function} onChange - Callback with new selected values array
  * @param {number} width - Component width (default: 150)
+ * @param {number} menuWidth - Dropdown menu width (defaults to width if not specified)
  * @param {Function} renderOption - Optional custom render for menu items
  * @param {Function} renderChip - Optional custom render for selected chips
  */
@@ -21,6 +22,7 @@ function MultiSelectFilter({
     selectedValues,
     onChange,
     width = 150,
+    menuWidth,
     renderOption,
     renderChip,
 }) {
@@ -47,7 +49,7 @@ function MultiSelectFilter({
             paper: {
                 sx: {
                     maxHeight: ITEM_HEIGHT * 5 + ITEM_PADDING_TOP,
-                    width: width,
+                    width: menuWidth || width,
                     backgroundColor: 'background.paper',
                     border: '1px solid',
                     borderColor: 'divider',
@@ -100,10 +102,10 @@ function MultiSelectFilter({
                         }
                         return (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, pl: 0.5, py: 0.25 }}>
-                                {selected.map((value) => {
+                                {selected.map((value, index) => {
                                     const option = getOptionByValue(value);
                                     if (renderChip) {
-                                        return renderChip(option, value);
+                                        return renderChip(option, value, index);
                                     }
                                     return (
                                         <Chip
