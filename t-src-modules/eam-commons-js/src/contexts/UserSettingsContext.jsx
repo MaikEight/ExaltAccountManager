@@ -76,7 +76,7 @@ const defaultSettings = {
         accountView: {
             hiddenVaults: [], //Array of vault names that are hidden
         },
-        rowsPerPage: 10,
+        rowsPerPage: 25,
         density: 'comfortable', // 'dense' | 'comfortable' | 'spacious'
     },
     backgroundSync: {
