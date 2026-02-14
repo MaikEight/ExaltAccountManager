@@ -33,8 +33,8 @@ function ChangelogVersion4_4_0() {
                         variant="rectangular"
                         sx={{
                             width: '100%',
-                            height: '525px',
-                            minHeight: '525px',
+                            height: '511.75px',
+                            minHeight: '511.75px',
                             borderRadius: `0 0 ${theme.shape.borderRadius * 2}px ${theme.shape.borderRadius * 2}px`,
                             flexShrink: 0,
                             borderBottom: `1px solid ${theme.palette.divider}`,
@@ -108,6 +108,7 @@ function ChangelogVersion4_4_0() {
                         "Some widgets have its own settings, accessible via the edit icon in the top right of the Widget itself.",
                     ]}
                 />
+
                 <ChangelogEntry
                     title={'Vault Peeker'}
                     listOfChanges={[
@@ -122,6 +123,13 @@ function ChangelogVersion4_4_0() {
                     listOfChanges={[
                         "Added the option to start the Daily Login process manually via a button in the Daily Logins page.",
                         "Fixed an issue where the Daily Login did not properly start on the second day and onwards.",
+                    ]}
+                />
+
+                <ChangelogEntry
+                    title={"Accounts Table"}
+                    listOfChanges={[
+                        "• Added a new context menu when right-clicking an account in the Accounts Table with various options like starting the game, reopening the account, and more.",
                     ]}
                 />
 
