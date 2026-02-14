@@ -85,7 +85,7 @@ function WidgetGrid() {
                 <Box
                     sx={{
                         display: 'grid',
-                        gridTemplateColumns: `repeat(${slots}, 1fr)`,
+                        gridTemplateColumns: `repeat(${slots}, minmax(0, 1fr))`,
                         gap: 1,
                         width: '100%',
                     }}
