@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import AccountGrid from "../components/AccountGrid";
 import { useEffect, useState } from "react";
-import AccountDetails from "../components/AccountDetails/AccountDetails";
 import AddNewAccount from "../components/AddNewAccount/AddNewAccount";
 import useAccounts from "../hooks/useAccounts";
 import useWidgets from '../hooks/useWidgets';
@@ -13,12 +12,14 @@ function AccountsPage() {
     const [showAddNewAccount, setShowAddNewAccount] = useState(false);
 
     useEffect(() => {
+        if (!subscribeToEvent) return;
+
         const unsubscribe = subscribeToEvent(WidgetBarEvents.ON_CLOSE, () => {
             setSelectedAccount(null);
         });
 
         return () => {
-            closeWidgetBar();
+            closeWidgetBar?.();
             unsubscribe();
         };
     }, []);
