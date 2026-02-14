@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { drawItemAsync } from "../../../utils/realmItemDrawUtils";
 import items from "../../../assets/constants";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
+import { TooltipUiForItem } from "../../Widgets/Widgets/Components/InventoryRender";
 
 const ITEM_BASE_SIZE = 40;
 const DEFAULT_ITEM_PADDING = 2;
@@ -24,6 +25,7 @@ const DEFAULT_ITEM_PADDING = 2;
  * @param {boolean} props.showEmptySlots - Whether to render empty slot placeholders
  * @param {string} props.emptySlotImage - Custom image for empty slots
  * @param {number} props.columns - Fixed number of columns (if not set, uses flex wrap)
+ * @param {boolean} props.showTooltips - Whether to show item name tooltips on hover
  */
 function ItemGridV2({
     items: itemsData = [],
@@ -33,10 +35,11 @@ function ItemGridV2({
     showEmptySlots = false,
     emptySlotImage,
     columns,
+    showTooltips = false,
 }) {
     const theme = useTheme();
     const containerRef = useRef(null);
-    const { itemPadding: contextPadding } = useVaultPeeker();
+    const { itemPadding: contextPadding } = useVaultPeeker() || {};
     
     const itemPadding = propPadding ?? contextPadding ?? DEFAULT_ITEM_PADDING;
     const itemSize = ITEM_BASE_SIZE + (2 * itemPadding);
@@ -204,7 +207,12 @@ function ItemGridV2({
                 const isHovered = hoveredIndex === displayItem.index;
                 const showCount = showCounts && displayItem.count > 1 && !displayItem.isEmptySlot;
 
-                return (
+                const itemContent = items[displayItem.itemId];
+                const tooltipElement = showTooltips && !displayItem.isEmptySlot && itemContent
+                    ? <TooltipUiForItem item={itemContent} />
+                    : null;
+
+                const itemBox = (
                     <Box
                         key={displayItem.index}
                         onClick={(e) => handleItemClick(displayItem, e)}
@@ -290,6 +298,10 @@ function ItemGridV2({
                         )}
                     </Box>
                 );
+
+                return tooltipElement
+                    ? <Tooltip key={displayItem.index} title={tooltipElement}>{itemBox}</Tooltip>
+                    : itemBox;
             })}
         </Box>
     );
