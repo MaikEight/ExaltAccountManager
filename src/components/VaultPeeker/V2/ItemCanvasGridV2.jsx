@@ -5,7 +5,6 @@ import { drawItemPromise, getItemRarity } from '../../../utils/realmItemDrawUtil
 import { TooltipUiForItem } from '../../Widgets/Widgets/Components/InventoryRender';
 import useVaultPeeker from '../../../hooks/useVaultPeeker';
 import useDebugLogs from './../../../hooks/useDebugLogs';
-import { Opacity } from '@mui/icons-material';
 
 const SPRITESHEET_SRC = "renders.png";
 
