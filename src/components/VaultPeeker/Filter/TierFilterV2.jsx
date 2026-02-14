@@ -75,8 +75,28 @@ function TierFilterV2() {
     };
 
     // Custom chip renderer for colored UT/ST
-    const renderChip = (option, value) => {
+    const renderChip = (option, value, index) => {
         if (!option) return null;
+        
+        // If 3+ selected, show "x selected" only once
+        if (selectedValues.length >= 3) {
+            if (index === 0) {
+                return (
+                    <Chip
+                        key="count"
+                        label={`${selectedValues.length} selected`}
+                        size="small"
+                        sx={{
+                            height: 20,
+                            fontSize: '0.7rem',
+                        }}
+                        variant="outlined"
+                    />
+                );
+            }
+            return null;
+        }
+        
         return (
             <Chip
                 key={value}
