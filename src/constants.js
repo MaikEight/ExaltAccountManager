@@ -148,3 +148,9 @@ export const EAM_PLUS_PURCHASE_SUCCESS_MESSAGES = Object.freeze([
     `Plus mode: engaged. ${MASCOT_NAME} feels fancy now.✨`,
     `Thank you for supporting EAM! ${MASCOT_NAME} may cry digital tears of joy.`,
 ]);
+
+// End-of-month reminder notification images (matching the Rust content.rs selection)
+export const END_OF_MONTH_NOTIFICATION_IMAGES = Object.freeze([
+    '/mascot/Info/notification_very_low_res.png',
+    '/mascot/Info/notification_eam_very_low_res.png',
+]);
