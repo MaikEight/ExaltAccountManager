@@ -57,5 +57,6 @@ libc = "0.2"
 security-framework = "3.5"
 security-framework-sys = "2.15"
 objc2 = "0.6"
-objc2-foundation = { version = "0.3", features = ["NSString", "NSURL", "NSDate", "NSError", "NSCalendar", "NSDictionary", "NSArray", "NSSet", "NSObject", "NSValue"] }
-objc2-user-notifications = { version = "0.3", features = ["UNUserNotificationCenter", "UNNotificationContent", "UNNotificationTrigger", "UNNotificationRequest", "UNNotificationAttachment", "UNNotificationAction", "UNNotificationCategory", "UNNotificationSettings", "UNNotificationSound"] }
+objc2-foundation = { version = "0.3", features = ["NSString", "NSURL", "NSDate", "NSError", "NSCalendar", "NSDictionary", "NSArray", "NSSet", "NSObject", "NSValue", "NSBundle"] }
+block2 = "0.6"
+objc2-user-notifications = { version = "0.3", features = ["block2", "UNUserNotificationCenter", "UNNotificationContent", "UNNotificationTrigger", "UNNotificationRequest", "UNNotificationAttachment", "UNNotificationAction", "UNNotificationCategory", "UNNotificationSettings", "UNNotificationSound"] }
