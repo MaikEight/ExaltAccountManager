@@ -29,3 +29,4 @@ pub use diesel_functions::*;
 pub mod rotmg_updater;
 pub mod limiter;
 pub mod parser;
+pub mod toast_notifications;
