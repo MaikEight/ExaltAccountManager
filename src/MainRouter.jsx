@@ -20,6 +20,7 @@ import VaultPeekerPage from './pages/VaultPeekerPage';
 import VaultPeekerPageV2 from './pages/V2/VaultPeekerPageV2';
 import FatalErrorPage from './pages/FatalErrorPage';
 import DeepLinkingComponent from './components/DeepLinkingComponent';
+import NotificationScheduler from './components/NotificationScheduler';
 import ProfilePage from './pages/ProfilePage';
 import PaymentSuccessful from './pages/PaymentSuccessful';
 import { DiscordContextProvider } from './contexts/DiscordContext';
@@ -61,6 +62,7 @@ function MainRouter() {
                                                     <NewsContextProvider>
                                                         <DiscordContextProvider>
                                                             <DeepLinkingComponent />
+                                                            <NotificationScheduler />
                                                             <Routes>
                                                                 <Route path='/' element={<AccountsPage />}></Route>
                                                                 <Route path='/error' element={<FatalErrorPage />}></Route>
