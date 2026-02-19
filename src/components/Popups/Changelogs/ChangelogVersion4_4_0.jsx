@@ -119,17 +119,34 @@ function ChangelogVersion4_4_0() {
                 />
 
                 <ChangelogEntry
-                    title={'Daily Logins'}
+                    title={"Accounts Table"}
                     listOfChanges={[
-                        "Added the option to start the Daily Login process manually via a button in the Daily Logins page.",
-                        "Fixed an issue where the Daily Login did not properly start on the second day and onwards.",
+                        "• Added a new context menu when right-clicking an account in the Accounts Table with various options like starting the game, reopening the account, and more.",
                     ]}
                 />
 
                 <ChangelogEntry
-                    title={"Accounts Table"}
+                    title={'Notifications'}
                     listOfChanges={[
-                        "• Added a new context menu when right-clicking an account in the Accounts Table with various options like starting the game, reopening the account, and more.",
+                        "Added support for toast notifications on Windows and macOS.",
+                        "Added a end-of-month reminder toast notification for unclaimed Daily Login rewards. This can be disabled in the Settings.",
+                    ]}
+                />
+
+                <ChangelogEntry
+                    title={'Settings'}
+                    listOfChanges={[
+                        "Added a new setting to enable or disable the end-of-month reminder toast notification for unclaimed Daily Login rewards.",
+                        "Added a new setting to change the item render density.",
+                        "Fixed an issue where Okta was not properly being displayed when opting in for analytics.",
+                    ]}
+                />
+
+                <ChangelogEntry
+                    title={'Daily Logins'}
+                    listOfChanges={[
+                        "Added the option to start the Daily Login process manually via a button in the Daily Logins page.",
+                        "Fixed an issue where the Daily Login did not properly start on the second day and onwards.",
                     ]}
                 />
 
