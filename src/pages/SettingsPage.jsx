@@ -1,5 +1,5 @@
 
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Input, InputLabel, LinearProgress, MenuItem, Paper, Popover, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Popover, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -61,8 +61,10 @@ function SettingsPage() {
     const [dataDeletionRequestLoading, setDataDeletionRequestLoading] = useState(false);
     const [anchorElDeletion, setAnchorElDeletion] = useState(null);
     const [mascotImage, setMascotImage] = useState('/mascot/Error/error_mascot_only_very_small_low_res.png');
-    const [previousOptOutState, setPreviousOptOutState] = useState(null);
     const [showHappyMascot, setShowHappyMascot] = useState(false);
+    const prevOptOutRef = useRef(null);
+    const happyMascotTimerRef = useRef(null);
+
     const openDeletionPopup = Boolean(anchorElDeletion);
     const idDeletionPopup = open ? 'data-deletion-popover' : undefined;
 
@@ -203,29 +205,32 @@ function SettingsPage() {
         updateAnalytics();
     }, [analyticsSettings]);
 
-    // Track when user opts back in to analytics after opting out
+    // Show sad mascot while opted out; briefly show happy mascot when opting back in
     useEffect(() => {
-        if (!analyticsSettings || previousOptOutState === null) {
-            if (analyticsSettings) {
-                setPreviousOptOutState(analyticsSettings.optOut);
-            }
-            return;
-        }
+        if (!analyticsSettings) return;
 
-        // If user opts out, hide happy mascot immediately
-        if (analyticsSettings.optOut === true) {
+        const prev = prevOptOutRef.current;
+        const current = analyticsSettings.optOut;
+        prevOptOutRef.current = current;
+
+        // Skip on initial load
+        if (prev === null) return;
+
+        if (current === true) {
+            // Opted out — cancel any pending happy timer and hide happy immediately
+            if (happyMascotTimerRef.current) {
+                clearTimeout(happyMascotTimerRef.current);
+                happyMascotTimerRef.current = null;
+            }
             setShowHappyMascot(false);
-        }
-        // If user was previously opted out and now opts back in
-        else if (previousOptOutState === true && analyticsSettings.optOut === false) {
+        } else if (prev === true && current === false) {
+            // Transitioned opted-out → opted-in: show happy briefly
             setShowHappyMascot(true);
-            // Hide the happy mascot after 3 seconds
-            setTimeout(() => {
+            happyMascotTimerRef.current = setTimeout(() => {
                 setShowHappyMascot(false);
+                happyMascotTimerRef.current = null;
             }, 3000);
         }
-
-        setPreviousOptOutState(analyticsSettings.optOut);
     }, [analyticsSettings?.optOut]);
 
     const isDarkMode = () => {
@@ -1234,24 +1239,28 @@ function SettingsPage() {
                                     }}
                                 />
                             </Box>
-                            <img
-                                src="/mascot/Error/sad_low_res.png"
-                                alt={`${MASCOT_NAME} is sad`}
-                                style={{
-                                    maxHeight: '64px',
-                                    opacity: analyticsSettings.optOut ? 1 : 0,
-                                    transition: 'opacity 0.2s ease-in-out',
-                                }}
-                            />
-                            <img
-                                src="/mascot/Happy/happy_very_low_res.png"
-                                alt={`${MASCOT_NAME} is happy`}
-                                style={{
-                                    maxHeight: '64px',
-                                    opacity: showHappyMascot ? 1 : 0,
-                                    transition: 'opacity 0.2s ease-in-out',
-                                }}
-                            />
+                            <Box sx={{ position: 'relative', height: '64px', width: '64px' }}>
+                                <img
+                                    src="/mascot/Error/sad_low_res.png"
+                                    alt={`${MASCOT_NAME} is sad`}
+                                    style={{
+                                        position: 'absolute',
+                                        maxHeight: '64px',
+                                        opacity: analyticsSettings.optOut ? 1 : 0,
+                                        transition: 'opacity 0.2s ease-in-out',
+                                    }}
+                                />
+                                <img
+                                    src="/mascot/Happy/happy_very_low_res.png"
+                                    alt={`${MASCOT_NAME} is happy`}
+                                    style={{
+                                        position: 'absolute',
+                                        maxHeight: '64px',
+                                        opacity: showHappyMascot ? 1 : 0,
+                                        transition: 'opacity 0.2s ease-in-out',
+                                    }}
+                                />
+                            </Box>
                         </Box>
                     }
                 </Box>
