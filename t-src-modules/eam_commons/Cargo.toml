@@ -37,6 +37,18 @@ zip = "7"
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "errhandlingapi", "winbase"] }
 wmi = "0.17.3"
+windows = { version = "0.58", features = [
+    "UI_Notifications",
+    "UI_Notifications_Management",
+    "Data_Xml_Dom",
+    "Foundation",
+    "Foundation_Collections",
+    "Win32_UI_Shell",
+    "Win32_UI_Shell_PropertiesSystem",
+    "Win32_System_Com",
+    "Win32_System_Com_StructuredStorage",
+    "Win32_Storage_EnhancedStorage",
+] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 anyhow = "1"
@@ -44,3 +56,6 @@ core-foundation = "0.10"
 libc = "0.2"
 security-framework = "3.5"
 security-framework-sys = "2.15"
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", features = ["NSString", "NSURL", "NSDate", "NSError", "NSCalendar", "NSDictionary", "NSArray", "NSSet", "NSObject", "NSValue"] }
+objc2-user-notifications = { version = "0.3", features = ["UNUserNotificationCenter", "UNNotificationContent", "UNNotificationTrigger", "UNNotificationRequest", "UNNotificationAttachment", "UNNotificationAction", "UNNotificationCategory", "UNNotificationSettings", "UNNotificationSound"] }
