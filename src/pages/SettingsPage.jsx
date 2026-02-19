@@ -872,6 +872,50 @@ function SettingsPage() {
                 </Box>
             </ComponentBox>
 
+            {/* Notifications */}
+            <ComponentBox
+                title="Notifications"
+                icon={<CalendarMonthOutlinedIcon />}
+                innerSx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <Typography variant="body2" color="text.secondary">
+                    {MASCOT_NAME} can remind you to claim your daily login rewards before the month resets.
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    When enabled, a toast notification will be displayed on the last day of each month around noon.
+                </Typography>
+                <Box
+                    sx={{
+                        mt: 1,
+                        ml: 1,
+                    }}
+                >
+                    <FormControlLabel
+                        sx={{ gap: 0.5 }}
+                        control={
+                            <Tooltip
+                                title={(settings?.notifications?.endOfMonthReminderEnabled ?? true) ? "Disable end-of-month reminder" : "Enable end-of-month reminder"}
+                            >
+                                <Switch
+                                    size="small"
+                                    checked={settings?.notifications?.endOfMonthReminderEnabled ?? true}
+                                    onChange={() => {
+                                        const newSettings = { ...settings };
+                                        if (!newSettings.notifications) newSettings.notifications = {};
+                                        newSettings.notifications.endOfMonthReminderEnabled = !newSettings.notifications.endOfMonthReminderEnabled;
+                                        setSettings(newSettings);
+                                    }}
+                                />
+                            </Tooltip>
+                        }
+                        label={'End-of-month daily login reminder'}
+                    />
+                </Box>
+            </ComponentBox>
+
             {/* Theme */}
             <ComponentBox
                 title="Theme"
