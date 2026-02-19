@@ -1,16 +1,19 @@
-use log::{error, info, warn};
+use log::{info, warn};
 use std::io::Error;
 
 use objc2::rc::Retained;
 use objc2::runtime::Bool;
 use objc2_foundation::{
-    NSCalendar, NSDate, NSDateComponents, NSDictionary, NSString, NSURL,
+    NSArray, NSBundle, NSDateComponents, NSError, NSSet, NSString, NSURL,
 };
 use objc2_user_notifications::{
-    UNCalendarNotificationTrigger, UNMutableNotificationContent, UNNotificationAction,
-    UNNotificationCategory, UNNotificationRequest, UNNotificationSound,
+    UNAuthorizationOptions, UNCalendarNotificationTrigger, UNMutableNotificationContent,
+    UNNotificationAction, UNNotificationActionOptions, UNNotificationCategory,
+    UNNotificationCategoryOptions, UNNotificationRequest, UNNotificationSound,
     UNTimeIntervalNotificationTrigger, UNUserNotificationCenter,
 };
+use block2::RcBlock;
+use chrono::{Datelike, Timelike};
 
 use super::{ScheduledNotificationInfo, ToastAction, ToastNotification};
 
@@ -27,28 +30,23 @@ pub fn show_toast_notification(notification: &ToastNotification) -> Result<(), E
     let content = build_notification_content(notification)?;
 
     // Fire in 1 second (UNTimeIntervalNotificationTrigger requires > 0)
-    let trigger = unsafe {
-        UNTimeIntervalNotificationTrigger::triggerWithTimeInterval_repeats(1.0, false)
-    };
+    let trigger =
+        UNTimeIntervalNotificationTrigger::triggerWithTimeInterval_repeats(1.0, false);
 
     let identifier = NSString::from_str(&format!("eam-instant-{}", uuid::Uuid::new_v4()));
 
-    let request = unsafe {
-        UNNotificationRequest::requestWithIdentifier_content_trigger(
-            &identifier,
-            &content,
-            Some(&trigger),
-        )
-    };
+    let request = UNNotificationRequest::requestWithIdentifier_content_trigger(
+        &identifier,
+        &content,
+        Some(&trigger),
+    );
 
-    let center = unsafe { UNUserNotificationCenter::currentNotificationCenter() };
+    let center = get_notification_center()?;
 
     // Use a simple synchronous approach: add the request and log errors
     // UNUserNotificationCenter's addNotificationRequest runs asynchronously,
     // but we fire-and-forget here since there's no meaningful recovery.
-    unsafe {
-        center.addNotificationRequest_withCompletionHandler(&request, None);
-    }
+    center.addNotificationRequest_withCompletionHandler(&request, None);
 
     info!("Toast notification requested on macOS.");
     Ok(())
@@ -85,7 +83,7 @@ pub fn schedule_toast_notification(
         })?;
 
     // Build NSDateComponents for the calendar trigger
-    let date_components = unsafe {
+    let date_components = {
         let components = NSDateComponents::new();
         components.setYear(dt.date().year() as isize);
         // chrono months are 1-based, same as NSDateComponents
@@ -97,28 +95,22 @@ pub fn schedule_toast_notification(
         components
     };
 
-    let trigger = unsafe {
-        UNCalendarNotificationTrigger::triggerWithDateMatchingComponents_repeats(
-            &date_components,
-            false, // Don't repeat
-        )
-    };
+    let trigger = UNCalendarNotificationTrigger::triggerWithDateMatchingComponents_repeats(
+        &date_components,
+        false, // Don't repeat
+    );
 
     let identifier = NSString::from_str(tag);
 
-    let request = unsafe {
-        UNNotificationRequest::requestWithIdentifier_content_trigger(
-            &identifier,
-            &content,
-            Some(&trigger),
-        )
-    };
+    let request = UNNotificationRequest::requestWithIdentifier_content_trigger(
+        &identifier,
+        &content,
+        Some(&trigger),
+    );
 
-    let center = unsafe { UNUserNotificationCenter::currentNotificationCenter() };
+    let center = get_notification_center()?;
 
-    unsafe {
-        center.addNotificationRequest_withCompletionHandler(&request, None);
-    }
+    center.addNotificationRequest_withCompletionHandler(&request, None);
 
     info!(
         "Toast notification scheduled on macOS for {} with tag '{}'.",
@@ -142,14 +134,12 @@ pub fn cancel_scheduled_toast_notification(tag: &str) -> Result<bool, Error> {
         tag
     );
 
-    let center = unsafe { UNUserNotificationCenter::currentNotificationCenter() };
+    let center = get_notification_center()?;
 
     let identifier = NSString::from_str(tag);
     let identifiers = NSArray::from_retained_slice(&[identifier]);
 
-    unsafe {
-        center.removePendingNotificationRequestsWithIdentifiers(&identifiers);
-    }
+    center.removePendingNotificationRequestsWithIdentifiers(&identifiers);
 
     info!("Cancelled scheduled notification with tag '{}' on macOS.", tag);
     Ok(true)
@@ -159,19 +149,41 @@ pub fn cancel_scheduled_toast_notification(tag: &str) -> Result<bool, Error> {
 // Internal helpers
 // ---------------------------------------------------------------------------
 
+/// Safely obtain the `UNUserNotificationCenter`.
+///
+/// `currentNotificationCenter()` throws an Objective-C exception
+/// (`NSInternalInconsistencyException`) when the binary is not running
+/// inside a proper `.app` bundle (e.g. during `cargo run` / `tauri dev`).
+/// We detect this up-front by checking for a bundle identifier.
+fn get_notification_center() -> Result<Retained<UNUserNotificationCenter>, Error> {
+    let bundle = NSBundle::mainBundle();
+    if bundle.bundleIdentifier().is_none() {
+        return Err(Error::new(
+            std::io::ErrorKind::Unsupported,
+            "UNUserNotificationCenter is unavailable: the process is not \
+             running inside an application bundle (missing bundle identifier). \
+             Notifications are only supported in bundled .app builds.",
+        ));
+    }
+    Ok(UNUserNotificationCenter::currentNotificationCenter())
+}
+
 /// Request notification authorization from the user (if not already granted).
 /// This is a best-effort operation — if the user denies, we still proceed
 /// (the notification just won't be displayed).
 fn ensure_notification_authorization() -> Result<(), Error> {
-    let center = unsafe { UNUserNotificationCenter::currentNotificationCenter() };
+    let center = get_notification_center()?;
 
     // Request alert + sound + badge authorization
     // This is idempotent — if already authorized, it returns immediately.
-    unsafe {
-        // UNAuthorizationOptions: alert = 1 << 0, sound = 1 << 1, badge = 1 << 2
-        let options: u64 = (1 << 0) | (1 << 1) | (1 << 2);
-        center.requestAuthorizationWithOptions_completionHandler(options, None);
-    }
+    let options = UNAuthorizationOptions::Alert
+        | UNAuthorizationOptions::Sound
+        | UNAuthorizationOptions::Badge;
+
+    let handler = RcBlock::new(|_granted: Bool, _error: *mut NSError| {
+        // Fire-and-forget: nothing to do on completion
+    });
+    center.requestAuthorizationWithOptions_completionHandler(options, &handler);
 
     Ok(())
 }
@@ -180,24 +192,22 @@ fn ensure_notification_authorization() -> Result<(), Error> {
 fn build_notification_content(
     notification: &ToastNotification,
 ) -> Result<Retained<UNMutableNotificationContent>, Error> {
-    let content = unsafe { UNMutableNotificationContent::new() };
+    let content = UNMutableNotificationContent::new();
 
     let title = NSString::from_str(&notification.title);
     let body = NSString::from_str(&notification.body);
 
-    unsafe {
-        content.setTitle(&title);
-        content.setBody(&body);
-        content.setSound(Some(&UNNotificationSound::defaultSound()));
-    }
+    content.setTitle(&title);
+    content.setBody(&body);
+    content.setSound(Some(&UNNotificationSound::defaultSound()));
 
     // Add image attachment if provided
     if let Some(ref hero_path) = notification.hero_image_path {
         match create_image_attachment(hero_path) {
-            Ok(attachment) => unsafe {
+            Ok(attachment) => {
                 let attachments = NSArray::from_retained_slice(&[attachment]);
                 content.setAttachments(&attachments);
-            },
+            }
             Err(e) => {
                 warn!(
                     "Failed to attach hero image '{}' to notification: {}. Continuing without image.",
@@ -211,9 +221,7 @@ fn build_notification_content(
     if !notification.actions.is_empty() {
         register_notification_category(&notification.actions)?;
         let category_id = NSString::from_str("eam-notification-actions");
-        unsafe {
-            content.setCategoryIdentifier(&category_id);
-        }
+        content.setCategoryIdentifier(&category_id);
     }
 
     Ok(content)
@@ -223,10 +231,8 @@ fn build_notification_content(
 fn create_image_attachment(
     image_path: &str,
 ) -> Result<Retained<objc2_user_notifications::UNNotificationAttachment>, Error> {
-    let url = unsafe {
-        let path_str = NSString::from_str(image_path);
-        NSURL::fileURLWithPath(&path_str)
-    };
+    let path_str = NSString::from_str(image_path);
+    let url = NSURL::fileURLWithPath(&path_str);
 
     let identifier = NSString::from_str("hero-image");
 
@@ -250,7 +256,7 @@ fn create_image_attachment(
 /// Register a notification category with the specified actions.
 /// macOS requires categories to be registered ahead of time for action buttons to work.
 fn register_notification_category(actions: &[ToastAction]) -> Result<(), Error> {
-    let center = unsafe { UNUserNotificationCenter::currentNotificationCenter() };
+    let center = get_notification_center()?;
 
     let mut ns_actions: Vec<Retained<UNNotificationAction>> = Vec::new();
 
@@ -258,10 +264,11 @@ fn register_notification_category(actions: &[ToastAction]) -> Result<(), Error> 
         let identifier = NSString::from_str(&format!("action-{}", i));
         let title = NSString::from_str(&action.label);
 
-        let ns_action = unsafe {
-            // UNNotificationActionOptions: foreground = 1 << 2
-            UNNotificationAction::actionWithIdentifier_title_options(&identifier, &title, 1 << 2)
-        };
+        let ns_action = UNNotificationAction::actionWithIdentifier_title_options(
+            &identifier,
+            &title,
+            UNNotificationActionOptions::Foreground,
+        );
         ns_actions.push(ns_action);
     }
 
@@ -270,24 +277,19 @@ fn register_notification_category(actions: &[ToastAction]) -> Result<(), Error> 
 
     let category_id = NSString::from_str("eam-notification-actions");
 
-    let category = unsafe {
+    let category =
         UNNotificationCategory::categoryWithIdentifier_actions_intentIdentifiers_options(
             &category_id,
             &actions_array,
             &NSArray::new(),
-            0, // No special options
-        )
-    };
+            UNNotificationCategoryOptions::empty(),
+        );
 
     let categories_set = NSSet::from_retained_slice(&[category]);
 
-    unsafe {
-        center.setNotificationCategories(&categories_set);
-    }
+    center.setNotificationCategories(&categories_set);
 
     Ok(())
 }
 
-// We need NSArray and NSSet — import them
-use objc2_foundation::{NSArray, NSSet};
-use chrono::{Datelike, Timelike};
+
