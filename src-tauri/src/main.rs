@@ -24,10 +24,15 @@ use eam_commons::requests::GameAccessToken;
 use eam_commons::requests::char_list::send_and_parse_char_list_request;
 use eam_commons::requests::account_verify::send_account_verify_request;
 use eam_commons::models::Server;
+use eam_commons::toast_notifications;
+use eam_commons::toast_notifications::{
+    ToastNotification, ToastAction, ScheduledNotificationInfo,
+    content::EndOfMonthNotificationContent,
+};
 use serde::Serialize;
 
 
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use diesel::r2d2::Pool;
 use diesel::SqliteConnection;
 use lazy_static::lazy_static;
@@ -288,7 +293,12 @@ fn main() {
             uninstall_eam_daily_login_task,
             run_eam_daily_login_task_now,
             get_current_deep_link,     // Deep link helper
-            is_started_with_autostart  // Autostart helper
+            is_started_with_autostart, // Autostart helper
+            send_toast_notification,      // Toast Notifications
+            schedule_toast_notification_command,
+            cancel_scheduled_toast_notification_command,
+            schedule_end_of_month_notification,
+            get_end_of_month_notification_info,
         ])
         .setup(|app| {
             // Handle deep links when the app starts - register all configured schemes
@@ -2746,6 +2756,160 @@ fn is_started_with_autostart() -> bool {
     info!("Checking if started with autostart...");
     let args: Vec<String> = std::env::args().collect();
     args.contains(&"--autostart".to_string())
+}
+
+//##################################
+//#      Toast Notifications       #
+//##################################
+
+/// Send a toast notification immediately.
+///
+/// * `title` — Notification title.
+/// * `body` — Notification body text.
+/// * `hero_image_path` — Optional absolute path to a hero image.
+/// * `icon_path` — Optional absolute path to an icon/logo.
+/// * `actions` — Optional list of action buttons.
+#[tauri::command]
+fn send_toast_notification(
+    title: String,
+    body: String,
+    hero_image_path: Option<String>,
+    icon_path: Option<String>,
+    actions: Option<Vec<ToastAction>>,
+) -> Result<(), String> {
+    info!("Tauri command: send_toast_notification");
+
+    let notification = ToastNotification {
+        title,
+        body,
+        hero_image_path,
+        icon_path,
+        actions: actions.unwrap_or_default(),
+    };
+
+    toast_notifications::show_toast_notification(&notification)
+        .map_err(|e| e.to_string())
+}
+
+/// Schedule a toast notification for a future date/time.
+///
+/// * `title` — Notification title.
+/// * `body` — Notification body text.
+/// * `hero_image_path` — Optional absolute path to a hero image.
+/// * `icon_path` — Optional absolute path to an icon/logo.
+/// * `actions` — Optional list of action buttons.
+/// * `scheduled_at` — ISO 8601 datetime string (e.g. "2026-02-28T12:00:00").
+/// * `tag` — Unique identifier for this notification (used to cancel it).
+#[tauri::command]
+fn schedule_toast_notification_command(
+    title: String,
+    body: String,
+    hero_image_path: Option<String>,
+    icon_path: Option<String>,
+    actions: Option<Vec<ToastAction>>,
+    scheduled_at: String,
+    tag: String,
+) -> Result<ScheduledNotificationInfo, String> {
+    info!("Tauri command: schedule_toast_notification_command");
+
+    let notification = ToastNotification {
+        title,
+        body,
+        hero_image_path,
+        icon_path,
+        actions: actions.unwrap_or_default(),
+    };
+
+    toast_notifications::schedule_toast_notification(&notification, &scheduled_at, &tag)
+        .map_err(|e| e.to_string())
+}
+
+/// Cancel a previously scheduled toast notification.
+///
+/// * `tag` — The unique tag of the notification to cancel.
+#[tauri::command]
+fn cancel_scheduled_toast_notification_command(tag: String) -> Result<bool, String> {
+    info!("Tauri command: cancel_scheduled_toast_notification_command");
+    toast_notifications::cancel_scheduled_toast_notification(&tag)
+        .map_err(|e| e.to_string())
+}
+
+/// Schedule the end-of-month daily login reminder notification.
+///
+/// Automatically determines the content (title, body, image) based on the
+/// current month, and schedules it for ~12:00 on the last day of the month.
+///
+/// * `resource_base_path` — The absolute path to the app's resource directory
+///   (where `mascot/Info/*.png` images are located).
+#[tauri::command]
+fn schedule_end_of_month_notification(
+    resource_base_path: String,
+) -> Result<ScheduledNotificationInfo, String> {
+    info!("Tauri command: schedule_end_of_month_notification");
+
+    let now = chrono::Local::now();
+    let year = now.format("%Y").to_string().parse::<i32>().unwrap();
+    let month = now.format("%m").to_string().parse::<u32>().unwrap();
+
+    let content = toast_notifications::content::get_end_of_month_notification_content(year, month);
+
+    // Build the absolute path to the hero image
+    let hero_image_path = {
+        let mut path = std::path::PathBuf::from(&resource_base_path);
+        path.push("mascot");
+        path.push("Info");
+        path.push(&content.image_filename);
+        path.to_string_lossy().to_string()
+    };
+
+    // Check if the scheduled time is in the past — if so, skip scheduling
+    let scheduled_dt = chrono::NaiveDateTime::parse_from_str(&content.scheduled_at, "%Y-%m-%dT%H:%M:%S")
+        .map_err(|e| format!("Failed to parse scheduled_at: {}", e))?;
+    let local_scheduled = chrono::Local::now()
+        .timezone()
+        .from_local_datetime(&scheduled_dt)
+        .single()
+        .ok_or_else(|| "Ambiguous or invalid scheduled datetime".to_string())?;
+
+    if local_scheduled <= now {
+        return Err(format!(
+            "The end-of-month notification for {}-{:02} is already in the past ({}). Skipping.",
+            year, month, content.scheduled_at
+        ));
+    }
+
+    // First, try to cancel any existing notification for this month
+    let _ = toast_notifications::cancel_scheduled_toast_notification(&content.tag);
+
+    let notification = ToastNotification {
+        title: content.title.clone(),
+        body: content.body.clone(),
+        hero_image_path: Some(hero_image_path),
+        icon_path: None,
+        actions: vec![
+            ToastAction {
+                label: "Open EAM".to_string(),
+                action_url: "eam://daily-login".to_string(),
+            },
+        ],
+    };
+
+    toast_notifications::schedule_toast_notification(&notification, &content.scheduled_at, &content.tag)
+        .map_err(|e| e.to_string())
+}
+
+/// Get the end-of-month notification info without scheduling it.
+/// Useful for the frontend to know what content will be shown and when,
+/// so it can display the same message as an in-app snackbar.
+#[tauri::command]
+fn get_end_of_month_notification_info() -> EndOfMonthNotificationContent {
+    info!("Tauri command: get_end_of_month_notification_info");
+
+    let now = chrono::Local::now();
+    let year = now.format("%Y").to_string().parse::<i32>().unwrap();
+    let month = now.format("%m").to_string().parse::<u32>().unwrap();
+
+    toast_notifications::content::get_end_of_month_notification_content(year, month)
 }
 
 //########################
