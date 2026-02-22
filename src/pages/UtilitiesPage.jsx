@@ -4,6 +4,7 @@ import HwidTool from '../components/HwidTool';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import { resolveResource } from '@tauri-apps/api/path';
 
 function UtilitiesPage() {
     const [searchParams] = useSearchParams();
@@ -18,19 +19,11 @@ function UtilitiesPage() {
 
     const handleSendToast = async () => {
         console.log('Sending test toast notification...');
-        // await invoke('send_toast_notification', {
-        //     title: 'Test Notification',
-        //     body: 'This is a test toast notification from EAM.',
-        //     heroImagePath: null,
-        // })
-        //     .catch((err) => {
-        //         console.error('Failed to send toast notification', err);
-        //     });
+        const heroImagePath = await resolveResource('mascot/Info/notification_very_low_res.png');
         await invoke('send_toast_notification', {
             title: 'Last chance for this month\'s rewards!',
             body: 'Okta checked and you still have unclaimed daily login rewards. The calendar waits for no one — claim them now!',
-            //heroImagePath: "C:\\Users\\Maik8\\Pictures\\EAM\\Mascot\\Info\\Toasts\\notification.png",
-            heroImagePath: "C:\\Users\\Maik8\\Pictures\\EAM\\Mascot\\Info\\Toasts\\reminder.png",
+            heroImagePath,
             actions: [
                 {
                     label: 'Claim Now',
