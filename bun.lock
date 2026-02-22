@@ -1,10 +1,11 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "exalt-account-manager",
       "dependencies": {
-        "@auth0/auth0-react": "^2.14.0",
+        "@auth0/auth0-react": "^2.15.0",
         "@dnd-kit/core": "^6.3.1",
         "@dnd-kit/sortable": "^10.0.0",
         "@dnd-kit/utilities": "^3.2.2",
@@ -56,9 +57,9 @@
   "packages": {
     "@auth0/auth0-auth-js": ["@auth0/auth0-auth-js@1.4.0", "", { "dependencies": { "jose": "^6.0.8", "openid-client": "^6.8.0" } }, "sha512-ShA7KT4KvcBEtxsXZTcrmoNxai5q1JXhB2aEBFnZD1L6LNLzzmiUWiFTtGMsaaITCylr8TJ/onEQk6XZmUHXbg=="],
 
-    "@auth0/auth0-react": ["@auth0/auth0-react@2.14.0", "", { "dependencies": { "@auth0/auth0-spa-js": "^2.15.0" }, "peerDependencies": { "react": "^16.11.0 || ^17 || ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1", "react-dom": "^16.11.0 || ^17 || ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1" } }, "sha512-Uyn9mB+pOJ0ko81aJoTbOJok11E4rFeNXhzNFLsvWaUD7dp0Qe3B9zwsbQhaCxrsJOX1UXg0y4ck/RjwNnsPoA=="],
+    "@auth0/auth0-react": ["@auth0/auth0-react@2.15.0", "", { "dependencies": { "@auth0/auth0-spa-js": "^2.16.0" }, "peerDependencies": { "react": "^16.11.0 || ^17 || ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1", "react-dom": "^16.11.0 || ^17 || ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1" } }, "sha512-LbRU87U54/YW/N3UHtNVoj3mCBBz+iYAdAByQjbXOkpI6IYnjMBwIwDusW3N23XNXq9WnihD57Dyi2R3/Q9btw=="],
 
-    "@auth0/auth0-spa-js": ["@auth0/auth0-spa-js@2.15.0", "", { "dependencies": { "@auth0/auth0-auth-js": "^1.4.0", "browser-tabs-lock": "^1.2.15", "dpop": "^2.1.1", "es-cookie": "~1.3.2" } }, "sha512-cXv1Isyy4JEc+GxesQPFj3SEbDSnCVQTGiardY9WLSoYTsMMU585Kgm9TJFPJO4dDq3wi+DSJoy3IUcB3rr9nA=="],
+    "@auth0/auth0-spa-js": ["@auth0/auth0-spa-js@2.16.0", "", { "dependencies": { "@auth0/auth0-auth-js": "^1.4.0", "browser-tabs-lock": "^1.2.15", "dpop": "^2.1.1", "es-cookie": "~1.3.2" } }, "sha512-UTP45NqjC2jVc/WaWh+iYOZt6FajpTJc+3WzljbXBiv2f76wDw4Mt9hW/aShBovsRmvKEIHaCifD3c/Gxmo2ZQ=="],
 
     "@babel/code-frame": ["@babel/code-frame@7.29.0", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.28.5", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw=="],
 
