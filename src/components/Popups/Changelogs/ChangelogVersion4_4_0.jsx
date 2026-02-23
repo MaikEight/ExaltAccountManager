@@ -9,7 +9,7 @@ function ChangelogVersion4_4_0() {
 
     const title = [
         "Exalt Account Manager v4.4.0",
-        "New Logo, Widgets and Vault Peeker redesign!",
+        "New Logo, Widgets, Enchantments and Vault Peeker redesign!",
     ];
 
     return (
@@ -114,7 +114,7 @@ function ChangelogVersion4_4_0() {
                     listOfChanges={[
                         "Redesigned the whole Vault Peeker interface for better usability and appearance.",
                         "Added support for Enchantments and Rarity display.",
-                        "Improved performance when loading many items at once.",                        
+                        "Improved performance when loading many items at once.",
                     ]}
                 />
 
@@ -155,6 +155,8 @@ function ChangelogVersion4_4_0() {
                     listOfChanges={[
                         "Changed the overall appearance of EAM with a new logo and updated borders.",
                         "Changed the Stripe Logo to the new version.",
+                        "Fixed the formatting of the EAM branding in the developer tools on macOS.",
+                        "Temporarily removed the rudementary Dungeon Stats popup due to unreliability and its outdated appearance. Will be back soon."
                     ]}
                 />
 
@@ -162,9 +164,15 @@ function ChangelogVersion4_4_0() {
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
-                        width: '100%',
+                        width: 'calc(100% + 16px)',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        background: theme.palette.background.default,
+                        borderRadius: `${(theme.shape.borderRadius * 2) - 2}px`,
+                        border: `1px solid ${theme.palette.divider}`,
+                        pt: 1,
+                        mx: -1,
+                        mb: -1,
                     }}
                 >
                     <Typography variant="subtitle1" color="primary">
@@ -189,8 +197,15 @@ function ChangelogVersion4_4_0() {
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
+                                <li>Ykao</li>
+                                <li>Rapshe</li>
                                 <li>K3y0708</li>
+                            </ul>
+                        </Typography>
+                        <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
+                            <ul>
                                 <li>Melon</li>
+                                <li></li>
                                 <li>and many more...</li>
                             </ul>
                         </Typography>
