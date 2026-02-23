@@ -1,5 +1,5 @@
 import { getLatestEamVersion } from "../backend/eamApi";
-import { isUpdateAvailable } from "../constants";
+import { APP_VERSION, isUpdateAvailable } from "../constants";
 import { PhysicalSize } from '@tauri-apps/api/window';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { invoke } from '@tauri-apps/api/core';
@@ -98,8 +98,10 @@ function logAllEnabledDebugFlags() {
 }
 
 function writeStartupLogoToConsole() {
+    const macOS = isMacOS();
+
     console.log('');
-    console.log('%c  _______     ___    .___  ___.\n |   ____|   /   \\   |   \\/   |\n |  |__     /  ^  \\  |  \\  /  |\n |   __|   /  /_\\  \\ |  |\\/|  |\n |  |____ /  _____  \\|  |  |  |\n |_______/__/     \\__\\__|  |__|\n\n                        by MaikEight', 'color: #9155FD;');
+    console.log(`%c  _______     ___    .___  ___.\n |   ____|   /   \\   |   \\/   |\n |  |__     /  ^  \\  |  \\  /  |\n |   __|   /  /_\\  \\ |  |\\/|  |\n |  |____ /  _____  \\|  |  |  |\n |_______/__/     \\__\\__|  |__|\n\n • Version ${APP_VERSION} \n • Copyright © 2026 MaikEight. All rights reserved.`, `color: #9155FD; ${macOS ? 'font-family: "SF Mono", "SF Mono Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace' : ''};`);
     console.log('');
 }
 
