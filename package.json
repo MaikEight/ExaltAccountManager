@@ -20,7 +20,7 @@
     "@mui/material": "^7.3.8",
     "@mui/x-charts": "^8.27.0",
     "@mui/x-data-grid": "^8.27.1",
-    "@mui/x-date-pickers": "^8.27.0",
+    "@mui/x-date-pickers": "^8.27.2",
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/plugin-autostart": "^2.5.1",
     "@tauri-apps/plugin-deep-link": "^2.4.7",
