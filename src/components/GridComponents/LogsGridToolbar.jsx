@@ -118,22 +118,11 @@ function LogsGridToolbar({ selectedLogtype, setSelectedLogtype, onSearchChanged 
                         overflow: 'hidden',
                     }}
                 >
-                    <FormControl sx={{ width: 120, minHeight: '100%' }}>
+                    <FormControl sx={{ width: 120,  height: '39px', mt: 0.125 }}>
                         <Select
                             id="select-logtype"
                             value={selectedLogtype}
                             onChange={(event) => setSelectedLogtype(event.target.value)}
-                            input={
-                                <Input
-                                    id="select-logtype"
-                                    disableUnderline
-                                    sx={{
-                                        backgroundColor: theme.palette.background.backdrop,
-                                        borderRadius: `${theme.shape.borderRadius}px`,
-                                        height: '100%'
-                                    }}
-                                />
-                            }
                             renderValue={(selected) => (
                                 <Box
                                     sx={{
