@@ -887,10 +887,10 @@ function SettingsPage() {
                 }}
             >
                 <Typography variant="body2" color="text.secondary">
-                    {MASCOT_NAME} can remind you to claim your daily login rewards before the month resets.
+                    {MASCOT_NAME} can remind you to claim your daily login rewards before the month ends.
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    When enabled, a toast notification will be displayed on the last day of each month around noon.
+                    When enabled, a notification will be displayed on the last day of each month around noon.
                 </Typography>
                 <Box
                     sx={{
@@ -902,7 +902,7 @@ function SettingsPage() {
                         sx={{ gap: 0.5 }}
                         control={
                             <Tooltip
-                                title={(settings?.notifications?.endOfMonthReminderEnabled ?? true) ? "Disable end-of-month reminder" : "Enable end-of-month reminder"}
+                                title={(settings?.notifications?.endOfMonthReminderEnabled ?? true) ? "Disable end of month login reminder" : "Enable end of month login reminder"}
                             >
                                 <Switch
                                     size="small"
@@ -916,7 +916,7 @@ function SettingsPage() {
                                 />
                             </Tooltip>
                         }
-                        label={'End-of-month daily login reminder'}
+                        label={'End of month login reminder'}
                     />
                 </Box>
             </ComponentBox>
