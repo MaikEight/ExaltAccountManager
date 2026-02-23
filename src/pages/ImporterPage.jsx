@@ -41,6 +41,7 @@ import AddAccountSvg from "../components/Illustrations/AddAccountSvg";
 import { MASCOT_NAME } from "../constants";
 import { GroupUI } from "../components/GridComponents/GroupUI";
 import { useColorList } from "../hooks/useColorList";
+import isMacOS from '../utils/isMacOS';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -130,6 +131,8 @@ function ImporterPage() {
     const currentAccounts = useAccounts().accounts;
     const updateAccount = useAccounts().updateAccount;
     const navigate = useNavigate();
+    const macOS = isMacOS();
+
 
     const getGroupUI = (params) => {
         if (!params.value) return null;
@@ -798,20 +801,29 @@ function ImporterPage() {
                                     p: 1
                                 }}
                             >
-                                <Typography variant="h6">
-                                    EAM.accounts files are currently only supported when the filepath is the one descriped below.
-                                </Typography>
-                                <Typography variant="body2" sx={{ mt: 2 }}>
-                                    EAM.accounts files are encrypted files that contain all the accounts.
-                                </Typography>
-                                <Typography variant="body2">
-                                    They are the save files of older EAM versions (v2.0.8 and older).
-                                </Typography>
-                                <Typography variant="body2" sx={{ mt: 0.5 }}>
-                                    <b>Note:</b> Only save files of EAM v3.0.0 and newer are supported.
-                                    If you have an older save file, please try to update EAM to the version 3.3 and import the file there.
-                                </Typography>
+                                {
+                                    macOS ?
+                                        <Typography variant="h6" color="warning">
+                                            This is not available on macOS as older EAM versions did not exist on macOS.
+                                        </Typography>
+                                        :
+                                        <>
 
+                                            <Typography variant="h6">
+                                                EAM.accounts files are currently only supported when the filepath is the one descriped below.
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ mt: 2 }}>
+                                                EAM.accounts files are encrypted files that contain all the accounts.
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                They are the save files of older EAM versions (v2.0.8 and older).
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                                                <b>Note:</b> Only save files of EAM v3.0.0 and newer are supported.
+                                                If you have an older save file, please try to update EAM to the version 3.3 and import the file there.
+                                            </Typography>
+                                        </>
+                                }
                                 <Typography variant="body1" sx={{ mt: 1 }}>
                                     You can find the file in the EAM save file folder located at:
                                 </Typography>
@@ -823,7 +835,7 @@ function ImporterPage() {
                                     }}
                                 >
                                     <Typography variant="body2" fontStyle={'mono'}>
-                                        C:\Users\%username%\AppData\Local\ExaltAccountManager
+                                        {macOS ? '/Users/%username%/Library/Application Support/ExaltAccountManager' : 'C:\\Users\\%username%\\AppData\\Local\\ExaltAccountManager'}
                                     </Typography>
                                 </Paper>
                                 <StyledButton
@@ -1650,7 +1662,8 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
                             {
                                 duplicate.imported && duplicate.imported.length > 0 &&
                                 duplicate.imported.map((acc, index) => {
-                                    return (
+                                    (
+
                                         <DuplicateAccountsRow
                                             key={acc.email}
                                             acc={acc}
