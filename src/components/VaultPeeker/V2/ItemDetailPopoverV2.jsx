@@ -19,6 +19,7 @@ import items, { enchantments } from "../../../assets/constants";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import ItemGridV2 from "./ItemGridV2";
 import { RARITY_IMAGE_SOURCES } from "../../../utils/realmItemDrawUtils";
+import useAccounts from "../../../hooks/useAccounts";
 
 // Rarity colors
 const RARITY_COLORS = {
@@ -604,13 +605,16 @@ function ItemDetailPopoverV2() {
     const theme = useTheme();
     const navigate = useNavigate();
     const { selectedItem, clearSelectedItem, popperPosition, totalsMap } = useVaultPeeker();
-
+    const { getAccountByEmail, setSelectedAccount } = useAccounts();
     const open = Boolean(selectedItem);
     const itemId = selectedItem?.itemId;
 
-    // Navigation handler for account links
+    // Navigation handler for accounts
     const handleNavigateToAccount = useCallback((email) => {
-        navigate(`/accounts?selectedAccount=${encodeURIComponent(email)}`);
+        const account = getAccountByEmail(email);
+        if (account) {
+            setSelectedAccount(account);
+        }
         clearSelectedItem();
     }, [navigate, clearSelectedItem]);
 
