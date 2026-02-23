@@ -202,10 +202,14 @@ function RegisterAccount({ open, onClose }) {
                                     sx: {
                                         borderRadius: `${theme.shape.borderRadius}px`,
                                         backgroundColor: theme.palette.background.paperLight,
+                                        border: `1px solid ${theme.palette.divider}`,
+                                        px: 0.25,
+                                        pb: 0.4,
                                         '& .MuiDayCalendar-root': {
                                             color: theme.palette.primary.main,
-                                            borderRadius: `${theme.shape.borderRadius}px`,
+                                            borderRadius: `${theme.shape.borderRadius - 1}px`,
                                             backgroundColor: theme.palette.background.paper,
+                                            border: `1px solid ${theme.palette.divider}`,
                                         },
                                     }
                                 }
