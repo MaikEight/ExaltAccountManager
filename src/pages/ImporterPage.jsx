@@ -1252,11 +1252,11 @@ function ImporterPage() {
                                         )}
                                     />
                                     <Tooltip
-                                        title={duplicateSortingPage !== Math.floor(importObject.duplicates.length / duplicatesPerPage) && "Available once you reached the last page"}
+                                        title={duplicateSortingPage !== Math.floor(importObject.duplicates?.length ? importObject.duplicates.length / duplicatesPerPage : 0) && "Available once you reached the last page"}
                                     >
                                         <span>
                                             <StyledButton
-                                                disabled={duplicateSortingPage !== Math.floor(importObject.duplicates.length / duplicatesPerPage)}
+                                                disabled={duplicateSortingPage !== Math.floor(importObject.duplicates?.length ? importObject.duplicates.length / duplicatesPerPage : 0)}
                                                 sx={{ ml: 1 }}
                                                 startIcon={<DoneOutlinedIcon />}
                                                 onClick={() => {
@@ -1474,9 +1474,9 @@ function ImporterPage() {
                                         src="/mascot/Happy/cheer_very_low_res.png"
                                         alt={`${MASCOT_NAME} cheering 🎉`}
                                         height={120}
-                                        style={{
-                                            marginLeft: '40px',
-                                            marginRight: 'auto',
+                                        style={{                                            
+                                            marginRight: '40px',
+                                            my: 'auto'
                                         }}
                                     />
                                 </ComponentBox>
@@ -1570,6 +1570,8 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
     if (!duplicate)
         return null;
 
+    console.log('Rendering DuplicateAccountBox for duplicate: ', duplicate);
+
     return (
         <ComponentBox
             title={`Duplicate #${duplicate.renderId + 1}: ${duplicate.email}`}
@@ -1620,7 +1622,7 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
                                         align="left"
                                     >
                                         <Typography variant="body2" fontWeight={'bold'} component="span">
-                                            Existing accounts
+                                            {duplicate.existing?.length > 1 ? `Existing accounts` : 'Existing account'}
                                         </Typography>
                                     </PaddedTableCell>
                                 </TableRow>
@@ -1654,7 +1656,7 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
                                         align="left"
                                     >
                                         <Typography variant="body2" fontWeight={'bold'} component="span">
-                                            Imported accounts
+                                            {duplicate.imported?.length > 1 ? `Imported accounts` : 'Imported account'}
                                         </Typography>
                                     </PaddedTableCell>
                                 </TableRow>
@@ -1662,8 +1664,7 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
                             {
                                 duplicate.imported && duplicate.imported.length > 0 &&
                                 duplicate.imported.map((acc, index) => {
-                                    (
-
+                                    return (
                                         <DuplicateAccountsRow
                                             key={acc.email}
                                             acc={acc}
