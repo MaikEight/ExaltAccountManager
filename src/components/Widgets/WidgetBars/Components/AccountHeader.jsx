@@ -38,6 +38,7 @@ function AccountHeader() {
     }
 
     useEffect(() => {
+        setCharacter([]);
         if (widgetBarState?.data?.email && widgetBarState.data.email !== lastEmailRef.current) {
             lastEmailRef.current = widgetBarState.data.email;
             const email = widgetBarState.data.email;            
