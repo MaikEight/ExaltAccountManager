@@ -345,12 +345,13 @@ function ImporterPage() {
             _duplicates[i] = { ..._duplicates[i], renderId: i };
         }
 
-        return getImportObject(_duplicates);
+        return getImportObject(_duplicates, _accountsWithMappedFields);
     };
 
-    const getImportObject = (_duplicates) => {
+    const getImportObject = (_duplicates, _accounts) => {
         const duplicateEmails = _duplicates.map(d => d.email);
-        const nonDuplicates = accountsWithMappedFields.filter(acc => !duplicateEmails.includes(acc.email));
+        const sourceAccounts = _accounts !== undefined ? _accounts : accountsWithMappedFields;
+        const nonDuplicates = sourceAccounts.filter(acc => !duplicateEmails.includes(acc.email));
         const importObject = {
             accounts: nonDuplicates,
             duplicates: _duplicates,
@@ -439,13 +440,14 @@ function ImporterPage() {
 
     useEffect(() => {
         let eventCancel;
-        listen('tauri://file-drop', event => {
-            if (event.payload.length === 0) return;
-            if (event.payload.length > 1) {
+        listen('tauri://drag-drop', event => {
+            const paths = event.payload.paths;
+            if (!paths || paths.length === 0) return;
+            if (paths.length > 1) {
                 showSnackbar('Only one file can be imported at a time');
                 return;
             }
-            readFileContent(event.payload[0]);
+            readFileContent(paths[0]);
         }).then(cancel => eventCancel = cancel);
 
         return () => {
@@ -923,7 +925,7 @@ function ImporterPage() {
                             </Typography>
 
                             <Box>
-                                <TableContainer component={Box} sx={{ borderRadius: 0 }}>
+                                <TableContainer component={Box} sx={{ borderRadius: 0, overflow: 'hidden' }}>
                                     <Table
                                         sx={{
                                             '& tbody tr:last-child td, & tbody tr:last-child th': {
@@ -958,17 +960,6 @@ function ImporterPage() {
                                                                             mapping[field] = event.target.value;
                                                                             setDataFieldsMapping(mapping);
                                                                         }}
-                                                                        input={
-                                                                            <Input
-                                                                                id={"data-field-list-label-" + index}
-                                                                                disableUnderline
-                                                                                sx={{
-                                                                                    backgroundColor: theme.palette.background.backdrop,
-                                                                                    borderRadius: `${theme.shape.borderRadius}px`,
-                                                                                    height: '39px'
-                                                                                }}
-                                                                            />
-                                                                        }
                                                                         renderValue={(selected) => {
                                                                             if (!selected || selected === '') {
                                                                                 return null;
@@ -1217,6 +1208,7 @@ function ImporterPage() {
                                         pl: 1,
                                         mx: 2,
                                         mb: 2,
+                                        border: `1px solid ${theme.palette.divider}`,
                                     }}
                                 >
                                     <TablePagination className="pagination-container"
@@ -1322,7 +1314,14 @@ function ImporterPage() {
                                             startIcon={<ArrowBackIosNewOutlinedIcon />}
                                             color="secondary"
                                             onClick={() => {
-                                                setActiveStep(importObject.duplicates?.length > 0 ? 2 : 1);
+                                                if (importObject.duplicates?.length > 0) {
+                                                    setActiveStep(2);
+                                                } else if (accounts.length === 0) {
+                                                    // .eam.accounts path skips step 1 (field mapping)
+                                                    setActiveStep(0);
+                                                } else {
+                                                    setActiveStep(1);
+                                                }
                                             }}
                                         >
                                             Back
@@ -1474,7 +1473,7 @@ function ImporterPage() {
                                         src="/mascot/Happy/cheer_very_low_res.png"
                                         alt={`${MASCOT_NAME} cheering 🎉`}
                                         height={120}
-                                        style={{                                            
+                                        style={{
                                             marginRight: '40px',
                                             my: 'auto'
                                         }}
@@ -1569,8 +1568,6 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
 
     if (!duplicate)
         return null;
-
-    console.log('Rendering DuplicateAccountBox for duplicate: ', duplicate);
 
     return (
         <ComponentBox
