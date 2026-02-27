@@ -147,7 +147,7 @@ function AccountsViewV2() {
             ))}
 
             {/* Pagination Controls */}
-            {totalAccounts > 0 && totalPages > 1 && (
+            {totalAccounts > 25 && (
                 <Box
                     sx={{
                         display: 'flex',
