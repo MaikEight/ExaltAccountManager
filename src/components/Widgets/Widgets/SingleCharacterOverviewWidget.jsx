@@ -82,7 +82,6 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
                 lastKnownFame = entry.fame;
             }
         });
-        console.log("daysDataArray", data);
         return data;
     }, [lastDaysCharListDataset, characterIdToShow]);
 
@@ -289,9 +288,6 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
             if (lastEmailRef.current === email) {
                 setLatestCharListDataset(latestDataset);
                 setLastDaysCharListDataset(lastDaysDataset);
-
-                console.log("Latest char list dataset:", latestDataset);
-                console.log(`Last ${days} days char list dataset:`, lastDaysDataset);
             }
         } catch (err) {
             console.error(err);
@@ -348,7 +344,26 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
 
     const getContent = () => {
         if (!characterIdToShow || !character) {
-            return null;
+            return (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        gap: 1,
+                    }}
+                >
+                    <img
+                        src="/mascot/Search/no_accounts_1_small_very_low_res.png"
+                        alt="No character"
+                        width="80"
+                        height="56"
+                    />
+                    No character found
+                </Box>
+            );        
         }
 
         return (
@@ -519,7 +534,7 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
     }
 
     return (
-        <WidgetBase type={type} widgetId={widgetId} onWidgetEditModeChanged={handleWidgetEditModeChanged} isEditMode={isSettingsEditMode}>
+        <WidgetBase type={type} widgetId={widgetId} onWidgetEditModeChanged={!characterIdToShow || !character ? null : handleWidgetEditModeChanged} isEditMode={isSettingsEditMode}>
             {isSettingsEditMode ? (
                 renderSettingsEditor()
             ) : (
@@ -534,6 +549,7 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
                     {getContent()}
                     {
                         currentSlots > 1 &&
+                        !(!characterIdToShow || !character) &&
                         <Box
                             sx={{
                                 p: 0.5,
