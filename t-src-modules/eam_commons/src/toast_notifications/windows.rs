@@ -3,7 +3,8 @@ use log::{error, info, warn};
 use std::io::Error;
 use std::sync::Once;
 
-use windows::core::{Interface, HSTRING, PROPVARIANT};
+use windows::core::{Interface, HSTRING};
+use windows::Win32::System::Com::StructuredStorage::PROPVARIANT;
 use windows::Data::Xml::Dom::XmlDocument;
 use windows::UI::Notifications::{
     ScheduledToastNotification, ToastNotification as WinToastNotification,
