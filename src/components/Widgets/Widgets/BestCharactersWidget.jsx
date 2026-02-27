@@ -11,6 +11,7 @@ function BestCharactersWidget({ type, widgetId }) {
 
     const [charListDataset, setCharListDataset] = useState(null);
     const [character, setCharacter] = useState([]);
+    const [noData, setNoData] = useState(false);
 
     const lastEmailRef = useRef(null);
     const sortCharacters = (dataset) => {
@@ -28,27 +29,35 @@ function BestCharactersWidget({ type, widgetId }) {
     useEffect(() => {
         if (!widgetBarState?.data?.email) {
             lastEmailRef.current = null;
-            setCharListDataset(null);
-            sortCharacters(null);
+            setNoData(true);
+            console.warn("No email found in widget bar state for BestCharactersWidget");
             return;
         }
 
         const email = widgetBarState.data.email;
+        
+        if (lastEmailRef.current === email) {
+            return;
+        }
         lastEmailRef.current = email;
+
+        setCharListDataset(null);
+        sortCharacters(null);
+
         invoke('get_latest_char_list_dataset_for_account', { email })
             .then((res) => {
-                if (lastEmailRef.current === email) {
-                    setCharListDataset(res);
-                    sortCharacters(res);
-                }
+                setNoData(false);
+                setCharListDataset(res);
+                sortCharacters(res);
             })
             .catch((err) => {
                 console.error(err);
+                setNoData(true);
             });
     }, [widgetBarState.data]);
 
     const currentSlots = Math.min(widgetBarConfig?.slots || 1, config?.slots || type?.defaultConfig?.slots || 1);
-    const columns = currentSlots > 1 ? 2 : 1;
+    const columns = noData ? 1 : currentSlots > 1 ? 2 : 1;
 
     // Group parsed items by character id for equipment lookup
     const itemsByCharId = useMemo(() => {
@@ -66,6 +75,28 @@ function BestCharactersWidget({ type, widgetId }) {
     const charsToRender = useMemo(() => {
         const maxAmount = columns * 3;
         const chars = character.slice(0, maxAmount);
+
+        if (chars.length === 0 || noData) {
+            return (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                    }}
+                >
+                    <img
+                        src="/mascot/Search/no_accounts_2_very_low_res.png"
+                        alt="No characters"
+                        width="60"
+                        height="60"
+                    />
+                    No characters found
+                </Box>
+            );
+        }
 
         return chars.map((c, i) => (
             <SingleCharacterOverview key={i} number={i + 1} character={c} parsedItems={itemsByCharId[c.char_id] || []} />
