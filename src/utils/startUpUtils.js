@@ -8,6 +8,7 @@ import { logToErrorLog, checkForUpdates } from "eam-commons-js";
 import { relaunch } from '@tauri-apps/plugin-process';
 import addSystemTray from "./addSystemTrayMenu";
 import isMacOS from "./isMacOS";
+import performMigrations from "./eamUpdateMigrations";
 
 const appWindow = getCurrentWebviewWindow()
 
@@ -81,6 +82,7 @@ async function onStartUp() {
     }
 
     logAllEnabledDebugFlags();
+    performMigrations();
 }
 
 function logAllEnabledDebugFlags() {
