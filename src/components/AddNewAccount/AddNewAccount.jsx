@@ -129,13 +129,13 @@ function AddNewAccount({ isOpen, onClose }) {
                 isDeleted: false,
                 performDailyLogin: newAccount.performDailyLogin || false,
             };
-            
+
             // Save the temp account (will be encrypted)
             await updateAccount(tempAccount, true, false);
 
             // Now call sendAccountVerify with the email
             const verifyResponse = await sendAccountVerify(newAccount.email, false, false);
-            
+
             if (!verifyResponse || !verifyResponse.success) {
                 setPasswordEmailWrong(true);
                 setNewAccount({ ...newAccount, password: '' });
@@ -156,11 +156,11 @@ function AddNewAccount({ isOpen, onClose }) {
             // If we got an access token, also fetch the char list
             if (verifyResponse.data?.Account?.AccessToken) {
                 const charListResponse = await sendCharList(
-                    newAccount.email, 
-                    verifyResponse.data.Account.AccessToken, 
+                    newAccount.email,
+                    verifyResponse.data.Account.AccessToken,
                     { ...tempAccount, name: accName }
                 );
-                
+
                 if (charListResponse && charListResponse.success) {
                     setNewAccount(prev => ({
                         ...prev,
@@ -565,6 +565,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                 width: '100%',
                                 backgroundColor: theme.palette.background.default,
                                 borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+                                borderTop: `1px solid ${theme.palette.divider}`,
                             }}
                         >
                             <Stepper
@@ -620,6 +621,7 @@ function AddNewAccount({ isOpen, onClose }) {
                         sx={{
                             borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                             backgroundColor: theme.palette.background.default,
+                            
                         }}
                     >
                         {
@@ -628,6 +630,7 @@ function AddNewAccount({ isOpen, onClose }) {
                                     sx={{
                                         pt: 2,
                                         borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+                                        borderTop: `1px solid ${theme.palette.divider}`,
                                     }}
                                 >
                                     <RegisterAccount
