@@ -47,11 +47,11 @@ const END_OF_MONTH_MESSAGES: &[(&str, &str)] = &[
 ];
 
 /// The notification images to use for end-of-month reminders.
-/// These are filenames relative to the mascot/Info/ resource directory.
+/// These are filenames relative to the mascot/Notification/ resource directory.
 /// Selection: `images[month_index % len]`.
 const END_OF_MONTH_IMAGES: &[&str] = &[
-    "notification_very_low_res.png",
-    "notification_eam_very_low_res.png",
+    "notification.png",
+    "reminder.png",
 ];
 
 /// Information returned about the end-of-month notification content.
@@ -61,7 +61,7 @@ pub struct EndOfMonthNotificationContent {
     pub title: String,
     /// The notification body text.
     pub body: String,
-    /// The filename of the hero image (relative to mascot/Info/ resource dir).
+    /// The filename of the hero image (relative to mascot/Notification/ resource dir).
     pub image_filename: String,
     /// The 1-based month number used for selection.
     pub month: u32,
