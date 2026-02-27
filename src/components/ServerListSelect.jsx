@@ -62,8 +62,8 @@ function ServerListSelect({ serversToAdd, selectedServer, onChange, defaultValue
                         ...(serverList && serverList.length > 0 ? serverList : [])
                     ].map((server) => (
                         <MenuItem
-                            key={server.DNS}
-                            value={server.Name}
+                            key={server.dns}
+                            value={server.name}
                             sx={{
                                 '&.Mui-selected': {
                                     backgroundColor: darken(theme.palette.action.selected, 0.55),
@@ -76,7 +76,7 @@ function ServerListSelect({ serversToAdd, selectedServer, onChange, defaultValue
                                 alignItems: 'center',
                             }}
                         >
-                            <ServerChip params={{ value: server.Name }} />
+                            <ServerChip params={{ value: server.name }} />
                         </MenuItem>
                     ))
                 }
