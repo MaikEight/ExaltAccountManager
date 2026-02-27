@@ -27,35 +27,41 @@ function ChangelogVersion4_4_0() {
                 overflow: 'auto',
             }}
         >
-            {
-                !imageLoaded && (
-                    <Skeleton
-                        variant="rectangular"
-                        sx={{
-                            width: '100%',
-                            height: '511.75px',
-                            minHeight: '511.75px',
-                            borderRadius: `0 0 ${theme.shape.borderRadius * 2}px ${theme.shape.borderRadius * 2}px`,
-                            flexShrink: 0,
-                            borderBottom: `1px solid ${theme.palette.divider}`,
-                        }}
-                    />
-                )
-            }
-            <img
-                src='https://app-data.exaltaccountmanager.com/images/okta/eam_logo_blog_post.png'
-                alt='EAM blog post logo'
-                onLoad={() => setImageLoaded(true)}
-                style={{
-                    display: imageLoaded ? 'block' : 'none',
-                    width: '100%',
-                    height: 'auto',
-                    marginLeft: '-1px',
-                    borderRadius: `${theme.shape.borderRadius * 2}px`,
-                    borderTopRightRadius: 0,
-                    borderBottom: `1px solid ${theme.palette.divider}`,
+            <Box
+                sx={{
+                    backgroundColor: theme.palette.background.default,
                 }}
-            />
+            >
+                {
+                    !imageLoaded && (
+                        <Skeleton
+                            variant="rounded"
+                            sx={{
+                                width: '100%',
+                                height: '511.75px',
+                                minHeight: '511.75px',
+                                borderRadius: `0 0 ${theme.shape.borderRadius * 2}px ${theme.shape.borderRadius * 2}px`,
+                                flexShrink: 0,
+                                borderBottom: `1px solid ${theme.palette.divider}`,
+                            }}
+                        />
+                    )
+                }
+                <img
+                    src='https://app-data.exaltaccountmanager.com/images/okta/eam_logo_blog_post.png'
+                    alt='EAM blog post logo'
+                    onLoad={() => setImageLoaded(true)}
+                    style={{
+                        display: imageLoaded ? 'block' : 'none',
+                        width: '100%',
+                        height: 'auto',
+                        marginLeft: '-1px',
+                        borderRadius: `${theme.shape.borderRadius * 2}px`,
+                        borderTopRightRadius: 0,
+                        borderBottom: `1px solid ${theme.palette.divider}`,
+                    }}
+                />
+            </Box>
             <Box
                 sx={{
                     position: 'sticky',
@@ -64,7 +70,6 @@ function ChangelogVersion4_4_0() {
                     width: '100%',
                     borderRadius: `${theme.shape.borderRadius - 1}px`,
                     pt: 0,
-                    px: 2,
                     pb: 1,
                     zIndex: 1,
                 }}
@@ -72,13 +77,16 @@ function ChangelogVersion4_4_0() {
                 {/* HEADLINE */}
                 <Box
                     sx={{
-                        pt: 2,
+                        px: 2,
+                        py: 1,
                         display: 'flex',
                         flexDirection: 'column',
                         width: '100%',
                         alignItems: 'start',
                         justifyContent: 'center',
-                        backgroundColor: theme.palette.background.paperLight,
+                        backgroundColor: theme.palette.background.default,
+                        borderRadius: `0 0 ${theme.shape.borderRadius * 2}px ${theme.shape.borderRadius * 2}px`,
+                        borderBottom: `1px solid ${theme.palette.divider}`, 
                     }}
                 >
                     <Typography variant="h6" component="h2" fontWeight="bold" color={theme.palette.primary.main}>
@@ -147,6 +155,13 @@ function ChangelogVersion4_4_0() {
                     listOfChanges={[
                         "Added the option to start the Daily Login process manually via a button in the Daily Logins page.",
                         "Fixed an issue where the Daily Login did not properly start on the second day and onwards.",
+                    ]}
+                />
+
+                <ChangelogEntry
+                    title={'Windows only changes'}
+                    listOfChanges={[
+                        "• Fixed the uninstaller to also remove the daily login task.",
                     ]}
                 />
 
