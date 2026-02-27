@@ -9,11 +9,10 @@ const ServerContext = createContext();
 function ServerContextProvider({ children }) {
     const [serverList, setServerList] = useState([]);
 
-    const getServers = useCallback(async () => {
+    const getServers = async () => {
         try {
             // Try to load servers from database
             const servers = await invoke('get_all_servers');
-            
             if (servers && servers.length > 0) {
                 setServerList(servers);
                 return servers;
@@ -66,12 +65,11 @@ function ServerContextProvider({ children }) {
             setServerList([]);
             return [];
         }
-    }, []);
+    };
 
     useEffect(() => {
         getServers();
-    }, [getServers]);
-
+    }, []);
     /**
      * Reload servers from the database.
      * Call this after a char/list request updates the servers.
