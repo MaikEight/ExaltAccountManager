@@ -117,7 +117,7 @@ function TotalsViewV2() {
                         itemEntries={itemEntries}
                         onItemClick={handleItemClick}
                         showCounts={true}
-                        maxHeight={5000}
+                        maxHeight={10000}
                         minColumns={8}
                     />
                     <img
