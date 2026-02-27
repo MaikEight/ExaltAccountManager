@@ -35,7 +35,7 @@ function getXof8OfCharacter(character) {
         x += cls[3][6] - character.hp_regen <= 0 ? 1 : 0;
         x += cls[3][7] - character.mp_regen <= 0 ? 1 : 0;
     } catch (e) {
-        console.error(e);
+        console.error("Failed to calculate X of 8 for character:", character, e);
     }
     return x;
 }
