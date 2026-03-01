@@ -12,7 +12,7 @@ import useVaultPeeker from "../../../hooks/useVaultPeeker";
  * @param {Array} props.characters - Array of character objects
  * @param {Function} props.onItemClick - Callback when an item is clicked
  */
-function CharacterGridV2({ characters = [], onItemClick }) {
+function CharacterGridV2({ characters = [], email, onItemClick }) {
     const { filter } = useVaultPeeker();
     const [collapsed, setCollapsed] = useState(false);
 
@@ -81,6 +81,7 @@ function CharacterGridV2({ characters = [], onItemClick }) {
                         <CharacterCardV2
                             key={character.char_id}
                             character={character}
+                            email={email}
                             onItemClick={onItemClick}
                         />
                     ))}
