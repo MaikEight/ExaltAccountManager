@@ -278,7 +278,7 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
                 {/* Characters Grid */}
                 {characters?.length > 0 && (
                     <Box sx={{ mb: 2 }}>
-                        <CharacterGridV2 characters={characters} />
+                        <CharacterGridV2 characters={characters} email={email} />
                     </Box>
                 )}
 
