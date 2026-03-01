@@ -17,7 +17,13 @@ function useDebugLogs() {
         }
     }, []);
 
-    return { debugLogs: debugLogsEnabled };
+    const log = (...args) => {
+        if (debugLogsEnabled) {
+            console.log(...args);
+        }
+    };
+
+    return { debugLogs: debugLogsEnabled, log };
 }
 
 export default useDebugLogs;
