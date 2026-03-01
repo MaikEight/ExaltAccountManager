@@ -8,6 +8,10 @@ import CharacterPortrait from "../../Realm/CharacterPortrait";
 import ItemGridV2 from "./ItemGridV2";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import useUserSettings from "../../../hooks/useUserSettings";
+import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
+import EamIconButton from "../../EamIconButton";
+import usePopups from "../../../hooks/usePopups";
+import CharactersOverviewPopup from "../../Popups/CharactersOverviewPopup";
 
 /**
  * CharacterCardV2 - Displays a single character with equipment, stats, and inventory
@@ -24,12 +28,13 @@ import useUserSettings from "../../../hooks/useUserSettings";
  * @param {Object} props.character - Character data from the account
  * @param {Function} props.onItemClick - Callback when an item is clicked
  */
-function CharacterCardV2({ character, onItemClick }) {
+function CharacterCardV2({ character, email, onItemClick }) {
     const theme = useTheme();
     const { filter, selectItem } = useVaultPeeker();
     const seasonalChipColor = useColorList(1);
     const crucibleChipColor = useColorList(3);
     const { getByKeyAndSubKey } = useUserSettings();
+    const { showPopup } = usePopups();
     const density = getByKeyAndSubKey('vaultPeeker', 'density') || 'comfortable';
 
     const CARD_WIDTH = useMemo(() => {
@@ -102,6 +107,18 @@ function CharacterCardV2({ character, onItemClick }) {
         }
     }, [onItemClick, selectItem]);
 
+    const handleOpenOverview = () => {
+        if (!email) return;
+        showPopup({
+            content: (
+                <CharactersOverviewPopup
+                    email={email}
+                    initialCharacterId={character.char_id}
+                />
+            ),
+        });
+    };
+
     // Get stat display
     const getStatUI = (statName, statValue, isMax) => (
         <Box
@@ -156,14 +173,16 @@ function CharacterCardV2({ character, onItemClick }) {
                     gap: 1,
                 }}
             >
-                {/* Character Portrait */}
-                <CharacterPortrait
-                    type={character.char_class}
-                    skin={character.texture}
-                    tex1={character.tex1}
-                    tex2={character.tex2}
-                    adjust={false}
-                />
+                {/* Character Portrait + overview button */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.25 }}>
+                    <CharacterPortrait
+                        type={character.char_class}
+                        skin={character.texture}
+                        tex1={character.tex1}
+                        tex2={character.tex2}
+                        adjust={false}
+                    />
+                </Box>
 
                 {/* Class Name and Level */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 60 }}>
@@ -215,7 +234,16 @@ function CharacterCardV2({ character, onItemClick }) {
                     </Tooltip>
                 )}
                 {/* Spacer */}
-                <Box sx={{ flex: 1 }} />
+                <Box sx={{ flex: 1 }} />                
+                {email && (
+                    <EamIconButton
+                        icon={<PersonSearchOutlinedIcon sx={{ fontSize: 16 }} />}
+                        tooltip="Detailed Overview"
+                        tooltipDirection="left"
+                        tooltipBackground="background.paper"
+                        onClick={handleOpenOverview}
+                    />
+                )}
                 {/* X/8 and Fame */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography variant="caption" fontWeight="bold" color={xof8 === 8 ? 'warning.main' : 'inherit'}>
