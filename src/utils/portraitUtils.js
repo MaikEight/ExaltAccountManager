@@ -256,6 +256,11 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
         }
     }
 
+    // Druid (class id 819) is not yet in the sprite data; return a static fallback image
+    if (type === 819 || skin === 819) {
+        return '/realm/druid.png';
+    }
+
     if (!ready) {
         console.error('Sprites are not ready yet.');
         return '';
