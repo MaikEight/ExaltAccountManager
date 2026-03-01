@@ -39,21 +39,24 @@ foreach ($stat in $xml.ArrayOfPlayerStat.PlayerStat) {
     $displayName = $stat.displayName
     $dungeonId   = $stat.dungeonId
 
-    if (-not [string]::IsNullOrWhiteSpace($dungeonId)) {
+    $isDungeon = -not [string]::IsNullOrWhiteSpace($dungeonId)
+
+    if ($isDungeon) {
         $name = $dungeonId
     } else {
         $name = $displayName
     }
 
-    $entries[$index] = @{ short = $short; name = $name }
+    $entries[$index] = @{ short = $short; name = $name; isDungeon = $isDungeon }
 }
 
 $lines = @("const playerStats = {")
 
 foreach ($key in ($entries.Keys | Sort-Object)) {
-    $short = $entries[$key].short -replace "'", "\'"
-    $name  = $entries[$key].name  -replace "'", "\'"
-    $lines += "    $key`: { short: '$short', name: '$name' },"
+    $short     = $entries[$key].short -replace "'", "\'"
+    $name      = $entries[$key].name  -replace "'", "\'"
+    $isDungeon = if ($entries[$key].isDungeon) { 'true' } else { 'false' }
+    $lines += "    $key`: { short: '$short', name: '$name', isDungeon: $isDungeon },"
 }
 
 $lines += "};"
