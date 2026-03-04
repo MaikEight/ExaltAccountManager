@@ -299,6 +299,7 @@ fn main() {
             cancel_scheduled_toast_notification_command,
             schedule_end_of_month_notification,
             get_end_of_month_notification_info,
+            open_text_in_editor,
         ])
         .setup(|app| {
             // Handle deep links when the app starts - register all configured schemes
@@ -792,6 +793,39 @@ fn start_application(
             let _child = cmd.spawn().expect("Failed to start process");
         }
     };
+
+    Ok(())
+}
+
+#[tauri::command]
+fn open_text_in_editor(text: String) -> Result<(), String> {
+    info!("Opening text in editor...");
+
+    // Write to a temp file
+    let mut tmp_path = std::env::temp_dir();
+    tmp_path.push("dungeon-checklist.md");
+    let mut file = std::fs::File::create(&tmp_path).map_err(|e| e.to_string())?;
+    file.write_all(text.as_bytes()).map_err(|e| e.to_string())?;
+    drop(file); // ensure it's flushed and closed before opening
+
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("notepad.exe")
+            .arg(&tmp_path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        // -t opens with the default text editor; -a TextEdit forces TextEdit
+        std::process::Command::new("open")
+            .arg("-a")
+            .arg("TextEdit")
+            .arg(&tmp_path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
 
     Ok(())
 }
