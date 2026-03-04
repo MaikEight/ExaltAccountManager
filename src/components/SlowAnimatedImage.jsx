@@ -51,7 +51,7 @@ function SlowAnimatedImage({ src, alt, fps = 12, style }) {
     return (
         <div style={{ position: 'relative', display: 'inline-flex', ...style }}>
             {/* Kept fully visible so the browser continues animating the APNG */}
-            <img ref={imgRef} src={src} alt={alt} style={{ display: 'block', width: '100%', height: '100%' }} />
+            <img ref={imgRef} src={src} alt={alt} style={{ display: 'block', width: 'auto', height: '100%' }} />
             {/* Canvas overlays the img and repaints at the reduced fps */}
             <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
         </div>
