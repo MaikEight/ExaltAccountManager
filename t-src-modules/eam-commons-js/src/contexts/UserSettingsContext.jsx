@@ -91,10 +91,18 @@ const defaultSettings = {
     },
     widgets: {
         widgetBars: {
-
+            ACCOUNT: {
+                slots: 1,
+                activeWidgets: [
+                    "BASIC_ACTIONS",                    
+                    "BEST_CHARACTERS",
+                    "SINGLE_CHARACTER_OVERVIEW",
+                    "ACCOUNT_DETAILS"
+                ]
+            }
         },
         widgets: {
-            
+
         }
     }
 };
