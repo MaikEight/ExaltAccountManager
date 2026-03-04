@@ -1,16 +1,17 @@
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import RealmUpdater from '../components/RealmUpdater';
 import HwidTool from '../components/HwidTool';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import isMacOS from './../utils/isMacOS';
 
 function UtilitiesPage() {
     const [searchParams] = useSearchParams();
     const [runHwidReader, setRunHwidReader] = useState(false);
-
-    useEffect(() => {        
+    const isMac = isMacOS();
+    useEffect(() => {
         const runHwidReader = searchParams.get('runHwidReader');
-        if (runHwidReader === 'true') {            
+        if (runHwidReader === 'true') {
             setRunHwidReader(true);
         }
     }, []);
@@ -26,7 +27,7 @@ function UtilitiesPage() {
         >
             <RealmUpdater />
             {
-                localStorage.getItem("isMacOs") !== "true" &&
+                !isMac &&
                 <HwidTool runHwidReader={runHwidReader} />
             }
         </Box>

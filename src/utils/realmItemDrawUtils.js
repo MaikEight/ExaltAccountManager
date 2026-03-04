@@ -43,7 +43,8 @@ export const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
             return resolve(null);
         }
 
-        const cacheKey = `${CACHE_PREFIX}drawItem:${imgSrc}-${item[3]}-${item[4]}-${rarity}-${itemPadding}`;
+        const isShiny = item[10];
+        const cacheKey = `${CACHE_PREFIX}drawItem:${imgSrc}-${item[3]}-${item[4]}-${rarity}-${itemPadding}-${isShiny ? 1 : 0}`;
         const cachedData = localStorage.getItem(cacheKey);
         let cachedObject;
         if (cachedData) {
@@ -87,6 +88,27 @@ export const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
                 itemSize
             );
 
+            const finalize = () => {
+                const imageUrl = canvas.toDataURL("image/png");
+                const cacheObject = { time: Date.now(), image: imageUrl };
+                localStorage.setItem(cacheKey, JSON.stringify(cacheObject));
+                resolve(imageUrl);
+            };
+
+            const drawShiny = (callback) => {
+                if (!isShiny) return callback();
+                const shinyImg = new Image();
+                shinyImg.src = "/realm/shiny.png";
+                shinyImg.onload = () => {
+                    ctx.drawImage(shinyImg, 0, 0, 50, 50, itemPadding, itemPadding, 16, 16);
+                    callback();
+                };
+                shinyImg.onerror = (error) => {
+                    console.error("Failed to load shiny image", error);
+                    callback();
+                };
+            };
+
             // Draw rarity image if it exists
             const rarityConfig = RARITY_IMAGE_SOURCES[rarity];
             if (rarityConfig && rarityConfig.source) {
@@ -97,45 +119,16 @@ export const drawItemPromise = (imgSrc, item, rarity = 0, itemPadding = 5) => {
                     // Position at bottom right, respecting padding
                     const rarityX = canvasSize - itemPadding - rarityConfig.width;
                     const rarityY = canvasSize - itemPadding - rarityConfig.height;
-
-                    ctx.drawImage(
-                        rarityImg,
-                        rarityX,
-                        rarityY,
-                        rarityConfig.width,
-                        rarityConfig.height
-                    );
-
-                    // Convert canvas to an image URL and cache it
-                    const imageUrl = canvas.toDataURL("image/png");
-                    const cacheObject = {
-                        time: Date.now(),
-                        image: imageUrl,
-                    };
-                    localStorage.setItem(cacheKey, JSON.stringify(cacheObject));
-                    resolve(imageUrl);
+                    ctx.drawImage(rarityImg, rarityX, rarityY, rarityConfig.width, rarityConfig.height);
+                    drawShiny(finalize);
                 };
 
                 rarityImg.onerror = (error) => {
                     console.error("Failed to load rarity image", rarityConfig.source, error);
-                    // Still resolve with the item image even if rarity fails
-                    const imageUrl = canvas.toDataURL("image/png");
-                    const cacheObject = {
-                        time: Date.now(),
-                        image: imageUrl,
-                    };
-                    localStorage.setItem(cacheKey, JSON.stringify(cacheObject));
-                    resolve(imageUrl);
+                    drawShiny(finalize);
                 };
             } else {
-                // No rarity image to draw
-                const imageUrl = canvas.toDataURL("image/png");
-                const cacheObject = {
-                    time: Date.now(),
-                    image: imageUrl,
-                };
-                localStorage.setItem(cacheKey, JSON.stringify(cacheObject));
-                resolve(imageUrl);
+                drawShiny(finalize);
             }
         };
 

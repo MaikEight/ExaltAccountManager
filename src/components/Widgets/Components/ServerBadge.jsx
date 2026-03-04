@@ -26,7 +26,7 @@ function ServerBadge({ serverName, editable, onChange }) {
     };
 
     const handleServerSelect = (server) => {
-        onChange?.(server.Name);
+        onChange?.(server.name);
         handleClose();
     };
 
@@ -82,13 +82,13 @@ function ServerBadge({ serverName, editable, onChange }) {
                     >
                         {
                             serverList && serverList.length > 0 && [
-                                { Name: 'Default', DNS: 'DEFAULT' },
-                                { Name: 'Last server', DNS: 'LAST' },
+                                { name: 'Default', dns: 'DEFAULT' },
+                                { name: 'Last server', dns: 'LAST' },
                                 ...serverList].map((server) => (
                                     <MenuItem
-                                        key={server.DNS}
+                                        key={server.dns}
                                         onClick={() => handleServerSelect(server)}
-                                        selected={server.Name === serverName}
+                                        selected={server.name === serverName}
                                         sx={{
                                             '&.Mui-selected': {
                                                 backgroundColor: theme.palette.mode === 'dark' ? darken(theme.palette.action.selected, 0.55) : theme.palette.action.selected,
@@ -101,7 +101,7 @@ function ServerBadge({ serverName, editable, onChange }) {
                                             alignItems: 'center',
                                         }}
                                     >
-                                        <ServerChip params={{ value: server.Name }} />
+                                        <ServerChip params={{ value: server.name }} />
                                     </MenuItem>
                                 ))
                         }

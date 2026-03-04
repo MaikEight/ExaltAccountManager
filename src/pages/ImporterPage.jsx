@@ -41,6 +41,7 @@ import AddAccountSvg from "../components/Illustrations/AddAccountSvg";
 import { MASCOT_NAME } from "../constants";
 import { GroupUI } from "../components/GridComponents/GroupUI";
 import { useColorList } from "../hooks/useColorList";
+import isMacOS from '../utils/isMacOS';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -130,6 +131,8 @@ function ImporterPage() {
     const currentAccounts = useAccounts().accounts;
     const updateAccount = useAccounts().updateAccount;
     const navigate = useNavigate();
+    const macOS = isMacOS();
+
 
     const getGroupUI = (params) => {
         if (!params.value) return null;
@@ -342,12 +345,13 @@ function ImporterPage() {
             _duplicates[i] = { ..._duplicates[i], renderId: i };
         }
 
-        return getImportObject(_duplicates);
+        return getImportObject(_duplicates, _accountsWithMappedFields);
     };
 
-    const getImportObject = (_duplicates) => {
+    const getImportObject = (_duplicates, _accounts) => {
         const duplicateEmails = _duplicates.map(d => d.email);
-        const nonDuplicates = accountsWithMappedFields.filter(acc => !duplicateEmails.includes(acc.email));
+        const sourceAccounts = _accounts !== undefined ? _accounts : accountsWithMappedFields;
+        const nonDuplicates = sourceAccounts.filter(acc => !duplicateEmails.includes(acc.email));
         const importObject = {
             accounts: nonDuplicates,
             duplicates: _duplicates,
@@ -436,13 +440,14 @@ function ImporterPage() {
 
     useEffect(() => {
         let eventCancel;
-        listen('tauri://file-drop', event => {
-            if (event.payload.length === 0) return;
-            if (event.payload.length > 1) {
+        listen('tauri://drag-drop', event => {
+            const paths = event.payload.paths;
+            if (!paths || paths.length === 0) return;
+            if (paths.length > 1) {
                 showSnackbar('Only one file can be imported at a time');
                 return;
             }
-            readFileContent(event.payload[0]);
+            readFileContent(paths[0]);
         }).then(cancel => eventCancel = cancel);
 
         return () => {
@@ -798,20 +803,29 @@ function ImporterPage() {
                                     p: 1
                                 }}
                             >
-                                <Typography variant="h6">
-                                    EAM.accounts files are currently only supported when the filepath is the one descriped below.
-                                </Typography>
-                                <Typography variant="body2" sx={{ mt: 2 }}>
-                                    EAM.accounts files are encrypted files that contain all the accounts.
-                                </Typography>
-                                <Typography variant="body2">
-                                    They are the save files of older EAM versions (v2.0.8 and older).
-                                </Typography>
-                                <Typography variant="body2" sx={{ mt: 0.5 }}>
-                                    <b>Note:</b> Only save files of EAM v3.0.0 and newer are supported.
-                                    If you have an older save file, please try to update EAM to the version 3.3 and import the file there.
-                                </Typography>
+                                {
+                                    macOS ?
+                                        <Typography variant="h6" color="warning">
+                                            This is not available on macOS as older EAM versions did not exist on macOS.
+                                        </Typography>
+                                        :
+                                        <>
 
+                                            <Typography variant="h6">
+                                                EAM.accounts files are currently only supported when the filepath is the one descriped below.
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ mt: 2 }}>
+                                                EAM.accounts files are encrypted files that contain all the accounts.
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                They are the save files of older EAM versions (v2.0.8 and older).
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                                                <b>Note:</b> Only save files of EAM v3.0.0 and newer are supported.
+                                                If you have an older save file, please try to update EAM to the version 3.3 and import the file there.
+                                            </Typography>
+                                        </>
+                                }
                                 <Typography variant="body1" sx={{ mt: 1 }}>
                                     You can find the file in the EAM save file folder located at:
                                 </Typography>
@@ -823,7 +837,7 @@ function ImporterPage() {
                                     }}
                                 >
                                     <Typography variant="body2" fontStyle={'mono'}>
-                                        C:\Users\%username%\AppData\Local\ExaltAccountManager
+                                        {macOS ? '/Users/%username%/Library/Application Support/ExaltAccountManager' : 'C:\\Users\\%username%\\AppData\\Local\\ExaltAccountManager'}
                                     </Typography>
                                 </Paper>
                                 <StyledButton
@@ -911,7 +925,7 @@ function ImporterPage() {
                             </Typography>
 
                             <Box>
-                                <TableContainer component={Box} sx={{ borderRadius: 0 }}>
+                                <TableContainer component={Box} sx={{ borderRadius: 0, overflow: 'hidden' }}>
                                     <Table
                                         sx={{
                                             '& tbody tr:last-child td, & tbody tr:last-child th': {
@@ -946,17 +960,6 @@ function ImporterPage() {
                                                                             mapping[field] = event.target.value;
                                                                             setDataFieldsMapping(mapping);
                                                                         }}
-                                                                        input={
-                                                                            <Input
-                                                                                id={"data-field-list-label-" + index}
-                                                                                disableUnderline
-                                                                                sx={{
-                                                                                    backgroundColor: theme.palette.background.backdrop,
-                                                                                    borderRadius: `${theme.shape.borderRadius}px`,
-                                                                                    height: '39px'
-                                                                                }}
-                                                                            />
-                                                                        }
                                                                         renderValue={(selected) => {
                                                                             if (!selected || selected === '') {
                                                                                 return null;
@@ -1205,6 +1208,7 @@ function ImporterPage() {
                                         pl: 1,
                                         mx: 2,
                                         mb: 2,
+                                        border: `1px solid ${theme.palette.divider}`,
                                     }}
                                 >
                                     <TablePagination className="pagination-container"
@@ -1240,11 +1244,11 @@ function ImporterPage() {
                                         )}
                                     />
                                     <Tooltip
-                                        title={duplicateSortingPage !== Math.floor(importObject.duplicates.length / duplicatesPerPage) && "Available once you reached the last page"}
+                                        title={duplicateSortingPage !== Math.floor(importObject.duplicates?.length ? importObject.duplicates.length / duplicatesPerPage : 0) && "Available once you reached the last page"}
                                     >
                                         <span>
                                             <StyledButton
-                                                disabled={duplicateSortingPage !== Math.floor(importObject.duplicates.length / duplicatesPerPage)}
+                                                disabled={duplicateSortingPage !== Math.floor(importObject.duplicates?.length ? importObject.duplicates.length / duplicatesPerPage : 0)}
                                                 sx={{ ml: 1 }}
                                                 startIcon={<DoneOutlinedIcon />}
                                                 onClick={() => {
@@ -1310,7 +1314,14 @@ function ImporterPage() {
                                             startIcon={<ArrowBackIosNewOutlinedIcon />}
                                             color="secondary"
                                             onClick={() => {
-                                                setActiveStep(importObject.duplicates?.length > 0 ? 2 : 1);
+                                                if (importObject.duplicates?.length > 0) {
+                                                    setActiveStep(2);
+                                                } else if (accounts.length === 0) {
+                                                    // .eam.accounts path skips step 1 (field mapping)
+                                                    setActiveStep(0);
+                                                } else {
+                                                    setActiveStep(1);
+                                                }
                                             }}
                                         >
                                             Back
@@ -1463,8 +1474,8 @@ function ImporterPage() {
                                         alt={`${MASCOT_NAME} cheering 🎉`}
                                         height={120}
                                         style={{
-                                            marginLeft: '40px',
-                                            marginRight: 'auto',
+                                            marginRight: '40px',
+                                            my: 'auto'
                                         }}
                                     />
                                 </ComponentBox>
@@ -1608,7 +1619,7 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
                                         align="left"
                                     >
                                         <Typography variant="body2" fontWeight={'bold'} component="span">
-                                            Existing accounts
+                                            {duplicate.existing?.length > 1 ? `Existing accounts` : 'Existing account'}
                                         </Typography>
                                     </PaddedTableCell>
                                 </TableRow>
@@ -1642,7 +1653,7 @@ function DuplicateAccountBox({ duplicate, onChangeExisting, onChangeImported }) 
                                         align="left"
                                     >
                                         <Typography variant="body2" fontWeight={'bold'} component="span">
-                                            Imported accounts
+                                            {duplicate.imported?.length > 1 ? `Imported accounts` : 'Imported account'}
                                         </Typography>
                                     </PaddedTableCell>
                                 </TableRow>

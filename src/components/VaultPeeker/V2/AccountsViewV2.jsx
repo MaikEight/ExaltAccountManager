@@ -147,7 +147,7 @@ function AccountsViewV2() {
             ))}
 
             {/* Pagination Controls */}
-            {totalAccounts > 0 && (
+            {totalAccounts > 25 && (
                 <Box
                     sx={{
                         display: 'flex',
@@ -189,7 +189,7 @@ function AccountsViewV2() {
                         </FormControl>
 
                         {/* Page navigation */}
-                        {pageSize !== 'all' && totalPages > 1 && (
+                        {pageSize !== 'all' && (
                             <Pagination
                                 count={totalPages}
                                 page={currentPage}

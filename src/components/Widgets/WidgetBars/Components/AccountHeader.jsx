@@ -10,15 +10,19 @@ import { getRelativeTimeString } from 'eam-commons-js';
 import { useColorList } from '../../../../hooks/useColorList';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
 import EamIconButton from '../../../EamIconButton';
 import CharacterPortraitAvatarGroup from './CharacterPortraitAvatarGroup';
 import { useEffect, useRef, useState } from 'react';
 import { invoke } from "@tauri-apps/api/core";
 import { WidgetBars } from '../../Widgetbars';
+import usePopups from '../../../../hooks/usePopups';
+import CharactersOverviewPopup from '../../../Popups/CharactersOverviewPopup';
 
 function AccountHeader() {
     const { widgetBarState, closeWidgetBar, updateWidgetBarEditMode, widgetBarConfig } = useWidgets();
     const { updateAccount, getAccountByEmail } = useAccounts();
+    const { showPopup } = usePopups();
 
     const type = widgetBarState?.type || WidgetBars.ACCOUNT;
     const currentSlots = widgetBarConfig?.slots || type?.defaultConfig?.slots || 1;
@@ -38,6 +42,7 @@ function AccountHeader() {
     }
 
     useEffect(() => {
+        setCharacter([]);
         if (widgetBarState?.data?.email && widgetBarState.data.email !== lastEmailRef.current) {
             lastEmailRef.current = widgetBarState.data.email;
             const email = widgetBarState.data.email;            
@@ -79,6 +84,12 @@ function AccountHeader() {
         if (contextAcc) {
             await updateAccount({ ...contextAcc, serverName: server });
         }
+    };
+
+    const handleOpenCharacters = () => {
+        showPopup({
+            content: <CharactersOverviewPopup email={acc.email} />,
+        });
     };
 
     return (
@@ -124,86 +135,93 @@ function AccountHeader() {
             <Box
                 sx={{
                     display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 2,
+                    flexDirection: 'column',
+                    gap: 0.75,
                     px: 0.5,
                 }}
             >
-                {
-                    acc.group && (
-                        <Box
-                            sx={{
-                                scale: '1.25',
-                            }}
-                        >
-                            <GroupUI group={acc.group} size={64} />
-                        </Box>
-                    )
-                }
-                <Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'start',
-                            gap: 0
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-
-                                gap: 1,
-                            }}
-                        >
-                            <Typography variant="h6" component="h6">
-                                {acc.name}
-                            </Typography>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'start',
-                                    justifyContent: 'start',
-                                    height: '100%',
-                                    mb: 0.5,
-                                }}
-                            >
-                                <Tooltip title="Last Refresh" sx={{}}>
-                                    <Chip label={relativeLastRefresh} sx={{ ...lastRefreshColor }} size="small" icon={<RefreshRoundedIcon color={lastRefreshColorText} />} />
-                                </Tooltip>
-                            </Box>
-                        </Box>
-                        <Typography variant="body2" color="text.secondary">
-                            {acc.email}
-                        </Typography>
-                    </Box>
-                </Box>
+                {/* Row 1: group · name · last-refresh chip · avatar group · server badge */}
                 <Box
                     sx={{
-                        ml: 'auto',
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        gap: 2,
+                        gap: 1.5,
                     }}
                 >
                     {
-                        currentSlots > 1 &&
-                        <CharacterPortraitAvatarGroup characters={character} renderAmount={8} />
+                        acc.group && (
+                            <Box sx={{ scale: '1.25', flexShrink: 0 }}>
+                                <GroupUI group={acc.group} size={64} />
+                            </Box>
+                        )
                     }
+                    <Typography variant="h6" component="h6">
+                        {acc.name}
+                    </Typography>
                     <Box
                         sx={{
                             display: 'flex',
-                            flexDirection: 'column',
-                            width: 'fit-content',
-                            gap: 1,
+                            flexDirection: 'row',
+                            alignItems: 'start',
+                            height: '100%',
+                            mb: 0.5,
                         }}
                     >
+                        <Tooltip title="Last Refresh">
+                            <Chip
+                                label={relativeLastRefresh}
+                                sx={{ ...lastRefreshColor }}
+                                size="small"
+                                icon={<RefreshRoundedIcon color={lastRefreshColorText} />}
+                            />
+                        </Tooltip>
+                    </Box>
+                    <Box
+                        sx={{
+                            ml: 'auto',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 2,
+                        }}
+                    >
+                        {
+                            currentSlots > 1 &&
+                            <CharacterPortraitAvatarGroup characters={character} renderAmount={8} />
+                        }
                         <ServerBadge serverName={acc?.serverName} editable={true} onChange={handleChangeServer} />
+                    </Box>
+                </Box>
+
+                {/* Row 2: email · characters popup button · request state chip */}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 1,
+                    }}
+                >
+                    <Typography variant="body2" color="text.secondary">
+                        {acc.email}
+                    </Typography>
+                    <Box
+                        sx={{
+                            ml: 'auto',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 0.5,
+                        }}
+                    >
+                        <EamIconButton
+                            icon={<PersonSearchOutlinedIcon fontSize='small' />}
+                            tooltip='Characters Overview'
+                            tooltipDirection='left'
+                            tooltipBackground='background.paperLight'
+                            onClick={handleOpenCharacters}
+                        />
                         <RequestStateChip state={acc?.state} useShortName={false} />
                     </Box>
                 </Box>

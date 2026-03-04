@@ -1,11 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import ComponentBox from "../ComponentBox";
 
-function PopupBase({ title, children }) {
+function PopupBase({ title, children, sx }) {
     return (
         <ComponentBox
             sx={{
                 m: 0,
+                ...sx,
             }}
         >
             <Box

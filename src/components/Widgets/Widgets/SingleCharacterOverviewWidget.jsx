@@ -3,7 +3,7 @@ import useWidgets from "../../../hooks/useWidgets";
 import { invoke } from '@tauri-apps/api/core';
 import WidgetBase from "./WidgetBase";
 import { getXof8OfCharacter, isCrucibleActive, isStatMaxed } from "../../../utils/realmCharacterUtils";
-import { Box, Chip, Tooltip, Typography, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Box, Chip, Tooltip, Typography, Select, MenuItem, FormControl, InputLabel, Tabs, Tab } from "@mui/material";
 import CharacterPortrait from "../../Realm/CharacterPortrait";
 import { classes } from "../../../assets/constants";
 import { useColorList } from "../../../hooks/useColorList";
@@ -13,9 +13,14 @@ import { useTheme } from "@emotion/react";
 import { areaElementClasses, chartsAxisHighlightClasses, lineElementClasses } from "@mui/x-charts";
 import { formatTime } from 'eam-commons-js';
 import StyledButton from "../../StyledButton";
+import playerStats, { getDungeonImage } from "../../../assets/playerStats";
+import useDebugLogs from "../../../hooks/useDebugLogs";
+import SlowAnimatedImage from "../../SlowAnimatedImage";
 
 function SingleCharacterOverviewWidget({ type, widgetId }) {
     const { widgetBarState, widgetBarConfig, getWidgetConfiguration, updateWidgetConfiguration } = useWidgets();
+    const { log } = useDebugLogs();
+
     const config = getWidgetConfiguration(type);
     const currentSlots = Math.min((widgetBarConfig?.slots || 1), (config?.slots || type?.defaultConfig?.slots || 1));
     const daysToFetch = config?.settings?.daysToFetch || 7;
@@ -26,12 +31,25 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
 
     const [characterIdToShow, setCharacterIdToShow] = useState(null);
     const [character, setCharacter] = useState(null);
+    const [charPcStats, setCharPcStats] = useState([]);
     const [latestCharListDataset, setLatestCharListDataset] = useState(null);
     const [lastDaysCharListDataset, setLastDaysCharListDataset] = useState(null);
     const lastEmailRef = useRef(null);
+    const leftContentRef = useRef(null);
+    const [leftContentHeight, setLeftContentHeight] = useState(0);
+
+    useEffect(() => {
+        if (!leftContentRef.current) return;
+        const observer = new ResizeObserver(entries => {
+            setLeftContentHeight(entries[0].contentRect.height);
+        });
+        observer.observe(leftContentRef.current);
+        return () => observer.disconnect();
+    }, [leftContentRef.current]);
 
     // Settings editor state
     const [isSettingsEditMode, setIsSettingsEditMode] = useState(false);
+    const [statsTab, setStatsTab] = useState(0);
     const [editDaysToFetch, setEditDaysToFetch] = useState(daysToFetch);
     const [editCharacterId, setEditCharacterId] = useState(null);
 
@@ -82,7 +100,6 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
                 lastKnownFame = entry.fame;
             }
         });
-        console.log("daysDataArray", data);
         return data;
     }, [lastDaysCharListDataset, characterIdToShow]);
 
@@ -129,7 +146,7 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
         if (!dataset?.email) {
             return null;
         }
-        
+
         const email = dataset.email;
         const charIdMapping = config?.settings?.characterIdPerAccount || {};
         if (charIdMapping[email]) {
@@ -289,9 +306,6 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
             if (lastEmailRef.current === email) {
                 setLatestCharListDataset(latestDataset);
                 setLastDaysCharListDataset(lastDaysDataset);
-
-                console.log("Latest char list dataset:", latestDataset);
-                console.log(`Last ${days} days char list dataset:`, lastDaysDataset);
             }
         } catch (err) {
             console.error(err);
@@ -314,6 +328,9 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
         setCharacterIdToShow(id);
         const char = latestCharListDataset.character.find(c => c.char_id === id) || latestCharListDataset.character[0] || null;
         setCharacter(char);
+
+        const stats = latestCharListDataset.pc_stats?.filter(stat => stat.char_id === id) || [];
+        setCharPcStats(stats);
     }, [latestCharListDataset]);
 
     const getCreationDate = () => {
@@ -348,7 +365,26 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
 
     const getContent = () => {
         if (!characterIdToShow || !character) {
-            return null;
+            return (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        gap: 1,
+                    }}
+                >
+                    <img
+                        src="/mascot/Search/no_accounts_1_small_very_low_res.png"
+                        alt="No character"
+                        width="80"
+                        height="56"
+                    />
+                    No character found
+                </Box>
+            );
         }
 
         return (
@@ -516,10 +552,178 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
                 )}
             </Box>
         );
-    }
+    };
+
+    const getChartContent = () => {
+        return (
+            <Box
+                sx={{
+                    p: 0.5,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: 1,
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        height: 'fit-content',
+                    }}
+                >
+                    <Box>
+                        <Typography variant="body2" fontWeight={400}>
+                            Creation Date
+                        </Typography>
+                        <Typography variant="body2" fontWeight={500}>
+                            {getCreationDate()}
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography variant="body2" fontWeight={400}>
+                            Character ID
+                        </Typography>
+                        <Typography variant="body2" fontWeight={500}>
+                            #{character?.char_id}
+                        </Typography>
+                    </Box>
+                </Box>
+                <Box
+                    sx={{
+                        mt: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%',
+                        height: 'fit-content',
+                    }}
+                >
+                    <Typography variant="h6">
+                        Base Fame over the last {daysToFetch} days
+                    </Typography>
+                    <SparkLineChart
+                        sx={{
+                            [`& .${areaElementClasses.root}`]: { opacity: 0.2 },
+                            [`& .${lineElementClasses.root}`]: { strokeWidth: 3 },
+                            [`& .${chartsAxisHighlightClasses.root}`]: {
+                                stroke: theme.palette.primary.main,
+                                strokeDasharray: 'none',
+                                strokeWidth: 0
+                            },
+                        }}
+                        data={daysDataArray.map(d => d.fame)}
+                        valueFormatter={(value) => value !== null ? `${value} Fame` : 'N/A'}
+                        height={100}
+                        color={theme.palette.primary.main}
+                        area
+                        plotType="line"
+                        showHighlight={true}
+                        showTooltip={true}
+                    />
+                </Box>
+            </Box>
+        )
+    };
+
+    const getStatsContent = () => {
+        // Build full list from playerStats definition, merging in actual values
+        const statLookup = Object.fromEntries(charPcStats.map(s => [s.stat_type, s.stat_value]));
+
+        const allStats = Object.entries(playerStats)
+            .map(([key, def]) => ({
+                stat_type: Number(key),
+                stat_value: statLookup[key] ?? null,
+                isDungeon: def.isDungeon,
+            }))
+            .sort((a, b) => a.stat_type - b.stat_type);
+
+        const nonDungeonStats = allStats.filter(s => !s.isDungeon);
+        const dungeonStats = allStats.filter(s => s.isDungeon);
+        const activeList = statsTab === 0 ? nonDungeonStats : dungeonStats;
+
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                    minWidth: 0,
+                    maxHeight: leftContentHeight || undefined,
+                    overflow: 'hidden',
+                    ml: 1,
+                }}
+            >
+                <Typography variant="h6">
+                    Character Stats
+                </Typography>
+                <Tabs
+                    value={statsTab}
+                    onChange={(_, v) => setStatsTab(v)}
+                    sx={{ minHeight: 32, mb: 0.5 }}
+                    slotProps={{
+                        indicator: {
+                            style: { height: 2 },
+                        },
+                    }}
+                >
+                    <Tab label="Stats" sx={{ minHeight: 32, py: 0.5, fontSize: '0.75rem' }} />
+                    <Tab label="Dungeons" sx={{ minHeight: 32, py: 0.5, fontSize: '0.75rem' }} />
+                </Tabs>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                        flex: 1,
+                        minHeight: 0,
+                        overflowY: 'auto',
+                        pr: 0.5,
+                    }}
+                >
+                    {activeList.map(stat => {
+                        const statDef = playerStats[stat.stat_type];
+                        const imgSrc = statDef ? getDungeonImage(statDef) : null;
+                        const isMissing = stat.stat_value === null;
+                        return (
+                            <Box
+                                key={`stat-${stat.stat_type}`}
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    gap: 1,
+                                    opacity: isMissing ? 0.4 : 1,
+                                }}
+                            >
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
+                                    {imgSrc && (
+                                        <SlowAnimatedImage
+                                            src={imgSrc}
+                                            alt={statDef.name}
+                                            fps={12}
+                                            style={{ height: 16, width: 'auto', flexShrink: 0 }}
+                                        />
+                                    )}
+                                    <Typography variant="body2" fontWeight={400} noWrap>
+                                        {statDef?.name || 'Unknown'}
+                                    </Typography>
+                                </Box>
+                                <Typography variant="body2" fontWeight={500} sx={{ flexShrink: 0, pr: 1 }}>
+                                    {stat.stat_value ?? 0}
+                                </Typography>
+                            </Box>
+                        );
+                    })}
+                </Box>
+            </Box>
+        );
+    };
 
     return (
-        <WidgetBase type={type} widgetId={widgetId} onWidgetEditModeChanged={handleWidgetEditModeChanged} isEditMode={isSettingsEditMode}>
+        <WidgetBase type={type} widgetId={widgetId} onWidgetEditModeChanged={!characterIdToShow || !character ? null : handleWidgetEditModeChanged} isEditMode={isSettingsEditMode}>
             {isSettingsEditMode ? (
                 renderSettingsEditor()
             ) : (
@@ -528,80 +732,17 @@ function SingleCharacterOverviewWidget({ type, widgetId }) {
                         width: '100%',
                         display: 'flex',
                         flexDirection: 'row',
+                        alignItems: 'flex-start',
                         gap: 1,
                     }}
                 >
+                    <Box ref={leftContentRef} sx={{ display: 'flex', flexShrink: 0 }}>
                     {getContent()}
+                    </Box>
                     {
                         currentSlots > 1 &&
-                        <Box
-                            sx={{
-                                p: 0.5,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: 1,
-                                    justifyContent: 'space-between',
-                                    width: '100%',
-                                    height: 'fit-content',
-                                }}
-                            >
-                                <Box>
-                                    <Typography variant="body2" fontWeight={400}>
-                                        Creation Date
-                                    </Typography>
-                                    <Typography variant="body2" fontWeight={500}>
-                                        {getCreationDate()}
-                                    </Typography>
-                                </Box>
-                                <Box>
-                                <Typography variant="body2" fontWeight={400}>
-                                    Character ID
-                                </Typography>
-                                <Typography variant="body2" fontWeight={500}>
-                                    #{character?.char_id}
-                                </Typography>
-                                </Box>
-                            </Box>
-                            <Box
-                                sx={{
-                                    mt: 'auto',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    width: '100%',
-                                    height: 'fit-content',
-                                }}
-                            >
-                                <Typography variant="h6">
-                                    Base Fame over the last {daysToFetch} days
-                                </Typography>
-                                <SparkLineChart
-                                    sx={{
-                                        [`& .${areaElementClasses.root}`]: { opacity: 0.2 },
-                                        [`& .${lineElementClasses.root}`]: { strokeWidth: 3 },
-                                        [`& .${chartsAxisHighlightClasses.root}`]: {
-                                            stroke: theme.palette.primary.main,
-                                            strokeDasharray: 'none',
-                                            strokeWidth: 0
-                                        },
-                                    }}
-                                    data={daysDataArray.map(d => d.fame)}
-                                    valueFormatter={(value) => value !== null ? `${value} Fame` : 'N/A'}
-                                    height={100}
-                                    color={theme.palette.primary.main}
-                                    area
-                                    plotType="line"
-                                    showHighlight={true}
-                                    showTooltip={true}
-                                />
-                            </Box>
-                        </Box>
+                        !(!characterIdToShow || !character) &&
+                        getStatsContent()
                     }
                 </Box>
             )}

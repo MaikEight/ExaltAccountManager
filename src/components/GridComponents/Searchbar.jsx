@@ -9,6 +9,7 @@ import { useTheme } from '@emotion/react';
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
+    border: `1px solid ${theme.palette.divider}`,
     ...(theme.palette.mode === 'dark' ? {
         backgroundColor: alpha(theme.palette.background.default, 0.5),
         '&:hover': {

@@ -952,6 +952,13 @@ Section Uninstall
 
   !insertmacro CheckIfAppIsRunning "${PRODUCTNAME}" "${PRODUCTNAME}"
 
+  ; Remove EAM Daily Login scheduled tasks if they exist (only on full uninstall, not update)
+  ${If} $UpdateMode <> 1
+    nsExec::ExecToLog 'schtasks /Delete /TN "Exalt Account Manager Daily Login Task V3" /F'
+    nsExec::ExecToLog 'schtasks /Delete /TN "Exalt Account Manager Daily Login Task V2" /F'
+    nsExec::ExecToLog 'schtasks /Delete /TN "Exalt Account Manager Daily Login Task" /F'
+  ${EndIf}
+
   ; Delete the app directory and its content from disk
   ; Copy main executable
   Delete "$INSTDIR\${MAINBINARYNAME}.exe"

@@ -1,13 +1,14 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { Box, Typography, Chip, IconButton, Collapse, Avatar, AvatarGroup, Skeleton } from "@mui/material";
+import { Box, Typography, Chip, Avatar, AvatarGroup, Skeleton } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ComponentBox from "../../ComponentBox";
 import CharacterGridV2 from "./CharacterGridV2";
 import StorageContainerV2 from "./StorageContainerV2";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { portrait } from "../../../utils/portraitUtils";
+import useAccounts from "../../../hooks/useAccounts";
+import EamIconButton from "../../EamIconButton";
+import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded';
 
 /**
  * AccountViewV2 - Displays a single account's characters and storage
@@ -22,6 +23,7 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
     const theme = useTheme();
     const { filter } = useVaultPeeker();
     const [characterPortraits, setCharacterPortraits] = useState([]);
+    const { getAccountByEmail, loadAccountByEmail, setSelectedAccount } = useAccounts();
 
     // Extract data from accountData (comes from processAccountsData in context)
     const { email, name, group, characters, storageContainers, account } = accountData || {};
@@ -47,6 +49,19 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
         }
         return count;
     }, [characters, storageContainers]);
+
+    const openWidgetBarWithAccount = useCallback(() => {
+        let fullAccountData = getAccountByEmail(email);
+        if (!fullAccountData) {
+            console.warn(`Account with email ${email} not found in context.`);
+            fullAccountData = loadAccountByEmail(email, true); // Force load if not found, as the getAccountByEmail would return null a second time..
+            if (!fullAccountData) {
+                console.error(`Failed to load account with email ${email}.`);
+                return;
+            }
+        }
+        setSelectedAccount(fullAccountData);
+    }, [email, getAccountByEmail, loadAccountByEmail, setSelectedAccount]);
 
     // Generate character portraits using the portrait utility (like v1)
     useEffect(() => {
@@ -97,15 +112,8 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
 
     if (!accountData) return null;
 
-    return (
-        <ComponentBox
-            sx={{
-                width: '100%',
-                mb: 0,
-                mx: 0, // Override default margin
-            }}
-        >
-            {/* Account Header */}
+    const getAccountHeader = useMemo(() => {
+        return (
             <Box
                 onClick={handleHeaderClick}
                 sx={{
@@ -115,16 +123,12 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
                     p: 1,
                     cursor: 'pointer',
                     borderRadius: 1,
+                    width: '100%',
                     '&:hover': {
                         backgroundColor: theme.palette.action.hover,
                     },
                 }}
             >
-                {/* Expand/Collapse Icon */}
-                <IconButton size="small" onClick={handleHeaderClick}>
-                    {collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                </IconButton>
-
                 {/* Group Color Indicator */}
                 {group && (
                     <Box
@@ -138,26 +142,50 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
                 )}
 
                 {/* Account Name */}
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ minWidth: 150 }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{}}>
                     {name || email || 'Unknown Account'}
                 </Typography>
 
-                {/* Stats Chips */}
-                <Chip
-                    label={`${characters?.length || 0} chars`}
-                    size="small"
-                    variant="outlined"
-                    sx={{ fontSize: '0.75rem' }}
-                />
-                <Chip
-                    label={`${totalItems} items`}
-                    size="small"
-                    variant="outlined"
-                    sx={{ fontSize: '0.75rem' }}
-                />
 
-                {/* Character Portraits (when collapsed) */}
-                {collapsed && characterPortraits.length > 0 && (
+
+                {/* Open WidgetBar Button */}
+                <EamIconButton
+                    icon={<MenuOpenRoundedIcon fontSize="medium" sx={{ ml: 0.75 }} />}
+                    tooltip={'Open account details'}
+                    tooltipDirection="right"
+                    tooltipBackground="background.paperLight"
+                    aria-label="Open Account Details"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        openWidgetBarWithAccount();
+                    }}
+                />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.5,
+                        justifyContent: 'center',
+                        mx: 'auto',
+                    }}
+                >
+                    {/* Stats Chips */}
+                    <Chip
+                        label={`${characters?.length || 0} chars`}
+                        size="small"
+                        variant="outlined"
+                        sx={{ fontSize: '0.75rem' }}
+                    />
+                    <Chip
+                        label={`${totalItems} items`}
+                        size="small"
+                        variant="outlined"
+                        sx={{ fontSize: '0.75rem' }}
+                    />
+                </Box>
+
+                {/* Character Portraits */}
+                {characterPortraits.length > 0 && (
                     <Box sx={{ display: 'flex', gap: 0.5, ml: 'auto', flexWrap: 'wrap' }}>
                         {characters?.length === 1 ? (
                             characterPortraits[0]?.src ? (
@@ -233,56 +261,65 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
                     </Box>
                 )}
             </Box>
+        );
+    }, [name, email, characterPortraits, characters, totalItems, group, theme, handleHeaderClick, openWidgetBarWithAccount]);
 
-            {/* Collapsible Content */}
-            <Collapse in={!collapsed} timeout="auto" unmountOnExit>
-                <Box sx={{ p: 1, pt: 0, }}>
-                    {/* Characters Grid */}
-                    {characters?.length > 0 && (
-                        <Box sx={{ mb: 2 }}>
-                            <CharacterGridV2 characters={characters} />
-                        </Box>
-                    )}
+    return (
+        <ComponentBox
+            sx={{
+                width: '100%',
+                mb: 0,
+                mx: 0, // Override default margin
+            }}
+            title={getAccountHeader}
+            isCollapseable
+        >
+            <Box sx={{ p: 1, pt: 0, }}>
+                {/* Characters Grid */}
+                {characters?.length > 0 && (
+                    <Box sx={{ mb: 2 }}>
+                        <CharacterGridV2 characters={characters} email={email} />
+                    </Box>
+                )}
 
-                    {/* Storage Containers */}
-                    {storageContainers && (
-                        <Box
-                            sx={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                                gap: 1,
-                            }}
-                        >
-                            <StorageContainerV2
-                                storageType="vault"
-                                items={storageContainers.vault || []}
-                                previewCount={16}
-                            />
-                            <StorageContainerV2
-                                storageType="gifts"
-                                items={storageContainers.gifts || []}
-                                previewCount={16}
-                            />
-                            <StorageContainerV2
-                                storageType="material_storage"
-                                items={storageContainers.material_storage || []}
-                                previewCount={16}
-                            />
-                            <StorageContainerV2
-                                storageType="temporary_gifts"
-                                items={storageContainers.temporary_gifts || []}
-                                previewCount={16}
-                            />
-                            <StorageContainerV2
-                                storageType="potions"
-                                items={storageContainers.potions || []}
-                                previewCount={16}
-                            />
-                        </Box>
-                    )}
-                </Box>
-            </Collapse>
-        </ComponentBox>
+                {/* Storage Containers */}
+                {storageContainers && (
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                            gap: 1,
+                        }}
+                    >
+                        <StorageContainerV2
+                            storageType="vault"
+                            items={storageContainers.vault || []}
+                            previewCount={16}
+                        />
+                        <StorageContainerV2
+                            storageType="gifts"
+                            items={storageContainers.gifts || []}
+                            previewCount={16}
+                        />
+                        <StorageContainerV2
+                            storageType="material_storage"
+                            items={storageContainers.material_storage || []}
+                            previewCount={16}
+                        />
+                        <StorageContainerV2
+                            storageType="temporary_gifts"
+                            items={storageContainers.temporary_gifts || []}
+                            previewCount={16}
+                        />
+                        <StorageContainerV2
+                            storageType="potions"
+                            items={storageContainers.potions || []}
+                            previewCount={16}
+                        />
+                    </Box>
+                )}
+            </Box>
+        </ComponentBox >
     );
 }
 

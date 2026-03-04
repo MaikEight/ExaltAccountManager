@@ -86,12 +86,23 @@ const defaultSettings = {
         closeAfterFinish: false,
         //HIDDEN: disableAutoHideOnDailyLoginStartup: boolean // Whether to disable auto-hide on daily login startup, store in the database
     },
+    notifications: {
+        endOfMonthReminderEnabled: true,
+    },
     widgets: {
         widgetBars: {
-
+            ACCOUNT: {
+                slots: 1,
+                activeWidgets: [
+                    "BASIC_ACTIONS",                    
+                    "BEST_CHARACTERS",
+                    "SINGLE_CHARACTER_OVERVIEW",
+                    "ACCOUNT_DETAILS"
+                ]
+            }
         },
         widgets: {
-            
+
         }
     }
 };

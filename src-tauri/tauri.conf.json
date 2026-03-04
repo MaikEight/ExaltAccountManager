@@ -47,7 +47,11 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "createUpdaterArtifacts": "v1Compatible"
+    "createUpdaterArtifacts": "v1Compatible",
+    "resources": {
+      "../public/mascot/Notification/notification.png": "mascot/Notification/notification.png",
+      "../public/mascot/Notification/reminder.png": "mascot/Notification/reminder.png"
+    }
   },
   "productName": "Exalt Account Manager",
   "mainBinaryName": "Exalt Account Manager",

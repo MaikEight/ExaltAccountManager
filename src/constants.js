@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
 export const APP_VERSION = '4.4.0';
-export const APP_VERSION_RELEASE_DATE = '01.02.2026';
+export const APP_VERSION_RELEASE_DATE = '04.03.2026';
 export const IS_PRE_RELEASE = false;
 
 export const CACHE_PREFIX = '!cache-';
@@ -147,4 +147,10 @@ export const EAM_PLUS_PURCHASE_SUCCESS_MESSAGES = Object.freeze([
     `${MASCOT_NAME} is honored to have you as a Plus member. Expect only mild mischief.`,
     `Plus mode: engaged. ${MASCOT_NAME} feels fancy now.✨`,
     `Thank you for supporting EAM! ${MASCOT_NAME} may cry digital tears of joy.`,
+]);
+
+// End-of-month reminder notification images (matching the Rust content.rs selection)
+export const END_OF_MONTH_NOTIFICATION_IMAGES = Object.freeze([
+    '/mascot/Info/notification_very_low_res.png',
+    '/mascot/Info/notification_eam_very_low_res.png',
 ]);
