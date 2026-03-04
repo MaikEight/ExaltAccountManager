@@ -342,13 +342,11 @@ function DebugFlagsPage() {
                             sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                overflowY: 'auto',
                                 px: 2,
                                 pb: 1,
                                 width: '100%',
                                 flexGrow: 1,
                                 minHeight: 0,
-                                height: '450px',
                                 gap: 1.5,
                             }}
                         >
@@ -362,6 +360,7 @@ function DebugFlagsPage() {
                                             padding: 1.25,
                                             backgroundColor: theme.palette.background.default,
                                             borderRadius: `${theme.shape.borderRadius}px`,
+                                            border: `1px solid ${theme.palette.divider}`,
                                         }}
                                     >
                                         <Typography variant="h6">
