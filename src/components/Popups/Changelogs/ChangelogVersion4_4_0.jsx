@@ -9,7 +9,7 @@ function ChangelogVersion4_4_0() {
 
     const title = [
         "Exalt Account Manager v4.4.0",
-        "New Logo, Widgets, Enchantments and Vault Peeker redesign!",
+        "New Logo, Widgets, Enchantments, Stats and Vault Peeker redesign!",
     ];
 
     return (
@@ -113,7 +113,17 @@ function ChangelogVersion4_4_0() {
                         "Added a new Widgets system to customize EAM to your liking.",
                         "Account Details are now using the new Widgets system, add / remove them as you like.",
                         "You can enable Edit Mode for Widget Bars to add, remove or rearrange Widgets. Just click the 'Edit' button in the top right of a Widget Bar.",
-                        "Some widgets have its own settings, accessible via the edit icon in the top right of the Widget itself.",
+                        "Some widgets have its own settings, accessible via the edit icon in the top right of the Widget itself.",                        
+                    ]}
+                />
+
+                <ChangelogEntry
+                    title={'Stats and Fame Bonuses'}
+                    listOfChanges={[
+                        "Added new stats parsing and display throughout the app, including character stats and dungeon completions.",
+                        "Added support for displaying Fame Bonuses and their conditions in the Character Details popup.",
+                        "Added a quick export of dungeons needed to achieve all / specific bonuses.",
+                        "Added a Fame Bonus prediction upon death (WIP)"
                     ]}
                 />
 
@@ -123,6 +133,7 @@ function ChangelogVersion4_4_0() {
                         "Redesigned the whole Vault Peeker interface for better usability and appearance.",
                         "Added support for Enchantments and Rarity display.",
                         "Improved performance when loading many items at once.",
+                        "Updated the item images and definitions to the latest version, including new items and fixes to existing ones.",
                     ]}
                 />
 
@@ -168,6 +179,8 @@ function ChangelogVersion4_4_0() {
                 <ChangelogEntry
                     title={'Miscellaneous'}
                     listOfChanges={[
+                        "Added support for the new Druid class. - Although textures and skins are not yet supported.",
+                        "Added support for character statistics and dungeon completions.",
                         "Changed the overall appearance of EAM with a new logo and updated borders.",
                         "Changed the Stripe Logo to the new version.",
                         "Fixed the formatting of the EAM branding in the developer tools on macOS.",
@@ -219,9 +232,9 @@ function ChangelogVersion4_4_0() {
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
-                                <li>Melon</li>
-                                <li></li>
-                                <li>and many more...</li>
+                                <li>MelonPerson - for creating the all the new Okta related images</li>
+                                <li>059 - for providing new constants.js and renders.png</li>
+                                <li>Faynt - for helping with constants.js and providing sheets.js</li>
                             </ul>
                         </Typography>
                     </Box>
