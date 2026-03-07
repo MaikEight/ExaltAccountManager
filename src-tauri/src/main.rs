@@ -230,6 +230,7 @@ fn main() {
             combine_paths,
             start_application,
             open_folder_in_explorer,
+            get_download_directory,
             get_temp_folder_path,
             get_temp_folder_path_with_creation,
             create_folder,
@@ -853,6 +854,16 @@ fn open_folder_in_explorer(path: String) -> Result<(), Error> {
     };
 
     Ok(())
+}
+
+#[tauri::command]
+fn get_download_directory() -> String {
+    info!("Getting download directory...");
+
+    dirs::download_dir()
+        .unwrap_or_else(|| std::env::temp_dir())
+        .to_string_lossy()
+        .to_string()
 }
 
 fn download_file_to_ram(url: &str) -> Result<Vec<u8>, std::io::Error> {
