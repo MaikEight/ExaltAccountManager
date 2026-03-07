@@ -481,7 +481,7 @@ function SettingsPage() {
                             </Typography>
                     }
                     <ServerListSelect
-                        serversToAdd={[{ Name: 'Last server', DNS: 'LAST' },]}
+                        serversToAdd={[{ name: 'Last server', dns: 'LAST' },]}
                         selectedServer={settings?.game?.defaultServer ? settings.game.defaultServer : "Last server"}
                         onChange={(server) => { setSettings({ ...settings, game: { ...settings.game, defaultServer: server } }) }}
                         defaultValue={'Last server'}
