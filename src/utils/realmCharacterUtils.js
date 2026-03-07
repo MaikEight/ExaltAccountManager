@@ -2,7 +2,7 @@ import { classes } from "../assets/constants";
 
 export const BACKPACK_ITEM_ID = 3180;
 export const BACKPACK_EXTENDER_ITEM_ID = 65280;
-export const ADCENTUREERS_BELT = 31883;
+export const ADVENTURERS_BELT = 31883;
 
 /**
 * Extract equipment IDs from a comma-separated string
@@ -78,7 +78,7 @@ function crucibleTimeStampToDate(ticks) {
     const epochMs = Date.UTC(2008, 6, 31, 0, 0, 0); // 2008-07-31T00:00:00Z (month is 0-based)
 
     const ms = ticks / 10000n;            // 100ns -> ms
-    const subMs100ns = ticks % 10000n;    // remainder in 100ns units (0..9999)
+    // const subMs100ns = ticks % 10000n;    // remainder in 100ns units (0..9999)
 
     const d = new Date(epochMs + Number(ms));
     return d;
