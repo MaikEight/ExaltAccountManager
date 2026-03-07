@@ -1,5 +1,6 @@
 import { fetch } from '@tauri-apps/plugin-http';
 import { EAM_USERS_API } from '../../constants';
+import { log } from '../utils/loggingUtils';
 
 async function getProfileImage(imageUrl) {
     const response = await fetch(
@@ -12,16 +13,14 @@ async function getProfileImage(imageUrl) {
         });
 
     if (!response.ok) {
-        console.log(`HTTP error! status: ${response.status}-${response}`);
+        console.error(`HTTP error! status: ${response.status}-${response}`);
         return;
     }
 
     const imageData = await response.arrayBuffer();
     const base64String = arrayBufferToBase64(imageData);
-
-    if (sessionStorage.getItem('flag:debug') === 'true') {
-        console.log('getProfileImage response', base64String);
-    }
+    
+    log('getProfileImage response', base64String);    
 
     if (sessionStorage.getItem('flag:copy:profile-image') === 'true') {
         navigator.clipboard.writeText(base64String)
