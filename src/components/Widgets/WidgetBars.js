@@ -42,6 +42,8 @@ export class WidgetBars {
             Widgets.BASIC_ACTIONS,
             Widgets.BEST_CHARACTERS,
             Widgets.SINGLE_CHARACTER_OVERVIEW,
+            Widgets.COMMENT,
+            Widgets.OWNED_SKINS,
             Widgets.AUDITLOG,
         ],
         headerComponents: [
