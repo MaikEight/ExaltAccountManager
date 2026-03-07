@@ -1,9 +1,10 @@
 import { textiles, skinsheets } from '../assets/sheets';
 import { skins, textures } from '../assets/constants';
 import { CACHE_PREFIX } from '../constants';
+import { log } from 'eam-commons-js';
 
 // single component
-function p_comp(s, x, y, i) {
+function p_comp(s, x, y, i) {    
     return s.data[((s.width * y + x) << 2) + i]
 }
 
@@ -91,7 +92,7 @@ function load_img(src, t, s) {
 // Function to load sheets (fallback - original implementation)
 function load_sheets_fallback() {
     console.time("load_sheets_fallback");
-    console.log("Loading skinsheets and textiles (fallback mode)...");
+    log("Loading skinsheets and textiles (fallback mode)...");
 
     const skinsheetPromises = Object.keys(skinsheets).map(key => {
         const src = skinsheets[key];
@@ -126,12 +127,12 @@ function load_sheets_fallback() {
 // Function to load sheets using Web Worker
 function load_sheets_worker() {
     return new Promise((resolve, reject) => {
-        console.log("Loading skinsheets and textiles (worker mode)...");
+        log("Loading skinsheets and textiles (worker mode)...");
         
         try {
             // Create worker
-            worker = new Worker(new URL('./portraitWorker.js', import.meta.url), { type: 'module' });
-            
+            worker = new Worker(new URL('./portraitWorker.js', import.meta.url), { type: 'module' });            
+
             // Listen for messages from worker
             worker.onmessage = (event) => {
                 const { type, sprites: workerSprites, error } = event.data;
@@ -140,7 +141,7 @@ function load_sheets_worker() {
                     // Sprites are transferred (not copied) from worker using transferable objects
                     // This is a zero-copy operation for maximum performance
                     Object.assign(sprites, workerSprites);
-                    console.log('Sprites loaded from worker (transferred via zero-copy)');
+                    log('Sprites loaded from worker (transferred via zero-copy)');
                     resolve();
                 } else if (type === 'SPRITES_ERROR') {
                     console.error('Worker failed to load sprites:', error);
@@ -286,6 +287,7 @@ function portrait(type, skin, tex1Id, tex2Id, adjust) {
     const st = document.createElement('canvas');
     st.width = 34;
     st.height = 34;
+
     const ctx = st.getContext('2d');
     ctx.save();
     ctx.clearRect(0, 0, st.width, st.height);
@@ -355,8 +357,8 @@ preload.then(() => {
     ready = true;
     window.portraitReady = true;
 
-    console.log('Loaded sprite types:', Object.keys(sprites).length);
-    console.log('Loaded sprites:', Object.keys(Object.keys(sprites).reduce((acc, key) => {
+    log('Loaded sprite types:', Object.keys(sprites).length);
+    log('Loaded sprites:', Object.keys(Object.keys(sprites).reduce((acc, key) => {
         acc[key] = sprites[key].length;
         return acc;
     }, {})).reduce((acc, key) => acc + sprites[key].length, 0)
