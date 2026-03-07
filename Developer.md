@@ -15,13 +15,14 @@ EAM is a project with the following components:
   This tool is currently closed source.
 
 - **Rust EAM_Plus_Lib:**  
-  This is closed-source.
+  This is closed-source.   
+  To still be able to compile, there is a mock-lib available at [t-src-modules/eam_plus_lib_mock](t-src-modules/eam_plus_lib_mock), just use it in the dependencies here [t-src-modules/eam_background_sync/Cargo.toml](t-src-modules/eam_background_sync/Cargo.toml)
 
 ## Prerequisites
 
 - **Rust:** [Install the Rust](https://www.rust-lang.org/learn/get-started) toolchain and Cargo.
 - **Node.js:** [Install Node.js](https://nodejs.org/en/download) for the React frontend.
-- **Bun** (Optional): For faster dependency installation [Bun](https://bun.sh/) can also be used.
+- **Bun**: [Bun](https://bun.sh/) is used as our runtime.
 - **.NET Framework 4.8:** Required for the C# sub-project. (Comes with windows)
 - **Tauri CLI:** Install globally with `cargo install tauri-cli`.
 
@@ -44,7 +45,7 @@ EAM is a project with the following components:
     If you have trouble building the `EAM_Task_Installer` you can just copy the current existing versions from your[C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4](C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4) into the specified destinations. (Requires an installed EAM version)
 
 4. **Run EAM in developer mode:**
-    Run `npm run tauri dev` in the root of the project.
+    Run `bun run tauri dev` in the root of the project.
     
     This will take quite a while for the first time but eventually you should see a transparent Window pop up. This windows will after a short time display EAM.
     
