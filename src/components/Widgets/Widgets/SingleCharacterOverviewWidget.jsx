@@ -14,12 +14,10 @@ import { areaElementClasses, chartsAxisHighlightClasses, lineElementClasses } fr
 import { formatTime } from 'eam-commons-js';
 import StyledButton from "../../StyledButton";
 import playerStats, { getDungeonImage } from "../../../assets/playerStats";
-import useDebugLogs from "../../../hooks/useDebugLogs";
 import SlowAnimatedImage from "../../SlowAnimatedImage";
 
 function SingleCharacterOverviewWidget({ type, widgetId }) {
     const { widgetBarState, widgetBarConfig, getWidgetConfiguration, updateWidgetConfiguration } = useWidgets();
-    const { log } = useDebugLogs();
 
     const config = getWidgetConfiguration(type);
     const currentSlots = Math.min((widgetBarConfig?.slots || 1), (config?.slots || type?.defaultConfig?.slots || 1));
