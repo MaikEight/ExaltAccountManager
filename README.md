@@ -14,7 +14,7 @@
 [![Top Language](https://img.shields.io/github/languages/top/MaikEight/ExaltAccountManager)](https://github.com/MaikEight/ExaltAccountManager#Languages:~:text=your%20first%20package-,Languages)
 [![Maintained](https://img.shields.io/maintenance/yes/2026?label=Maintained)](https://github.com/MaikEight)
 [![Last Commit](https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit)](https://github.com/MaikEight/ExaltAccountManager/commits/main)
-[![Tauri](https://img.shields.io/badge/Tauri-2.9.1-violet.svg?style=flat&logo=Tauri&color=512BD4)](https://tauri.app)
+[![Tauri](https://img.shields.io/badge/Tauri-2.10.3-violet.svg?style=flat&logo=Tauri&color=512BD4)](https://tauri.app)
 [![Greater Good](https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg)](https://good-labs.github.io/greater-good-affirmation)
 [![Latest Release](https://img.shields.io/github/v/release/MaikEight/ExaltAccountManager?label=Latest%20Release)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
 [![Release Date](https://img.shields.io/github/release-date/MaikEight/ExaltAccountManager?label=Release%20date)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
@@ -104,6 +104,7 @@ Purchases:
 - The domain ExaltAccountManager.com.
 - A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
 - 3x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
+- 1x Apple Developer Account to ensure authenticity and integrity of the software.
 - Webhosting for the [website](https://ExaltAccountManager.com).
 
 <b>Any help is greatly appreciated</b> 🍻
