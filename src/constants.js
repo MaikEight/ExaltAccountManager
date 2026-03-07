@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
 export const APP_VERSION = '4.4.0';
-export const APP_VERSION_RELEASE_DATE = '04.03.2026';
+export const APP_VERSION_RELEASE_DATE = '07.03.2026';
 export const IS_PRE_RELEASE = false;
 
 export const CACHE_PREFIX = '!cache-';
@@ -147,6 +147,15 @@ export const EAM_PLUS_PURCHASE_SUCCESS_MESSAGES = Object.freeze([
     `${MASCOT_NAME} is honored to have you as a Plus member. Expect only mild mischief.`,
     `Plus mode: engaged. ${MASCOT_NAME} feels fancy now.✨`,
     `Thank you for supporting EAM! ${MASCOT_NAME} may cry digital tears of joy.`,
+]);
+
+export const EXPORT_SUCCESS_MESSAGES = Object.freeze([
+    `${MASCOT_NAME} just exported your data like a pro!`,
+    `Export complete! ${MASCOT_NAME} handled it with care.`,
+    `${MASCOT_NAME} has successfully exported your data. Time to celebrate!`,
+    `Your data is now safely exported, thanks to ${MASCOT_NAME}!`,
+    `${MASCOT_NAME} did the export dance and got it done!`,
+    `Exporting success! ${MASCOT_NAME} is on a roll!`,
 ]);
 
 // End-of-month reminder notification images (matching the Rust content.rs selection)
