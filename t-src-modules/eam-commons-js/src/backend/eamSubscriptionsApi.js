@@ -1,8 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
 import { EAM_SUBSCRIPTIONS_API } from "../../constants";
+import { isDebugLoggingEnabled } from "../utils/loggingUtils";
 
 async function postPlusToken(id_token, deviceId) {
-    const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+    const debugFlag = isDebugLoggingEnabled();
     const myHeaders = new Map();
     myHeaders.set('Authorization', `Bearer ${id_token}`);
 
@@ -41,7 +42,7 @@ async function postPlusToken(id_token, deviceId) {
 }
 
 async function validatePlusToken(jwt, deviceId) {
-    const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+    const debugFlag = isDebugLoggingEnabled();
     const myHeaders = new Map();
     myHeaders.set('Authorization', `Bearer ${jwt}`);
 
@@ -101,7 +102,7 @@ async function validatePlusToken(jwt, deviceId) {
  * }
  */
 async function checkForPaidSubscription(jwt) {
-    const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+    const debugFlag = isDebugLoggingEnabled();
     if (debugFlag) {
         console.log('Checking for paid subscription');
     }
