@@ -1,6 +1,7 @@
 import { Avatar, AvatarGroup, Box, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { portrait } from "../../../../utils/portraitUtils";
+import useDebugLogs from "../../../../hooks/useDebugLogs";
 
 function CharacterPortraitAvatarGroup({ characters, renderAmount = 4 }) {
     if (!characters) {
@@ -9,10 +10,12 @@ function CharacterPortraitAvatarGroup({ characters, renderAmount = 4 }) {
         characters = [characters];
     }
 
+    const { log } = useDebugLogs();
+
     const [characterPortraits, setCharacterPortraits] = useState([renderAmount].fill(-1));
 
     useEffect(() => {
-        console.log("Generating portraits for characters:", characters, renderAmount);
+        log("Generating portraits for characters:", characters, renderAmount);
         const generatePortraits = async () => {
             const chars = [];
             for (let i = 0; i < characters.length && i < renderAmount; i++) {
