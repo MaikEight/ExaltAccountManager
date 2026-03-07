@@ -10,7 +10,6 @@ import ExpandRoundedIcon from '@mui/icons-material/ExpandRounded';
 import UnfoldLessRoundedIcon from '@mui/icons-material/UnfoldLessRounded';
 import EamIconButton from '../../EamIconButton';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { useState } from 'react';
 
 function WidgetBase({ children, type, widgetId, onWidgetEditModeChanged, isEditMode = false, sx }) {
     const { getWidgetConfiguration, widgetBarConfig, removeWidgetFromBar, widgetBarState, updateWidgetConfiguration } = useWidgets();
