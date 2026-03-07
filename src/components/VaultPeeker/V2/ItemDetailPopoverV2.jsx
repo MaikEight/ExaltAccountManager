@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import {
     Box,
     Popover,
@@ -20,6 +20,8 @@ import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import ItemGridV2 from "./ItemGridV2";
 import { RARITY_IMAGE_SOURCES } from "../../../utils/realmItemDrawUtils";
 import useAccounts from "../../../hooks/useAccounts";
+import { getBagTypeImage } from "../../../utils/bagTypeUtils";
+import useDebugLogs from "../../../hooks/useDebugLogs";
 
 // Rarity colors
 const RARITY_COLORS = {
@@ -68,6 +70,14 @@ const getStorageConfig = (storageTypeId) => {
  * Get enchantment display info
  */
 const getEnchantmentInfo = (enchantId) => {
+    // 65535 indicates an empty enchantment slot
+    // 0 indicates an empty & locked enchantment slot (Legacy)
+    if (enchantId === 65535) {
+        return { name: 'Empty Slot', description: 'This enchantment slot is empty.', isEmpty: true };
+    }
+    if (enchantId === 0) {
+        return { name: 'Locked Slot', description: 'This enchantment slot is empty and locked.', isEmpty: true };
+    }
     let enchant = "";
     try {
         enchant = enchantments[enchantId];
@@ -313,7 +323,11 @@ function EnchantVariantTooltip({ variant, locations, onNavigate }) {
                     </Typography>
                     {enchantInfoList.map((enchant, idx) => (
                         <Box key={idx} sx={{ mt: 0.5 }}>
-                            <Typography variant="body2" fontWeight="bold">
+                            <Typography
+                                variant="body2"
+                                fontWeight={enchant.isEmpty ? 'normal' : 'bold'}
+                                fontStyle={enchant.isEmpty ? 'italic' : 'normal'}
+                            >
                                 {enchant.name}
                             </Typography>
                             {enchant.description && (
@@ -496,6 +510,7 @@ function EnchantVariantRow({ variant, locations, onNavigate }) {
                                     display: 'block',
                                     lineHeight: 1.3,
                                     color: idx === 0 ? 'text.primary' : 'text.secondary',
+                                    fontStyle: enchant.isEmpty ? 'italic' : 'normal',
                                 }}
                             >
                                 {enchant.name}
@@ -606,6 +621,10 @@ function ItemDetailPopoverV2() {
     const navigate = useNavigate();
     const { selectedItem, clearSelectedItem, popperPosition, totalsMap } = useVaultPeeker();
     const { getAccountByEmail, setSelectedAccount } = useAccounts();
+    const { log } = useDebugLogs();
+
+    const [bagTypeImage, setBagTypeImage] = useState(null);
+
     const open = Boolean(selectedItem);
     const itemId = selectedItem?.itemId;
 
@@ -641,6 +660,7 @@ function ItemDetailPopoverV2() {
 
     // Get totals data for this item
     const itemTotals = useMemo(() => {
+        log("Fetching totals for itemId:", itemId, totalsMap);
         if (!totalsMap || !itemId) return null;
         return totalsMap.get(itemId);
     }, [totalsMap, itemId]);
@@ -648,7 +668,6 @@ function ItemDetailPopoverV2() {
     // Group enchant variants by rarity
     const variantsByRarity = useMemo(() => {
         if (!itemTotals?.enchantVariants) return {};
-
         const grouped = {};
         for (const [key, variant] of itemTotals.enchantVariants) {
             const rarity = variant.rarity || 0;
@@ -665,6 +684,20 @@ function ItemDetailPopoverV2() {
 
         return grouped;
     }, [itemTotals]);
+
+    useEffect(() => {
+        if (!itemId) { setBagTypeImage(null); return; }
+        const bagType = items[itemId]?.[7];
+        if (!bagType) { setBagTypeImage(null); return; }
+        getBagTypeImage(bagType)
+            .then((imageUrl) => {
+                setBagTypeImage(imageUrl)
+            })
+            .catch((error) => {
+                console.error("Failed to get bag type image", error);
+                setBagTypeImage(null);
+            });
+    }, [itemId]);
 
     // Get unique locations (deduplicate by email + storageTypeId)
     const uniqueLocations = useMemo(() => {
@@ -804,6 +837,20 @@ function ItemDetailPopoverV2() {
                             ×{itemTotals?.count}
                         </Typography>
                     )}
+
+                    {/* Bag */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        {
+                            bagTypeImage &&
+                            <img src={bagTypeImage} alt="Bag" />
+                        }
+                    </Box>
                 </Box>
 
                 {/* Scrollable content */}
