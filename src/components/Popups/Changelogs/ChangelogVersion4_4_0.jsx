@@ -25,6 +25,7 @@ function ChangelogVersion4_4_0() {
                 maxHeight: '95vh',
                 maxWidth: '90vw',
                 overflow: 'auto',
+                background: theme.palette.background.paper,
             }}
         >
             <Box
@@ -132,6 +133,7 @@ function ChangelogVersion4_4_0() {
                     listOfChanges={[
                         "Redesigned the whole Vault Peeker interface for better usability and appearance.",
                         "Added support for Enchantments and Rarity display.",
+                        "Added support for Bag Types.",
                         "Improved performance when loading many items at once.",
                         "Updated the item images and definitions to the latest version, including new items and fixes to existing ones.",
                     ]}
@@ -181,9 +183,11 @@ function ChangelogVersion4_4_0() {
                     listOfChanges={[
                         "Added support for the new Druid class. - Although textures and skins are not yet supported.",
                         "Added support for character statistics and dungeon completions.",
+                        "Added a new snackbar for exporting accounts with a button to open the exported file in Explorer/Finder.",
                         "Changed the overall appearance of EAM with a new logo and updated borders.",
                         "Changed the Stripe Logo to the new version.",
                         "Fixed the formatting of the EAM branding in the developer tools on macOS.",
+                        "Fixed exporting accounts causing EAM to not work properly until restarted.",
                         "Temporarily removed the rudementary Dungeon Stats popup due to unreliability and its outdated appearance. Will be back soon."
                     ]}
                 />
