@@ -4,11 +4,11 @@ import { useTheme } from "@emotion/react";
 import ComponentBox from "../../ComponentBox";
 import CharacterGridV2 from "./CharacterGridV2";
 import StorageContainerV2 from "./StorageContainerV2";
-import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { portrait } from "../../../utils/portraitUtils";
 import useAccounts from "../../../hooks/useAccounts";
 import EamIconButton from "../../EamIconButton";
 import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded';
+import { useColorList } from "../../../hooks/useColorList";
 
 /**
  * AccountViewV2 - Displays a single account's characters and storage
@@ -21,10 +21,9 @@ import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded';
  */
 function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
     const theme = useTheme();
-    const { filter } = useVaultPeeker();
     const [characterPortraits, setCharacterPortraits] = useState([]);
     const { getAccountByEmail, loadAccountByEmail, setSelectedAccount } = useAccounts();
-
+    
     // Extract data from accountData (comes from processAccountsData in context)
     const { email, name, group, characters, storageContainers, account } = accountData || {};
 
@@ -49,6 +48,8 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
         }
         return count;
     }, [characters, storageContainers]);
+
+    const IndicatorColor = useColorList(group?.color || 'primary' )?.color || theme.palette.primary.main;
 
     const openWidgetBarWithAccount = useCallback(() => {
         let fullAccountData = getAccountByEmail(email);
@@ -108,7 +109,7 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
 
     const handleHeaderClick = useCallback(() => {
         onToggleCollapse?.(!collapsed);
-    }, [collapsed, onToggleCollapse]);
+    }, [collapsed, onToggleCollapse]);    
 
     if (!accountData) return null;
 
@@ -130,13 +131,14 @@ function AccountViewV2({ accountData, onToggleCollapse, collapsed = false }) {
                 }}
             >
                 {/* Group Color Indicator */}
-                {group && (
+                {group &&
+                (
                     <Box
                         sx={{
                             width: 10,
                             height: 10,
                             borderRadius: '50%',
-                            backgroundColor: group.color || theme.palette.primary.main,
+                            backgroundColor: IndicatorColor,
                         }}
                     />
                 )}
