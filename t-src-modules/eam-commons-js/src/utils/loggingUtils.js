@@ -42,7 +42,7 @@ async function logToErrorLog(sender, message) {
         message: "" + message
     }
 
-    if (debugFlag) {        
+    if (debugFlag) {
         console.info(`Logging to error log: ${JSON.stringify(logData)}`);
     }
 
@@ -59,10 +59,32 @@ async function getErrorLog() {
         });
 }
 
-export { 
-    logToAuditLog, 
-    getAuditLog, 
-    getAuditLogForAccount, 
-    logToErrorLog, 
-    getErrorLog 
+function isDebugLoggingEnabled() {
+    const localStorageValue = localStorage.getItem('flag:debug');
+    if (localStorageValue !== 'true') {
+        return false;
+    }
+
+    const sessionStorageValue = sessionStorage.getItem('flag:debug');
+    if (sessionStorageValue !== 'true') {
+        return false;
+    }
+
+    return true;
+}
+
+function log(...args) {
+    if (!isDebugLoggingEnabled()) return;
+
+    console.log(...args);
+}
+
+export {
+    logToAuditLog,
+    getAuditLog,
+    getAuditLogForAccount,
+    logToErrorLog,
+    getErrorLog,
+    isDebugLoggingEnabled,
+    log
 };
