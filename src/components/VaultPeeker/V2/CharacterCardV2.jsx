@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Chip, Skeleton, Tooltip, Typography } from "@mui/material";
+import { useCallback, useMemo } from "react";
+import { Box, Chip, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { classes } from "../../../assets/constants";
 import { useColorList } from "../../../hooks/useColorList";
