@@ -1,7 +1,7 @@
 import { useEffect, useState, createContext } from "react";
 import _ from "lodash";
 import { invoke } from '@tauri-apps/api/core';
-import { logToAuditLog } from "../utils/loggingUtils";
+import { log, logToAuditLog } from "../utils/loggingUtils";
 
 const UserSettingsContext = createContext();
 
@@ -24,7 +24,7 @@ const getGameExePath = async () => {
             console.warn('Failed to get game exe path (1/2)', err);
             return invoke('get_default_game_path')
                 .then((res) => {
-                    console.log('Got game exe path (2/2)', res);
+                    log('Got game exe path (2/2)', res);
                     return res;
                 })
                 .catch((err) => {
@@ -205,7 +205,7 @@ function UserSettingsProvider({ children }) {
                     invoke('insert_or_update_user_data', { userData: { dataKey: 'game_exe_path', dataValue: value } });
                     return;
                 case key === 'dailyLogin' && subKey === 'disableAutoHideOnDailyLoginStartup':
-                    console.log('Setting daily_login_disable_auto_hide to', value);
+                    log('Setting daily_login_disable_auto_hide to', value);
                     invoke('insert_or_update_user_data', { userData: { dataKey: 'daily_login_disable_auto_hide', dataValue: value?.toString() } });
                     return;
                 default: {
