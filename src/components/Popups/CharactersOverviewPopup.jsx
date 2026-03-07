@@ -20,6 +20,9 @@ import {
     getXof8OfCharacter,
     isCrucibleActive,
     isStatMaxed,
+    ADVENTURERS_BELT,
+    BACKPACK_EXTENDER_ITEM_ID,
+    BACKPACK_ITEM_ID
 } from "../../utils/realmCharacterUtils";
 import { useColorList } from "../../hooks/useColorList";
 import playerStats, { getDungeonImage } from "../../assets/playerStats";
@@ -31,6 +34,9 @@ import EamIconButton from "../EamIconButton";
 import PopupBase from "./PopupBase";
 import usePopups from "../../hooks/usePopups";
 import useAccounts from "../../hooks/useAccounts";
+import { drawItemAsync } from "../../utils/realmItemDrawUtils";
+import { getItemById } from "../../utils/realmItemUtils";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -229,6 +235,8 @@ function CharacterDetail({
     const crucibleChipColor = useColorList(3);
     const [statsTab, setStatsTab] = useState(0);
     const [expandedCollectionEntries, setExpandedCollectionEntries] = useState(new Set());
+    // Backpack / extender / belt indicator icons
+    const [backpackIcons, setBackpackIcons] = useState({ backpack: null, extender: null, belt: null });
 
     const toggleCollectionEntry = useCallback((id) => {
         setExpandedCollectionEntries(prev => {
@@ -237,6 +245,25 @@ function CharacterDetail({
             else next.add(id);
             return next;
         });
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        const load = async () => {
+            const results = {};
+            const bckItem = getItemById(BACKPACK_ITEM_ID);
+            if (bckItem) results.backpack = await drawItemAsync("renders.png", bckItem);
+
+            const extItem = getItemById(BACKPACK_EXTENDER_ITEM_ID);
+            if (extItem) results.extender = await drawItemAsync("renders.png", extItem);
+
+            const beltItem = getItemById(ADVENTURERS_BELT);
+            if (beltItem) results.belt = await drawItemAsync("renders.png", beltItem);
+
+            if (!cancelled) setBackpackIcons(prev => ({ ...prev, ...results }));
+        };
+        load();
+        return () => { cancelled = true; };
     }, []);
 
     const isActiveCrucible = useMemo(
@@ -549,25 +576,48 @@ function CharacterDetail({
                 </Box>
 
                 {/* Equipment */}
-                {equipmentItems.length > 0 && (
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 2,
+                    }}
+                >
+                    {equipmentItems.length > 0 && (
+                        <Box
+                            sx={{
+                                backgroundColor: (theme) =>
+                                    theme.palette.background.default,
+                                borderRadius: 1,
+                                p: 0.25,
+                                width: "fit-content",
+                            }}
+                        >
+                            <ItemGridV2
+                                items={equipmentItems}
+                                showCounts={false}
+                                showEmptySlots={true}
+                                showTooltips={true}
+                                columns={4}
+                            />
+                        </Box>
+                    )}
                     <Box
                         sx={{
-                            backgroundColor: (theme) =>
-                                theme.palette.background.default,
-                            borderRadius: 1,
-                            p: 0.25,
-                            width: "fit-content",
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                            alignItems: 'end',
+                            maxHeight: '50px',
+                            width: 'fit-content',
                         }}
                     >
-                        <ItemGridV2
-                            items={equipmentItems}
-                            showCounts={false}
-                            showEmptySlots={true}
-                            showTooltips={true}
-                            columns={4}
-                        />
+                        {character.backpack_slots > 0 && <img src={backpackIcons.backpack} alt="Backpack" width={25} height={25} />}
+                        {character.backpack_slots > 8 && <img src={backpackIcons.extender} alt="Backpack Extender" width={25} height={25} />}
+                        {character.has3_quickslots > 0 && <img src={backpackIcons.belt} alt="Adventurer's Belt" width={25} height={25} />}
                     </Box>
-                )}
+                </Box>
 
                 {/* Inventory */}
                 {inventoryItems.length > 0 && (
@@ -719,130 +769,247 @@ function CharacterDetail({
                                         e => !e.achieved && e.conditionDetails.some(c => c.missing > 0)
                                     );
                                 return (
-                                <Box key={groupName} sx={{ mb: 1 }}>
-                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                            fontWeight={700}
-                                            sx={{ textTransform: "uppercase", letterSpacing: 0.5 }}
-                                        >
-                                            {groupName}
-                                        </Typography>
-                                        {hasExportableCollections && (
-                                            <Box sx={{ display: "flex", gap: 0.5 }}>
-                                                <Tooltip title="Export as simple dungeon list">
-                                                    <IconButton size="small" onClick={exportDungeonSimple} sx={{ p: 0.25, borderRadius: 0.75, fontSize: "0.6rem", gap: 0.25 }}>
-                                                        <FileDownloadRoundedIcon sx={{ fontSize: 12 }} />
-                                                        <Typography variant="caption" sx={{ fontSize: "0.6rem", lineHeight: 1 }}>Simple</Typography>
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Export as extended dungeon checklist grouped by category">
-                                                    <IconButton size="small" onClick={exportDungeonExtended} sx={{ p: 0.25, borderRadius: 0.75, fontSize: "0.6rem", gap: 0.25 }}>
-                                                        <FileDownloadRoundedIcon sx={{ fontSize: 12 }} />
-                                                        <Typography variant="caption" sx={{ fontSize: "0.6rem", lineHeight: 1 }}>Extended</Typography>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Box>
-                                        )}
-                                    </Box>
-                                    {Object.entries(groupCategories).map(([categoryName, result], catIdx) => {
-                                        const isCollection = !result.isTiered && result.entryResults.length > 1;
+                                    <Box key={groupName} sx={{ mb: 1 }}>
+                                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                                fontWeight={700}
+                                                sx={{ textTransform: "uppercase", letterSpacing: 0.5 }}
+                                            >
+                                                {groupName}
+                                            </Typography>
+                                            {hasExportableCollections && (
+                                                <Box sx={{ display: "flex", gap: 0.5 }}>
+                                                    <Tooltip title="Export as simple dungeon list">
+                                                        <IconButton size="small" onClick={exportDungeonSimple} sx={{ p: 0.25, borderRadius: 0.75, fontSize: "0.6rem", gap: 0.25 }}>
+                                                            <FileDownloadRoundedIcon sx={{ fontSize: 12 }} />
+                                                            <Typography variant="caption" sx={{ fontSize: "0.6rem", lineHeight: 1 }}>Simple</Typography>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title="Export as extended dungeon checklist grouped by category">
+                                                        <IconButton size="small" onClick={exportDungeonExtended} sx={{ p: 0.25, borderRadius: 0.75, fontSize: "0.6rem", gap: 0.25 }}>
+                                                            <FileDownloadRoundedIcon sx={{ fontSize: 12 }} />
+                                                            <Typography variant="caption" sx={{ fontSize: "0.6rem", lineHeight: 1 }}>Extended</Typography>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Box>
+                                            )}
+                                        </Box>
+                                        {Object.entries(groupCategories).map(([categoryName, result], catIdx) => {
+                                            const isCollection = !result.isTiered && result.entryResults.length > 1;
 
-                                        if (isCollection) {
-                                            return (
-                                                <Box key={categoryName} sx={{ mb: 0.5 }}>
-                                                    {/* Collection header */}
-                                                    <Typography
-                                                        variant="caption"
-                                                        color="text.secondary"
-                                                        fontWeight={700}
-                                                        sx={{ textTransform: "uppercase", letterSpacing: 0.5, display: "block", mb: 0.25, px: 0.75 }}
-                                                    >
-                                                        {categoryName}
-                                                    </Typography>
-                                                    {/* Individual entries, each with their conditions */}
-                                                    {result.entryResults.map((entry, entryIdx) => {
-                                                        const isExpanded = !entry.achieved || expandedCollectionEntries.has(entry.id);
-                                                        return (
-                                                            <Box
-                                                                key={entry.id}
-                                                                sx={{
-                                                                    pl: 1.5,
-                                                                    pr: 0.75,
-                                                                    py: 0.5,
-                                                                    mb: 0.25,
-                                                                    borderRadius: 0.5,
-                                                                    backgroundColor: (theme) =>
-                                                                        entryIdx % 2 === 0
-                                                                            ? theme.palette.background.paper
-                                                                            : theme.palette.background.default,
-                                                                }}
-                                                            >
-                                                                {/* Entry header row */}
+                                            if (isCollection) {
+                                                return (
+                                                    <Box key={categoryName} sx={{ mb: 0.5 }}>
+                                                        {/* Collection header */}
+                                                        <Typography
+                                                            variant="caption"
+                                                            color="text.secondary"
+                                                            fontWeight={700}
+                                                            sx={{ textTransform: "uppercase", letterSpacing: 0.5, display: "block", mb: 0.25, px: 0.75 }}
+                                                        >
+                                                            {categoryName}
+                                                        </Typography>
+                                                        {/* Individual entries, each with their conditions */}
+                                                        {result.entryResults.map((entry, entryIdx) => {
+                                                            const isExpanded = !entry.achieved || expandedCollectionEntries.has(entry.id);
+                                                            return (
                                                                 <Box
-                                                                    onClick={entry.achieved ? () => toggleCollectionEntry(entry.id) : undefined}
+                                                                    key={entry.id}
                                                                     sx={{
-                                                                        display: "flex",
-                                                                        justifyContent: "space-between",
-                                                                        alignItems: "center",
-                                                                        gap: 1,
-                                                                        mb: isExpanded ? 0.25 : 0,
-                                                                        cursor: entry.achieved ? "pointer" : "default",
+                                                                        pl: 1.5,
+                                                                        pr: 0.75,
+                                                                        py: 0.5,
+                                                                        mb: 0.25,
+                                                                        borderRadius: 0.5,
+                                                                        backgroundColor: (theme) =>
+                                                                            entryIdx % 2 === 0
+                                                                                ? theme.palette.background.paper
+                                                                                : theme.palette.background.default,
                                                                     }}
                                                                 >
-                                                                    <Typography variant="body2" fontWeight={500} noWrap sx={{ flex: 1, minWidth: 0 }}>
-                                                                        {entry.displayName}
-                                                                    </Typography>
-                                                                    {entry.achieved ? (
-                                                                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexShrink: 0 }}>
-                                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.4 }}>
-                                                                                <Typography variant="body2" fontWeight={600}>
-                                                                                    {calcBonus(entry.absoluteBonus, entry.relativeBonus).toLocaleString()}
-                                                                                </Typography>
-                                                                                <img src="/realm/fame.png" alt="Fame" width={12} height={12} style={{ marginBottom: -1 }} />
-                                                                            </Box>
-                                                                            <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1 }}>
-                                                                                {isExpanded ? "▲" : "▼"}
-                                                                            </Typography>
-                                                                        </Box>
-                                                                    ) : (
-                                                                        <Typography variant="caption" color="text.disabled" sx={{ flexShrink: 0 }}>
-                                                                            {entry.completedCount}/{entry.totalCount}
+                                                                    {/* Entry header row */}
+                                                                    <Box
+                                                                        onClick={entry.achieved ? () => toggleCollectionEntry(entry.id) : undefined}
+                                                                        sx={{
+                                                                            display: "flex",
+                                                                            justifyContent: "space-between",
+                                                                            alignItems: "center",
+                                                                            gap: 1,
+                                                                            mb: isExpanded ? 0.25 : 0,
+                                                                            cursor: entry.achieved ? "pointer" : "default",
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant="body2" fontWeight={500} noWrap sx={{ flex: 1, minWidth: 0 }}>
+                                                                            {entry.displayName}
                                                                         </Typography>
-                                                                    )}
-                                                                </Box>
-                                                                {/* Condition rows */}
-                                                                <Collapse in={isExpanded}>
-                                                                    <Box sx={{ opacity: entry.achieved ? 1 : 0.65 }}>
-                                                                        {entry.conditionDetails.map((ma, i) => {
-                                                                            const statDef = ma.type === "StatValue" ? shortToStatDef[ma.stat] : null;
-                                                                            const imgSrc = statDef ? getDungeonImage(statDef) : null;
-                                                                            const isDone = ma.missing === 0;
-                                                                            return (
-                                                                                <Box
-                                                                                    key={i}
-                                                                                    sx={{
-                                                                                        display: "flex",
-                                                                                        justifyContent: "space-between",
-                                                                                        alignItems: "center",
-                                                                                        gap: 1,
-                                                                                        opacity: isDone ? 0.5 : 1,
-                                                                                    }}
-                                                                                >
-                                                                                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, minWidth: 0 }}>
-                                                                                        {imgSrc && (
-                                                                                            <SlowAnimatedImage
-                                                                                                src={imgSrc}
-                                                                                                alt={statDef.name}
-                                                                                                fps={12}
-                                                                                                style={{ height: 14, width: "auto", flexShrink: 0 }}
-                                                                                            />
-                                                                                        )}
-                                                                                        <Typography variant="caption" color="text.secondary" noWrap>
-                                                                                            {statDef?.name ?? ma.stat}
+                                                                        {entry.achieved ? (
+                                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexShrink: 0 }}>
+                                                                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.4 }}>
+                                                                                    <Typography variant="body2" fontWeight={600}>
+                                                                                        {calcBonus(entry.absoluteBonus, entry.relativeBonus).toLocaleString()}
+                                                                                    </Typography>
+                                                                                    <img src="/realm/fame.png" alt="Fame" width={12} height={12} style={{ marginBottom: -1 }} />
+                                                                                </Box>
+                                                                                <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1 }}>
+                                                                                    {isExpanded ? "▲" : "▼"}
+                                                                                </Typography>
+                                                                            </Box>
+                                                                        ) : (
+                                                                            <Typography variant="caption" color="text.disabled" sx={{ flexShrink: 0 }}>
+                                                                                {entry.completedCount}/{entry.totalCount}
+                                                                            </Typography>
+                                                                        )}
+                                                                    </Box>
+                                                                    {/* Condition rows */}
+                                                                    <Collapse in={isExpanded}>
+                                                                        <Box sx={{ opacity: entry.achieved ? 1 : 0.65 }}>
+                                                                            {entry.conditionDetails.map((ma, i) => {
+                                                                                const statDef = ma.type === "StatValue" ? shortToStatDef[ma.stat] : null;
+                                                                                const imgSrc = statDef ? getDungeonImage(statDef) : null;
+                                                                                const isDone = ma.missing === 0;
+                                                                                return (
+                                                                                    <Box
+                                                                                        key={i}
+                                                                                        sx={{
+                                                                                            display: "flex",
+                                                                                            justifyContent: "space-between",
+                                                                                            alignItems: "center",
+                                                                                            gap: 1,
+                                                                                            opacity: isDone ? 0.5 : 1,
+                                                                                        }}
+                                                                                    >
+                                                                                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, minWidth: 0 }}>
+                                                                                            {imgSrc && (
+                                                                                                <SlowAnimatedImage
+                                                                                                    src={imgSrc}
+                                                                                                    alt={statDef.name}
+                                                                                                    fps={12}
+                                                                                                    style={{ height: 14, width: "auto", flexShrink: 0 }}
+                                                                                                />
+                                                                                            )}
+                                                                                            <Typography variant="caption" color="text.secondary" noWrap>
+                                                                                                {statDef?.name ?? ma.stat}
+                                                                                            </Typography>
+                                                                                        </Box>
+                                                                                        <Typography
+                                                                                            variant="caption"
+                                                                                            color={isDone ? "success.main" : "text.secondary"}
+                                                                                            sx={{ flexShrink: 0 }}
+                                                                                        >
+                                                                                            {isDone ? "✓" : "✗"}
                                                                                         </Typography>
                                                                                     </Box>
+                                                                                );
+                                                                            })}
+                                                                        </Box>
+                                                                    </Collapse>
+                                                                </Box>
+                                                            );
+                                                        })}
+                                                    </Box>
+                                                );
+                                            }
+
+                                            // Tiered / single-entry rendering
+                                            return (
+                                                <Box
+                                                    key={categoryName}
+                                                    sx={{
+                                                        mb: 0,
+                                                        px: 0.75,
+                                                        py: 0.5,
+                                                        borderRadius: 0.5,
+                                                        backgroundColor: (theme) =>
+                                                            catIdx % 2 === 0
+                                                                ? theme.palette.background.paper
+                                                                : theme.palette.background.default,
+                                                    }}
+                                                >
+                                                    {/* Achieved row */}
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            justifyContent: "space-between",
+                                                            alignItems: "center",
+                                                            gap: 1,
+                                                        }}
+                                                    >
+                                                        <Typography variant="body2" fontWeight={400} noWrap sx={{ flex: 1, minWidth: 0 }}>
+                                                            {result.highestCategoryAchieved
+                                                                ? result.highestCategoryAchieved.displayName
+                                                                : categoryName}
+                                                        </Typography>
+                                                        {result.highestCategoryAchieved ? (
+                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, flexShrink: 0 }}>
+                                                                <Typography variant="body2" fontWeight={500}>
+                                                                    {calcBonus(result.absoluteBonus, result.relativeBonus).toLocaleString()}
+                                                                </Typography>
+                                                                <img src="/realm/fame.png" alt="Fame" width={12} height={12} style={{ marginBottom: -1 }} />
+                                                            </Box>
+                                                        ) : (
+                                                            <Typography
+                                                                variant="body2"
+                                                                fontWeight={500}
+                                                                color="text.disabled"
+                                                                sx={{ flexShrink: 0 }}
+                                                            >
+                                                                —
+                                                            </Typography>
+                                                        )}
+                                                    </Box>
+                                                    {/* Next level conditions */}
+                                                    {result.nextCategories.length > 0 && (
+                                                        <Box sx={{ pl: 1.5, mt: 0.25, opacity: 0.5 }}>
+                                                            {result.nextCategories.map((nextCat) => (
+                                                                <Box key={nextCat.id} sx={{ mb: 0.25 }}>
+                                                                    <Typography
+                                                                        variant="caption"
+                                                                        color="text.secondary"
+                                                                        sx={{ display: "block", mb: 0.25 }}
+                                                                    >
+                                                                        {nextCat.displayName}
+                                                                    </Typography>
+                                                                    {nextCat.missingAmounts.map((ma, i) => {
+                                                                        const statDef = ma.type === "StatValue" ? shortToStatDef[ma.stat] : null;
+                                                                        const imgSrc = statDef ? getDungeonImage(statDef) : null;
+                                                                        const isDone = ma.missing === 0;
+                                                                        return (
+                                                                            <Box
+                                                                                key={i}
+                                                                                sx={{
+                                                                                    display: "flex",
+                                                                                    justifyContent: "space-between",
+                                                                                    alignItems: "center",
+                                                                                    gap: 1,
+                                                                                    opacity: isDone ? 0.5 : 1,
+                                                                                }}
+                                                                            >
+                                                                                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, minWidth: 0 }}>
+                                                                                    {imgSrc && (
+                                                                                        <SlowAnimatedImage
+                                                                                            src={imgSrc}
+                                                                                            alt={statDef.name}
+                                                                                            fps={12}
+                                                                                            style={{ height: 14, width: "auto", flexShrink: 0 }}
+                                                                                        />
+                                                                                    )}
+                                                                                    <Typography variant="caption" color="text.secondary" noWrap>
+                                                                                        {ma.type === "StatValue"
+                                                                                            ? (statDef?.name ?? ma.stat)
+                                                                                            : ma.stat}
+                                                                                    </Typography>
+                                                                                </Box>
+                                                                                {ma.type === "StatValue" ? (
+                                                                                    <Typography
+                                                                                        variant="caption"
+                                                                                        color={isDone ? "success.main" : "text.secondary"}
+                                                                                        sx={{ flexShrink: 0 }}
+                                                                                    >
+                                                                                        {(ma.current ?? 0).toLocaleString()} / {ma.threshold.toLocaleString()}
+                                                                                    </Typography>
+                                                                                ) : (
                                                                                     <Typography
                                                                                         variant="caption"
                                                                                         color={isDone ? "success.main" : "text.secondary"}
@@ -850,135 +1017,18 @@ function CharacterDetail({
                                                                                     >
                                                                                         {isDone ? "✓" : "✗"}
                                                                                     </Typography>
-                                                                                </Box>
-                                                                            );
-                                                                        })}
-                                                                    </Box>
-                                                                </Collapse>
-                                                            </Box>
-                                                        );
-                                                    })}
-                                                </Box>
-                                            );
-                                        }
-
-                                        // Tiered / single-entry rendering
-                                        return (
-                                            <Box
-                                                key={categoryName}
-                                                sx={{
-                                                    mb: 0,
-                                                    px: 0.75,
-                                                    py: 0.5,
-                                                    borderRadius: 0.5,
-                                                    backgroundColor: (theme) =>
-                                                        catIdx % 2 === 0
-                                                            ? theme.palette.background.paper
-                                                            : theme.palette.background.default,
-                                                }}
-                                            >
-                                                {/* Achieved row */}
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        justifyContent: "space-between",
-                                                        alignItems: "center",
-                                                        gap: 1,
-                                                    }}
-                                                >
-                                                    <Typography variant="body2" fontWeight={400} noWrap sx={{ flex: 1, minWidth: 0 }}>
-                                                        {result.highestCategoryAchieved
-                                                            ? result.highestCategoryAchieved.displayName
-                                                            : categoryName}
-                                                    </Typography>
-                                                    {result.highestCategoryAchieved ? (
-                                                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.4, flexShrink: 0 }}>
-                                                            <Typography variant="body2" fontWeight={500}>
-                                                                {calcBonus(result.absoluteBonus, result.relativeBonus).toLocaleString()}
-                                                            </Typography>
-                                                            <img src="/realm/fame.png" alt="Fame" width={12} height={12} style={{ marginBottom: -1 }} />
+                                                                                )}
+                                                                            </Box>
+                                                                        );
+                                                                    })}
+                                                                </Box>
+                                                            ))}
                                                         </Box>
-                                                    ) : (
-                                                        <Typography
-                                                            variant="body2"
-                                                            fontWeight={500}
-                                                            color="text.disabled"
-                                                            sx={{ flexShrink: 0 }}
-                                                        >
-                                                            —
-                                                        </Typography>
                                                     )}
                                                 </Box>
-                                                {/* Next level conditions */}
-                                                {result.nextCategories.length > 0 && (
-                                                    <Box sx={{ pl: 1.5, mt: 0.25, opacity: 0.5 }}>
-                                                        {result.nextCategories.map((nextCat) => (
-                                                            <Box key={nextCat.id} sx={{ mb: 0.25 }}>
-                                                                <Typography
-                                                                    variant="caption"
-                                                                    color="text.secondary"
-                                                                    sx={{ display: "block", mb: 0.25 }}
-                                                                >
-                                                                    {nextCat.displayName}
-                                                                </Typography>
-                                                                {nextCat.missingAmounts.map((ma, i) => {
-                                                                    const statDef = ma.type === "StatValue" ? shortToStatDef[ma.stat] : null;
-                                                                    const imgSrc = statDef ? getDungeonImage(statDef) : null;
-                                                                    const isDone = ma.missing === 0;
-                                                                    return (
-                                                                        <Box
-                                                                            key={i}
-                                                                            sx={{
-                                                                                display: "flex",
-                                                                                justifyContent: "space-between",
-                                                                                alignItems: "center",
-                                                                                gap: 1,
-                                                                                opacity: isDone ? 0.5 : 1,
-                                                                            }}
-                                                                        >
-                                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, minWidth: 0 }}>
-                                                                                {imgSrc && (
-                                                                                    <SlowAnimatedImage
-                                                                                        src={imgSrc}
-                                                                                        alt={statDef.name}
-                                                                                        fps={12}
-                                                                                        style={{ height: 14, width: "auto", flexShrink: 0 }}
-                                                                                    />
-                                                                                )}
-                                                                                <Typography variant="caption" color="text.secondary" noWrap>
-                                                                                    {ma.type === "StatValue"
-                                                                                        ? (statDef?.name ?? ma.stat)
-                                                                                        : ma.stat}
-                                                                                </Typography>
-                                                                            </Box>
-                                                                            {ma.type === "StatValue" ? (
-                                                                                <Typography
-                                                                                    variant="caption"
-                                                                                    color={isDone ? "success.main" : "text.secondary"}
-                                                                                    sx={{ flexShrink: 0 }}
-                                                                                >
-                                                                                    {(ma.current ?? 0).toLocaleString()} / {ma.threshold.toLocaleString()}
-                                                                                </Typography>
-                                                                            ) : (
-                                                                                <Typography
-                                                                                    variant="caption"
-                                                                                    color={isDone ? "success.main" : "text.secondary"}
-                                                                                    sx={{ flexShrink: 0 }}
-                                                                                >
-                                                                                    {isDone ? "✓" : "✗"}
-                                                                                </Typography>
-                                                                            )}
-                                                                        </Box>
-                                                                    );
-                                                                })}
-                                                            </Box>
-                                                        ))}
-                                                    </Box>
-                                                )}
-                                            </Box>
-                                        );
-                                    })}
-                                </Box>
+                                            );
+                                        })}
+                                    </Box>
                                 );
                             })}
                             <Box
@@ -1006,8 +1056,11 @@ function CharacterDetail({
                                     </Box>
                                 </Box>
                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Predicted fame on death
+                                    <Typography variant="body2" color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                        Predicted fame on death 
+                                        <Tooltip title="This is an estimate of how much fame the character would receive if it died right now, based on its current fame and all the bonuses it has achieved. It does not take into account any gear bonuses and is not 100% accurate." sx={{ mb: 0.25 }}>
+                                            <InfoOutlinedIcon fontSize="inherit" />
+                                        </Tooltip>
                                     </Typography>
                                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.4 }}>
                                         <Typography variant="body2" color="text.secondary">
