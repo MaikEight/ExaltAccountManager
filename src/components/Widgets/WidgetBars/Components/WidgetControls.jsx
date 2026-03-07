@@ -1,4 +1,4 @@
-import { Box, IconButton, Menu, MenuItem, Divider, Typography } from '@mui/material';
+import { IconButton, Menu, MenuItem, Divider, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import useWidgets from '../../../../hooks/useWidgets';
@@ -43,7 +43,7 @@ function WidgetControls() {
                 sx={{
                     position: 'absolute',
                     bottom: 8,
-                    right: 8,
+                    right: 18,
                     bgcolor: (theme) => theme.palette.background.default,
                     border: (theme) => `1px solid ${theme.palette.divider}`,
                     zIndex: 11,
