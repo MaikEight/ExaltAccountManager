@@ -1,6 +1,6 @@
 import { fetch } from '@tauri-apps/plugin-http';
 import { invoke } from '@tauri-apps/api/core';
-import { logToErrorLog } from '../utils/loggingUtils';
+import { log, logToErrorLog } from '../utils/loggingUtils';
 import { ROTMG_BASE_URL, UPDATE_URLS } from '../../constants';
 import { xmlToJson } from '../utils/XmlUtils';
 
@@ -40,14 +40,14 @@ async function postAccountVerify(account, clientId, decryptNeeded = true) {
         const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
         const jsonResponse = xmlToJson(response);
 
-        if (sessionStorage.getItem('flag:debug') === 'true') {
-            console.log('postAccountVerify response', jsonResponse);
-        }
+
+        log('postAccountVerify response', jsonResponse);
+
 
         if (sessionStorage.getItem('flag:copy:account/verify') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(jsonResponse, null, 2))
                 .then(() => console.log('postAccountVerify response copied to clipboard'))
-                .catch(err => console.error('Failed to copy postAccountVerify response: ', err));
+                .catch(err => logToErrorLog('Failed to copy postAccountVerify response: ', err));
         }
 
         return jsonResponse || null;
@@ -85,14 +85,14 @@ async function postCharList(accessToken) {
         const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
         const jsonResponse = xmlToJson(response);
 
-        if (sessionStorage.getItem('flag:debug') === 'true') {
-            console.log('postCharList response', jsonResponse);
-        }
+
+        log('postCharList response', jsonResponse);
+
 
         if (sessionStorage.getItem('flag:copy:char/list') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(jsonResponse, null, 2))
                 .then(() => console.log('postCharList response copied to clipboard'))
-                .catch(err => console.error('Failed to copy postCharList response: ', err));
+                .catch(err => logToErrorLog('Failed to copy postCharList response: ', err));
         }
 
         return jsonResponse || null;
@@ -129,14 +129,14 @@ async function postRegisterAccount(account) {
                 return 'EAM API error';
             });
 
-        if (sessionStorage.getItem('flag:debug') === 'true') {
-            console.log('postRegisterAccount response', response);
-        }
+
+        log('postRegisterAccount response', response);
+
 
         if (sessionStorage.getItem('flag:copy:account/register') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(response, null, 2))
                 .then(() => console.log('postRegisterAccount response copied to clipboard'))
-                .catch(err => console.error('Failed to copy postRegisterAccount response: ', err));
+                .catch(err => logToErrorLog('Failed to copy postRegisterAccount response: ', err));
         }
 
         return response || null;
@@ -159,20 +159,18 @@ async function getAppInit() {
             });
 
         if (!response.ok) {
-            console.log(`HTTP error! status: ${response.status}-${response}`);
+            logToErrorLog(`HTTP error! status: ${response.status}-${response}`);
             return;
         }
 
         const appSettings = xmlToJson(await response.data);
 
-        if (sessionStorage.getItem('flag:debug') === 'true') {
-            console.log('getAppInit response', appSettings);
-        }
+        log('getAppInit response', appSettings);
 
         if (sessionStorage.getItem('flag:copy:app-init') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(appSettings, null, 2))
                 .then(() => console.log('getAppInit response copied to clipboard'))
-                .catch(err => console.error('Failed to copy getAppInit response: ', err));
+                .catch(err => logToErrorLog('Failed to copy getAppInit response: ', err));
         }
 
         sessionStorage.setItem('buildHash', appSettings.BuildHash);
@@ -180,7 +178,7 @@ async function getAppInit() {
 
         return appSettings;
     } catch (error) {
-        console.log(error);
+        log(error);
         logToErrorLog('getAppInit', error);
         return null;
     }
@@ -207,19 +205,17 @@ async function getGameFileList(buildHash) {
 
         const files = response.data.files;
 
-        if( sessionStorage.getItem('flag:debug') === 'true') {
-            console.log('getGameFileList response', files);
-        }
+            log('getGameFileList response', files);        
 
         if (sessionStorage.getItem('flag:copy:game-file-list') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(files, null, 2))
                 .then(() => console.log('getGameFileList response copied to clipboard'))
-                .catch(err => console.error('Failed to copy getGameFileList response: ', err));
+                .catch(err => logToErrorLog('Failed to copy getGameFileList response: ', err));
         }
 
         return files;
     } catch (error) {
-        console.log(error);
+        log(error);
         logToErrorLog('getGameFileList', error);
         return null;
     }
