@@ -146,13 +146,6 @@ function ItemGridV2({
         onItemClick(displayItem.itemId, position, displayItem.originalData);
     }, [onItemClick]);
 
-    // Calculate grid dimensions
-    const gridColumns = useMemo(() => {
-        if (!containerRef.current) return 10;
-        const containerWidth = containerRef.current.offsetWidth;
-        return Math.max(1, Math.floor(containerWidth / itemSize));
-    }, [itemSize]);
-
     // Show loading state
     if (isLoading && displayItems.length > 0 && renderedItems.size === 0) {
         return (
