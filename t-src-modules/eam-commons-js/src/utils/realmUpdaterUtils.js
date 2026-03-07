@@ -1,9 +1,9 @@
 import { invoke } from '@tauri-apps/api/core';
 import { getCurrentTime } from './timeUtils';
-import { logToErrorLog } from './loggingUtils';
+import { isDebugLoggingEnabled, logToErrorLog } from './loggingUtils';
 
 async function checkForUpdates(force) {
-    const debugFlag = localStorage.getItem('debugMode') === 'true';
+    const debugFlag = isDebugLoggingEnabled();
     if (sessionStorage.getItem('updateCheckInProgress') === 'true' ||
         sessionStorage.getItem('updateInProgress') === 'true') {
         return
