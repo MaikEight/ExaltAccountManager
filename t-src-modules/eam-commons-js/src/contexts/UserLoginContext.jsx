@@ -3,6 +3,7 @@ import { createContext } from "react";
 import { AUTH0_REDIRECT_URL, AUTH0_DOMAIN, AUTH0_CLIENT_ID, EAM_USERS_API } from "../../constants";
 import { invoke } from '@tauri-apps/api/core';
 import { checkForPaidSubscription, postPlusToken } from "../backend/eamSubscriptionsApi";
+import { isDebugLoggingEnabled, log } from "../utils/loggingUtils";
 
 const UserLoginContext = createContext();
 const SUBSCRIPTIONS = ['Default', 'Plus'];
@@ -94,7 +95,7 @@ function UserLoginProvider({ children }) {
     };
 
     const handleAuthRedirect = async (url) => {
-        console.log("Handling Auth0 redirect...", url);
+        log("Handling Auth0 redirect...", url);
         // Extract the authorization code from the URL if available
         const urlParams = new URLSearchParams(url.search);
         const authCode = urlParams.get("code");
@@ -152,7 +153,7 @@ function UserLoginProvider({ children }) {
             return;
         }
 
-        const debugFlag = sessionStorage.getItem('flag:debug') === 'true';
+        const debugFlag = isDebugLoggingEnabled();
 
         setIsLoading(true);
 
@@ -362,4 +363,4 @@ function UserLoginProvider({ children }) {
     );
 }
 
-export { UserLoginProvider, UserLoginContext };
+export { UserLoginProvider, UserLoginContext, SUBSCRIPTIONS };
