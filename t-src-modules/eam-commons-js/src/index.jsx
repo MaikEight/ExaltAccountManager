@@ -27,7 +27,9 @@ export {
     getAuditLog,
     getAuditLogForAccount,
     logToErrorLog,
-    getErrorLog
+    getErrorLog,
+    isDebugLoggingEnabled,
+    log
 } from './utils/loggingUtils';
 
 export {
@@ -55,7 +57,8 @@ export {
 
 export {
     UserLoginProvider,
-    UserLoginContext
+    UserLoginContext,
+    SUBSCRIPTIONS
 } from './contexts/UserLoginContext';
 
 export {
