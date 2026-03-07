@@ -7,8 +7,7 @@ import {
     TableRow,
     Typography,
     TextField,
-    Switch,
-    Button,
+    Switch,    
     TableHead,
 } from "@mui/material";
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
@@ -194,7 +193,7 @@ function TableDataWidget({ type, widgetId }) {
         }
     };
 
-    const renderEditControl = (field, fieldKey, value) => {
+    const renderEditControl = (field, _fieldKey, _value) => {
         switch (field.dataType) {
             case 'boolean':
                 return (
