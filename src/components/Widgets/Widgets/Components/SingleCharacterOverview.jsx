@@ -1,8 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import CharacterPortrait from "../../../Realm/CharacterPortrait";
-import { classes } from "../../../../assets/constants";
 import { useEffect, useMemo, useState } from "react";
-import { ADCENTUREERS_BELT, BACKPACK_EXTENDER_ITEM_ID, BACKPACK_ITEM_ID, getXof8OfCharacter } from "../../../../utils/realmCharacterUtils";
+import { ADVENTURERS_BELT, BACKPACK_EXTENDER_ITEM_ID, BACKPACK_ITEM_ID, getXof8OfCharacter } from "../../../../utils/realmCharacterUtils";
 import { getItemById } from "../../../../utils/realmItemUtils";
 import { drawItemAsync } from "../../../../utils/realmItemDrawUtils";
 import ItemGridV2 from "../../../VaultPeeker/V2/ItemGridV2";
@@ -24,7 +23,6 @@ function SingleCharacterOverview({ character, number, parsedItems }) {
     }, [parsedItems]);
 
     const xof8 = useMemo(() => getXof8OfCharacter(character), [character]);
-    const charClass = useMemo(() => classes[character.char_class], [character.char_class]);
 
     // Backpack / extender / belt indicator icons
     const [backpackIcons, setBackpackIcons] = useState({ backpack: null, extender: null, belt: null });
@@ -42,7 +40,7 @@ function SingleCharacterOverview({ character, number, parsedItems }) {
                 if (item) results.extender = await drawItemAsync("renders.png", item);
             }
             if (character.has3_quickslots > 0) {
-                const item = getItemById(ADCENTUREERS_BELT);
+                const item = getItemById(ADVENTURERS_BELT);
                 if (item) results.belt = await drawItemAsync("renders.png", item);
             }
             if (!cancelled) setBackpackIcons(prev => ({ ...prev, ...results }));
