@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { logToErrorLog } from "../utils/loggingUtils";
+import { log, logToErrorLog } from "../utils/loggingUtils";
 
 async function getEamPlusPrices() {
     const requestHeaders = new Map();
@@ -18,13 +18,13 @@ async function getEamPlusPrices() {
         });
 
         if (sessionStorage.getItem('flag:debug') === 'true') {
-            console.log('getEamPlusPrices response', response);
+            log('getEamPlusPrices response', response);
         }
 
         if (sessionStorage.getItem('flag:copy:eam-plus-prices') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(response, null, 2))
                 .then(() => console.log('getEamPlusPrices response copied to clipboard'))
-                .catch(err => console.error('Failed to copy getEamPlusPrices response: ', err));
+                .catch(err => logToErrorLog('Failed to copy getEamPlusPrices response: ', err));
         }
 
         return response || null;
