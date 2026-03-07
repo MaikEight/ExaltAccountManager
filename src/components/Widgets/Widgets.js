@@ -8,6 +8,10 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import HistoryEduRoundedIcon from '@mui/icons-material/HistoryEduRounded';
 import TocRoundedIcon from '@mui/icons-material/TocRounded';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import CommentWidget from './Widgets/CommentWidget';
+import CharacterIcon from './Widgets/Components/CharacterIcon';
+import OwnedSkinsWidget from './Widgets/OwnedSkinsWidget';
 
 export class Widgets {
     static getWidgetByType(type) {
@@ -22,6 +26,10 @@ export class Widgets {
                 return Widgets.AUDITLOG;
             case Widgets.ACCOUNT_DETAILS.type:
                 return Widgets.ACCOUNT_DETAILS;
+            case Widgets.COMMENT.type:
+                return Widgets.COMMENT;
+            case Widgets.OWNED_SKINS.type:
+                return Widgets.OWNED_SKINS;
             default:
                 return null;
         }
@@ -184,6 +192,32 @@ export class Widgets {
                     },
                 }
             }
+        }
+    }    
+
+    static COMMENT = {
+        type: 'COMMENT_WIDGET',
+        name: 'Comment',
+        icon: ChatOutlinedIcon,
+        Component: CommentWidget, 
+        minSlots: 1,
+        maxSlots: 2,
+        defaultConfig: {
+            slots: 1,
+            settings: {}
+        }
+    }
+
+    static OWNED_SKINS = {
+        type: 'OWNED_SKINS',
+        name: 'Owned Skins',
+        icon: CharacterIcon,
+        Component: OwnedSkinsWidget,
+        minSlots: 1,
+        maxSlots: 2,
+        defaultConfig: {
+            slots: 1,
+            settings: {}
         }
     }
 }
