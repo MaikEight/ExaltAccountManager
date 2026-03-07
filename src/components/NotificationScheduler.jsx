@@ -3,6 +3,7 @@ import useUserSettings from "../hooks/useUserSettings";
 import useSnack from "../hooks/useSnack";
 import { getEndOfMonthNotificationInfo, scheduleEndOfMonthNotification } from "../utils/notificationUtils";
 import { resolveResource } from "@tauri-apps/api/path";
+import useDebugLogs from "../hooks/useDebugLogs";
 
 /**
  * NotificationScheduler — invisible component that:
@@ -18,6 +19,7 @@ function NotificationScheduler() {
     const hasScheduled = useRef(false);
     const hasShownSnackbar = useRef(false);
     const intervalRef = useRef(null);
+    const { log } = useDebugLogs();
 
     const settings = userSettings?.get;
     const isEnabled = settings?.notifications?.endOfMonthReminderEnabled ?? true;
@@ -33,10 +35,10 @@ function NotificationScheduler() {
             const resourceBasePath = await resolveResource("");
 
             const result = await scheduleEndOfMonthNotification(resourceBasePath);
-            console.log("[NotificationScheduler] End-of-month notification scheduled:", result);
+            log("[NotificationScheduler] End-of-month notification scheduled:", result);
         } catch (err) {
             // This is expected if the date is already past
-            console.log("[NotificationScheduler] Could not schedule end-of-month notification:", err);
+            log("[NotificationScheduler] Could not schedule end-of-month notification:", err);
         }
     }, [isEnabled]);
 
