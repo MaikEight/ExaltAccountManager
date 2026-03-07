@@ -70,8 +70,7 @@ function FilterOverviewV2() {
  * - Filter presets (save, load, delete)
  */
 function ItemFilterBoxV2() {
-    const theme = useTheme();
-    const { filter, changeFilter, resetAllFilters } = useVaultPeeker();
+    const { filter, changeFilter } = useVaultPeeker();
     const collapsedFields = useUserSettings().getByKeyAndSubKey('vaultPeeker', 'collapsedFileds');
 
     // Debounced search handler
