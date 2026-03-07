@@ -24,8 +24,6 @@ function BasicActionsWidget({ type, widgetId }) {
     const [isLoadingRefresh, setIsLoadingRefresh] = useState(false);
     const [updateInProgress, setUpdateInProgress] = useState(false);
 
-    const config = getWidgetConfiguration(type);
-
     const account = widgetBarState.data;
 
 
