@@ -226,6 +226,7 @@ fn main() {
             get_current_background_sync_mode,
             change_background_sync_mode,
             open_url,
+            send_post_request_get_redirect_url,
             get_save_file_path,
             combine_paths,
             start_application,
@@ -578,6 +579,41 @@ fn change_background_sync_mode(mode: SyncMode) -> Result<(), Error> {
 async fn open_url(url: String) -> Result<(), Error> {
     info!("Opening URL: {}", &url);
     Ok(open::that(url)?)
+}
+
+#[tauri::command]
+async fn send_post_request_get_redirect_url(
+    url: String,
+    data: HashMap<String, String>,
+) -> Result<String, String> {
+    info!("Sending POST to get redirect URL: {}", &url);
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        CONTENT_TYPE,
+        HeaderValue::from_static("application/x-www-form-urlencoded"),
+    );
+
+    let client = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let body = serde_urlencoded::to_string(&data).map_err(|e| e.to_string())?;
+    let response = client
+        .post(&url)
+        .headers(headers)
+        .body(body)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let location = response
+        .headers()
+        .get("location")
+        .and_then(|v| v.to_str().ok())
+        .ok_or_else(|| "No redirect location in response".to_string())?;
+
+    Ok(location.to_string())
 }
 
 #[tauri::command]
