@@ -30,6 +30,7 @@ function FeedbackPage() {
     const [value2, setValue2] = useState('');
     const [value3, setValue3] = useState('');
     const [value4, setValue4] = useState('');
+    const [value5, setValue5] = useState('');
 
     useEffect(() => {
         const feedbackSent = localStorage.getItem('feedbackSent');
@@ -50,8 +51,9 @@ function FeedbackPage() {
         const likes = value2 && value2.length > 2 ? `**Likes**\n${value2}` : '';
         const dislikes = value3 && value3.length > 2 ? `**Dislikes**\n${value3}` : '';
         const feature = value4 && value4.length > 2 ? `**Feature**\n${value4}` : '';
+        const contact = value5 && value5.length > 2 ? `**Contact**\n${value5}` : '';
 
-        return `${rating}${rating ? '\n\n' : ''}${likes}${likes ? '\n\n' : ''}${dislikes}${dislikes ? '\n\n' : ''}${feature}`;
+        return `${rating}${rating ? '\n\n' : ''}${likes}${likes ? '\n\n' : ''}${dislikes}${dislikes ? '\n\n' : ''}${feature}${feature ? '\n\n' : ''}${contact}${contact ? '\n\n' : ''}`;
     }
 
     const handleSubmit = async () => {
@@ -120,7 +122,7 @@ function FeedbackPage() {
                 </Typography>
             </ComponentBox>
             <ComponentBox
-                title="How do you like the look and feel of the new EAM version?"
+                title="How do you like the look and feel of the new EAM version? (Optional)"
                 icon={<FavoriteBorderOutlinedIcon />}
                 sx={{ userSelect: "none" }}
             >
@@ -157,7 +159,7 @@ function FeedbackPage() {
             </ComponentBox>
 
             <ComponentBox
-                title="What do you like about EAM?"
+                title="What do you like about EAM? (Optional)"
                 icon={<ThumbUpAltOutlinedIcon />}
                 sx={{ userSelect: "none" }}
             >
@@ -183,7 +185,7 @@ function FeedbackPage() {
                 </Box>
             </ComponentBox>
             <ComponentBox
-                title="What do you dislike about EAM?"
+                title="What do you dislike about EAM? (Optional)"
                 icon={<ThumbDownAltOutlinedIcon />}
                 sx={{ userSelect: "none" }}
             >
@@ -209,7 +211,7 @@ function FeedbackPage() {
                 </Box>
             </ComponentBox>
             <ComponentBox
-                title="What feature would you like to see next / be improved upon?"
+                title="What feature would you like to see next / be improved upon? (Optional)"
                 icon={<HandymanOutlinedIcon />}
                 sx={{ userSelect: "none" }}
             >
@@ -229,6 +231,33 @@ function FeedbackPage() {
                         multiline
                         value={value4}
                         onChange={(event) => setValue4(event.target.value)}
+                        variant="outlined"
+                        fullWidth
+                    />
+                </Box>
+            </ComponentBox>
+            {/* How to reach out to you? (Discord handle / email) */}
+            <ComponentBox
+                title="How can we reach out to you? (Optional)"
+                icon={<InsertCommentOutlinedIcon />}
+                sx={{ userSelect: "none" }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2
+                    }}
+                >
+                    <Typography variant="body2" color="text.secondary">
+                        If you're open to being contacted for further details about your feedback, please provide a way for us to reach out to you.
+                        This could be your Discord handle, email address, or any other preferred method of contact.
+                    </Typography>
+                    <TextField
+                        label="Your contact info (Discord handle / email)"
+                        multiline
+                        value={value5}
+                        onChange={(event) => setValue5(event.target.value)}
                         variant="outlined"
                         fullWidth
                     />
