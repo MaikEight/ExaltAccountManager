@@ -5,7 +5,7 @@ import { ROTMG_BASE_URL, UPDATE_URLS } from '../../constants';
 import { xmlToJson } from '../utils/XmlUtils';
 
 /**
- * @deprecated Use AccountsContext.sendAccountVerify() which calls Rust-side 
+ * Use AccountsContext.sendAccountVerify() which calls Rust-side 
  * implementation via 'send_account_verify_request_for_account' Tauri command.
  * This function is kept for backward compatibility but should not be used in new code.
  * 
@@ -37,12 +37,14 @@ async function postAccountVerify(account, clientId, decryptNeeded = true) {
     };
 
     try {
-        const response = await invoke('send_post_request_with_form_url_encoded_data', { url, data });
+
+        const tauriData = { url, data: data }; 
+        log('postAccountVerify request data', tauriData);
+
+        const response = await invoke('send_post_request_with_form_url_encoded_data', tauriData);
         const jsonResponse = xmlToJson(response);
 
-
         log('postAccountVerify response', jsonResponse);
-
 
         if (sessionStorage.getItem('flag:copy:account/verify') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(jsonResponse, null, 2))
@@ -205,7 +207,7 @@ async function getGameFileList(buildHash) {
 
         const files = response.data.files;
 
-            log('getGameFileList response', files);        
+        log('getGameFileList response', files);
 
         if (sessionStorage.getItem('flag:copy:game-file-list') === 'true') {
             navigator.clipboard.writeText(JSON.stringify(files, null, 2))
