@@ -8,7 +8,7 @@ import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import ComponentBox from "../ComponentBox";
 import StyledButton from "../StyledButton";
-import { useGroups } from 'eam-commons-js';
+import { useGroups, postAccountVerify } from 'eam-commons-js';
 import GroupSelector from "../AccountDetails/GroupSelector";
 import GroupRow from "../AccountDetails/GroupRow";
 import TextTableRow from "../AccountDetails/TextTableRow";
@@ -24,6 +24,7 @@ import RegisterAccount from "./RegisterAccount";
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import AddAccountSvg from "../Illustrations/AddAccountSvg";
 import { useColorList } from "../../hooks/useColorList";
+import useHWID from "../../hooks/useHWID";
 
 const steps = ['Login', 'Add details', 'Finish'];
 const icons = [
@@ -33,7 +34,14 @@ const icons = [
 ];
 
 function AddNewAccount({ isOpen, onClose }) {
-    const { accounts, updateAccount, sendAccountVerify, sendCharList } = useAccounts();
+    const theme = useTheme();
+    const { hwid } = useHWID();
+    const color = useColorList(0);
+    const containerRef = useRef(null);
+    const navigate = useNavigate();
+    const { groups } = useGroups();
+
+    const { accounts, updateAccount, sendCharList } = useAccounts();
 
     const [activeStep, setActiveStep] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -41,15 +49,9 @@ function AddNewAccount({ isOpen, onClose }) {
     const [newAccount, setNewAccount] = useState({ email: '', password: '', isSteam: false, steamId: null });
     const [showRegisterForm, setShowRegisterForm] = useState(false);
 
-    //STEP 1
     const [passwordEmailWrong, setPasswordEmailWrong] = useState(false);
-    //STEP 2
-    const { groups } = useGroups();
 
-    const theme = useTheme();
-    const color = useColorList(0);
-    const containerRef = useRef(null);
-    const navigate = useNavigate();
+
 
     useEffect(() => {
         setShowRegisterForm(false);
@@ -93,7 +95,7 @@ function AddNewAccount({ isOpen, onClose }) {
 
     const accountAlreadyExists = () => accounts.find((account) => account.email === newAccount.email) !== undefined;
 
-    const getFooterButtons = (backButton, nextButton) => {
+    const getFooterButtons = (backButton, nextButton, isLoading = false) => {
         return (<Box
             sx={{
                 display: 'flex',
@@ -104,6 +106,7 @@ function AddNewAccount({ isOpen, onClose }) {
         >
             <StyledButton
                 color="secondary"
+                disabled={isLoading}
                 onClick={backButton.onClick}
                 {...(backButton.icon && { startIcon: backButton.icon })}
             >
@@ -111,6 +114,8 @@ function AddNewAccount({ isOpen, onClose }) {
             </StyledButton>
             <StyledButton
                 onClick={nextButton.onClick}
+                disabled={isLoading}
+                loading={isLoading}
                 {...(nextButton.endIcon && { endIcon: nextButton.endIcon })}
                 {...(nextButton.startIcon && { startIcon: nextButton.startIcon })}
             >
@@ -121,61 +126,32 @@ function AddNewAccount({ isOpen, onClose }) {
 
     const handleLoginButtonClick = async () => {
         setIsLoading(true);
-        try {
-            // First, we need to save the account temporarily to the database so sendAccountVerify can find it
-            // This is because the Rust-side function needs the account in the database
-            const tempAccount = {
-                ...newAccount,
-                isDeleted: false,
-                performDailyLogin: newAccount.performDailyLogin || false,
-            };
+        const email = newAccount.email;
+        let accName = '';
+        postAccountVerify(newAccount, hwid, false)
+            .then((response) => {
+                if (!response || response.Error) {
+                    setPasswordEmailWrong(true);
+                    setNewAccount({ ...newAccount, password: '' });
+                    return;
+                }
 
-            // Save the temp account (will be encrypted)
-            await updateAccount(tempAccount, true, false);
+                accName = response?.Account?.Name;
+                setNewAccount({
+                    ...newAccount,
+                    ...(accName && accName.length > 0 ? { name: accName } : {})
+                });
 
-            // Now call sendAccountVerify with the email
-            const verifyResponse = await sendAccountVerify(newAccount.email, false, false);
-
-            if (!verifyResponse || !verifyResponse.success) {
+                setActiveStep(1);
+            })
+            .catch((error) => {
+                console.error("Error: ", error);
                 setPasswordEmailWrong(true);
                 setNewAccount({ ...newAccount, password: '' });
-                // Clean up the temp account if verification failed
-                // Note: The account will be updated later with correct details or deleted
-                return;
-            }
-
-            const accName = verifyResponse.data?.Account?.Name;
-            setNewAccount({
-                ...newAccount,
-                ...(accName && accName.length > 0 ? { name: accName } : {}),
-                state: verifyResponse.requestState
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
-
-            setActiveStep(1);
-
-            // If we got an access token, also fetch the char list
-            if (verifyResponse.data?.Account?.AccessToken) {
-                const charListResponse = await sendCharList(
-                    newAccount.email,
-                    verifyResponse.data.Account.AccessToken,
-                    { ...tempAccount, name: accName }
-                );
-
-                if (charListResponse && charListResponse.success) {
-                    setNewAccount(prev => ({
-                        ...prev,
-                        state: charListResponse.requestState,
-                        ...(accName && accName.length > 0 ? { name: accName } : {})
-                    }));
-                }
-            }
-        } catch (error) {
-            console.error("Error: ", error);
-            setPasswordEmailWrong(true);
-            setNewAccount({ ...newAccount, password: '' });
-        } finally {
-            setIsLoading(false);
-        }
     };
 
     const getStepContent = () => {
@@ -396,7 +372,11 @@ function AddNewAccount({ isOpen, onClose }) {
                                     <Checkbox
                                         checked={newAccount.performDailyLogin ? newAccount.performDailyLogin : false}
                                         onChange={(event) => setNewAccount({ ...newAccount, performDailyLogin: event.target.checked })}
-                                        inputProps={{ 'aria-label': 'Daily login' }}
+                                        slotProps={{
+                                            input: {
+                                                'aria-label': 'Daily login'
+                                            }
+                                        }}
                                     />
                                 }
                                 label="Daily login"
@@ -479,8 +459,16 @@ function AddNewAccount({ isOpen, onClose }) {
                                 },
                                 {
                                     text: 'SAVE ACCOUNT',
-                                    onClick: () => {
-                                        updateAccount({ ...newAccount, isDeleted: false }, true);
+                                    onClick: async () => {
+                                        setIsLoading(true);
+                                        try {
+                                            await updateAccount({ ...newAccount, isDeleted: false }, true);
+                                            await sendCharList(newAccount.email);
+                                        } catch (error) {
+                                            console.error("Error: ", error);
+                                        } finally {
+                                            setIsLoading(false);
+                                        }
                                         onClose();
                                     },
                                     startIcon: <DoneOutlinedIcon />
@@ -621,7 +609,7 @@ function AddNewAccount({ isOpen, onClose }) {
                         sx={{
                             borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
                             backgroundColor: theme.palette.background.default,
-                            
+
                         }}
                     >
                         {
