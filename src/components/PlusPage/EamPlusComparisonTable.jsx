@@ -9,11 +9,13 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
+import { invoke } from '@tauri-apps/api/core';
 import { getEamPlusPrices, useUserLogin } from 'eam-commons-js';
 import { useColorList } from "../../hooks/useColorList";
 import ComponentBox from "../ComponentBox";
 import StyledButton from "../StyledButton";
 import PaddedTableCell from "../AccountDetails/PaddedTableCell";
+import useDebugLogs from './../../hooks/useDebugLogs';
 
 function EamPlusComparisonTable() {
     const { user } = useUserLogin();
@@ -337,7 +339,10 @@ function EamPlusComparisonTable() {
 
 function PriceTableRow({ plan, price, priceData, onClick, sx }) {
     const { isAuthenticated, user, login } = useUserLogin();
+    const { log } = useDebugLogs();
+
     price = priceData ? `${priceData.displayPrice} ${price}` : price;
+    log('PriceTableRow render', { plan, price, priceData, user });
 
     const getPaymentMode = (type) => {
         switch (type) {
@@ -348,6 +353,20 @@ function PriceTableRow({ plan, price, priceData, onClick, sx }) {
             default:
                 return 'Unknown';
         }
+    };
+
+    const handleCheckout = async () => {
+        const data = {
+            lookup_key: priceData.id,
+            mode: getPaymentMode(priceData.type),
+            client_reference_id: user.user_id ?? user.sub ?? null,
+        };
+        log('handleCheckout', data);
+        const checkoutUrl = await invoke('send_post_request_get_redirect_url', {
+            url: 'https://payments.exaltaccountmanager.com/eam-plus-create-checkout-session.php',
+            data,
+        });
+        await invoke('open_url', { url: checkoutUrl });
     }
 
     return (
@@ -400,21 +419,16 @@ function PriceTableRow({ plan, price, priceData, onClick, sx }) {
             >
                 {
                     (isAuthenticated && user) ?
-                        <form action="https://payments.exaltaccountmanager.com/eam-plus-create-checkout-session.php" target="_blank" method="POST">
-                            <input type="hidden" name="lookup_key" value={priceData.id} />
-                            <input type="hidden" name="mode" value={getPaymentMode(priceData.type)} />
-                            <input type="hidden" name="client_reference_id" value={user.user_id ?? user.sub ?? null} />
-                            <StyledButton
+                        <StyledButton
                                 startIcon={<AddShoppingCartOutlinedIcon />}
-                                type="submit"
                                 id="checkout-button"
+                                onClick={handleCheckout}
                                 sx={{
                                     width: "fit-content",
                                 }}
                             >
                                 Choose Plan
                             </StyledButton>
-                        </form>
                         :
                         <StyledButton
                             sx={{
