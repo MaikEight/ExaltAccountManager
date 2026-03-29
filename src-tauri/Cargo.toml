@@ -43,19 +43,19 @@ zip = "8"
 mpsc = "0.2.6"
 anyhow = "1.0"
 curl = "0.4"
-sha1 = "0.10"
+sha1 = "0.11"
 num-bigint = "0.4"
 num-traits = "0.2.19"
 hex = "0.4"
-diesel = { version = "2.3.6", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel = { version = "2.3.7", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.3.1"
 diesel_derives = "2.3.7"
 lazy_static = "1.5.0"
-uuid = "1.21"
+uuid = "1.23"
 base64 = "0.22"
 h2 = "0.4.13"
-mio = "1.1.1"
-libsqlite3-sys = { version = "0.35.0", features = ["bundled"] }
+mio = "1.2"
+libsqlite3-sys = { version = "0.36.0", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12"
 open = "5.3"
@@ -67,7 +67,7 @@ eam_background_sync = { path = "../t-src-modules/eam_background_sync" }
 [target.'cfg(windows)'.dependencies]
 wmi = "0.18"
 winapi = { version = "0.3.9", features = ["winnt", "processthreadsapi", "securitybaseapi", "handleapi", "sddl", "dpapi", "wincrypt", "winbase"] }
-winreg = "0.55.0"
+winreg = "0.56.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 libc = "0.2"
