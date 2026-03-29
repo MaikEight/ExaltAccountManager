@@ -39,7 +39,7 @@ pub async fn get_device_unique_identifier() -> Result<String, String> {
     let mut hasher = Sha1::new();
     hasher.update(concat_str);
     let result = hasher.finalize();
-    let hashed = format!("{:x}", result);
+    let hashed = result.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
     Ok(hashed)
 }

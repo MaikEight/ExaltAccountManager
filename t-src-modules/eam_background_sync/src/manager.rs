@@ -294,7 +294,7 @@ impl BackgroundSyncManager {
         let random_string = format!("{}{}", Uuid::new_v4(), "Fallback HWID");
         hasher.update(random_string);
         let result = hasher.finalize();
-        let hashed =format!("{:x}", result);
+        let hashed = result.iter().map(|b| format!("{:02x}", b)).collect::<String>();
         info!("Using fallback HWID: {}", hashed);
         hashed
     }
