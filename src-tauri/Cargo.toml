@@ -34,7 +34,7 @@ async-std = "1.13"
 window-vibrancy = "0.7"
 dirs = "6.0"
 md5 = "0.8"
-tokio = "1.50"
+tokio = "1.52"
 futures = "0.3"
 flate2 = "1.1"
 walkdir = "2.5"
@@ -78,4 +78,4 @@ libc = "0.2"
 custom-protocol = ["tauri/custom-protocol"]
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.10.0"
+tauri-plugin-updater = "2.10.1"
