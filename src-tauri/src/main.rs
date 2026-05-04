@@ -2221,7 +2221,7 @@ fn hash_email(email: &str) -> String {
     let mut hasher = Sha1::new();
     hasher.update(email.as_bytes());
     let email_hash = hasher.finalize();
-    format!("{:x}", email_hash)
+    hex::encode(email_hash)
 }
 
 #[tauri::command]
