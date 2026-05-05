@@ -16,7 +16,7 @@
 [![Last Commit](https://img.shields.io/github/last-commit/MaikEight/ExaltAccountManager?label=Last%20commit)](https://github.com/MaikEight/ExaltAccountManager/commits/main)
 [![Tauri](https://img.shields.io/badge/Tauri-2.10.3-violet.svg?style=flat&logo=Tauri&color=512BD4)](https://tauri.app)
 [![Greater Good](https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg)](https://good-labs.github.io/greater-good-affirmation)
-[![Latest Release](https://img.shields.io/github/v/release/MaikEight/ExaltAccountManager?label=Latest%20Release)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
+[![Latest Release](https://img.shields.io/github/release/MaikEight/ExaltAccountManager?label=Latest%20Release)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
 [![Release Date](https://img.shields.io/github/release-date/MaikEight/ExaltAccountManager?label=Release%20date)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/MaikEight/ExaltAccountManager/total?label=Downloads)](https://github.com/MaikEight/ExaltAccountManager/releases/latest)
 [![Discord](https://img.shields.io/discord/870868049333469224?color=5662F6&label=Discord)](https://discord.exalt-account-manager.eu)
