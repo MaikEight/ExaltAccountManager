@@ -2,6 +2,18 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import react from "@vitejs/plugin-react";
 
+const EXTERNAL_PREFIXES = ['react', '@emotion/', '@mui/'];
+const EXTERNAL_EXACT = new Set([
+  'react',
+  'react-dom',
+  'styled-components',
+]);
+
+function isExternal(id) {
+  if (EXTERNAL_EXACT.has(id)) return true;
+  return EXTERNAL_PREFIXES.some(prefix => id.startsWith(prefix));
+}
+
 export default defineConfig({
   plugins: [react()],
   build: {
@@ -11,22 +23,21 @@ export default defineConfig({
       fileName: (format) => `eam-commons-js.${format}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom', '@mui/material', 'styled-components'],
+      external: isExternal,
       output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          '@mui/material': 'MaterialUI',
+        globals: (id) => {
+          if (id === 'react') return 'React';
+          if (id === 'react-dom') return 'ReactDOM';
+          if (id === 'react/jsx-runtime') return 'ReactJSXRuntime';
+          if (id === 'react/jsx-dev-runtime') return 'ReactJSXDevRuntime';
+          if (id.startsWith('@mui/')) return 'MaterialUI';
+          if (id.startsWith('@emotion/')) return 'Emotion';
+          return id;
         },
       },
     },
   },
-  resolve: {
-    alias: {
-      '@mui/material': resolve(__dirname, 'node_modules/@mui/material'),
-    },
-  },
   optimizeDeps: {
-    include: ['@mui/material', 'styled-components'],
+    include: ['styled-components'],
   },
 });
