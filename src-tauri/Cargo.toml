@@ -12,10 +12,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.5.6", features = [] }
+tauri-build = { version = "2.6.2", features = [] }
 
 [dependencies]
-tauri = { version = "2.10.3", features = ["devtools", "macos-private-api", "tray-icon", "image-png"] }
+tauri = { version = "2.11.2", features = ["devtools", "macos-private-api", "tray-icon", "image-png"] }
 tauri-plugin = "2"
 tauri-plugin-deep-link = "2"
 tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
@@ -48,14 +48,14 @@ num-bigint = "0.4"
 num-traits = "0.2.19"
 hex = "0.4"
 diesel = { version = "2.3.7", features = ["sqlite", "r2d2", "64-column-tables"] }
-diesel_migrations = "2.3.1"
-diesel_derives = "2.3.7"
+diesel_migrations = "2.3.2"
+diesel_derives = "2.3.9"
 lazy_static = "1.5.0"
 uuid = "1.23"
 base64 = "0.22"
-h2 = "0.4.13"
+h2 = "0.4.14"
 mio = "1.2"
-libsqlite3-sys = { version = "0.36.0", features = ["bundled"] }
+libsqlite3-sys = { version = "0.37.0", features = ["bundled"] }
 log = "0.4"
 simplelog = "0.12"
 open = "5.3"
