@@ -10,16 +10,16 @@ edition = "2021"
 [dependencies]
 base64 = "0.22"
 chrono = { version = "0.4", features = ["serde"] }
-diesel = { version = "2.3.7", features = ["sqlite", "r2d2", "64-column-tables"] }
-diesel_migrations = "2.3.1"
-diesel_derives = "2.3.7"
+diesel = { version = "2.3.10", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel_migrations = "2.3.2"
+diesel_derives = "2.3.9"
 dirs = "6.0"
 flate2 = "1.1"
 function_name = "0.3"
 futures = "0.3"
 glob = "0.3.3"
 lazy_static = "1.5"
-libsqlite3-sys = { version = "0.36.0", features = ["bundled"] }
+libsqlite3-sys = { version = "0.37.0", features = ["bundled"] }
 log = "0.4"
 md5 = "0.8"
 reqwest = { version = "0.13", features = ["blocking", "json"] }
