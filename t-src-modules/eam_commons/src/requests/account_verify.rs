@@ -122,6 +122,7 @@ fn get_access_token(xml: &str) -> Option<GameAccessToken> {
         access_token: "".to_string(),
         access_token_timestamp: "".to_string(),
         access_token_expiration: "".to_string(),
+        verified_email: false,
     };
 
     for node in doc.descendants() {
@@ -131,6 +132,9 @@ fn get_access_token(xml: &str) -> Option<GameAccessToken> {
             access_token.access_token_timestamp = node.text()?.to_string();
         } else if node.has_tag_name("AccessTokenExpiration") {
             access_token.access_token_expiration = node.text()?.to_string();
+        } else if node.has_tag_name("VerifiedEmail") {
+            // Presence of a `<VerifiedEmail />` element means the email is verified.
+            access_token.verified_email = true;
         }
     }
 
