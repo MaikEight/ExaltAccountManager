@@ -49,7 +49,7 @@ function ChangelogVersion4_5_0() {
                     )
                 }
                 <img
-                    src='https://app-data.exaltaccountmanager.com/images/okta/eam_logo_blog_post.png'
+                    src='https://app-data.exaltaccountmanager.com/images/okta/banner_4_5_0.webp'
                     alt='EAM blog post logo'
                     onLoad={() => setImageLoaded(true)}
                     style={{
@@ -129,8 +129,8 @@ function ChangelogVersion4_5_0() {
                 <ChangelogEntry
                     title={'Daily Logins'}
                     listOfChanges={[
-                        "The daily login has also changed to not start the game anymore, meaning that the EAM Premium variant is now also the way used by the free version.",
-                        "🕑 The Premium variant is faster than the free version."
+                        "The daily login has also changed to not start the game anymore, meaning that the EAM Plus variant is now also the way used by the free version.",
+                        "🕑 The Plus variant is faster than the free version."
                     ]}
                 />
 
@@ -177,16 +177,7 @@ function ChangelogVersion4_5_0() {
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
-                                <li>Ykao</li>
-                                <li>Rapshe</li>
-                                <li>K3y0708</li>
-                            </ul>
-                        </Typography>
-                        <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
-                            <ul>
-                                <li>MelonPerson - for creating the all the new Okta related images</li>
-                                <li>059 - for providing new constants.js and renders.png</li>
-                                <li>Faynt - for helping with constants.js and providing sheets.js</li>
+                                <li>Tiramisu - for actively helping EAM to stay alive!</li>
                             </ul>
                         </Typography>
                     </Box>
