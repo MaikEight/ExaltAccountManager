@@ -242,12 +242,6 @@ function useStartGame() {
                         launcherPath: launcherPath,
                     }
                 );
-
-                // Writing prefs does not affect an already-running launcher.
-                if (!localStorage.getItem('launcherRunningHintShown')) {
-                    showSnackbar("If the launcher is already open, close and reopen it to switch accounts.", 'message');
-                    localStorage.setItem('launcherRunningHintShown', 'true');
-                }
             }
 
             const acc = { ...account, lastLogin: new Date() };
