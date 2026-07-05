@@ -10,6 +10,7 @@ import { useGroups } from 'eam-commons-js';
 import SwapVertOutlinedIcon from '@mui/icons-material/SwapVertOutlined';
 import { GroupUI } from './GroupUI.jsx';
 import CloseIcon from '@mui/icons-material/CloseOutlined';
+import useRunningGames from './../../hooks/useRunningGames';
 
 /**
  * Context menu for DataGrid rows
@@ -19,6 +20,7 @@ function AccountContextMenu({ anchorPosition, onClose, account, accounts }) {
     const { startGame } = useStartGame();
     const { updateAccount, updateAccounts } = useAccounts();
     const { groups } = useGroups();
+    const { isAccountRunning } = useRunningGames();
     const [groupMenuAnchor, setGroupMenuAnchor] = useState(null);
     const [orderMenuAnchor, setOrderMenuAnchor] = useState(null);
     const [adjustedTop, setAdjustedTop] = useState(null);
@@ -218,7 +220,7 @@ function AccountContextMenu({ anchorPosition, onClose, account, accounts }) {
                                 <Divider />
                             </Box>
                             <MenuList>
-                                <MenuItem onClick={handleStartGame}>
+                                <MenuItem disabled={account?.email ? isAccountRunning(account.email) : true} onClick={handleStartGame}>
                                     <ListItemIcon>
                                         <PlayCircleFilledWhiteOutlinedIcon fontSize="small" />
                                     </ListItemIcon>
