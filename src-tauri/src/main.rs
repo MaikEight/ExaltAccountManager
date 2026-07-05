@@ -252,6 +252,8 @@ fn main() {
             get_os_user_identity,
             quick_hash,
             get_default_game_path,
+            get_default_launcher_path,
+            prepare_and_start_launcher,
             get_all_eam_accounts, //EAM ACCOUNTS
             get_eam_account_by_email,
             insert_or_update_eam_account,
@@ -1291,6 +1293,80 @@ async fn get_device_unique_identifier() -> Result<String, String> {
 #[tauri::command]
 fn get_default_game_path() -> String {
     eam_commons::paths::get_default_game_path()
+}
+
+#[tauri::command]
+fn get_default_launcher_path() -> String {
+    eam_commons::paths::get_default_launcher_path()
+}
+
+/// The official launcher's macOS CFPreferences domain (and, later, Windows registry identity).
+const LAUNCHER_PREFS_DOMAIN: &str = "com.decagames.RealmOfTheMadGodExaltLauncher";
+/// The environment the launcher's credential keys are scoped to.
+const LAUNCHER_ENV_PREFIX: &str = "Production";
+
+/// Writes the selected account's login into the official launcher's store, then
+/// starts the launcher (already signed in). Required for DECA ToS compliance:
+/// EAM no longer starts the game executable directly for non-Steam accounts.
+///
+/// The access token is fetched by the caller (via account/verify) and passed in,
+/// so the launcher has both a valid cached token and the credentials to
+/// re-verify if it chooses to. The password is decrypted here and never crosses
+/// the JS bridge.
+#[tauri::command]
+async fn prepare_and_start_launcher(
+    account_email: String,
+    access_token: String,
+    access_token_timestamp: String,
+    access_token_expiration: String,
+    launcher_path: String,
+) -> Result<(), tauri::Error> {
+    info!("Preparing launcher login for {}", &account_email);
+
+    // Fetch the account; the pool guard is consumed and dropped inside the _impl
+    // helper before we write prefs or spawn the launcher.
+    let account = match POOL.lock() {
+        Ok(pool) => get_eam_account_by_email_impl(pool, account_email.clone()),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            get_eam_account_by_email_impl(poisoned.into_inner(), account_email.clone())
+        }
+    }?;
+
+    // Steam accounts authenticate through Steam and never use the launcher login
+    // store; they keep the direct-launch flow on the frontend.
+    if account.isSteam {
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Steam accounts cannot be started through the launcher login store",
+        )));
+    }
+
+    // Decrypt the stored password (same call account/verify uses).
+    let password = eam_commons::encryption_utils::decrypt_data(&account.password)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+
+    let login = eam_commons::launcher_prefs::LauncherLogin {
+        email: account_email,
+        password,
+        token: access_token,
+        token_timestamp: access_token_timestamp,
+        token_expiration: access_token_expiration,
+        name: account.name.unwrap_or_default(),
+    };
+
+    // Write the login into the OS-specific launcher store (CFPreferences on macOS).
+    eam_commons::launcher_prefs::write_launcher_login(
+        LAUNCHER_PREFS_DOMAIN,
+        LAUNCHER_ENV_PREFIX,
+        &login,
+    )
+    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+
+    // Start the launcher (reuses the existing path-exists check and per-OS spawn).
+    // Empty start parameters: the launcher reads the login from its prefs store,
+    // and the macOS branch skips `--args` when parameters are empty.
+    start_application(launcher_path, String::new(), None)
 }
 
 #[tauri::command]
