@@ -29,6 +29,9 @@ pub struct LauncherLogin {
     pub token_expiration: String,
     /// In-game name (may be empty).
     pub name: String,
+    /// Whether the account's email is verified, from the `account/verify`
+    /// response (the launcher stores this as its `verifiedEmail` flag).
+    pub verified_email: bool,
 }
 
 #[cfg(target_os = "windows")]

@@ -58,9 +58,10 @@ pub fn write_launcher_login(
 
     // Integer-typed keys (the launcher reads these via PlayerPrefs.GetInt).
     let name_chosen: i32 = if login.name.is_empty() { 0 } else { 1 };
+    let verified_email: i32 = if login.verified_email { 1 } else { 0 };
     let int_keys: [(CFString, CFNumber); 6] = [
         (CFString::new("nameChosen"), CFNumber::from(name_chosen)),
-        (CFString::new("verifiedEmail"), CFNumber::from(1i32)),
+        (CFString::new("verifiedEmail"), CFNumber::from(verified_email)),
         (CFString::new("AccountVersion"), CFNumber::from(2i32)),
         (CFString::new("characterId"), CFNumber::from(-1i32)),
         (CFString::new("isAdmin"), CFNumber::from(0i32)),
