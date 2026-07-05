@@ -1,9 +1,9 @@
 import useWidgets from "../../../hooks/useWidgets";
 import StyledButton from "../../StyledButton";
+import StartGameSplitButton from "../../StartGameSplitButton";
 import WidgetBase from "./WidgetBase";
 import { Box, Grid, Tooltip } from "@mui/material";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useEffect, useState } from "react";
@@ -11,14 +11,12 @@ import useAccounts from "../../../hooks/useAccounts";
 import useSnack from "../../../hooks/useSnack";
 import usePopups from "../../../hooks/usePopups";
 import DeleteAccountWarning from "../Components/DeleteAccountWarning";
-import useStartGame from "../../../hooks/useStartGame.jsx";
 
 function BasicActionsWidget({ type, widgetId }) {
     const { getWidgetConfiguration, closeWidgetBar, widgetBarState } = useWidgets();
     const { refreshData } = useAccounts();
     const { showSnackbar } = useSnack();
     const { showPopup, closePopup } = usePopups();
-    const { startGame } = useStartGame();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingRefresh, setIsLoadingRefresh] = useState(false);
@@ -64,21 +62,14 @@ function BasicActionsWidget({ type, widgetId }) {
                                     </Box>
                                 ) : ""}
                         >
-                            <span>
-                                <StyledButton
+                            <span style={{ display: 'block', width: '100%' }}>
+                                <StartGameSplitButton
+                                    account={account}
                                     disabled={isLoading || isLoadingRefresh || updateInProgress || account.state === 'Registered'}
-                                    fullWidth={true}
-                                    sx={{ height: 55 }}
-                                    onClick={async () => {
-                                        setIsLoading(true);
-                                        await startGame(account);
-                                        setIsLoading(false);
-                                    }}
                                     loading={isLoading}
-                                >
-                                    <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
-                                    start game
-                                </StyledButton>
+                                    onLoadingChange={setIsLoading}
+                                    sx={{ height: 55 }}
+                                />
                             </span>
                         </Tooltip>
                     </Grid>

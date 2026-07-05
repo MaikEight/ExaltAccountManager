@@ -8,7 +8,7 @@ import ServerTableRow from "./ServerTableRow";
 import DailyLoginCheckBoxTableRow from "./DailyLoginCheckBoxTableRow";
 import StyledButton from './../StyledButton';
 import CloseIcon from '@mui/icons-material/Close';
-import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
+import StartGameSplitButton from '../StartGameSplitButton';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
@@ -23,14 +23,12 @@ import { formatTime, useGroups } from "eam-commons-js";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { invoke } from '@tauri-apps/api/core';
 import RequestStateChip from "../GridComponents/RequestStateChip";
-import useStartGame from "../../hooks/useStartGame";
 
 function AccountDetails({ acc, onClose }) {
     const { groups } = useGroups();
 
     const { updateAccount, deleteAccount, refreshData } = useAccounts();
     const { showSnackbar } = useSnack();
-    const { startGame } = useStartGame();
 
     const theme = useTheme();
     const containerRef = useRef(null);
@@ -305,21 +303,14 @@ function AccountDetails({ acc, onClose }) {
                                             </Box>
                                         ) : ""}
                                 >
-                                    <span>
-                                        <StyledButton
+                                    <span style={{ display: 'block', width: '100%' }}>
+                                        <StartGameSplitButton
+                                            account={account}
                                             disabled={isLoading || isLoadingRefresh || updateInProgress || account.state === 'Registered'}
-                                            fullWidth={true}
-                                            sx={{ height: 55 }}
-                                            onClick={async () => {
-                                                setIsLoading(true);
-                                                await startGame(account);
-                                                setIsLoading(false);
-                                            }}
                                             loading={isLoading}
-                                        >
-                                            <PlayCircleFilledWhiteOutlinedIcon size='large' sx={{ mr: 1 }} />
-                                            start game
-                                        </StyledButton>
+                                            onLoadingChange={setIsLoading}
+                                            sx={{ height: 55 }}
+                                        />
                                     </span>
                                 </Tooltip>
                             </Grid>

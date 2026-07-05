@@ -163,7 +163,7 @@ function useStartGame() {
         return serverToJoin === "Last Server" ? "" : serverToJoin;
     };
 
-    const startGame = async (account) => {
+    const startGame = async (account, characterId = null) => {
         if (!account) {
             showSnackbar("No account provided", 'error');
             return { success: false };
@@ -211,6 +211,19 @@ function useStartGame() {
                 logToErrorLog("start game", "No access token returned for " + account.email);
                 showSnackbar("Failed to fetch access token", 'error');
                 return { success: false };
+            }
+
+            // Optionally pre-select a specific character. The game reads this from
+            // its own preference store on startup (works for both the launcher and
+            // the Steam direct-launch flow). Non-fatal: a failure just means the
+            // game starts on its last/default character.
+            if (characterId !== null && characterId !== undefined) {
+                try {
+                    await invoke("set_game_character_id", { characterId });
+                } catch (e) {
+                    console.error("Failed to set game character id", e);
+                    logToErrorLog("start game", "Failed to pre-select character for " + account.email);
+                }
             }
 
             if (isSteam) {
