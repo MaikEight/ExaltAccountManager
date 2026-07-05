@@ -1305,6 +1305,74 @@ const LAUNCHER_PREFS_DOMAIN: &str = "com.decagames.RealmOfTheMadGodExaltLauncher
 /// The environment the launcher's credential keys are scoped to.
 const LAUNCHER_ENV_PREFIX: &str = "Production";
 
+/// Returns true if a process whose command line contains `launcher_path` is
+/// running (macOS). Uses `pgrep -f`, which matches the launcher's executable path
+/// inside its `.app` bundle.
+#[cfg(target_os = "macos")]
+fn is_launcher_running(launcher_path: &str) -> bool {
+    match std::process::Command::new("/usr/bin/pgrep")
+        .arg("-f")
+        .arg(launcher_path)
+        .output()
+    {
+        Ok(output) => {
+            output.status.success() && !String::from_utf8_lossy(&output.stdout).trim().is_empty()
+        }
+        Err(e) => {
+            error!("Failed to run pgrep while checking launcher: {}", e);
+            false
+        }
+    }
+}
+
+/// If the launcher is already running, terminate it and wait for it to fully exit
+/// before returning. Returns true if it had to close a running launcher.
+///
+/// This must happen BEFORE writing the launcher login: a running launcher would
+/// otherwise flush its own (old) login to the preference store on quit and
+/// overwrite what we write. Signal-based (SIGTERM, then SIGKILL) so it needs no
+/// macOS Automation/Accessibility permission, and it only targets the launcher's
+/// own `.app` path (not the game or EAM itself).
+#[cfg(target_os = "macos")]
+fn ensure_launcher_closed(launcher_path: &str) -> bool {
+    if !is_launcher_running(launcher_path) {
+        return false;
+    }
+
+    info!("Launcher is already running; closing it before updating the login...");
+    let _ = std::process::Command::new("/usr/bin/pkill")
+        .arg("-f")
+        .arg(launcher_path)
+        .output();
+
+    // Wait up to ~5s for a graceful exit.
+    for _ in 0..25 {
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        if !is_launcher_running(launcher_path) {
+            info!("Launcher closed.");
+            return true;
+        }
+    }
+
+    warn!("Launcher did not exit after SIGTERM; sending SIGKILL...");
+    let _ = std::process::Command::new("/usr/bin/pkill")
+        .arg("-9")
+        .arg("-f")
+        .arg(launcher_path)
+        .output();
+
+    // Wait up to ~3s more.
+    for _ in 0..15 {
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        if !is_launcher_running(launcher_path) {
+            return true;
+        }
+    }
+
+    warn!("Launcher may still be running after SIGKILL; proceeding anyway.");
+    true
+}
+
 /// Writes the selected account's login into the official launcher's store, then
 /// starts the launcher (already signed in). Required for DECA ToS compliance:
 /// EAM no longer starts the game executable directly for non-Steam accounts.
@@ -1354,6 +1422,12 @@ async fn prepare_and_start_launcher(
         token_expiration: access_token_expiration,
         name: account.name.unwrap_or_default(),
     };
+
+    // If the launcher is already open, close it first and wait for it to fully
+    // exit, so our write is the last one to touch the preference store (and so the
+    // user doesn't have to switch to the launcher and restart it manually).
+    #[cfg(target_os = "macos")]
+    ensure_launcher_closed(&launcher_path);
 
     // Write the login into the OS-specific launcher store (CFPreferences on macOS).
     eam_commons::launcher_prefs::write_launcher_login(
