@@ -1441,8 +1441,8 @@ fn ensure_launcher_closed(launcher_path: &str) -> bool {
         .creation_flags(CREATE_NO_WINDOW)
         .output();
 
-    // Wait up to ~5s for a graceful exit.
-    for _ in 0..25 {
+    // Wait up to ~3s for a graceful exit.
+    for _ in 0..15 {
         std::thread::sleep(std::time::Duration::from_millis(200));
         if !is_launcher_running(&exe_name) {
             info!("Launcher closed.");
@@ -1456,8 +1456,8 @@ fn ensure_launcher_closed(launcher_path: &str) -> bool {
         .creation_flags(CREATE_NO_WINDOW)
         .output();
 
-    // Wait up to ~3s more.
-    for _ in 0..15 {
+    // Wait up to ~1s more (force kill is near-instant).
+    for _ in 0..5 {
         std::thread::sleep(std::time::Duration::from_millis(200));
         if !is_launcher_running(&exe_name) {
             return true;
