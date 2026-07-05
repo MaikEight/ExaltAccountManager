@@ -1,6 +1,9 @@
 pub mod encryption_utils;
 pub use encryption_utils::{encrypt_data, decrypt_data};
 
+pub mod launcher_prefs;
+pub use launcher_prefs::{write_launcher_login, LauncherLogin};
+
 pub mod hwid;
 pub use hwid::get_device_unique_identifier;
 
@@ -8,7 +11,7 @@ pub mod daily_login_task;
 pub use daily_login_task::{check_for_installed_eam_daily_login_task, install_eam_daily_login_task, uninstall_eam_daily_login_task};
 
 pub mod paths;
-pub use paths::{get_save_file_path, get_default_game_path};
+pub use paths::{get_save_file_path, get_default_game_path, get_default_launcher_path};
 
 pub mod requests;
 pub use requests::*;
