@@ -254,6 +254,7 @@ fn main() {
             get_default_game_path,
             get_default_launcher_path,
             prepare_and_start_launcher,
+            set_game_character_id,
             get_all_eam_accounts, //EAM ACCOUNTS
             get_eam_account_by_email,
             insert_or_update_eam_account,
@@ -1538,6 +1539,19 @@ async fn prepare_and_start_launcher(
     // Empty start parameters: the launcher reads the login from its prefs store,
     // and the macOS branch skips `--args` when parameters are empty.
     start_application(launcher_path, String::new(), None)
+}
+
+/// Selects which character the game starts into, by writing the game's
+/// `characterId` PlayerPrefs value into its preference store (the Windows
+/// registry `RotMGExalt` key). Call this before starting the launcher (or the
+/// Steam game) when the user picks a specific character; the game reads it on
+/// startup. Works for both launcher and Steam flows since the game reads its own
+/// store regardless of how it was started.
+#[tauri::command]
+fn set_game_character_id(character_id: i32) -> Result<(), tauri::Error> {
+    info!("Setting game character id to {}", character_id);
+    eam_commons::launcher_prefs::write_game_character_id(character_id)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
 }
 
 #[tauri::command]

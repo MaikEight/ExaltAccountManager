@@ -37,14 +37,14 @@ pub struct LauncherLogin {
 #[cfg(target_os = "windows")]
 mod windows;
 #[cfg(target_os = "windows")]
-pub use windows::write_launcher_login;
+pub use windows::{write_game_character_id, write_launcher_login};
 
 #[cfg(target_os = "macos")]
 mod macos;
 #[cfg(target_os = "macos")]
-pub use macos::write_launcher_login;
+pub use macos::{write_game_character_id, write_launcher_login};
 
 #[cfg(not(any(target_os = "windows", target_os = "macos")))]
 mod unsupported;
 #[cfg(not(any(target_os = "windows", target_os = "macos")))]
-pub use unsupported::write_launcher_login;
+pub use unsupported::{write_game_character_id, write_launcher_login};

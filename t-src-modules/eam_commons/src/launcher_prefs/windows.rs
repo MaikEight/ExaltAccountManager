@@ -107,6 +107,23 @@ pub fn write_launcher_login(
     Ok(())
 }
 
+/// The registry key (under `HKEY_CURRENT_USER`) where the GAME itself (not the
+/// launcher) persists its Unity PlayerPrefs. The game reads `characterId` from
+/// here on startup to decide which character to load into.
+const GAME_REG_SUBKEY: &str = "Software\\DECA Live Operations GmbH\\RotMGExalt";
+
+/// Sets the game's selected character so it starts directly into that character.
+///
+/// Writes the `characterId` PlayerPrefs value (a `REG_DWORD`) into the game's
+/// registry key. The value name carries the same constant Unity hash suffix used
+/// everywhere for this key (`characterId_h4046366545`).
+pub fn write_game_character_id(character_id: i32) -> Result<(), Box<dyn Error>> {
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let (key, _disposition) = hkcu.create_subkey(GAME_REG_SUBKEY)?;
+    key.set_value(playerprefs_key("characterId"), &(character_id as u32))?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::{obfuscated_key, playerprefs_key};
@@ -134,5 +151,7 @@ mod tests {
         assert_eq!(playerprefs_key("verifiedEmail"), "verifiedEmail_h2486142991");
         assert_eq!(playerprefs_key("nameChosen"), "nameChosen_h78283710");
         assert_eq!(playerprefs_key("showTosPopup"), "showTosPopup_h3263037028");
+        // Used by write_game_character_id (same key name in the game's registry).
+        assert_eq!(playerprefs_key("characterId"), "characterId_h4046366545");
     }
 }

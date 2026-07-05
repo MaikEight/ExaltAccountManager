@@ -111,6 +111,16 @@ pub fn write_launcher_login(
     Ok(())
 }
 
+/// Sets the game's selected character.
+///
+/// Not yet implemented on macOS: the game persists its PlayerPrefs in a
+/// different CFPreferences domain than the launcher, which must be confirmed
+/// before writing. This is a no-op so launches still succeed (the game starts on
+/// its last/default character).
+pub fn write_game_character_id(_character_id: i32) -> Result<(), Box<dyn Error>> {
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::obfuscated_key;
