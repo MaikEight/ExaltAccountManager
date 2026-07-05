@@ -54,6 +54,7 @@ function SettingsPage() {
     const [initialSettings, setInitialSettings] = useState(true);
     const [settings, setSettings] = useState({});
     const [gameExePath, setGameExePath] = useState("");
+    const [launcherPath, setLauncherPath] = useState("");
     const [disableAutoHideOnDailyLoginStartup, setDisableAutoHideOnDailyLoginStartup] = useState(null);
     const [openVaultPeekerAccountsPoppover, setOpenVaultPeekerAccountsPoppover] = useState(false);
     const [analyticsSettings, setAnalyticsSettings] = useState(null);
@@ -132,9 +133,11 @@ function SettingsPage() {
     const setTheSettings = async () => {
         const s = userSettings.get;
         const _gameExePath = await userSettings.getByKeyAndSubKey('game', 'exePath');
+        const _launcherPath = await userSettings.getByKeyAndSubKey('game', 'launcherPath');
         const _disableAutoHideOnDailyLoginStartup = await userSettings.getByKeyAndSubKey('dailyLogin', 'disableAutoHideOnDailyLoginStartup');
         setSettings(s);
         setGameExePath(_gameExePath);
+        setLauncherPath(_launcherPath);
         setDisableAutoHideOnDailyLoginStartup(_disableAutoHideOnDailyLoginStartup);
 
         // Set the analytics settings
@@ -187,6 +190,12 @@ function SettingsPage() {
 
         userSettings.setByKeyAndSubKey('game', 'exePath', gameExePath);
     }, [gameExePath]);
+
+    useEffect(() => {
+        if (launcherPath === undefined || launcherPath === "" || launcherPath === null) return;
+
+        userSettings.setByKeyAndSubKey('game', 'launcherPath', launcherPath);
+    }, [launcherPath]);
 
     useEffect(() => {
         if (disableAutoHideOnDailyLoginStartup === undefined || disableAutoHideOnDailyLoginStartup === "" || disableAutoHideOnDailyLoginStartup === null) return;
@@ -357,6 +366,87 @@ function SettingsPage() {
                                     return;
                                 }
                                 setGameExePath("");
+                            }}
+                        >
+                            Set to default
+                        </StyledButton>
+                    </Box>
+                </Box>
+            </ComponentBox>
+
+            {/* Launcher Path */}
+            <ComponentBox
+                title="Launcher Path"
+                icon={<FolderOutlinedIcon />}
+            >
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    Path to the official RotMG Exalt Launcher. EAM signs the selected account into the launcher and starts it (required by DECA's terms of service).
+                </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        gap: 2
+                    }}
+                >
+                    <TextField
+                        sx={{ width: '100%' }}
+                        id="launcherPath"
+                        label="Path to RotMG Exalt Launcher"
+                        variant="standard"
+                        value={launcherPath}
+                        onChange={async (event) => {
+                            if (event.target.value.endsWith("RotMG Exalt.exe") || event.target.value.endsWith("RotMGExalt.app")) {
+                                showSnackbar("You have chosen the game executable instead of the launcher. Please choose the RotMG Exalt Launcher instead.", "error");
+
+                                const defaultLauncherPath = await invoke('get_default_launcher_path');
+                                if (defaultLauncherPath) {
+                                    setLauncherPath(defaultLauncherPath);
+                                    return;
+                                }
+                                setLauncherPath("");
+
+                                return;
+                            }
+
+                            setLauncherPath(event.target.value)
+                        }}
+                    />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <StyledButton
+                            color="secondary"
+                            startIcon={<SearchOutlinedIcon />}
+                            onClick={async () => {
+                                const filePath = await dialog.open({ multiple: false });
+                                if (filePath) {
+                                    if (filePath.endsWith("RotMG Exalt.exe") || filePath.endsWith("RotMGExalt.app")) {
+                                        showSnackbar("You have chosen the game executable instead of the launcher. Please choose the RotMG Exalt Launcher instead.", "error");
+                                        return;
+                                    }
+
+                                    setLauncherPath(filePath);
+                                }
+                            }}
+                        >
+                            Choose file
+                        </StyledButton>
+                        <StyledButton
+                            color="secondary"
+                            startIcon={<RestartAltOutlinedIcon />}
+                            onClick={async () => {
+                                const defaultLauncherPath = await invoke('get_default_launcher_path');
+                                if (defaultLauncherPath) {
+                                    setLauncherPath(defaultLauncherPath);
+                                    return;
+                                }
+                                setLauncherPath("");
                             }}
                         >
                             Set to default
