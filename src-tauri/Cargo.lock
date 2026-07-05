@@ -1428,6 +1428,7 @@ dependencies = [
  "block2",
  "chrono",
  "core-foundation 0.10.1",
+ "core-foundation-sys",
  "diesel",
  "diesel_derives",
  "diesel_migrations",
