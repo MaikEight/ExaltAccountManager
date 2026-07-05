@@ -204,6 +204,7 @@ function useStartGame() {
                 AccessToken: accResponse.data.Account.AccessToken,
                 AccessTokenTimestamp: accResponse.data.Account.AccessTokenTimestamp,
                 AccessTokenExpiration: accResponse.data.Account.AccessTokenExpiration,
+                VerifiedEmail: accResponse.data.Account.VerifiedEmail,
             };
 
             if (!token.AccessToken) {
@@ -239,6 +240,7 @@ function useStartGame() {
                         accessToken: token.AccessToken,
                         accessTokenTimestamp: String(token.AccessTokenTimestamp ?? ''),
                         accessTokenExpiration: String(token.AccessTokenExpiration ?? ''),
+                        verifiedEmail: !!token.VerifiedEmail,
                         launcherPath: launcherPath,
                     }
                 );
