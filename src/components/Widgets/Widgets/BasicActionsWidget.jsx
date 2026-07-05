@@ -4,10 +4,12 @@ import StartGameSplitButton from "../../StartGameSplitButton";
 import WidgetBase from "./WidgetBase";
 import { Box, Grid, Tooltip } from "@mui/material";
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import SportsEsportsOutlinedIcon from '@mui/icons-material/SportsEsportsOutlined';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useEffect, useState } from "react";
 import useAccounts from "../../../hooks/useAccounts";
+import useRunningGames from "../../../hooks/useRunningGames";
 import useSnack from "../../../hooks/useSnack";
 import usePopups from "../../../hooks/usePopups";
 import DeleteAccountWarning from "../Components/DeleteAccountWarning";
@@ -15,6 +17,7 @@ import DeleteAccountWarning from "../Components/DeleteAccountWarning";
 function BasicActionsWidget({ type, widgetId }) {
     const { getWidgetConfiguration, closeWidgetBar, widgetBarState } = useWidgets();
     const { refreshData } = useAccounts();
+    const { isAccountRunning } = useRunningGames();
     const { showSnackbar } = useSnack();
     const { showPopup, closePopup } = usePopups();
 
@@ -23,6 +26,7 @@ function BasicActionsWidget({ type, widgetId }) {
     const [updateInProgress, setUpdateInProgress] = useState(false);
 
     const account = widgetBarState.data;
+    const isRunning = isAccountRunning(account?.email);
 
 
     useEffect(() => {
@@ -46,7 +50,21 @@ function BasicActionsWidget({ type, widgetId }) {
                 <Grid container spacing={2}>
                     <Grid size={12}>
                         <Tooltip
-                            title={account.state === 'Registered' ?
+                            title={isRunning ?
+                                (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        textAlign: 'left',
+                                        gap: 1,
+                                    }}
+                                    >
+                                        <SportsEsportsOutlinedIcon color="success" />
+                                        The game is already running for this account
+                                    </Box>
+                                ) : account.state === 'Registered' ?
                                 (
                                     <Box sx={{
                                         display: 'flex',
@@ -65,7 +83,7 @@ function BasicActionsWidget({ type, widgetId }) {
                             <span style={{ display: 'block', width: '100%' }}>
                                 <StartGameSplitButton
                                     account={account}
-                                    disabled={isLoading || isLoadingRefresh || updateInProgress || account.state === 'Registered'}
+                                    disabled={isLoading || isLoadingRefresh || updateInProgress || account.state === 'Registered' || isRunning}
                                     loading={isLoading}
                                     onLoadingChange={setIsLoading}
                                     sx={{ height: 55 }}
