@@ -27,6 +27,9 @@ import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import useApplySettingsToHeaderName from "../hooks/useApplySettingsToHeaderName";
 import LogsNoRowsOverlay from './../components/GridComponents/LogsNoRowsOverlay';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import LoginRewardsCalendar from "../components/DailyLoginRewards/LoginRewardsCalendar";
+import useLoginRewardsCalendar from "../hooks/useLoginRewardsCalendar";
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -51,6 +54,7 @@ function DailyLoginsPage() {
     const { showSnackbar } = useSnack();
     const { syncMode } = useBackgroundSync();
     const theme = useTheme();
+    const rewardsCalendar = useLoginRewardsCalendar({ withLoginDates: true });
 
     const convertUtcDatetoLocalDate = (date) => {
         if (!date) return null;
@@ -496,6 +500,24 @@ function DailyLoginsPage() {
                     }}
                 >
                     <Bar id="paddingBelowLegends" data={data} options={options} />
+                </Box>
+            </ComponentBox>
+            <ComponentBox
+                title="Daily Login Rewards"
+                icon={<CalendarMonthOutlinedIcon />}
+                isCollapseable
+                defaultCollapsed={localStorage.getItem('dailyLoginRewardsCollapsed') === 'true'}
+            >
+                <Box sx={{ width: '100%', px: 2, pb: 1 }}>
+                    <LoginRewardsCalendar
+                        variant="month"
+                        month={rewardsCalendar.month}
+                        availableMonths={rewardsCalendar.availableMonths}
+                        onMonthChange={rewardsCalendar.setMonth}
+                        rewards={rewardsCalendar.rewards}
+                        loginDates={rewardsCalendar.loginDates}
+                        isLoading={rewardsCalendar.isLoading}
+                    />
                 </Box>
             </ComponentBox>
             <Box
