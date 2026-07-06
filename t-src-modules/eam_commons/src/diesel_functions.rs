@@ -17,6 +17,8 @@ use crate::models::{NewUserData, UpdateUserData, UserData};
 use crate::models::{Server, NewServer};
 use crate::models::{ParsedItem, ParsedItemRow, NewParsedItem};
 use crate::models::{PcStat, PcStatRow, NewPcStat};
+use crate::models::{LoginRewardEntry, LoginRewardCalendarRow, NewLoginRewardCalendar, UpdateLoginRewardCalendar};
+use crate::models::{AccountLoginRewardRow, NewAccountLoginReward, UpdateAccountLoginReward};
 use crate::schema::Account as account;
 use crate::schema::ApiRequests as api_requests;
 use crate::schema::AuditLog as audit_logs;
@@ -34,6 +36,8 @@ use crate::schema::UserData as user_data;
 use crate::schema::Servers as servers;
 use crate::schema::ParsedItems as parsed_items;
 use crate::schema::PcStats as pc_stats_table;
+use crate::schema::LoginRewardsCalendar as login_rewards_calendar;
+use crate::schema::AccountLoginRewards as account_login_rewards;
 use chrono::{Local, NaiveDateTime, TimeZone, Utc};
 use diesel::dsl::sql;
 use diesel::insert_into;
@@ -1482,4 +1486,210 @@ pub fn insert_servers(pool: &DbPool, servers_to_insert: Vec<Server>) -> Result<u
     }
     
     Ok(total_inserted)
+}
+
+// ####################################
+// #       Login Rewards Calendar     #
+// ####################################
+
+/// True when `month` is exactly a "YYYY-MM" literal (guards raw SQL below).
+fn is_valid_month(month: &str) -> bool {
+    let b = month.as_bytes();
+    b.len() == 7
+        && b[..4].iter().all(|c| c.is_ascii_digit())
+        && b[4] == b'-'
+        && b[5].is_ascii_digit()
+        && b[6].is_ascii_digit()
+}
+
+/// Upserts the global reward calendar for a month. Only rows whose item/quantity/gold
+/// differ from what is stored (or are missing) are written, so a repeated fetch of an
+/// unchanged month is a no-op while a mid-month DECA edit is reflected. Returns the
+/// number of rows written.
+#[named]
+pub fn upsert_login_rewards_calendar_for_month(
+    pool: &DbPool,
+    month: &str,
+    entries: &[LoginRewardEntry],
+) -> Result<usize, diesel::result::Error> {
+    log_fn!();
+
+    with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            let now = Utc::now().to_rfc3339();
+
+            let existing: Vec<LoginRewardCalendarRow> = login_rewards_calendar::table
+                .filter(login_rewards_calendar::month.eq(month))
+                .load::<LoginRewardCalendarRow>(&mut conn)?;
+            let existing_map: std::collections::HashMap<i32, (i32, i32, i32)> = existing
+                .into_iter()
+                .map(|r| (r.day, (r.item_id, r.quantity, r.gold)))
+                .collect();
+
+            let mut written = 0usize;
+            for e in entries {
+                if let Some(&(item_id, quantity, gold)) = existing_map.get(&e.day) {
+                    if item_id == e.item_id && quantity == e.quantity && gold == e.gold {
+                        continue; // unchanged
+                    }
+                }
+
+                let insertable = NewLoginRewardCalendar {
+                    month: month.to_string(),
+                    day: e.day,
+                    item_id: e.item_id,
+                    quantity: e.quantity,
+                    gold: e.gold,
+                    updated_at: now.clone(),
+                };
+                let updatable = UpdateLoginRewardCalendar {
+                    item_id: e.item_id,
+                    quantity: e.quantity,
+                    gold: e.gold,
+                    updated_at: now.clone(),
+                };
+
+                diesel::insert_into(login_rewards_calendar::table)
+                    .values(&insertable)
+                    .on_conflict((login_rewards_calendar::month, login_rewards_calendar::day))
+                    .do_update()
+                    .set(&updatable)
+                    .execute(&mut conn)?;
+                written += 1;
+            }
+
+            Ok(written)
+        },
+        5,
+    )
+}
+
+/// Upserts the per-account monthly status (one row per account_email + month).
+#[named]
+pub fn upsert_account_login_rewards(
+    pool: &DbPool,
+    new_row: NewAccountLoginReward,
+) -> Result<usize, diesel::result::Error> {
+    log_fn!();
+
+    with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            let updatable = UpdateAccountLoginReward {
+                unlockable_days: new_row.unlockable_days,
+                claimed_days: new_row.claimed_days.clone(),
+                server_time: new_row.server_time.clone(),
+                updated_at: new_row.updated_at.clone(),
+            };
+
+            diesel::insert_into(account_login_rewards::table)
+                .values(&new_row)
+                .on_conflict((
+                    account_login_rewards::account_email,
+                    account_login_rewards::month,
+                ))
+                .do_update()
+                .set(&updatable)
+                .execute(&mut conn)
+        },
+        5,
+    )
+}
+
+#[named]
+pub fn get_login_rewards_calendar_for_month(
+    pool: &DbPool,
+    month: String,
+) -> Result<Vec<LoginRewardCalendarRow>, diesel::result::Error> {
+    log_fn!();
+
+    with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            login_rewards_calendar::table
+                .filter(login_rewards_calendar::month.eq(&month))
+                .order(login_rewards_calendar::day.asc())
+                .load::<LoginRewardCalendarRow>(&mut conn)
+        },
+        5,
+    )
+}
+
+#[named]
+pub fn get_account_login_rewards(
+    pool: &DbPool,
+    email: String,
+    month: String,
+) -> Result<Option<AccountLoginRewardRow>, diesel::result::Error> {
+    log_fn!();
+
+    with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            account_login_rewards::table
+                .filter(account_login_rewards::account_email.eq(&email))
+                .filter(account_login_rewards::month.eq(&month))
+                .first::<AccountLoginRewardRow>(&mut conn)
+                .optional()
+        },
+        5,
+    )
+}
+
+/// Distinct months present in the global calendar, ascending (for the month navigator).
+#[named]
+pub fn get_available_login_reward_months(
+    pool: &DbPool,
+) -> Result<Vec<String>, diesel::result::Error> {
+    log_fn!();
+
+    with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            login_rewards_calendar::table
+                .select(login_rewards_calendar::month)
+                .distinct()
+                .order(login_rewards_calendar::month.asc())
+                .load::<String>(&mut conn)
+        },
+        5,
+    )
+}
+
+/// Distinct "YYYY-MM-DD" dates in `month` on which a daily-login run succeeded for at
+/// least one account (drives the page calendar's per-day marker).
+#[named]
+pub fn get_daily_login_success_dates_for_month(
+    pool: &DbPool,
+    month: String,
+) -> Result<Vec<String>, diesel::result::Error> {
+    log_fn!();
+
+    if !is_valid_month(&month) {
+        return Ok(vec![]);
+    }
+
+    with_db_retry(
+        || {
+            let mut conn = pool.get().expect("Failed to get connection from pool.");
+            let start_times: Vec<Option<String>> = daily_login_report_entries::table
+                .filter(daily_login_report_entries::status.eq("Succeeded"))
+                .filter(sql::<diesel::sql_types::Bool>(&format!(
+                    "startTime LIKE '{}%'",
+                    month
+                )))
+                .select(daily_login_report_entries::startTime)
+                .load::<Option<String>>(&mut conn)?;
+
+            let mut set = std::collections::BTreeSet::new();
+            for st in start_times.into_iter().flatten() {
+                if st.len() >= 10 {
+                    set.insert(st[..10].to_string());
+                }
+            }
+            Ok(set.into_iter().collect())
+        },
+        5,
+    )
 }

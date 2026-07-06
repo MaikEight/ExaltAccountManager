@@ -1373,3 +1373,89 @@ impl From<Server> for NewServer {
         }
     }
 }
+
+// ####################################
+// #       Login Rewards Calendar     #
+// ####################################
+
+/// Parsed representation of a single day (tier) from a dailyLogin/fetchCalendar response.
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct LoginRewardEntry {
+    pub day: i32,       // reward tier 1..31
+    pub item_id: i32,
+    pub quantity: i32,
+    pub gold: i32,
+    pub claimed: bool,  // whether a <Claimed/> marker was present
+}
+
+/// Parsed representation of a dailyLogin/fetchCalendar response (NonConsecutive only).
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct LoginRewardsResponse {
+    pub server_time: String,      // raw serverTime attr, e.g. "1783293127.793961"
+    pub unlockable_days: i32,     // from <Unlockable days=N>: logins this month = unlocked tier count
+    pub entries: Vec<LoginRewardEntry>,
+}
+
+/// A row of the global monthly reward calendar (shared across accounts).
+#[derive(Queryable, Serialize, Deserialize, Clone, Debug)]
+pub struct LoginRewardCalendarRow {
+    pub id: Option<i32>,
+    pub month: String,
+    pub day: i32,
+    pub item_id: i32,
+    pub quantity: i32,
+    pub gold: i32,
+    pub updated_at: String,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::LoginRewardsCalendar)]
+pub struct NewLoginRewardCalendar {
+    pub month: String,
+    pub day: i32,
+    pub item_id: i32,
+    pub quantity: i32,
+    pub gold: i32,
+    pub updated_at: String,
+}
+
+#[derive(AsChangeset, Serialize)]
+#[diesel(table_name = schema::LoginRewardsCalendar)]
+pub struct UpdateLoginRewardCalendar {
+    pub item_id: i32,
+    pub quantity: i32,
+    pub gold: i32,
+    pub updated_at: String,
+}
+
+/// Per-account monthly claim/unlock status.
+#[derive(Queryable, Serialize, Deserialize, Clone, Debug)]
+pub struct AccountLoginRewardRow {
+    pub id: Option<i32>,
+    pub account_email: String,
+    pub month: String,
+    pub unlockable_days: i32,
+    pub claimed_days: Option<String>,
+    pub server_time: Option<String>,
+    pub updated_at: String,
+}
+
+#[derive(Insertable, Serialize)]
+#[diesel(table_name = schema::AccountLoginRewards)]
+pub struct NewAccountLoginReward {
+    pub account_email: String,
+    pub month: String,
+    pub unlockable_days: i32,
+    pub claimed_days: Option<String>,
+    pub server_time: Option<String>,
+    pub updated_at: String,
+}
+
+#[derive(AsChangeset, Serialize)]
+#[diesel(table_name = schema::AccountLoginRewards)]
+pub struct UpdateAccountLoginReward {
+    pub unlockable_days: i32,
+    pub claimed_days: Option<String>,
+    pub server_time: Option<String>,
+    pub updated_at: String,
+}

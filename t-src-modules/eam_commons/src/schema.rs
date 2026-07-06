@@ -245,6 +245,30 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    LoginRewardsCalendar (id) {
+        id -> Nullable<Integer>,
+        month -> Text,
+        day -> Integer,
+        item_id -> Integer,
+        quantity -> Integer,
+        gold -> Integer,
+        updated_at -> Text,
+    }
+}
+
+diesel::table! {
+    AccountLoginRewards (id) {
+        id -> Nullable<Integer>,
+        account_email -> Text,
+        month -> Text,
+        unlockable_days -> Integer,
+        claimed_days -> Nullable<Text>,
+        server_time -> Nullable<Text>,
+        updated_at -> Text,
+    }
+}
+
 diesel::joinable!(Account -> Char_list_entries (entry_id));
 diesel::joinable!(Class_stats -> Account (entry_id));
 diesel::joinable!(AuditLog -> EamAccount (accountEmail));
@@ -265,4 +289,6 @@ diesel::allow_tables_to_appear_in_same_query!(
     Servers,
     ParsedItems,
     PcStats,
+    LoginRewardsCalendar,
+    AccountLoginRewards,
 );
