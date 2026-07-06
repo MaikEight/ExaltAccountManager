@@ -29,6 +29,9 @@ pub use diesel_setup::{DbPool, setup_database};
 pub mod diesel_functions;
 pub use diesel_functions::*;
 
+pub mod login_rewards;
+pub use login_rewards::fetch_and_store_login_calendar;
+
 pub mod rotmg_updater;
 pub mod limiter;
 pub mod parser;

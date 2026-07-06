@@ -8,3 +8,6 @@ pub use server_parser::parse_servers;
 
 pub mod request_state_parser;
 pub use request_state_parser::{parse_request_state, parse_account_name, RequestState};
+
+pub mod login_rewards_parser;
+pub use login_rewards_parser::parse_login_rewards;
