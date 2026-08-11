@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
-/** Local "YYYY-MM" for the current month (fallback when nothing is stored yet). */
+/** Local "YYYY-MM" for the current month (used as the initial selection). */
 function currentMonthKey() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -9,21 +9,30 @@ function currentMonthKey() {
 
 /**
  * Loads daily-login reward calendar data from the backend and manages the
- * selected month (defaulting to the latest stored month).
+ * selected month. Starts on the current month and, on first load, jumps to the
+ * latest month that actually has stored data (unless the user navigated first).
  *
  * @param {Object}  options
  * @param {string=} options.email          When set, also loads the per-account claim/unlock status.
  * @param {boolean} options.withLoginDates  When true, also loads the dates a daily-login run succeeded.
+ * @param {*}       options.reloadKey       Changing this value re-fetches everything (e.g. after an account refresh).
  */
-export default function useLoginRewardsCalendar({ email = null, withLoginDates = false } = {}) {
+export default function useLoginRewardsCalendar({ email = null, withLoginDates = false, reloadKey = null } = {}) {
     const [availableMonths, setAvailableMonths] = useState([]);
-    const [month, setMonth] = useState(null);
+    const [month, setMonth] = useState(currentMonthKey);
     const [rewards, setRewards] = useState([]);
     const [accountStatus, setAccountStatus] = useState(null);
     const [loginDates, setLoginDates] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const userNavigatedRef = useRef(false);
 
-    // Load the list of stored months once and pick an initial selection.
+    // Manual month selection (via the navigator) pins the month.
+    const selectMonth = useCallback((m) => {
+        userNavigatedRef.current = true;
+        setMonth(m);
+    }, []);
+
+    // Load the list of stored months once; jump to the latest that has data.
     useEffect(() => {
         let cancelled = false;
         invoke('get_available_login_reward_months')
@@ -31,17 +40,17 @@ export default function useLoginRewardsCalendar({ email = null, withLoginDates =
                 if (cancelled) return;
                 const list = Array.isArray(months) ? months : [];
                 setAvailableMonths(list);
-                setMonth((prev) => prev ?? (list.length ? list[list.length - 1] : currentMonthKey()));
+                if (!userNavigatedRef.current && list.length) {
+                    setMonth(list[list.length - 1]);
+                }
             })
-            .catch(() => {
-                if (!cancelled) setMonth((prev) => prev ?? currentMonthKey());
-            });
+            .catch(() => { /* keep the current-month default */ });
         return () => { cancelled = true; };
-    }, []);
+    }, [reloadKey]);
 
     // Load calendar + optional per-account / login-date data for the selected month.
+    // `month` is never null, so this always runs and always clears isLoading.
     useEffect(() => {
-        if (!month) return;
         let cancelled = false;
         setIsLoading(true);
 
@@ -69,7 +78,7 @@ export default function useLoginRewardsCalendar({ email = null, withLoginDates =
 
         Promise.all(tasks).finally(() => { if (!cancelled) setIsLoading(false); });
         return () => { cancelled = true; };
-    }, [month, email, withLoginDates]);
+    }, [month, email, withLoginDates, reloadKey]);
 
-    return { month, setMonth, availableMonths, rewards, accountStatus, loginDates, isLoading };
+    return { month, setMonth: selectMonth, availableMonths, rewards, accountStatus, loginDates, isLoading };
 }
