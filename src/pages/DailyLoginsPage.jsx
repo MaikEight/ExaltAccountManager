@@ -30,6 +30,7 @@ import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import LoginRewardsCalendar from "../components/DailyLoginRewards/LoginRewardsCalendar";
 import useLoginRewardsCalendar from "../hooks/useLoginRewardsCalendar";
+import { useNavigate } from 'react-router-dom';
 
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -54,6 +55,7 @@ function DailyLoginsPage() {
     const { showSnackbar } = useSnack();
     const { syncMode } = useBackgroundSync();
     const theme = useTheme();
+    const navigate = useNavigate();
     const rewardsCalendar = useLoginRewardsCalendar({ withLoginDates: true });
 
     const convertUtcDatetoLocalDate = (date) => {
@@ -517,6 +519,17 @@ function DailyLoginsPage() {
                         rewards={rewardsCalendar.rewards}
                         loginDates={rewardsCalendar.loginDates}
                         isLoading={rewardsCalendar.isLoading}
+                        emptyState={
+                            <Box sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5 }}>
+                                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                                    No reward calendar stored for this month yet.<br />
+                                    Refresh the data of any account to load the current month's rewards.
+                                </Typography>
+                                <StyledButton variant="contained" size="small" onClick={() => navigate('/accounts')}>
+                                    Go to Accounts
+                                </StyledButton>
+                            </Box>
+                        }
                     />
                 </Box>
             </ComponentBox>
