@@ -32,5 +32,8 @@ buildEnvKeys.ps1
 .env
 updateEnvVars.ps1
 target
+**/bin/
+**/obj/
+src-tauri/binaries/
 buildEnvKeys.fish
 .envrc

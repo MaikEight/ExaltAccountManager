@@ -605,7 +605,7 @@ function SettingsPage() {
                         <Select
                             labelId="density-select-label"
                             label="Density"
-                            value={settings?.vaultPeeker?.density || 'comfortable'}
+                            value={settings?.vaultPeeker?.density || 'dense'}
                             onChange={(event) => {
                                 // Clear relevant cache items
                                 const clearAllCacheItemsWithPrefix = (prefix) => {

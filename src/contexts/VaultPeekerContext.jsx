@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import items from "../assets/constants";
+import { items } from "../assets/runtimeAssets";
 import { useGroups } from 'eam-commons-js';
 import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";
@@ -450,7 +450,10 @@ function VaultPeekerContextProvider({ children }) {
     const [popperPosition, setPopperPosition] = useState(null);
 
     // Settings
-    const [itemPadding, setItemPadding] = useState(2);
+    // Match the original Vault Peeker density by default: 40px item cells
+    // without additional padding. Users can still opt into comfortable or
+    // spacious density through the existing setting.
+    const [itemPadding, setItemPadding] = useState(0);
 
     // Filter presets
     const filterPresets = useMemo(() => {

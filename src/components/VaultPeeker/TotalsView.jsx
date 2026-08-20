@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
 import ComponentBox from "../ComponentBox";
 import ItemCanvas from "../Realm/ItemCanvas";
-import items from "../../assets/constants";
+import { items } from "../../assets/runtimeAssets";
 import { useEffect, useState } from "react";
 import VaultPeekerLogo from "../VaultPeekerLogo";
 import useItemCanvas from "../../hooks/useItemCanvas";
@@ -81,7 +81,6 @@ function TotalsView() {
         >
             <ItemCanvas
                 canvasIdentifier="totals"
-                imgSrc="renders.png"
                 itemIds={filteredItems}
                 items={items}
                 totals={totalItems?.totals ? totalItems.totals : {}}

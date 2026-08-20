@@ -33,15 +33,15 @@ function SingleCharacterOverview({ character, number, parsedItems }) {
             const results = {};
             if (character.backpack_slots > 0) {
                 const item = getItemById(BACKPACK_ITEM_ID);
-                if (item) results.backpack = await drawItemAsync("renders.png", item);
+                if (item) results.backpack = await drawItemAsync(item);
             }
             if (character.backpack_slots > 8) {
                 const item = getItemById(BACKPACK_EXTENDER_ITEM_ID);
-                if (item) results.extender = await drawItemAsync("renders.png", item);
+                if (item) results.extender = await drawItemAsync(item);
             }
             if (character.has3_quickslots > 0) {
                 const item = getItemById(ADVENTURERS_BELT);
-                if (item) results.belt = await drawItemAsync("renders.png", item);
+                if (item) results.belt = await drawItemAsync(item);
             }
             if (!cancelled) setBackpackIcons(prev => ({ ...prev, ...results }));
         };

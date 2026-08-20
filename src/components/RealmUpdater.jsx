@@ -1,5 +1,4 @@
 import StyledButton from '../components/StyledButton';
-import useUserSettings from '../hooks/useUserSettings';
 import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ComponentBox from '../components/ComponentBox';
@@ -7,13 +6,13 @@ import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutl
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined';
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
-import { checkForUpdates, updateGame } from 'eam-commons-js';
+import { checkForUpdates } from 'eam-commons-js';
 import useSnack from '../hooks/useSnack';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { getCurrentWindow } from '@tauri-apps/api/window'
+import { getCurrentWindow } from '@tauri-apps/api/window';
+import { invoke } from '@tauri-apps/api/core';
 
 function RealmUpdater() {
-    const settings = useUserSettings();
     const [isLoading, setIsLoading] = useState(false);
     const [updateRequired, setUpdateRequired] = useState(false);
     const [lastUpdateCheck, setLastUpdateCheck] = useState('never');
@@ -142,13 +141,22 @@ function RealmUpdater() {
                         fullWidth
                         onClick={async () => {
                             setIsLoading(true);
+                            sessionStorage.setItem('updateInProgress', 'true');
                             updateProgressbar(true);
                             try {
-                                await updateGame();
+                                const updateSucceeded = await invoke('perform_game_update');
+                                if (!updateSucceeded) {
+                                    throw new Error('Realm Updater did not complete successfully.');
+                                }
+
+                                localStorage.removeItem('updateNeeded');
+                                setUpdateRequired(false);
+                                showSnackbar('Realm updated', 'success');
                             } catch (error) {
-                                console.error('Failed to update the game', error);
-                                showSnackbar('Failed to update the game', 'error');
+                                console.error('Failed to update Realm', error);
+                                showSnackbar('Failed to update Realm', 'error');
                             } finally {
+                                sessionStorage.setItem('updateInProgress', 'false');
                                 setIsLoading(false);
                                 updateProgressbar(false);
                             }

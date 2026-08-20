@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { drawItemAsync } from "../../../utils/realmItemDrawUtils";
-import items from "../../../assets/constants";
+import { items } from "../../../assets/runtimeAssets";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { TooltipUiForItem } from "../../Widgets/Widgets/Components/InventoryRender";
 
 const ITEM_BASE_SIZE = 40;
-const DEFAULT_ITEM_PADDING = 2;
+const DEFAULT_ITEM_PADDING = 0;
 
 /**
  * ItemGridV2 - A performant grid component for rendering realm items
@@ -104,7 +104,7 @@ function ItemGridV2({
                 } else {
                     const itemData = items[itemId];
                     if (itemData) {
-                        imageSrc = await drawItemAsync("renders.png", itemData, maxRarity, itemPadding);
+                        imageSrc = await drawItemAsync(itemData, maxRarity, itemPadding);
                     }
                 }
 

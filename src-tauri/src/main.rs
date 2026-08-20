@@ -1,8 +1,11 @@
 //Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod asset_sync;
+
 extern crate dirs;
 
+use asset_sync::{get_asset_sprite_data_url, refresh_asset_cache_from_api};
 use diesel::r2d2::ConnectionManager;
 use eam_background_sync::types::SyncMode;
 use eam_background_sync::BackgroundSyncManager;
@@ -30,8 +33,6 @@ use eam_commons::toast_notifications::{
     content::EndOfMonthNotificationContent,
 };
 use serde::Serialize;
-
-
 use chrono::{DateTime, TimeZone, Utc};
 use diesel::r2d2::Pool;
 use diesel::SqliteConnection;
@@ -211,7 +212,6 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_http::init())
-        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_drpc::init())
@@ -237,6 +237,8 @@ fn main() {
             create_folder,
             check_for_game_update,
             perform_game_update,
+            refresh_asset_cache,
+            get_asset_sprite,
             send_get_request, // HTTP Requests
             send_get_request_with_json_body,
             send_post_request,
@@ -614,6 +616,16 @@ async fn send_post_request_get_redirect_url(
         .ok_or_else(|| "No redirect location in response".to_string())?;
 
     Ok(location.to_string())
+}
+
+#[tauri::command]
+async fn refresh_asset_cache(app: AppHandle, force: bool) -> Result<Value, String> {
+    refresh_asset_cache_from_api(app, force).await
+}
+
+#[tauri::command]
+async fn get_asset_sprite(app: AppHandle, sprite_hash: String) -> Result<String, String> {
+    get_asset_sprite_data_url(app, sprite_hash).await
 }
 
 #[tauri::command]
