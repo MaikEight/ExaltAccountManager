@@ -1,8 +1,8 @@
 
-import { Box, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Popover, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Popover, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
 import ComponentBox from './../components/ComponentBox';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import StyledButton from './../components/StyledButton';
 import { invoke } from '@tauri-apps/api/core';
 import useUserSettings from '../hooks/useUserSettings';
@@ -12,7 +12,7 @@ import ViewColumnOutlinedIcon from '@mui/icons-material/ViewColumnOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import { ColorContext, useUserLogin } from 'eam-commons-js';
+import { useUserLogin } from 'eam-commons-js';
 import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import useSnack from '../hooks/useSnack';
 import useServerList from '../hooks/useServerList';
@@ -38,10 +38,13 @@ import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import SyncOutlinedIcon from '@mui/icons-material/SyncOutlined';
 import DiscordLogo from './../components/DiscordLogo';
+import {
+    DEFAULT_COLOR_SCHEME,
+    MULEDUMP_COLOR_SCHEME,
+} from '../themes/muledump';
 
 function SettingsPage() {
     const userSettings = useUserSettings();
-    const colorContext = useContext(ColorContext);
     const { serverList } = useServerList();
     const { showSnackbar } = useSnack();
     const { idToken, isAuthenticated } = useUserLogin();
@@ -233,11 +236,25 @@ function SettingsPage() {
         }
     }, [analyticsSettings?.optOut]);
 
-    const isDarkMode = () => {
-        if (settings === undefined || settings.general === undefined || settings.general.theme === undefined)
-            return true;
+    const selectedThemeOption = settings?.general?.colorScheme === MULEDUMP_COLOR_SCHEME
+        ? MULEDUMP_COLOR_SCHEME
+        : settings?.general?.theme === 'light'
+            ? 'eam-light'
+            : 'eam-dark';
 
-        return settings.general.theme === 'dark';
+    const handleThemeChange = (_event, themeOption) => {
+        if (!themeOption) return;
+
+        setSettings({
+            ...settings,
+            general: {
+                ...settings.general,
+                colorScheme: themeOption === MULEDUMP_COLOR_SCHEME
+                    ? MULEDUMP_COLOR_SCHEME
+                    : DEFAULT_COLOR_SCHEME,
+                theme: themeOption === 'eam-light' ? 'light' : 'dark',
+            },
+        });
     };
 
     const deleteAllUserData = async () => {
@@ -927,7 +944,7 @@ function SettingsPage() {
                 icon={<DarkModeOutlinedIcon />}
             >
                 <Typography variant="body2" color="text.secondary">
-                    Choose which theme should be used... of course only dark mode is the correct choice.
+                    Choose EAM's color scheme and brightness.
                 </Typography>
                 <Box
                     sx={{
@@ -935,9 +952,23 @@ function SettingsPage() {
                         ml: 1,
                     }}
                 >
-                    <Tooltip title={isDarkMode() ? "Burn your eyes!" : "Come to the dark side, we have cookies!"}>
-                        <FormControlLabel sx={{ gap: 0.5 }} control={<Switch size="small" checked={isDarkMode()} onChange={() => colorContext.toggleColorMode()} />} label={'Darkmode'} />
-                    </Tooltip>
+                    <ToggleButtonGroup
+                        exclusive
+                        size="small"
+                        value={selectedThemeOption}
+                        onChange={handleThemeChange}
+                        aria-label="Theme"
+                    >
+                        <ToggleButton value="eam-dark" aria-label="EAM dark theme">
+                            Dark
+                        </ToggleButton>
+                        <ToggleButton value="eam-light" aria-label="EAM light theme">
+                            Light
+                        </ToggleButton>
+                        <ToggleButton value={MULEDUMP_COLOR_SCHEME} aria-label="Muledump theme">
+                            Muledump
+                        </ToggleButton>
+                    </ToggleButtonGroup>
                 </Box>
             </ComponentBox>
 

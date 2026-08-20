@@ -5,11 +5,23 @@ import { drawItemPromise, getItemRarity } from '../../../utils/realmItemDrawUtil
 import { TooltipUiForItem } from '../../Widgets/Widgets/Components/InventoryRender';
 import useVaultPeeker from '../../../hooks/useVaultPeeker';
 import useDebugLogs from './../../../hooks/useDebugLogs';
+import { useTheme } from '@emotion/react';
+import { getVaultItemSlotImage } from '../../../utils/vaultPeekerThemeUtils';
 
 const SPRITESHEET_SRC = "renders.png";
 
 // In-memory cache for HTMLImageElement objects (survives re-renders, cleared on page reload)
 const imageElementCache = new Map();
+
+const loadImage = async (imageUrl) => {
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = imageUrl;
+    });
+    return img;
+};
 
 /**
  * ItemCanvasGridV2 - A performant canvas-based item grid renderer
@@ -44,11 +56,29 @@ const getRarityFromData = (data) => {
  * Pre-load all item images in parallel, returns Map of index -> HTMLImageElement
  * Uses in-memory cache to avoid repeated Image() creation
  */
-const preloadAllItemImages = async (itemEntries, itemPadding, debugLogs = false) => {
+const preloadAllItemImages = async (itemEntries, itemPadding, emptySlotImage, debugLogs = false) => {
     let cacheHits = 0;
     let cacheMisses = 0;
 
     const imagePromises = itemEntries.map(async ([itemId, data], index) => {
+        if (itemId === -1) {
+            const memoryCacheKey = `empty-slot-${emptySlotImage}`;
+            if (imageElementCache.has(memoryCacheKey)) {
+                cacheHits++;
+                return [index, imageElementCache.get(memoryCacheKey)];
+            }
+
+            cacheMisses++;
+            try {
+                const img = await loadImage(emptySlotImage);
+                imageElementCache.set(memoryCacheKey, img);
+                return [index, img];
+            } catch (error) {
+                console.error('Failed to load empty item slot:', error);
+                return [index, null];
+            }
+        }
+
         const item = items[itemId];
         if (!item) return [index, null];
 
@@ -67,12 +97,7 @@ const preloadAllItemImages = async (itemEntries, itemPadding, debugLogs = false)
 
         try {
             const imageUrl = await drawItemPromise(SPRITESHEET_SRC, item, rarity, itemPadding);
-            const img = new Image();
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = imageUrl;
-            });
+            const img = await loadImage(imageUrl);
 
             // Store in memory cache for future renders
             imageElementCache.set(memoryCacheKey, img);
@@ -141,6 +166,9 @@ const ItemCanvasGridV2 = ({
     minColumns = 4,
     itemPadding: propPadding,
 }) => {
+    const theme = useTheme();
+    const emptySlotImage = getVaultItemSlotImage(theme);
+
     // Sort empty items to the end (itemId -1)
     itemEntries?.sort((a, b) => {
         const idA = a[0];
@@ -200,7 +228,7 @@ const ItemCanvasGridV2 = ({
 
             // Step 1: Pre-load ALL images in parallel (with padding baked in)
             const preloadStart = performance.now();
-            const imageMap = await preloadAllItemImages(itemEntries, itemPadding, debugLogs);
+            const imageMap = await preloadAllItemImages(itemEntries, itemPadding, emptySlotImage, debugLogs);
             if (debugLogs) {
                 console.log(`[VaultPeeker] Image preload took ${(performance.now() - preloadStart).toFixed(2)}ms (${itemEntries.length} items)`);
             }
@@ -222,7 +250,7 @@ const ItemCanvasGridV2 = ({
         renderCanvas();
 
         return () => { cancelled = true; };
-    }, [itemEntries, columns, canvasWidth, canvasHeight, showCounts, containerWidth, itemPadding, cellSize]);
+    }, [itemEntries, columns, canvasWidth, canvasHeight, showCounts, containerWidth, itemPadding, cellSize, emptySlotImage, debugLogs]);
 
     // Click handler - find item by position
     const handleOverlayClick = useCallback((index, event) => {

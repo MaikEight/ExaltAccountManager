@@ -9,6 +9,7 @@ import useItemCanvas from "../../hooks/useItemCanvas";
 import useUserSettings from "../../hooks/useUserSettings";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import { getVaultItemSlotImage } from "../../utils/vaultPeekerThemeUtils";
 
 function TotalsView() {
     const [filteredItems, setFilteredItems] = useState([]);
@@ -90,7 +91,7 @@ function TotalsView() {
                 overrideItemImages={
                     {
                         '-1': {
-                            imgSrc: theme.palette.mode === "dark" ? 'realm/itemSlot.png' : 'realm/itemSlot_light.png',
+                            imgSrc: getVaultItemSlotImage(theme),
                             size: 50,
                             padding: 0,
                         }

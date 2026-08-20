@@ -5,6 +5,7 @@ import { drawItemAsync } from "../../../utils/realmItemDrawUtils";
 import items from "../../../assets/constants";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { TooltipUiForItem } from "../../Widgets/Widgets/Components/InventoryRender";
+import { getVaultItemSlotImage } from "../../../utils/vaultPeekerThemeUtils";
 
 const ITEM_BASE_SIZE = 40;
 const DEFAULT_ITEM_PADDING = 2;
@@ -52,10 +53,8 @@ function ItemGridV2({
     // Determine empty slot image based on theme
     const emptySlotSrc = useMemo(() => {
         if (emptySlotImage) return emptySlotImage;
-        return theme.palette.mode === 'dark' 
-            ? '/realm/itemSlot.png' 
-            : '/realm/itemSlot_light.png';
-    }, [emptySlotImage, theme.palette.mode]);
+        return getVaultItemSlotImage(theme);
+    }, [emptySlotImage, theme]);
 
     // Filter and prepare items for rendering
     const displayItems = useMemo(() => {

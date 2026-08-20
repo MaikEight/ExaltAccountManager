@@ -1,12 +1,18 @@
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider as MuiThemeProvider, styled } from "@mui/material/styles";
 import { ColorContext } from "eam-commons-js";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { MaterialDesignContent, SnackbarProvider, useSnackbar } from "notistack";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import MainRouterRoutes from "./MainRouter";
+import useUserSettings from "./hooks/useUserSettings";
+import {
+    DEFAULT_COLOR_SCHEME,
+    MULEDUMP_COLOR_SCHEME,
+    muledumpTheme,
+} from "./themes/muledump";
 
 const getSnackbarStyles = (theme) => ({
     borderRadius: theme.shape.borderRadius,
@@ -50,7 +56,17 @@ const CloseAction = (key) => {
 
 function MainProviders() {
     const colorContext = useContext(ColorContext);
-    const theme = colorContext.theme;
+    const userSettings = useUserSettings();
+    const colorScheme = userSettings.getByKeyAndSubKey("general", "colorScheme")
+        || DEFAULT_COLOR_SCHEME;
+    const theme = colorScheme === MULEDUMP_COLOR_SCHEME
+        ? muledumpTheme
+        : colorContext.theme;
+
+    useEffect(() => {
+        document.body.classList.toggle('dark-theme', theme.palette.mode === 'dark');
+        document.documentElement.setAttribute('data-color-scheme', colorScheme);
+    }, [colorScheme, theme.palette.mode]);
 
     return (
             <MuiThemeProvider theme={theme}>

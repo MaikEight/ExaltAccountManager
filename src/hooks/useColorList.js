@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTheme } from "@emotion/react";
+import { alpha } from '@mui/material/styles';
 
 /**
  * Custom hook to get a list of colors based on the provided index.
@@ -11,17 +12,20 @@ const useColorList = (index) => {
 
     const colorList = useMemo(
         () => [
-            { background: '#9155fd1f', color: theme.palette.primary.main },
-            { background: '#16b1ff1f', color: theme.palette.info.main },
-            { background: '#56ca0021', color: theme.palette.success.main },
-            { background: '#ff4c511f', color: theme.palette.error.main },
-            { background: '#ffb4001f', color: theme.palette.warning.main },
+            { background: alpha(theme.palette.primary.main, 0.12), color: theme.palette.primary.main },
+            { background: alpha(theme.palette.info.main, 0.12), color: theme.palette.info.main },
+            { background: alpha(theme.palette.success.main, 0.13), color: theme.palette.success.main },
+            { background: alpha(theme.palette.error.main, 0.12), color: theme.palette.error.main },
+            { background: alpha(theme.palette.warning.main, 0.12), color: theme.palette.warning.main },
         ],
         [theme]
     );
 
     if (index === 'secondary') {
-        return { background: '#8a8d931f', color: '#8a8d931f' };
+        return {
+            background: alpha(theme.palette.secondary.main, 0.12),
+            color: theme.palette.secondary.main,
+        };
     }
 
     return (

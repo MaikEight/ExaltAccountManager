@@ -3,6 +3,8 @@ import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/mater
 
 function SidebarButton({ menu, selected, hasNotification }) {
     const theme = useTheme();
+    const primaryGradient = theme.palette.primary.gradient
+        || 'linear-gradient(98deg, rgb(198, 167, 254), rgb(145, 85, 253) 94%)';
 
     return (
         <ListItem
@@ -22,12 +24,12 @@ function SidebarButton({ menu, selected, hasNotification }) {
                             }
                         } : {
                             color: theme.palette.mode === 'light' ? theme.palette.background.default : theme.palette.text.primary,
-                            backgroundImage: 'linear-gradient(98deg, rgb(198, 167, 254), rgb(145, 85, 253) 94%)',
+                            backgroundImage: primaryGradient,
                             boxShadow: theme.palette.mode === 'light'
                                 ? 'rgba(58, 53, 65, 0.42) 0px 4px 8px -4px'
                                 : 'rgba(19, 17, 32, 0.42) 0px 4px 8px -4px',
                             "&:hover": {
-                                backgroundImage: 'linear-gradient(98deg, rgb(198, 167, 254), rgb(145, 85, 253) 94%)',
+                                backgroundImage: primaryGradient,
                             }
                         })
                 }}

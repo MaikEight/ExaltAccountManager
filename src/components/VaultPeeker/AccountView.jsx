@@ -12,6 +12,7 @@ import useSnack from "../../hooks/useSnack";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { portrait } from "../../utils/portraitUtils";
 import { GroupUI } from "../GridComponents/GroupUI";
+import { getVaultItemSlotImage } from "../../utils/vaultPeekerThemeUtils";
 
 function AccountView({ account }) {
     const [accountItemIds, setAccountItemIds] = useState([]);
@@ -489,7 +490,7 @@ function StorageView({ vaultName, canvasIdentifier, title, itemIds, totals, over
                     overrideItemImages={
                         {
                             '-1': {
-                                imgSrc: theme.palette.mode === "dark" ? 'realm/itemSlot.png' : 'realm/itemSlot_light.png',
+                                imgSrc: getVaultItemSlotImage(theme),
                                 size: 50,
                                 padding: 0,
                             }
