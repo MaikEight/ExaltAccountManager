@@ -3,6 +3,7 @@ use serde::Deserialize;
 use serde_json::{json, Map, Value};
 use sha2::{Digest, Sha256};
 use std::fs;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 use std::time::Duration;
@@ -13,7 +14,10 @@ use uuid::Uuid;
 const DEFAULT_GAME_DATA_API_URL: &str = "https://game-assets.api.exaltaccountmanager.com";
 const MANIFEST_LIMIT: usize = 64 * 1024 * 1024;
 const SPRITE_LIMIT: usize = 1024 * 1024;
+const BUNDLE_LIMIT: usize = 128 * 1024 * 1024;
 const PNG_SIGNATURE: &[u8; 8] = b"\x89PNG\r\n\x1a\n";
+/// Records which build's sprite bundle has already been unpacked.
+const BUNDLE_MARKER_FILE: &str = "sprite-bundle.build";
 
 static REFRESH_LOCK: Mutex<()> = Mutex::const_new(());
 static SPRITE_DOWNLOADS: Semaphore = Semaphore::const_new(16);
@@ -42,7 +46,22 @@ pub async fn refresh_asset_cache_from_api(app: AppHandle, force: bool) -> Result
     let cached_manifest = load_cached_manifest(&manifest_path).ok();
 
     match refresh_from_service(&manifest_path, cached_manifest.as_ref(), force).await {
-        Ok(manifest) => Ok(with_cache_status(manifest, "service", None)),
+        Ok(manifest) => {
+            // Populating the sprite cache in one request keeps a cold start from
+            // issuing thousands of individual requests, which the service rate
+            // limits. A failure here is not fatal: sprites are still fetched
+            // individually on demand.
+            if let Some(build_id) = manifest.get("buildId").and_then(Value::as_str) {
+                match prefetch_sprite_bundle(&cache_directory, build_id).await {
+                    Ok(0) => {}
+                    Ok(count) => println!("[assets] unpacked {count} sprites from the bundle"),
+                    Err(error) => {
+                        eprintln!("[assets] sprite bundle unavailable, falling back to individual sprite requests: {error}");
+                    }
+                }
+            }
+            Ok(with_cache_status(manifest, "service", None))
+        }
         Err(error) => match cached_manifest {
             Some(manifest) => Ok(with_cache_status(manifest, "cache", Some(error))),
             None => Err(format!(
@@ -99,6 +118,127 @@ pub async fn get_asset_sprite_path(
         .to_str()
         .map(str::to_owned)
         .ok_or_else(|| "The sprite cache path is not valid UTF-8.".to_string())
+}
+
+/// Populates the sprite cache from the service's bundle route.
+///
+/// A marker file records the build whose sprites are already unpacked, so an
+/// unchanged build costs nothing and a changed one asks only for the sprites it
+/// added. Returns the number of sprites written.
+async fn prefetch_sprite_bundle(
+    cache_directory: &Path,
+    build_id: &str,
+) -> Result<usize, String> {
+    if !is_hex(build_id, 64) {
+        return Err("The manifest build ID has an invalid format.".to_string());
+    }
+
+    let marker_path = cache_directory.join(BUNDLE_MARKER_FILE);
+    let unpacked_build = fs::read_to_string(&marker_path)
+        .ok()
+        .map(|value| value.trim().to_ascii_lowercase())
+        .filter(|value| is_hex(value, 64));
+    if unpacked_build.as_deref() == Some(build_id) {
+        return Ok(0);
+    }
+
+    let sprite_directory = cache_directory.join("sprites");
+    fs::create_dir_all(&sprite_directory)
+        .map_err(|error| format!("Could not create the EAM sprite cache: {error}"))?;
+
+    let client = http_client()?;
+    let base_url = game_data_api_base_url()?;
+
+    let mut archive = None;
+    if let Some(from_build) = unpacked_build.as_deref() {
+        let incremental = endpoint(
+            &base_url,
+            &format!("api/v1/builds/{build_id}/sprites?from={from_build}"),
+        );
+        // A 404 means the service no longer retains that build, so the complete
+        // bundle is requested instead.
+        archive = fetch_optional_bytes(&client, incremental, BUNDLE_LIMIT).await?;
+    }
+    let archive = match archive {
+        Some(bytes) => bytes,
+        None => {
+            let complete = endpoint(&base_url, &format!("api/v1/builds/{build_id}/sprites"));
+            fetch_bytes(&client, complete, BUNDLE_LIMIT).await?
+        }
+    };
+
+    let target_directory = sprite_directory.clone();
+    let written = tokio::task::spawn_blocking(move || {
+        unpack_sprite_bundle(&target_directory, &archive)
+    })
+    .await
+    .map_err(|error| format!("The sprite bundle could not be unpacked: {error}"))??;
+
+    fs::write(&marker_path, build_id)
+        .map_err(|error| format!("Could not record the unpacked sprite bundle: {error}"))?;
+    Ok(written)
+}
+
+/// Writes every valid entry of a sprite bundle into the sprite cache.
+///
+/// Entry names are never used to build a path. The hash is taken from the file
+/// name, validated, and the destination is composed from it, so a crafted entry
+/// name cannot write outside the sprite directory. Each entry is verified
+/// against its content hash exactly as an individually fetched sprite is, and
+/// anything that fails is skipped rather than aborting the bundle.
+fn unpack_sprite_bundle(sprite_directory: &Path, archive: &[u8]) -> Result<usize, String> {
+    let mut reader = tar::Archive::new(archive);
+    let entries = reader
+        .entries()
+        .map_err(|error| format!("The sprite bundle is not a readable archive: {error}"))?;
+
+    let mut written = 0usize;
+    let mut skipped = 0usize;
+    for entry in entries {
+        let mut entry = entry
+            .map_err(|error| format!("The sprite bundle contains an unreadable entry: {error}"))?;
+
+        let file_name = entry
+            .path()
+            .ok()
+            .and_then(|path| path.file_name().map(|name| name.to_string_lossy().into_owned()))
+            .unwrap_or_default();
+        let Some(hash) = file_name
+            .strip_suffix(".png")
+            .map(str::to_ascii_lowercase)
+            .filter(|hash| is_hex(hash, 64))
+        else {
+            skipped += 1;
+            continue;
+        };
+
+        let size = entry.header().size().unwrap_or(u64::MAX);
+        if size > SPRITE_LIMIT as u64 {
+            skipped += 1;
+            continue;
+        }
+
+        let mut bytes = Vec::with_capacity(size as usize);
+        entry
+            .read_to_end(&mut bytes)
+            .map_err(|error| format!("Could not read a sprite from the bundle: {error}"))?;
+        if verify_sprite(&bytes, &hash).is_err() {
+            skipped += 1;
+            continue;
+        }
+
+        let sprite_path = sprite_directory.join(format!("{hash}.png"));
+        if sprite_path.exists() {
+            continue;
+        }
+        write_new_file(&sprite_path, &bytes)?;
+        written += 1;
+    }
+
+    if skipped > 0 {
+        eprintln!("[assets] skipped {skipped} invalid entries in the sprite bundle");
+    }
+    Ok(written)
 }
 
 async fn refresh_from_service(
@@ -496,6 +636,103 @@ fn is_hex(value: &str, length: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn tiny_png() -> Vec<u8> {
+        // Not a decodable image, but it carries the PNG signature that
+        // verify_sprite checks for.
+        let mut bytes = PNG_SIGNATURE.to_vec();
+        bytes.extend_from_slice(b"sprite-bundle-test");
+        bytes
+    }
+
+    /// Writes the entry name straight into the ustar header rather than going
+    /// through `append_data`, which refuses to build archives containing `..`.
+    /// Forging those names is the point of the traversal test.
+    fn tar_with(entries: &[(&str, &[u8])]) -> Vec<u8> {
+        let mut builder = tar::Builder::new(Vec::new());
+        for (name, bytes) in entries {
+            let mut header = tar::Header::new_ustar();
+            {
+                let raw = name.as_bytes();
+                let old = header.as_old_mut();
+                old.name[..raw.len()].copy_from_slice(raw);
+            }
+            header.set_size(bytes.len() as u64);
+            header.set_mode(0o644);
+            header.set_cksum();
+            builder.append(&header, *bytes).unwrap();
+        }
+        builder.into_inner().unwrap()
+    }
+
+    fn temp_directory() -> PathBuf {
+        let path = std::env::temp_dir().join(format!("eam-bundle-test-{}", Uuid::new_v4()));
+        fs::create_dir_all(&path).unwrap();
+        path
+    }
+
+    #[test]
+    fn unpacks_only_entries_matching_their_content_hash() {
+        let directory = temp_directory();
+        let png = tiny_png();
+        let hash = sha256_hex(&png);
+        let archive = tar_with(&[
+            (format!("{hash}.png").as_str(), png.as_slice()),
+            // Correctly named, but the bytes hash to something else.
+            (format!("{}.png", "c".repeat(64)).as_str(), png.as_slice()),
+            ("not-a-hash.png", png.as_slice()),
+            ("readme.txt", b"ignored".as_slice()),
+        ]);
+
+        let written = unpack_sprite_bundle(&directory, &archive).unwrap();
+
+        assert_eq!(written, 1);
+        assert!(directory.join(format!("{hash}.png")).exists());
+        assert!(!directory.join(format!("{}.png", "c".repeat(64))).exists());
+        assert_eq!(fs::read(directory.join(format!("{hash}.png"))).unwrap(), png);
+        fs::remove_dir_all(&directory).ok();
+    }
+
+    #[test]
+    fn traversal_entry_names_cannot_escape_the_sprite_directory() {
+        let directory = temp_directory();
+        let escape_target = directory.join("escaped.png");
+        let png = tiny_png();
+        let hash = sha256_hex(&png);
+        let archive = tar_with(&[
+            (format!("../../{hash}.png").as_str(), png.as_slice()),
+            ("../../escaped.png", png.as_slice()),
+        ]);
+
+        let nested = directory.join("sprites");
+        fs::create_dir_all(&nested).unwrap();
+        unpack_sprite_bundle(&nested, &archive).unwrap();
+
+        // Nothing may be written outside the sprite directory, whichever way the
+        // traversal entries are handled.
+        assert!(!escape_target.exists());
+        assert_eq!(
+            fs::read_dir(&directory)
+                .unwrap()
+                .filter_map(Result::ok)
+                .map(|entry| entry.file_name().to_string_lossy().into_owned())
+                .collect::<Vec<_>>(),
+            vec!["sprites".to_string()],
+        );
+        // The hashed entry, if kept at all, lands under its own hash.
+        for entry in fs::read_dir(&nested).unwrap().filter_map(Result::ok) {
+            assert_eq!(entry.file_name().to_string_lossy(), format!("{hash}.png"));
+        }
+        fs::remove_dir_all(&directory).ok();
+    }
+
+    #[test]
+    fn an_empty_bundle_unpacks_to_nothing() {
+        let directory = temp_directory();
+        let written = unpack_sprite_bundle(&directory, &vec![0u8; 1024]).unwrap();
+        assert_eq!(written, 0);
+        fs::remove_dir_all(&directory).ok();
+    }
 
     #[test]
     fn rejects_invalid_sprite_hashes() {

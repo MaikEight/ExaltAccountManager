@@ -36,8 +36,9 @@ md5 = "0.8"
 tokio = "1.52"
 futures = "0.3"
 flate2 = "1.1"
+tar = "0.4"
 walkdir = "2.5"
-reqwest = { version = "0.13", features = ["blocking"] }
+reqwest = { version = "0.13", features = ["blocking", "gzip"] }
 zip = "8"
 mpsc = "0.3.0"
 anyhow = "1.0"
