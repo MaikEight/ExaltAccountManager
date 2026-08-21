@@ -450,10 +450,7 @@ function VaultPeekerContextProvider({ children }) {
     const [popperPosition, setPopperPosition] = useState(null);
 
     // Settings
-    // Match the original Vault Peeker density by default: 40px item cells
-    // without additional padding. Users can still opt into comfortable or
-    // spacious density through the existing setting.
-    const [itemPadding, setItemPadding] = useState(0);
+    const [itemPadding, setItemPadding] = useState(2);
 
     // Filter presets
     const filterPresets = useMemo(() => {

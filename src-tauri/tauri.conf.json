@@ -83,7 +83,7 @@
         "fullscreen": false,
         "resizable": true,
         "decorations": false,
-        "transparent": false,
+        "transparent": true,
         "title": "Exalt Account Manager",
         "width": 1200,
         "height": 800

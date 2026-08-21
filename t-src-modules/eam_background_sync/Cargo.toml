@@ -23,4 +23,8 @@ base64 = "0.23"
 
 # Local libs
 eam_commons = { path = "../eam_commons" }
-eam_plus_lib = { path = "../eam_plus_lib_mock" }
+
+# THIS IS NOT PUBLIC
+eam_plus_lib = { path = "../../../eam_plus_lib" }
+# Use the mock lib for development if you do not have access to the eam_plus_lib repository.
+# eam_plus_lib = { path = "../eam_plus_lib_mock" }

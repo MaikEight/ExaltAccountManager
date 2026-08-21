@@ -1464,7 +1464,7 @@ dependencies = [
 
 [[package]]
 name = "eam_plus_lib"
-version = "0.1.4"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "dirs 6.0.0",
@@ -1475,7 +1475,6 @@ dependencies = [
  "roxmltree",
  "serde",
  "serde_json",
- "serde_urlencoded",
  "thiserror 2.0.20",
  "tokio",
 ]
@@ -2831,9 +2830,9 @@ dependencies = [
 
 [[package]]
 name = "jsonwebtoken"
-version = "11.0.0"
+version = "10.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "881733cbc631fc9e472e24447ce32a64bedf2da498d6d8570b08edc87de71f65"
+checksum = "eba32bfb4ffdeaca3e34431072faf01745c9b26d25504aa7a6cf5684334fc4fc"
 dependencies = [
  "base64 0.22.1",
  "getrandom 0.2.17",
