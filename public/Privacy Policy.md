@@ -1,5 +1,5 @@
 # **Privacy Policy for Exalt Account Manager (EAM)**
-**Effective Date:** 15.03.2025  
+**Effective Date:** 21.08.2026  
 _Last Updated: 21.08.2026_
 
 Welcome to the Privacy Policy for **Exalt Account Manager (EAM)**. This document describes how we collect, use, store, and protect your personal data when you use our software in compliance with the **General Data Protection Regulation (GDPR)**.
