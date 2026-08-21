@@ -1,56 +1,116 @@
 # EAM Developer Quick Start
 
-EAM consists of a Tauri/Rust backend in `src-tauri/src`, a React/Vite frontend
-in `src`, and the existing EAM support modules under `t-src-modules`.
+EAM is a project with the following components:
+
+- **Tauri Backend (Rust):**  
+  Located in [src-tauri/src/main.rs](src-tauri/src/main.rs). This is the main backend of the application.
+
+- **React Frontend (Vite + JS):**  
+  See the source in [src/](src/). The frontend is built with Vite and React.
+
+- **C# Sub-Project (.NET Framework 4.8) EAM_Task_Installer:**  
+  This tool is in the C# project at [t-src-modules/EAM_Task_Installer/EAM_Task_Installer/Program.cs](t-src-modules/EAM_Task_Installer/EAM_Task_Installer/Program.cs).
+
+- **C# Sub-Project (.Net Framework 4.8) EAM_Save_File_Converter:**  
+  This tool is currently closed source.
+
+- **Rust EAM_Plus_Lib:**  
+  This is closed-source.   
+  To still be able to compile, there is a mock-lib available at [t-src-modules/eam_plus_lib_mock](t-src-modules/eam_plus_lib_mock), just use it in the dependencies here [t-src-modules/eam_background_sync/Cargo.toml](t-src-modules/eam_background_sync/Cargo.toml)
 
 ## Prerequisites
 
-- Rust and Cargo
-- Node.js
-- Bun
-- .NET Framework 4.8 for the existing Windows-only task installer project
-- Tauri CLI (`cargo install tauri-cli`)
+- **Rust:** [Install the Rust](https://www.rust-lang.org/learn/get-started) toolchain and Cargo.
+- **Node.js:** [Install Node.js](https://nodejs.org/en/download) for the React frontend.
+- **Bun**: [Bun](https://bun.sh/) is used as our runtime.
+- **.NET Framework 4.8:** Required for the C# sub-project. (Comes with windows)
+- **Tauri CLI:** Install globally with `cargo install tauri-cli`.
 
-EAM no longer builds or ships a local Realm asset extractor. Item metadata,
-40x40 item sprites, character stats, dungeon definitions, and fame bonuses come
-from RotMGGameDataService.
+## Setup Steps
 
-## Setup
+1. **Install JavaScript Dependencies:**  
+   - Run either `npm i` or `bun i` in the project root.
+   - Run either `npm i` or `bun i` in [t-src-modules/eam-commons-js](t-src-modules/eam-commons-js)
+  
+2. **Link the eam-commons-js lib:**
+   - Build the lib using `npm run build` in [t-src-modules/eam-commons-js]
+   - Run either `npm link` or `bun link` in [t-src-modules/eam-commons-js](t-src-modules/eam-commons-js)
+   - Run either `npm link eam-commons-js` or `bun link eam-commons-js` in the project root
+  
+3. **Build the included binaries (Windows only):**
+   - Create a new folder called `IncludedBinaries` at `src-tauri` resulting in a path like: [src-tauri/IncludedBinaries](src-tauri/IncludedBinaries)
+   - Copy the `EAM_Save_File_Converter.exe` from your known source into [src-tauri/IncludedBinaries](src-tauri/IncludedBinaries)
+   - Build the [EAM_Task_Installer](t-src-modules\EAM_Task_Installer) in `Release` mode.
+  
+    If you have trouble building the `EAM_Task_Installer` you can just copy the current existing versions from your[C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4](C:\Users\\%username%\AppData\Local\ExaltAccountManager\v4) into the specified destinations. (Requires an installed EAM version)
 
-1. Clone EAM normally. The removed game-asset extractor submodule is not needed.
-2. Run `npm i` or `bun i` in the repository root.
-3. Build and link `t-src-modules/eam-commons-js` as described by that module.
-4. Prepare the existing Windows helper binaries when working on those features.
-5. Run `bun run tauri dev`.
+4. **Run EAM in developer mode:**
+    Run `bun run tauri dev` in the root of the project.
+    
+    This will take quite a while for the first time but eventually you should see a transparent Window pop up. This windows will after a short time display EAM.
+    
+    **Enjoy coding 🥳** 
 
-Debug builds default to the development service at
-`http://192.168.1.2:8090`. Override it before compiling when needed:
+## Game data service
+
+Item metadata, 40x40 item sprites, player stats and fame bonuses are not bundled
+with EAM. They come from the [RotMGGameDataService](https://github.com/TadusPro/RotMGGameDataService),
+which EAM queries on startup and caches in its application data directory.
+
+There is nothing to set up: builds default to the public service at
+`https://game-assets.api.exaltaccountmanager.com`. You do **not** need a local
+instance for normal development.
+
+To point EAM at a service instance of your own, set `EAM_GAME_DATA_API_URL`:
 
 ```powershell
-$env:EAM_GAME_DATA_API_URL = 'https://game-data.example.com'
+$env:EAM_GAME_DATA_API_URL = 'http://127.0.0.1:8090'
 bun run tauri dev
 ```
 
-Release builds have no private-network default. `EAM_GAME_DATA_API_URL` must be
-set to the public HTTPS service URL when the Tauri binary is compiled.
+- **Debug builds** read the variable at runtime, so switching endpoints only
+  needs a restart, not a rebuild.
+- **Release builds** bake in whatever was set when the binary was compiled and
+  ignore the runtime environment.
+- `http://` is accepted by debug builds only. Release builds require HTTPS.
 
-On startup, EAM downloads the latest manifest or an available diff. It retains
-the last-good manifest for offline startup and downloads content-addressed
-sprites only when the UI needs them. Downloaded sprites are SHA-256 verified and
-cached in application data. If neither the service nor a last-good manifest is
-available, EAM still starts in degraded mode and represents unknown items with a
-bundled question-mark sprite. An unavailable individual sprite uses the same
-temporary placeholder without storing it in the rendered-item cache.
+A locally hosted service needs its PostgreSQL connection configured and at least
+one published build, otherwise `/api/v1/builds/latest` answers `503` and EAM
+falls back to placeholder sprites. See that repository's own documentation.
 
-## Developer tools
+If neither the service nor a previously cached manifest is reachable, EAM still
+starts and shows a question-mark placeholder for every item.
 
-- Windows: press F12 while EAM is focused.
-- macOS: press Cmd+Shift+J or use Inspect.
-- Reload with F5/Ctrl+R on Windows or Cmd+R on macOS.
+## Recommendations
 
-## Production builds
+- We use [GitMojis](https://gitmoji.dev/) for commit messages, if you don't wish to do so, that's fine but expect your commits to be squashed upon merge.
+- If possible use a GPG-Key to sign your commits.
 
-Set `EAM_GAME_DATA_API_URL` to the public HTTPS endpoint, then run
-`npm run tauri build`. Local unsigned builds may still need the signing and
-updater settings in `src-tauri/tauri.conf.json` adjusted as described by the
-Tauri documentation.
+## Bonus
+
+- Opening the developer tools
+  - **Windows**: Press **F12** when EAM is focused to open the Developer console.
+  - **macOS**: Right-Click -> Inspect or press **CMD + Shift + J**
+- Reload the page
+  - **Windows**: Press **F5** or **Ctrl + R** to reload the window.
+  - **macOS**: Right-Click -> Reload or open the **developer tools** and press **CMD + R**
+- The **LocalStorage** and **SessionStorage** contain data.
+
+## Building for Production
+
+At the moment building for production is not done via GitHub actions since we use a Code Signing Certificate that is stored on a local SmartCard. If you wish to build your own version please do so by modifying the [src-tauri\tauri.conf.json](src-tauri\tauri.conf.json) file.
+
+Remove the following properties in order to be able to build:
+
+- `bundle.windows.certificateThumbprint` This is the code signing certificates thumbprint
+- `bundle.windows.digestAlgorithm` This is the digest Algorithem for code signing
+- `bundle.windows.timestampUrl` This is the timestamp server used for code signing
+- `bundle.plugins.updater.endpoints` This are the endpoints for EAM-Updates. If you build your own version you need to either host your own or remove all update servers.
+- `bundle.plugins.updater.pubkey` This is the public key of the updates, since your build requires it's own private key you need to either remove this property or have your own key-pair.  
+
+More informations can be found at the Tauri documentation [https://tauri.app/reference/config/](https://tauri.app/reference/config/)  
+When ready, use `npm run tauri build` in the root of the project.
+
+Release builds resolve the game data service at compile time. Leaving
+`EAM_GAME_DATA_API_URL` unset is fine and uses the public endpoint; set it only
+when a build should target a different service.
