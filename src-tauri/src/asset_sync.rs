@@ -18,6 +18,9 @@ const BUNDLE_LIMIT: usize = 128 * 1024 * 1024;
 const PNG_SIGNATURE: &[u8; 8] = b"\x89PNG\r\n\x1a\n";
 /// Records which build's sprite bundle has already been unpacked.
 const BUNDLE_MARKER_FILE: &str = "sprite-bundle.build";
+const MAX_FETCH_ATTEMPTS: u32 = 3;
+const DEFAULT_RETRY_DELAY: Duration = Duration::from_secs(1);
+const MAX_RETRY_DELAY: Duration = Duration::from_secs(5);
 
 static REFRESH_LOCK: Mutex<()> = Mutex::const_new(());
 static SPRITE_DOWNLOADS: Semaphore = Semaphore::const_new(16);
@@ -353,7 +356,72 @@ fn apply_diff(cached: &Value, diff_bytes: &[u8], latest: &LatestBuild) -> Result
     }
 
     validate_manifest(&updated, latest)?;
+    verify_object_catalog(&updated, &diff)?;
     Ok(updated)
+}
+
+/// Checks a diff-assembled object map against the target catalog the diff
+/// declares.
+///
+/// A downloaded manifest is verified against `manifestSha256`, but one assembled
+/// locally cannot be: reproducing the service's exact serialized bytes is not
+/// something a different language can be relied on to do. The catalog hash is
+/// defined over the object ids and their metadata hashes instead, which is
+/// reproducible, so an incomplete or inconsistent diff is caught here. Failing
+/// makes the caller fall back to the full manifest, which is byte-verified.
+fn verify_object_catalog(manifest: &Value, diff: &Value) -> Result<(), String> {
+    let expected_count = diff
+        .get("objectCount")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| "The game-data diff does not declare an object count.".to_string())?;
+    let expected_catalog = diff
+        .get("objectsCatalogHash")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "The game-data diff does not declare an object catalog hash.".to_string())?;
+
+    let objects = manifest
+        .get("objects")
+        .and_then(Value::as_object)
+        .ok_or_else(|| "The assembled object map is invalid.".to_string())?;
+    if objects.len() as u64 != expected_count {
+        return Err(format!(
+            "The diff produced {} objects but declared {expected_count}.",
+            objects.len()
+        ));
+    }
+
+    let actual_catalog = hash_object_catalog(objects);
+    if actual_catalog != expected_catalog {
+        return Err("The diff-assembled object catalog does not match the diff.".to_string());
+    }
+    Ok(())
+}
+
+/// Hashes an object map as `id:metadataHash` lines joined by newlines.
+///
+/// Keys are sorted byte-wise, which matches the ordinal ordering the service
+/// uses. The sort is explicit rather than relying on the map's iteration order,
+/// so enabling serde_json's `preserve_order` feature could not silently change
+/// the result.
+fn hash_object_catalog(objects: &Map<String, Value>) -> String {
+    let mut keys: Vec<&String> = objects.keys().collect();
+    keys.sort();
+
+    let mut catalog = String::new();
+    for (index, key) in keys.iter().enumerate() {
+        if index > 0 {
+            catalog.push('\n');
+        }
+        let metadata_hash = objects
+            .get(*key)
+            .and_then(|object| object.get("metadataHash"))
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        catalog.push_str(key);
+        catalog.push(':');
+        catalog.push_str(metadata_hash);
+    }
+    sha256_hex(catalog.as_bytes())
 }
 
 fn merge_object_section(
@@ -548,19 +616,53 @@ fn http_client() -> Result<Client, String> {
         .ok_or_else(|| "Could not retain the game-data HTTP client.".to_string())
 }
 
+/// How long to wait before retrying a throttled or temporarily failed request.
+///
+/// Only the delta-seconds form of `Retry-After` is parsed. The HTTP-date form is
+/// legal but rare, and falling back to the default simply costs one more
+/// rejected request before giving up.
+fn retry_delay(response: &reqwest::Response) -> Duration {
+    response
+        .headers()
+        .get(reqwest::header::RETRY_AFTER)
+        .and_then(|value| value.to_str().ok())
+        .and_then(|value| value.trim().parse::<u64>().ok())
+        .map(Duration::from_secs)
+        .unwrap_or(DEFAULT_RETRY_DELAY)
+        .min(MAX_RETRY_DELAY)
+}
+
 async fn fetch_optional_bytes(
     client: &Client,
     url: String,
     limit: usize,
 ) -> Result<Option<Vec<u8>>, String> {
-    let response = client
-        .get(url)
-        .send()
-        .await
-        .map_err(|error| format!("The game-data service request failed: {error}"))?;
-    if response.status() == StatusCode::NOT_FOUND {
-        return Ok(None);
-    }
+    let mut attempt = 1;
+    let response = loop {
+        let response = client
+            .get(&url)
+            .send()
+            .await
+            .map_err(|error| format!("The game-data service request failed: {error}"))?;
+        if response.status() == StatusCode::NOT_FOUND {
+            return Ok(None);
+        }
+
+        // The service throttles per client, so a rejection is worth waiting out
+        // rather than surfacing immediately. The wait is capped so a busy
+        // service cannot stall startup for the full period it asked for.
+        let is_transient = response.status() == StatusCode::TOO_MANY_REQUESTS
+            || response.status() == StatusCode::SERVICE_UNAVAILABLE;
+        if is_transient && attempt < MAX_FETCH_ATTEMPTS {
+            let delay = retry_delay(&response);
+            tokio::time::sleep(delay).await;
+            attempt += 1;
+            continue;
+        }
+
+        break response;
+    };
+
     let response = response
         .error_for_status()
         .map_err(|error| format!("The game-data service returned an error: {error}"))?;
@@ -780,7 +882,11 @@ mod tests {
             "modifiedObjects": {},
             "removedObjectIds": [1],
             "playerStats": {},
-            "fameBonuses": []
+            "fameBonuses": [],
+            // Only object 2 survives, and it carries no metadataHash, so the
+            // catalog is the single line "2:".
+            "objectCount": 1,
+            "objectsCatalogHash": sha256_hex(b"2:")
         });
 
         let updated = apply_diff(&cached, &serde_json::to_vec(&diff).unwrap(), &latest).unwrap();
@@ -788,5 +894,50 @@ mod tests {
         assert_eq!(updated["objects"]["2"]["id"], 2);
         assert_eq!(updated["buildId"], latest.build_id);
         assert_eq!(updated["playerStatsHash"], "5".repeat(64));
+    }
+
+    #[test]
+    fn hash_object_catalog_sorts_keys_byte_wise() {
+        // "10" precedes "9" byte-wise, matching the service's ordinal ordering,
+        // and the result must not depend on insertion order.
+        let ascending = json!({
+            "10": { "metadataHash": "hash-10" },
+            "9": { "metadataHash": "hash-9" },
+        });
+        let descending = json!({
+            "9": { "metadataHash": "hash-9" },
+            "10": { "metadataHash": "hash-10" },
+        });
+
+        let expected = sha256_hex(b"10:hash-10\n9:hash-9");
+        assert_eq!(hash_object_catalog(ascending.as_object().unwrap()), expected);
+        assert_eq!(hash_object_catalog(descending.as_object().unwrap()), expected);
+    }
+
+    #[test]
+    fn rejects_a_diff_whose_catalog_does_not_match() {
+        let manifest = json!({ "objects": { "2": { "metadataHash": "abc" } } });
+
+        // Correct count, wrong catalog hash.
+        let wrong_hash = json!({ "objectCount": 1, "objectsCatalogHash": "f".repeat(64) });
+        assert!(verify_object_catalog(&manifest, &wrong_hash).is_err());
+
+        // Correct catalog hash, wrong count.
+        let wrong_count = json!({
+            "objectCount": 7,
+            "objectsCatalogHash": sha256_hex(b"2:abc"),
+        });
+        assert!(verify_object_catalog(&manifest, &wrong_count).is_err());
+
+        // A diff that predates the field cannot be verified, so it is refused
+        // and the caller falls back to the byte-verified manifest.
+        let missing = json!({ "objectCount": 1 });
+        assert!(verify_object_catalog(&manifest, &missing).is_err());
+
+        let correct = json!({
+            "objectCount": 1,
+            "objectsCatalogHash": sha256_hex(b"2:abc"),
+        });
+        assert!(verify_object_catalog(&manifest, &correct).is_ok());
     }
 }
