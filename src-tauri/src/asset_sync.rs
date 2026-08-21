@@ -11,6 +11,7 @@ use tauri::{AppHandle, Manager};
 use tokio::sync::{Mutex, Semaphore};
 use uuid::Uuid;
 
+const DEFAULT_GAME_DATA_API_URL: &str = "https://game-assets.api.exaltaccountmanager.com";
 const MANIFEST_LIMIT: usize = 64 * 1024 * 1024;
 const SPRITE_LIMIT: usize = 1024 * 1024;
 const PNG_SIGNATURE: &[u8; 8] = b"\x89PNG\r\n\x1a\n";
@@ -445,18 +446,18 @@ async fn fetch_bytes(client: &Client, url: String, limit: usize) -> Result<Vec<u
 }
 
 fn game_data_api_base_url() -> Result<Url, String> {
+    // Debug builds may retarget the service at runtime, so a locally running
+    // instance can be used without recompiling. Release builds only honour the
+    // value baked in at compile time.
     #[cfg(debug_assertions)]
-    let development_default = "http://192.168.1.2:8090";
+    let runtime_override = std::env::var("EAM_GAME_DATA_API_URL").ok();
     #[cfg(not(debug_assertions))]
-    let development_default = "";
+    let runtime_override: Option<String> = None;
 
-    let configured = option_env!("EAM_GAME_DATA_API_URL")
-        .unwrap_or(development_default)
-        .trim();
+    let compiled = option_env!("EAM_GAME_DATA_API_URL").unwrap_or(DEFAULT_GAME_DATA_API_URL);
+    let configured = runtime_override.as_deref().unwrap_or(compiled).trim();
     if configured.is_empty() {
-        return Err(
-            "EAM_GAME_DATA_API_URL was not configured when this EAM build was created.".to_string(),
-        );
+        return Err("The configured game-data service URL is empty.".to_string());
     }
 
     let url = Url::parse(configured)
