@@ -5,7 +5,7 @@ mod asset_sync;
 
 extern crate dirs;
 
-use asset_sync::{get_asset_sprite_data_url, refresh_asset_cache_from_api};
+use asset_sync::refresh_asset_cache_from_api;
 use diesel::r2d2::ConnectionManager;
 use eam_background_sync::types::SyncMode;
 use eam_background_sync::BackgroundSyncManager;
@@ -238,7 +238,7 @@ fn main() {
             check_for_game_update,
             perform_game_update,
             refresh_asset_cache,
-            get_asset_sprite,
+            get_asset_sprite_path,
             send_get_request, // HTTP Requests
             send_get_request_with_json_body,
             send_post_request,
@@ -623,9 +623,11 @@ async fn refresh_asset_cache(app: AppHandle, force: bool) -> Result<Value, Strin
     refresh_asset_cache_from_api(app, force).await
 }
 
+/// Returns the disk path of a verified sprite. The webview loads the file
+/// through Tauri's asset protocol instead of receiving the bytes over IPC.
 #[tauri::command]
-async fn get_asset_sprite(app: AppHandle, sprite_hash: String) -> Result<String, String> {
-    get_asset_sprite_data_url(app, sprite_hash).await
+async fn get_asset_sprite_path(app: AppHandle, sprite_hash: String) -> Result<String, String> {
+    asset_sync::get_asset_sprite_path(app, sprite_hash).await
 }
 
 #[tauri::command]

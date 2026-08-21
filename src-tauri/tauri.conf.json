@@ -90,7 +90,13 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$APPDATA/game-data/sprites/*.png"
+        ]
+      }
     }
   }
 }

@@ -1,9 +1,4 @@
-import { CACHE_PREFIX } from "../constants";
-import {
-    getRuntimeAssetCacheKey,
-    getRuntimeSpriteHash,
-    MISSING_ITEM_SPRITE_SOURCE,
-} from "../assets/runtimeAssets";
+import { getRuntimeSpriteHash } from "../assets/runtimeAssets";
 import { getRuntimeItemSpriteSource } from "../backend/assetApi";
 
 export const RARITY_IMAGE_SOURCES = {
@@ -44,24 +39,13 @@ export const drawItemPromise = async (item, rarity = 0, itemPadding = 5) => {
 
     const isShiny = item[10];
     const spriteHash = getRuntimeSpriteHash(item) || "missing";
-    const runtimeCacheKey = getRuntimeAssetCacheKey();
-    const cacheKey = `${CACHE_PREFIX}drawItem:${runtimeCacheKey}-${spriteHash}-${rarity}-${itemPadding}-${isShiny ? 1 : 0}`;
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-        try {
-            const cachedObject = JSON.parse(cachedData);
-            const maxCacheDuration = 1000 * 60 * 60 * 24 * 7;
-            if (cachedObject?.image && Date.now() - cachedObject.time < maxCacheDuration) {
-                return cachedObject.image;
-            }
-        } catch (error) {
-            // Ignore malformed browser cache entries and regenerate below.
-        }
-        localStorage.removeItem(cacheKey);
-    }
 
+    // Rendered composites are deliberately not cached. Each sprite is now its
+    // own small PNG served from disk by the asset protocol and kept by the
+    // webview's cache, so compositing a 40x40 tile is cheaper than the
+    // synchronous localStorage round trip this used to perform - and it no
+    // longer competes for the origin's storage quota.
     const spriteSource = await getRuntimeItemSpriteSource(item);
-    const isMissingSprite = spriteSource === MISSING_ITEM_SPRITE_SOURCE;
     return new Promise((resolve, reject) => {
         const itemSize = 40;
         const canvasSize = itemSize + (2 * itemPadding);
@@ -71,6 +55,10 @@ export const drawItemPromise = async (item, rarity = 0, itemPadding = 5) => {
         const ctx = canvas.getContext("2d");
 
         const img = new Image();
+        // Sprites come from Tauri's asset protocol, which is a different origin
+        // than the app. Without an explicit CORS request the canvas is tainted
+        // and toDataURL() below throws.
+        img.crossOrigin = "anonymous";
         img.src = spriteSource;
 
         img.onload = () => {
@@ -78,16 +66,7 @@ export const drawItemPromise = async (item, rarity = 0, itemPadding = 5) => {
             ctx.drawImage(img, itemPadding, itemPadding, itemSize, itemSize);
 
             const finalize = () => {
-                const imageUrl = canvas.toDataURL("image/png");
-                if (!isMissingSprite) {
-                    try {
-                        const cacheObject = { time: Date.now(), image: imageUrl };
-                        localStorage.setItem(cacheKey, JSON.stringify(cacheObject));
-                    } catch (error) {
-                        console.warn("Unable to cache rendered item image", error);
-                    }
-                }
-                resolve(imageUrl);
+                resolve(canvas.toDataURL("image/png"));
             };
 
             const drawShiny = (callback) => {

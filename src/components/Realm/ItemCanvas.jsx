@@ -269,6 +269,10 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, overrideItemImages = {},
                 try {
                     const source = await getRuntimeItemSpriteSource(item);
                     const image = new Image();
+                    // The asset protocol is a different origin than the app, so
+                    // request CORS explicitly. Otherwise this canvas is tainted
+                    // and the saveCanvas path's toDataURL() throws.
+                    image.crossOrigin = "anonymous";
                     await new Promise((resolve, reject) => {
                         image.onload = resolve;
                         image.onerror = reject;

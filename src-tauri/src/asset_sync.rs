@@ -1,4 +1,3 @@
-use base64::{engine::general_purpose, Engine as _};
 use reqwest::{Client, StatusCode, Url};
 use serde::Deserialize;
 use serde_json::{json, Map, Value};
@@ -53,9 +52,14 @@ pub async fn refresh_asset_cache_from_api(app: AppHandle, force: bool) -> Result
     }
 }
 
-/// Returns a final 40x40 PNG as a data URL. Sprites are fetched once, verified
-/// against their content-addressed hash, and then served from the disk cache.
-pub async fn get_asset_sprite_data_url(
+/// Ensures a final 40x40 PNG is present in the disk cache and returns its path.
+///
+/// Sprites are fetched once and verified against their content-addressed hash
+/// before being written. The webview then loads the file directly through
+/// Tauri's asset protocol, so the bytes never cross the IPC boundary and no
+/// base64 copy is made. `tauri.conf.json` restricts that protocol to exactly
+/// this directory.
+pub async fn get_asset_sprite_path(
     app: AppHandle,
     sprite_hash: String,
 ) -> Result<String, String> {
@@ -69,37 +73,32 @@ pub async fn get_asset_sprite_data_url(
         .map_err(|error| format!("Could not create the EAM sprite cache: {error}"))?;
     let sprite_path = sprite_directory.join(format!("{normalized_hash}.png"));
 
-    let bytes = match read_verified_sprite(&sprite_path, &normalized_hash) {
-        Ok(bytes) => bytes,
-        Err(_) => {
-            let _download_permit = SPRITE_DOWNLOADS
-                .acquire()
-                .await
-                .map_err(|error| format!("Could not queue the sprite download: {error}"))?;
+    if !is_cached_sprite_valid(&sprite_path, &normalized_hash) {
+        let _download_permit = SPRITE_DOWNLOADS
+            .acquire()
+            .await
+            .map_err(|error| format!("Could not queue the sprite download: {error}"))?;
 
-            if let Ok(bytes) = read_verified_sprite(&sprite_path, &normalized_hash) {
-                bytes
-            } else {
-                if sprite_path.exists() {
-                    fs::remove_file(&sprite_path).map_err(|error| {
-                        format!("Could not replace an invalid cached sprite: {error}")
-                    })?;
-                }
-                let client = http_client()?;
-                let base_url = game_data_api_base_url()?;
-                let url = endpoint(&base_url, &format!("api/v1/sprites/{normalized_hash}.png"));
-                let downloaded = fetch_bytes(&client, url, SPRITE_LIMIT).await?;
-                verify_sprite(&downloaded, &normalized_hash)?;
-                write_new_file(&sprite_path, &downloaded)?;
-                downloaded
+        // Another task may have completed the download while this one waited.
+        if !is_cached_sprite_valid(&sprite_path, &normalized_hash) {
+            if sprite_path.exists() {
+                fs::remove_file(&sprite_path).map_err(|error| {
+                    format!("Could not replace an invalid cached sprite: {error}")
+                })?;
             }
+            let client = http_client()?;
+            let base_url = game_data_api_base_url()?;
+            let url = endpoint(&base_url, &format!("api/v1/sprites/{normalized_hash}.png"));
+            let downloaded = fetch_bytes(&client, url, SPRITE_LIMIT).await?;
+            verify_sprite(&downloaded, &normalized_hash)?;
+            write_new_file(&sprite_path, &downloaded)?;
         }
-    };
+    }
 
-    Ok(format!(
-        "data:image/png;base64,{}",
-        general_purpose::STANDARD.encode(bytes)
-    ))
+    sprite_path
+        .to_str()
+        .map(str::to_owned)
+        .ok_or_else(|| "The sprite cache path is not valid UTF-8.".to_string())
 }
 
 async fn refresh_from_service(
@@ -347,11 +346,13 @@ fn write_manifest_atomically(path: &Path, manifest: &Value) -> Result<(), String
     Ok(())
 }
 
-fn read_verified_sprite(path: &Path, expected_hash: &str) -> Result<Vec<u8>, String> {
-    let bytes =
-        fs::read(path).map_err(|error| format!("Could not read the cached sprite: {error}"))?;
-    verify_sprite(&bytes, expected_hash)?;
-    Ok(bytes)
+/// Verifies a cached sprite on disk. The bytes are read only to check them; the
+/// webview loads the file itself, so they are not returned.
+fn is_cached_sprite_valid(path: &Path, expected_hash: &str) -> bool {
+    match fs::read(path) {
+        Ok(bytes) => verify_sprite(&bytes, expected_hash).is_ok(),
+        Err(_) => false,
+    }
 }
 
 fn verify_sprite(bytes: &[u8], expected_hash: &str) -> Result<(), String> {

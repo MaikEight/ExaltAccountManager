@@ -18,7 +18,7 @@ const imageElementCache = new Map();
  * 3. Draws ALL items to canvas in ONE synchronous batch (no incremental redraws)
  * 4. Uses ResizeObserver for dynamic width - fills available space
  * 5. Pure CSS hover highlighting - no React state for hover (buttery smooth)
- * 6. Leverages existing localStorage cache from drawItemPromise
+ * 6. Sprites come from the asset protocol, so the webview caches the source PNGs
  * 7. Supports density-based padding (dense: 0px, comfortable: 2px, spacious: 5px)
  */
 
@@ -55,7 +55,7 @@ const preloadAllItemImages = async (itemEntries, itemPadding, debugLogs = false)
         // Create cache key for in-memory lookup
         const memoryCacheKey = `${getRuntimeAssetCacheKey()}-${itemId}-${rarity}-${itemPadding}`;
 
-        // Check in-memory cache first (much faster than localStorage)
+        // Check in-memory cache first to skip recompositing entirely
         if (imageElementCache.has(memoryCacheKey)) {
             cacheHits++;
             return [index, imageElementCache.get(memoryCacheKey)];

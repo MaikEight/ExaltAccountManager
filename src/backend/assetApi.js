@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import {
     getRuntimeSpriteHash,
     mergeRuntimeAssets,
@@ -19,14 +19,22 @@ export async function refreshRuntimeAssets(force = false) {
     return manifest;
 }
 
-/** Resolves one content-addressed sprite through Rust's verified disk cache. */
+/**
+ * Resolves one content-addressed sprite to a URL the webview can load.
+ *
+ * Rust ensures the file is present and hash-verified in the sprite cache, then
+ * the asset protocol serves it straight from disk. Only the path crosses the IPC
+ * boundary, so the image bytes are never copied or base64-encoded, and the
+ * webview's own HTTP cache handles repeat loads.
+ */
 export function getRuntimeItemSpriteSource(item) {
     const spriteHash = getRuntimeSpriteHash(item);
     if (!spriteHash) {
         return Promise.resolve(MISSING_ITEM_SPRITE_SOURCE);
     }
     if (!spritePromises.has(spriteHash)) {
-        const request = invoke("get_asset_sprite", { spriteHash })
+        const request = invoke("get_asset_sprite_path", { spriteHash })
+            .then((path) => convertFileSrc(path))
             .catch((error) => {
                 spritePromises.delete(spriteHash);
                 console.warn(`Using the missing-item sprite for ${spriteHash}:`, error);
