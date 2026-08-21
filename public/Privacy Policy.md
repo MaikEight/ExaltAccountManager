@@ -1,6 +1,6 @@
 # **Privacy Policy for Exalt Account Manager (EAM)**
 **Effective Date:** 15.03.2025  
-_Last Updated: 15.03.2025_
+_Last Updated: 21.08.2026_
 
 Welcome to the Privacy Policy for **Exalt Account Manager (EAM)**. This document describes how we collect, use, store, and protect your personal data when you use our software in compliance with the **General Data Protection Regulation (GDPR)**.
 
@@ -55,6 +55,12 @@ Under the GDPR, we process your personal data based on:
 5. **Payment Information**  
    - Handled securely by **Stripe**. We never store credit card numbers or billing info.  
    - We only store a reference to your **Stripe Customer ID** and subscription details for account verification and subscription management.
+
+6. **Game Data Service Requests**  
+   - **Purpose**: EAM no longer ships item definitions and images inside the application. It retrieves them from a game data service we host, so item names, statistics and icons stay current without an app update.  
+   - **What Is Sent**: No account data. A request identifies the game data version EAM needs and the content hashes of the item images it is about to display. As with any request over the internet, your IP address is transmitted so the response can reach you.  
+   - **What Is Stored**: Nothing. The service keeps no request log. IP addresses are held in memory only, to apply rate limits, and are never written to disk.  
+   - **Legal Basis**: Legitimate interests (Art. 6(1)(f) GDPR). EAM cannot display your items without this data, so these requests are part of the application functioning rather than a separate, optional feature.
 
 ### **2.3 Analytics & Consent Options**
 You can choose how much data to share via in-app settings:
@@ -114,7 +120,7 @@ You can change these settings at any time. If you withdraw consent for analytics
 ---
 
 ## **5. Where Data Is Stored & Transferred**
-- We store data on **self-hosted servers** in Germany (NetCup & Hetzner).  
+- We store data on **self-hosted servers** in Germany (NetCup & Hetzner). The game data service runs on the same infrastructure, so requests for item definitions and images do not leave it.  
 - **Stripe & Auth0**: May process data in the U.S. or other countries. We ensure GDPR compliance through Standard Contractual Clauses (SCCs) or equivalent safeguards.
 
 ---
@@ -142,7 +148,7 @@ To exercise any of these rights, contact us at [privacy@maik8.de](mailto:privacy
 ## **7. Security Measures**
 - **Encryption in Transit**: We use SSL/TLS (HTTPS) to secure data sent over the internet.  
 - **Local Encryption**: Sensitive data (e.g., Auth0 refresh tokens) is encrypted on your device with Windows Data Protection API.  
-- **Limited Server-Side Data**: We do **not** store raw IP addresses, only approximate location from an IP lookup.  
+- **Limited Server-Side Data**: We do **not** keep request logs of your activity, and we do **not** store raw IP addresses, only approximate location from an IP lookup. Operational error logs may briefly contain a network address; these rotate automatically and are not retained.  
 - **No Automated Decision-Making**: We do not use automated profiling that produces legal or significant effects on you.
 
 ---
