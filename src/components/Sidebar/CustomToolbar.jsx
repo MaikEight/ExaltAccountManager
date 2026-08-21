@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Chip, Paper, Popover, Tooltip, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Chip, CircularProgress, Paper, Popover, Tooltip, Typography } from "@mui/material";
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import CloseIcon from '@mui/icons-material/Close';
@@ -7,11 +7,16 @@ import { useTheme } from "@emotion/react";
 import { listen } from '@tauri-apps/api/event';
 import { useEffect, useState } from "react";
 import VpnLockOutlinedIcon from '@mui/icons-material/VpnLockOutlined';
+import CloudOffOutlinedIcon from '@mui/icons-material/CloudOffOutlined';
 import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
 import { MASCOT_NAME } from "../../constants";
+import useGameDataStatus from "../../hooks/useGameDataStatus";
 import useUserSettings from "../../hooks/useUserSettings";
 import WindowControls from "./MacOS/WindowControls";
 import isMacOS from "../../utils/isMacOS";
+
+/** Matches the mascot size the API cooldown popover renders at. */
+const MASCOT_POPOVER_HEIGHT = 80;
 
 function CustomToolbar(props) {
     const theme = useTheme();
@@ -19,6 +24,8 @@ function CustomToolbar(props) {
     const isMac = isMacOS();
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [gameDataAnchorEl, setGameDataAnchorEl] = useState(null);
+    const gameData = useGameDataStatus();
     const [hasGlobalApiCooldown, setHasGlobalApiCooldown] = useState(false);
     const [apiRemainingLimits, setApiRemainingLimits] = useState(new Map([
         ['account/verify', 30],
@@ -68,6 +75,7 @@ function CustomToolbar(props) {
     };
 
     const open = Boolean(anchorEl);
+    const isGameDataPopoverOpen = Boolean(gameDataAnchorEl);
 
     const getEmptyApiLimitChip = () => {
         const hasEmptyLimit = Array.from(apiRemainingLimits.values()).some(limit => limit <= 0);
@@ -114,6 +122,159 @@ function CustomToolbar(props) {
         );
     }
 
+    const getGameDataChip = () => {
+        if (gameData.state !== 'cached' && gameData.state !== 'degraded') {
+            return null;
+        }
+
+        const isDegraded = gameData.state === 'degraded';
+        const flavour = gameData.flavour;
+        if (!flavour) {
+            return null;
+        }
+
+        return (
+            <>
+                <Box
+                    aria-owns={isGameDataPopoverOpen ? 'game-data-status-popover' : undefined}
+                    onMouseEnter={(event) => setGameDataAnchorEl(event.currentTarget)}
+                    onMouseLeave={() => setGameDataAnchorEl(null)}
+                >
+                    <Chip
+                        variant="outlined"
+                        label={isDegraded ? 'Game data unavailable' : 'Cached game data'}
+                        size="small"
+                        color={isDegraded ? 'error' : 'warning'}
+                        sx={gameData?.isRefreshing && {
+                            pl: 0.75,
+                        }}
+                        icon={
+                            gameData.isRefreshing
+                                ? <CircularProgress size={12} color="inherit" />
+                                : <CloudOffOutlinedIcon sx={{ pl: '2px' }} />
+                        }
+                        onClick={() => {
+                            if (!gameData.isRefreshing) {
+                                gameData.retry();
+                            }
+                        }}
+                    />
+                </Box>
+                <Popover
+                    id="game-data-status-popover"
+                    sx={{ pointerEvents: 'none' }}
+                    open={isGameDataPopoverOpen}
+                    anchorEl={gameDataAnchorEl}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    onClose={() => setGameDataAnchorEl(null)}
+                    disableRestoreFocus
+                >
+                    <Paper
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            p: 0.125,
+                            borderRadius: `${(theme?.shape?.borderRadius || 9)}px`,
+                            border: '1px solid',
+                            borderColor: theme?.palette?.divider || '#3A3541',
+                            overflow: 'hidden',
+                            height: 'fit-content',
+                            width: 'fit-content',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                backgroundColor: theme?.palette?.background?.default || '#28243D',
+                                borderRadius: `${(theme?.shape?.borderRadius || 9) - 2}px`,
+                                border: '1px solid',
+                                borderColor: theme?.palette?.divider || '#3A3541',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                p: 1,
+                                px: 1.5,
+                                gap: 0.75,
+                                height: 'fit-content',
+                                width: 'fit-content',
+                                maxWidth: '22rem',
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                }}
+                            >
+                                <img
+                                    src={flavour.image}
+                                    alt={`${MASCOT_NAME} could not reach the asset service`}
+                                    // The variants are authored at very different
+                                    // resolutions, so the height is fixed to the
+                                    // one the cooldown popover renders at.
+                                    height={MASCOT_POPOVER_HEIGHT}
+                                    style={{
+                                        width: 'auto',
+                                        display: 'block',
+                                    }}
+                                />
+                                <img
+                                    src="mascot/floor.png"
+                                    alt="Floor"
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: 'auto',
+                                    }}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                <Typography variant="body1" fontWeight={600}>
+                                    {flavour.title}
+                                </Typography>
+                                {
+                                    flavour.lines.map((line) => (
+                                        <Typography key={line} variant="body2">
+                                            {line}
+                                        </Typography>
+                                    ))
+                                }
+                                <Typography
+                                    variant="caption"
+                                    color="textSecondary"
+                                    sx={{ mt: 0.75 }}
+                                >
+                                    {
+                                        gameData.isRefreshing
+                                            ? 'Checking again...'
+                                            : 'Click the chip to try again'
+                                    }
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Paper>
+                </Popover>
+            </>
+        );
+    }
+
     return (
         <Box
             id="custom-toolbar"
@@ -147,6 +308,7 @@ function CustomToolbar(props) {
                     }}
                 >
                     {getEmptyApiLimitChip()}
+                    {getGameDataChip()}
                     {
                         hasGlobalApiCooldown &&
                         <>

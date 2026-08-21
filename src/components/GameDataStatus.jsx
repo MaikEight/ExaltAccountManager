@@ -1,4 +1,4 @@
-import { Alert, Box, Button, CircularProgress, CssBaseline, Typography } from "@mui/material";
+import { Box, CircularProgress, CssBaseline, Typography } from "@mui/material";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { ColorContext } from "eam-commons-js";
 import { useContext } from "react";
@@ -53,41 +53,6 @@ export function GameDataLoadingScreen() {
                     Loading game data...
                 </Typography>
             </Box>
-        </ThemedRoot>
-    );
-}
-
-/**
- * Reports that the manifest came from the local cache, or that no game data
- * could be loaded at all, and offers a retry.
- */
-export function GameDataStatusToast({ status, onRetry }) {
-    const isDegraded = status.state === 'degraded';
-
-    return (
-        <ThemedRoot>
-            <Alert
-                severity={isDegraded ? 'warning' : 'info'}
-                variant="filled"
-                title={status.message || undefined}
-                action={
-                    <Button color="inherit" size="small" onClick={onRetry}>
-                        Retry
-                    </Button>
-                }
-                sx={{
-                    position: 'fixed',
-                    right: '1rem',
-                    bottom: '1rem',
-                    zIndex: (theme) => theme.zIndex.snackbar,
-                    maxWidth: '28rem',
-                    alignItems: 'center',
-                }}
-            >
-                {isDegraded
-                    ? 'Game data is unavailable. Items will use question-mark placeholders.'
-                    : 'Using cached game data while the asset service is unavailable.'}
-            </Alert>
         </ThemedRoot>
     );
 }
