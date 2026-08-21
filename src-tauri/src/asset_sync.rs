@@ -1,3 +1,4 @@
+use flate2::read::GzDecoder;
 use reqwest::{Client, StatusCode, Url};
 use serde::Deserialize;
 use serde_json::{json, Map, Value};
@@ -18,6 +19,9 @@ const BUNDLE_LIMIT: usize = 128 * 1024 * 1024;
 const PNG_SIGNATURE: &[u8; 8] = b"\x89PNG\r\n\x1a\n";
 /// Records which build's sprite bundle has already been unpacked.
 const BUNDLE_MARKER_FILE: &str = "sprite-bundle.build";
+/// Snapshot shipped with the installer, used to seed an empty cache.
+const SNAPSHOT_MANIFEST_FILE: &str = "manifest.json.gz";
+const SNAPSHOT_SPRITES_FILE: &str = "sprites.tar.gz";
 const MAX_FETCH_ATTEMPTS: u32 = 3;
 const DEFAULT_RETRY_DELAY: Duration = Duration::from_secs(1);
 const MAX_RETRY_DELAY: Duration = Duration::from_secs(5);
@@ -46,7 +50,16 @@ pub async fn refresh_asset_cache_from_api(app: AppHandle, force: bool) -> Result
         .map_err(|error| format!("Could not create the EAM game-data cache: {error}"))?;
 
     let manifest_path = cache_directory.join("manifest.json");
-    let cached_manifest = load_cached_manifest(&manifest_path).ok();
+    let mut cached_manifest = load_cached_manifest(&manifest_path).ok();
+    if cached_manifest.is_none() {
+        // A fresh install has nothing retained yet. Seeding before the service
+        // is contacted means the refresh below can diff against the snapshot,
+        // and an unreachable service still leaves the application usable.
+        match seed_cache_from_snapshot(&app, &cache_directory) {
+            Ok(manifest) => cached_manifest = Some(manifest),
+            Err(error) => eprintln!("[assets] no bundled snapshot to seed the cache: {error}"),
+        }
+    }
 
     match refresh_from_service(&manifest_path, cached_manifest.as_ref(), force).await {
         Ok(manifest) => {
@@ -121,6 +134,70 @@ pub async fn get_asset_sprite_path(
         .to_str()
         .map(str::to_owned)
         .ok_or_else(|| "The sprite cache path is not valid UTF-8.".to_string())
+}
+
+/// Seeds an empty cache from the snapshot shipped with the application.
+///
+/// Without this, a fresh install whose first contact with the service fails has
+/// nothing to fall back on and renders every item as a placeholder. An existing
+/// install is unaffected, because it already retains its last-good manifest.
+///
+/// The snapshot is treated as a cache that arrives with the installer: it is
+/// written into the cache directory and then superseded by the service in the
+/// ordinary way, including by a diff against it. Its sprites are verified
+/// against their own content hashes exactly as downloaded ones are. The manifest
+/// has no published hash to check against here, so only its shape is validated;
+/// it ships inside the signed installer, so it is trusted to the same degree as
+/// the executable reading it.
+fn seed_cache_from_snapshot(app: &AppHandle, cache_directory: &Path) -> Result<Value, String> {
+    let resources = app
+        .path()
+        .resource_dir()
+        .map_err(|error| format!("Could not resolve the resource directory: {error}"))?
+        .join("game-data");
+
+    // The manifest is stored compressed: as JSON it is mostly repeated keys, so
+    // it deflates to roughly a sixth of its size and that saving goes straight
+    // into the installer.
+    let compressed = fs::read(resources.join(SNAPSHOT_MANIFEST_FILE))
+        .map_err(|error| format!("No bundled game-data snapshot is available: {error}"))?;
+    let mut manifest_bytes = Vec::new();
+    GzDecoder::new(compressed.as_slice())
+        .read_to_end(&mut manifest_bytes)
+        .map_err(|error| {
+            format!("The bundled game-data manifest could not be decompressed: {error}")
+        })?;
+    let manifest: Value = serde_json::from_slice(&manifest_bytes)
+        .map_err(|error| format!("The bundled game-data manifest is invalid: {error}"))?;
+    validate_manifest_shape(&manifest)?;
+
+    write_manifest_atomically(&cache_directory.join("manifest.json"), &manifest)?;
+
+    // Sprites are best-effort. The manifest alone already restores names, tiers
+    // and stats, and anything missing falls back to the placeholder sprite.
+    match seed_sprites_from_snapshot(&resources, cache_directory) {
+        Ok(count) => println!("[assets] seeded {count} sprites from the bundled snapshot"),
+        Err(error) => eprintln!("[assets] bundled sprite snapshot unusable: {error}"),
+    }
+
+    Ok(manifest)
+}
+
+fn seed_sprites_from_snapshot(resources: &Path, cache_directory: &Path) -> Result<usize, String> {
+    let archive = fs::read(resources.join(SNAPSHOT_SPRITES_FILE))
+        .map_err(|error| format!("No bundled sprite archive is available: {error}"))?;
+
+    let mut tar_bytes = Vec::new();
+    GzDecoder::new(archive.as_slice())
+        .read_to_end(&mut tar_bytes)
+        .map_err(|error| {
+            format!("The bundled sprite archive could not be decompressed: {error}")
+        })?;
+
+    let sprite_directory = cache_directory.join("sprites");
+    fs::create_dir_all(&sprite_directory)
+        .map_err(|error| format!("Could not create the EAM sprite cache: {error}"))?;
+    unpack_sprite_bundle(&sprite_directory, &tar_bytes)
 }
 
 /// Populates the sprite cache from the service's bundle route.
@@ -482,6 +559,21 @@ fn validate_manifest(manifest: &Value, latest: &LatestBuild) -> Result<(), Strin
         || manifest.get("sourceChecksum").and_then(Value::as_str) != Some(&latest.source_checksum)
     {
         return Err("The game-data manifest does not match the latest build metadata.".to_string());
+    }
+
+    validate_manifest_shape(manifest)
+}
+
+/// Checks a manifest is internally usable, without comparing it to a build the
+/// service advertised. The bundled snapshot has no such build to compare
+/// against, since it is read before the service is contacted.
+fn validate_manifest_shape(manifest: &Value) -> Result<(), String> {
+    if !manifest
+        .get("buildId")
+        .and_then(Value::as_str)
+        .is_some_and(|id| is_hex(id, 64))
+    {
+        return Err("The game-data manifest has no valid build ID.".to_string());
     }
 
     let objects = manifest
@@ -894,6 +986,69 @@ mod tests {
         assert_eq!(updated["objects"]["2"]["id"], 2);
         assert_eq!(updated["buildId"], latest.build_id);
         assert_eq!(updated["playerStatsHash"], "5".repeat(64));
+    }
+
+    #[test]
+    fn seeds_sprites_from_a_compressed_snapshot() {
+        use std::io::Write;
+
+        let directory = temp_directory();
+        let resources = directory.join("resources");
+        fs::create_dir_all(&resources).unwrap();
+
+        let png = tiny_png();
+        let hash = sha256_hex(&png);
+        let archive = tar_with(&[(format!("{hash}.png").as_str(), png.as_slice())]);
+        let mut encoder =
+            flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
+        encoder.write_all(&archive).unwrap();
+        fs::write(
+            resources.join(SNAPSHOT_SPRITES_FILE),
+            encoder.finish().unwrap(),
+        )
+        .unwrap();
+
+        let written = seed_sprites_from_snapshot(&resources, &directory).unwrap();
+
+        assert_eq!(written, 1);
+        assert!(directory
+            .join("sprites")
+            .join(format!("{hash}.png"))
+            .exists());
+        fs::remove_dir_all(&directory).ok();
+    }
+
+    #[test]
+    fn a_missing_snapshot_reports_an_error() {
+        let directory = temp_directory();
+        assert!(seed_sprites_from_snapshot(&directory.join("absent"), &directory).is_err());
+        fs::remove_dir_all(&directory).ok();
+    }
+
+    #[test]
+    fn manifest_shape_validation_rejects_unusable_manifests() {
+        let valid = json!({
+            "buildId": "a".repeat(64),
+            "objects": { "1": { "spriteHash": "b".repeat(64) } },
+            "playerStats": {},
+            "fameBonuses": [],
+            "playerStatsHash": "c".repeat(64),
+            "fameBonusesHash": "d".repeat(64),
+        });
+        assert!(validate_manifest_shape(&valid).is_ok());
+
+        // Without a build ID the snapshot cannot be diffed against later.
+        let mut no_build = valid.clone();
+        no_build["buildId"] = json!("not-hex");
+        assert!(validate_manifest_shape(&no_build).is_err());
+
+        let mut empty_objects = valid.clone();
+        empty_objects["objects"] = json!({});
+        assert!(validate_manifest_shape(&empty_objects).is_err());
+
+        let mut bad_sprite = valid.clone();
+        bad_sprite["objects"]["1"]["spriteHash"] = json!("short");
+        assert!(validate_manifest_shape(&bad_sprite).is_err());
     }
 
     #[test]

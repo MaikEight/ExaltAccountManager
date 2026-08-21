@@ -78,8 +78,30 @@ A locally hosted service needs its PostgreSQL connection configured and at least
 one published build, otherwise `/api/v1/builds/latest` answers `503` and EAM
 falls back to placeholder sprites. See that repository's own documentation.
 
-If neither the service nor a previously cached manifest is reachable, EAM still
-starts and shows a question-mark placeholder for every item.
+### Bundled snapshot
+
+A snapshot of the game data ships with the installer, in
+[src-tauri/resources/game-data](src-tauri/resources/game-data). EAM seeds an
+empty cache from it, so a **fresh install** whose first contact with the service
+fails still shows real items instead of placeholders. An existing install never
+touches it, because it already retains its last-good manifest. The service
+supersedes the snapshot on the first successful refresh, including by a diff
+against it.
+
+Refresh it before cutting a release:
+
+```powershell
+./src-tauri/resources/game-data/update-snapshot.ps1
+```
+
+The script verifies the manifest against the hash the service publishes, stores
+both files compressed, and both are committed. They are declared in
+`tauri.conf.json`, and **the Rust build fails if either is missing**, so they
+cannot be left out of a checkout.
+
+If the snapshot, the service and a previously cached manifest are all
+unavailable, EAM still starts and shows a question-mark placeholder for every
+item.
 
 ## Recommendations
 
