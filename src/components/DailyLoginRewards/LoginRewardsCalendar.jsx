@@ -5,7 +5,7 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import MonetizationOnRoundedIcon from '@mui/icons-material/MonetizationOnRounded';
-import items from "../../assets/constants";
+import { items } from "../../assets/runtimeAssets";
 import { drawItemAsync } from "../../utils/realmItemDrawUtils";
 import { TooltipUiForItem } from "../Widgets/Widgets/Components/InventoryRender";
 
@@ -45,7 +45,7 @@ function DayCell({ label, reward, cornerIcon = null, dim = false, sx }) {
             setImg(null);
             return;
         }
-        drawItemAsync("renders.png", itemData, 0, ITEM_PADDING)
+        drawItemAsync(itemData, 0, ITEM_PADDING)
             .then((src) => { if (!cancelled) setImg(src); })
             .catch(() => { if (!cancelled) setImg(null); });
         return () => { cancelled = true; };
