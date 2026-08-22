@@ -28,6 +28,7 @@ import DebugFlagsPage from './pages/DebugFlagsPage';
 import { BackgroundSyncProvider } from './contexts/BackgroundSyncContext';
 import { NewsContextProvider } from './contexts/NewsContext';
 import { WidgetsContextProvider } from './contexts/WidgetsContext';
+import { RunningGamesContextProvider } from './contexts/RunningGamesContext';
 
 function MainRouter() {
     const theme = useTheme();
@@ -50,6 +51,7 @@ function MainRouter() {
                 >
                     <ServerContextProvider>
                         <AccountsContextProvider>
+                            <RunningGamesContextProvider>
                             <BackgroundSyncProvider>
                                 <Sidebar id="sidebar">
                                     <GroupsContextProvider>
@@ -90,6 +92,7 @@ function MainRouter() {
                                     </GroupsContextProvider>
                                 </Sidebar>
                             </BackgroundSyncProvider>
+                            </RunningGamesContextProvider>
                         </AccountsContextProvider>
                     </ServerContextProvider>
                 </Router>

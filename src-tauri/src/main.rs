@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod asset_sync;
+mod game_instance_watcher;
 
 extern crate dirs;
 
@@ -265,6 +266,7 @@ fn main() {
             get_default_launcher_path,
             prepare_and_start_launcher,
             set_game_character_id,
+            get_running_game_accounts, // Running game instance detection
             get_all_eam_accounts, //EAM ACCOUNTS
             get_eam_account_by_email,
             insert_or_update_eam_account,
@@ -338,6 +340,10 @@ fn main() {
                 initialize_game_exe_path().await;
             });
 
+            // Start watching for running game instances so the UI can highlight
+            // logged-in accounts and prevent duplicate launches.
+            game_instance_watcher::start(app.handle().clone());
+
             Ok(())
         })
         .run(tauri::generate_context!("./tauri.conf.json"))
@@ -366,6 +372,13 @@ async fn initialize_game_exe_path() {
 fn get_current_os() -> String {
     info!("Getting current OS...");
     env::consts::OS.to_string()
+}
+
+/// Returns the account emails that currently have the RotMG game running.
+/// Used by the frontend to fetch the initial running state on mount.
+#[tauri::command]
+fn get_running_game_accounts() -> Vec<String> {
+    game_instance_watcher::get_running_game_accounts()
 }
 
 //###################

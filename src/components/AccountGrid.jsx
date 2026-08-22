@@ -1,4 +1,5 @@
 import { useTheme } from "@emotion/react";
+import { alpha } from "@mui/material/styles";
 import { Box, LinearProgress, Paper, Chip } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from "react";
@@ -16,10 +17,13 @@ import { GroupUI } from "./GridComponents/GroupUI";
 import FloatingSelectedRowComponent from "./GridComponents/FloatingSelectedRowComponent";
 import RequestStateChip from "./GridComponents/RequestStateChip";
 import AccountContextMenu from "./GridComponents/AccountContextMenu";
+import RunningGameIndicator from "./GridComponents/RunningGameIndicator";
+import useRunningGames from "../hooks/useRunningGames";
 
 
 function AccountGrid({ setShowAddNewAccount }) {
     const { accounts, selectedAccount, setSelectedAccount, updateAccount, isLoading } = useAccounts();
+    const { isAccountRunning } = useRunningGames();
     const theme = useTheme();
     const { groups } = useGroups();
     const settings = useUserSettings();
@@ -147,7 +151,15 @@ function AccountGrid({ setShowAddNewAccount }) {
         return [
             { field: 'orderId', headerName: applySettingsToHeaderName('🆔 Order ID'), width: hideEmojis ? 75 : 95 },
             { field: 'group', headerName: applySettingsToHeaderName('👥 Group'), width: hideEmojis ? 65 : 80, renderCell: (params) => getGroupUI(params) },
-            { field: 'name', headerName: applySettingsToHeaderName('🗣️ Accountname'), minWidth: 135, width: 230, flex: 0.25 },
+            {
+                field: 'name', headerName: applySettingsToHeaderName('🗣️ Accountname'), minWidth: 135, width: 230, flex: 0.25,
+                renderCell: (params) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <RunningGameIndicator email={params.row.email} />
+                        <span>{params.value}</span>
+                    </Box>
+                )
+            },
             { field: 'email', headerName: applySettingsToHeaderName('📧 Email'), minWidth: 150, flex: 0.35, renderCell: (params) => { return (params.value && params.row.isSteam) ? <SteamworksMailColumn params={params} /> : params.value } },
             { field: 'lastLogin', headerName: applySettingsToHeaderName('⏰ Last Login'), minWidth: 115, flex: 0.125, type: 'dateTime', renderCell: (params) => <div style={{ textAlign: 'center' }}> {formatTime(params.value)} </div> },
             { field: 'serverName', headerName: applySettingsToHeaderName('🌐 Server'), width: 125, renderCell: (params) => <ServerChip params={params} /> },
@@ -209,6 +221,16 @@ function AccountGrid({ setShowAddNewAccount }) {
                 rows={shownAccounts}
                 getRowId={(row) => row.id}
                 columns={columns}
+                getRowClassName={(params) => isAccountRunning(params.row.email) ? 'running-game-row' : ''}
+                sx={{
+                    ...theme.components.MuiDataGrid.defaultProps.sx,
+                    '& .MuiDataGrid-row.running-game-row': {
+                        backgroundColor: alpha(theme.palette.success.main, 0.12),                                              
+                    },
+                    '& .MuiDataGrid-row.running-game-row:hover': {
+                        backgroundColor: alpha(theme.palette.success.main, 0.18),
+                    },
+                }}
                 pageSizeOptions={[10, 25, 50, 100]}
                 getRowHeight={() => "auto"}
                 rowSelection
