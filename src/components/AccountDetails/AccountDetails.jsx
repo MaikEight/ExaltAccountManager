@@ -15,6 +15,7 @@ import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import GroupRow from "./GroupRow";
+import useGameUpdate from '../../hooks/useGameUpdate';
 import useSnack from "../../hooks/useSnack";
 import SteamworksRow from "./SteamworksRow";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
@@ -38,24 +39,15 @@ function AccountDetails({ acc, onClose }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [isDeleteMode, setIsDeleteMode] = useState(false);
-    const [updateInProgress, setUpdateInProgress] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingRefresh, setIsLoadingRefresh] = useState(false);
     const [decryptedPassword, setDecryptedPassword] = useState("");
     const [newDecryptedPassword, setNewDecryptedPassword] = useState("");
 
+    // Shared updater state: an update started anywhere disables starting a game.
+    const { isUpdating: updateInProgress } = useGameUpdate();
+
     const group = account?.group ? groups?.find((g) => g.name === account.group) : null;
-
-    useEffect(() => {
-        const checkSessionStorage = () => {
-            const updInProgress = sessionStorage.getItem('updateInProgress');
-            setUpdateInProgress(updInProgress === 'true');
-        };
-        checkSessionStorage();
-
-        const intervalId = setInterval(checkSessionStorage, 750);
-        return () => { clearInterval(intervalId); }
-    }, []);
 
     useEffect(() => {
         setAccountOrg(acc);

@@ -1,55 +1,27 @@
 import StyledButton from '../components/StyledButton';
 import { Box, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
 import ComponentBox from '../components/ComponentBox';
 import SystemUpdateAltOutlinedIcon from '@mui/icons-material/SystemUpdateAltOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined';
 import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
-import { checkForUpdates } from 'eam-commons-js';
 import useSnack from '../hooks/useSnack';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { getCurrentWindow } from '@tauri-apps/api/window';
-import { invoke } from '@tauri-apps/api/core';
+import useGameUpdate from '../hooks/useGameUpdate';
 
 function RealmUpdater() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [updateRequired, setUpdateRequired] = useState(false);
-    const [lastUpdateCheck, setLastUpdateCheck] = useState('never');
+    // The updater state is shared, so an update started by the daily login shows
+    // here too, and the taskbar is driven centrally by the provider.
+    const {
+        isBusy,
+        isUpdateAvailable,
+        lastCheckedAt,
+        checkForUpdate,
+        performUpdate,
+    } = useGameUpdate();
 
     const { showSnackbar } = useSnack();
-
-    const updateProgressbar = async (show) => await getCurrentWindow().setProgressBar({
-        status: show ? 'indeterminate' : 'none',
-        value: show ? 50 : 0,
-    });
-
-    useEffect(() => {
-        const checkSessionStorage = () => {
-            const updateCheckInProgress = sessionStorage.getItem('updateCheckInProgress');
-            const updateInProgress = sessionStorage.getItem('updateInProgress');
-
-            setIsLoading(updateCheckInProgress === 'true' || updateInProgress === 'true');
-            setUpdateRequired(localStorage.getItem('updateNeeded') === 'true');
-        };
-        checkSessionStorage();
-
-        const intervalId = setInterval(checkSessionStorage, 750);
-        return () => { clearInterval(intervalId); }
-    }, []);
-
-    useEffect(() => {
-        const lastUpdateText = getLastUpdateCheckText();
-        setLastUpdateCheck(lastUpdateText);
-    }, [localStorage.getItem('lastUpdateCheck')]);
-
-    const getLastUpdateCheckText = () => {
-        const lastUpdateCheck = localStorage.getItem('lastUpdateCheck');
-        if (lastUpdateCheck) {
-            return lastUpdateCheck;
-        }
-        return 'never';
-    };
+    const lastUpdateCheck = lastCheckedAt || 'never';
 
     return (
         <Box
@@ -72,7 +44,7 @@ function RealmUpdater() {
                     flexDirection: "column",
                     gap: 1,
                 }}
-                isLoading={isLoading}
+                isLoading={isBusy}
             >
                 <Typography variant="body1" >
                     Search for updates and corrupted files.
@@ -121,45 +93,29 @@ function RealmUpdater() {
                                             textAlign: 'center'
                                         }}
                                     >
-                                        {updateRequired > 0 ? <NewReleasesOutlinedIcon /> : <BeenhereOutlinedIcon />}
+                                        {isUpdateAvailable ? <NewReleasesOutlinedIcon /> : <BeenhereOutlinedIcon />}
                                         <Typography variant="body1" fontWeight={300}>
                                             State
                                         </Typography>
                                     </Box>
                                 </TableCell>
                                 <TableCell align="left">
-                                    {updateRequired ? 'Update available' : 'Up to date'}
+                                    {isUpdateAvailable ? 'Update available' : 'Up to date'}
                                 </TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
                 </TableContainer>
                 {
-                    updateRequired &&
+                    isUpdateAvailable &&
                     <StyledButton
-                        disabled={isLoading}
+                        disabled={isBusy}
                         fullWidth
                         onClick={async () => {
-                            setIsLoading(true);
-                            sessionStorage.setItem('updateInProgress', 'true');
-                            updateProgressbar(true);
-                            try {
-                                const updateSucceeded = await invoke('perform_game_update');
-                                if (!updateSucceeded) {
-                                    throw new Error('Realm Updater did not complete successfully.');
-                                }
-
-                                localStorage.removeItem('updateNeeded');
-                                setUpdateRequired(false);
-                                showSnackbar('Realm updated', 'success');
-                            } catch (error) {
-                                console.error('Failed to update Realm', error);
-                                showSnackbar('Failed to update Realm', 'error');
-                            } finally {
-                                sessionStorage.setItem('updateInProgress', 'false');
-                                setIsLoading(false);
-                                updateProgressbar(false);
-                            }
+                            const updateSucceeded = await performUpdate();
+                            showSnackbar(
+                                updateSucceeded ? 'Realm updated' : 'Failed to update Realm',
+                                updateSucceeded ? 'success' : 'error');
                         }}
                         startIcon={<SystemUpdateAltOutlinedIcon />}
                     >
@@ -167,21 +123,15 @@ function RealmUpdater() {
                     </StyledButton>
                 }
                 <StyledButton
-                    disabled={isLoading}
+                    disabled={isBusy}
                     fullWidth
-                    color={updateRequired ? 'secondary' : 'primary'}
+                    color={isUpdateAvailable ? 'secondary' : 'primary'}
                     onClick={async () => {
-                        setIsLoading(true);
-                        updateProgressbar(true);
                         try {
-                            const updateNeeded = await checkForUpdates(true);
-                            setUpdateRequired(updateNeeded);
+                            await checkForUpdate(true);
                         } catch (error) {
                             console.error('Failed to check for updates', error);
                             showSnackbar('Failed to check for game updates', 'error');
-                        } finally {
-                            setIsLoading(false);
-                            updateProgressbar(false);
                         }
                     }}
                     startIcon={<SearchOutlinedIcon />}

@@ -29,6 +29,7 @@ import { BackgroundSyncProvider } from './contexts/BackgroundSyncContext';
 import { NewsContextProvider } from './contexts/NewsContext';
 import { WidgetsContextProvider } from './contexts/WidgetsContext';
 import { RunningGamesContextProvider } from './contexts/RunningGamesContext';
+import { GameUpdateContextProvider } from './contexts/GameUpdateContext';
 
 function MainRouter() {
     const theme = useTheme();
@@ -52,6 +53,7 @@ function MainRouter() {
                     <ServerContextProvider>
                         <AccountsContextProvider>
                             <RunningGamesContextProvider>
+                            <GameUpdateContextProvider>
                             <BackgroundSyncProvider>
                                 <Sidebar id="sidebar">
                                     <GroupsContextProvider>
@@ -92,6 +94,7 @@ function MainRouter() {
                                     </GroupsContextProvider>
                                 </Sidebar>
                             </BackgroundSyncProvider>
+                            </GameUpdateContextProvider>
                             </RunningGamesContextProvider>
                         </AccountsContextProvider>
                     </ServerContextProvider>

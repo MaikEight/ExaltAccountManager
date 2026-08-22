@@ -7,10 +7,11 @@ import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import SportsEsportsOutlinedIcon from '@mui/icons-material/SportsEsportsOutlined';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useAccounts from "../../../hooks/useAccounts";
 import useRunningGames from "../../../hooks/useRunningGames";
 import useSnack from "../../../hooks/useSnack";
+import useGameUpdate from '../../../hooks/useGameUpdate';
 import usePopups from "../../../hooks/usePopups";
 import DeleteAccountWarning from "../Components/DeleteAccountWarning";
 
@@ -23,22 +24,13 @@ function BasicActionsWidget({ type, widgetId }) {
 
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingRefresh, setIsLoadingRefresh] = useState(false);
-    const [updateInProgress, setUpdateInProgress] = useState(false);
+
+    // Shared updater state: an update started anywhere disables starting a game.
+    const { isUpdating: updateInProgress } = useGameUpdate();
 
     const account = widgetBarState.data;
     const isRunning = isAccountRunning(account?.email);
 
-
-    useEffect(() => {
-        const checkSessionStorage = () => {
-            const updInProgress = sessionStorage.getItem('updateInProgress');
-            setUpdateInProgress(updInProgress === 'true');
-        };
-        checkSessionStorage();
-
-        const intervalId = setInterval(checkSessionStorage, 750);
-        return () => { clearInterval(intervalId); }
-    }, []);
 
     return (
         <WidgetBase type={type} widgetId={widgetId}>

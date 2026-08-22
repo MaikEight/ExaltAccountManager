@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import CustomToolbar from "./CustomToolbar";
 import SideBarLogo from "./SideBarLogo";
 import { useLocation, useNavigate } from "react-router-dom";
+import useGameUpdate from '../../hooks/useGameUpdate';
 import useSnack from "../../hooks/useSnack";
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import FeedbackButton from "./FeedbackButton";
@@ -25,24 +26,22 @@ function Sidebar({ children }) {
     const location = useLocation();
     const theme = useTheme();
 
-    const [isGameUpdateAvailable, setIsGameUpdateAvailable] = useState(false);
+    // Shared state rather than a poll of its own, so the badge appears the moment
+    // any part of the application learns an update is available.
+    const { isUpdateAvailable: isGameUpdateAvailable } = useGameUpdate();
     const [isOlddailyLoginTaskInstalled, setIsOlddailyLoginTaskInstalled] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
-
     useEffect(() => {
-        const intervallId = setInterval(() => {
-            const updateNeeded = localStorage.getItem("updateNeeded") === 'true';
+        // Kept on a poll because nothing signals when the legacy task is
+        // removed, but no longer skipped whenever an update is available: the
+        // previous version returned early in that case and left this stale.
+        const readOldTaskState = () =>
+            setIsOlddailyLoginTaskInstalled(
+                localStorage.getItem('dailyLoginOldTaskInstalled') === 'true');
+        readOldTaskState();
 
-            if (updateNeeded && !isGameUpdateAvailable) {
-                setIsGameUpdateAvailable(true);
-                return;
-            }
-            setIsGameUpdateAvailable(false);
-            const oldTaskInstalled = localStorage.getItem('dailyLoginOldTaskInstalled') === 'true';
-            setIsOlddailyLoginTaskInstalled(oldTaskInstalled);
-        }, 1000);
-
+        const intervallId = setInterval(readOldTaskState, 1000);
         return () => {
             clearInterval(intervallId);
         };

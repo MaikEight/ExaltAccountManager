@@ -7,7 +7,8 @@ import BackgroundSyncComponent from "../components/BackgroundSyncComponent";
 import { Box, Typography } from "@mui/material";
 import { DAILY_LOGIN_COMPLETED_MESSAGES, MASCOT_NAME } from "../constants";
 import useSnack from "../hooks/useSnack";
-import { validatePlusToken, checkForUpdates, updateGame } from 'eam-commons-js';
+import { validatePlusToken } from 'eam-commons-js';
+import useGameUpdate from "../hooks/useGameUpdate";
 import useUserSettings from "../hooks/useUserSettings";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
@@ -41,6 +42,10 @@ function BackgroundSyncProvider({ children }) {
     const { loadAccountByEmail, updateAccount, accounts } = useAccounts();
     const { showSnackbar } = useSnack();
     const { getByKeyAndSubKey } = useUserSettings();
+    // Routed through the shared updater so a daily-login update is visible in the
+    // Realm Updater card, the sidebar badge and the taskbar, exactly as a manual
+    // one is. Calling the library directly showed the user nothing.
+    const { checkForUpdate, performUpdate } = useGameUpdate();
 
     const [syncMode, setSyncMode] = useState(SyncMode.Stopped);
     const [uiState, setUiState] = useState({
@@ -623,18 +628,16 @@ function BackgroundSyncProvider({ children }) {
                             await invoke('stop_background_sync_manager').catch(console.error);
                         }
 
-                        let updateNeeded = await checkForUpdates(false)
-                        if (updateNeeded === null) {
-                            const storedState = localStorage.getItem('updateNeeded');
-                            updateNeeded = storedState === 'true';
-                        }
+                        const updateNeeded = await checkForUpdate(false);
 
                         if (updateNeeded) {
                             if (debugFlag) {
                                 console.info('Update needed for daily login, performing game update...');
                             }
-                            await updateGame();
-                            console.log('Game update completed, starting background sync manager for daily login.');
+                            const updateSucceeded = await performUpdate();
+                            console.log(updateSucceeded
+                                ? 'Game update completed, starting background sync manager for daily login.'
+                                : 'Game update did not complete; starting background sync manager anyway.');
                         }
                     }
 
