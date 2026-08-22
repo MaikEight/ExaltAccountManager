@@ -4,8 +4,9 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import useItemCanvas from '../../hooks/useItemCanvas';
 import useVaultPeeker from '../../hooks/useVaultPeeker';
+import { getRuntimeItemSpriteSource } from '../../backend/assetApi';
 
-const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImages = {}, totals = {}, filteredTotals = {}, override = {}, overrideTotals = null, filter = [], saveCanvas }) => {
+const ItemCanvas = ({ canvasIdentifier, itemIds, items, overrideItemImages = {}, totals = {}, filteredTotals = {}, override = {}, overrideTotals = null, filter = [], saveCanvas }) => {
     const canvasRef = useRef(null);
     const baseCanvasRef = useRef(null);
     const itemPositionsRef = useRef([]);
@@ -144,8 +145,9 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
             return;
         }
 
-        const img = new Image();
-        img.src = imgSrc;
+        let cancelled = false;
+        let imagesLoaded = false;
+        const itemImages = new Map();
 
         const overrideImages = {};
         if (overrideItemImages) {
@@ -227,8 +229,10 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
                     // Draw the item with the custom image                    
                     baseCt.drawImage(overrideImages[id], 0, 0, overrideItemImages[id].size, overrideItemImages[id].size, overrideItemImages[id].padding, overrideItemImages[id].padding, overrideItemImages[id].size, overrideItemImages[id].size);
                 } else {
-                    // Draw the item in the center of the box
-                    baseCt.drawImage(img, it[3], it[4], itemSize, itemSize, itemPadding, itemPadding, itemSize, itemSize);
+                    const itemImage = itemImages.get(String(id)) || itemImages.get('0');
+                    if (itemImage) {
+                        baseCt.drawImage(itemImage, itemPadding, itemPadding, itemSize, itemSize);
+                    }
                 }
 
                 // Store the position and ID of the item
@@ -257,16 +261,38 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
             ct.drawImage(baseCanvas, 0, 0);
         };
 
-        img.onload = () => {
+        const preloadItemImages = async () => {
+            const uniqueIds = [...new Set(itemIds.map((id) => String(items[id] ? id : 0)))];
+            await Promise.all(uniqueIds.map(async (id) => {
+                const item = items[id];
+                if (!item) return;
+                try {
+                    const source = await getRuntimeItemSpriteSource(item);
+                    const image = new Image();
+                    // The asset protocol is a different origin than the app, so
+                    // request CORS explicitly. Otherwise this canvas is tainted
+                    // and the saveCanvas path's toDataURL() throws.
+                    image.crossOrigin = "anonymous";
+                    await new Promise((resolve, reject) => {
+                        image.onload = resolve;
+                        image.onerror = reject;
+                        image.src = source;
+                    });
+                    itemImages.set(id, image);
+                } catch (error) {
+                    console.error(`Failed to load live item sprite ${id}:`, error);
+                }
+            }));
+            if (cancelled) return;
+            imagesLoaded = true;
             drawBaseImage();
             redrawCanvas(hoveredItem);
         };
 
-        img.onerror = () => {
-            console.error('Failed to load image', imgSrc);
-        };
+        preloadItemImages();
 
         const handleResize = () => {
+            if (!imagesLoaded) return;
             drawBaseImage();
             redrawCanvas(hoveredItem);
         };
@@ -274,12 +300,8 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
         window.addEventListener('resize', handleResize);
 
         return () => {
+            cancelled = true;
             window.removeEventListener('resize', handleResize);
-            // Clean up canvas contexts and image references
-            if (img) {
-                img.onload = null;
-                img.onerror = null;
-            }
             // Clear canvas contexts
             if (canvas && baseCanvas) {
                 const ct = canvas.getContext('2d');
@@ -290,7 +312,7 @@ const ItemCanvas = ({ canvasIdentifier, itemIds, items, imgSrc, overrideItemImag
             // Clear item positions to prevent memory accumulation
             itemPositionsRef.current = [];
         };
-    }, [itemIds, items, imgSrc]);
+    }, [itemIds, items]);
 
     useEffect(() => {
         if (hoveredConvasId !== canvasIdentifier) {

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import items from "../assets/constants";
+import { items } from "../assets/runtimeAssets";
 import { useGroups } from 'eam-commons-js';
 import useUserSettings from "../hooks/useUserSettings";
 import useAccounts from "../hooks/useAccounts";

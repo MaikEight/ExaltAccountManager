@@ -25,7 +25,7 @@ import { save } from '@tauri-apps/plugin-dialog';
 import { writeFile } from '@tauri-apps/plugin-fs';
 import { useUserLogin } from 'eam-commons-js';
 import { drawItemAsync } from "../../../utils/realmItemDrawUtils";
-import items from "../../../assets/constants";
+import { items } from "../../../assets/runtimeAssets";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { useNavigate } from "react-router-dom";
 
@@ -146,7 +146,7 @@ function ExportModalV2({ open, onClose, items: itemsData = [] }) {
             try {
                 const itemData = items[itemId];
                 if (itemData) {
-                    const imageSrc = await drawItemAsync("renders.png", itemData, maxRarity, itemPadding);
+                    const imageSrc = await drawItemAsync(itemData, maxRarity, itemPadding);
                     if (imageSrc) {
                         const img = new Image();
                         img.src = imageSrc;

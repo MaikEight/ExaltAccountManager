@@ -1,4 +1,4 @@
-import items from "../assets/constants";
+import { items } from "../assets/runtimeAssets";
 
 export function getItemById(itemId) {
     return items[itemId];

@@ -5,7 +5,7 @@ function SingleItemCanvas({ item, doTransition = false }) {
     const [imageData, setImageData] = useState(null);
 
     useEffect(() => {
-        drawItem("renders.png", item, (imageUrl) => {
+        drawItem(item, (imageUrl) => {
             setImageData(imageUrl);
         });
     }, [item]);

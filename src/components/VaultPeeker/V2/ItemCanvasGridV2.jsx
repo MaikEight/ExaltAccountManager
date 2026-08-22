@@ -1,12 +1,10 @@
 import { useRef, useEffect, useState, useCallback, useLayoutEffect } from 'react';
 import { Box, Tooltip } from '@mui/material';
-import items from '../../../assets/constants';
+import { getRuntimeAssetCacheKey, items } from '../../../assets/runtimeAssets';
 import { drawItemPromise, getItemRarity } from '../../../utils/realmItemDrawUtils';
 import { TooltipUiForItem } from '../../Widgets/Widgets/Components/InventoryRender';
 import useVaultPeeker from '../../../hooks/useVaultPeeker';
 import useDebugLogs from './../../../hooks/useDebugLogs';
-
-const SPRITESHEET_SRC = "renders.png";
 
 // In-memory cache for HTMLImageElement objects (survives re-renders, cleared on page reload)
 const imageElementCache = new Map();
@@ -20,12 +18,12 @@ const imageElementCache = new Map();
  * 3. Draws ALL items to canvas in ONE synchronous batch (no incremental redraws)
  * 4. Uses ResizeObserver for dynamic width - fills available space
  * 5. Pure CSS hover highlighting - no React state for hover (buttery smooth)
- * 6. Leverages existing localStorage cache from drawItemPromise
+ * 6. Sprites come from the asset protocol, so the webview caches the source PNGs
  * 7. Supports density-based padding (dense: 0px, comfortable: 2px, spacious: 5px)
  */
 
 const ITEM_SIZE = 40;
-const DEFAULT_ITEM_PADDING = 2;
+const DEFAULT_ITEM_PADDING = 0;
 
 /**
  * Get rarity from item data - supports both direct maxRarity and enchant_ids
@@ -55,9 +53,9 @@ const preloadAllItemImages = async (itemEntries, itemPadding, debugLogs = false)
         const rarity = getRarityFromData(data);
 
         // Create cache key for in-memory lookup
-        const memoryCacheKey = `${itemId}-${rarity}-${itemPadding}`;
+        const memoryCacheKey = `${getRuntimeAssetCacheKey()}-${itemId}-${rarity}-${itemPadding}`;
 
-        // Check in-memory cache first (much faster than localStorage)
+        // Check in-memory cache first to skip recompositing entirely
         if (imageElementCache.has(memoryCacheKey)) {
             cacheHits++;
             return [index, imageElementCache.get(memoryCacheKey)];
@@ -66,7 +64,7 @@ const preloadAllItemImages = async (itemEntries, itemPadding, debugLogs = false)
         cacheMisses++;
 
         try {
-            const imageUrl = await drawItemPromise(SPRITESHEET_SRC, item, rarity, itemPadding);
+            const imageUrl = await drawItemPromise(item, rarity, itemPadding);
             const img = new Image();
             await new Promise((resolve, reject) => {
                 img.onload = resolve;

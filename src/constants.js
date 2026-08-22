@@ -163,3 +163,66 @@ export const END_OF_MONTH_NOTIFICATION_IMAGES = Object.freeze([
     '/mascot/Info/notification_very_low_res.png',
     '/mascot/Info/notification_eam_very_low_res.png',
 ]);
+
+// Game data status popover. Unlike the other mascot texts these are not picked
+// at random: the same problem has to keep saying the same thing, or the wording
+// changes on every hover.
+export const GAME_DATA_STATUS_IMAGES = Object.freeze([
+    'mascot/Error/error_2_low_res.png',
+    'mascot/Error/error_network_very_low_res.png',
+]);
+
+export const GAME_DATA_CACHED_TEXTS = Object.freeze([
+    {
+        title: 'Working from memory',
+        lines: [
+            `${MASCOT_NAME} can't reach the asset service right now.`,
+            'Your items are being served from the last copy that worked.',
+        ],
+    },
+    {
+        title: 'Out of signal',
+        lines: [
+            `The asset service isn't answering, so ${MASCOT_NAME} raided his own stash.`,
+            'Everything still works, it just might not be the newest.',
+        ],
+    },
+    {
+        title: 'Held together nicely',
+        lines: [
+            `${MASCOT_NAME} knocked, but nobody was home at the asset service.`,
+            'He kept a copy for exactly this, so carry on.',
+        ],
+    },
+    {
+        title: 'Improvising',
+        lines: [
+            `No answer from the asset service. ${MASCOT_NAME} shrugged and used the spare.`,
+            'Item data may be slightly behind until it comes back.',
+        ],
+    },
+]);
+
+export const GAME_DATA_UNAVAILABLE_TEXTS = Object.freeze([
+    {
+        title: 'Completely stumped',
+        lines: [
+            `${MASCOT_NAME} found no item data at all, and no spare copy either.`,
+            'Items will show as question marks until the service answers.',
+        ],
+    },
+    {
+        title: 'Empty handed',
+        lines: [
+            `The asset service is unreachable and ${MASCOT_NAME} has nothing cached.`,
+            'Everything else works, items just have no faces yet.',
+        ],
+    },
+    {
+        title: 'Drawing a blank',
+        lines: [
+            `${MASCOT_NAME} looked everywhere for item data and came back with none.`,
+            'Give it another go once the connection is back.',
+        ],
+    },
+]);

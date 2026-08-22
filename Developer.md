@@ -51,6 +51,58 @@ EAM is a project with the following components:
     
     **Enjoy coding 🥳** 
 
+## Game data service
+
+Item metadata, 40x40 item sprites, player stats and fame bonuses are not bundled
+with EAM. They come from the [RotMGGameDataService](https://github.com/TadusPro/RotMGGameDataService),
+which EAM queries on startup and caches in its application data directory.
+
+There is nothing to set up: builds default to the public service at
+`https://game-assets.api.exaltaccountmanager.com`. You do **not** need a local
+instance for normal development.
+
+To point EAM at a service instance of your own, set `EAM_GAME_DATA_API_URL`:
+
+```powershell
+$env:EAM_GAME_DATA_API_URL = 'http://127.0.0.1:8090'
+bun run tauri dev
+```
+
+- **Debug builds** read the variable at runtime, so switching endpoints only
+  needs a restart, not a rebuild.
+- **Release builds** bake in whatever was set when the binary was compiled and
+  ignore the runtime environment.
+- `http://` is accepted by debug builds only. Release builds require HTTPS.
+
+A locally hosted service needs its PostgreSQL connection configured and at least
+one published build, otherwise `/api/v1/builds/latest` answers `503` and EAM
+falls back to placeholder sprites. See that repository's own documentation.
+
+### Bundled snapshot
+
+A snapshot of the game data ships with the installer, in
+[src-tauri/resources/game-data](src-tauri/resources/game-data). EAM seeds an
+empty cache from it, so a **fresh install** whose first contact with the service
+fails still shows real items instead of placeholders. An existing install never
+touches it, because it already retains its last-good manifest. The service
+supersedes the snapshot on the first successful refresh, including by a diff
+against it.
+
+Refresh it before cutting a release:
+
+```powershell
+./src-tauri/resources/game-data/update-snapshot.ps1
+```
+
+The script verifies the manifest against the hash the service publishes, stores
+both files compressed, and both are committed. They are declared in
+`tauri.conf.json`, and **the Rust build fails if either is missing**, so they
+cannot be left out of a checkout.
+
+If the snapshot, the service and a previously cached manifest are all
+unavailable, EAM still starts and shows a question-mark placeholder for every
+item.
+
 ## Recommendations
 
 - We use [GitMojis](https://gitmoji.dev/) for commit messages, if you don't wish to do so, that's fine but expect your commits to be squashed upon merge.
@@ -80,3 +132,7 @@ Remove the following properties in order to be able to build:
 
 More informations can be found at the Tauri documentation [https://tauri.app/reference/config/](https://tauri.app/reference/config/)  
 When ready, use `npm run tauri build` in the root of the project.
+
+Release builds resolve the game data service at compile time. Leaving
+`EAM_GAME_DATA_API_URL` unset is fine and uses the public endpoint; set it only
+when a build should target a different service.
