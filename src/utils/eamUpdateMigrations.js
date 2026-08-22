@@ -17,6 +17,23 @@ const migrations = [
             clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}single-item`);
             clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}portrait`);
         }
+    },
+    {
+        id: 2,
+        version: "4.5.0",
+        migrate: () => {
+            console.info("🚀 Performing migration for version 4.5.0: Clearing item caches");
+            const clearAllCacheItemsWithPrefix = (prefix) => {                
+                const keysToRemove = Object.keys(localStorage).filter(key => key.startsWith(prefix));
+                keysToRemove.forEach(key => {
+                    localStorage.removeItem(key);
+                });
+            }
+
+            clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}drawItem`);
+            clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}single-item`);
+            clearAllCacheItemsWithPrefix(`${CACHE_PREFIX}portrait`);
+        }
     }
 ];
 
