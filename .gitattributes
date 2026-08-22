@@ -1,0 +1,10 @@
+# Every text file in this repository is stored with LF, so say so explicitly.
+#
+# Without this, core.autocrlf writes CRLF into the working tree while cargo, the
+# Tauri CLI, npm and bun all write LF. Anything those tools regenerate then reads
+# as permanently modified: it blocked branch switches repeatedly and produced
+# merge diffs that rewrote entire files without changing a line of content.
+* text=auto eol=lf
+
+# The bundled game-data snapshot is a pair of gzip streams.
+src-tauri/resources/game-data/*.gz binary
