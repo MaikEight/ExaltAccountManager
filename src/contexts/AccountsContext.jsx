@@ -204,6 +204,7 @@ function AccountsContextProvider({ children }) {
                     AccessToken: access_token?.access_token,
                     AccessTokenTimestamp: access_token?.access_token_timestamp,
                     AccessTokenExpiration: access_token?.access_token_expiration,
+                    VerifiedEmail: access_token?.verified_email ?? false,
                     Name: account_name
                 }
             };

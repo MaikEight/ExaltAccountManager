@@ -23,7 +23,6 @@ use eam_commons::paths::get_save_file_path;
 
 use eam_commons::get_eam_account_by_email;
 use eam_commons::get_latest_daily_login;
-use eam_commons::get_user_data_by_key;
 use eam_commons::hwid::get_device_unique_identifier;
 use eam_commons::insert_or_update_daily_login_report;
 use eam_commons::insert_or_update_daily_login_report_entry;
@@ -907,23 +906,6 @@ impl BackgroundSyncManager {
                 });
         }
 
-        let game_exe_path = get_user_data_by_key(&self.pool, "game_exe_path".to_string())
-            .unwrap()
-            .dataValue;
-
-        if game_exe_path.is_empty() {
-            error!("[BGRSYNC][DL] No game.exe file found, exiting.");
-            log_to_audit_log(
-                &self.pool,
-                "No game.exe file found, exiting.".to_string(),
-                None,
-            );
-            
-            // Switch back to default mode before returning
-            info!("[BGRSYNC][DL] Daily login mode finished (no game exe path), switching back to default.");
-            self.switch_mode(SyncMode::Default);
-            return;
-        }
 
         let mut emails_vec = accounts_to_perform_daily_login_with
             .iter()
@@ -1015,10 +997,8 @@ impl BackgroundSyncManager {
                     entry_id.clone(),
                     daily_login_report.id.clone(),
                     self.hwid.clone(),
-                    game_exe_path.clone(),
                     &self.event_hub,
                     Arc::clone(&self.api_limiter),
-                    self.is_plus_user.clone(),
                 )
                 .await;
 
@@ -1116,6 +1096,6 @@ impl BackgroundSyncManager {
         if self.is_plus_user.load(Ordering::SeqCst) {
             return Utc::now() + Duration::from_secs(80 * left as u64);
         }
-        Utc::now() + Duration::from_secs(102 * left as u64)
+        Utc::now() + Duration::from_secs(120 * left as u64)
     }
 }

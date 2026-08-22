@@ -25,4 +25,8 @@ pub struct GameAccessToken {
     pub access_token: String,
     pub access_token_timestamp: String,
     pub access_token_expiration: String,
+    /// Whether the account's email is verified. Parsed from the presence of a
+    /// `<VerifiedEmail />` element in the `account/verify` response.
+    #[serde(default)]
+    pub verified_email: bool,
 }

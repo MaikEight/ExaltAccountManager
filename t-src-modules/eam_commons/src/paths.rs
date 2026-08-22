@@ -44,6 +44,37 @@ pub fn get_default_game_path() -> String {
         path.push("RealmOfTheMadGod");
         path.push("Production");
         path.push("RotMGExalt.app");
-        path.to_str().unwrap().to_string()        
+        path.to_str().unwrap().to_string()
+    }
+}
+
+///OS dependent default launcher path.
+///
+/// EAM starts the official launcher (not the game executable) to comply with
+/// DECA's ToS. The launcher is a separate application from the game.
+///
+///Windows: `C:\Users\USERNAME\Documents\RealmOfTheMadGod\Launcher\RotMG Exalt Launcher.exe`
+///
+///Mac: `~/RealmOfTheMadGod/Launcher/RotMG Exalt Launcher.app`
+pub fn get_default_launcher_path() -> String {
+    #[cfg(target_os = "windows")]
+    {
+        // The launcher is a standalone install (its own installer), placed under
+        // Program Files: `...\RotMG Exalt Launcher\RotMG Exalt Launcher.exe`.
+        let program_files =
+            std::env::var("ProgramFiles").unwrap_or_else(|_| "C:\\Program Files".to_string());
+        let mut path = PathBuf::from(program_files);
+        path.push("RotMG Exalt Launcher");
+        path.push("RotMG Exalt Launcher.exe");
+        path.to_str().unwrap().to_string()
+    }
+    #[cfg(target_os = "macos")]
+    {
+        // The launcher is installed as a standalone app via a .dmg.
+        String::from("/Applications/RotMG Exalt Launcher/RotMG Exalt Launcher.app")
+    }
+    #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+    {
+        String::new()
     }
 }

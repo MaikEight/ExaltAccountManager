@@ -254,6 +254,9 @@ fn main() {
             get_os_user_identity,
             quick_hash,
             get_default_game_path,
+            get_default_launcher_path,
+            prepare_and_start_launcher,
+            set_game_character_id,
             get_all_eam_accounts, //EAM ACCOUNTS
             get_eam_account_by_email,
             insert_or_update_eam_account,
@@ -761,7 +764,10 @@ fn start_application(
     match std::env::consts::OS {
         "windows" => {
             let mut cmd = std::process::Command::new(&application_path);
-            cmd.arg(start_parameters);
+            
+            if !start_parameters.is_empty() {
+                cmd.arg(&start_parameters);
+            }
             if let Some(dir) = &current_directory {
                 cmd.current_dir(dir);
             }
@@ -1305,6 +1311,261 @@ async fn get_device_unique_identifier() -> Result<String, String> {
 #[tauri::command]
 fn get_default_game_path() -> String {
     eam_commons::paths::get_default_game_path()
+}
+
+#[tauri::command]
+fn get_default_launcher_path() -> String {
+    eam_commons::paths::get_default_launcher_path()
+}
+
+/// The official launcher's macOS CFPreferences domain (and, later, Windows registry identity).
+const LAUNCHER_PREFS_DOMAIN: &str = "com.decagames.RealmOfTheMadGodExaltLauncher";
+/// The environment the launcher's credential keys are scoped to.
+const LAUNCHER_ENV_PREFIX: &str = "Production";
+
+/// Returns true if a process whose command line contains `launcher_path` is
+/// running (macOS). Uses `pgrep -f`, which matches the launcher's executable path
+/// inside its `.app` bundle.
+#[cfg(target_os = "macos")]
+fn is_launcher_running(launcher_path: &str) -> bool {
+    match std::process::Command::new("/usr/bin/pgrep")
+        .arg("-f")
+        .arg(launcher_path)
+        .output()
+    {
+        Ok(output) => {
+            output.status.success() && !String::from_utf8_lossy(&output.stdout).trim().is_empty()
+        }
+        Err(e) => {
+            error!("Failed to run pgrep while checking launcher: {}", e);
+            false
+        }
+    }
+}
+
+/// If the launcher is already running, terminate it and wait for it to fully exit
+/// before returning. Returns true if it had to close a running launcher.
+///
+/// This must happen BEFORE writing the launcher login: a running launcher would
+/// otherwise flush its own (old) login to the preference store on quit and
+/// overwrite what we write. Signal-based (SIGTERM, then SIGKILL) so it needs no
+/// macOS Automation/Accessibility permission, and it only targets the launcher's
+/// own `.app` path (not the game or EAM itself).
+#[cfg(target_os = "macos")]
+fn ensure_launcher_closed(launcher_path: &str) -> bool {
+    if !is_launcher_running(launcher_path) {
+        return false;
+    }
+
+    info!("Launcher is already running; closing it before updating the login...");
+    let _ = std::process::Command::new("/usr/bin/pkill")
+        .arg("-f")
+        .arg(launcher_path)
+        .output();
+
+    // Wait up to ~5s for a graceful exit.
+    for _ in 0..25 {
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        if !is_launcher_running(launcher_path) {
+            info!("Launcher closed.");
+            return true;
+        }
+    }
+
+    warn!("Launcher did not exit after SIGTERM; sending SIGKILL...");
+    let _ = std::process::Command::new("/usr/bin/pkill")
+        .arg("-9")
+        .arg("-f")
+        .arg(launcher_path)
+        .output();
+
+    // Wait up to ~3s more.
+    for _ in 0..15 {
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        if !is_launcher_running(launcher_path) {
+            return true;
+        }
+    }
+
+    warn!("Launcher may still be running after SIGKILL; proceeding anyway.");
+    true
+}
+
+/// Returns true if a process with image name `exe_name` is running (Windows).
+/// Uses `tasklist` with an image-name filter; `CREATE_NO_WINDOW` keeps a console
+/// window from flashing.
+#[cfg(target_os = "windows")]
+fn is_launcher_running(exe_name: &str) -> bool {
+    use std::os::windows::process::CommandExt;
+    const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+
+    match std::process::Command::new("tasklist")
+        .args(["/FI", &format!("IMAGENAME eq {}", exe_name), "/NH"])
+        .creation_flags(CREATE_NO_WINDOW)
+        .output()
+    {
+        Ok(output) => {
+            // tasklist prints an "INFO: No tasks..." line (not the image name)
+            // when nothing matches, so a match is when the exe name appears.
+            let stdout = String::from_utf8_lossy(&output.stdout).to_lowercase();
+            stdout.contains(&exe_name.to_lowercase())
+        }
+        Err(e) => {
+            error!("Failed to run tasklist while checking launcher: {}", e);
+            false
+        }
+    }
+}
+
+/// If the launcher is already running, terminate it and wait for it to fully exit
+/// before returning. Returns true if it had to close a running launcher.
+///
+/// This must happen BEFORE writing the launcher login: a running launcher would
+/// otherwise flush its own (old) PlayerPrefs to the registry on quit and
+/// overwrite what we write. Tries a graceful `taskkill` first (which posts a
+/// close request to the launcher's window), then falls back to `taskkill /F`.
+/// It only targets the launcher's own executable name (not the game or EAM).
+#[cfg(target_os = "windows")]
+fn ensure_launcher_closed(launcher_path: &str) -> bool {
+    use std::os::windows::process::CommandExt;
+    const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+
+    let exe_name = match std::path::Path::new(launcher_path).file_name() {
+        Some(name) => name.to_string_lossy().to_string(),
+        None => {
+            warn!(
+                "Could not derive launcher executable name from path: {}",
+                launcher_path
+            );
+            return false;
+        }
+    };
+
+    let running = is_launcher_running(&exe_name);
+    info!(
+        "Checking for a running launcher \"{}\": running={}",
+        exe_name, running
+    );
+    if !running {
+        return false;
+    }
+
+    info!("Launcher is already running; closing it before updating the login...");
+    let _ = std::process::Command::new("taskkill")
+        .args(["/IM", &exe_name])
+        .creation_flags(CREATE_NO_WINDOW)
+        .output();
+
+    // Wait up to ~3s for a graceful exit.
+    for _ in 0..15 {
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        if !is_launcher_running(&exe_name) {
+            info!("Launcher closed.");
+            return true;
+        }
+    }
+
+    warn!("Launcher did not exit after taskkill; forcing termination...");
+    let _ = std::process::Command::new("taskkill")
+        .args(["/F", "/IM", &exe_name])
+        .creation_flags(CREATE_NO_WINDOW)
+        .output();
+
+    // Wait up to ~1s more (force kill is near-instant).
+    for _ in 0..5 {
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        if !is_launcher_running(&exe_name) {
+            return true;
+        }
+    }
+
+    warn!("Launcher may still be running after force kill; proceeding anyway.");
+    true
+}
+
+/// Writes the selected account's login into the official launcher's store, then
+/// starts the launcher (already signed in). Required for DECA ToS compliance:
+/// EAM no longer starts the game executable directly for non-Steam accounts.
+///
+/// The access token is fetched by the caller (via account/verify) and passed in,
+/// so the launcher has both a valid cached token and the credentials to
+/// re-verify if it chooses to. The password is decrypted here and never crosses
+/// the JS bridge.
+#[tauri::command]
+async fn prepare_and_start_launcher(
+    account_email: String,
+    access_token: String,
+    access_token_timestamp: String,
+    access_token_expiration: String,
+    verified_email: bool,
+    launcher_path: String,
+) -> Result<(), tauri::Error> {
+    info!("Preparing launcher login for {}", &account_email);
+
+    // Fetch the account; the pool guard is consumed and dropped inside the _impl
+    // helper before we write prefs or spawn the launcher.
+    let account = match POOL.lock() {
+        Ok(pool) => get_eam_account_by_email_impl(pool, account_email.clone()),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            get_eam_account_by_email_impl(poisoned.into_inner(), account_email.clone())
+        }
+    }?;
+
+    // Steam accounts authenticate through Steam and never use the launcher login
+    // store; they keep the direct-launch flow on the frontend.
+    if account.isSteam {
+        return Err(tauri::Error::from(std::io::Error::new(
+            ErrorKind::Other,
+            "Steam accounts cannot be started through the launcher login store",
+        )));
+    }
+
+    // Decrypt the stored password (same call account/verify uses).
+    let password = eam_commons::encryption_utils::decrypt_data(&account.password)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+
+    let login = eam_commons::launcher_prefs::LauncherLogin {
+        email: account_email,
+        password,
+        token: access_token,
+        token_timestamp: access_token_timestamp,
+        token_expiration: access_token_expiration,
+        name: account.name.unwrap_or_default(),
+        verified_email,
+    };
+
+    // If the launcher is already open, close it first and wait for it to fully
+    // exit, so our write is the last one to touch the preference store (and so the
+    // user doesn't have to switch to the launcher and restart it manually).
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
+    ensure_launcher_closed(&launcher_path);
+
+    // Write the login into the OS-specific launcher store (CFPreferences on macOS).
+    eam_commons::launcher_prefs::write_launcher_login(
+        LAUNCHER_PREFS_DOMAIN,
+        LAUNCHER_ENV_PREFIX,
+        &login,
+    )
+    .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))?;
+
+    // Start the launcher (reuses the existing path-exists check and per-OS spawn).
+    // Empty start parameters: the launcher reads the login from its prefs store,
+    // and the macOS branch skips `--args` when parameters are empty.
+    start_application(launcher_path, String::new(), None)
+}
+
+/// Selects which character the game starts into, by writing the game's
+/// `characterId` PlayerPrefs value into its preference store (the Windows
+/// registry `RotMGExalt` key). Call this before starting the launcher (or the
+/// Steam game) when the user picks a specific character; the game reads it on
+/// startup. Works for both launcher and Steam flows since the game reads its own
+/// store regardless of how it was started.
+#[tauri::command]
+fn set_game_character_id(character_id: i32) -> Result<(), tauri::Error> {
+    info!("Setting game character id to {}", character_id);
+    eam_commons::launcher_prefs::write_game_character_id(character_id)
+        .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())))
 }
 
 #[tauri::command]

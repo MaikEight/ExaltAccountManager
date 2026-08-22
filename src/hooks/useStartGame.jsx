@@ -163,17 +163,34 @@ function useStartGame() {
         return serverToJoin === "Last Server" ? "" : serverToJoin;
     };
 
-    const startGame = async (account) => {
+    const startGame = async (account, characterId = null) => {
         if (!account) {
             showSnackbar("No account provided", 'error');
             return { success: false };
         }
 
+        // Steam accounts authenticate through Steam and start the game directly;
+        // they never use the official launcher, so they keep the legacy
+        // direct-launch flow. Everyone else goes through the launcher (DECA ToS:
+        // only the official launcher may start the game).
+        const isSteam = !!account.isSteam;
+
         try {
-            const gameExePath = await settings.getByKeyAndSubKey("game", "exePath");
-            if (!gameExePath) {
-                showSnackbar("Game executable path not set", 'error');
-                return { success: false };
+            // Resolve the path we need up front so we can fail fast before verifying.
+            let gameExePath = null;
+            let launcherPath = null;
+            if (isSteam) {
+                gameExePath = await settings.getByKeyAndSubKey("game", "exePath");
+                if (!gameExePath) {
+                    showSnackbar("Game executable path not set", 'error');
+                    return { success: false };
+                }
+            } else {
+                launcherPath = await settings.getByKeyAndSubKey("game", "launcherPath");
+                if (!launcherPath) {
+                    showSnackbar("Launcher path not set. Set it in Settings.", 'error');
+                    return { success: false };
+                }
             }
 
             const accResponse = await sendAccountVerify(account.email, true, true);
@@ -187,22 +204,60 @@ function useStartGame() {
                 AccessToken: accResponse.data.Account.AccessToken,
                 AccessTokenTimestamp: accResponse.data.Account.AccessTokenTimestamp,
                 AccessTokenExpiration: accResponse.data.Account.AccessTokenExpiration,
+                VerifiedEmail: accResponse.data.Account.VerifiedEmail,
             };
 
-            showSnackbar("Starting the game...");
-            const args = `data:{platform:Deca,guid:${btoa(account.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin(account)}}`;
+            if (!token.AccessToken) {
+                logToErrorLog("start game", "No access token returned for " + account.email);
+                showSnackbar("Failed to fetch access token", 'error');
+                return { success: false };
+            }
 
-            // Extract the directory from gameExePath by removing the filename
-            const currentDirectory = gameExePath ? gameExePath.substring(0, gameExePath.lastIndexOf('\\')) : "";
-
-            invoke(
-                "start_application",
-                {
-                    applicationPath: gameExePath,
-                    startParameters: args,
-                    currentDirectory: currentDirectory,
+            // Optionally pre-select a specific character. The game reads this from
+            // its own preference store on startup (works for both the launcher and
+            // the Steam direct-launch flow). Non-fatal: a failure just means the
+            // game starts on its last/default character.
+            if (characterId !== null && characterId !== undefined) {
+                try {
+                    await invoke("set_game_character_id", { characterId });
+                } catch (e) {
+                    console.error("Failed to set game character id", e);
+                    logToErrorLog("start game", "Failed to pre-select character for " + account.email);
                 }
-            );
+            }
+
+            if (isSteam) {
+                showSnackbar("Starting the game...");
+                const args = `data:{platform:Deca,guid:${btoa(account.email)},token:${btoa(token.AccessToken)},tokenTimestamp:${btoa(token.AccessTokenTimestamp)},tokenExpiration:${btoa(token.AccessTokenExpiration)},env:4,serverName:${getServerToJoin(account)}}`;
+
+                // Extract the directory from gameExePath by removing the filename
+                const currentDirectory = gameExePath ? gameExePath.substring(0, gameExePath.lastIndexOf('\\')) : "";
+
+                invoke(
+                    "start_application",
+                    {
+                        applicationPath: gameExePath,
+                        startParameters: args,
+                        currentDirectory: currentDirectory,
+                    }
+                );
+            } else {
+                showSnackbar("Starting the launcher...");
+
+                // Write the login into the launcher's store, then start the launcher.
+                // Awaited so the prefs are guaranteed written before it spawns.
+                await invoke(
+                    "prepare_and_start_launcher",
+                    {
+                        accountEmail: account.email,
+                        accessToken: token.AccessToken,
+                        accessTokenTimestamp: String(token.AccessTokenTimestamp ?? ''),
+                        accessTokenExpiration: String(token.AccessTokenExpiration ?? ''),
+                        verifiedEmail: !!token.VerifiedEmail,
+                        launcherPath: launcherPath,
+                    }
+                );
+            }
 
             const acc = { ...account, lastLogin: new Date() };
             await updateAccount(acc, false);
@@ -220,7 +275,7 @@ function useStartGame() {
             return { success: true };
         } catch (e) {
             console.error(e);
-            showSnackbar("Failed to start the game", 'error');
+            showSnackbar(isSteam ? "Failed to start the game" : "Failed to start the launcher", 'error');
             return { success: false };
         }
     };

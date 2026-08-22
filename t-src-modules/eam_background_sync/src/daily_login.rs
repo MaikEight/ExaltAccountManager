@@ -1,33 +1,32 @@
 use crate::events::{AccountProgressState, BackgroundSyncEvent, BackgroundSyncEventHub};
 
-use base64::prelude::*;
 use chrono::Utc;
 use log::{error, info};
-use std::io::ErrorKind;
-use std::process::Command;
-use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use uuid::Uuid;
 
-use eam_commons::GameAccessToken;
-use eam_commons::utils::log_to_audit_log;
-use eam_commons::account_verify;
-use eam_commons::char_list::{send_char_list_request, parse_char_list_request};
-use eam_commons::parser::RequestState;
-use eam_commons::diesel_functions::{self, insert_char_list_dataset, delete_all_servers, insert_servers};
+use eam_commons::char_list::parse_char_list_request;
+use eam_commons::diesel_functions::{self, delete_all_servers, insert_char_list_dataset, insert_servers};
 use eam_commons::diesel_setup::DbPool;
 use eam_commons::insert_or_update_daily_login_report_entry;
 use eam_commons::limiter::manager::RateLimiterManager;
 use eam_commons::models::DailyLoginReportEntries;
 use eam_commons::models::EamAccount;
 use eam_commons::models::UserData;
+use eam_commons::utils::log_to_audit_log;
 use eam_plus_lib::daily_login::daily_login::{DailyLoginError, DailyLoginResult};
-use eam_plus_lib::user_status_utils;
 
-const GAME_START_TIMEOUT: u64 = 90;
-const PLUS_USER_TIMEOUT: u64 = 60;
+/// Cooldown after each account's daily login, to stay well within DECA's API
+/// rate limits.
+const DAILY_LOGIN_TIMEOUT: u64 = 60;
 
+/// Performs the daily login for a single account.
+///
+/// Every account — regardless of EAM Plus status, and including Steam accounts —
+/// goes through the eam_plus_lib API-based daily login (account/verify +
+/// char/list with `do_login`). EAM never starts the game executable for the
+/// daily login (DECA ToS compliance).
 pub async fn perform_daily_login_for_account(
     pool: &DbPool,
     account: EamAccount,
@@ -35,10 +34,8 @@ pub async fn perform_daily_login_for_account(
     entry_id: i32,
     daily_login_report_id: String,
     hwid: String,
-    game_exe_path: String,
     event_hub: &BackgroundSyncEventHub,
     global_api_limiter: Arc<Mutex<RateLimiterManager>>,
-    is_plus_user: Arc<AtomicBool>,
 ) -> Result<bool, Box<dyn std::error::Error>> {
     info!(
         "[BGRSYNC][DL] Performing daily login with account: {}",
@@ -50,431 +47,105 @@ pub async fn perform_daily_login_for_account(
         Some(account.email.clone()),
     );
 
-    if is_plus_user.load(std::sync::atomic::Ordering::Relaxed) {
-        let account_email = account.email.clone();
-        let result = perform_daily_login_for_plus_user(
-            pool,
-            account,
-            hwid,
-            global_api_limiter
-        )
-        .await;
+    let account_email = account.email.clone();
+    let result = perform_daily_login_via_api(pool, account, hwid, global_api_limiter).await;
 
-        let success;
-        match result {
-            Ok(daily_login_report) => {
-                if daily_login_report.success {
-                    if !daily_login_report.char_list.is_empty() {
-                        event_hub.emit(BackgroundSyncEvent::AccountProgress {
-                            id: Uuid::new_v4(),
-                            email: account_email.clone(),
-                            state: AccountProgressState::SyncingCharList,
-                        });
+    let success;
+    match result {
+        Ok(daily_login_report) => {
+            if daily_login_report.success && !daily_login_report.char_list.is_empty() {
+                event_hub.emit(BackgroundSyncEvent::AccountProgress {
+                    id: Uuid::new_v4(),
+                    email: account_email.clone(),
+                    state: AccountProgressState::SyncingCharList,
+                });
 
-                        // Parse and insert char list dataset directly
-                        match parse_char_list_request(&account_email, None, daily_login_report.char_list.to_string()).await {
-                            Ok((dataset, servers, _request_state)) => {
-                                // Insert dataset into database
-                                if let Err(e) = insert_char_list_dataset(pool, dataset) {
-                                    error!("[BGRSYNC][DL] Failed to insert char list dataset for {}: {}", &account_email, e);
-                                }
+                // Parse and insert char list dataset directly
+                match parse_char_list_request(&account_email, None, daily_login_report.char_list.to_string()).await {
+                    Ok((dataset, servers, _request_state)) => {
+                        // Insert dataset into database
+                        if let Err(e) = insert_char_list_dataset(pool, dataset) {
+                            error!("[BGRSYNC][DL] Failed to insert char list dataset for {}: {}", &account_email, e);
+                        }
 
-                                // Update servers if present
-                                if !servers.is_empty() {
-                                    if let Err(e) = delete_all_servers(pool) {
-                                        error!("[BGRSYNC][DL] Failed to delete servers: {:?}", e);
-                                    } else if let Err(e) = insert_servers(pool, servers) {
-                                        error!("[BGRSYNC][DL] Failed to insert servers: {:?}", e);
-                                    }
-                                }
-                            }
-                            Err(e) => {
-                                error!("[BGRSYNC][DL] Failed to parse char list for {}: {}", &account_email, e);
+                        // Update servers if present
+                        if !servers.is_empty() {
+                            if let Err(e) = delete_all_servers(pool) {
+                                error!("[BGRSYNC][DL] Failed to delete servers: {:?}", e);
+                            } else if let Err(e) = insert_servers(pool, servers) {
+                                error!("[BGRSYNC][DL] Failed to insert servers: {:?}", e);
                             }
                         }
                     }
-                }
-
-                let report_entry = DailyLoginReportEntries {
-                    id: Some(entry_id),
-                    reportId: Some(daily_login_report_id.clone()),
-                    startTime: start_time.clone(),
-                    endTime: Some(Utc::now().to_rfc3339()),
-                    accountEmail: Some(account_email.clone()),
-                    status: if daily_login_report.success {
-                        "Succeeded".to_string()
-                    } else {
-                        "Failed".to_string()
-                    },
-                    errorMessage: None,
-                };
-                let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
-                success = daily_login_report.success;
-            }
-            Err(e) => {
-                let report_entry = DailyLoginReportEntries {
-                    id: Some(entry_id),
-                    reportId: Some(daily_login_report_id.clone()),
-                    startTime: start_time.clone(),
-                    endTime: Some(Utc::now().to_rfc3339()),
-                    accountEmail: Some(account_email.clone()),
-                    status: "Failed".to_string(),
-                    errorMessage: Some(e.to_string()),
-                };
-                let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
-
-                return Err(Box::new(e));
-            }
-        }
-
-        event_hub.emit(BackgroundSyncEvent::AccountProgress {
-            id: Uuid::new_v4(),
-            email: account_email.clone(),
-            state: AccountProgressState::WaitingForCooldown,
-        });
-
-        tokio::time::sleep(Duration::from_secs(PLUS_USER_TIMEOUT)).await;
-
-        event_hub.emit(BackgroundSyncEvent::AccountProgress {
-            id: Uuid::new_v4(),
-            email: account_email.clone(),
-            state: AccountProgressState::Done,
-        });
-
-        return Ok(success);
-    }
-
-    event_hub.emit(BackgroundSyncEvent::AccountProgress {
-        id: Uuid::new_v4(),
-        email: account.email.clone(),
-        state: AccountProgressState::FetchingAccount,
-    });
-
-    let pool_arc = Arc::new(pool.clone());
-    
-    // Handle rate limiting for account verification
-    let access_token_opt: Option<GameAccessToken> = loop {
-        // Check for global cooldown first
-        let is_global_cooldown = {
-            let limiter = global_api_limiter.lock().unwrap();
-            limiter.is_cooldown()
-        };
-
-        if is_global_cooldown {
-            let cooldown_until = {
-                let limiter = global_api_limiter.lock().unwrap();
-                limiter.cooldown_until
-            };
-            
-            if let Some(until) = cooldown_until {
-                let wait_duration = (until.timestamp() - chrono::Utc::now().timestamp()).max(0) + 3; // Adding 3 seconds buffer to avoid immediate retry
-                info!("[BGRSYNC][DL] Global API cooldown active, waiting {} seconds", wait_duration);
-                event_hub.emit(BackgroundSyncEvent::AccountProgress {
-                    id: Uuid::new_v4(),
-                    email: account.email.clone(),
-                    state: AccountProgressState::WaitingForCooldown,
-                });
-                tokio::time::sleep(Duration::from_secs(wait_duration as u64)).await;
-                continue;
-            }
-        }
-
-        // Check for soft limit
-        let can_call = {
-            let mut limiter = global_api_limiter.lock().unwrap();
-            limiter.can_call("account/verify")
-        };
-
-        if !can_call {
-            info!("[BGRSYNC][DL] API soft limit reached for account/verify, waiting 10 seconds");
-            tokio::time::sleep(Duration::from_secs(10)).await;
-            continue;
-        }
-
-        // Attempt the actual request
-        let acc_verify_result = account_verify::send_account_verify_request(
-            pool_arc.clone(),
-            account.email.clone(),
-            hwid.clone(),
-            global_api_limiter.clone(),
-        )
-        .await;
-
-        break match acc_verify_result {
-            Ok((token, RequestState::Success, _account_name)) => token,
-            Ok((None, request_state, _)) => {
-                error!(
-                    "[BGRSYNC][DL] Account verify failed with state: {}",
-                    request_state
-                );
-                log_to_audit_log(
-                    pool,
-                    format!("Account verify failed: {}", request_state),
-                    Some(account.email.clone()),
-                );
-                
-                return Err(Box::new(std::io::Error::new(
-                    ErrorKind::Other,
-                    format!("Account verify failed: {}", request_state),
-                )));
-            }
-            Ok((Some(_), request_state, _)) => {
-                // Got token but non-success state (unlikely)
-                error!(
-                    "[BGRSYNC][DL] Account verify returned non-success state: {}",
-                    request_state
-                );
-                log_to_audit_log(
-                    pool,
-                    format!("Account verify returned non-success state: {}", request_state),
-                    Some(account.email.clone()),
-                );
-                
-                return Err(Box::new(std::io::Error::new(
-                    ErrorKind::Other,
-                    format!("Account verify failed: {}", request_state),
-                )));
-            }
-            Err(e) => {
-                error!(
-                    "[BGRSYNC][DL] Error during account verification: {}",
-                    e.to_string()
-                );
-                log_to_audit_log(
-                    pool,
-                    ("Error during account verification: ".to_owned() + &e.to_string()).to_string(),
-                    Some(account.email.clone()),
-                );
-                
-                // Check if this was a rate limit error that we need to retry
-                if e.to_string().contains("RateLimitHit") {
-                    info!("[BGRSYNC][DL] Rate limit hit during account verification, retrying");
-                    continue;
-                }
-                
-                return Err(Box::new(std::io::Error::new(
-                    ErrorKind::Other,
-                    "Failed to verify account.",
-                )));
-            }
-        };
-    };
-
-    if access_token_opt.is_none() {
-        error!(
-            "[BGRSYNC][DL] Failed to get access token for account: {}",
-            account.email.clone()
-        );
-        log_to_audit_log(
-            pool,
-            ("Failed to get access token for account: ".to_owned() + &account.email).to_string(),
-            Some(account.email.clone()),
-        );
-
-        let report_entry = DailyLoginReportEntries {
-            id: Some(entry_id),
-            reportId: Some(daily_login_report_id.clone()),
-            startTime: start_time.clone(),
-            endTime: Some(Utc::now().to_rfc3339()),
-            accountEmail: Some(account.email.clone()),
-            status: "Failed".to_string(),
-            errorMessage: Some("Failed to get access token.".to_string()),
-        };
-        let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
-
-        return Err(Box::new(std::io::Error::new(
-            ErrorKind::Other,
-            "Failed to get access token.",
-        )));
-    }
-    let access_token = access_token_opt.unwrap();
-    let args = format!(
-        "data:{{platform:Deca,guid:{},token:{},tokenTimestamp:{},tokenExpiration:{},env:4,serverName:{}}}",
-        BASE64_STANDARD.encode(&account.email.clone()),
-        BASE64_STANDARD.encode(access_token.clone().access_token),
-        BASE64_STANDARD.encode(access_token.clone().access_token_timestamp),
-        BASE64_STANDARD.encode(access_token.clone().access_token_expiration),
-        "".to_string()
-    );
-
-    let game_dir = std::path::Path::new(&game_exe_path)
-        .parent()
-        .map(|p| p.to_path_buf())
-        .unwrap_or_else(|| {
-            dirs::document_dir().unwrap_or_else(|| std::path::PathBuf::from("."))
-        });
-
-    //Start the game with the args
-    let mut child = Command::new(game_exe_path.clone())
-        .arg("-batchmode")
-        .arg(args)
-        .current_dir(&game_dir)
-        .spawn()
-        .expect("Failed to start the game.");
-
-    info!("[BGRSYNC][DL] Game started, waiting for login...");
-
-    event_hub.emit(BackgroundSyncEvent::AccountProgress {
-        id: Uuid::new_v4(),
-        email: account.email.clone(),
-        state: AccountProgressState::FetchingCharList,
-    });
-
-    // Handle rate limiting for char/list request
-    let char_list_response = loop {
-        // Check for global cooldown first
-        let is_global_cooldown = {
-            let limiter = global_api_limiter.lock().unwrap();
-            limiter.is_cooldown()
-        };
-
-        if is_global_cooldown {
-            let cooldown_until = {
-                let limiter = global_api_limiter.lock().unwrap();
-                limiter.cooldown_until
-            };
-            
-            if let Some(until) = cooldown_until {
-                let wait_duration = (until.timestamp() - chrono::Utc::now().timestamp()).max(0);
-                info!("[BGRSYNC][DL] Global API cooldown active, waiting {} seconds", wait_duration);
-                event_hub.emit(BackgroundSyncEvent::AccountProgress {
-                    id: Uuid::new_v4(),
-                    email: account.email.clone(),
-                    state: AccountProgressState::WaitingForCooldown,
-                });
-                tokio::time::sleep(Duration::from_secs(wait_duration as u64)).await;
-                continue;
-            }
-        }
-
-        // Check for soft limit
-        let can_call = {
-            let mut limiter = global_api_limiter.lock().unwrap();
-            limiter.can_call("char/list")
-        };
-
-        if !can_call {
-            info!("[BGRSYNC][DL] API soft limit reached for char/list, waiting 10 seconds");
-            tokio::time::sleep(Duration::from_secs(10)).await;
-            continue;
-        }
-
-        // Attempt the actual request
-        let char_list_result = send_char_list_request(access_token.clone(), Arc::clone(&global_api_limiter)).await;
-        
-        break match char_list_result {
-            Ok(response) => response,
-            Err(err) => {
-                error!(
-                    "[BGRSYNC][DL] Error during char list request: {}",
-                    err.to_string()
-                );
-                log_to_audit_log(
-                    pool,
-                    ("Error during char list request: ".to_owned() + &err.to_string()).to_string(),
-                    Some(account.email.clone()),
-                );
-                
-                // Check if this was a rate limit error that we need to retry
-                if err.to_string().contains("RateLimitHit") {
-                    info!("[BGRSYNC][DL] Rate limit hit during char list request, retrying");
-                    continue;
-                }
-                
-                //We can't exit (return) here because the game is still running and we need to close it properly after wait for the game to login
-                "".to_string()
-            }
-        };
-    };
-
-    if !char_list_response.is_empty() {
-        event_hub.emit(BackgroundSyncEvent::AccountProgress {
-            id: Uuid::new_v4(),
-            email: account.email.clone(),
-            state: AccountProgressState::SyncingCharList,
-        });
-
-        // Parse and insert char list dataset directly
-        match parse_char_list_request(&account.email, None, char_list_response).await {
-            Ok((dataset, servers, _request_state)) => {
-                // Insert dataset into database
-                if let Err(e) = insert_char_list_dataset(pool, dataset) {
-                    error!("[BGRSYNC][DL] Failed to insert char list dataset for {}: {}", &account.email, e);
-                }
-
-                // Update servers if present
-                if !servers.is_empty() {
-                    if let Err(e) = delete_all_servers(pool) {
-                        error!("[BGRSYNC][DL] Failed to delete servers: {:?}", e);
-                    } else if let Err(e) = insert_servers(pool, servers) {
-                        error!("[BGRSYNC][DL] Failed to insert servers: {:?}", e);
+                    Err(e) => {
+                        error!("[BGRSYNC][DL] Failed to parse char list for {}: {}", &account_email, e);
                     }
                 }
             }
-            Err(e) => {
-                error!("[BGRSYNC][DL] Failed to parse char list for {}: {}", &account.email, e);
-            }
+
+            let report_entry = DailyLoginReportEntries {
+                id: Some(entry_id),
+                reportId: Some(daily_login_report_id.clone()),
+                startTime: start_time.clone(),
+                endTime: Some(Utc::now().to_rfc3339()),
+                accountEmail: Some(account_email.clone()),
+                status: if daily_login_report.success {
+                    "Succeeded".to_string()
+                } else {
+                    "Failed".to_string()
+                },
+                errorMessage: None,
+            };
+            let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
+            success = daily_login_report.success;
+        }
+        Err(e) => {
+            let report_entry = DailyLoginReportEntries {
+                id: Some(entry_id),
+                reportId: Some(daily_login_report_id.clone()),
+                startTime: start_time.clone(),
+                endTime: Some(Utc::now().to_rfc3339()),
+                accountEmail: Some(account_email.clone()),
+                status: "Failed".to_string(),
+                errorMessage: Some(e.to_string()),
+            };
+            let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
+
+            return Err(Box::new(e));
         }
     }
 
-    //Wait for the game to automatically login
-    tokio::time::sleep(Duration::from_secs(GAME_START_TIMEOUT)).await;
+    event_hub.emit(BackgroundSyncEvent::AccountProgress {
+        id: Uuid::new_v4(),
+        email: account_email.clone(),
+        state: AccountProgressState::WaitingForCooldown,
+    });
 
-    //Close the game
-    child.kill().expect("Failed to close the game.");
+    tokio::time::sleep(Duration::from_secs(DAILY_LOGIN_TIMEOUT)).await;
 
-    info!(
-        "[BGRSYNC][DL] Game closed, daily login completed for account: {}",
-        account.email.clone()
-    );
+    event_hub.emit(BackgroundSyncEvent::AccountProgress {
+        id: Uuid::new_v4(),
+        email: account_email.clone(),
+        state: AccountProgressState::Done,
+    });
 
-    let report_entry = DailyLoginReportEntries {
-        id: Some(entry_id),
-        reportId: Some(daily_login_report_id.clone()),
-        startTime: start_time,
-        endTime: Some(Utc::now().to_rfc3339()),
-        accountEmail: Some(account.email.clone()),
-        status: "Succeeded".to_string(),
-        errorMessage: None,
-    };
-    let _ = insert_or_update_daily_login_report_entry(pool, report_entry);
-
-    Ok(true)
+    Ok(success)
 }
 
-async fn perform_daily_login_for_plus_user(
+/// Runs the eam_plus_lib API daily login for an account. Works for all accounts
+/// (plus or free, Steam or not). The stored JWT is passed through only for
+/// bookkeeping; it is not required and does not gate the login.
+async fn perform_daily_login_via_api(
     pool: &DbPool,
     account: EamAccount,
     hwid: String,
     global_api_limiter: Arc<Mutex<RateLimiterManager>>,
 ) -> Result<DailyLoginResult, DailyLoginError> {
     let jwt = diesel_functions::get_user_data_by_key(&pool, "jwtSignature".to_string())
-        .unwrap_or_else(|_| {
-            error!("Failed to get jwtSignature from user data, using dummy value.");
-            UserData {
-                dataKey: "jwtSignature".to_string(),
-                dataValue: "dummy_id_token".to_string(),
-            }
+        .unwrap_or_else(|_| UserData {
+            dataKey: "jwtSignature".to_string(),
+            dataValue: String::new(),
         });
-
-    // If the token is not found or invalid, we continue with the daily login for non plus users
-    if jwt.dataValue.is_empty() || jwt.dataValue == "dummy_id_token" {
-        error!("No valid JWT token found for Plus user, skipping daily login.");
-        return Err(DailyLoginError::FailedToGetAccessToken(
-            "No valid JWT token found for Plus user.".to_string(),
-        ));
-    }
-
-    let is_plus_user = user_status_utils::is_plus_user(&jwt.dataValue, &pool).await;
-    if !is_plus_user {
-        error!(
-            "[BGRSYNC][DL] User is not a Plus user, skipping daily login for account: {}",
-            account.email.clone()
-        );
-        return Err(DailyLoginError::NotAPlusUserError(
-            "Failed jwt validation.".to_string(),
-        ));
-    }
 
     let result: Result<DailyLoginResult, DailyLoginError> =
         eam_plus_lib::daily_login::daily_login::perform_daily_login(
@@ -482,19 +153,19 @@ async fn perform_daily_login_for_plus_user(
             account.email.clone(),
             hwid,
             pool,
-            global_api_limiter
+            global_api_limiter,
         )
         .await;
 
     match result {
         Ok(daily_login_report) => {
             info!(
-                "[BGRSYNC][DL] Daily login completed for Plus user: {}",
+                "[BGRSYNC][DL] Daily login completed for account: {}",
                 account.email.clone()
             );
             log_to_audit_log(
                 pool,
-                ("Daily login completed for Plus user: ".to_owned() + &account.email).to_string(),
+                ("Daily login completed for account: ".to_owned() + &account.email).to_string(),
                 Some(account.email.clone()),
             );
 
@@ -502,13 +173,12 @@ async fn perform_daily_login_for_plus_user(
         }
         Err(e) => {
             error!(
-                "[BGRSYNC][DL] Error during daily login for Plus user: {}",
+                "[BGRSYNC][DL] Error during daily login for account: {}",
                 e.to_string()
             );
             log_to_audit_log(
                 pool,
-                ("Error during daily login for Plus user: ".to_owned() + &e.to_string())
-                    .to_string(),
+                ("Error during daily login for account: ".to_owned() + &e.to_string()).to_string(),
                 Some(account.email.clone()),
             );
             Err(e)

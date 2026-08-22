@@ -293,7 +293,7 @@ function EamPlusComparisonTable() {
                                 eamPlusValue={infinityIcon}
                             />
                             <ComparisonTableRow
-                                attribute="Faster & ressource friendly login"
+                                attribute="Faster daily login"
                                 defaultValue={falseIcon}
                                 signedInValue={falseIcon}
                                 eamPlusValue={trueIcon}

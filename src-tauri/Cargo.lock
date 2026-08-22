@@ -1457,6 +1457,7 @@ dependencies = [
  "block2",
  "chrono",
  "core-foundation 0.10.1",
+ "core-foundation-sys",
  "diesel",
  "diesel_derives",
  "diesel_migrations",
@@ -1486,6 +1487,7 @@ dependencies = [
  "uuid 1.24.0",
  "winapi",
  "windows 0.62.2",
+ "winreg 0.56.0",
  "wmi",
  "zeroize",
  "zip 8.6.0",
@@ -1625,7 +1627,7 @@ dependencies = [
 
 [[package]]
 name = "exalt-account-manager"
-version = "4.4.1"
+version = "4.5.0"
 dependencies = [
  "anyhow",
  "async-std",

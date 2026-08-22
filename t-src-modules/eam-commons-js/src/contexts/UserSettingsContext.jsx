@@ -34,6 +34,35 @@ const getGameExePath = async () => {
         });
 };
 
+const getLauncherPath = async () => {
+    return invoke('get_user_data_by_key', { key: 'launcher_path' })
+        .then((res) => {
+            if (res && res.dataValue) {
+                return res.dataValue;
+            }
+            return invoke('get_default_launcher_path')
+                .then((res) => {
+                    return res;
+                })
+                .catch((err) => {
+                    console.error('Failed to get launcher path', err);
+                    return null;
+                });
+        })
+        .catch((err) => {
+            console.warn('Failed to get launcher path (1/2)', err);
+            return invoke('get_default_launcher_path')
+                .then((res) => {
+                    log('Got launcher path (2/2)', res);
+                    return res;
+                })
+                .catch((err) => {
+                    console.error('Failed to get launcher path (2/2)', err);
+                    return null;
+                });
+        });
+};
+
 const getDisableAutoHideOnDailyLoginStartup = async () => {
     return invoke('get_user_data_by_key', { key: 'disable_auto_hide_on_daily_login_startup' })
         .then((res) => {
@@ -114,6 +143,9 @@ function expandSettings(_settings) {
     if (settings?.game?.exePath) {
         delete settings.game.exePath;
     }
+    if (settings?.game?.launcherPath) {
+        delete settings.game.launcherPath;
+    }
 
     return _.defaultsDeep(settings, defaultSettings);
 };
@@ -134,6 +166,9 @@ function UserSettingsProvider({ children }) {
         // Remove any transient data
         if (userSettingsDataToSave?.game?.exePath) {
             delete userSettingsDataToSave.game.exePath;
+        }
+        if (userSettingsDataToSave?.game?.launcherPath) {
+            delete userSettingsDataToSave.game.launcherPath;
         }
         if (userSettingsDataToSave?.dailyLogin?.disableAutoHideOnDailyLoginStartup !== null) {
             delete userSettingsDataToSave.dailyLogin.disableAutoHideOnDailyLoginStartup;
@@ -185,12 +220,20 @@ function UserSettingsProvider({ children }) {
                         return userSettingsData[key][subKey];
                     }
 
-                    const gameExePath = getGameExePath();
-                    if (gameExePath) {
-                        setUserSettingsData({ ...userSettingsData, [key]: { ...userSettingsData?.[key], [subKey]: gameExePath } });
+                    // Do NOT cache into userSettingsData here: the path lives in the DB
+                    // (user_data) and is stripped from the settings blob on save. Writing
+                    // it back into userSettingsData creates a feedback loop with the
+                    // `[settings]`/`[userSettings.get]` effects in consumers (SettingsPage).
+                    return getGameExePath();
+                }
+                case request.key === 'game' && request.subKey === 'launcherPath': {
+                    if (userSettingsData && userSettingsData[key] && userSettingsData[key][subKey]) {
+                        return userSettingsData[key][subKey];
                     }
 
-                    return gameExePath;
+                    // Do NOT cache into userSettingsData here (see the exePath case above):
+                    // caching a brand-new key here is what caused the SettingsPage update loop.
+                    return getLauncherPath();
                 }
                 case request.key === 'dailyLogin' && request.subKey === 'disableAutoHideOnDailyLoginStartup':
                     return getDisableAutoHideOnDailyLoginStartup();
@@ -203,6 +246,9 @@ function UserSettingsProvider({ children }) {
             switch (true) {
                 case key === 'game' && subKey === 'exePath':
                     invoke('insert_or_update_user_data', { userData: { dataKey: 'game_exe_path', dataValue: value } });
+                    return;
+                case key === 'game' && subKey === 'launcherPath':
+                    invoke('insert_or_update_user_data', { userData: { dataKey: 'launcher_path', dataValue: value } });
                     return;
                 case key === 'dailyLogin' && subKey === 'disableAutoHideOnDailyLoginStartup':
                     log('Setting daily_login_disable_auto_hide to', value);
