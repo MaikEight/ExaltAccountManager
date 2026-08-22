@@ -77,6 +77,10 @@ lazy_static! {
                 (
                     "account/register".to_string(),
                     "account/register".to_string(),
+                ),
+                (
+                    "dailyLogin/fetchCalendar".to_string(),
+                    "dailyLogin/fetchCalendar".to_string(),
                 )
             ],
 
@@ -248,6 +252,10 @@ fn main() {
             perform_char_list_request_for_account, // Char List Request
             send_account_verify_request_for_account, // Account Verify Request (new)
             send_char_list_request_for_account, // Char List Request (new, with servers)
+            get_login_rewards_calendar_for_month, // Login Rewards Calendar
+            get_account_login_rewards,
+            get_available_login_reward_months,
+            get_daily_login_success_dates_for_month,
             get_all_servers, // Servers DB
             insert_servers_from_migration, // Servers migration from file
             get_device_unique_identifier,
@@ -3374,7 +3382,7 @@ async fn send_char_list_request_for_account(
 
     let result = send_and_parse_char_list_request(
         &email,
-        access_token,
+        access_token.clone(),
         None,
         api_limiter
     ).await;
@@ -3419,6 +3427,23 @@ async fn send_char_list_request_for_account(
                 }
             }
 
+            // Reuse the fresh access token to also fetch & store the daily-login
+            // reward calendar. Non-fatal: a failure here must not fail char/list.
+            // Clone the pool out of the mutex so we don't hold the guard across .await.
+            let pool_for_calendar = match POOL.lock() {
+                Ok(guard) => guard.as_ref().cloned(),
+                Err(poisoned) => poisoned.into_inner().as_ref().cloned(),
+            };
+            if let Some(pool) = pool_for_calendar {
+                eam_commons::fetch_and_store_login_calendar(
+                    &pool,
+                    access_token,
+                    email.clone(),
+                    Arc::clone(&GLOBAL_API_LIMITER),
+                )
+                .await;
+            }
+
             Ok(CharListResponse {
                 dataset,
                 servers,
@@ -3440,6 +3465,125 @@ async fn send_char_list_request_for_account(
             )))
         }
     }
+}
+
+//################################
+//#   Login Rewards Calendar DB   #
+//################################
+
+#[tauri::command]
+async fn get_login_rewards_calendar_for_month(
+    month: String,
+) -> Result<Vec<models::LoginRewardCalendarRow>, tauri::Error> {
+    info!("Getting login rewards calendar for month {}...", &month);
+    match POOL.lock() {
+        Ok(pool) => get_login_rewards_calendar_for_month_impl(pool, month),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            get_login_rewards_calendar_for_month_impl(pool, month)
+        }
+    }
+}
+
+fn get_login_rewards_calendar_for_month_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    month: String,
+) -> Result<Vec<models::LoginRewardCalendarRow>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_login_rewards_calendar_for_month(pool, month)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn get_account_login_rewards(
+    email: String,
+    month: String,
+) -> Result<Option<models::AccountLoginRewardRow>, tauri::Error> {
+    info!("Getting account login rewards for {} ({})...", &email, &month);
+    match POOL.lock() {
+        Ok(pool) => get_account_login_rewards_impl(pool, email, month),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            get_account_login_rewards_impl(pool, email, month)
+        }
+    }
+}
+
+fn get_account_login_rewards_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    email: String,
+    month: String,
+) -> Result<Option<models::AccountLoginRewardRow>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_account_login_rewards(pool, email, month)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn get_available_login_reward_months() -> Result<Vec<String>, tauri::Error> {
+    info!("Getting available login reward months...");
+    match POOL.lock() {
+        Ok(pool) => get_available_login_reward_months_impl(pool),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            get_available_login_reward_months_impl(pool)
+        }
+    }
+}
+
+fn get_available_login_reward_months_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+) -> Result<Vec<String>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_available_login_reward_months(pool)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
+}
+
+#[tauri::command]
+async fn get_daily_login_success_dates_for_month(
+    month: String,
+) -> Result<Vec<String>, tauri::Error> {
+    info!("Getting daily login success dates for month {}...", &month);
+    match POOL.lock() {
+        Ok(pool) => get_daily_login_success_dates_for_month_impl(pool, month),
+        Err(poisoned) => {
+            error!("Mutex was poisoned. Recovering...");
+            let pool = poisoned.into_inner();
+            get_daily_login_success_dates_for_month_impl(pool, month)
+        }
+    }
+}
+
+fn get_daily_login_success_dates_for_month_impl(
+    pool: MutexGuard<Option<Pool<ConnectionManager<SqliteConnection>>>>,
+    month: String,
+) -> Result<Vec<String>, tauri::Error> {
+    if let Some(ref pool) = *pool {
+        return diesel_functions::get_daily_login_success_dates_for_month(pool, month)
+            .map_err(|e| tauri::Error::from(std::io::Error::new(ErrorKind::Other, e.to_string())));
+    }
+    Err(tauri::Error::from(std::io::Error::new(
+        ErrorKind::Other,
+        "Pool is not initialized",
+    )))
 }
 
 //########################

@@ -135,6 +135,14 @@ function ChangelogVersion4_5_0() {
                 />
 
                 <ChangelogEntry
+                    title={'Daily Login Rewards'}
+                    listOfChanges={[
+                        "The current months daily login rewards are now displayed on the daily login page with a small checkmark on the days the daily login ran.",
+                        "A new Daily Login Rewards Widget has been added, it shows the current months daily login reward state of an account (claimed / unclaimed)."
+                    ]}
+                />
+
+                <ChangelogEntry
                     title={'Miscellaneous'}
                     listOfChanges={[
                     ]}
@@ -177,9 +185,23 @@ function ChangelogVersion4_5_0() {
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
-                                <li>Tiramisu - for actively helping EAM to stay alive!</li>
+                                <li><span style={{ color: '#f50' }}>DECA</span> Tiramisu</li>
+                                <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
+                                    Thank you for actively helping EAM to stay alive!
+                                </Typography>
                             </ul>
                         </Typography>
+                        <Box
+                            sx={{
+                                my: 'auto'
+                            }}
+                        >
+                            <img
+                                src="/mascot/Happy/happy_very_low_res.png"
+                                alt="Okta"
+                                style={{ width: '56px', height: '56px' }}
+                            />
+                        </Box>
                     </Box>
                 </Box>
             </Box>

@@ -38,9 +38,18 @@ pub fn setup(pool: Arc<DbPool>) -> RateLimiterManager {
         pool: pool.clone(),
     };
 
+    // Same limits as account/verify for now.
+    let fetch_calendar = ApiLimiter {
+        api_name: "dailyLogin/fetchCalendar".to_string(),
+        limit: 30,
+        interval_secs: 5 * 60, // 5 minutes
+        pool: pool.clone(),
+    };
+
     sub_limiters.insert(account_verify.api_name.clone(), account_verify);
     sub_limiters.insert(char_list.api_name.clone(), char_list);
     sub_limiters.insert(account_register.api_name.clone(), account_register);
+    sub_limiters.insert(fetch_calendar.api_name.clone(), fetch_calendar);
 
     let limited_endpoints = vec![
         ("account/verify".to_string(), "account/verify".to_string()),
@@ -48,6 +57,10 @@ pub fn setup(pool: Arc<DbPool>) -> RateLimiterManager {
         (
             "account/register".to_string(),
             "account/register".to_string(),
+        ),
+        (
+            "dailyLogin/fetchCalendar".to_string(),
+            "dailyLogin/fetchCalendar".to_string(),
         ),
     ];
 

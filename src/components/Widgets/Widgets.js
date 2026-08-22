@@ -12,6 +12,8 @@ import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import CommentWidget from './Widgets/CommentWidget';
 import CharacterIcon from './Widgets/Components/CharacterIcon';
 import OwnedSkinsWidget from './Widgets/OwnedSkinsWidget';
+import DailyLoginRewardsWidget from './Widgets/DailyLoginRewardsWidget';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 export class Widgets {
     static getWidgetByType(type) {
@@ -30,6 +32,8 @@ export class Widgets {
                 return Widgets.COMMENT;
             case Widgets.OWNED_SKINS.type:
                 return Widgets.OWNED_SKINS;
+            case Widgets.DAILY_LOGIN_REWARDS.type:
+                return Widgets.DAILY_LOGIN_REWARDS;
             default:
                 return null;
         }
@@ -213,6 +217,19 @@ export class Widgets {
         name: 'Owned Skins',
         icon: CharacterIcon,
         Component: OwnedSkinsWidget,
+        minSlots: 1,
+        maxSlots: 2,
+        defaultConfig: {
+            slots: 1,
+            settings: {}
+        }
+    }
+
+    static DAILY_LOGIN_REWARDS = {
+        type: 'DAILY_LOGIN_REWARDS',
+        name: 'Daily Login Rewards',
+        icon: CalendarMonthOutlinedIcon,
+        Component: DailyLoginRewardsWidget,
         minSlots: 1,
         maxSlots: 2,
         defaultConfig: {
