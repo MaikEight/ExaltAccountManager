@@ -64,7 +64,7 @@ function CreditsPopup() {
                 />
             </ComponentBox>
             <ComponentBox
-                title={'Resources & People'}
+                title={'Resources'}
                 sx={{
                     background: theme.palette.background.default,
                     m: 0,
@@ -78,33 +78,13 @@ function CreditsPopup() {
             >
                 <CreditEntry title={'Muledump'} url={'https://github.com/jakcodex/muledump'} image={'muledump.png'} text={"Thank you for the great project, it helped a lot."} />
                 <CreditEntry title={'Muledump (Tadus Fork)'} url={'https://github.com/TadusPro/muledump'} image={'muledump.png'} text={"Thanks for providing this fork."} />
-                <CreditEntry title={'Muledump-Asset-Compiler'} url={'https://github.com/jakcodex/muledump-asset-compiler'} image={'muledump-asset-compiler.png'} text={"Thanks for the nice assets!"} />
+                <CreditEntry title={'RotMGAssetExtractor'} url={'https://github.com/TadusPro/RotMGAssetExtractor'} image={'https://avatars.githubusercontent.com/u/22742194?s=60&v=4'} text={"Thanks for this library!"} />
+                <CreditEntry title={'Muledump-Asset-Compiler'} url={'https://github.com/jakcodex/muledump-asset-compiler'} image={'muledump-asset-compiler.png'} text={"Thanks for the nice assets."} />
                 <CreditEntry title={'unDraw'} url={'https://undraw.co/'} image={'unDraw.svg'} text={'Thanks for providing the nice illustrations free of charge.'} />
-                <Typography component={"div"} variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-                    A Special <b>THANKS</b> goes to these legends
-                </Typography>
-
-                <SpecialThanks>
-                    <ThanksLink title={'Jakcodex'} url={'https://github.com/jakcodex'} />
-                    for his muledump fork and the asset compiler.
-                </SpecialThanks>
-
-                <SpecialThanks>
-                    <ThanksLink title={'TadusPro'} url={'https://github.com/TadusPro'} />
-                    for his muledump fork and active support / feedback.
-                </SpecialThanks>
-
-                <SpecialThanks>
-                    Faynt for his active help with solving a render issue and contributions to muledump.
-                </SpecialThanks>
-
-                <SpecialThanks>
-                    059 for providing new game assets and support.
-                </SpecialThanks>
-
             </ComponentBox>
+
             <ComponentBox
-                title={'Big Thanks to DECA Games'}
+                title={'People'}
                 sx={{
                     background: theme.palette.background.default,
                     m: 0,
@@ -116,20 +96,64 @@ function CreditsPopup() {
                     width: 'fit-content',
                 }}
             >
+                <Typography component={"div"} variant="body1" color="textSecondary">
+                    A special <b>THANKS</b> goes to these legends:
+                </Typography>
+
                 <SpecialThanks>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: '0.5rem',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        <ThanksLink title={'DECA Games'} url={'https://decagames.com/'} />
-                        for creating the game
-                        <ThanksLink title={'Realm of the Mad God Exalt'} url={'https://www.realmofthemadgod.com/'} />
-                    </Box>
+                    <ThanksLink title={'Jakcodex'} url={'https://github.com/jakcodex'} />
+                    for his muledump fork and the asset compiler.
                 </SpecialThanks>
+
+                <SpecialThanks>
+                    <ThanksLink title={'TadusPro'} url={'https://github.com/TadusPro'} />
+                    for his direct contribution to EAM, his muledump fork and active support / feedback.
+                </SpecialThanks>
+
+                <SpecialThanks>
+                    Faynt for his active help with solving a render issue and contributions to muledump.
+                </SpecialThanks>
+
+                <SpecialThanks>
+                    059 for providing new game assets and support.
+                </SpecialThanks>
+
+            </ComponentBox>
+
+            <ComponentBox
+                title={(
+                    <Typography variant="h6" component="h2" fontWeight="bold">
+                        Big Thanks to <span style={{ color: '#f50' }}>DECA Games</span>
+                    </Typography>
+                )}
+                sx={{
+                    background: theme.palette.background.default,
+                    m: 0,
+                }}
+                innerSx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1.25,
+                    width: 'fit-content',
+                }}
+            >
+                <Box>
+
+                    <SpecialThanks>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: '0.5rem',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            <ThanksLink title={'DECA Games'} url={'https://decagames.com/'} />
+                            for creating the game
+                            <ThanksLink title={'Realm of the Mad God Exalt'} url={'https://www.realmofthemadgod.com/'} />
+                        </Box>
+                    </SpecialThanks>
+                </Box>
             </ComponentBox>
         </PopupBase>
     );
@@ -264,3 +288,4 @@ function CreditEntry({ title, image, url, text }) {
 }
 
 export default CreditsPopup;
+export { CreditEntry as ExternalLink };
