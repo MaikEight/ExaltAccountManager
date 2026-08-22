@@ -11,6 +11,7 @@
   "permissions": [
     "updater:default",
     "fs:default",
+    "shell:default",
     "http:default",
     "process:default",
     "dialog:default",

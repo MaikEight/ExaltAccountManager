@@ -38,6 +38,7 @@
     "core:window:allow-set-progress-bar",
     "core:window:allow-set-focus",
     "core:window:allow-set-title",
+    "shell:allow-open",
     "dialog:allow-open",
     "dialog:allow-save",
     "dialog:allow-message",
