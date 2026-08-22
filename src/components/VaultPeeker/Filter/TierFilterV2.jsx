@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Chip } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
-import items from "../../../assets/constants";
+import { items } from "../../../assets/runtimeAssets";
 import MultiSelectFilter from "./MultiSelectFilter";
 
 /**

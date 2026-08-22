@@ -1,7 +1,7 @@
 import { Box, FormControl, Input, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import { useEffect, useState } from "react";
-import items from "../../../assets/constants";
+import { items } from "../../../assets/runtimeAssets";
 import { useTheme } from "@emotion/react";
 
 const ITEM_HEIGHT = 48;

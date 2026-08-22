@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import itemsSlotTypeMap from "../../assets/slotmap";
-import items, { classes } from "../../assets/constants";
-import { drawItem, drawItemAsync } from "../../utils/realmItemDrawUtils";
+import { classes } from "../../assets/constants";
+import { items } from "../../assets/runtimeAssets";
+import { drawItemAsync, drawSpriteSheetItemAsync } from "../../utils/realmItemDrawUtils";
 import { Box } from "@mui/material";
 import useItemCanvas from "../../hooks/useItemCanvas";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
@@ -46,10 +47,9 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                 slot.sheet[1],
             ];
 
-            promises.push(drawItemAsync(
+            promises.push(drawSpriteSheetItemAsync(
                 "realm/itemsilhouettes_25p.png",
-                slotItem,
-                5
+                slotItem
             ));
             promiseItems.push(itemId);
         }
@@ -70,11 +70,7 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
             const itemId = character.equipment[i];
             const item = items[itemId];
             if (itemId && itemId !== -1 && item) {
-                itemPromises.push(drawItemAsync(
-                    "renders.png",
-                    item,
-                    5
-                ));
+                itemPromises.push(drawItemAsync(item));
                 itemPromisesIds.push(itemId);
                 continue;
             }
@@ -87,10 +83,9 @@ function EquipmentCanvas({ canvasIdentifier, character }) {
                 slot.sheet[1],
             ];
 
-            itemPromises.push(drawItemAsync(
+            itemPromises.push(drawSpriteSheetItemAsync(
                 "realm/itemsilhouettes_25p.png",
-                slotItem,
-                5
+                slotItem
             ));
             itemPromisesIds.push(itemId);
         }

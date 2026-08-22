@@ -252,13 +252,13 @@ function CharacterDetail({
         const load = async () => {
             const results = {};
             const bckItem = getItemById(BACKPACK_ITEM_ID);
-            if (bckItem) results.backpack = await drawItemAsync("renders.png", bckItem);
+            if (bckItem) results.backpack = await drawItemAsync(bckItem);
 
             const extItem = getItemById(BACKPACK_EXTENDER_ITEM_ID);
-            if (extItem) results.extender = await drawItemAsync("renders.png", extItem);
+            if (extItem) results.extender = await drawItemAsync(extItem);
 
             const beltItem = getItemById(ADVENTURERS_BELT);
-            if (beltItem) results.belt = await drawItemAsync("renders.png", beltItem);
+            if (beltItem) results.belt = await drawItemAsync(beltItem);
 
             if (!cancelled) setBackpackIcons(prev => ({ ...prev, ...results }));
         };

@@ -15,7 +15,8 @@ import {
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
-import items, { enchantments } from "../../../assets/constants";
+import { enchantments } from "../../../assets/constants";
+import { items } from "../../../assets/runtimeAssets";
 import useVaultPeeker from "../../../hooks/useVaultPeeker";
 import ItemGridV2 from "./ItemGridV2";
 import { RARITY_IMAGE_SOURCES } from "../../../utils/realmItemDrawUtils";

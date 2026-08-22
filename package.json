@@ -29,7 +29,6 @@
     "@tauri-apps/plugin-http": "^2.5.9",
     "@tauri-apps/plugin-os": "^2.3.2",
     "@tauri-apps/plugin-process": "^2.3.1",
-    "@tauri-apps/plugin-shell": "^2.3.5",
     "@tauri-apps/plugin-updater": "^2.10.1",
     "axios": "^1.19.0",
     "date-fns": "^4.4.0",

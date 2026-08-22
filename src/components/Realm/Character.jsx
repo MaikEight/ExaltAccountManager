@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { classes } from "../../assets/constants";
 import { useTheme } from "@emotion/react";
 import ItemCanvas from "./ItemCanvas";
-import items from './../../assets/constants';
+import { items } from './../../assets/runtimeAssets';
 import EquipmentCanvas from "./EquipmentCanvas";
 import CharacterPortrait from "./CharacterPortrait";
 import useVaultPeeker from "../../hooks/useVaultPeeker";
@@ -278,10 +278,10 @@ function Character({ charIdentifier, character }) {
                             gap: 1,
                         }}
                     >
-                        <ItemCanvas canvasIdentifier={charIdentifier + "_INV"} imgSrc="renders.png" itemIds={charItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride(theme.palette.mode === 'dark')} override={{ fillNumbers: false }} />
+                        <ItemCanvas canvasIdentifier={charIdentifier + "_INV"} itemIds={charItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride(theme.palette.mode === 'dark')} override={{ fillNumbers: false }} />
                         {
                             backpackItems.length > 0 &&
-                            <ItemCanvas canvasIdentifier={charIdentifier + "_BACK"} imgSrc="renders.png" itemIds={backpackItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride(theme.palette.mode === 'dark')} override={{ fillNumbers: false }} />
+                            <ItemCanvas canvasIdentifier={charIdentifier + "_BACK"} itemIds={backpackItems} items={items} totals={totalItems?.totals} overrideItemImages={emptyItemOverride(theme.palette.mode === 'dark')} override={{ fillNumbers: false }} />
                         }
                     </Box>
                 }

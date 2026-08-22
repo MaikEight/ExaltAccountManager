@@ -23,7 +23,14 @@ export default defineConfig(async () => ({
       'react': resolve(__dirname, 'node_modules/react'),
       'react-dom': resolve(__dirname, 'node_modules/react-dom'),
     },
-    dedupe: ['react', 'react-dom'],
+    dedupe: [
+      'react',
+      'react-dom',
+      '@emotion/react',
+      '@emotion/styled',
+      '@mui/material',
+      '@mui/system',
+    ],
   },
   build: {
     rollupOptions: {

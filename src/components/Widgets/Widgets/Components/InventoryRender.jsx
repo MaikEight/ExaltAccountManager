@@ -53,7 +53,7 @@ function InventoryRender({ character }) {
             }
 
             promises.push(new Promise((resolve) => {
-                drawItem("renders.png", item, (imageUrl) => {
+                drawItem(item, (imageUrl) => {
                     resolve(imageUrl);
                 });
             }));
