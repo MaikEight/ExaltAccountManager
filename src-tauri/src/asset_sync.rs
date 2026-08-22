@@ -176,7 +176,22 @@ fn seed_cache_from_snapshot(app: &AppHandle, cache_directory: &Path) -> Result<V
     // Sprites are best-effort. The manifest alone already restores names, tiers
     // and stats, and anything missing falls back to the placeholder sprite.
     match seed_sprites_from_snapshot(&resources, cache_directory) {
-        Ok(count) => println!("[assets] seeded {count} sprites from the bundled snapshot"),
+        Ok(count) => {
+            println!("[assets] seeded {count} sprites from the bundled snapshot");
+            // Record which build those sprites belong to. Without this the
+            // bundle prefetch sees no marker, downloads the complete bundle and
+            // discards every entry because the files are already present, and a
+            // newer build is fetched in full rather than as a difference.
+            // Only recorded on success, so a broken archive cannot claim sprites
+            // that were never written.
+            if let Some(build_id) = manifest.get("buildId").and_then(Value::as_str) {
+                if let Err(error) =
+                    fs::write(cache_directory.join(BUNDLE_MARKER_FILE), build_id)
+                {
+                    eprintln!("[assets] could not record the seeded sprite build: {error}");
+                }
+            }
+        }
         Err(error) => eprintln!("[assets] bundled sprite snapshot unusable: {error}"),
     }
 
