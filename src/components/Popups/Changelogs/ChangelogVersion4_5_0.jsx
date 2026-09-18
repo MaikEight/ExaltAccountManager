@@ -1,6 +1,8 @@
 import { Box, Paper, Skeleton, Typography, useTheme } from '@mui/material';
 import ChangelogEntry from './ChangelogEntry';
 import { useState } from 'react';
+import { ExternalLink } from '../CreditsPopup';
+import { MASCOT_NAME } from '../../../constants';
 
 function ChangelogVersion4_5_0() {
     const theme = useTheme();
@@ -9,7 +11,7 @@ function ChangelogVersion4_5_0() {
 
     const title = [
         "Exalt Account Manager v4.5.0",
-        "Starting the Launcher, Character selection and premium daily logins are free now!",
+        "Starting the launcher, character selection and premium daily logins are now free!",
     ];
 
     return (
@@ -111,42 +113,188 @@ function ChangelogVersion4_5_0() {
                 <ChangelogEntry
                     title={'Game starting'}
                     listOfChanges={[
-                        "Recent changes in Deca's policy made it mandatory to use the official launcher to start the game. EAM now supports starting the game through the official launcher.",
-                        "You can now use the new dropdown menu at the right od the 'Start Game' button to choose the character you want to start the game with.",
+                        "Recent changes in DECA's policy made it mandatory to use the official launcher to start the game. EAM now supports starting the game through the official launcher.",
+                        "You can now use the new dropdown menu to the right of the 'Start Game' button to choose the character you want to start the game with.",
                     ]}
                 />
                 <Box
                     sx={{
                         mt: -1,
                         ml: 1,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'start',
+                        justifyContent: 'start',
+                        gap: 0.5,
                     }}
                 >
                     <Typography variant="subtitle1">
-                        Read more about this change in the <a href="https://hub.realmofthemadgod.com/news0/news1/guardians" target="_blank" rel="noopener noreferrer">official blogpost</a>
+                        Read more about this change in the
                     </Typography>
+                    <Box
+                        sx={{ mt: 0.25 }}
+                    >
+                        <ExternalLink url="https://hub.realmofthemadgod.com/news0/news1/guardians" title="official blogpost" />
+                    </Box>
+                    <Typography variant="subtitle1">
+                        from june 2026.
+                    </Typography>
+                </Box>
+                <Box
+                    sx={{
+                        p: 1,
+                        pl: 2,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        width: '100%',
+                        alignItems: 'start',
+                        justifyContent: 'center',
+                        borderRadius: `${theme.shape.borderRadius * 0.5}px ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px ${theme.shape.borderRadius * 0.5}px`,
+                        borderLeft: `3px solid ${theme.palette.primary.main}`,
+                        backgroundColor: theme.palette.background.default,
+                        gap: 1.5,
+                    }}
+                >
+                    <img
+                        // src="/mascot/Error/error_mascot_only_2_small_very_low_res.png"
+                        // src="/mascot/Notification/notification.png"
+                        src="/mascot/Info/notification_very_low_res.png"
+                        alt="Error Mascot"
+                        style={{ height: 'auto', width: '39px', marginTop: '-2px',  }}
+                    />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '100%',
+                            alignItems: 'start',
+                            justifyContent: 'center',
+                            gap: 1,
+                        }}
+                    >
+                        <Typography variant="body1">
+                            DECA reviewed a pre-release build of <b>v4.5.0</b>. They don't endorse EAM — they don't
+                            endorse any third-party software — but they don't forbid EAM either.
+                        </Typography>
+                        <Typography variant="body1">
+                            In an official statement, DECA's community manager <b>Tiramisu</b> confirmed that DECA
+                            will <b>not</b> take action against accounts for using EAM, as long as EAM stays free of
+                            cheats and doesn't bypass the Terms of Service.
+                        </Typography>
+                        <Typography variant="body1">
+                            This reflects DECA's current position. We'll keep monitoring the situation and let you
+                            know if anything changes.
+                        </Typography>
+                    </Box>
+                    {/* <Typography variant="body1">
+                        In an official statement, <b>DECA's community manager Tiramisu</b> told us that DECA will <b>not</b> pursue account actions against EAM users as long as EAM does not contain any cheats and continues to not bypass the terms of service.
+                    </Typography>
+                    <Typography variant="body1">
+                        A pre-release Version of v4.5.0 was reviewed by DECA, they do not greenlight EAM, as they do not greenlight any third-party software, but they also do not explicitly forbid its use for now.
+                    </Typography>
+                    <Typography variant="body1">
+                        We will continue to monitor the situation and update you if anything changes.
+                    </Typography> */}
+                </Box>
+
+                <ChangelogEntry
+                    title={'Game asset updater'}
+                    listOfChanges={[
+                        "Game assets are now updated at runtime, meaning EAM automatically updates them when they are outdated.",
+                    ]}
+                />
+                <Box
+                    sx={{
+                        mt: -1,
+                        ml: 1,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'start',
+                        justifyContent: 'start',
+                        gap: 0.5,
+                    }}
+                >
+                    <Typography variant="subtitle1">
+                        This <b>big</b> improvement is only possible thanks to our new contributor and <b>long</b>-time EAM supporter
+                    </Typography>
+                    <Box
+                        sx={{ mt: 0.25 }}
+                    >
+                        <ExternalLink url="https://github.com/TadusPro" title="Tadus" image="https://avatars.githubusercontent.com/u/22742194?v=4" />
+                    </Box>
                 </Box>
 
                 <ChangelogEntry
                     title={'Daily Logins'}
                     listOfChanges={[
-                        "The daily login has also changed to not start the game anymore, meaning that the EAM Plus variant is now also the way used by the free version.",
-                        "🕑 The Plus variant is faster than the free version."
+                        "The daily login no longer starts the game, which means the free version now uses the same method as EAM Plus.",
+                        "🕑 The Plus variant is still a bit faster than the free version."
                     ]}
                 />
 
                 <ChangelogEntry
                     title={'Daily Login Rewards'}
                     listOfChanges={[
-                        "The current months daily login rewards are now displayed on the daily login page with a small checkmark on the days the daily login ran.",
-                        "A new Daily Login Rewards Widget has been added, it shows the current months daily login reward state of an account (claimed / unclaimed)."
+                        "The current month's daily login rewards are now displayed on the daily login page.",
+                        "A new Daily Login Rewards widget has been added; it shows an account's daily login reward state for the current month."
                     ]}
                 />
 
                 <ChangelogEntry
                     title={'Miscellaneous'}
                     listOfChanges={[
+                        "Accounts that currently have the game running are now marked in the accounts table.",
+                        "Updated all dependencies to their latest versions to stay as secure as possible.",
+                        "Updated the Credits & Thanks popup.",
+                        "Fixed the Game Updater's loading state not being displayed correctly.",
                     ]}
                 />
+
+                <Box>
+                    <Typography variant="h6" color="primary">
+                        Privacy Policy and Terms of Service Update
+                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'start',
+                            justifyContent: 'start',
+                            width: '100%',
+                            gap: 2,
+                        }}
+                    >
+                        <img
+                            src="https://exaltaccountmanager.com/okta/variants/sleepy_320.png"
+                            alt="Sleepy Variant"
+                            style={{ width: 'auto', height: '100px' }}
+                        />
+                        <Box
+                            sx={{
+                                mt: 2,
+                            }}
+                        >
+                            <Typography variant="body1" align="start" color="textSecondary">
+                                Please read them carefully ... or not. {MASCOT_NAME} does not judge you for that.
+                            </Typography>
+                            <Typography variant="subtitle2" align="start" color="textSecondary">
+                                But we would like to inform you that by using EAM, you agree to our Privacy Policy and Terms of Service.
+                            </Typography>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'start',
+                                    gap: 4,
+                                    mt: 1,
+                                }}
+                            >
+                                <ExternalLink url="https://exaltaccountmanager.com/privacy-policy" title="Privacy Policy" />
+                                <ExternalLink url="https://exaltaccountmanager.com/terms-of-service" title="Terms of Service" />
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
 
                 <Box
                     sx={{
@@ -181,25 +329,32 @@ function ChangelogVersion4_5_0() {
                                 <li>Pro90</li>
                                 <li>TheDangerScrew</li>
                                 <li>n1k-o</li>
+                                <li>K3y0708</li>
                             </ul>
                         </Typography>
                         <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
                             <ul>
+                                <li><span style={{ color: theme.palette.primary.main }}>Contributor</span> Tadus</li>
+                                <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
+                                    Thank you for your contribution to EAM!
+                                </Typography>
                                 <li><span style={{ color: '#f50' }}>DECA</span> Tiramisu</li>
                                 <Typography component={'span'} variant="body2" fontWeight={'bold'} color="textSecondary">
-                                    Thank you for actively helping EAM to stay alive!
+                                    Thank you for actively helping EAM stay alive!
                                 </Typography>
                             </ul>
                         </Typography>
                         <Box
                             sx={{
-                                my: 'auto'
+                                my: 'auto',
+                                ml: 0.25,
+                                mr: -0.25
                             }}
                         >
                             <img
                                 src="/mascot/Happy/happy_very_low_res.png"
                                 alt="Okta"
-                                style={{ width: '56px', height: '56px' }}
+                                style={{ width: '80px', height: '80px' }}
                             />
                         </Box>
                     </Box>
