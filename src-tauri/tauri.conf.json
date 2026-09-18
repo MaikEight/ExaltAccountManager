@@ -15,7 +15,7 @@
     "copyright": "© Copyright 2020-2026, MaikEight, All rights reserved.",
     "windows": {
       "allowDowngrades": false,
-      "certificateThumbprint": "902a87c85afbc0c5eb692d2e921ff8dabbee5625",
+      "certificateThumbprint": "203cfa5c47118085819876d013a595f3ddc268d0",
       "digestAlgorithm": "sha256",
       "timestampUrl": "http://time.certum.pl",
       "webviewInstallMode": {
