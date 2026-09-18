@@ -156,8 +156,6 @@ function ChangelogVersion4_5_0() {
                     }}
                 >
                     <img
-                        // src="/mascot/Error/error_mascot_only_2_small_very_low_res.png"
-                        // src="/mascot/Notification/notification.png"
                         src="/mascot/Info/notification_very_low_res.png"
                         alt="Error Mascot"
                         style={{ height: 'auto', width: '39px', marginTop: '-2px',  }}
@@ -186,15 +184,6 @@ function ChangelogVersion4_5_0() {
                             know if anything changes.
                         </Typography>
                     </Box>
-                    {/* <Typography variant="body1">
-                        In an official statement, <b>DECA's community manager Tiramisu</b> told us that DECA will <b>not</b> pursue account actions against EAM users as long as EAM does not contain any cheats and continues to not bypass the terms of service.
-                    </Typography>
-                    <Typography variant="body1">
-                        A pre-release Version of v4.5.0 was reviewed by DECA, they do not greenlight EAM, as they do not greenlight any third-party software, but they also do not explicitly forbid its use for now.
-                    </Typography>
-                    <Typography variant="body1">
-                        We will continue to monitor the situation and update you if anything changes.
-                    </Typography> */}
                 </Box>
 
                 <ChangelogEntry
@@ -247,6 +236,7 @@ function ChangelogVersion4_5_0() {
                         "Updated all dependencies to their latest versions to stay as secure as possible.",
                         "Updated the Credits & Thanks popup.",
                         "Fixed the Game Updater's loading state not being displayed correctly.",
+                        "A new code signing certificate has been issued for EAM. This is a security measure to ensure that the application is not tampered with.",
                     ]}
                 />
 
