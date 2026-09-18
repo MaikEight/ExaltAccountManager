@@ -2,7 +2,7 @@
   Title: Exalt Account Manager
   Description: An account manager and launcher for the game realm of the mad god (rotmg for short).
   Author: Maik8
-  -->
+-->
 
 # Exalt Account Manager
 
@@ -45,6 +45,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 <br >
 
 ## Features ✨
+
 - Quickly launch Exalt with different accounts
 - Open multiple instances of Exalt simultaneously with the click of a button
 - View and manage all your items across your accounts
@@ -73,6 +74,7 @@ As EAM continues to evolve, your feedback and suggestions are invaluable. Join t
 5. Enjoy!
 
 ## Need support or have questions? 📝
+
 Join the [Discord server](https://discord.exalt-account-manager.eu) and leave a message in the help-request or general channel. I respond to inquiries promptly!
 
 Don't have discord? 
@@ -90,6 +92,7 @@ Just open an issue here, write an email (mail@maik8.de) or join the discord.
 </a>
 
 ## Want to support this project? 📈
+
 If you want to contribut to this project, please leave me a message in discord and I happily take some time to help you getting started.
 
 <b>Can't code but want to help anyways?</b>
@@ -103,7 +106,7 @@ Purchases:
 - The domain exalt-account-manager.eu.
 - The domain ExaltAccountManager.com.
 - A VPS to host the "Analytics"- and "General Services"-API aswell as potential other EAM-services.
-- 3x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
+- 4x Open Source Code Signing Certificate to ensure authenticity and integrity of the software.
 - 1x Apple Developer Account to ensure authenticity and integrity of the software.
 - Webhosting for the [website](https://ExaltAccountManager.com).
 
