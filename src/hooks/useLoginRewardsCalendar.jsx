@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
 /** Local "YYYY-MM" for the current month (used as the initial selection). */
@@ -9,8 +9,8 @@ function currentMonthKey() {
 
 /**
  * Loads daily-login reward calendar data from the backend and manages the
- * selected month. Starts on the current month and, on first load, jumps to the
- * latest month that actually has stored data (unless the user navigated first).
+ * selected month. Always starts on the current month; the navigator lets the
+ * user step back to past months that have stored data.
  *
  * @param {Object}  options
  * @param {string=} options.email          When set, also loads the per-account claim/unlock status.
@@ -24,27 +24,15 @@ export default function useLoginRewardsCalendar({ email = null, withLoginDates =
     const [accountStatus, setAccountStatus] = useState(null);
     const [loginDates, setLoginDates] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const userNavigatedRef = useRef(false);
 
-    // Manual month selection (via the navigator) pins the month.
-    const selectMonth = useCallback((m) => {
-        userNavigatedRef.current = true;
-        setMonth(m);
-    }, []);
-
-    // Load the list of stored months once; jump to the latest that has data.
+    // Load the list of stored months (used only to bound the month navigator).
     useEffect(() => {
         let cancelled = false;
         invoke('get_available_login_reward_months')
             .then((months) => {
-                if (cancelled) return;
-                const list = Array.isArray(months) ? months : [];
-                setAvailableMonths(list);
-                if (!userNavigatedRef.current && list.length) {
-                    setMonth(list[list.length - 1]);
-                }
+                if (!cancelled) setAvailableMonths(Array.isArray(months) ? months : []);
             })
-            .catch(() => { /* keep the current-month default */ });
+            .catch(() => { /* keep whatever we have */ });
         return () => { cancelled = true; };
     }, [reloadKey]);
 
@@ -80,5 +68,5 @@ export default function useLoginRewardsCalendar({ email = null, withLoginDates =
         return () => { cancelled = true; };
     }, [month, email, withLoginDates, reloadKey]);
 
-    return { month, setMonth: selectMonth, availableMonths, rewards, accountStatus, loginDates, isLoading };
+    return { month, setMonth, availableMonths, rewards, accountStatus, loginDates, isLoading };
 }

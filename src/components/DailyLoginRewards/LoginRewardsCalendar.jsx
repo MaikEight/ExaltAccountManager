@@ -27,11 +27,17 @@ function monthLabel(month) {
     return new Date(y, m - 1, 1).toLocaleString(undefined, { month: 'long', year: 'numeric' });
 }
 
+/** Local "YYYY-MM" for the current month. */
+function currentMonthKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
 /**
  * A single calendar rectangle: day/tier number top-left, item sprite centered
  * (no backdrop), an optional quantity badge and a bottom-right corner icon.
  */
-function DayCell({ label, reward, cornerIcon = null, dim = false, sx }) {
+function DayCell({ label, reward, cornerIcon = null, dim = false, loading = false, sx }) {
     const [img, setImg] = useState(null);
 
     const itemId = reward?.item_id ?? -1;
@@ -51,7 +57,9 @@ function DayCell({ label, reward, cornerIcon = null, dim = false, sx }) {
         return () => { cancelled = true; };
     }, [itemId]);
 
-    const center = img ? (
+    const center = loading ? (
+        <Skeleton variant="rounded" width={SPRITE_SIZE} height={SPRITE_SIZE} />
+    ) : img ? (
         <img
             src={img}
             alt={itemData ? itemData[0] : `Item ${itemId}`}
@@ -63,7 +71,7 @@ function DayCell({ label, reward, cornerIcon = null, dim = false, sx }) {
     ) : gold > 0 && itemId <= 0 ? (
         <MonetizationOnRoundedIcon sx={{ color: 'warning.light', fontSize: 26 }} />
     ) : itemData ? (
-        <Skeleton variant="rectangular" width={SPRITE_SIZE} height={SPRITE_SIZE} />
+        <Skeleton variant="rounded" width={SPRITE_SIZE} height={SPRITE_SIZE} />
     ) : itemId > 0 ? (
         <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem' }}>#{itemId}</Typography>
     ) : null;
@@ -159,9 +167,16 @@ function LoginRewardsCalendar({
     }, [accountStatus]);
     const unlockableDays = accountStatus?.unlockable_days ?? 0;
 
-    const sortedMonths = useMemo(() => [...availableMonths].sort(), [availableMonths]);
-    const canPrev = !!month && sortedMonths.length > 0 && month > sortedMonths[0];
-    const canNext = !!month && sortedMonths.length > 0 && month < sortedMonths[sortedMonths.length - 1];
+    // The current month is always reachable (even without data), plus every month
+    // that has stored data, so the navigator can step back to history and return.
+    const navMonths = useMemo(() => {
+        const set = new Set(availableMonths);
+        set.add(currentMonthKey());
+        if (month) set.add(month);
+        return [...set].sort();
+    }, [availableMonths, month]);
+    const canPrev = !!month && navMonths.length > 0 && month > navMonths[0];
+    const canNext = !!month && navMonths.length > 0 && month < navMonths[navMonths.length - 1];
 
     const tierHighlight = (day) => {
         if (claimedSet.has(day)) return 'claimed';
@@ -195,6 +210,7 @@ function LoginRewardsCalendar({
                     key={day}
                     label={day}
                     reward={rewardsByDay.get(day)}
+                    loading={isLoading}
                     cornerIcon={loginDateSet.has(dateStr) ? cornerCheck(theme.palette.primary.main) : null}
                     sx={{ backgroundColor: 'background.paper' }}
                 />
@@ -232,28 +248,36 @@ function LoginRewardsCalendar({
             </>
         );
     } else if (variant === 'tier') {
-        const days = [...rewardsByDay.keys()].sort((a, b) => a - b);
+        // Keep the table visible while loading by rendering placeholder tiers.
+        const days = rewards.length > 0
+            ? [...rewardsByDay.keys()].sort((a, b) => a - b)
+            : (isLoading ? Array.from({ length: 31 }, (_, i) => i + 1) : []);
         grid = (
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 0.75 }}>
                 {days.map((day) => {
                     const h = tierHighlight(day);
-                    const borderColor = h === 'claimed'
-                        ? theme.palette.success.main
-                        : h === 'unlocked'
-                            ? theme.palette.warning.main
-                            : theme.palette.divider;
-                    const tint = h === 'claimed'
-                        ? alpha(theme.palette.success.main, 0.12)
-                        : h === 'unlocked'
-                            ? alpha(theme.palette.warning.main, 0.12)
-                            : 'transparent';
+                    const borderColor = isLoading
+                        ? theme.palette.divider
+                        : h === 'claimed'
+                            ? theme.palette.success.main
+                            : h === 'unlocked'
+                                ? theme.palette.warning.main
+                                : theme.palette.divider;
+                    const tint = isLoading
+                        ? 'transparent'
+                        : h === 'claimed'
+                            ? alpha(theme.palette.success.main, 0.12)
+                            : h === 'unlocked'
+                                ? alpha(theme.palette.warning.main, 0.12)
+                                : 'transparent';
                     return (
                         <DayCell
                             key={day}
                             label={day}
                             reward={rewardsByDay.get(day)}
-                            dim={h === 'locked'}
-                            cornerIcon={h === 'claimed' ? cornerCheck(theme.palette.success.main) : null}
+                            loading={isLoading}
+                            dim={!isLoading && h === 'locked'}
+                            cornerIcon={!isLoading && h === 'claimed' ? cornerCheck(theme.palette.success.main) : null}
                             sx={{
                                 border: `2px solid ${borderColor}`,
                                 borderRadius: 1,
@@ -265,6 +289,10 @@ function LoginRewardsCalendar({
             </Box>
         );
     }
+
+    // Only fall back to the empty message once loading has finished with no data;
+    // while loading, the grid above is shown with skeleton item images instead.
+    const showEmpty = !isLoading && rewards.length === 0;
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -282,7 +310,7 @@ function LoginRewardsCalendar({
             </Box>
 
             {/* Legend (tier variant only) */}
-            {variant === 'tier' && rewards.length > 0 && (
+            {variant === 'tier' && !showEmpty && (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'center', alignItems: 'center', mb: 1 }}>
                     <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
                         <Box sx={{ width: 12, height: 12, borderRadius: '50%', border: `2px solid ${theme.palette.warning.main}`, flexShrink: 0 }} />
@@ -302,14 +330,9 @@ function LoginRewardsCalendar({
                 </Box>
             )}
 
-            {/* Content */}
-            {isLoading ? (
-                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 0.75 }}>
-                    {Array.from({ length: 14 }).map((_, i) => (
-                        <Skeleton key={i} variant="rounded" height={CELL_MIN_HEIGHT} />
-                    ))}
-                </Box>
-            ) : rewards.length === 0 ? (
+            {/* Content — the table is always rendered; only the item images show
+                skeletons while loading, so the layout never resizes afterwards. */}
+            {showEmpty ? (
                 emptyState ?? (
                     <Box sx={{ py: 4, textAlign: 'center' }}>
                         <Typography variant="body2" color="text.secondary">
