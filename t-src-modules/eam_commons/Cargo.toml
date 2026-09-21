@@ -10,14 +10,14 @@ edition = "2021"
 [dependencies]
 base64 = "0.23"
 chrono = { version = "0.4", features = ["serde"] }
-diesel = { version = "2.3.10", features = ["sqlite", "r2d2", "64-column-tables"] }
+diesel = { version = "2.3.13", features = ["sqlite", "r2d2", "64-column-tables"] }
 diesel_migrations = "2.3.2"
-diesel_derives = "2.3.9"
-dirs = "6.0"
+diesel_derives = "2.3.10"
+dirs = "7.0"
 flate2 = "1.1"
 function_name = "0.3"
 futures = "0.3"
-glob = "0.3.3"
+glob = "0.3.4"
 lazy_static = "1.5"
 libsqlite3-sys = { version = "0.38.2", features = ["bundled"] }
 log = "0.4"
@@ -29,9 +29,9 @@ serde_json = "1.0"
 serde_urlencoded = "0.7"
 sha1 = "0.11"
 thiserror = "2.0"
-tokio = { version = "1.52", features = ["full"] }
-uuid = { version = "1.23", features = ["serde", "v4"] }
-zeroize = "1.8"
+tokio = { version = "1.53", features = ["full"] }
+uuid = { version = "1.26", features = ["serde", "v4"] }
+zeroize = "1.9"
 zip = "8"
 
 [target.'cfg(windows)'.dependencies]
