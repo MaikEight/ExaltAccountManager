@@ -51,7 +51,7 @@ function ChangelogVersion4_5_0() {
                     )
                 }
                 <img
-                    src='https://app-data.exaltaccountmanager.com/images/okta/banner_4_5_0.webp'
+                    src='https://app-data.exaltaccountmanager.com/images/okta/banner_4_5_0.webp'                   
                     alt='EAM blog post logo'
                     onLoad={() => setImageLoaded(true)}
                     style={{
