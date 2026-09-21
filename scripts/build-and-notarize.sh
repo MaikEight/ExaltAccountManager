@@ -39,7 +39,11 @@ cd "$SCRIPT_DIR/.."
 
 # If the direnv shell hook did not run (non-interactive shell, IDE terminal,
 # CI), pull the environment in explicitly.
-if [ -z "${NOTARY_KEYCHAIN_PROFILE:-}${APPLE_ID:-}" ] && [ -f .envrc ] && command -v direnv >/dev/null 2>&1; then
+# Always reload after the cd above, rather than only when the environment looks
+# empty. direnv loads the NEAREST .envrc, so a shell started in a subdirectory
+# can carry a partial environment — the notary profile but not the signing key,
+# say — and a check for "some variable is set" would wrongly skip the reload.
+if [ -f .envrc ] && command -v direnv >/dev/null 2>&1; then
     eval "$(direnv export bash 2>/dev/null || true)"
 fi
 
